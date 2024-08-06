@@ -9,8 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/providerserver"
 )
 
-var version string = "dev"
-var debug bool
+//go:generate go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs generate -provider-name descope
+
+var (
+	version = "dev"
+	debug   bool
+)
 
 func main() {
 	flag.BoolVar(&debug, "debug", false, "set to true to run the provider with support for debuggers")
@@ -18,7 +22,7 @@ func main() {
 
 	ctx := context.Background()
 	opts := providerserver.ServeOpts{
-		Address: "descope/descope",
+		Address: "registry.terraform.io/descope/descope",
 		Debug:   debug,
 	}
 

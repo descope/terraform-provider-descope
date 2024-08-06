@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/descope/terraform-provider-descope/internal/infra"
-	"github.com/descope/terraform-provider-descope/internal/resources"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -119,6 +118,6 @@ func (p *descopeProvider) DataSources(_ context.Context) []func() datasource.Dat
 
 func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		resources.NewProjectResource,
+		NewProjectResource,
 	}
 }
