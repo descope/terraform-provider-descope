@@ -4,7 +4,6 @@ on:
   push:
     tags:
       - "v*"
-  pull_request: # while testing
 
 permissions:
   contents: write
@@ -27,6 +26,6 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
         with:
-          args: release --clean --snapshot
+          args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
