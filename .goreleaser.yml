@@ -5,14 +5,11 @@ before:
   hooks:
     # this is just an example and not a requirement for provider building/publishing
     - go mod tidy
+env:
+  - CGO_ENABLED=0
+  - COSIGN_YES=true
 builds:
-  - env:
-      # goreleaser does not work with CGO, it could also complicate
-      # usage by users in CI/CD systems like HCP Terraform where
-      # they are unable to install libraries.
-      - CGO_ENABLED=0
-      - COSIGN_YES=true
-    mod_timestamp: "{{ .CommitTimestamp }}"
+  - mod_timestamp: "{{ .CommitTimestamp }}"
     flags:
       - -trimpath
     ldflags:
