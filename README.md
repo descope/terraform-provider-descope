@@ -1,0 +1,2 @@
+
+# Descope Terraform Provider
