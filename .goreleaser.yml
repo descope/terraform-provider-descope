@@ -42,7 +42,7 @@ checksum:
   algorithm: sha256
 signs:
   - artifacts: checksum
-  - cmd: cosign
+    cmd: cosign
     signature: "${artifact}.sig"
     certificate: "${artifact}.pem"
     args:
