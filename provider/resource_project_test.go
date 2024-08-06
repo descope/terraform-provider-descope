@@ -14,7 +14,7 @@ func TestAccProjectResource(t *testing.T) {
 		Steps: []resource.TestStep{
 			// Create and Read testing
 			{
-				Config: testAccProjectResourceConfig("one"),
+				Config: testAccProjectResourceConfig("one"), // need a dynamic value for parallel testing
 				Check: resource.ComposeAggregateTestCheckFunc(
 					resource.TestCheckResourceAttrSet("descope_project.test", "id"),
 					resource.TestCheckResourceAttr("descope_project.test", "name", "one"),
