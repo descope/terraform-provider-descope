@@ -1,0 +1,97 @@
+package connectors
+
+import (
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+    {{- if .HasField "boolean" }}
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
+    {{- end }}
+    {{- if .HasField "number" }}
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/floatattr"
+    {{- end }}
+    {{- if .HasField "object" }}
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
+    {{- end }}
+    {{- if or .HasValidator (.HasField "httpAuth") }}
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+    {{- end }}
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+)
+
+{{ if .HasValidator }}
+var {{.StructName}}Validator = objectattr.NewValidator[{{.StructName}}Model]("must have a valid configuration")
+{{ end }}
+
+var {{.StructName}}Attributes = map[string]schema.Attribute{
+	"id":          stringattr.IdentifierMatched(),
+	"name":        stringattr.Required(),
+	"description": stringattr.Default(""),
+
+    {{ range .Fields }}
+    "{{.AttributeName}}": {{.AttributeType}},
+    {{- end }}
+}
+
+// Model
+
+type {{.StructName}}Model struct {
+	ID          types.String `tfsdk:"id"`
+	Name        types.String `tfsdk:"name"`
+	Description types.String `tfsdk:"description"`
+
+    {{ range .Fields }}
+    {{.StructName}} {{.StructType}} `tfsdk:"{{.AttributeName}}"`
+    {{- end }}
+}
+
+func (m *{{.StructName}}Model) Values(h *helpers.Handler) map[string]any {
+	data := connectorValues(m.ID, m.Name, m.Description, h)
+	data["type"] = "{{.ID}}"
+	data["configuration"] = m.ConfigurationValues(h)
+	return data
+}
+
+func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any) {
+	// all connector values are specified in the schema
+}
+
+{{ if .HasValidator }}
+func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
+    {{- range .Fields }}{{ if .Dependency }}
+	{{- if .Dependency.DefaultValue }}
+	if !m.{{.StructName}}.IsNull() && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
+		h.Error("Invalid connector configuration", "The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} is set to false")
+	}
+	{{- else }}
+	if !m.{{.StructName}}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
+		h.Error("Invalid connector configuration", "The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to true")
+	}
+	{{- end }}
+	{{- end }}{{ end }}
+}
+{{ end }}
+
+// Configuration
+
+func (m *{{.StructName}}Model) ConfigurationValues(h *helpers.Handler) map[string]any {
+	c := map[string]any{}
+    {{- range .Fields }}
+    {{.GetValueStatement}}
+    {{- end }}
+	return c
+}
+
+// Matching
+
+func (m *{{.StructName}}Model) GetName() types.String {
+	return m.Name
+}
+
+func (m *{{.StructName}}Model) GetID() types.String {
+	return m.ID
+}
+
+func (m *{{.StructName}}Model) SetID(id types.String) {
+	m.ID = id
+}

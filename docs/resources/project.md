@@ -885,10 +885,13 @@ Optional:
 - `datadog` (Attributes List) (see [below for nested schema](#nestedatt--connectors--datadog))
 - `devrev_grow` (Attributes List) (see [below for nested schema](#nestedatt--connectors--devrev_grow))
 - `docebo` (Attributes List) (see [below for nested schema](#nestedatt--connectors--docebo))
+- `fingerprint` (Attributes List) (see [below for nested schema](#nestedatt--connectors--fingerprint))
+- `fingerprint_descope` (Attributes List) (see [below for nested schema](#nestedatt--connectors--fingerprint_descope))
 - `forter` (Attributes List) (see [below for nested schema](#nestedatt--connectors--forter))
 - `google_cloud_translation` (Attributes List) (see [below for nested schema](#nestedatt--connectors--google_cloud_translation))
 - `hibp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--hibp))
 - `http` (Attributes List) (see [below for nested schema](#nestedatt--connectors--http))
+- `http_static_ip` (Attributes List) (see [below for nested schema](#nestedatt--connectors--http_static_ip))
 - `hubspot` (Attributes List) (see [below for nested schema](#nestedatt--connectors--hubspot))
 - `intercom` (Attributes List) (see [below for nested schema](#nestedatt--connectors--intercom))
 - `newrelic` (Attributes List) (see [below for nested schema](#nestedatt--connectors--newrelic))
@@ -1005,8 +1008,10 @@ Required:
 
 Optional:
 
+- `audit_enabled` (Boolean)
 - `audit_filters` (String)
 - `description` (String)
+- `troubleshoot_log_enabled` (Boolean)
 
 Read-Only:
 
@@ -1103,6 +1108,44 @@ Required:
 
 Optional:
 
+- `description` (String)
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--fingerprint"></a>
+### Nested Schema for `connectors.fingerprint`
+
+Required:
+
+- `name` (String)
+- `public_api_key` (String)
+- `secret_api_key` (String, Sensitive)
+
+Optional:
+
+- `cloudflare_endpoint_url` (String)
+- `cloudflare_script_url` (String)
+- `description` (String)
+- `use_cloudflare_integration` (Boolean)
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--fingerprint_descope"></a>
+### Nested Schema for `connectors.fingerprint_descope`
+
+Required:
+
+- `name` (String)
+
+Optional:
+
+- `custom_domain` (String)
 - `description` (String)
 
 Read-Only:
@@ -1215,6 +1258,56 @@ Required:
 
 
 
+<a id="nestedatt--connectors--http_static_ip"></a>
+### Nested Schema for `connectors.http_static_ip`
+
+Required:
+
+- `base_url` (String)
+- `name` (String)
+
+Optional:
+
+- `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--http_static_ip--authentication))
+- `description` (String)
+- `headers` (Map of String)
+- `hmac_secret` (String, Sensitive)
+- `include_headers_in_context` (Boolean)
+- `insecure` (Boolean)
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--http_static_ip--authentication"></a>
+### Nested Schema for `connectors.http_static_ip.authentication`
+
+Optional:
+
+- `api_key` (Attributes) (see [below for nested schema](#nestedatt--connectors--http_static_ip--authentication--api_key))
+- `basic` (Attributes) (see [below for nested schema](#nestedatt--connectors--http_static_ip--authentication--basic))
+- `bearer_token` (String, Sensitive)
+
+<a id="nestedatt--connectors--http_static_ip--authentication--api_key"></a>
+### Nested Schema for `connectors.http_static_ip.authentication.api_key`
+
+Required:
+
+- `key` (String)
+- `token` (String, Sensitive)
+
+
+<a id="nestedatt--connectors--http_static_ip--authentication--basic"></a>
+### Nested Schema for `connectors.http_static_ip.authentication.basic`
+
+Required:
+
+- `password` (String, Sensitive)
+- `username` (String)
+
+
+
+
 <a id="nestedatt--connectors--hubspot"></a>
 ### Nested Schema for `connectors.hubspot`
 
@@ -1265,6 +1358,8 @@ Optional:
 - `audit_filters` (String)
 - `data_center` (String)
 - `description` (String)
+- `logs_prefix` (String)
+- `override_logs_prefix` (Boolean)
 - `troubleshoot_log_enabled` (Boolean)
 
 Read-Only:

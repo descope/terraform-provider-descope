@@ -1,0 +1,20 @@
+{{ range .Models }}
+{{.Name}}
+{{ head .Name }}
+{{ range .Fields }}
+
+
+{{.Name}}
+{{ subhead .Name }}
+
+- Type: `{{.Type}}`{{ if .Element }} of `{{.Element}}`{{ end }} {{ if .Required }}(required){{ end }}
+{{- if .Default }}
+- Default: `{{.Default}}`
+{{- end }}
+
+{{ if .Description }}{{.Description}}{{ else }}{{ placeholder .Name }}{{ end }}
+{{end}}
+
+
+
+{{end}}

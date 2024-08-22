@@ -91,84 +91,6 @@ func addConnectorNames[T any, M helpers.MatchableModel[T]](names map[string]int,
 	}
 }
 
-// HTTP Auth Field
-
-var HTTPAuthFieldValidator = objectattr.NewValidator[HTTPAuthFieldModel]("must specify exactly one authentication method")
-
-var HTTPAuthFieldAttributes = map[string]schema.Attribute{
-	"bearer_token": stringattr.SecretOptional(),
-	"basic": objectattr.Optional(map[string]schema.Attribute{
-		"username": stringattr.Required(),
-		"password": stringattr.SecretRequired(),
-	}),
-	"api_key": objectattr.Optional(map[string]schema.Attribute{
-		"key":   stringattr.Required(),
-		"token": stringattr.SecretRequired(),
-	}),
-}
-
-type HTTPAuthFieldModel struct {
-	BearerToken types.String              `tfsdk:"bearer_token"`
-	Basic       *HTTPAuthFieldBasicModel  `tfsdk:"basic"`
-	ApiKey      *HTTPAuthFieldApiKeyModel `tfsdk:"api_key"`
-}
-
-type HTTPAuthFieldBasicModel struct {
-	Username types.String `tfsdk:"username"`
-	Password types.String `tfsdk:"password"`
-}
-
-type HTTPAuthFieldApiKeyModel struct {
-	Key   types.String `tfsdk:"key"`
-	Token types.String `tfsdk:"token"`
-}
-
-func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
-	data := map[string]any{}
-	if v := m.BearerToken.ValueString(); v != "" {
-		data["method"] = "bearerToken"
-		data["bearerToken"] = v
-	}
-	if v := m.Basic; v != nil {
-		data["method"] = "basic"
-		data["basic"] = map[string]any{
-			"username": v.Username.ValueString(),
-			"password": v.Password.ValueString(),
-		}
-	}
-	if v := m.ApiKey; v != nil {
-		data["method"] = "apiKey"
-		data["apiKey"] = map[string]any{
-			"key":   v.Key.ValueString(),
-			"token": v.Token.ValueString(),
-		}
-	}
-	return data
-}
-
-func (m *HTTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all auth values are specified in the configuration
-}
-
-func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
-	count := 0
-	if m.BearerToken.ValueString() != "" {
-		count += 1
-	}
-	if m.Basic != nil {
-		count += 1
-	}
-	if m.ApiKey != nil {
-		count += 1
-	}
-
-	if count == 0 {
-		h.Error("Invalid HTTP authentication type", "An HTTP authentication method is required")
-	} else if count > 1 {
-		h.Error("Invalid HTTP authentication type", "Only one HTTP authentication method is allowed")
-	}
-}
-
 // Sender Field
 
 var SenderFieldAttributes = map[string]schema.Attribute{
@@ -215,4 +137,106 @@ func (m *ServerFieldModel) Values(h *helpers.Handler) map[string]any {
 func (m *ServerFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Host, data, "host")
 	intattr.Set(&m.Port, data, "port")
+}
+
+// HTTP Auth Field
+
+var HTTPAuthFieldValidator = objectattr.NewValidator[HTTPAuthFieldModel]("must specify exactly one authentication method")
+
+var HTTPAuthFieldAttributes = map[string]schema.Attribute{
+	"bearer_token": stringattr.SecretOptional(),
+	"basic":        objectattr.Optional(HTTPAuthBasicFieldAttributes),
+	"api_key":      objectattr.Optional(HTTPAuthAPIKeyFieldAttributes),
+}
+
+type HTTPAuthFieldModel struct {
+	BearerToken types.String              `tfsdk:"bearer_token"`
+	Basic       *HTTPAuthBasicFieldModel  `tfsdk:"basic"`
+	ApiKey      *HTTPAuthAPIKeyFieldModel `tfsdk:"api_key"`
+}
+
+func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	if v := m.BearerToken.ValueString(); v != "" {
+		data["method"] = "bearerToken"
+		data["bearerToken"] = v
+	}
+	if v := m.Basic; v != nil {
+		data["method"] = "basic"
+		data["basic"] = v.Values(h)
+	}
+	if v := m.ApiKey; v != nil {
+		data["method"] = "apiKey"
+		data["apiKey"] = v.Values(h)
+	}
+	return data
+}
+
+func (m *HTTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	// all auth values are specified in the configuration
+}
+
+func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
+	count := 0
+	if m.BearerToken.ValueString() != "" {
+		count += 1
+	}
+	if m.Basic != nil {
+		count += 1
+	}
+	if m.ApiKey != nil {
+		count += 1
+	}
+
+	if count == 0 {
+		h.Error("Invalid HTTP authentication type", "An HTTP authentication method is required")
+	} else if count > 1 {
+		h.Error("Invalid HTTP authentication type", "Only one HTTP authentication method is allowed")
+	}
+}
+
+// HTTP Auth Basic Field
+
+var HTTPAuthBasicFieldAttributes = map[string]schema.Attribute{
+	"username": stringattr.Required(),
+	"password": stringattr.SecretRequired(),
+}
+
+type HTTPAuthBasicFieldModel struct {
+	Username types.String `tfsdk:"username"`
+	Password types.String `tfsdk:"password"`
+}
+
+func (m *HTTPAuthBasicFieldModel) Values(h *helpers.Handler) map[string]any {
+	return map[string]any{
+		"username": m.Username.ValueString(),
+		"password": m.Password.ValueString(),
+	}
+}
+
+func (m *HTTPAuthBasicFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	// all auth values are specified in the configuration
+}
+
+// HTTP Auth APIKey Field
+
+var HTTPAuthAPIKeyFieldAttributes = map[string]schema.Attribute{
+	"key":   stringattr.Required(),
+	"token": stringattr.SecretRequired(),
+}
+
+type HTTPAuthAPIKeyFieldModel struct {
+	Key   types.String `tfsdk:"key"`
+	Token types.String `tfsdk:"token"`
+}
+
+func (m *HTTPAuthAPIKeyFieldModel) Values(h *helpers.Handler) map[string]any {
+	return map[string]any{
+		"key":   m.Key.ValueString(),
+		"token": m.Token.ValueString(),
+	}
+}
+
+func (m *HTTPAuthAPIKeyFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	// all auth values are specified in the configuration
 }

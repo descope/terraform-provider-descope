@@ -18,16 +18,19 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"abuseipdb":                listattr.Optional(AbuseIPDBAttributes),
 	"amplitude":                listattr.Optional(AmplitudeAttributes),
 	"audit_webhook":            listattr.Optional(AuditWebhookAttributes),
-	"aws_s3":                   listattr.Optional(AWSS3Attributes),
+	"aws_s3":                   listattr.Optional(AWSS3Attributes, AWSS3Validator),
 	"aws_translate":            listattr.Optional(AWSTranslateAttributes),
 	"clear":                    listattr.Optional(ClearAttributes),
 	"datadog":                  listattr.Optional(DatadogAttributes, DatadogValidator),
 	"devrev_grow":              listattr.Optional(DevRevGrowAttributes),
 	"docebo":                   listattr.Optional(DoceboAttributes),
+	"fingerprint":              listattr.Optional(FingerprintAttributes, FingerprintValidator),
+	"fingerprint_descope":      listattr.Optional(FingerprintDescopeAttributes),
 	"forter":                   listattr.Optional(ForterAttributes, ForterValidator),
 	"google_cloud_translation": listattr.Optional(GoogleCloudTranslationAttributes),
 	"hibp":                     listattr.Optional(HIBPAttributes),
 	"http":                     listattr.Optional(HTTPAttributes),
+	"http_static_ip":           listattr.Optional(HttpStaticIPAttributes),
 	"hubspot":                  listattr.Optional(HubSpotAttributes),
 	"intercom":                 listattr.Optional(IntercomAttributes),
 	"newrelic":                 listattr.Optional(NewRelicAttributes, NewRelicValidator),
@@ -56,10 +59,13 @@ type ConnectorsModel struct {
 	Datadog                []*DatadogModel                `tfsdk:"datadog"`
 	DevRevGrow             []*DevRevGrowModel             `tfsdk:"devrev_grow"`
 	Docebo                 []*DoceboModel                 `tfsdk:"docebo"`
+	Fingerprint            []*FingerprintModel            `tfsdk:"fingerprint"`
+	FingerprintDescope     []*FingerprintDescopeModel     `tfsdk:"fingerprint_descope"`
 	Forter                 []*ForterModel                 `tfsdk:"forter"`
 	GoogleCloudTranslation []*GoogleCloudTranslationModel `tfsdk:"google_cloud_translation"`
 	HIBP                   []*HIBPModel                   `tfsdk:"hibp"`
 	HTTP                   []*HTTPModel                   `tfsdk:"http"`
+	HttpStaticIP           []*HttpStaticIPModel           `tfsdk:"http_static_ip"`
 	HubSpot                []*HubSpotModel                `tfsdk:"hubspot"`
 	Intercom               []*IntercomModel               `tfsdk:"intercom"`
 	NewRelic               []*NewRelicModel               `tfsdk:"newrelic"`
@@ -89,10 +95,13 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Datadog, data, "datadog", h)
 	listattr.Get(m.DevRevGrow, data, "devrev-grow", h)
 	listattr.Get(m.Docebo, data, "docebo", h)
+	listattr.Get(m.Fingerprint, data, "fingerprint", h)
+	listattr.Get(m.FingerprintDescope, data, "fingerprint-descope", h)
 	listattr.Get(m.Forter, data, "forter", h)
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
+	listattr.Get(m.HttpStaticIP, data, "http-static-ip", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
 	listattr.Get(m.Intercom, data, "intercom", h)
 	listattr.Get(m.NewRelic, data, "newrelic", h)
@@ -106,8 +115,8 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
 	listattr.Get(m.Traceable, data, "traceable", h)
-	listattr.Get(m.TwilioCore, data, "twilio-core", h)
-	listattr.Get(m.TwilioVerify, data, "twilio-verify", h)
+	listattr.Get(m.TwilioCore, data, "twilio_core", h)
+	listattr.Get(m.TwilioVerify, data, "twilio_verify", h)
 	listattr.Get(m.Veriff, data, "veriff", h)
 	return data
 }
@@ -122,10 +131,13 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "datadog", m.Datadog)
 	SetConnectorIDs(h, data, "devrev-grow", m.DevRevGrow)
 	SetConnectorIDs(h, data, "docebo", m.Docebo)
+	SetConnectorIDs(h, data, "fingerprint", m.Fingerprint)
+	SetConnectorIDs(h, data, "fingerprint-descope", m.FingerprintDescope)
 	SetConnectorIDs(h, data, "forter", m.Forter)
 	SetConnectorIDs(h, data, "google-cloud-translation", m.GoogleCloudTranslation)
 	SetConnectorIDs(h, data, "hibp", m.HIBP)
 	SetConnectorIDs(h, data, "http", m.HTTP)
+	SetConnectorIDs(h, data, "http-static-ip", m.HttpStaticIP)
 	SetConnectorIDs(h, data, "hubspot", m.HubSpot)
 	SetConnectorIDs(h, data, "intercom", m.Intercom)
 	SetConnectorIDs(h, data, "newrelic", m.NewRelic)
@@ -139,8 +151,8 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "sumologic", m.SumoLogic)
 	SetConnectorIDs(h, data, "telesign", m.Telesign)
 	SetConnectorIDs(h, data, "traceable", m.Traceable)
-	SetConnectorIDs(h, data, "twilio-core", m.TwilioCore)
-	SetConnectorIDs(h, data, "twilio-verify", m.TwilioVerify)
+	SetConnectorIDs(h, data, "twilio_core", m.TwilioCore)
+	SetConnectorIDs(h, data, "twilio_verify", m.TwilioVerify)
 	SetConnectorIDs(h, data, "veriff", m.Veriff)
 }
 
@@ -155,10 +167,13 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "datadog", m.Datadog)
 	addConnectorReferences(refs, "devrev-grow", m.DevRevGrow)
 	addConnectorReferences(refs, "docebo", m.Docebo)
+	addConnectorReferences(refs, "fingerprint", m.Fingerprint)
+	addConnectorReferences(refs, "fingerprint-descope", m.FingerprintDescope)
 	addConnectorReferences(refs, "forter", m.Forter)
 	addConnectorReferences(refs, "google-cloud-translation", m.GoogleCloudTranslation)
 	addConnectorReferences(refs, "hibp", m.HIBP)
 	addConnectorReferences(refs, "http", m.HTTP)
+	addConnectorReferences(refs, "http-static-ip", m.HttpStaticIP)
 	addConnectorReferences(refs, "hubspot", m.HubSpot)
 	addConnectorReferences(refs, "intercom", m.Intercom)
 	addConnectorReferences(refs, "newrelic", m.NewRelic)
@@ -172,8 +187,8 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "sumologic", m.SumoLogic)
 	addConnectorReferences(refs, "telesign", m.Telesign)
 	addConnectorReferences(refs, "traceable", m.Traceable)
-	addConnectorReferences(refs, "twilio-core", m.TwilioCore)
-	addConnectorReferences(refs, "twilio-verify", m.TwilioVerify)
+	addConnectorReferences(refs, "twilio_core", m.TwilioCore)
+	addConnectorReferences(refs, "twilio_verify", m.TwilioVerify)
 	addConnectorReferences(refs, "veriff", m.Veriff)
 	return refs
 }
@@ -189,10 +204,13 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.Datadog)
 	addConnectorNames(names, m.DevRevGrow)
 	addConnectorNames(names, m.Docebo)
+	addConnectorNames(names, m.Fingerprint)
+	addConnectorNames(names, m.FingerprintDescope)
 	addConnectorNames(names, m.Forter)
 	addConnectorNames(names, m.GoogleCloudTranslation)
 	addConnectorNames(names, m.HIBP)
 	addConnectorNames(names, m.HTTP)
+	addConnectorNames(names, m.HttpStaticIP)
 	addConnectorNames(names, m.HubSpot)
 	addConnectorNames(names, m.Intercom)
 	addConnectorNames(names, m.NewRelic)
@@ -226,10 +244,13 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.Datadog, state.Datadog)
 	helpers.MatchModels(ctx, m.DevRevGrow, state.DevRevGrow)
 	helpers.MatchModels(ctx, m.Docebo, state.Docebo)
+	helpers.MatchModels(ctx, m.Fingerprint, state.Fingerprint)
+	helpers.MatchModels(ctx, m.FingerprintDescope, state.FingerprintDescope)
 	helpers.MatchModels(ctx, m.Forter, state.Forter)
 	helpers.MatchModels(ctx, m.GoogleCloudTranslation, state.GoogleCloudTranslation)
 	helpers.MatchModels(ctx, m.HIBP, state.HIBP)
 	helpers.MatchModels(ctx, m.HTTP, state.HTTP)
+	helpers.MatchModels(ctx, m.HttpStaticIP, state.HttpStaticIP)
 	helpers.MatchModels(ctx, m.HubSpot, state.HubSpot)
 	helpers.MatchModels(ctx, m.Intercom, state.Intercom)
 	helpers.MatchModels(ctx, m.NewRelic, state.NewRelic)

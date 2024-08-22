@@ -72,13 +72,17 @@ func (m *TwilioCoreModel) SetID(id types.String) {
 var TwilioCoreSendersFieldValidator = objectattr.NewValidator[TwilioCoreSendersFieldModel]("must have valid senders configured")
 
 var TwilioCoreSendersFieldAttributes = map[string]schema.Attribute{
-	"sms": objectattr.Required(map[string]schema.Attribute{
-		"phone_number":          stringattr.Default(""),
-		"messaging_service_sid": stringattr.Default(""),
-	}),
-	"voice": objectattr.Optional(map[string]schema.Attribute{
-		"phone_number": stringattr.Required(),
-	}),
+	"sms":   objectattr.Required(TwilioCoreSendersSMSFieldAttributes),
+	"voice": objectattr.Optional(TwilioCoreSendersVoiceFieldAttributes),
+}
+
+var TwilioCoreSendersSMSFieldAttributes = map[string]schema.Attribute{
+	"phone_number":          stringattr.Default(""),
+	"messaging_service_sid": stringattr.Default(""),
+}
+
+var TwilioCoreSendersVoiceFieldAttributes = map[string]schema.Attribute{
+	"phone_number": stringattr.Required(),
 }
 
 type TwilioCoreSendersFieldModel struct {

@@ -14,7 +14,7 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
-	// oidc
+
 	"login_page_url": stringattr.Default(""),
 	"claims":         listattr.StringOptional(),
 }

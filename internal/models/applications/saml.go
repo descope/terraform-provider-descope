@@ -18,7 +18,7 @@ var SAMLAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
-	// saml
+
 	"login_page_url":            stringattr.Default(""),
 	"dynamic_configuration":     objectattr.Optional(DynamicConfigurationAttributes),
 	"manual_configuration":      objectattr.Optional(ManualConfigurationAttributes),
