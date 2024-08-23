@@ -26,7 +26,7 @@ type projectResource struct {
 	client *infra.Client
 }
 
-func (r *projectResource) Configure(_ context.Context, req resource.ConfigureRequest, resp *resource.ConfigureResponse) {
+func (r *projectResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
 	if client, ok := req.ProviderData.(*infra.Client); ok {
 		r.client = client
 	}
