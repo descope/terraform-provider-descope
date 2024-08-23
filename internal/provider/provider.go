@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/descope/terraform-provider-descope/internal/infra"
+	"github.com/descope/terraform-provider-descope/internal/resources"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
@@ -18,7 +19,7 @@ var (
 	_ provider.Provider = &descopeProvider{}
 )
 
-func New(version string) func() provider.Provider {
+func NewDescopeProvider(version string) func() provider.Provider {
 	return func() provider.Provider {
 		return &descopeProvider{
 			version: version,
@@ -118,6 +119,6 @@ func (p *descopeProvider) DataSources(_ context.Context) []func() datasource.Dat
 
 func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
-		NewProjectResource,
+		resources.NewProjectResource,
 	}
 }

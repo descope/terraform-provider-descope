@@ -24,7 +24,7 @@ func main() {
 		Debug:   debug,
 	}
 
-	err := providerserver.Serve(ctx, provider.New(version), opts)
+	err := providerserver.Serve(ctx, provider.NewDescopeProvider(version), opts)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
