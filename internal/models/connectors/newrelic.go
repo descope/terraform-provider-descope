@@ -21,6 +21,8 @@ var NewRelicAttributes = map[string]schema.Attribute{
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            stringattr.Default(""),
 	"troubleshoot_log_enabled": boolattr.Default(false),
+	"override_logs_prefix":     boolattr.Default(false),
+	"logs_prefix":              stringattr.Default("descope."),
 }
 
 // Model
@@ -35,6 +37,8 @@ type NewRelicModel struct {
 	AuditEnabled           types.Bool   `tfsdk:"audit_enabled"`
 	AuditFilters           types.String `tfsdk:"audit_filters"`
 	TroubleshootLogEnabled types.Bool   `tfsdk:"troubleshoot_log_enabled"`
+	OverrideLogsPrefix     types.Bool   `tfsdk:"override_logs_prefix"`
+	LogsPrefix             types.String `tfsdk:"logs_prefix"`
 }
 
 func (m *NewRelicModel) Values(h *helpers.Handler) map[string]any {
@@ -52,6 +56,9 @@ func (m *NewRelicModel) Validate(h *helpers.Handler) {
 	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Error("Invalid connector configuration", "The audit_filters field cannot be used when audit_enabled is set to false")
 	}
+	if !m.LogsPrefix.IsNull() && !m.OverrideLogsPrefix.ValueBool() {
+		h.Error("Invalid connector configuration", "The logs_prefix field cannot be used unless override_logs_prefix is set to true")
+	}
 }
 
 // Configuration
@@ -63,6 +70,8 @@ func (m *NewRelicModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	stringattr.Get(m.AuditFilters, c, "auditFilters")
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	boolattr.Get(m.OverrideLogsPrefix, c, "overrideLogsPrefix")
+	stringattr.Get(m.LogsPrefix, c, "logsPrefix")
 	return c
 }
 

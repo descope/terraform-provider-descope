@@ -3,8 +3,14 @@ package entities
 import (
 	"context"
 
+	"github.com/descope/terraform-provider-descope/internal/docs"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
+
+// inject documentation into models before using them
+func init() {
+	docs.InjectModels()
+}
 
 // Interface representation for req.Plan and req.State in resource operations.
 type entitySource interface {

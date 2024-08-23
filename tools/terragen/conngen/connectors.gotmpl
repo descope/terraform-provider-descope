@@ -1,0 +1,67 @@
+package connectors
+
+import (
+	"context"
+
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+)
+
+var ConnectorsValidator = objectattr.NewValidator[ConnectorsModel]("must have unique connector names")
+
+var ConnectorsModifier = objectattr.NewModifier[ConnectorsModel]("maintains connector identifiers between plan changes")
+
+var ConnectorsAttributes = map[string]schema.Attribute{
+    {{- range .Connectors }}
+	"{{.AttributeName}}":     listattr.Optional({{.StructName}}Attributes{{ if .HasValidator }}, {{.StructName}}Validator{{ end }}),
+    {{- end }}
+}
+
+type ConnectorsModel struct {
+    {{- range .Connectors }}
+	{{.StructName}}     []*{{.StructName}}Model     `tfsdk:"{{.AttributeName}}"`
+    {{- end }}
+}
+
+func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+    {{- range .Connectors }}
+	listattr.Get(m.{{.StructName}}, data, "{{.DataName}}", h)
+    {{- end }}
+	return data
+}
+
+func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
+    {{- range .Connectors }}
+	SetConnectorIDs(h, data, "{{.DataName}}", m.{{.StructName}})
+    {{- end }}
+}
+
+func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap {
+	refs := helpers.ReferencesMap{}
+    {{- range .Connectors }}
+	addConnectorReferences(refs, "{{.DataName}}", m.{{.StructName}})
+    {{- end }}
+	return refs
+}
+
+func (m *ConnectorsModel) Validate(h *helpers.Handler) {
+	names := map[string]int{}
+    {{- range .Connectors }}
+	addConnectorNames(names, m.{{.StructName}})
+    {{- end }}
+	for k, v := range names {
+		if v > 1 {
+			h.Error("Connector names must be unique", "The connector name '%s' is used %d times", k, v)
+		}
+	}
+}
+
+func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, diags *diag.Diagnostics) {
+    {{- range .Connectors }}
+    helpers.MatchModels(ctx, m.{{.StructName}}, state.{{.StructName}})
+    {{- end }}
+}

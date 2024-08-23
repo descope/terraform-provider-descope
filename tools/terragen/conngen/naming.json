@@ -1,0 +1,362 @@
+{
+  "connector": {
+    "abuseipdb": {
+      "attribute": "abuseipdb",
+      "file": "abuseipdb",
+      "struct": "AbuseIPDB"
+    },
+    "amplitude": {
+      "attribute": "amplitude",
+      "file": "amplitude",
+      "struct": "Amplitude"
+    },
+    "audit-webhook": {
+      "attribute": "audit_webhook",
+      "file": "auditwebhook",
+      "struct": "AuditWebhook"
+    },
+    "aws-s3": {
+      "attribute": "aws_s3",
+      "file": "awss3",
+      "struct": "AWSS3"
+    },
+    "aws-translate": {
+      "attribute": "aws_translate",
+      "file": "awstranslate",
+      "struct": "AWSTranslate"
+    },
+    "clear": {
+      "attribute": "clear",
+      "file": "clear",
+      "struct": "Clear"
+    },
+    "datadog": {
+      "attribute": "datadog",
+      "file": "datadog",
+      "struct": "Datadog"
+    },
+    "devrev-grow": {
+      "attribute": "devrev_grow",
+      "file": "devrevgrow",
+      "struct": "DevRevGrow"
+    },
+    "docebo": {
+      "attribute": "docebo",
+      "file": "docebo",
+      "struct": "Docebo"
+    },
+    "fingerprint": {
+      "attribute": "fingerprint",
+      "file": "fingerprint",
+      "struct": "Fingerprint"
+    },
+    "fingerprint-descope": {
+      "attribute": "fingerprint_descope",
+      "file": "fingerprintdescope",
+      "struct": "FingerprintDescope"
+    },
+    "forter": {
+      "attribute": "forter",
+      "file": "forter",
+      "struct": "Forter"
+    },
+    "google-cloud-translation": {
+      "attribute": "google_cloud_translation",
+      "file": "googlecloudtranslation",
+      "struct": "GoogleCloudTranslation"
+    },
+    "hibp": {
+      "attribute": "hibp",
+      "file": "hibp",
+      "struct": "HIBP"
+    },
+    "http": {
+      "attribute": "http",
+      "file": "http",
+      "struct": "HTTP"
+    },
+    "http-static-ip": {
+      "attribute": "http_static_ip",
+      "file": "httpstaticip",
+      "struct": "HttpStaticIP"
+    },
+    "hubspot": {
+      "attribute": "hubspot",
+      "file": "hubspot",
+      "struct": "HubSpot"
+    },
+    "intercom": {
+      "attribute": "intercom",
+      "file": "intercom",
+      "struct": "Intercom"
+    },
+    "newrelic": {
+      "attribute": "newrelic",
+      "file": "newrelic",
+      "struct": "NewRelic"
+    },
+    "recaptcha": {
+      "attribute": "recaptcha",
+      "file": "recaptcha",
+      "struct": "Recaptcha"
+    },
+    "recaptcha-enterprise": {
+      "attribute": "recaptcha_enterprise",
+      "file": "recaptchaenterprise",
+      "struct": "RecaptchaEnterprise"
+    },
+    "rekognition": {
+      "attribute": "rekognition",
+      "file": "rekognition",
+      "struct": "Rekognition"
+    },
+    "salesforce": {
+      "attribute": "salesforce",
+      "file": "salesforce",
+      "struct": "Salesforce"
+    },
+    "segment": {
+      "attribute": "segment",
+      "file": "segment",
+      "struct": "Segment"
+    },
+    "sendgrid": {
+      "attribute": "sendgrid",
+      "struct": "SendGrid"
+    },
+    "smtp": {
+      "attribute": "smtp",
+      "struct": "SMTP"
+    },
+    "sumologic": {
+      "attribute": "sumologic",
+      "file": "sumologic",
+      "struct": "SumoLogic"
+    },
+    "telesign": {
+      "attribute": "telesign",
+      "file": "telesign",
+      "struct": "Telesign"
+    },
+    "traceable": {
+      "attribute": "traceable",
+      "file": "traceable",
+      "struct": "Traceable"
+    },
+    "twilio-core": {
+      "attribute": "twilio_core",
+      "struct": "TwilioCore"
+    },
+    "twilio-verify": {
+      "attribute": "twilio_verify",
+      "struct": "TwilioVerify"
+    },
+    "veriff": {
+      "attribute": "veriff",
+      "file": "veriff",
+      "struct": "Veriff"
+    }
+  },
+  "field": {
+    "accessKeyId": {
+      "attribute": "access_key_id",
+      "struct": "AccessKeyID"
+    },
+    "accessToken": {
+      "attribute": "access_token",
+      "struct": "AccessToken"
+    },
+    "apiKey": {
+      "attribute": "api_key",
+      "struct": "APIKey"
+    },
+    "assessmentScore": {
+      "attribute": "assessment_score",
+      "struct": "AssessmentScore"
+    },
+    "auditEnabled": {
+      "attribute": "audit_enabled",
+      "struct": "AuditEnabled"
+    },
+    "auditFilters": {
+      "attribute": "audit_filters",
+      "struct": "AuditFilters"
+    },
+    "authentication": {
+      "attribute": "authentication",
+      "struct": "Authentication"
+    },
+    "baseUrl": {
+      "attribute": "base_url",
+      "struct": "BaseURL"
+    },
+    "bucket": {
+      "attribute": "bucket",
+      "struct": "Bucket"
+    },
+    "clientId": {
+      "attribute": "client_id",
+      "struct": "ClientID"
+    },
+    "clientSecret": {
+      "attribute": "client_secret",
+      "struct": "ClientSecret"
+    },
+    "cloudflareEndpointUrl": {
+      "attribute": "cloudflare_endpoint_url",
+      "struct": "CloudflareEndpointURL"
+    },
+    "cloudflareScriptUrl": {
+      "attribute": "cloudflare_script_url",
+      "struct": "CloudflareScriptURL"
+    },
+    "collectionId": {
+      "attribute": "collection_id",
+      "struct": "CollectionID"
+    },
+    "customDomain": {
+      "attribute": "custom_domain",
+      "struct": "CustomDomain"
+    },
+    "customerID": {
+      "attribute": "customer_id",
+      "struct": "CustomerID"
+    },
+    "dataCenter": {
+      "attribute": "data_center",
+      "struct": "DataCenter"
+    },
+    "euRegion": {
+      "attribute": "eu_region",
+      "struct": "EURegion"
+    },
+    "headers": {
+      "attribute": "headers",
+      "struct": "Headers"
+    },
+    "hmacSecret": {
+      "attribute": "hmac_secret",
+      "struct": "HMACSecret"
+    },
+    "host": {
+      "attribute": "host",
+      "struct": "Host"
+    },
+    "httpSourceUrl": {
+      "attribute": "http_source_url",
+      "struct": "HTTPSourceURL"
+    },
+    "includeHeadersInContext": {
+      "attribute": "include_headers_in_context",
+      "struct": "IncludeHeadersInContext"
+    },
+    "insecure": {
+      "attribute": "insecure",
+      "struct": "Insecure"
+    },
+    "logsPrefix": {
+      "attribute": "logs_prefix",
+      "struct": "LogsPrefix"
+    },
+    "overrideAssessment": {
+      "attribute": "override_assessment",
+      "struct": "OverrideAssessment"
+    },
+    "overrideIpAddress": {
+      "attribute": "override_ip_address",
+      "struct": "OverrideIPAddress"
+    },
+    "overrideLogsPrefix": {
+      "attribute": "override_logs_prefix",
+      "struct": "OverrideLogsPrefix"
+    },
+    "overrideUserEmail": {
+      "attribute": "override_user_email",
+      "struct": "OverrideUserEmail"
+    },
+    "overrides": {
+      "attribute": "overrides",
+      "struct": "Overrides"
+    },
+    "password": {
+      "attribute": "password",
+      "struct": "Password"
+    },
+    "projectId": {
+      "attribute": "project_id",
+      "struct": "ProjectID"
+    },
+    "publicApiKey": {
+      "attribute": "public_api_key",
+      "struct": "PublicAPIKey"
+    },
+    "region": {
+      "attribute": "region",
+      "struct": "Region"
+    },
+    "secretAccessKey": {
+      "attribute": "secret_access_key",
+      "struct": "SecretAccessKey"
+    },
+    "secretApiKey": {
+      "attribute": "secret_api_key",
+      "struct": "SecretAPIKey"
+    },
+    "secretKey": {
+      "attribute": "secret_key",
+      "struct": "SecretKey"
+    },
+    "serverUrl": {
+      "attribute": "server_url",
+      "struct": "ServerURL"
+    },
+    "serverZone": {
+      "attribute": "server_zone",
+      "struct": "ServerZone"
+    },
+    "serviceAccountJSON": {
+      "attribute": "service_account_json",
+      "struct": "ServiceAccountJSON"
+    },
+    "sessionToken": {
+      "attribute": "session_token",
+      "struct": "SessionToken"
+    },
+    "site": {
+      "attribute": "site",
+      "struct": "Site"
+    },
+    "siteId": {
+      "attribute": "site_id",
+      "struct": "SiteID"
+    },
+    "siteKey": {
+      "attribute": "site_key",
+      "struct": "SiteKey"
+    },
+    "token": {
+      "attribute": "token",
+      "struct": "Token"
+    },
+    "troubleshootLogEnabled": {
+      "attribute": "troubleshoot_log_enabled",
+      "struct": "TroubleshootLogEnabled"
+    },
+    "useCloudflareIntegration": {
+      "attribute": "use_cloudflare_integration",
+      "struct": "UseCloudflareIntegration"
+    },
+    "username": {
+      "attribute": "username",
+      "struct": "Username"
+    },
+    "version": {
+      "attribute": "version",
+      "struct": "Version"
+    },
+    "writeKey": {
+      "attribute": "write_key",
+      "struct": "WriteKey"
+    }
+  }
+}
