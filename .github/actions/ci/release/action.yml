@@ -1,0 +1,29 @@
+name: Run GoReleaser
+
+description: Run GoReleaser
+
+inputs:
+  go_version:
+    description: 'Version of Go to use for this build'
+    required: true
+  token:
+    description: 'The GITHUB_TOKEN secret'
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Repo
+      uses: ./.github/actions/ci/setup
+      with:
+        go_version: ${{ inputs.go_version }}
+
+    - name: Install Cosign
+      uses: sigstore/cosign-installer@v3
+
+    - name: Run GoReleaser
+      uses: goreleaser/goreleaser-action@v6
+      with:
+        args: release --clean --config .github/actions/ci/release/goreleaser.yml
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}

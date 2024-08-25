@@ -16,16 +16,6 @@ var docsProject = map[string]string{
 	"flows": "",
 }
 
-var docsSettings = map[string]string{
-	"cookie_policy": "",
-	"domain": "",
-	"enable_inactivity": "",
-	"inactivity_time": "",
-	"refresh_token_expiration": "",
-	"user_jwt_template": "",
-	"access_key_jwt_template": "",
-}
-
 var docsApplication = map[string]string{
 	"oidc": "",
 	"saml": "",
@@ -602,6 +592,16 @@ var docsJWTTemplate = map[string]string{
 
 var docsJWTTemplates = map[string]string{
 	"templates": "",
+}
+
+var docsSettings = map[string]string{
+	"cookie_policy": "",
+	"domain": "",
+	"enable_inactivity": "",
+	"inactivity_time": "",
+	"refresh_token_expiration": "",
+	"user_jwt_template": "",
+	"access_key_jwt_template": "",
 }
 
 var docsEmailService = map[string]string{

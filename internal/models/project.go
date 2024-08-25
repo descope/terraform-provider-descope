@@ -15,6 +15,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/jwttemplates"
+	"github.com/descope/terraform-provider-descope/internal/models/settings"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -24,7 +25,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"id":               stringattr.Identifier(),
 	"name":             stringattr.Required(),
 	"tag":              stringattr.Optional(stringvalidator.OneOf("production")),
-	"project_settings": objectattr.Optional(SettingsAttributes),
+	"project_settings": objectattr.Optional(settings.SettingsAttributes),
 	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
 	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
 	"attributes":       objectattr.Optional(attributes.AttributesAttributes),
@@ -39,7 +40,7 @@ type ProjectModel struct {
 	ID             types.String                        `tfsdk:"id"`
 	Name           types.String                        `tfsdk:"name"`
 	Tag            types.String                        `tfsdk:"tag"`
-	Settings       *SettingsModel                      `tfsdk:"project_settings"`
+	Settings       *settings.SettingsModel             `tfsdk:"project_settings"`
 	Authentication *authentication.AuthenticationModel `tfsdk:"authentication"`
 	Authorization  *authorization.AuthorizationModel   `tfsdk:"authorization"`
 	Attributes     *attributes.AttributesModel         `tfsdk:"attributes"`

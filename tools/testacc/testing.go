@@ -6,7 +6,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func Test(t *testing.T, steps ...resource.TestStep) {
+func Run(t *testing.T, steps ...resource.TestStep) {
+	t.Parallel()
+	resource.Test(t, TestCase(t, steps...))
+}
+
+func RunIsolated(t *testing.T, steps ...resource.TestStep) {
 	resource.Test(t, TestCase(t, steps...))
 }
 

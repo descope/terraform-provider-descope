@@ -1,13 +1,13 @@
-# Visit https://goreleaser.com for documentation on how to customize this
-# behavior.
 version: 2
+
 before:
   hooks:
-    # this is just an example and not a requirement for provider building/publishing
     - go mod tidy
+
 env:
   - CGO_ENABLED=0
   - COSIGN_YES=true
+
 builds:
   - mod_timestamp: "{{ .CommitTimestamp }}"
     flags:
@@ -28,15 +28,18 @@ builds:
       - goos: darwin
         goarch: "386"
     binary: "{{ .ProjectName }}_v{{ .Version }}"
+
 archives:
   - format: zip
     name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
 checksum:
   extra_files:
     - glob: "terraform-registry-manifest.json"
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
   name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
   algorithm: sha256
+
 signs:
   - artifacts: checksum
     cmd: cosign
@@ -51,11 +54,14 @@ signs:
         "${artifact}.pem",
         "${artifact}",
       ]
+
 release:
+  draft: true
+  replace_existing_draft: true
+  replace_existing_artifacts: true
   extra_files:
     - glob: "terraform-registry-manifest.json"
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
-  # If you want to manually examine the release before its live, uncomment this line:
-  # draft: true
+  
 changelog:
   disable: true
