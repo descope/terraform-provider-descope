@@ -25,7 +25,7 @@ func IdentifierMatched() schema.StringAttribute {
 func Required(validators ...validator.String) schema.StringAttribute {
 	return schema.StringAttribute{
 		Required:   true,
-		Validators: validators,
+		Validators: append([]validator.String{NonEmptyValidator()}, validators...),
 	}
 }
 
@@ -33,7 +33,7 @@ func SecretRequired(validators ...validator.String) schema.StringAttribute {
 	return schema.StringAttribute{
 		Required:   true,
 		Sensitive:  true,
-		Validators: validators,
+		Validators: append([]validator.String{NonEmptyValidator()}, validators...),
 	}
 }
 

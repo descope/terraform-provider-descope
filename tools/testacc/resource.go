@@ -2,13 +2,11 @@ package testacc
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
-
-var AttributeIsSet = 1
-var AttributeIsNotSet = -1
 
 type Resource struct {
 	Type string
@@ -33,6 +31,8 @@ func (r *Resource) Check(checks map[string]any) resource.TestCheckFunc {
 	for k, v := range checks {
 		if value, ok := v.(string); ok {
 			f = append(f, resource.TestCheckResourceAttr(path, k, value))
+		} else if value, ok := v.(int); ok {
+			f = append(f, resource.TestCheckResourceAttr(path, k, strconv.Itoa(value)))
 		} else if v == AttributeIsSet {
 			f = append(f, resource.TestCheckResourceAttrSet(path, k))
 		} else if v == AttributeIsNotSet {
@@ -43,3 +43,10 @@ func (r *Resource) Check(checks map[string]any) resource.TestCheckFunc {
 	}
 	return resource.ComposeAggregateTestCheckFunc(f...)
 }
+
+type attributeSymbol struct {
+	v int
+}
+
+var AttributeIsSet = attributeSymbol{v: 1}
+var AttributeIsNotSet = attributeSymbol{v: -1}
