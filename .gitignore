@@ -24,7 +24,7 @@ website/node_modules
 .idea
 *.iml
 *.test
-*.iml
+*.env
 /coverage.*
 
 website/vendor

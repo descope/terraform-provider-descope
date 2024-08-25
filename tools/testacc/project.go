@@ -15,7 +15,7 @@ func Project(t *testing.T) *ProjectResource {
 	require.NoError(t, err)
 	return &ProjectResource{
 		Resource: Resource{Type: "descope_project", Name: "test"},
-		Name:     fmt.Sprintf("%s-%s", t.Name(), uuid),
+		Name:     fmt.Sprintf("testacc-%s-%s", t.Name(), strings.ReplaceAll(uuid, "-", "")),
 	}
 }
 

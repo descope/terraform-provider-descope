@@ -27,8 +27,8 @@ testcoverage: ensure-go ensure-courtney ## runs all tests and computes test cove
 	go tool cover -func coverage.out | grep total | awk '{print $$3}'
 	go tool cover -html=coverage.out -o coverage.html
 
-testcleanup: ensure-descope ## cleans up local environment after running tests
-	descope project list | grep '"name":"Test[^"]\{36,\}"' | sed -e 's/.*"id":"\([^"]*\)".*/\1/' | xargs -I {} descope project delete {} --force
+testcleanup: ensure-descope ## cleans up redundant projects after running tests
+	descope project list | grep '"name":"testacc-.*' | sed -e 's/.*"id":"\([^"]*\)".*/\1/' | xargs -I {} descope project delete {} --force
 
 terragen: ensure-go ## runs the terragen tool to generate code and model documentation
 	go run tools/terragen/main.go $(ARGS)

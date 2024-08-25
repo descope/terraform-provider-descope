@@ -19,6 +19,4 @@ runs:
       uses: golangci/golangci-lint-action@v6
       with:
         version: v1.60.3
-        skip-pkg-cache: true
-        skip-build-cache: true
         args: --config=.github/actions/ci/lint/golangci.yml

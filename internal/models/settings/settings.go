@@ -1,4 +1,4 @@
-package models
+package settings
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"

@@ -13,13 +13,13 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/connectors"
 	"github.com/descope/terraform-provider-descope/internal/models/flows"
 	"github.com/descope/terraform-provider-descope/internal/models/jwttemplates"
+	"github.com/descope/terraform-provider-descope/internal/models/settings"
 	"github.com/descope/terraform-provider-descope/internal/models/templates"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
 func InjectModels() {
 	inject(models.ProjectAttributes, docsProject)
-	inject(models.SettingsAttributes, docsSettings)
 	inject(applications.ApplicationAttributes, docsApplication)
 	inject(applications.OIDCAttributes, docsOIDC)
 	inject(applications.SAMLAttributes, docsSAML)
@@ -93,6 +93,7 @@ func InjectModels() {
 	inject(flows.StylesAttributes, docsStyles)
 	inject(jwttemplates.JWTTemplateAttributes, docsJWTTemplate)
 	inject(jwttemplates.JWTTemplatesAttributes, docsJWTTemplates)
+	inject(settings.SettingsAttributes, docsSettings)
 	inject(templates.EmailServiceAttributes, docsEmailService)
 	inject(templates.EmailTemplateAttributes, docsEmailTemplate)
 	inject(templates.TextServiceAttributes, docsTextService)

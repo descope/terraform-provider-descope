@@ -10,7 +10,7 @@ import (
 
 func TestProject(t *testing.T) {
 	p := testacc.Project(t)
-	testacc.Test(t,
+	testacc.Run(t,
 		resource.TestStep{
 			Config: p.Config(`
 				tag = "foo"
@@ -22,7 +22,7 @@ func TestProject(t *testing.T) {
 				tag = "production"
 			`),
 			Check: p.Check(map[string]any{
-				"id":   nil,
+				"id":   testacc.AttributeIsSet,
 				"tag":  "production",
 				"name": p.Name,
 			}),

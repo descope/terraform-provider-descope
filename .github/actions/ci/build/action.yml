@@ -15,6 +15,23 @@ runs:
       with:
         go_version: ${{ inputs.go_version }}
 
+    - name: Check Go Files
+      shell: bash
+      run: |
+        echo "Running go mod tidy"
+        set +e
+        go mod tidy
+        if [ "$?" != "0" ]; then
+          echo "Unexpected error running 'go mod tidy'"
+          exit 1
+        fi
+        echo "Checking for diffs"
+        git diff --exit-code
+        if [ "$?" != "0" ]; then
+          echo "Unexpected diff after running 'go mod tidy'"
+          exit 1
+        fi
+
     - name: Build Code
       shell: bash
       run: go build -v ./...
