@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
-.PHONY:  help setup install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
-.SILENT: help setup install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
+.PHONY:  help setup install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
+.SILENT: help setup install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
 
 help: Makefile ## this help message
 	grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -13,13 +13,13 @@ install: ensure-go ## installs terraform-provider-descope to $GOPATH/bin
 	go install .
 	echo The $$'\e[33m'terraform-provider-descope$$'\e[0m' tool has been installed to $$GOPATH/bin
 
-test: ensure-go ## runs unit tests
+test: ensure-go ensure-env ## runs unit tests
 	go test -v -timeout 30m $(ARGS) ./...
 
-testacc: ensure-go ## runs acceptance and unit tests
+testacc: ensure-go ensure-env ## runs acceptance and unit tests
 	TF_ACC=1 go test -v -timeout 120m $(ARGS) ./...
 
-testcoverage: ensure-go ensure-courtney ## runs all tests and computes test coverage
+testcoverage: ensure-go ensure-courtney ensure-env ## runs all tests and computes test coverage
 	TF_ACC=1 go test -race -timeout 120m -coverpkg=./... -coverprofile=coverage.raw -covermode=atomic $(ARGS) ./...
 	cat coverage.raw | grep -v -e "\/tools\/.*\.go\:.*" | grep -v -e ".*\/main\.go\:.*" > coverage.out
 	rm -f coverage.raw
@@ -27,7 +27,7 @@ testcoverage: ensure-go ensure-courtney ## runs all tests and computes test cove
 	go tool cover -func coverage.out | grep total | awk '{print $$3}'
 	go tool cover -html=coverage.out -o coverage.html
 
-testcleanup: ensure-descope ## cleans up redundant projects after running tests
+testcleanup: ensure-descope ensure-env ## cleans up redundant projects after running tests
 	descope project list | grep '"name":"testacc-.*' | sed -e 's/.*"id":"\([^"]*\)".*/\1/' | xargs -I {} descope project delete {} --force
 
 terragen: ensure-go ## runs the terragen tool to generate code and model documentation
@@ -49,6 +49,20 @@ lint: ensure-linter ensure-gitleaks ## check for linter and gitleaks failures
 	golangci-lint --config .github/actions/ci/lint/golangci.yml run
 	gitleaks protect --redact -v -c .github/actions/ci/leaks/gitleaks.toml
 	gitleaks detect --redact -v -c .github/actions/ci/leaks/gitleaks.toml
+
+ensure-env:
+  env ?= tools/testacc/config.env
+  ifneq ($(wildcard $(env)),)
+  ifeq ($(DESCOPE_PROJECT_ID),)
+    export DESCOPE_PROJECT_ID = $(shell cat $(env) | grep DESCOPE_PROJECT_ID | sed 's/^.*=//')
+  endif
+  ifeq ($(DESCOPE_MANAGEMENT_KEY),)
+    export DESCOPE_MANAGEMENT_KEY = $(shell cat $(env) | grep DESCOPE_MANAGEMENT_KEY | sed 's/^.*=//')
+  endif
+  ifeq ($(DESCOPE_BASE_URL),)
+    export DESCOPE_BASE_URL = $(shell cat $(env) | grep DESCOPE_BASE_URL | sed 's/^.*=//')
+  endif
+  endif
 
 ensure-linter: ensure-go
 	if ! command -v golangci-lint &> /dev/null; then \

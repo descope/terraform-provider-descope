@@ -22,7 +22,3 @@ func TestCase(t *testing.T, steps ...resource.TestStep) resource.TestCase {
 		Steps:                    steps,
 	}
 }
-
-func CleanupStep() resource.TestStep {
-	return resource.TestStep{Config: `locals {}`}
-}

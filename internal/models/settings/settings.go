@@ -37,8 +37,8 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.EnableInactivity, data, "enableInactivity")
 	durationattr.Get(m.InactivityTime, data, "inactivityTime")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
-	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", h)
-	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", h)
+	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", "user", h)
+	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", "key", h)
 	return data
 }
 
@@ -52,16 +52,18 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.EnsureKnown(&m.AccessKeyJWTTemplate)
 }
 
-func getJWTTemplate(field types.String, data map[string]any, key string, h *helpers.Handler) {
+func getJWTTemplate(field types.String, data map[string]any, key string, typ string, h *helpers.Handler) {
 	if v := field; !v.IsNull() && !v.IsUnknown() {
 		jwtTemplateName := v.ValueString()
 		if jwtTemplateName == "" {
 			data[key] = ""
-		} else if ref := h.Refs.Get(helpers.JWTTemplateReferenceKey, jwtTemplateName); ref != nil {
+		} else if ref := h.Refs.Get(helpers.JWTTemplateReferenceKey, jwtTemplateName); ref == nil {
+			h.Error("Unknown JWT template reference", "No JWT template named '%s' for project settings was defined", jwtTemplateName)
+		} else if ref.Type != typ {
+			h.Error("Invalid JWT template reference", "The JWT template named '%s' is not a %s template", jwtTemplateName, typ)
+		} else {
 			h.Log("Setting %s reference to JWT template '%s'", key, jwtTemplateName)
 			data[key] = ref.ReferenceValue()
-		} else {
-			h.Error("Unknown JWT template reference", "No JWT template named '"+jwtTemplateName+"' for project settings was defined")
 		}
 	}
 }

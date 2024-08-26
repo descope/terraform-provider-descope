@@ -61,7 +61,7 @@ func Set(s *types.String, data map[string]any, key string) {
 	}
 	value := composeString(num, unit)
 	if value != s.ValueString()+"s" { // don't overwrite singular with plural
-		*s = types.StringValue(composeString(num, unit))
+		*s = types.StringValue(value)
 	}
 }
 

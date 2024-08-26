@@ -31,7 +31,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"attributes":       objectattr.Optional(attributes.AttributesAttributes),
 	"connectors":       objectattr.Optional(connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
 	"applications":     objectattr.Optional(applications.ApplicationAttributes, applications.ApplicationValidator),
-	"jwt_templates":    objectattr.Optional(jwttemplates.JWTTemplatesAttributes),
+	"jwt_templates":    objectattr.Optional(jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
 	"styles":           objectattr.Optional(flows.StylesAttributes, flows.StylesValidator),
 	"flows":            mapattr.Optional(flows.FlowAttributes, flows.FlowValidator),
 }
