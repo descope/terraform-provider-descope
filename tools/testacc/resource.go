@@ -54,19 +54,3 @@ func (r *Resource) Check(checks map[string]any, extras ...resource.TestCheckFunc
 	f = append(f, extras...)
 	return resource.ComposeAggregateTestCheckFunc(f...)
 }
-
-type attributeSymbol struct {
-	v int
-}
-
-var AttributeIsSet = attributeSymbol{v: 1}
-var AttributeIsNotSet = attributeSymbol{v: -1}
-
-func AttributeHasPrefix(prefix string) func(string) error {
-	return func(s string) error {
-		if !strings.HasPrefix(s, prefix) {
-			return fmt.Errorf("expected value with prefix %s, got %#v", prefix, s)
-		}
-		return nil
-	}
-}
