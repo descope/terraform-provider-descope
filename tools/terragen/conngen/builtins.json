@@ -6,9 +6,9 @@
     "id": "smtp"
   },
   {
-    "id": "twilio_core"
+    "id": "twilio-core"
   },
   {
-    "id": "twilio_verify"
+    "id": "twilio-verify"
   }
 ]

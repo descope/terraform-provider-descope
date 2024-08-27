@@ -115,8 +115,8 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
 	listattr.Get(m.Traceable, data, "traceable", h)
-	listattr.Get(m.TwilioCore, data, "twilio_core", h)
-	listattr.Get(m.TwilioVerify, data, "twilio_verify", h)
+	listattr.Get(m.TwilioCore, data, "twilio-core", h)
+	listattr.Get(m.TwilioVerify, data, "twilio-verify", h)
 	listattr.Get(m.Veriff, data, "veriff", h)
 	return data
 }
@@ -151,8 +151,8 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "sumologic", m.SumoLogic)
 	SetConnectorIDs(h, data, "telesign", m.Telesign)
 	SetConnectorIDs(h, data, "traceable", m.Traceable)
-	SetConnectorIDs(h, data, "twilio_core", m.TwilioCore)
-	SetConnectorIDs(h, data, "twilio_verify", m.TwilioVerify)
+	SetConnectorIDs(h, data, "twilio-core", m.TwilioCore)
+	SetConnectorIDs(h, data, "twilio-verify", m.TwilioVerify)
 	SetConnectorIDs(h, data, "veriff", m.Veriff)
 }
 
@@ -187,8 +187,8 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "sumologic", m.SumoLogic)
 	addConnectorReferences(refs, "telesign", m.Telesign)
 	addConnectorReferences(refs, "traceable", m.Traceable)
-	addConnectorReferences(refs, "twilio_core", m.TwilioCore)
-	addConnectorReferences(refs, "twilio_verify", m.TwilioVerify)
+	addConnectorReferences(refs, "twilio-core", m.TwilioCore)
+	addConnectorReferences(refs, "twilio-verify", m.TwilioVerify)
 	addConnectorReferences(refs, "veriff", m.Veriff)
 	return refs
 }

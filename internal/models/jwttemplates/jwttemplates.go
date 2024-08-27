@@ -5,55 +5,83 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+var JWTTemplatesValidator = objectattr.NewValidator[JWTTemplatesModel]("must have unique template names")
+
 var JWTTemplatesAttributes = map[string]schema.Attribute{
-	"templates": listattr.Optional(JWTTemplateAttributes),
+	"user_templates":       listattr.Optional(JWTTemplateAttributes),
+	"access_key_templates": listattr.Optional(JWTTemplateAttributes),
 }
 
 type JWTTemplatesModel struct {
-	Templates []*JWTTemplateModel `tfsdk:"templates"`
+	UserTemplates      []*JWTTemplateModel `tfsdk:"user_templates"`
+	AccessKeyTemplates []*JWTTemplateModel `tfsdk:"access_key_templates"`
 }
 
 func (m *JWTTemplatesModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	listattr.Get(m.Templates, data, "templates", h)
+	listattr.Get(m.UserTemplates, data, "userTemplates", h)
+	listattr.Get(m.AccessKeyTemplates, data, "keyTemplates", h)
 	return data
 }
 
 func (m *JWTTemplatesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	templates := m.getTemplateIDs(data)
-	for _, template := range m.Templates {
+	m.setTemplateValues(h, data, "userTemplates", m.UserTemplates)
+	m.setTemplateValues(h, data, "keyTemplates", m.AccessKeyTemplates)
+}
+
+func (m *JWTTemplatesModel) References(ctx context.Context) helpers.ReferencesMap {
+	refs := helpers.ReferencesMap{}
+	for _, v := range m.UserTemplates {
+		refs.Add(helpers.JWTTemplateReferenceKey, "user", v.ID.ValueString(), v.Name.ValueString())
+	}
+	for _, v := range m.AccessKeyTemplates {
+		refs.Add(helpers.JWTTemplateReferenceKey, "key", v.ID.ValueString(), v.Name.ValueString())
+	}
+	return refs
+}
+
+func (m *JWTTemplatesModel) Validate(h *helpers.Handler) {
+	names := map[string]int{}
+	for _, v := range m.UserTemplates {
+		names[v.Name.ValueString()] += 1
+	}
+	for _, v := range m.AccessKeyTemplates {
+		names[v.Name.ValueString()] += 1
+	}
+	for k, v := range names {
+		if v > 1 {
+			h.Error("JWT template names must be unique", "The JWT template name '%s' is used %d times", k, v)
+		}
+	}
+}
+
+func (m *JWTTemplatesModel) setTemplateValues(h *helpers.Handler, data map[string]any, key string, list []*JWTTemplateModel) {
+	templates := m.getTemplateIDs(data, key)
+	for _, template := range list {
 		name := template.Name.ValueString()
 		id, found := templates[name]
 		if found {
 			value := types.StringValue(id)
 			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '" + id + "' for JWT template named '" + name + "'")
+				h.Log("Setting new ID '%s' for %s JWT template named '%s'", id, key, name)
 				template.ID = value
 			} else {
-				h.Log("Keeping existing ID '" + id + "' for JWT template named '" + name + "'")
+				h.Log("Keeping existing ID '%s' for %s JWT template named '%s'", id, key, name)
 			}
 		} else {
-			h.Error("JWT template not found", "Expected to find JWT template to match with '"+name+"'")
+			h.Error("JWT template not found", "Expected to find %s JWT template to match with '%s'", key, name)
 		}
 	}
 }
 
-func (m *JWTTemplatesModel) References(ctx context.Context) helpers.ReferencesMap {
-	refs := helpers.ReferencesMap{}
-	for _, v := range m.Templates {
-		refs.Add(helpers.JWTTemplateReferenceKey, "", v.ID.ValueString(), v.Name.ValueString())
-	}
-	return refs
-}
-
-func (m *JWTTemplatesModel) getTemplateIDs(data map[string]any) (templates map[string]string) {
-	templates = map[string]string{}
-
-	rs, _ := data["templates"].([]any)
+func (m *JWTTemplatesModel) getTemplateIDs(data map[string]any, key string) map[string]string {
+	templates := map[string]string{}
+	rs, _ := data[key].([]any)
 	for _, v := range rs {
 		if r, ok := v.(map[string]any); ok {
 			id, _ := r["id"].(string)
@@ -61,6 +89,5 @@ func (m *JWTTemplatesModel) getTemplateIDs(data map[string]any) (templates map[s
 			templates[name] = id
 		}
 	}
-
-	return
+	return templates
 }

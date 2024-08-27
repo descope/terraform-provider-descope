@@ -58,12 +58,24 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					user_jwt_template = "foo"
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Unknown JWT template reference`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					domain = "example.com"
+					enable_inactivity = true
+					inactivity_time = "1 hour"
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"project_settings.refresh_token_expiration": "1 days",
 				"project_settings.domain":                   "example.com",
+				"project_settings.enable_inactivity":        true,
+				"project_settings.inactivity_time":          "1 hour",
 			}),
 		},
 	)

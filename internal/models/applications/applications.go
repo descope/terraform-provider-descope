@@ -10,33 +10,33 @@ import (
 var ApplicationValidator = objectattr.NewValidator[ApplicationModel]("must have a valid SAML configuration")
 
 var ApplicationAttributes = map[string]schema.Attribute{
-	"oidc": listattr.Optional(OIDCAttributes),
-	"saml": listattr.Optional(SAMLAttributes),
+	"oidc_applications": listattr.Optional(OIDCAttributes),
+	"saml_applications": listattr.Optional(SAMLAttributes),
 }
 
 type ApplicationModel struct {
-	OIDC []*OIDCModel `tfsdk:"oidc"`
-	SAML []*SAMLModel `tfsdk:"saml"`
+	OIDCApplications []*OIDCModel `tfsdk:"oidc_applications"`
+	SAMLApplications []*SAMLModel `tfsdk:"saml_applications"`
 }
 
 func (m *ApplicationModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	listattr.Get(m.OIDC, data, "oidc", h)
-	listattr.Get(m.SAML, data, "saml", h)
+	listattr.Get(m.OIDCApplications, data, "oidc", h)
+	listattr.Get(m.SAMLApplications, data, "saml", h)
 	return data
 }
 
 func (m *ApplicationModel) SetValues(h *helpers.Handler, data map[string]any) {
-	for _, app := range m.OIDC {
+	for _, app := range m.OIDCApplications {
 		RequireID(h, data, "oidc", app.Name, &app.ID)
 	}
-	for _, app := range m.SAML {
+	for _, app := range m.SAMLApplications {
 		RequireID(h, data, "saml", app.Name, &app.ID)
 	}
 }
 
 func (m *ApplicationModel) Validate(h *helpers.Handler) {
-	for _, app := range m.SAML {
+	for _, app := range m.SAMLApplications {
 		if app.DynamicConfiguration == nil && app.ManualConfiguration == nil {
 			h.Error("Either dynamic_configuration or manual_configuration must be set", "no configuration found for application")
 		} else if app.DynamicConfiguration != nil && app.ManualConfiguration != nil {

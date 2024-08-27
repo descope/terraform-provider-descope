@@ -17,8 +17,8 @@ var docsProject = map[string]string{
 }
 
 var docsApplication = map[string]string{
-	"oidc": "",
-	"saml": "",
+	"oidc_applications": "",
+	"saml_applications": "",
 }
 
 var docsOIDC = map[string]string{
@@ -587,11 +587,11 @@ var docsJWTTemplate = map[string]string{
 	"auth_schema": "",
 	"conformance_issuer": "",
 	"template": "",
-	"type": "",
 }
 
 var docsJWTTemplates = map[string]string{
-	"templates": "",
+	"user_templates": "",
+	"access_key_templates": "",
 }
 
 var docsSettings = map[string]string{

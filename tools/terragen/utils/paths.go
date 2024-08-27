@@ -41,10 +41,11 @@ func PreparePaths() *Paths {
 
 	templates := ""
 	if !Flags.SkipTemplates {
-		templates = filepath.Clean(strings.TrimSpace(os.Getenv("DESCOPE_TEMPLATES_PATH")))
+		templates = strings.TrimSpace(os.Getenv("DESCOPE_TEMPLATES_PATH"))
 		if templates == "" {
-			log.Fatalf("expected templates path in DESCOPE_TEMPLATES_PATH environment variable")
+			log.Fatalf("expected path to templates in DESCOPE_TEMPLATES_PATH environment variable")
 		}
+		templates = filepath.Clean(templates)
 		if info, err := os.Stat(templates); os.IsNotExist(err) || !info.IsDir() {
 			log.Fatalf("expected to find templates directory at path: %s", templates)
 		}
