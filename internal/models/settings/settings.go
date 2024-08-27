@@ -4,14 +4,14 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var SettingsAttributes = map[string]schema.Attribute{
-	"cookie_policy":            intattr.Optional(),
+	"cookie_policy":            stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
 	"domain":                   stringattr.Optional(),
 	"enable_inactivity":        boolattr.Optional(),
 	"inactivity_time":          durationattr.Optional(durationattr.MinimumValue("10 minutes")),
@@ -21,7 +21,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 }
 
 type SettingsModel struct {
-	CookiePolicy           types.Int64  `tfsdk:"cookie_policy"`
+	CookiePolicy           types.String `tfsdk:"cookie_policy"`
 	Domain                 types.String `tfsdk:"domain"`
 	EnableInactivity       types.Bool   `tfsdk:"enable_inactivity"`
 	InactivityTime         types.String `tfsdk:"inactivity_time"`
@@ -32,7 +32,7 @@ type SettingsModel struct {
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	intattr.Get(m.CookiePolicy, data, "cookiePolicy")
+	stringattr.Get(m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Get(m.Domain, data, "domain")
 	boolattr.Get(m.EnableInactivity, data, "enableInactivity")
 	durationattr.Get(m.InactivityTime, data, "inactivityTime")
@@ -43,7 +43,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
-	intattr.Set(&m.CookiePolicy, data, "cookiePolicy")
+	stringattr.Set(&m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Set(&m.Domain, data, "domain")
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
 	durationattr.Set(&m.InactivityTime, data, "inactivityTime")

@@ -66,9 +66,18 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					cookie_policy = "foo"
+				}
+			`),
+			ExpectError: regexp.MustCompile(`value must be one of`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					domain = "example.com"
 					enable_inactivity = true
 					inactivity_time = "1 hour"
+					cookie_policy = "lax"
 				}
 			`),
 			Check: p.Check(map[string]any{
@@ -76,6 +85,7 @@ func TestSettings(t *testing.T) {
 				"project_settings.domain":                   "example.com",
 				"project_settings.enable_inactivity":        true,
 				"project_settings.inactivity_time":          "1 hour",
+				"project_settings.cookie_policy":            "lax",
 			}),
 		},
 	)
