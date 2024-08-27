@@ -13,9 +13,10 @@ import (
 const projectEntity = "project"
 
 var (
-	_ resource.Resource                = &projectResource{}
-	_ resource.ResourceWithConfigure   = &projectResource{}
-	_ resource.ResourceWithImportState = &projectResource{}
+	_ resource.Resource                     = &projectResource{}
+	_ resource.ResourceWithConfigure        = &projectResource{}
+	_ resource.ResourceWithConfigValidators = &projectResource{}
+	_ resource.ResourceWithImportState      = &projectResource{}
 )
 
 func NewProjectResource() resource.Resource {
@@ -38,6 +39,10 @@ func (r *projectResource) Metadata(_ context.Context, req resource.MetadataReque
 
 func (r *projectResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
 	resp.Schema = entities.ProjectSchema
+}
+
+func (r *projectResource) ConfigValidators(context.Context) []resource.ConfigValidator {
+	return []resource.ConfigValidator{entities.ProjectValidator}
 }
 
 func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
