@@ -51,7 +51,7 @@ lint: ensure-linter ensure-gitleaks ## check for linter and gitleaks failures
 	gitleaks detect --redact -v -c .github/actions/ci/leaks/gitleaks.toml
 
 ensure-env:
-  env ?= tools/testacc/config.env
+  env ?= tools/config.env
   ifneq ($(wildcard $(env)),)
   ifeq ($(DESCOPE_PROJECT_ID),)
     export DESCOPE_PROJECT_ID = $(shell cat $(env) | grep DESCOPE_PROJECT_ID | sed 's/^.*=//')
