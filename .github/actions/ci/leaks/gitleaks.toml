@@ -652,4 +652,5 @@ paths = [
     '''(go.mod|go.sum)$''',
 	"vendor/",
 	".vscode/targets.log",
+	"connectors_test.go",
 ]

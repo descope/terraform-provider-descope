@@ -1,7 +1,10 @@
 package conngen
 
 import (
+	"crypto/sha256"
+	"encoding/base32"
 	"fmt"
+	"strings"
 
 	"github.com/descope/terraform-provider-descope/tools/terragen/utils"
 )
@@ -145,6 +148,56 @@ func (f *Field) ValidateNonZero() string {
 	default:
 		panic("Unexpected field type: " + f.Type)
 	}
+}
+
+// Tests
+
+func (f *Field) GetTestAssignment() string {
+	switch f.Type {
+	case FieldTypeString, FieldTypeSecret, FieldTypeAuditFilters:
+		return fmt.Sprintf(`%q`, f.TestString())
+	case FieldTypeBool:
+		return `true`
+	case FieldTypeNumber:
+		return fmt.Sprintf(`%d`, f.TestNumber())
+	case FieldTypeObject:
+		return fmt.Sprintf(`{
+    							"key" = %q
+    						}`, f.TestString())
+	case FieldTypeHTTPAuth:
+		return fmt.Sprintf(`{
+    							bearer_token = %q
+    						}`, f.TestString())
+	default:
+		panic("Unexpected field type: " + f.Type)
+	}
+}
+
+func (f *Field) GetTestCheck(list string, index int) string {
+	switch f.Type {
+	case FieldTypeString, FieldTypeSecret, FieldTypeAuditFilters:
+		return fmt.Sprintf(`"connectors.%s.%d.%s": %q`, list, index, f.AttributeName(), f.TestString())
+	case FieldTypeBool:
+		return fmt.Sprintf(`"connectors.%s.%d.%s": true`, list, index, f.AttributeName())
+	case FieldTypeNumber:
+		return fmt.Sprintf(`"connectors.%s.%d.%s": %d`, list, index, f.AttributeName(), f.TestNumber())
+	case FieldTypeObject:
+		return fmt.Sprintf(`"connectors.%s.%d.%s.key": %q`, list, index, f.AttributeName(), f.TestString())
+	case FieldTypeHTTPAuth:
+		return fmt.Sprintf(`"connectors.%s.%d.%s.bearer_token": %q`, list, index, f.AttributeName(), f.TestString())
+	default:
+		panic("Unexpected field type: " + f.Type)
+	}
+}
+
+func (f *Field) TestString() string {
+	b := sha256.Sum256([]byte(f.Name))
+	s := base32.StdEncoding.EncodeToString(b[:])
+	return strings.ToLower(s[:min(len(s), len(f.Name))])
+}
+
+func (f *Field) TestNumber() int {
+	return len(f.Name)
 }
 
 // Dependency

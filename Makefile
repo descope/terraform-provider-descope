@@ -1,12 +1,12 @@
 .DEFAULT_GOAL := help
 
-.PHONY:  help setup install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
-.SILENT: help setup install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
+.PHONY:  help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
+.SILENT: help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
 
 help: Makefile ## this help message
 	grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 
-setup: install terraformrc ## prepares local environment for running the provider
+dev: install terraformrc ## prepares development environment for running the provider
 
 install: ensure-go ## installs terraform-provider-descope to $GOPATH/bin
 	mkdir -p "$$GOPATH/bin"
