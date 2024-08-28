@@ -10,13 +10,13 @@ import (
 )
 
 var (
-	//go:embed flows_test_emptystyle.json
+	//go:embed tests/emptystyle.json
 	emptyStyle string
 
-	//go:embed flows_test_basicflow.json
+	//go:embed tests/basicflow.json
 	basicFlow string
 
-	//go:embed flows_test_referencesflow.json
+	//go:embed tests/referencesflow.json
 	referencesFlow string
 )
 
@@ -80,6 +80,52 @@ func TestFlows(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
+				"flows.references-flow.data": testacc.AttributeMatchesJSON(referencesFlow),
+				"connectors.http.#":          1,
+				"connectors.http.0.id":       testacc.AttributeHasPrefix("CI"),
+				"connectors.http.0.name":     "My HTTP Connector",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				flows = {
+					"references-flow" = {
+						data = jsonencode(` + referencesFlow + `)
+					}
+				}
+				connectors = {
+					"http": [
+						{
+							name = "Renamed Connector"
+							base_url = "https://example.com"
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Unknown connector reference`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				flows = {
+					"basic-flow" = {
+						data = jsonencode(` + basicFlow + `)
+					}
+					"references-flow" = {
+						data = jsonencode(` + referencesFlow + `)
+					}
+				}
+				connectors = {
+					"http": [
+						{
+							name = "My HTTP Connector"
+							base_url = "https://example.com"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"flows.%":                    2,
+				"flows.basic-flow.data":      testacc.AttributeMatchesJSON(basicFlow),
 				"flows.references-flow.data": testacc.AttributeMatchesJSON(referencesFlow),
 				"connectors.http.#":          1,
 				"connectors.http.0.id":       testacc.AttributeHasPrefix("CI"),
