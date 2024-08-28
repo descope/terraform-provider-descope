@@ -48,7 +48,7 @@ type ProjectModel struct {
 	Applications   *applications.ApplicationModel      `tfsdk:"applications"`
 	JWTTemplates   *jwttemplates.JWTTemplatesModel     `tfsdk:"jwt_templates"`
 	Styles         *flows.StylesModel                  `tfsdk:"styles"`
-	Flows          map[string]*flows.FlowModel         `tfsdk:"flows"`
+	Flows          *flows.FlowsModel                   `tfsdk:"flows"` // this is just a map but use pointer to stay consistent with other models
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -64,18 +64,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	objectattr.Get(m.Attributes, data, "attributes", h)
 	objectattr.Get(m.JWTTemplates, data, "jwtTemplates", h)
 	objectattr.Get(m.Styles, data, "styles", h)
-	if len(m.Flows) > 0 {
-		flows := map[string]any{}
-		for flowID, flow := range m.Flows {
-			values := flow.Values(h)
-			if valuesID, _ := values["flowId"].(string); valuesID != "" && valuesID != flowID {
-				h.Warn("Possible flow mismatch", "The '%s' flow data specifies a different flowId '%s'. You can update the flow data to use the same flowId or ignore this warning to use the '%s' flowId.", flowID, valuesID, flowID)
-			}
-			values["flowId"] = flowID
-			flows[flowID] = values
-		}
-		data["flows"] = flows
-	}
+	mapattr.Get(m.Flows, data, "flows", h)
 	return data
 }
 
@@ -94,7 +83,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objectattr.Set(&m.Attributes, data, "attributes", h)
 	objectattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
 	objectattr.Set(&m.Styles, data, "styles", h)
-	// not reading flows for now
+	mapattr.Set(&m.Flows, data, "flows", h)
 }
 
 func (m *ProjectModel) References(ctx context.Context) helpers.ReferencesMap {
