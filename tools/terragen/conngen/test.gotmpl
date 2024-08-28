@@ -1,0 +1,52 @@
+package connectors_test
+
+import (
+	"regexp"
+	"testing"
+
+	"github.com/descope/terraform-provider-descope/tools/testacc"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+)
+
+func TestConnectors(t *testing.T) {
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.%": 0,
+			}),
+		},
+{{- range .Connectors }}{{ $c := . }}
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"{{.AttributeName}}": [
+						{
+							name = "Test {{.ID}} Connector"
+							description = "A description for the {{.DataName}} connector"
+							{{- range .Fields }}
+    						{{.AttributeName}} = {{.GetTestAssignment}}
+							{{- end }}
+						}
+					]
+				}
+			`),
+{{- if .BuiltIn }}
+			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
+{{- else }}
+			Check: p.Check(map[string]any{
+				"connectors.{{.AttributeName}}.#": 1,
+				"connectors.{{.AttributeName}}.0.id": testacc.AttributeHasPrefix("CI"),
+				"connectors.{{.AttributeName}}.0.name": "Test {{.ID}} Connector",
+                "connectors.{{.AttributeName}}.0.description": "A description for the {{.DataName}} connector",
+				{{- range .Fields }}
+				{{ .GetTestCheck $c.AttributeName 0 }},
+				{{- end }}
+			}),
+{{- end}}
+		},
+{{- end }}
+	)
+}

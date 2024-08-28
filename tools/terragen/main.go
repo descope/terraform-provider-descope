@@ -18,7 +18,7 @@ func main() {
 	// parses all connector template metadata (unless --skip-templates flag was set)
 	conns := conngen.ParseConnectors(paths.Data, paths.Templates)
 
-	// generates model .go source files for all connectors (unless --skip-templates flag was set)
+	// generates .go sources and tests for all connector models (unless --skip-templates flag was set)
 	conngen.GenerateSources(paths.Connectors, conns)
 
 	// creates a simple schema representation by parsing attributes in all model .go source files

@@ -13,6 +13,9 @@ var connectorTemplateData []byte
 //go:embed connectors.gotmpl
 var connectorsTemplateData []byte
 
+//go:embed test.gotmpl
+var testTemplateData []byte
+
 func GenerateSources(dir string, conns *Connectors) {
 	connectorTemplate := utils.LoadTemplate("connector", connectorTemplateData)
 	for _, connector := range conns.Connectors {
@@ -26,6 +29,12 @@ func GenerateSources(dir string, conns *Connectors) {
 	if !utils.Flags.SkipTemplates {
 		path := filepath.Join(dir, "connectors.go")
 		utils.WriteGoSource(path, conns, connectorsTemplate, true)
+	}
+
+	testTemplate := utils.LoadTemplate("test", testTemplateData)
+	if !utils.Flags.SkipTemplates {
+		path := filepath.Join(dir, "connectors_test.go")
+		utils.WriteGoSource(path, conns, testTemplate, true)
 	}
 }
 
