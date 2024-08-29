@@ -29,5 +29,19 @@ func TestAuthentication(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`The redirectUrl field must be a valid URL`),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					magic_link = {
+						enabled = true
+						redirect_url = "https://example.com"
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.magic_link.enabled":      true,
+				"authentication.magic_link.redirect_url": "https://example.com",
+			}),
+		},
 	)
 }
