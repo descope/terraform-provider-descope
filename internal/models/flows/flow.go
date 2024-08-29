@@ -57,7 +57,7 @@ func checkReferences(h *helpers.Handler, data map[string]any) {
 		for name := range connectors {
 			if ref := h.Refs.Get(helpers.ConnectorReferenceKey, name); ref == nil {
 				flowID, _ := data["flowId"].(string)
-				h.Error("Unknown connector reference", "No connector named '%s' was defined but it's required for flow %s", name, flowID)
+				h.Error("Unknown connector reference", "The flow %s requires a connector named '%s' to be defined", flowID, name)
 			}
 		}
 	}

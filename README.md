@@ -112,7 +112,7 @@ resource "descope_project" "my_project" {
     ]
     permissions = [
       {
-        name = "builds-apps"
+        name = "build-apps"
         description = "Allowed to build and sign applications"
       },
       {
