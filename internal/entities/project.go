@@ -10,8 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var ProjectValidator = NewValidator(NewProjectEntity, "must have valid relationships between attributes")
-
 var ProjectSchema = schema.Schema{
 	Attributes: models.ProjectAttributes,
 }
@@ -46,11 +44,6 @@ func (e *ProjectEntity) SetValues(ctx context.Context, data map[string]any) {
 	refs := e.Model.References(ctx) // references aren't really needed here
 	handler := helpers.NewHandler(ctx, e.Diagnostics, refs)
 	e.Model.SetValues(handler, data)
-}
-
-// Validates relationships between attributes in the project.
-func (e *ProjectEntity) Validate(ctx context.Context) {
-	_ = e.Values(ctx) // we validate by simply trying to convert the model to values
 }
 
 // Returns the projectID value from the model.

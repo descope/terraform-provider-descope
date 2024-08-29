@@ -13,10 +13,10 @@ import (
 const projectEntity = "project"
 
 var (
-	_ resource.Resource                     = &projectResource{}
-	_ resource.ResourceWithConfigure        = &projectResource{}
-	_ resource.ResourceWithConfigValidators = &projectResource{}
-	_ resource.ResourceWithImportState      = &projectResource{}
+	_ resource.Resource                   = &projectResource{}
+	_ resource.ResourceWithConfigure      = &projectResource{}
+	_ resource.ResourceWithValidateConfig = &projectResource{}
+	_ resource.ResourceWithImportState    = &projectResource{}
 )
 
 func NewProjectResource() resource.Resource {
@@ -41,8 +41,20 @@ func (r *projectResource) Schema(_ context.Context, _ resource.SchemaRequest, re
 	resp.Schema = entities.ProjectSchema
 }
 
-func (r *projectResource) ConfigValidators(context.Context) []resource.ConfigValidator {
-	return []resource.ConfigValidator{entities.ProjectValidator}
+func (r *projectResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
+	tflog.Info(ctx, "Validating project resource")
+
+	entity := entities.NewProjectEntity(ctx, req.Config, &resp.Diagnostics)
+	if entity.Diagnostics.HasError() {
+		return
+	}
+
+	_ = entity.Values(ctx)
+	if entity.Diagnostics.HasError() {
+		return
+	}
+
+	tflog.Info(ctx, "Project resource validated")
 }
 
 func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -59,6 +71,10 @@ func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest
 	}
 
 	res, err := r.client.Create(ctx, infra.PrincipalProjectID, projectEntity, values)
+	if failure, ok := infra.AsValidationError(err); ok {
+		resp.Diagnostics.AddError("Invalid project configuration", failure)
+		return
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating project", err.Error())
 		return
@@ -111,6 +127,10 @@ func (r *projectResource) Update(ctx context.Context, req resource.UpdateRequest
 	}
 
 	res, err := r.client.Update(ctx, projectID, projectEntity, projectID, values)
+	if failure, ok := infra.AsValidationError(err); ok {
+		resp.Diagnostics.AddError("Invalid project configuration", failure)
+		return
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error updating project", err.Error())
 		return
