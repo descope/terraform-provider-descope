@@ -13,7 +13,7 @@ var FingerprintValidator = objectattr.NewValidator[FingerprintModel]("must have 
 
 var FingerprintAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
 	"public_api_key":             stringattr.Required(),

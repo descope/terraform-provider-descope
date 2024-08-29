@@ -14,7 +14,7 @@ import (
 
 var SAMLAttributes = map[string]schema.Attribute{
 	"id":          stringattr.Optional(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),

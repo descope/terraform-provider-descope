@@ -25,7 +25,7 @@ var {{.StructName}}Validator = objectattr.NewValidator[{{.StructName}}Model]("mu
 
 var {{.StructName}}Attributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
     {{ range .Fields }}

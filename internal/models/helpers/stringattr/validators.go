@@ -3,6 +3,7 @@ package stringattr
 import (
 	"context"
 	"fmt"
+	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -11,11 +12,13 @@ import (
 
 var TimeUnitValidator = stringvalidator.OneOf("seconds", "minutes", "hours", "days", "weeks")
 
-// Non-Empty
+var StandardLenValidator = stringvalidator.LengthAtMost(254)
 
-func NonEmptyValidator() validator.String {
-	return &nonEmptyValidator{}
-}
+var FlowIDValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[A-Za-z0-9_-]+$`), "must only contain alphanumeric, underscore or hyphen characters")
+
+var NonEmptyValidator validator.String = &nonEmptyValidator{}
+
+// Non-Empty
 
 type nonEmptyValidator struct {
 }

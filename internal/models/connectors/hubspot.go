@@ -9,7 +9,7 @@ import (
 
 var HubSpotAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
 	"access_token": stringattr.SecretRequired(),

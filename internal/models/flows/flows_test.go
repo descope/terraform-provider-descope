@@ -56,6 +56,16 @@ func TestFlows(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				flows = {
+					"invalidid!@#$" = {
+						data = jsonencode(` + basicFlow + `)
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Invalid Attribute Value Match`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				flows = {
 					"references-flow" = {
 						data = jsonencode(` + referencesFlow + `)
 					}

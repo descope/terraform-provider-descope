@@ -314,7 +314,7 @@ func (s *Schema) ValidateIfNeeded() {
 }
 
 func shouldIgnoreDir(path string) bool {
-	return strings.HasSuffix(path, "/models/helpers") || strings.HasSuffix(path, "/test")
+	return strings.HasSuffix(path, "/models/helpers") || strings.HasSuffix(path, "/tests")
 }
 
 func shouldIgnoreFile(path string) bool {

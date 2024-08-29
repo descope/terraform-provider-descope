@@ -9,7 +9,7 @@ import (
 
 var DoceboAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
 	"base_url":      stringattr.Required(),

@@ -3,14 +3,15 @@ package authorization
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var PermissionAttributes = map[string]schema.Attribute{
 	"id":          stringattr.Identifier(),
-	"name":        stringattr.Required(),
-	"description": stringattr.Default(""),
+	"name":        stringattr.Required(stringvalidator.LengthAtMost(100)),
+	"description": stringattr.Default("", stringattr.StandardLenValidator),
 }
 
 type PermissionModel struct {

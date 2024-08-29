@@ -37,7 +37,7 @@ func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
 var attributeTypeValidator = stringvalidator.OneOf("string", "number", "boolean", "singleselect", "multiselect", "date")
 
 var TenantAttributeAttributes = map[string]schema.Attribute{
-	"name":           stringattr.Required(),
+	"name":           stringattr.Required(stringvalidator.LengthAtMost(20)),
 	"type":           stringattr.Required(attributeTypeValidator),
 	"select_options": listattr.StringOptional(),
 }
@@ -72,7 +72,7 @@ func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any
 // User Attributes
 
 var UserAttributeAttributes = map[string]schema.Attribute{
-	"name":                 stringattr.Required(),
+	"name":                 stringattr.Required(stringvalidator.LengthAtMost(20)),
 	"type":                 stringattr.Required(attributeTypeValidator),
 	"select_options":       listattr.StringOptional(),
 	"widget_authorization": objectattr.Optional(UserAttributeWidgetAuthorizationAttributes),

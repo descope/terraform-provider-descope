@@ -14,7 +14,7 @@ var RecaptchaEnterpriseValidator = objectattr.NewValidator[RecaptchaEnterpriseMo
 
 var RecaptchaEnterpriseAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
 	"project_id":          stringattr.Required(),
