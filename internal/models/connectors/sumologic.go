@@ -13,7 +13,7 @@ var SumoLogicValidator = objectattr.NewValidator[SumoLogicModel]("must have a va
 
 var SumoLogicAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
 	"http_source_url":          stringattr.SecretRequired(),

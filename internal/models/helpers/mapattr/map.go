@@ -1,6 +1,8 @@
 package mapattr
 
 import (
+	"fmt"
+
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -9,24 +11,26 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func Optional(attributes map[string]schema.Attribute, validators ...validator.Object) schema.MapNestedAttribute {
+func Optional(attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+	mapValidators, objectValidators := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
-		Validators: validators,
+		Validators: objectValidators,
 	}
 	return schema.MapNestedAttribute{
 		Optional:     true,
 		Computed:     true,
 		NestedObject: nested,
 		Default:      mapdefault.StaticValue(types.MapNull(nested.Type())),
+		Validators:   mapValidators,
 	}
 }
 
 func StringOptional(validators ...validator.Map) schema.MapAttribute {
-	return optionalTypeMap(types.StringType, validators...)
+	return optionalTypeMap(types.StringType, validators)
 }
 
-func optionalTypeMap(elementType attr.Type, validators ...validator.Map) schema.MapAttribute {
+func optionalTypeMap(elementType attr.Type, validators []validator.Map) schema.MapAttribute {
 	return schema.MapAttribute{
 		Optional:    true,
 		Computed:    true,
@@ -48,4 +52,22 @@ func Set[T any, M helpers.Model[T]](m *M, data map[string]any, key string, h *he
 			(*m).SetValues(h, v)
 		}
 	}
+}
+
+func parseExtras(extras []any) (mapValidators []validator.Map, objectValidators []validator.Object) {
+	for _, e := range extras {
+		matched := false
+		if v, ok := e.(validator.Map); ok {
+			matched = true
+			mapValidators = append(mapValidators, v)
+		}
+		if v, ok := e.(validator.Object); ok {
+			matched = true
+			objectValidators = append(objectValidators, v)
+		}
+		if !matched {
+			panic(fmt.Sprintf("Unexpected extra value of type %T in map attribute", e))
+		}
+	}
+	return
 }

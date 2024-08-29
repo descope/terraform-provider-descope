@@ -13,7 +13,7 @@ var AWSS3Validator = objectattr.NewValidator[AWSS3Model]("must have a valid conf
 
 var AWSS3Attributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
 	"access_key_id":            stringattr.SecretRequired(),

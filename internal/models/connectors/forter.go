@@ -13,7 +13,7 @@ var ForterValidator = objectattr.NewValidator[ForterModel]("must have a valid co
 
 var ForterAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
 	"site_id":             stringattr.Required(),

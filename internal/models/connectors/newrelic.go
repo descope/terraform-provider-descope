@@ -13,7 +13,7 @@ var NewRelicValidator = objectattr.NewValidator[NewRelicModel]("must have a vali
 
 var NewRelicAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
-	"name":        stringattr.Required(),
+	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
 	"api_key":                  stringattr.SecretRequired(),
