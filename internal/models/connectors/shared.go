@@ -157,6 +157,7 @@ type HTTPAuthFieldModel struct {
 
 func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
+	data["method"] = "none"
 	if v := m.BearerToken.ValueString(); v != "" {
 		data["method"] = "bearerToken"
 		data["bearerToken"] = v

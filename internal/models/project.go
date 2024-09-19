@@ -24,7 +24,7 @@ import (
 var ProjectAttributes = map[string]schema.Attribute{
 	"id":               stringattr.Identifier(),
 	"name":             stringattr.Required(),
-	"tag":              stringattr.Optional(stringvalidator.OneOf("production")),
+	"environment":      stringattr.Optional(stringvalidator.OneOf("production")),
 	"project_settings": objectattr.Optional(settings.SettingsAttributes),
 	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
 	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
@@ -39,7 +39,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 type ProjectModel struct {
 	ID             types.String                        `tfsdk:"id"`
 	Name           types.String                        `tfsdk:"name"`
-	Tag            types.String                        `tfsdk:"tag"`
+	Environment    types.String                        `tfsdk:"environment"`
 	Settings       *settings.SettingsModel             `tfsdk:"project_settings"`
 	Authentication *authentication.AuthenticationModel `tfsdk:"authentication"`
 	Authorization  *authorization.AuthorizationModel   `tfsdk:"authorization"`
@@ -55,7 +55,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	data["version"] = ModelVersion
 	stringattr.Get(m.Name, data, "name")
-	stringattr.Get(m.Tag, data, "tag")
+	stringattr.Get(m.Environment, data, "environment")
 	objectattr.Get(m.Settings, data, "settings", h)
 	objectattr.Get(m.Authentication, data, "authentication", h)
 	objectattr.Get(m.Connectors, data, "connectors", h)
@@ -74,7 +74,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 
 	stringattr.Set(&m.Name, data, "name")
-	stringattr.Set(&m.Tag, data, "tag")
+	stringattr.Set(&m.Environment, data, "environment")
 	objectattr.Set(&m.Settings, data, "settings", h)
 	objectattr.Set(&m.Authentication, data, "authentication", h)
 	objectattr.Set(&m.Connectors, data, "connectors", h)
