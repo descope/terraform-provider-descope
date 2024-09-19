@@ -104,6 +104,9 @@ func InjectModels() {
 
 func inject(model map[string]schema.Attribute, docs map[string]string) {
 	for field, desc := range docs {
+		if _, found := model[field]; !found {
+			panic(fmt.Sprintf("missing schema attribute for documentation key %s", field))
+		}
 		switch attr := model[field].(type) {
 		case schema.StringAttribute:
 			attr.MarkdownDescription = desc
