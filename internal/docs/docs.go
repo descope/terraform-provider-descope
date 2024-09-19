@@ -4,7 +4,7 @@ package docs
 
 var docsProject = map[string]string{
 	"name": "",
-	"tag": "",
+	"environment": "",
 	"project_settings": "",
 	"authentication": "",
 	"authorization": "",
