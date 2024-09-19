@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
-.PHONY:  help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
-.SILENT: help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-go
+.PHONY:  help dev install test testacc testflags testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-brew ensure-go
+.SILENT: help dev install test testacc testflags testcoverage testcleanup terragen docs terraformrc lint ensure-env ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-brew ensure-go
 
 help: Makefile ## this help message
 	grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
@@ -13,14 +13,20 @@ install: ensure-go ## installs terraform-provider-descope to $GOPATH/bin
 	go install .
 	echo The $$'\e[33m'terraform-provider-descope$$'\e[0m' tool has been installed to $$GOPATH/bin
 
-test: ensure-go ensure-env ## runs unit tests
-	go test -v -timeout 30m $(ARGS) ./...
+test: ensure-go ensure-env testflags ## runs unit tests
+	go test -timeout 30m $(flags) ./...
 
-testacc: ensure-go ensure-env ## runs acceptance and unit tests
-	TF_ACC=1 go test -v -timeout 120m $(ARGS) ./...
+testacc: ensure-go ensure-env testflags ## runs acceptance and unit tests
+	TF_ACC=1 go test -timeout 120m $(flags) ./...
+
+testflags:
+  flags ?= -v
+  ifneq ($(tests),)
+	flags := $(flags) -count 1 -run '$(tests)'
+  endif
 
 testcoverage: ensure-go ensure-courtney ensure-env ## runs all tests and computes test coverage
-	TF_ACC=1 go test -race -timeout 120m -coverpkg=./... -coverprofile=coverage.raw -covermode=atomic $(ARGS) ./...
+	TF_ACC=1 go test -v -race -timeout 120m -coverpkg=./... -coverprofile=coverage.raw -covermode=atomic ./...
 	cat coverage.raw | grep -v -e "\/tools\/.*\.go\:.*" | grep -v -e ".*\/main\.go\:.*" > coverage.out
 	rm -f coverage.raw
 	courtney -l coverage.out
@@ -31,7 +37,7 @@ testcleanup: ensure-descope ensure-env ## cleans up redundant projects after run
 	descope project list | grep '"name":"testacc-.*' | sed -e 's/.*"id":"\([^"]*\)".*/\1/' | xargs -I {} descope project delete {} --force
 
 terragen: ensure-go ## runs the terragen tool to generate code and model documentation
-	go run tools/terragen/main.go $(ARGS)
+	go run tools/terragen/main.go $(flags)
 
 docs: ensure-go ## runs tfplugindocs to generate documentation for the registry 
 	go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@v0.19.4 generate -provider-name descope
@@ -66,23 +72,31 @@ ensure-env:
 
 ensure-linter: ensure-go
 	if ! command -v golangci-lint &> /dev/null; then \
-		go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.60.3 ;\
+	    echo Installing the $$'\e[33m'golangci-lint$$'\e[0m' tool... ;\
+	    go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.60.3 ;\
 	fi
 
-ensure-gitleaks:
+ensure-gitleaks: ensure-brew
 	if ! command -v gitleaks &> /dev/null; then \
-		brew install gitleaks ;\
+	    echo Installing the $$'\e[33m'gitleaks$$'\e[0m' tool... ;\
+	    brew install gitleaks ;\
 	fi
 
-ensure-descope:
+ensure-descope: ensure-brew
 	if ! command -v descope &> /dev/null; then \
-	    echo \\nInstall the descope CLI tool with $$'\e[33m'brew install descope$$'\e[0m'\\n ;\
-	    false ;\
+	    echo Installing the $$'\e[33m'descope$$'\e[0m' CLI tool... ;\
+	    brew install descope ;\
 	fi
 
-ensure-courtney:
+ensure-courtney: ensure-go
 	if ! command -v courtney &> /dev/null; then \
-	    echo \\nInstall the courtney tool with $$'\e[33m'go install github.com/dave/courtney@master$$'\e[0m'\\n ;\
+	    echo Installing the $$'\e[33m'courtney$$'\e[0m' tool... ;\
+	    go install github.com/dave/courtney@master ;\
+	fi
+
+ensure-brew:
+	if ! command -v brew &> /dev/null; then \
+	    echo \\nInstall the brew tool from $$'\e[33m'https://brew.sh$$'\e[0m'\\n ;\
 	    false ;\
 	fi
 

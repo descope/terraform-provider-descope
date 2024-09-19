@@ -41,11 +41,11 @@ description: |-
 
 Optional:
 
-- `oidc` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc))
-- `saml` (Attributes List) (see [below for nested schema](#nestedatt--applications--saml))
+- `oidc_applications` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc_applications))
+- `saml_applications` (Attributes List) (see [below for nested schema](#nestedatt--applications--saml_applications))
 
-<a id="nestedatt--applications--oidc"></a>
-### Nested Schema for `applications.oidc`
+<a id="nestedatt--applications--oidc_applications"></a>
+### Nested Schema for `applications.oidc_applications`
 
 Required:
 
@@ -61,8 +61,8 @@ Optional:
 - `logo` (String)
 
 
-<a id="nestedatt--applications--saml"></a>
-### Nested Schema for `applications.saml`
+<a id="nestedatt--applications--saml_applications"></a>
+### Nested Schema for `applications.saml_applications`
 
 Required:
 
@@ -71,20 +71,20 @@ Required:
 Optional:
 
 - `acs_allowed_callback_urls` (List of String)
-- `attribute_mapping` (Attributes List) (see [below for nested schema](#nestedatt--applications--saml--attribute_mapping))
+- `attribute_mapping` (Attributes List) (see [below for nested schema](#nestedatt--applications--saml_applications--attribute_mapping))
 - `default_relay_state` (String)
 - `description` (String)
 - `disabled` (Boolean)
-- `dynamic_configuration` (Attributes) (see [below for nested schema](#nestedatt--applications--saml--dynamic_configuration))
+- `dynamic_configuration` (Attributes) (see [below for nested schema](#nestedatt--applications--saml_applications--dynamic_configuration))
 - `id` (String)
 - `login_page_url` (String)
 - `logo` (String)
-- `manual_configuration` (Attributes) (see [below for nested schema](#nestedatt--applications--saml--manual_configuration))
+- `manual_configuration` (Attributes) (see [below for nested schema](#nestedatt--applications--saml_applications--manual_configuration))
 - `subject_name_id_format` (String)
 - `subject_name_id_type` (String)
 
-<a id="nestedatt--applications--saml--attribute_mapping"></a>
-### Nested Schema for `applications.saml.attribute_mapping`
+<a id="nestedatt--applications--saml_applications--attribute_mapping"></a>
+### Nested Schema for `applications.saml_applications.attribute_mapping`
 
 Required:
 
@@ -92,16 +92,16 @@ Required:
 - `value` (String)
 
 
-<a id="nestedatt--applications--saml--dynamic_configuration"></a>
-### Nested Schema for `applications.saml.dynamic_configuration`
+<a id="nestedatt--applications--saml_applications--dynamic_configuration"></a>
+### Nested Schema for `applications.saml_applications.dynamic_configuration`
 
 Required:
 
 - `metadata_url` (String)
 
 
-<a id="nestedatt--applications--saml--manual_configuration"></a>
-### Nested Schema for `applications.saml.manual_configuration`
+<a id="nestedatt--applications--saml_applications--manual_configuration"></a>
+### Nested Schema for `applications.saml_applications.manual_configuration`
 
 Required:
 
@@ -876,50 +876,50 @@ Read-Only:
 
 Optional:
 
-- `abuseipdb` (Attributes List) (see [below for nested schema](#nestedatt--connectors--abuseipdb))
-- `amplitude` (Attributes List) (see [below for nested schema](#nestedatt--connectors--amplitude))
+- `abuseipdb` (Attributes List) AbuseIPDB provides an API to identify if an IP address has been associated with malicious activities online. (see [below for nested schema](#nestedatt--connectors--abuseipdb))
+- `amplitude` (Attributes List) Amplitude, an analytics product that allows you to collects events from web and mobile apps, unify those and use those to better understand your customers needs. (see [below for nested schema](#nestedatt--connectors--amplitude))
 - `audit_webhook` (Attributes List) (see [below for nested schema](#nestedatt--connectors--audit_webhook))
 - `aws_s3` (Attributes List) (see [below for nested schema](#nestedatt--connectors--aws_s3))
 - `aws_translate` (Attributes List) (see [below for nested schema](#nestedatt--connectors--aws_translate))
-- `clear` (Attributes List) (see [below for nested schema](#nestedatt--connectors--clear))
-- `datadog` (Attributes List) (see [below for nested schema](#nestedatt--connectors--datadog))
+- `clear` (Attributes List) An identity verification platform that allow customers to digitally verify their identity from anywhere. (see [below for nested schema](#nestedatt--connectors--clear))
+- `datadog` (Attributes List) Datadog, an observability service for cloud-scale applications, providing monitoring of servers, databases, tools, and services, through a SaaS-based data analytics platform. (see [below for nested schema](#nestedatt--connectors--datadog))
 - `devrev_grow` (Attributes List) (see [below for nested schema](#nestedatt--connectors--devrev_grow))
-- `docebo` (Attributes List) (see [below for nested schema](#nestedatt--connectors--docebo))
-- `fingerprint` (Attributes List) (see [below for nested schema](#nestedatt--connectors--fingerprint))
+- `docebo` (Attributes List) Docebo is a cloud-based Learning Management System (LMS) designed to increase performance and learning engagement. (see [below for nested schema](#nestedatt--connectors--docebo))
+- `fingerprint` (Attributes List) Use the Fingerprint (formerly FingerprintJS) connector to add device intelligence and prevent fraud. (see [below for nested schema](#nestedatt--connectors--fingerprint))
 - `fingerprint_descope` (Attributes List) (see [below for nested schema](#nestedatt--connectors--fingerprint_descope))
-- `forter` (Attributes List) (see [below for nested schema](#nestedatt--connectors--forter))
+- `forter` (Attributes List) Use the Forter connector for account fraud prevention. (see [below for nested schema](#nestedatt--connectors--forter))
 - `google_cloud_translation` (Attributes List) (see [below for nested schema](#nestedatt--connectors--google_cloud_translation))
-- `hibp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--hibp))
-- `http` (Attributes List) (see [below for nested schema](#nestedatt--connectors--http))
+- `hibp` (Attributes List) API to check if password appeared previously exposed in data breaches. (see [below for nested schema](#nestedatt--connectors--hibp))
+- `http` (Attributes List) A general purpose HTTP client (see [below for nested schema](#nestedatt--connectors--http))
 - `http_static_ip` (Attributes List) (see [below for nested schema](#nestedatt--connectors--http_static_ip))
-- `hubspot` (Attributes List) (see [below for nested schema](#nestedatt--connectors--hubspot))
-- `intercom` (Attributes List) (see [below for nested schema](#nestedatt--connectors--intercom))
-- `newrelic` (Attributes List) (see [below for nested schema](#nestedatt--connectors--newrelic))
-- `recaptcha` (Attributes List) (see [below for nested schema](#nestedatt--connectors--recaptcha))
+- `hubspot` (Attributes List) HubSpot is a CRM platform with software, integrations, and resources needed to connect marketing, sales, content management, and customer service. (see [below for nested schema](#nestedatt--connectors--hubspot))
+- `intercom` (Attributes List) Intercom is a Conversational Relationship Platform (CRP). (see [below for nested schema](#nestedatt--connectors--intercom))
+- `newrelic` (Attributes List) Use this connector to send audit events and troubleshooting logs to New Relic. (see [below for nested schema](#nestedatt--connectors--newrelic))
+- `recaptcha` (Attributes List) reCAPTCHA is a free google service that protects your site from spam and abuse. It uses advanced risk analysis techniques to tell humans and bots apart. (see [below for nested schema](#nestedatt--connectors--recaptcha))
 - `recaptcha_enterprise` (Attributes List) (see [below for nested schema](#nestedatt--connectors--recaptcha_enterprise))
-- `rekognition` (Attributes List) (see [below for nested schema](#nestedatt--connectors--rekognition))
-- `salesforce` (Attributes List) (see [below for nested schema](#nestedatt--connectors--salesforce))
-- `segment` (Attributes List) (see [below for nested schema](#nestedatt--connectors--segment))
+- `rekognition` (Attributes List) AWS Rekognition, cloud-based AI service that offers computer vision capabilities for analyzing and processing images. Useful for registration and verification processes, and can be used to detect fraud and prevent identity theft. (see [below for nested schema](#nestedatt--connectors--rekognition))
+- `salesforce` (Attributes List) Salesforce is a leading cloud-based Customer Relationship Management (CRM) platform that helps businesses streamline their sales, service, and marketing operations. (see [below for nested schema](#nestedatt--connectors--salesforce))
+- `segment` (Attributes List) Segment, an analytics product that allows you to collects events from web and mobile apps, unify those and use those to better understand your customers needs. (see [below for nested schema](#nestedatt--connectors--segment))
 - `sendgrid` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sendgrid))
 - `smtp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--smtp))
-- `sumologic` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sumologic))
-- `telesign` (Attributes List) (see [below for nested schema](#nestedatt--connectors--telesign))
-- `traceable` (Attributes List) (see [below for nested schema](#nestedatt--connectors--traceable))
+- `sumologic` (Attributes List) Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log analytics (see [below for nested schema](#nestedatt--connectors--sumologic))
+- `telesign` (Attributes List) Telesign Phone number intelligence API provides risk score for phone numbers. (see [below for nested schema](#nestedatt--connectors--telesign))
+- `traceable` (Attributes List) API security for a cloud-first, API-driven world. (see [below for nested schema](#nestedatt--connectors--traceable))
 - `twilio_core` (Attributes List) (see [below for nested schema](#nestedatt--connectors--twilio_core))
 - `twilio_verify` (Attributes List) (see [below for nested schema](#nestedatt--connectors--twilio_verify))
-- `veriff` (Attributes List) (see [below for nested schema](#nestedatt--connectors--veriff))
+- `veriff` (Attributes List) AI-powered identity verification solution for identity fraud prevention, Know Your Customer compliance, and fast conversions of valuable customers. (see [below for nested schema](#nestedatt--connectors--veriff))
 
 <a id="nestedatt--connectors--abuseipdb"></a>
 ### Nested Schema for `connectors.abuseipdb`
 
 Required:
 
-- `api_key` (String, Sensitive)
-- `name` (String)
+- `api_key` (String, Sensitive) The unique AbuseIPDB API key.
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -931,14 +931,14 @@ Read-Only:
 
 Required:
 
-- `api_key` (String, Sensitive)
-- `name` (String)
+- `api_key` (String, Sensitive) The Amplitude API Key generated for the Descope service.
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `description` (String)
-- `server_url` (String)
-- `server_zone` (String)
+- `description` (String) A description of what your connector is used for.
+- `server_url` (String) The server URL of the Amplitude API, when using different api or a custom domain in Amplitude.
+- `server_zone` (String) `EU` or `US`. Sets the Amplitude server zone. Set this to `EU` for Amplitude projects created in `EU` data center. Default is `US`.
 
 Read-Only:
 
@@ -950,17 +950,17 @@ Read-Only:
 
 Required:
 
-- `base_url` (String)
-- `name` (String)
+- `base_url` (String) The base URL to fetch
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `audit_filters` (String)
-- `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication))
-- `description` (String)
-- `headers` (Map of String)
-- `hmac_secret` (String, Sensitive)
-- `insecure` (Boolean)
+- `audit_filters` (String) Specify which events will be sent to the external audit service (including tenant selection).
+- `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication))
+- `description` (String) A description of what your connector is used for.
+- `headers` (Map of String) The headers to send with the request
+- `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
+- `insecure` (Boolean) Will ignore certificate errors raised by the client
 
 Read-Only:
 
@@ -1000,17 +1000,17 @@ Required:
 
 Required:
 
-- `access_key_id` (String, Sensitive)
-- `bucket` (String)
-- `name` (String)
-- `region` (String)
-- `secret_access_key` (String, Sensitive)
+- `access_key_id` (String, Sensitive) The unique AWS access key ID.
+- `bucket` (String) The AWS S3 bucket. This bucket should already exist for the connector to work.
+- `name` (String) A custom name for your connector.
+- `region` (String) The AWS S3 region, e.g. `us-east-1`.
+- `secret_access_key` (String, Sensitive) The secret AWS access key.
 
 Optional:
 
 - `audit_enabled` (Boolean)
 - `audit_filters` (String)
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 - `troubleshoot_log_enabled` (Boolean)
 
 Read-Only:
@@ -1023,15 +1023,15 @@ Read-Only:
 
 Required:
 
-- `access_key_id` (String)
-- `name` (String)
-- `region` (String)
-- `secret_access_key` (String, Sensitive)
+- `access_key_id` (String) AWS access key ID.
+- `name` (String) A custom name for your connector.
+- `region` (String) The AWS region to which this client will send requests. (e.g. us-east-1.)
+- `secret_access_key` (String, Sensitive) AWS secret access key.
 
 Optional:
 
-- `description` (String)
-- `session_token` (String, Sensitive)
+- `description` (String) A description of what your connector is used for.
+- `session_token` (String, Sensitive) (Optional) A security or session token to use with these credentials. Usually present for temporary credentials.
 
 Read-Only:
 
@@ -1043,13 +1043,13 @@ Read-Only:
 
 Required:
 
-- `api_key` (String, Sensitive)
-- `name` (String)
-- `project_id` (String)
+- `api_key` (String, Sensitive) Your CLEAR API key.
+- `name` (String) A custom name for your connector.
+- `project_id` (String) Your CLEAR project ID.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1061,15 +1061,15 @@ Read-Only:
 
 Required:
 
-- `api_key` (String, Sensitive)
-- `name` (String)
+- `api_key` (String, Sensitive) The unique Datadog organization key.
+- `name` (String) A custom name for your connector.
 
 Optional:
 
 - `audit_enabled` (Boolean)
 - `audit_filters` (String)
-- `description` (String)
-- `site` (String)
+- `description` (String) A description of what your connector is used for.
+- `site` (String) The Datadog site to send logs to. Default is `datadoghq.com`. European, free tier and other customers should set their site accordingly.
 - `troubleshoot_log_enabled` (Boolean)
 
 Read-Only:
@@ -1082,12 +1082,12 @@ Read-Only:
 
 Required:
 
-- `api_key` (String, Sensitive)
-- `name` (String)
+- `api_key` (String, Sensitive) Authentication to DevRev APIs requires a personal access token (PAT).
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1099,16 +1099,16 @@ Read-Only:
 
 Required:
 
-- `base_url` (String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `name` (String)
-- `password` (String, Sensitive)
-- `username` (String)
+- `base_url` (String) The Docebo api base url.
+- `client_id` (String) The Docebo OAuth 2.0 app client ID.
+- `client_secret` (String, Sensitive) The Docebo OAuth 2.0 app client secret.
+- `name` (String) A custom name for your connector.
+- `password` (String, Sensitive) The Docebo user's password.
+- `username` (String) The Docebo username.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1120,16 +1120,16 @@ Read-Only:
 
 Required:
 
-- `name` (String)
-- `public_api_key` (String)
-- `secret_api_key` (String, Sensitive)
+- `name` (String) A custom name for your connector.
+- `public_api_key` (String) The Fingerprint public API key.
+- `secret_api_key` (String, Sensitive) The Fingerprint secret API key.
 
 Optional:
 
-- `cloudflare_endpoint_url` (String)
-- `cloudflare_script_url` (String)
-- `description` (String)
-- `use_cloudflare_integration` (Boolean)
+- `cloudflare_endpoint_url` (String) The Cloudflare integration Endpoint URL.
+- `cloudflare_script_url` (String) The Cloudflare integration Script URL.
+- `description` (String) A description of what your connector is used for.
+- `use_cloudflare_integration` (Boolean) Enable to configure the relevant Cloudflare integration parameters if Cloudflare integration is set in your Fingerprint account.
 
 Read-Only:
 
@@ -1141,12 +1141,12 @@ Read-Only:
 
 Required:
 
-- `name` (String)
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `custom_domain` (String)
-- `description` (String)
+- `custom_domain` (String) The custom domain to fetch
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1158,16 +1158,16 @@ Read-Only:
 
 Required:
 
-- `name` (String)
-- `secret_key` (String, Sensitive)
-- `site_id` (String)
+- `name` (String) A custom name for your connector.
+- `secret_key` (String, Sensitive) The Forter secret key.
+- `site_id` (String) The Forter site ID.
 
 Optional:
 
-- `description` (String)
-- `override_ip_address` (String)
-- `override_user_email` (String)
-- `overrides` (Boolean)
+- `description` (String) A description of what your connector is used for.
+- `override_ip_address` (String) Override the user IP address.
+- `override_user_email` (String) Override the user email.
+- `overrides` (Boolean) Override the user's IP address or email so that Forter can provide a specific decision or recommendation. Contact the Forter team for further details. Note: Overriding the user IP address or email is intended for testing purpose and should not be utilized in production environments.
 
 Read-Only:
 
@@ -1179,13 +1179,13 @@ Read-Only:
 
 Required:
 
-- `name` (String)
-- `project_id` (String)
-- `service_account_json` (String, Sensitive)
+- `name` (String) A custom name for your connector.
+- `project_id` (String) The Google Cloud project ID where the Google Cloud Translation is managed.
+- `service_account_json` (String, Sensitive) Service Account JSON associated with the current project.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1197,11 +1197,11 @@ Read-Only:
 
 Required:
 
-- `name` (String)
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1213,17 +1213,17 @@ Read-Only:
 
 Required:
 
-- `base_url` (String)
-- `name` (String)
+- `base_url` (String) The base URL to fetch
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--http--authentication))
-- `description` (String)
-- `headers` (Map of String)
-- `hmac_secret` (String, Sensitive)
-- `include_headers_in_context` (Boolean)
-- `insecure` (Boolean)
+- `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--http--authentication))
+- `description` (String) A description of what your connector is used for.
+- `headers` (Map of String) The headers to send with the request
+- `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
+- `include_headers_in_context` (Boolean) The connector response context will also include the headers. The context will have a "body" attribute and a "headers" attribute. See more details in the help guide
+- `insecure` (Boolean) Will ignore certificate errors raised by the client
 
 Read-Only:
 
@@ -1263,17 +1263,17 @@ Required:
 
 Required:
 
-- `base_url` (String)
-- `name` (String)
+- `base_url` (String) The base URL to fetch
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--http_static_ip--authentication))
-- `description` (String)
-- `headers` (Map of String)
-- `hmac_secret` (String, Sensitive)
-- `include_headers_in_context` (Boolean)
-- `insecure` (Boolean)
+- `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--http_static_ip--authentication))
+- `description` (String) A description of what your connector is used for.
+- `headers` (Map of String) The headers to send with the request
+- `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
+- `include_headers_in_context` (Boolean) The connector response context will also include the headers. The context will have a "body" attribute and a "headers" attribute. See more details in the help guide
+- `insecure` (Boolean) Will ignore certificate errors raised by the client
 
 Read-Only:
 
@@ -1313,13 +1313,13 @@ Required:
 
 Required:
 
-- `access_token` (String, Sensitive)
-- `name` (String)
+- `access_token` (String, Sensitive) The HubSpot private API access token generated for the Descope service.
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `base_url` (String)
-- `description` (String)
+- `base_url` (String) The base URL of the HubSpot API, when using a custom domain in HubSpot, default value is https://api.hubapi.com .
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1331,13 +1331,13 @@ Read-Only:
 
 Required:
 
-- `name` (String)
-- `token` (String, Sensitive)
+- `name` (String) A custom name for your connector.
+- `token` (String, Sensitive) The Intercom access token.
 
 Optional:
 
-- `description` (String)
-- `region` (String)
+- `description` (String) A description of what your connector is used for.
+- `region` (String) Regional Hosting - US, EU, or AU. default: US
 
 Read-Only:
 
@@ -1349,17 +1349,17 @@ Read-Only:
 
 Required:
 
-- `api_key` (String, Sensitive)
-- `name` (String)
+- `api_key` (String, Sensitive) Ingest License Key of the account you want to report data to.
+- `name` (String) A custom name for your connector.
 
 Optional:
 
 - `audit_enabled` (Boolean)
 - `audit_filters` (String)
-- `data_center` (String)
-- `description` (String)
-- `logs_prefix` (String)
-- `override_logs_prefix` (Boolean)
+- `data_center` (String) The New Relic data center the account belongs to. Possible values are: `US`, `EU`, `FedRAMP`. Default is `US`.
+- `description` (String) A description of what your connector is used for.
+- `logs_prefix` (String) Specify a custom prefix for all log fields. The default prefix is `descope.`.
+- `override_logs_prefix` (Boolean) Enable this option to use a custom prefix for log fields.
 - `troubleshoot_log_enabled` (Boolean)
 
 Read-Only:
@@ -1372,13 +1372,13 @@ Read-Only:
 
 Required:
 
-- `name` (String)
-- `secret_key` (String, Sensitive)
-- `site_key` (String)
+- `name` (String) A custom name for your connector.
+- `secret_key` (String, Sensitive) The secret key authorizes communication between Descope backend and the reCAPTCHA server to verify the user's response.
+- `site_key` (String) The site key is used to invoke reCAPTCHA service on your site or mobile application.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1390,16 +1390,16 @@ Read-Only:
 
 Required:
 
-- `api_key` (String, Sensitive)
-- `name` (String)
-- `project_id` (String)
-- `site_key` (String)
+- `api_key` (String, Sensitive) API key associated with the current project.
+- `name` (String) A custom name for your connector.
+- `project_id` (String) The Google Cloud project ID where the reCAPTCHA Enterprise is managed.
+- `site_key` (String) The site key is used to invoke reCAPTCHA Enterprise service on your site or mobile application.
 
 Optional:
 
-- `assessment_score` (Number)
-- `description` (String)
-- `override_assessment` (Boolean)
+- `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
+- `description` (String) A description of what your connector is used for.
+- `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
 Read-Only:
 
@@ -1411,14 +1411,14 @@ Read-Only:
 
 Required:
 
-- `access_key_id` (String)
-- `collection_id` (String)
-- `name` (String)
-- `secret_access_key` (String, Sensitive)
+- `access_key_id` (String) The AWS access key ID
+- `collection_id` (String) The collection to store registered users in. Should match `[a-zA-Z0-9_.-]+` pattern. Changing this will cause losing existing users.
+- `name` (String) A custom name for your connector.
+- `secret_access_key` (String, Sensitive) The AWS secret access key
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1430,15 +1430,15 @@ Read-Only:
 
 Required:
 
-- `base_url` (String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `name` (String)
-- `version` (String)
+- `base_url` (String) The Salesforce API base URL.
+- `client_id` (String) The consumer key of the connected app.
+- `client_secret` (String, Sensitive) The consumer secret of the connected app.
+- `name` (String) A custom name for your connector.
+- `version` (String) REST API Version.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1450,13 +1450,13 @@ Read-Only:
 
 Required:
 
-- `name` (String)
-- `write_key` (String, Sensitive)
+- `name` (String) A custom name for your connector.
+- `write_key` (String, Sensitive) The Segment Write Key generated for the Descope service.
 
 Optional:
 
-- `description` (String)
-- `host` (String)
+- `description` (String) A description of what your connector is used for.
+- `host` (String) The base URL of the Segment API, when using a custom domain in Segment.
 
 Read-Only:
 
@@ -1469,12 +1469,12 @@ Read-Only:
 Required:
 
 - `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--sendgrid--authentication))
-- `name` (String)
+- `name` (String) A custom name for your connector.
 - `sender` (Attributes) (see [below for nested schema](#nestedatt--connectors--sendgrid--sender))
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1507,13 +1507,13 @@ Optional:
 Required:
 
 - `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--smtp--authentication))
-- `name` (String)
+- `name` (String) A custom name for your connector.
 - `sender` (Attributes) (see [below for nested schema](#nestedatt--connectors--smtp--sender))
 - `server` (Attributes) (see [below for nested schema](#nestedatt--connectors--smtp--server))
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1562,14 +1562,14 @@ Optional:
 
 Required:
 
-- `http_source_url` (String, Sensitive)
-- `name` (String)
+- `http_source_url` (String, Sensitive) The URL associated with an HTTP Hosted collector
+- `name` (String) A custom name for your connector.
 
 Optional:
 
 - `audit_enabled` (Boolean)
 - `audit_filters` (String)
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 - `troubleshoot_log_enabled` (Boolean)
 
 Read-Only:
@@ -1582,13 +1582,13 @@ Read-Only:
 
 Required:
 
-- `api_key` (String, Sensitive)
-- `customer_id` (String)
-- `name` (String)
+- `api_key` (String, Sensitive) The unique Telesign API key
+- `customer_id` (String) The unique Telesign account Customer ID
+- `name` (String) A custom name for your connector.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1600,13 +1600,13 @@ Read-Only:
 
 Required:
 
-- `name` (String)
-- `secret_key` (String, Sensitive)
+- `name` (String) A custom name for your connector.
+- `secret_key` (String, Sensitive) The Traceable secret key.
 
 Optional:
 
-- `description` (String)
-- `eu_region` (Boolean)
+- `description` (String) A description of what your connector is used for.
+- `eu_region` (Boolean) EU(Europe) Region deployment of Traceable platform.
 
 Read-Only:
 
@@ -1620,12 +1620,12 @@ Required:
 
 - `account_sid` (String)
 - `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--twilio_core--authentication))
-- `name` (String)
+- `name` (String) A custom name for your connector.
 - `senders` (Attributes) (see [below for nested schema](#nestedatt--connectors--twilio_core--senders))
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1678,12 +1678,12 @@ Required:
 
 - `account_sid` (String)
 - `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--twilio_verify--authentication))
-- `name` (String)
+- `name` (String) A custom name for your connector.
 - `service_sid` (String)
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description of what your connector is used for.
 - `sender` (String)
 
 Read-Only:
@@ -1706,14 +1706,14 @@ Optional:
 
 Required:
 
-- `api_key` (String)
-- `name` (String)
-- `secret_key` (String, Sensitive)
+- `api_key` (String) The Veriff Public API Key, you can find under Veriff Station - Integrations.
+- `name` (String) A custom name for your connector.
+- `secret_key` (String, Sensitive) The Veriff Shared secret key, you can find under Veriff Station - Integrations.
 
 Optional:
 
-- `base_url` (String)
-- `description` (String)
+- `base_url` (String) The base URL of the Veriff API, default value is https://stationapi.veriff.com.
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1734,16 +1734,35 @@ Required:
 
 Optional:
 
-- `templates` (Attributes List) (see [below for nested schema](#nestedatt--jwt_templates--templates))
+- `access_key_templates` (Attributes List) (see [below for nested schema](#nestedatt--jwt_templates--access_key_templates))
+- `user_templates` (Attributes List) (see [below for nested schema](#nestedatt--jwt_templates--user_templates))
 
-<a id="nestedatt--jwt_templates--templates"></a>
-### Nested Schema for `jwt_templates.templates`
+<a id="nestedatt--jwt_templates--access_key_templates"></a>
+### Nested Schema for `jwt_templates.access_key_templates`
 
 Required:
 
 - `name` (String)
 - `template` (String)
-- `type` (String)
+
+Optional:
+
+- `auth_schema` (String)
+- `conformance_issuer` (Boolean)
+- `description` (String)
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--jwt_templates--user_templates"></a>
+### Nested Schema for `jwt_templates.user_templates`
+
+Required:
+
+- `name` (String)
+- `template` (String)
 
 Optional:
 
@@ -1763,7 +1782,7 @@ Read-Only:
 Optional:
 
 - `access_key_jwt_template` (String)
-- `cookie_policy` (Number)
+- `cookie_policy` (String)
 - `domain` (String)
 - `enable_inactivity` (Boolean)
 - `inactivity_time` (String)
