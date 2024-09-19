@@ -35,7 +35,7 @@ func PreparePaths() *Paths {
 
 	docs := EnsurePath(root, "internal", "docs")
 
-	raw := EnsurePath(docs, "raw")
+	raw := EnsurePath(root, "docs", "raw")
 
 	connectors := filepath.Join(models, "connectors")
 

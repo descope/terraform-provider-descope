@@ -9,7 +9,7 @@ name
 
 - Type: `string` (required)
 
-The name of the project.
+The name of the Descope project.
 
 
 
@@ -18,7 +18,7 @@ environment
 
 - Type: `string` 
 
-// description for environment
+This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.
 
 
 
@@ -27,7 +27,7 @@ project_settings
 
 - Type: `object` of `settings.Settings` 
 
-// description for project_settings
+General settings for the Descope project.
 
 
 
@@ -36,7 +36,7 @@ authentication
 
 - Type: `object` of `authentication.Authentication` 
 
-// description for authentication
+Settings for each authentication method.
 
 
 

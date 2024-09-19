@@ -17,19 +17,19 @@ description: |-
 
 ### Required
 
-- `name` (String) The name of the project.
+- `name` (String) The name of the Descope project.
 
 ### Optional
 
 - `applications` (Attributes) (see [below for nested schema](#nestedatt--applications))
 - `attributes` (Attributes) (see [below for nested schema](#nestedatt--attributes))
-- `authentication` (Attributes) (see [below for nested schema](#nestedatt--authentication))
+- `authentication` (Attributes) Settings for each authentication method. (see [below for nested schema](#nestedatt--authentication))
 - `authorization` (Attributes) (see [below for nested schema](#nestedatt--authorization))
 - `connectors` (Attributes) (see [below for nested schema](#nestedatt--connectors))
-- `environment` (String)
+- `environment` (String) This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.
 - `flows` (Attributes Map) (see [below for nested schema](#nestedatt--flows))
 - `jwt_templates` (Attributes) (see [below for nested schema](#nestedatt--jwt_templates))
-- `project_settings` (Attributes) (see [below for nested schema](#nestedatt--project_settings))
+- `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) (see [below for nested schema](#nestedatt--styles))
 
 ### Read-Only
@@ -166,7 +166,7 @@ Optional:
 - `enchanted_link` (Attributes) (see [below for nested schema](#nestedatt--authentication--enchanted_link))
 - `magic_link` (Attributes) (see [below for nested schema](#nestedatt--authentication--magic_link))
 - `oauth` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth))
-- `otp` (Attributes) (see [below for nested schema](#nestedatt--authentication--otp))
+- `otp` (Attributes) A dynamically generated set of numbers, granting the user one-time access. (see [below for nested schema](#nestedatt--authentication--otp))
 - `password` (Attributes) (see [below for nested schema](#nestedatt--authentication--password))
 - `sso` (Attributes) (see [below for nested schema](#nestedatt--authentication--sso))
 - `totp` (Attributes) (see [below for nested schema](#nestedatt--authentication--totp))

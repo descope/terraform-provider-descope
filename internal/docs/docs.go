@@ -3,10 +3,10 @@
 package docs
 
 var docsProject = map[string]string{
-	"name": "The name of the project.",
-	"environment": "",
-	"project_settings": "",
-	"authentication": "",
+	"name": "The name of the Descope project.",
+	"environment": "This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.",
+	"project_settings": "General settings for the Descope project.",
+	"authentication": "Settings for each authentication method.",
 	"authorization": "",
 	"attributes": "",
 	"connectors": "",
@@ -86,7 +86,7 @@ var docsUserAttributeWidgetAuthorization = map[string]string{
 }
 
 var docsAuthentication = map[string]string{
-	"otp": "",
+	"otp": "A dynamically generated set of numbers, granting the user one-time access.",
 	"magic_link": "",
 	"enchanted_link": "",
 	"embedded_link": "",

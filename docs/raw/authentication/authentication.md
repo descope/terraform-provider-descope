@@ -9,7 +9,7 @@ otp
 
 - Type: `object` of `authentication.OTP` 
 
-// description for otp
+A dynamically generated set of numbers, granting the user one-time access.
 
 
 
