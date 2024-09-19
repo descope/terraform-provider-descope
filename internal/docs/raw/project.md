@@ -9,7 +9,7 @@ name
 
 - Type: `string` (required)
 
-// description for name
+The name of the project.
 
 
 

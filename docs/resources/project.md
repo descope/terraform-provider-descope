@@ -17,7 +17,7 @@ description: |-
 
 ### Required
 
-- `name` (String)
+- `name` (String) The name of the project.
 
 ### Optional
 
@@ -26,11 +26,11 @@ description: |-
 - `authentication` (Attributes) (see [below for nested schema](#nestedatt--authentication))
 - `authorization` (Attributes) (see [below for nested schema](#nestedatt--authorization))
 - `connectors` (Attributes) (see [below for nested schema](#nestedatt--connectors))
+- `environment` (String)
 - `flows` (Attributes Map) (see [below for nested schema](#nestedatt--flows))
 - `jwt_templates` (Attributes) (see [below for nested schema](#nestedatt--jwt_templates))
 - `project_settings` (Attributes) (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) (see [below for nested schema](#nestedatt--styles))
-- `tag` (String)
 
 ### Read-Only
 
