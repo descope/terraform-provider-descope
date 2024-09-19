@@ -25,7 +25,7 @@ func main() {
 	schema := schema.ParseSources(paths.Models)
 
 	// copies existing model descriptions from the raw .md documentation files into the schema
-	docgen.MergeDocs(paths.Markdown, schema)
+	docgen.MergeDocs(paths.Raw, schema)
 
 	// copies model descriptions from the connector template metadata files into the schema
 	conngen.MergeDocs(conns, schema)
@@ -37,7 +37,7 @@ func main() {
 	schema.ValidateIfNeeded()
 
 	// generates updated raw .md documentation files
-	docgen.GenerateDocs(paths.Markdown, schema)
+	docgen.GenerateDocs(paths.Raw, schema)
 
 	// add back boilerplate fields with hardcoded descriptions
 	conngen.AddBoilerplate(conns, schema)

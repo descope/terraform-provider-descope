@@ -10,11 +10,11 @@ import (
 type Paths struct {
 	Root       string
 	Models     string
-	Markdown   string
+	Docs       string
+	Raw        string
 	Connectors string
 	Data       string
 	Templates  string
-	Docs       string
 }
 
 func PreparePaths() *Paths {
@@ -33,7 +33,9 @@ func PreparePaths() *Paths {
 		log.Fatalf("expected to find models directory at path: %s", models)
 	}
 
-	markdown := EnsurePath(root, "docs", "raw")
+	docs := EnsurePath(root, "internal", "docs")
+
+	raw := EnsurePath(docs, "raw")
 
 	connectors := filepath.Join(models, "connectors")
 
@@ -51,16 +53,14 @@ func PreparePaths() *Paths {
 		}
 	}
 
-	docs := EnsurePath(root, "internal", "docs")
-
 	return &Paths{
 		Root:       root,
 		Models:     models,
-		Markdown:   markdown,
+		Docs:       docs,
+		Raw:        raw,
 		Connectors: connectors,
 		Data:       data,
 		Templates:  templates,
-		Docs:       docs,
 	}
 }
 
