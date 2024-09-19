@@ -17,6 +17,9 @@ const PlaceholderDescription = `// description for`
 const DefaultConnectorNameText = "A custom name for your connector."
 const DefaultConnectorDescriptionText = "A description of what your connector is used for."
 
+// markdown descriptions with paragraphs will require a custom template to look good
+const preserveParagraphs = false
+
 func LoadTemplate(name string, data []byte) *template.Template {
 	tpl, err := template.New(name).Funcs(templateUtils).Parse(string(data))
 	if err != nil {
@@ -37,12 +40,21 @@ var templateUtils = map[string]any{
 	},
 	"srcliteral": func(name string, description string) string {
 		r := []string{}
-		for _, v := range strings.Split(description, "\n") {
+		parts := strings.Split(description, "\n")
+		for i, v := range parts {
+			if len(v) == 0 && !preserveParagraphs {
+				continue
+			}
 			v = strings.ReplaceAll(v, `\`, `\\`)
 			v = strings.ReplaceAll(v, `"`, `\"`)
+			if len(v) == 0 && preserveParagraphs && i != 0 {
+				v = "\\n\\n"
+			} else if len(v) > 0 && i != len(parts)-1 {
+				v = v + " "
+			}
 			r = append(r, v)
 		}
-		joiner := ` " +` + "\n\t" + strings.Repeat(" ", len(name)+4) + `"`
+		joiner := `" +` + "\n\t" + strings.Repeat(" ", len(name)+4) + `"`
 		return `"` + strings.Join(r, joiner) + `"`
 	},
 }
