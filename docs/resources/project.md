@@ -21,16 +21,16 @@ description: |-
 
 ### Optional
 
-- `applications` (Attributes) (see [below for nested schema](#nestedatt--applications))
-- `attributes` (Attributes) (see [below for nested schema](#nestedatt--attributes))
+- `applications` (Attributes) Applications that are registered with the project. (see [below for nested schema](#nestedatt--applications))
+- `attributes` (Attributes) Custom attributes that can be attached to users and tenants. (see [below for nested schema](#nestedatt--attributes))
 - `authentication` (Attributes) Settings for each authentication method. (see [below for nested schema](#nestedatt--authentication))
-- `authorization` (Attributes) (see [below for nested schema](#nestedatt--authorization))
-- `connectors` (Attributes) (see [below for nested schema](#nestedatt--connectors))
+- `authorization` (Attributes) Define Role-Based Access Control (RBAC) for your users by creating roles and permissions. (see [below for nested schema](#nestedatt--authorization))
+- `connectors` (Attributes) Enrich your flows by interacting with third party services. (see [below for nested schema](#nestedatt--connectors))
 - `environment` (String) This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.
 - `flows` (Attributes Map) (see [below for nested schema](#nestedatt--flows))
-- `jwt_templates` (Attributes) (see [below for nested schema](#nestedatt--jwt_templates))
+- `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
-- `styles` (Attributes) (see [below for nested schema](#nestedatt--styles))
+- `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
 
 ### Read-Only
 
@@ -41,24 +41,24 @@ description: |-
 
 Optional:
 
-- `oidc_applications` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc_applications))
-- `saml_applications` (Attributes List) (see [below for nested schema](#nestedatt--applications--saml_applications))
+- `oidc_applications` (Attributes List) Applications using OpenID Connect (OIDC) for authentication. (see [below for nested schema](#nestedatt--applications--oidc_applications))
+- `saml_applications` (Attributes List) Applications using SAML for authentication. (see [below for nested schema](#nestedatt--applications--saml_applications))
 
 <a id="nestedatt--applications--oidc_applications"></a>
 ### Nested Schema for `applications.oidc_applications`
 
 Required:
 
-- `name` (String)
+- `name` (String) The name of the application.
 
 Optional:
 
-- `claims` (List of String)
-- `description` (String)
-- `disabled` (Boolean)
-- `id` (String)
-- `login_page_url` (String)
-- `logo` (String)
+- `claims` (List of String) Claims associated with JWT tokens, typically used for user information.
+- `description` (String) A brief description of the application.
+- `disabled` (Boolean) Indicates whether the resource or functionality is disabled.
+- `id` (String) An optional identifier for the application.
+- `login_page_url` (String) The URL of the custom login page for the application.
+- `logo` (String) The URL of the logo associated with the application.
 
 
 <a id="nestedatt--applications--saml_applications"></a>
@@ -66,19 +66,19 @@ Optional:
 
 Required:
 
-- `name` (String)
+- `name` (String) The name of the application.
 
 Optional:
 
 - `acs_allowed_callback_urls` (List of String)
-- `attribute_mapping` (Attributes List) (see [below for nested schema](#nestedatt--applications--saml_applications--attribute_mapping))
+- `attribute_mapping` (Attributes List) Map user attributes from the third party identity provider to custom attributes in Descope. (see [below for nested schema](#nestedatt--applications--saml_applications--attribute_mapping))
 - `default_relay_state` (String)
-- `description` (String)
-- `disabled` (Boolean)
+- `description` (String) A brief description of the application.
+- `disabled` (Boolean) Indicates whether the application is disabled.
 - `dynamic_configuration` (Attributes) (see [below for nested schema](#nestedatt--applications--saml_applications--dynamic_configuration))
-- `id` (String)
-- `login_page_url` (String)
-- `logo` (String)
+- `id` (String) An optional identifier for the application.
+- `login_page_url` (String) The URL of the custom login page for the application.
+- `logo` (String) The URL of the logo associated with the application.
 - `manual_configuration` (Attributes) (see [below for nested schema](#nestedatt--applications--saml_applications--manual_configuration))
 - `subject_name_id_format` (String)
 - `subject_name_id_type` (String)
@@ -88,8 +88,8 @@ Optional:
 
 Required:
 
-- `name` (String)
-- `value` (String)
+- `name` (String) The name of the user attribute in the third party identity provider.
+- `value` (String) The name of the user custom attribute in Descope.
 
 
 <a id="nestedatt--applications--saml_applications--dynamic_configuration"></a>
@@ -117,20 +117,20 @@ Required:
 
 Optional:
 
-- `tenant` (Attributes List) (see [below for nested schema](#nestedatt--attributes--tenant))
-- `user` (Attributes List) (see [below for nested schema](#nestedatt--attributes--user))
+- `tenant` (Attributes List) Custom attributes to store additional details about your tenants. (see [below for nested schema](#nestedatt--attributes--tenant))
+- `user` (Attributes List) Custom attributes to store additional details about your users. (see [below for nested schema](#nestedatt--attributes--user))
 
 <a id="nestedatt--attributes--tenant"></a>
 ### Nested Schema for `attributes.tenant`
 
 Required:
 
-- `name` (String)
-- `type` (String)
+- `name` (String) The name of the tenant attribute.
+- `type` (String) The type of the tenant attribute. Valid valus are `string`, `number`, `boolean`, `date`, `singleselect`, and `multiselect`.
 
 Optional:
 
-- `select_options` (List of String)
+- `select_options` (List of String) A list of strings to define the set of options for select attributes.
 
 
 <a id="nestedatt--attributes--user"></a>
@@ -138,21 +138,21 @@ Optional:
 
 Required:
 
-- `name` (String)
-- `type` (String)
+- `name` (String) The name of the user attribute.
+- `type` (String) The type of the user attribute. Valid valus are `string`, `number`, `boolean`, `date`, `singleselect`, and `multiselect`.
 
 Optional:
 
-- `select_options` (List of String)
-- `widget_authorization` (Attributes) (see [below for nested schema](#nestedatt--attributes--user--widget_authorization))
+- `select_options` (List of String) A list of strings to define the set of options for select attributes.
+- `widget_authorization` (Attributes) When provided, viewing and editing the attribute values in widgets will be restricted to users with the specified permissions. (see [below for nested schema](#nestedatt--attributes--user--widget_authorization))
 
 <a id="nestedatt--attributes--user--widget_authorization"></a>
 ### Nested Schema for `attributes.user.widget_authorization`
 
 Optional:
 
-- `edit_permissions` (List of String)
-- `view_permissions` (List of String)
+- `edit_permissions` (List of String) Editing the attribute value in widgets will be restricted to users with the specified permissions.
+- `view_permissions` (List of String) Viewing the attribute value in widgets will be restricted to users with the specified permissions.
 
 
 
@@ -162,15 +162,15 @@ Optional:
 
 Optional:
 
-- `embedded_link` (Attributes) (see [below for nested schema](#nestedatt--authentication--embedded_link))
-- `enchanted_link` (Attributes) (see [below for nested schema](#nestedatt--authentication--enchanted_link))
-- `magic_link` (Attributes) (see [below for nested schema](#nestedatt--authentication--magic_link))
-- `oauth` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth))
+- `embedded_link` (Attributes) Make the authentication experience smoother for the user by generating their initial token in a way that does not require the end user to initiate the process, requiring only verification. (see [below for nested schema](#nestedatt--authentication--embedded_link))
+- `enchanted_link` (Attributes) An enhanced and more secure version of Magic Link, enabling users to start the authentication process on one device and execute the verification on another. (see [below for nested schema](#nestedatt--authentication--enchanted_link))
+- `magic_link` (Attributes) An authentication method where a user receives a unique link via email to log in. (see [below for nested schema](#nestedatt--authentication--magic_link))
+- `oauth` (Attributes) Authentication using Open Authorization, which allows users to authenticate with various external services. (see [below for nested schema](#nestedatt--authentication--oauth))
 - `otp` (Attributes) A dynamically generated set of numbers, granting the user one-time access. (see [below for nested schema](#nestedatt--authentication--otp))
-- `password` (Attributes) (see [below for nested schema](#nestedatt--authentication--password))
-- `sso` (Attributes) (see [below for nested schema](#nestedatt--authentication--sso))
-- `totp` (Attributes) (see [below for nested schema](#nestedatt--authentication--totp))
-- `webauthn` (Attributes) (see [below for nested schema](#nestedatt--authentication--webauthn))
+- `passkeys` (Attributes) Device-based passwordless authentication, using fingerprint, face scan, and more. (see [below for nested schema](#nestedatt--authentication--passkeys))
+- `password` (Attributes) The classic username and password combination used for authentication. (see [below for nested schema](#nestedatt--authentication--password))
+- `sso` (Attributes) Single Sign-On (SSO) authentication method that enables users to access multiple applications with a single set of credentials. (see [below for nested schema](#nestedatt--authentication--sso))
+- `totp` (Attributes) A one-time code generated for the user using a shared secret and time. (see [below for nested schema](#nestedatt--authentication--totp))
 
 <a id="nestedatt--authentication--embedded_link"></a>
 ### Nested Schema for `authentication.embedded_link`
@@ -178,7 +178,7 @@ Optional:
 Optional:
 
 - `enabled` (Boolean)
-- `expiration_time` (Number)
+- `expiration_time` (Number) The amount of time that the embedded link will be valid for.
 - `expiration_time_unit` (String)
 
 
@@ -187,11 +187,11 @@ Optional:
 
 Optional:
 
-- `email_service` (Attributes) (see [below for nested schema](#nestedatt--authentication--enchanted_link--email_service))
+- `email_service` (Attributes) Settings related to sending emails as part of the enchanted link authentication. (see [below for nested schema](#nestedatt--authentication--enchanted_link--email_service))
 - `enabled` (Boolean)
 - `expiration_time` (Number)
 - `expiration_time_unit` (String)
-- `redirect_url` (String)
+- `redirect_url` (String) The URL to redirect users to after they log in using the enchanted link.
 
 <a id="nestedatt--authentication--enchanted_link--email_service"></a>
 ### Nested Schema for `authentication.enchanted_link.email_service`
@@ -231,12 +231,12 @@ Read-Only:
 
 Optional:
 
-- `email_service` (Attributes) (see [below for nested schema](#nestedatt--authentication--magic_link--email_service))
+- `email_service` (Attributes) Settings related to sending emails as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--email_service))
 - `enabled` (Boolean)
 - `expiration_time` (Number)
 - `expiration_time_unit` (String)
-- `redirect_url` (String)
-- `text_service` (Attributes) (see [below for nested schema](#nestedatt--authentication--magic_link--text_service))
+- `redirect_url` (String) The URL to redirect users to after they log in using the magic link.
+- `text_service` (Attributes) Settings related to sending SMS messages as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--text_service))
 
 <a id="nestedatt--authentication--magic_link--email_service"></a>
 ### Nested Schema for `authentication.magic_link.email_service`
@@ -305,31 +305,31 @@ Read-Only:
 
 Optional:
 
-- `custom` (Attributes Map) (see [below for nested schema](#nestedatt--authentication--oauth--custom))
+- `custom` (Attributes Map) Custom OAuth providers configured for this project. (see [below for nested schema](#nestedatt--authentication--oauth--custom))
 - `disabled` (Boolean)
-- `system` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system))
+- `system` (Attributes) Custom configurations for builtin OAuth providers such as Apple, Google, GitHub, Facebook, etc. (see [below for nested schema](#nestedatt--authentication--oauth--system))
 
 <a id="nestedatt--authentication--oauth--custom"></a>
 ### Nested Schema for `authentication.oauth.custom`
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--custom--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--custom--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--custom--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.custom.provider_token_management`
@@ -346,37 +346,37 @@ Optional:
 
 Optional:
 
-- `apple` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--apple))
-- `discord` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--discord))
-- `facebook` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook))
-- `github` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--github))
-- `gitlab` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab))
-- `google` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--google))
-- `linkedin` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin))
-- `microsoft` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft))
-- `slack` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--slack))
+- `apple` (Attributes) Apple's OAuth provider, allowing users to authenticate with their Apple Account. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple))
+- `discord` (Attributes) Discord's OAuth provider, allowing users to authenticate with their Discord account. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord))
+- `facebook` (Attributes) Facebook's OAuth provider, allowing users to authenticate with their Facebook account. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook))
+- `github` (Attributes) GitHub's OAuth provider, allowing users to authenticate with their GitHub account. (see [below for nested schema](#nestedatt--authentication--oauth--system--github))
+- `gitlab` (Attributes) GitLab's OAuth provider, allowing users to authenticate with their GitLab account. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab))
+- `google` (Attributes) Google's OAuth provider, allowing users to authenticate with their Google account. (see [below for nested schema](#nestedatt--authentication--oauth--system--google))
+- `linkedin` (Attributes) LinkedIn's OAuth provider, allowing users to authenticate with their LinkedIn account. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin))
+- `microsoft` (Attributes) Microsoft's OAuth provider, allowing users to authenticate with their Microsoft account. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft))
+- `slack` (Attributes) Slack's OAuth provider, allowing users to authenticate with their Slack account. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack))
 
 <a id="nestedatt--authentication--oauth--system--apple"></a>
 ### Nested Schema for `authentication.oauth.system.apple`
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--apple--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.apple.provider_token_management`
@@ -393,22 +393,22 @@ Optional:
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--discord--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.discord.provider_token_management`
@@ -425,22 +425,22 @@ Optional:
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--facebook--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.facebook.provider_token_management`
@@ -457,22 +457,22 @@ Optional:
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--github--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--github--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.github.provider_token_management`
@@ -489,22 +489,22 @@ Optional:
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--gitlab--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.gitlab.provider_token_management`
@@ -521,22 +521,22 @@ Optional:
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--google--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--google--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.google.provider_token_management`
@@ -553,22 +553,22 @@ Optional:
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--linkedin--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.linkedin.provider_token_management`
@@ -585,22 +585,22 @@ Optional:
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--microsoft--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.microsoft.provider_token_management`
@@ -617,22 +617,22 @@ Optional:
 
 Optional:
 
-- `authorization_endpoint` (String)
+- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `claim_mapping` (Map of String)
-- `client_id` (String)
-- `client_secret` (String, Sensitive)
-- `description` (String)
+- `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
+- `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
+- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean)
-- `grant_type` (String)
+- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
-- `jwks_endpoint` (String)
-- `logo` (String)
-- `merge_user_accounts` (Boolean)
-- `prompts` (List of String)
-- `provider_token_management` (Attributes) (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--provider_token_management))
-- `scopes` (List of String)
-- `token_endpoint` (String)
-- `user_info_endpoint` (String)
+- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
+- `logo` (String) The URL of the logo associated with the OAuth provider.
+- `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
+- `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
+- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--provider_token_management))
+- `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
+- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--slack--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.slack.provider_token_management`
@@ -651,13 +651,13 @@ Optional:
 
 Optional:
 
-- `domain` (String)
-- `email_service` (Attributes) (see [below for nested schema](#nestedatt--authentication--otp--email_service))
+- `domain` (String) The domain to embed in OTP messages.
+- `email_service` (Attributes) Settings related to sending emails with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--email_service))
 - `enabled` (Boolean)
-- `expiration_time` (Number)
+- `expiration_time` (Number) The amount of time that an OTP code will be valid for.
 - `expiration_time_unit` (String)
-- `text_service` (Attributes) (see [below for nested schema](#nestedatt--authentication--otp--text_service))
-- `voice_service` (Attributes) (see [below for nested schema](#nestedatt--authentication--otp--voice_service))
+- `text_service` (Attributes) Settings related to sending SMS messages with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--text_service))
+- `voice_service` (Attributes) Settings related to voice calls with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--voice_service))
 
 <a id="nestedatt--authentication--otp--email_service"></a>
 ### Nested Schema for `authentication.otp.email_service`
@@ -750,24 +750,33 @@ Read-Only:
 
 
 
+<a id="nestedatt--authentication--passkeys"></a>
+### Nested Schema for `authentication.passkeys`
+
+Optional:
+
+- `enabled` (Boolean)
+- `top_level_domain` (String) Passkeys will be usable in the following domain and all its subdomains.
+
+
 <a id="nestedatt--authentication--password"></a>
 ### Nested Schema for `authentication.password`
 
 Optional:
 
-- `email_service` (Attributes) (see [below for nested schema](#nestedatt--authentication--password--email_service))
+- `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--authentication--password--email_service))
 - `enabled` (Boolean)
-- `expiration` (Boolean)
-- `expiration_weeks` (Number)
-- `lock` (Boolean)
-- `lock_attempts` (Number)
-- `lowercase` (Boolean)
-- `min_length` (Number)
-- `non_alphanumeric` (Boolean)
-- `number` (Boolean)
-- `reuse` (Boolean)
+- `expiration` (Boolean) Whether users are required to change their password periodically.
+- `expiration_weeks` (Number) The number of weeks after which a user's password expires and they need to replace it.
+- `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
+- `lock_attempts` (Number) The number of failed login attempts allowed before an account is locked.
+- `lowercase` (Boolean) Whether passwords must contain at least one lowercase letter.
+- `min_length` (Number) The minimum length of the password that users are required to use. The maximum length is always `64`.
+- `non_alphanumeric` (Boolean) Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).
+- `number` (Boolean) Whether passwords must contain at least one number.
+- `reuse` (Boolean) Whether to forbid password reuse when users change their password.
 - `reuse_amount` (Number)
-- `uppercase` (Boolean)
+- `uppercase` (Boolean) Whether passwords must contain at least one uppercase letter.
 
 <a id="nestedatt--authentication--password--email_service"></a>
 ### Nested Schema for `authentication.password.email_service`
@@ -808,7 +817,7 @@ Read-Only:
 Optional:
 
 - `enabled` (Boolean)
-- `merge_users` (Boolean)
+- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 
 
 <a id="nestedatt--authentication--totp"></a>
@@ -817,15 +826,6 @@ Optional:
 Optional:
 
 - `enabled` (Boolean)
-
-
-<a id="nestedatt--authentication--webauthn"></a>
-### Nested Schema for `authentication.webauthn`
-
-Optional:
-
-- `enabled` (Boolean)
-- `top_level_domain` (String)
 
 
 

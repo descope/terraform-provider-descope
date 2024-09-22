@@ -18,7 +18,7 @@ expiration_time
 
 - Type: `int` 
 
-// description for expiration_time
+The amount of time that the embedded link will be valid for.
 
 
 

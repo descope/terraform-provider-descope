@@ -18,7 +18,7 @@ system
 
 - Type: `object` of `authentication.OAuthSystemProvider` 
 
-// description for system
+Custom configurations for builtin OAuth providers such as Apple, Google, GitHub, Facebook, etc.
 
 
 
@@ -27,7 +27,7 @@ custom
 
 - Type: `map` of `authentication.OAuthProvider` 
 
-// description for custom
+Custom OAuth providers configured for this project.
 
 
 
@@ -43,7 +43,7 @@ apple
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for apple
+Apple's OAuth provider, allowing users to authenticate with their Apple Account.
 
 
 
@@ -52,7 +52,7 @@ discord
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for discord
+Discord's OAuth provider, allowing users to authenticate with their Discord account.
 
 
 
@@ -61,7 +61,7 @@ facebook
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for facebook
+Facebook's OAuth provider, allowing users to authenticate with their Facebook account.
 
 
 
@@ -70,7 +70,7 @@ github
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for github
+GitHub's OAuth provider, allowing users to authenticate with their GitHub account.
 
 
 
@@ -79,7 +79,7 @@ gitlab
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for gitlab
+GitLab's OAuth provider, allowing users to authenticate with their GitLab account.
 
 
 
@@ -88,7 +88,7 @@ google
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for google
+Google's OAuth provider, allowing users to authenticate with their Google account.
 
 
 
@@ -97,7 +97,7 @@ linkedin
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for linkedin
+LinkedIn's OAuth provider, allowing users to authenticate with their LinkedIn account.
 
 
 
@@ -106,7 +106,7 @@ microsoft
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for microsoft
+Microsoft's OAuth provider, allowing users to authenticate with their Microsoft account.
 
 
 
@@ -115,7 +115,7 @@ slack
 
 - Type: `object` of `authentication.OAuthProvider` 
 
-// description for slack
+Slack's OAuth provider, allowing users to authenticate with their Slack account.
 
 
 
@@ -140,7 +140,7 @@ client_id
 
 - Type: `string` 
 
-// description for client_id
+The client ID for the OAuth provider, used to identify the application to the provider.
 
 
 
@@ -149,7 +149,7 @@ client_secret
 
 - Type: `secret` 
 
-// description for client_secret
+The client secret for the OAuth provider, used to authenticate the application with the provider.
 
 
 
@@ -158,7 +158,7 @@ provider_token_management
 
 - Type: `object` of `authentication.OAuthProviderTokenManagementAttribute` 
 
-// description for provider_token_management
+Settings related to token management for the OAuth provider.
 
 
 
@@ -167,7 +167,7 @@ prompts
 
 - Type: `list` of `string` 
 
-// description for prompts
+Custom prompts or consent screens that users may see during OAuth authentication.
 
 
 
@@ -176,7 +176,7 @@ scopes
 
 - Type: `list` of `string` 
 
-// description for scopes
+Scopes of access that the application requests from the user's account on the OAuth provider.
 
 
 
@@ -186,7 +186,7 @@ merge_user_accounts
 - Type: `bool` 
 - Default: `true`
 
-// description for merge_user_accounts
+Whether to merge existing user accounts with new ones created through OAuth authentication.
 
 
 
@@ -195,7 +195,7 @@ description
 
 - Type: `string` 
 
-// description for description
+A brief description of the OAuth provider.
 
 
 
@@ -204,7 +204,7 @@ logo
 
 - Type: `string` 
 
-// description for logo
+The URL of the logo associated with the OAuth provider.
 
 
 
@@ -213,7 +213,8 @@ grant_type
 
 - Type: `string` 
 
-// description for grant_type
+The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens
+from the OAuth provider.
 
 
 
@@ -231,7 +232,7 @@ authorization_endpoint
 
 - Type: `string` 
 
-// description for authorization_endpoint
+The URL that users are redirected to for authorization with the OAuth provider.
 
 
 
@@ -240,7 +241,7 @@ token_endpoint
 
 - Type: `string` 
 
-// description for token_endpoint
+The URL where the application requests an access token from the OAuth provider.
 
 
 
@@ -249,7 +250,7 @@ user_info_endpoint
 
 - Type: `string` 
 
-// description for user_info_endpoint
+The URL where the application retrieves user information from the OAuth provider.
 
 
 
@@ -258,7 +259,7 @@ jwks_endpoint
 
 - Type: `string` 
 
-// description for jwks_endpoint
+The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 
 
 

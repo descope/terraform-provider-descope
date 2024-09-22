@@ -18,7 +18,7 @@ expiration
 
 - Type: `bool` 
 
-// description for expiration
+Whether users are required to change their password periodically.
 
 
 
@@ -27,7 +27,7 @@ expiration_weeks
 
 - Type: `int` 
 
-// description for expiration_weeks
+The number of weeks after which a user's password expires and they need to replace it.
 
 
 
@@ -36,7 +36,7 @@ lock
 
 - Type: `bool` 
 
-// description for lock
+Whether the user account should be locked after a specified number of failed login attempts.
 
 
 
@@ -45,7 +45,7 @@ lock_attempts
 
 - Type: `int` 
 
-// description for lock_attempts
+The number of failed login attempts allowed before an account is locked.
 
 
 
@@ -54,7 +54,7 @@ lowercase
 
 - Type: `bool` 
 
-// description for lowercase
+Whether passwords must contain at least one lowercase letter.
 
 
 
@@ -63,7 +63,7 @@ min_length
 
 - Type: `int` 
 
-// description for min_length
+The minimum length of the password that users are required to use. The maximum length is always `64`.
 
 
 
@@ -72,7 +72,7 @@ non_alphanumeric
 
 - Type: `bool` 
 
-// description for non_alphanumeric
+Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).
 
 
 
@@ -81,7 +81,7 @@ number
 
 - Type: `bool` 
 
-// description for number
+Whether passwords must contain at least one number.
 
 
 
@@ -90,7 +90,7 @@ reuse
 
 - Type: `bool` 
 
-// description for reuse
+Whether to forbid password reuse when users change their password.
 
 
 
@@ -108,7 +108,7 @@ uppercase
 
 - Type: `bool` 
 
-// description for uppercase
+Whether passwords must contain at least one uppercase letter.
 
 
 
@@ -117,4 +117,4 @@ email_service
 
 - Type: `object` of `templates.EmailService` 
 
-// description for email_service
+Settings related to sending password reset emails as part of the password feature.
