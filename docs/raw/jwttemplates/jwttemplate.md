@@ -9,7 +9,7 @@ name
 
 - Type: `string` (required)
 
-// Name of the JWT Template.
+Name of the JWT Template.
 
 
 
@@ -18,7 +18,7 @@ description
 
 - Type: `string` 
 
-// Description of the JWT Template.
+Description of the JWT Template.
 
 
 
@@ -28,7 +28,7 @@ auth_schema
 - Type: `string` 
 - Default: `"default"`
 
-// Specify the authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 
 
 
