@@ -2,8 +2,6 @@ name: CI
 
 on:
   push:
-    paths-ignore:
-      - "README.md"
 
 permissions:
   contents: read
@@ -17,8 +15,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Build
         uses: ./.github/actions/ci/build
-        with:
-          go_version: '1.22'
 
   lint:
     name: Run Linter
@@ -28,8 +24,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Run Linter
         uses: ./.github/actions/ci/lint
-        with:
-          go_version: '1.22'
 
   leaks:
     name: Check Leaks

@@ -18,8 +18,19 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0 # Allow goreleaser to access older tag information for changelog
-      - name: Run GoReleaser
-        uses: ./.github/actions/ci/release
+      - name: Setup Repo
+        uses: ./.github/actions/ci/setup
+
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@01dd5d3ca463c7f10f7f4f7b4f177225ac661ee4 # v6.1.0
+        id: import_gpg
         with:
-          go_version: '1.22'
-          token: ${{ secrets.GITHUB_TOKEN }}
+          gpg_private_key: ${{ secrets.MAVEN_GPG_KEY }}
+          passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@286f3b13b1b49da4ac219696163fb8c1c93e1200 # v6.0.0
+        with:
+          args: release --clean --config .github/actions/ci/release/goreleaser.yml
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}

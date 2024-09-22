@@ -6,7 +6,6 @@ before:
 
 env:
   - CGO_ENABLED=0
-  - COSIGN_YES=true
 
 builds:
   - mod_timestamp: "{{ .CommitTimestamp }}"
@@ -35,33 +34,30 @@ archives:
 
 checksum:
   extra_files:
-    - glob: ".github/actions/ci/release/terraform-registry-manifest.json"
+    - glob: "terraform-registry-manifest.json"
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
   name_template: "{{ .ProjectName }}_{{ .Version }}_SHA256SUMS"
   algorithm: sha256
 
 signs:
   - artifacts: checksum
-    cmd: cosign
-    signature: "${artifact}.sig"
-    certificate: "${artifact}.pem"
     args:
-      [
-        "sign-blob",
-        "--output-signature",
-        "${artifact}.sig",
-        "--output-certificate",
-        "${artifact}.pem",
-        "${artifact}",
-      ]
+      - "--batch"
+      - "--local-user"
+      - "{{ .Env.GPG_FINGERPRINT }}"
+      - "--output"
+      - "${signature}"
+      - "--detach-sign"
+      - "${artifact}"
 
 release:
   draft: true
   replace_existing_draft: true
   replace_existing_artifacts: true
+  mode: replace
   extra_files:
-    - glob: ".github/actions/ci/release/terraform-registry-manifest.json"
+    - glob: "terraform-registry-manifest.json"
       name_template: "{{ .ProjectName }}_{{ .Version }}_manifest.json"
-  
+
 changelog:
   disable: true
