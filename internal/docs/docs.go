@@ -4,52 +4,53 @@ package docs
 
 var docsProject = map[string]string{
 	"name": "The name of the Descope project.",
-	"environment": "This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.",
+	"environment": "This can be set to `production` to mark production projects, otherwise this should be " +
+	               "left unset for development or staging projects.",
 	"project_settings": "General settings for the Descope project.",
 	"authentication": "Settings for each authentication method.",
-	"authorization": "",
-	"attributes": "",
-	"connectors": "",
-	"applications": "",
-	"jwt_templates": "",
-	"styles": "",
+	"authorization": "Define Role-Based Access Control (RBAC) for your users by creating roles and permissions.",
+	"attributes": "Custom attributes that can be attached to users and tenants.",
+	"connectors": "Enrich your flows by interacting with third party services.",
+	"applications": "Applications that are registered with the project.",
+	"jwt_templates": "Defines templates for JSON Web Tokens (JWT) used for authentication.",
+	"styles": "Custom styles that can be applied to the project's authentication flows.",
 	"flows": "",
 }
 
 var docsApplication = map[string]string{
-	"oidc_applications": "",
-	"saml_applications": "",
+	"oidc_applications": "Applications using OpenID Connect (OIDC) for authentication.",
+	"saml_applications": "Applications using SAML for authentication.",
 }
 
 var docsOIDC = map[string]string{
-	"id": "",
-	"name": "",
-	"description": "",
-	"logo": "",
-	"disabled": "",
-	"login_page_url": "",
-	"claims": "",
+	"id": "An optional identifier for the application.",
+	"name": "The name of the application.",
+	"description": "A brief description of the application.",
+	"logo": "The URL of the logo associated with the application.",
+	"disabled": "Indicates whether the resource or functionality is disabled.",
+	"login_page_url": "The URL of the custom login page for the application.",
+	"claims": "Claims associated with JWT tokens, typically used for user information.",
 }
 
 var docsSAML = map[string]string{
-	"id": "",
-	"name": "",
-	"description": "",
-	"logo": "",
-	"disabled": "",
-	"login_page_url": "",
+	"id": "An optional identifier for the application.",
+	"name": "The name of the application.",
+	"description": "A brief description of the application.",
+	"logo": "The URL of the logo associated with the application.",
+	"disabled": "Indicates whether the application is disabled.",
+	"login_page_url": "The URL of the custom login page for the application.",
 	"dynamic_configuration": "",
 	"manual_configuration": "",
 	"acs_allowed_callback_urls": "",
 	"subject_name_id_type": "",
 	"subject_name_id_format": "",
 	"default_relay_state": "",
-	"attribute_mapping": "",
+	"attribute_mapping": "Map user attributes from the third party identity provider to custom attributes in Descope.",
 }
 
 var docsAttributeMapping = map[string]string{
-	"name": "",
-	"value": "",
+	"name": "The name of the user attribute in the third party identity provider.",
+	"value": "The name of the user custom attribute in Descope.",
 }
 
 var docsDynamicConfiguration = map[string]string{
@@ -63,43 +64,52 @@ var docsManualConfiguration = map[string]string{
 }
 
 var docsAttributes = map[string]string{
-	"tenant": "",
-	"user": "",
+	"tenant": "Custom attributes to store additional details about your tenants.",
+	"user": "Custom attributes to store additional details about your users.",
 }
 
 var docsTenantAttribute = map[string]string{
-	"name": "",
-	"type": "",
-	"select_options": "",
+	"name": "The name of the tenant attribute.",
+	"type": "The type of the tenant attribute. Valid valus are `string`, `number`, `boolean`, " +
+	        "`date`, `singleselect`, and `multiselect`.",
+	"select_options": "A list of strings to define the set of options for select attributes.",
 }
 
 var docsUserAttribute = map[string]string{
-	"name": "",
-	"type": "",
-	"select_options": "",
-	"widget_authorization": "",
+	"name": "The name of the user attribute.",
+	"type": "The type of the user attribute. Valid valus are `string`, `number`, `boolean`, " +
+	        "`date`, `singleselect`, and `multiselect`.",
+	"select_options": "A list of strings to define the set of options for select attributes.",
+	"widget_authorization": "When provided, viewing and editing the attribute values in widgets will " +
+	                        "be restricted to users with the specified permissions.",
 }
 
 var docsUserAttributeWidgetAuthorization = map[string]string{
-	"view_permissions": "",
-	"edit_permissions": "",
+	"view_permissions": "Viewing the attribute value in widgets will be restricted to users with " +
+	                    "the specified permissions.",
+	"edit_permissions": "Editing the attribute value in widgets will be restricted to users with " +
+	                    "the specified permissions.",
 }
 
 var docsAuthentication = map[string]string{
 	"otp": "A dynamically generated set of numbers, granting the user one-time access.",
-	"magic_link": "",
-	"enchanted_link": "",
-	"embedded_link": "",
-	"password": "",
-	"oauth": "",
-	"sso": "",
-	"totp": "",
-	"webauthn": "",
+	"magic_link": "An authentication method where a user receives a unique link via email to log in.",
+	"enchanted_link": "An enhanced and more secure version of Magic Link, enabling users to start the authentication " +
+	                  "process on one device and execute the verification on another.",
+	"embedded_link": "Make the authentication experience smoother for the user by generating their initial token in a " +
+	                 "way that does not require the end user to initiate the process, requiring only verification.",
+	"password": "The classic username and password combination used for authentication.",
+	"oauth": "Authentication using Open Authorization, which allows users to authenticate with various external " +
+	         "services.",
+	"sso": "Single Sign-On (SSO) authentication method that enables users to access multiple applications with " +
+	       "a single set of credentials.",
+	"totp": "A one-time code generated for the user using a shared secret and time.",
+	"passkeys": "Device-based passwordless authentication, using fingerprint, face scan, and more.",
 }
 
 var docsEmbeddedLink = map[string]string{
 	"enabled": "",
-	"expiration_time": "",
+	"expiration_time": "The amount of time that the embedded link will be valid for.",
 	"expiration_time_unit": "",
 }
 
@@ -107,94 +117,95 @@ var docsEnchantedLink = map[string]string{
 	"enabled": "",
 	"expiration_time": "",
 	"expiration_time_unit": "",
-	"redirect_url": "",
-	"email_service": "",
+	"redirect_url": "The URL to redirect users to after they log in using the enchanted link.",
+	"email_service": "Settings related to sending emails as part of the enchanted link authentication.",
 }
 
 var docsMagicLink = map[string]string{
 	"enabled": "",
 	"expiration_time": "",
 	"expiration_time_unit": "",
-	"redirect_url": "",
-	"email_service": "",
-	"text_service": "",
+	"redirect_url": "The URL to redirect users to after they log in using the magic link.",
+	"email_service": "Settings related to sending emails as part of the magic link authentication.",
+	"text_service": "Settings related to sending SMS messages as part of the magic link authentication.",
 }
 
 var docsOAuth = map[string]string{
 	"disabled": "",
-	"system": "",
-	"custom": "",
+	"system": "Custom configurations for builtin OAuth providers such as Apple, Google, GitHub, Facebook, etc.",
+	"custom": "Custom OAuth providers configured for this project.",
 }
 
 var docsOAuthSystemProvider = map[string]string{
-	"apple": "",
-	"discord": "",
-	"facebook": "",
-	"github": "",
-	"gitlab": "",
-	"google": "",
-	"linkedin": "",
-	"microsoft": "",
-	"slack": "",
+	"apple": "Apple's OAuth provider, allowing users to authenticate with their Apple Account.",
+	"discord": "Discord's OAuth provider, allowing users to authenticate with their Discord account.",
+	"facebook": "Facebook's OAuth provider, allowing users to authenticate with their Facebook account.",
+	"github": "GitHub's OAuth provider, allowing users to authenticate with their GitHub account.",
+	"gitlab": "GitLab's OAuth provider, allowing users to authenticate with their GitLab account.",
+	"google": "Google's OAuth provider, allowing users to authenticate with their Google account.",
+	"linkedin": "LinkedIn's OAuth provider, allowing users to authenticate with their LinkedIn account.",
+	"microsoft": "Microsoft's OAuth provider, allowing users to authenticate with their Microsoft account.",
+	"slack": "Slack's OAuth provider, allowing users to authenticate with their Slack account.",
 }
 
 var docsOAuthProvider = map[string]string{
 	"disabled": "",
-	"client_id": "",
-	"client_secret": "",
-	"provider_token_management": "",
-	"prompts": "",
-	"scopes": "",
-	"merge_user_accounts": "",
-	"description": "",
-	"logo": "",
-	"grant_type": "",
+	"client_id": "The client ID for the OAuth provider, used to identify the application to the provider.",
+	"client_secret": "The client secret for the OAuth provider, used to authenticate the application with the provider.",
+	"provider_token_management": "Settings related to token management for the OAuth provider.",
+	"prompts": "Custom prompts or consent screens that users may see during OAuth authentication.",
+	"scopes": "Scopes of access that the application requests from the user's account on the OAuth provider.",
+	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
+	"description": "A brief description of the OAuth provider.",
+	"logo": "The URL of the logo associated with the OAuth provider.",
+	"grant_type": "The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens " +
+	              "from the OAuth provider.",
 	"issuer": "",
-	"authorization_endpoint": "",
-	"token_endpoint": "",
-	"user_info_endpoint": "",
-	"jwks_endpoint": "",
+	"authorization_endpoint": "The URL that users are redirected to for authorization with the OAuth provider.",
+	"token_endpoint": "The URL where the application requests an access token from the OAuth provider.",
+	"user_info_endpoint": "The URL where the application retrieves user information from the OAuth provider.",
+	"jwks_endpoint": "The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.",
 	"claim_mapping": "",
 }
 
 var docsOTP = map[string]string{
 	"enabled": "",
-	"domain": "",
-	"expiration_time": "",
+	"domain": "The domain to embed in OTP messages.",
+	"expiration_time": "The amount of time that an OTP code will be valid for.",
 	"expiration_time_unit": "",
-	"email_service": "",
-	"text_service": "",
-	"voice_service": "",
+	"email_service": "Settings related to sending emails with OTP codes.",
+	"text_service": "Settings related to sending SMS messages with OTP codes.",
+	"voice_service": "Settings related to voice calls with OTP codes.",
+}
+
+var docsPasskeys = map[string]string{
+	"enabled": "",
+	"top_level_domain": "Passkeys will be usable in the following domain and all its subdomains.",
 }
 
 var docsPassword = map[string]string{
 	"enabled": "",
-	"expiration": "",
-	"expiration_weeks": "",
-	"lock": "",
-	"lock_attempts": "",
-	"lowercase": "",
-	"min_length": "",
-	"non_alphanumeric": "",
-	"number": "",
-	"reuse": "",
+	"expiration": "Whether users are required to change their password periodically.",
+	"expiration_weeks": "The number of weeks after which a user's password expires and they need to replace it.",
+	"lock": "Whether the user account should be locked after a specified number of failed login attempts.",
+	"lock_attempts": "The number of failed login attempts allowed before an account is locked.",
+	"lowercase": "Whether passwords must contain at least one lowercase letter.",
+	"min_length": "The minimum length of the password that users are required to use. The maximum length is always `64`.",
+	"non_alphanumeric": "Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).",
+	"number": "Whether passwords must contain at least one number.",
+	"reuse": "Whether to forbid password reuse when users change their password.",
 	"reuse_amount": "",
-	"uppercase": "",
-	"email_service": "",
+	"uppercase": "Whether passwords must contain at least one uppercase letter.",
+	"email_service": "Settings related to sending password reset emails as part of the password feature.",
 }
 
 var docsSSO = map[string]string{
 	"enabled": "",
-	"merge_users": "",
+	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
 }
 
 var docsTOTP = map[string]string{
 	"enabled": "",
-}
-
-var docsWebAuthn = map[string]string{
-	"enabled": "",
-	"top_level_domain": "",
 }
 
 var docsAuthorization = map[string]string{
