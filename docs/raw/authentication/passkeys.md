@@ -1,5 +1,5 @@
 
-WebAuthn
+Passkeys
 ========
 
 
@@ -18,4 +18,4 @@ top_level_domain
 
 - Type: `string` 
 
-// description for top_level_domain
+Passkeys will be usable in the following domain and all its subdomains.

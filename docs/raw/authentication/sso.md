@@ -18,4 +18,4 @@ merge_users
 
 - Type: `bool` 
 
-// description for merge_users
+Whether to merge existing user accounts with new ones created through SSO authentication.

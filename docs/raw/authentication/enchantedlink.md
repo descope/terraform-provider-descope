@@ -36,7 +36,7 @@ redirect_url
 
 - Type: `string` 
 
-// description for redirect_url
+The URL to redirect users to after they log in using the enchanted link.
 
 
 
@@ -45,4 +45,4 @@ email_service
 
 - Type: `object` of `templates.EmailService` 
 
-// description for email_service
+Settings related to sending emails as part of the enchanted link authentication.
