@@ -45,7 +45,7 @@ authorization
 
 - Type: `object` of `authorization.Authorization` 
 
-// description for authorization
+// Specify the `Authorization` object.
 
 
 
@@ -54,7 +54,7 @@ attributes
 
 - Type: `object` of `attributes.Attributes` 
 
-// description for attributes
+// Specify the `Attributes` object.
 
 
 
@@ -63,7 +63,7 @@ connectors
 
 - Type: `object` of `connectors.Connectors` 
 
-// description for connectors
+// Specify the `Connectors` object.
 
 
 
@@ -72,7 +72,7 @@ applications
 
 - Type: `object` of `applications.Application` 
 
-// description for applications
+// Specify the `Application` object.
 
 
 
@@ -81,7 +81,7 @@ jwt_templates
 
 - Type: `object` of `jwttemplates.JWTTemplates` 
 
-// description for jwt_templates
+// Specify the `JWTTemplates` object.
 
 
 
@@ -90,7 +90,7 @@ styles
 
 - Type: `object` of `flows.Styles` 
 
-// description for styles
+// Specify the `Styles` object.
 
 
 
@@ -99,4 +99,4 @@ flows
 
 - Type: `map` of `flows.Flow` 
 
-// description for flows
+// Specify the `Flow` object.

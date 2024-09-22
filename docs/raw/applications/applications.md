@@ -9,7 +9,7 @@ oidc_applications
 
 - Type: `list` of `applications.OIDC` 
 
-// description for oidc_applications
+// Specify a list of `OIDC` type applications.
 
 
 
@@ -18,4 +18,4 @@ saml_applications
 
 - Type: `list` of `applications.SAML` 
 
-// description for saml_applications
+// Specify a list of `SAML` type applications.

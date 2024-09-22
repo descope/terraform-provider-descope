@@ -9,7 +9,7 @@ id
 
 - Type: `string` 
 
-// description for id
+// Specify an identifier for the OIDC application.
 
 
 
@@ -18,7 +18,7 @@ name
 
 - Type: `string` (required)
 
-// description for name
+// Specify a name for the OIDC application.
 
 
 
@@ -27,7 +27,7 @@ description
 
 - Type: `string` 
 
-// description for description
+// Specify a description for the OIDC application.
 
 
 
@@ -36,7 +36,7 @@ logo
 
 - Type: `string` 
 
-// description for logo
+// Specify a logo for the OIDC application. Should be a hosted image URL.
 
 
 
@@ -45,7 +45,7 @@ disabled
 
 - Type: `bool` 
 
-// description for disabled
+// Specify whether the application should be enabled or disabled.
 
 
 
@@ -54,7 +54,7 @@ login_page_url
 
 - Type: `string` 
 
-// description for login_page_url
+// Specify the Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 
 
 
@@ -63,4 +63,4 @@ claims
 
 - Type: `list` of `string` 
 
-// description for claims
+// Specify a list of supported claims. e.g. `sub`, `email`, `exp`.

@@ -9,8 +9,7 @@ name
 
 - Type: `string` (required)
 
-// description for name
-
+// Specify a name for the role.
 
 
 description
@@ -18,8 +17,7 @@ description
 
 - Type: `string` 
 
-// description for description
-
+// Specify a description for the role.
 
 
 permissions
@@ -27,4 +25,5 @@ permissions
 
 - Type: `list` of `string` 
 
-// description for permissions
+// Specify a list of permissions by name to be included in the role.
+

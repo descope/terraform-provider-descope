@@ -9,7 +9,7 @@ cookie_policy
 
 - Type: `string` 
 
-// description for cookie_policy
+// Optional. Use "strict", "lax" or "none". To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 
 
 
@@ -18,16 +18,17 @@ domain
 
 - Type: `string` 
 
-// description for domain
+// Optional. The Domain name for custom domain set up. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 
 
 
 enable_inactivity
 -----------------
 
-- Type: `bool` 
+- Type: `bool`
+- Default: `False`
 
-// description for enable_inactivity
+// Optional. Specify True to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
 
 
 
@@ -36,7 +37,7 @@ inactivity_time
 
 - Type: `duration` 
 
-// description for inactivity_time
+// Optional. Specify the inactivity timer, e.g "15 minutes", "1 hour". Minimum is "10 minutes".
 
 
 
@@ -45,7 +46,7 @@ refresh_token_expiration
 
 - Type: `duration` 
 
-// description for refresh_token_expiration
+// Optional. Specify the refresh token expiration timer.  e.g "15 minutes", "1 hour". Minimum is "2 minutes".
 
 
 

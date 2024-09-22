@@ -9,7 +9,7 @@ user_templates
 
 - Type: `list` of `jwttemplates.JWTTemplate` 
 
-// description for user_templates
+// Specify a list of `User` type JWT Templates.
 
 
 
@@ -18,4 +18,4 @@ access_key_templates
 
 - Type: `list` of `jwttemplates.JWTTemplate` 
 
-// description for access_key_templates
+// Specify a list of `Access Key` type JWT Templates.
