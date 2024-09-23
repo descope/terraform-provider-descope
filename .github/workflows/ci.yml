@@ -16,6 +16,22 @@ jobs:
       - name: Build
         uses: ./.github/actions/ci/build
 
+  acc_test:
+    name: Acceptance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Build
+        uses: ./.github/actions/ci/build
+      - name: Run Acceptance Tests
+        env:
+          DESCOPE_PROJECT_ID: ${{ secrets.DESCOPE_PROJECT_ID }}
+          DESCOPE_MANAGEMENT_KEY: ${{ secrets.DESCOPE_MANAGEMENT_KEY }}
+          DESCOPE_BASE_URL: https://api.descope.com
+          TF_ACC: 1
+        run: go test -v ./...
+
   lint:
     name: Run Linter
     runs-on: ubuntu-latest
