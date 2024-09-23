@@ -31,4 +31,9 @@ runs:
 
     - name: Run Tests
       shell: bash
+      env:
+        TF_ACC: "1"
+        DESCOPE_PROJECT_ID: ${{ secrets.DESCOPE_PROJECT_ID }}
+        DESCOPE_MANAGEMENT_KEY: ${{ secrets.DESCOPE_MANAGEMENT_KEY }}
+        DESCOPE_BASE_URL: https://api.descope.com
       run: go test -v ./...
