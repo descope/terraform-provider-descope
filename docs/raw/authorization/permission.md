@@ -9,7 +9,7 @@ name
 
 - Type: `string` (required)
 
-// description for name
+A name for the permission.
 
 
 
@@ -18,4 +18,4 @@ description
 
 - Type: `string` 
 
-// description for description
+A description for the permission.

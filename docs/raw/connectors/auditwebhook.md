@@ -58,5 +58,5 @@ audit_filters
 
 - Type: `string` 
 
-Specify which events will be sent to the external audit service (including
+Which events will be sent to the external audit service (including
 tenant selection).

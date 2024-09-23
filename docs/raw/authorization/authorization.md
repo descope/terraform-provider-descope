@@ -9,7 +9,7 @@ roles
 
 - Type: `list` of `authorization.Role` 
 
-// description for roles
+A list of `Role` objects.
 
 
 
@@ -18,4 +18,4 @@ permissions
 
 - Type: `list` of `authorization.Permission` 
 
-// description for permissions
+A list of `Permission` objects.

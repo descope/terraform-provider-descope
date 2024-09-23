@@ -9,7 +9,7 @@ tenant
 
 - Type: `list` of `attributes.TenantAttribute` 
 
-// description for tenant
+A list of `TenantAttribute`. Read the description below.
 
 
 
@@ -18,7 +18,7 @@ user
 
 - Type: `list` of `attributes.UserAttribute` 
 
-// description for user
+A list of `UserAttribute`. Read the description below.
 
 
 
@@ -34,7 +34,7 @@ name
 
 - Type: `string` (required)
 
-// description for name
+The name of the attribute.
 
 
 
@@ -43,7 +43,7 @@ type
 
 - Type: `string` (required)
 
-// description for type
+The type of the attribute. Choose one of "string", "number", "boolean", "singleselect", "multiselect", "date".
 
 
 
@@ -52,7 +52,7 @@ select_options
 
 - Type: `list` of `string` 
 
-// description for select_options
+When the attribute type is "multiselect". A list of options to chose from.
 
 
 
@@ -68,7 +68,7 @@ name
 
 - Type: `string` (required)
 
-// description for name
+The name of the attribute.
 
 
 
@@ -77,7 +77,7 @@ type
 
 - Type: `string` (required)
 
-// description for type
+The type of the attribute. Choose one of "string", "number", "boolean", "singleselect", "multiselect", "date".
 
 
 
@@ -85,8 +85,8 @@ select_options
 --------------
 
 - Type: `list` of `string` 
-
-// description for select_options
+ 
+ When the attribute type is "multiselect". A list of options to chose from.
 
 
 
@@ -95,7 +95,7 @@ widget_authorization
 
 - Type: `object` of `attributes.UserAttributeWidgetAuthorization` 
 
-// description for widget_authorization
+The `UserAttributeWidgetAuthorization` object. Read the description below.
 
 
 
@@ -111,7 +111,7 @@ view_permissions
 
 - Type: `list` of `string` 
 
-// description for view_permissions
+A list of permissions by name to set viewing permissions to the attribute in widgets. e.g "SSO Admin".
 
 
 
@@ -120,4 +120,4 @@ edit_permissions
 
 - Type: `list` of `string` 
 
-// description for edit_permissions
+A list of permissions by name to set editing permissions to the attribute in widgets. e.g "SSO Admin".
