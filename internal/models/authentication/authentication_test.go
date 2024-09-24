@@ -12,8 +12,7 @@ func TestAuthentication(t *testing.T) {
 	p := testacc.Project(t)
 	testacc.Run(t,
 		resource.TestStep{
-			Config: p.Config(`
-			`),
+			Config: p.Config(),
 			Check: p.Check(map[string]any{
 				"authentication.%": 0,
 			}),
