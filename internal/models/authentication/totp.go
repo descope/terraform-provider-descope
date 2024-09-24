@@ -8,19 +8,19 @@ import (
 )
 
 var TOTPAttributes = map[string]schema.Attribute{
-	"enabled": boolattr.Optional(),
+	"disabled": boolattr.Default(false),
 }
 
 type TOTPModel struct {
-	Enabled types.Bool `tfsdk:"enabled"`
+	Disabled types.Bool `tfsdk:"disabled"`
 }
 
 func (m *TOTPModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	boolattr.Get(m.Enabled, data, "enabled")
+	boolattr.GetNot(m.Disabled, data, "enabled")
 	return data
 }
 
 func (m *TOTPModel) SetValues(h *helpers.Handler, data map[string]any) {
-	boolattr.Set(&m.Enabled, data, "enabled")
+	boolattr.SetNot(&m.Disabled, data, "enabled")
 }

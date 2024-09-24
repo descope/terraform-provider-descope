@@ -103,19 +103,25 @@ var docsAuthentication = map[string]string{
 }
 
 var docsEmbeddedLink = map[string]string{
-	"enabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"expiration_time": "The amount of time that the embedded link will be valid for.",
 }
 
 var docsEnchantedLink = map[string]string{
-	"enabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"expiration_time": "",
 	"redirect_url": "The URL to redirect users to after they log in using the enchanted link.",
 	"email_service": "Settings related to sending emails as part of the enchanted link authentication.",
 }
 
 var docsMagicLink = map[string]string{
-	"enabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"expiration_time": "",
 	"redirect_url": "The URL to redirect users to after they log in using the magic link.",
 	"email_service": "Settings related to sending emails as part of the magic link authentication.",
@@ -123,7 +129,9 @@ var docsMagicLink = map[string]string{
 }
 
 var docsOAuth = map[string]string{
-	"disabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"system": "Custom configurations for builtin OAuth providers such as Apple, Google, GitHub, Facebook, etc.",
 	"custom": "Custom OAuth providers configured for this project.",
 }
@@ -141,7 +149,9 @@ var docsOAuthSystemProvider = map[string]string{
 }
 
 var docsOAuthProvider = map[string]string{
-	"disabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"client_id": "The client ID for the OAuth provider, used to identify the application to the provider.",
 	"client_secret": "The client secret for the OAuth provider, used to authenticate the application with the provider.",
 	"provider_token_management": "Settings related to token management for the OAuth provider.",
@@ -161,7 +171,9 @@ var docsOAuthProvider = map[string]string{
 }
 
 var docsOTP = map[string]string{
-	"enabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"domain": "The domain to embed in OTP messages.",
 	"expiration_time": "The amount of time that an OTP code will be valid for.",
 	"email_service": "Settings related to sending emails with OTP codes.",
@@ -170,12 +182,16 @@ var docsOTP = map[string]string{
 }
 
 var docsPasskeys = map[string]string{
-	"enabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"top_level_domain": "Passkeys will be usable in the following domain and all its subdomains.",
 }
 
 var docsPassword = map[string]string{
-	"enabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"expiration": "Whether users are required to change their password periodically.",
 	"expiration_weeks": "The number of weeks after which a user's password expires and they need to replace it.",
 	"lock": "Whether the user account should be locked after a specified number of failed login attempts.",
@@ -191,12 +207,16 @@ var docsPassword = map[string]string{
 }
 
 var docsSSO = map[string]string{
-	"enabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
 }
 
 var docsTOTP = map[string]string{
-	"enabled": "",
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
 }
 
 var docsAuthorization = map[string]string{
