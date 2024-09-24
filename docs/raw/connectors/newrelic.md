@@ -66,4 +66,4 @@ logs_prefix
 - Type: `string` 
 - Default: `"descope."`
 
-A custom prefix for all log fields. The default prefix is `descope.`.
+Specify a custom prefix for all log fields. The default prefix is `descope.`.

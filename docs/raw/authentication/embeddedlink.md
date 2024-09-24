@@ -16,15 +16,6 @@ enabled
 expiration_time
 ---------------
 
-- Type: `int` 
+- Type: `duration` 
 
 The amount of time that the embedded link will be valid for.
-
-
-
-expiration_time_unit
---------------------
-
-- Type: `string` 
-
-// description for expiration_time_unit

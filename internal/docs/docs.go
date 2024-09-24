@@ -14,7 +14,7 @@ var docsProject = map[string]string{
 	"applications": "Applications that are registered with the project.",
 	"jwt_templates": "Defines templates for JSON Web Tokens (JWT) used for authentication.",
 	"styles": "Custom styles that can be applied to the project's authentication flows.",
-	"flows": "",
+	"flows": "Custom authentication flows to use in this project.",
 }
 
 var docsApplication = map[string]string{
@@ -23,72 +23,67 @@ var docsApplication = map[string]string{
 }
 
 var docsOIDC = map[string]string{
-	"id": "An optional identifier for the application.",
-	"name": "The name of the application.",
-	"description": "A brief description of the application.",
-	"logo": "The URL of the logo associated with the application.",
-	"disabled": "Indicates whether the resource or functionality is disabled.",
-	"login_page_url": "The URL of the custom login page for the application.",
-	"claims": "Claims associated with JWT tokens, typically used for user information.",
+	"id": "An optional identifier for the OIDC application.",
+	"name": "A name for the OIDC application.",
+	"description": "A description for the OIDC application.",
+	"logo": "A logo for the OIDC application. Should be a hosted image URL.",
+	"disabled": "Whether the application should be enabled or disabled.",
+	"login_page_url": "The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
+	"claims": "A list of supported claims. e.g. `sub`, `email`, `exp`.",
 }
 
 var docsSAML = map[string]string{
-	"id": "An optional identifier for the application.",
-	"name": "The name of the application.",
-	"description": "A brief description of the application.",
-	"logo": "The URL of the logo associated with the application.",
-	"disabled": "Indicates whether the application is disabled.",
-	"login_page_url": "The URL of the custom login page for the application.",
-	"dynamic_configuration": "",
-	"manual_configuration": "",
-	"acs_allowed_callback_urls": "",
-	"subject_name_id_type": "",
-	"subject_name_id_format": "",
-	"default_relay_state": "",
-	"attribute_mapping": "Map user attributes from the third party identity provider to custom attributes in Descope.",
+	"id": "An optional identifier for the SAML application.",
+	"name": "A name for the SAML application.",
+	"description": "A description for the SAML application.",
+	"logo": "A logo for the SAML application. Should be a hosted image URL.",
+	"disabled": "Whether the application should be enabled or disabled.",
+	"login_page_url": "The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
+	"dynamic_configuration": "The `DynamicConfiguration` object. Read the description below.",
+	"manual_configuration": "The `ManualConfiguration` object. Read the description below.",
+	"acs_allowed_callback_urls": "A list of allowed ACS callback URLS. This configuration is used when the default ACS URL value is unreachable. Supports wildcards.",
+	"subject_name_id_type": "The subject name id type. Choose one of \"\", \"email\", \"phone\". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
+	"subject_name_id_format": "The subject name id format. Choose one of \"\", \"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\", \"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\", \"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent\", \"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
+	"default_relay_state": "The default relay state. When using IdP-initiated authentication, this value may be used as a URL to a resource in the Service Provider.",
+	"attribute_mapping": "The `AttributeMapping` object. Read the description below.",
 }
 
 var docsAttributeMapping = map[string]string{
-	"name": "The name of the user attribute in the third party identity provider.",
-	"value": "The name of the user custom attribute in Descope.",
+	"name": "The name of the attribute.",
+	"value": "The value of the attribute.",
 }
 
 var docsDynamicConfiguration = map[string]string{
-	"metadata_url": "",
+	"metadata_url": "The metadata URL when retrieving the connection details dynamically.",
 }
 
 var docsManualConfiguration = map[string]string{
-	"acs_url": "",
-	"entity_id": "",
-	"certificate": "",
+	"acs_url": "Enter the `ACS URL` from the SP.",
+	"entity_id": "Enter the `Entity Id` from the SP.",
+	"certificate": "Enter the `Certificate` from the SP.",
 }
 
 var docsAttributes = map[string]string{
-	"tenant": "Custom attributes to store additional details about your tenants.",
-	"user": "Custom attributes to store additional details about your users.",
+	"tenant": "A list of `TenantAttribute`. Read the description below.",
+	"user": "A list of `UserAttribute`. Read the description below.",
 }
 
 var docsTenantAttribute = map[string]string{
-	"name": "The name of the tenant attribute.",
-	"type": "The type of the tenant attribute. Valid valus are `string`, `number`, `boolean`, " +
-	        "`date`, `singleselect`, and `multiselect`.",
-	"select_options": "A list of strings to define the set of options for select attributes.",
+	"name": "The name of the attribute.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", \"multiselect\", \"date\".",
+	"select_options": "When the attribute type is \"multiselect\". A list of options to chose from.",
 }
 
 var docsUserAttribute = map[string]string{
-	"name": "The name of the user attribute.",
-	"type": "The type of the user attribute. Valid valus are `string`, `number`, `boolean`, " +
-	        "`date`, `singleselect`, and `multiselect`.",
-	"select_options": "A list of strings to define the set of options for select attributes.",
-	"widget_authorization": "When provided, viewing and editing the attribute values in widgets will " +
-	                        "be restricted to users with the specified permissions.",
+	"name": "The name of the attribute.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", \"multiselect\", \"date\".",
+	"select_options": "When the attribute type is \"multiselect\". A list of options to chose from.",
+	"widget_authorization": "The `UserAttributeWidgetAuthorization` object. Read the description below.",
 }
 
 var docsUserAttributeWidgetAuthorization = map[string]string{
-	"view_permissions": "Viewing the attribute value in widgets will be restricted to users with " +
-	                    "the specified permissions.",
-	"edit_permissions": "Editing the attribute value in widgets will be restricted to users with " +
-	                    "the specified permissions.",
+	"view_permissions": "A list of permissions by name to set viewing permissions to the attribute in widgets. e.g \"SSO Admin\".",
+	"edit_permissions": "A list of permissions by name to set editing permissions to the attribute in widgets. e.g \"SSO Admin\".",
 }
 
 var docsAuthentication = map[string]string{
@@ -110,13 +105,11 @@ var docsAuthentication = map[string]string{
 var docsEmbeddedLink = map[string]string{
 	"enabled": "",
 	"expiration_time": "The amount of time that the embedded link will be valid for.",
-	"expiration_time_unit": "",
 }
 
 var docsEnchantedLink = map[string]string{
 	"enabled": "",
 	"expiration_time": "",
-	"expiration_time_unit": "",
 	"redirect_url": "The URL to redirect users to after they log in using the enchanted link.",
 	"email_service": "Settings related to sending emails as part of the enchanted link authentication.",
 }
@@ -124,7 +117,6 @@ var docsEnchantedLink = map[string]string{
 var docsMagicLink = map[string]string{
 	"enabled": "",
 	"expiration_time": "",
-	"expiration_time_unit": "",
 	"redirect_url": "The URL to redirect users to after they log in using the magic link.",
 	"email_service": "Settings related to sending emails as part of the magic link authentication.",
 	"text_service": "Settings related to sending SMS messages as part of the magic link authentication.",
@@ -172,7 +164,6 @@ var docsOTP = map[string]string{
 	"enabled": "",
 	"domain": "The domain to embed in OTP messages.",
 	"expiration_time": "The amount of time that an OTP code will be valid for.",
-	"expiration_time_unit": "",
 	"email_service": "Settings related to sending emails with OTP codes.",
 	"text_service": "Settings related to sending SMS messages with OTP codes.",
 	"voice_service": "Settings related to voice calls with OTP codes.",
@@ -209,19 +200,19 @@ var docsTOTP = map[string]string{
 }
 
 var docsAuthorization = map[string]string{
-	"roles": "",
-	"permissions": "",
+	"roles": "A list of `Role` objects.",
+	"permissions": "A list of `Permission` objects.",
 }
 
 var docsPermission = map[string]string{
-	"name": "",
-	"description": "",
+	"name": "A name for the permission.",
+	"description": "A description for the permission.",
 }
 
 var docsRole = map[string]string{
-	"name": "",
-	"description": "",
-	"permissions": "",
+	"name": "A name for the role.",
+	"description": "A description for the role.",
+	"permissions": "A list of permissions by name to be included in the role.",
 }
 
 var docsAbuseIPDB = map[string]string{
@@ -645,26 +636,26 @@ var docsStyles = map[string]string{
 }
 
 var docsJWTTemplate = map[string]string{
-	"name": "",
-	"description": "",
-	"auth_schema": "",
+	"name": "Name of the JWT Template.",
+	"description": "Description of the JWT Template.",
+	"auth_schema": "The authorization claims format - \"default\", \"tenantOnly\" or \"none\". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).",
 	"conformance_issuer": "",
 	"template": "",
 }
 
 var docsJWTTemplates = map[string]string{
-	"user_templates": "",
-	"access_key_templates": "",
+	"user_templates": "A list of `User` type JWT Templates.",
+	"access_key_templates": "A list of `Access Key` type JWT Templates.",
 }
 
 var docsSettings = map[string]string{
-	"cookie_policy": "",
-	"domain": "",
-	"enable_inactivity": "",
-	"inactivity_time": "",
-	"refresh_token_expiration": "",
-	"user_jwt_template": "",
-	"access_key_jwt_template": "",
+	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"domain": "The Domain name for custom domain set up. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).",
+	"inactivity_time": "The inactivity timer, e.g \"15 minutes\", \"1 hour\". Minimum is \"10 minutes\".",
+	"refresh_token_expiration": "The refresh token expiration timer.  e.g \"15 minutes\", \"1 hour\". Minimum is \"2 minutes\".",
+	"user_jwt_template": "Name of the user JWT Template.",
+	"access_key_jwt_template": "Name of the access key JWT Template.",
 }
 
 var docsEmailService = map[string]string{

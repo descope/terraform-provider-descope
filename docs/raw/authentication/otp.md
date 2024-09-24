@@ -25,18 +25,9 @@ The domain to embed in OTP messages.
 expiration_time
 ---------------
 
-- Type: `int` 
+- Type: `duration` 
 
 The amount of time that an OTP code will be valid for.
-
-
-
-expiration_time_unit
---------------------
-
-- Type: `string` 
-
-// description for expiration_time_unit
 
 
 

@@ -85,8 +85,8 @@ select_options
 --------------
 
 - Type: `list` of `string` 
- 
- When the attribute type is "multiselect". A list of options to chose from.
+
+When the attribute type is "multiselect". A list of options to chose from.
 
 
 

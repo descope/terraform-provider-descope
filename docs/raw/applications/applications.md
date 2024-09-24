@@ -9,7 +9,7 @@ oidc_applications
 
 - Type: `list` of `applications.OIDC` 
 
-A list of `OIDC applications` type objects.
+Applications using OpenID Connect (OIDC) for authentication.
 
 
 
@@ -18,4 +18,4 @@ saml_applications
 
 - Type: `list` of `applications.SAML` 
 
-A list of `SAML applications` type applications.
+Applications using SAML for authentication.
