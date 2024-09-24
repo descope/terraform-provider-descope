@@ -1,4 +1,4 @@
-{{ range .Models }}
+{{ range .Models }}{{ if not .Generated }}
 {{.Name}}
 {{ head .Name }}
 {{ range .Fields }}
@@ -17,4 +17,4 @@
 
 
 
-{{end}}
+{{end}}{{end}}
