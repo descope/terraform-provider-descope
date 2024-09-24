@@ -1,15 +1,5 @@
 package schema
 
-type Field struct {
-	Name        string
-	Description string
-	Type        FieldType
-	Required    bool
-	Element     string
-	Default     string
-	Declaration string
-}
-
 type FieldType string
 
 const (
@@ -23,3 +13,13 @@ const (
 	FieldTypeString   FieldType = "string"
 	FieldTypeSecret   FieldType = "secret"
 )
+
+type Field struct {
+	Name        string
+	Description string
+	Type        FieldType
+	Required    bool
+	Element     string
+	Default     string
+	Declaration string
+}

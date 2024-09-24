@@ -42,14 +42,6 @@ func MergeDocs(conns *Connectors, sc *schema.Schema) {
 	}
 }
 
-func StripBoilerplate(conns *Connectors, sc *schema.Schema) {
-	updateBoilerplate(conns, sc, true)
-}
-
-func AddBoilerplate(conns *Connectors, sc *schema.Schema) {
-	updateBoilerplate(conns, sc, false)
-}
-
 func mergeConnectorDocs(c *Connector, sc *schema.Schema) {
 	model := findConnectorModel(sc, c.StructName())
 	for _, field := range model.Fields {
@@ -64,11 +56,20 @@ func mergeConnectorDocs(c *Connector, sc *schema.Schema) {
 	}
 }
 
+func StripBoilerplate(conns *Connectors, sc *schema.Schema) {
+	updateBoilerplate(conns, sc, true)
+}
+
+func AddBoilerplate(conns *Connectors, sc *schema.Schema) {
+	updateBoilerplate(conns, sc, false)
+}
+
 func updateBoilerplate(conns *Connectors, sc *schema.Schema, strip bool) {
 	name := &schema.Field{Name: "name", Description: utils.DefaultConnectorNameText}
 	desc := &schema.Field{Name: "description", Description: utils.DefaultConnectorDescriptionText}
 	for _, c := range conns.Connectors {
 		model := findConnectorModel(sc, c.StructName())
+		model.Generated = !c.BuiltIn
 		if strip {
 			model.Fields = slices.DeleteFunc(model.Fields, func(f *schema.Field) bool { return f.Name == name.Name || f.Name == desc.Name })
 		} else {
