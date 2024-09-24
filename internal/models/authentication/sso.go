@@ -8,23 +8,23 @@ import (
 )
 
 var SSOAttributes = map[string]schema.Attribute{
-	"enabled":     boolattr.Optional(),
+	"disabled":    boolattr.Default(false),
 	"merge_users": boolattr.Optional(),
 }
 
 type SSOModel struct {
-	Enabled    types.Bool `tfsdk:"enabled"`
+	Disabled   types.Bool `tfsdk:"disabled"`
 	MergeUsers types.Bool `tfsdk:"merge_users"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	boolattr.Get(m.Enabled, data, "enabled")
+	boolattr.GetNot(m.Disabled, data, "enabled")
 	boolattr.Get(m.MergeUsers, data, "mergeUsers")
 	return data
 }
 
 func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
-	boolattr.Set(&m.Enabled, data, "enabled")
+	boolattr.SetNot(&m.Disabled, data, "enabled")
 	boolattr.Set(&m.MergeUsers, data, "mergeUsers")
 }

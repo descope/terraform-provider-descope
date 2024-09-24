@@ -32,7 +32,7 @@ type OAuthModel struct {
 
 func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	data["enabled"] = !m.Disabled.ValueBool()
+	boolattr.GetNot(m.Disabled, data, "enabled")
 	providers := m.System.Values(h)
 	for name, provider := range m.Custom {
 		data := provider.Values(h)
@@ -47,9 +47,7 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *OAuthModel) SetValues(h *helpers.Handler, data map[string]any) {
-	if b, ok := data["enabled"].(bool); ok {
-		m.Disabled = types.BoolValue(!b)
-	}
+	boolattr.SetNot(&m.Disabled, data, "enabled")
 	if providers, ok := data["providerSettings"].(map[string]any); ok {
 		m.System.SetValues(h, providers)
 		for k, v := range m.Custom {

@@ -177,7 +177,7 @@ Optional:
 
 Optional:
 
-- `enabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `expiration_time` (String) The amount of time that the embedded link will be valid for.
 
 
@@ -186,8 +186,8 @@ Optional:
 
 Optional:
 
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending emails as part of the enchanted link authentication. (see [below for nested schema](#nestedatt--authentication--enchanted_link--email_service))
-- `enabled` (Boolean)
 - `expiration_time` (String)
 - `redirect_url` (String) The URL to redirect users to after they log in using the enchanted link.
 
@@ -229,8 +229,8 @@ Read-Only:
 
 Optional:
 
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending emails as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--email_service))
-- `enabled` (Boolean)
 - `expiration_time` (String)
 - `redirect_url` (String) The URL to redirect users to after they log in using the magic link.
 - `text_service` (Attributes) Settings related to sending SMS messages as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--text_service))
@@ -303,7 +303,7 @@ Read-Only:
 Optional:
 
 - `custom` (Attributes Map) Custom OAuth providers configured for this project. (see [below for nested schema](#nestedatt--authentication--oauth--custom))
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `system` (Attributes) Custom configurations for builtin OAuth providers such as Apple, Google, GitHub, Facebook, etc. (see [below for nested schema](#nestedatt--authentication--oauth--system))
 
 <a id="nestedatt--authentication--oauth--custom"></a>
@@ -316,7 +316,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -363,7 +363,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -395,7 +395,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -427,7 +427,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -459,7 +459,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -491,7 +491,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -523,7 +523,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -555,7 +555,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -587,7 +587,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -619,7 +619,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -648,9 +648,9 @@ Optional:
 
 Optional:
 
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `domain` (String) The domain to embed in OTP messages.
 - `email_service` (Attributes) Settings related to sending emails with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--email_service))
-- `enabled` (Boolean)
 - `expiration_time` (String) The amount of time that an OTP code will be valid for.
 - `text_service` (Attributes) Settings related to sending SMS messages with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--text_service))
 - `voice_service` (Attributes) Settings related to voice calls with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--voice_service))
@@ -751,7 +751,7 @@ Read-Only:
 
 Optional:
 
-- `enabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `top_level_domain` (String) Passkeys will be usable in the following domain and all its subdomains.
 
 
@@ -760,8 +760,8 @@ Optional:
 
 Optional:
 
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--authentication--password--email_service))
-- `enabled` (Boolean)
 - `expiration` (Boolean) Whether users are required to change their password periodically.
 - `expiration_weeks` (Number) The number of weeks after which a user's password expires and they need to replace it.
 - `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
@@ -812,7 +812,7 @@ Read-Only:
 
 Optional:
 
-- `enabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 
 
@@ -821,7 +821,7 @@ Optional:
 
 Optional:
 
-- `enabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 
 
 

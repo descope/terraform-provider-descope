@@ -21,7 +21,6 @@ func TestAuthentication(t *testing.T) {
 			Config: p.Config(`
 				authentication = {
 					magic_link = {
-						enabled = true
 						redirect_url = "1"
 					}
 				}
@@ -32,13 +31,13 @@ func TestAuthentication(t *testing.T) {
 			Config: p.Config(`
 				authentication = {
 					magic_link = {
-						enabled = true
+						disabled = true
 						redirect_url = "https://example.com"
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.magic_link.enabled":         true,
+				"authentication.magic_link.disabled":        true,
 				"authentication.magic_link.redirect_url":    "https://example.com",
 				"authentication.magic_link.expiration_time": "3 minutes",
 			}),
@@ -72,7 +71,7 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.magic_link.enabled":         true,
+				"authentication.magic_link.disabled":        false,
 				"authentication.magic_link.redirect_url":    "https://example.com",
 				"authentication.magic_link.expiration_time": "5 minutes",
 			}),
