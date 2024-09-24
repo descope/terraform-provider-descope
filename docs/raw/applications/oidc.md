@@ -9,7 +9,7 @@ id
 
 - Type: `string` 
 
-An identifier for the OIDC application.
+An optional identifier for the OIDC application.
 
 
 

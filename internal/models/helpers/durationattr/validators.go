@@ -3,6 +3,7 @@ package durationattr
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -19,7 +20,7 @@ type durationValidator struct {
 }
 
 func (v durationValidator) Description(_ context.Context) string {
-	return fmt.Sprintf("must be a number between 0 and 1000 followed by a space and one of the valid time units: %s", units)
+	return fmt.Sprintf("must be a number between 0 and 1000 followed by a space and one of the valid time units: %s", strings.Join(units, ", "))
 }
 
 func (v durationValidator) MarkdownDescription(ctx context.Context) string {

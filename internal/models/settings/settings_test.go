@@ -40,8 +40,7 @@ func TestSettings(t *testing.T) {
 			ExpectError: regexp.MustCompile(`Invalid Attribute Value`),
 		},
 		resource.TestStep{
-			Config: p.Config(`
-			`),
+			Config: p.Config(),
 			Check: p.Check(map[string]any{
 				"project_settings": testacc.AttributeIsNotSet,
 			}),

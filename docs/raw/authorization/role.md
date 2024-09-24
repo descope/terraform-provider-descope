@@ -12,6 +12,7 @@ name
 A name for the role.
 
 
+
 description
 -----------
 
@@ -20,10 +21,10 @@ description
 A description for the role.
 
 
+
 permissions
 -----------
 
 - Type: `list` of `string` 
 
 A list of permissions by name to be included in the role.
-

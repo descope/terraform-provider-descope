@@ -12,8 +12,7 @@ func TestAuthentication(t *testing.T) {
 	p := testacc.Project(t)
 	testacc.Run(t,
 		resource.TestStep{
-			Config: p.Config(`
-			`),
+			Config: p.Config(),
 			Check: p.Check(map[string]any{
 				"authentication.%": 0,
 			}),
@@ -39,8 +38,43 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.magic_link.enabled":      true,
-				"authentication.magic_link.redirect_url": "https://example.com",
+				"authentication.magic_link.enabled":         true,
+				"authentication.magic_link.redirect_url":    "https://example.com",
+				"authentication.magic_link.expiration_time": "3 minutes",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					magic_link = {
+						expiration_time = "2000 seconds"
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`space and one of the valid time units`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					magic_link = {
+						expiration_time = "1 second"
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Invalid Attribute Value`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					magic_link = {
+						expiration_time = "5 minutes"
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.magic_link.enabled":         true,
+				"authentication.magic_link.redirect_url":    "https://example.com",
+				"authentication.magic_link.expiration_time": "5 minutes",
 			}),
 		},
 	)
