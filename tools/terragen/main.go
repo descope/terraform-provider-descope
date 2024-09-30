@@ -24,14 +24,14 @@ func main() {
 	// creates a simple schema representation by parsing attributes in all model .go source files
 	schema := schema.ParseSources(paths.Models)
 
-	// copies existing model descriptions from the raw .md documentation files into the schema
-	docgen.MergeDocs(paths.Raw, schema)
-
 	// copies model descriptions from the connector template metadata files into the schema
 	conngen.MergeDocs(conns, schema)
 
 	// strip repetitive boilerplate fields from generated docs
 	conngen.StripBoilerplate(conns, schema)
+
+	// copies existing model descriptions from the raw .md documentation files into the schema
+	docgen.MergeDocs(paths.Raw, schema)
 
 	// checks that nothing went wrong and all docs are available, aborts if not (unless --skip-validate flag was set)
 	schema.ValidateIfNeeded()

@@ -25,7 +25,9 @@ func MergeDocs(root string, sc *schema.Schema) {
 		data, err := os.ReadFile(path)
 		if err != nil {
 			if os.IsNotExist(err) {
-				sc.Warnings = append(sc.Warnings, fmt.Sprintf("No existing model documentation file was found: %s", filepath.Join(filepath.Join(file.Dirs...), file.Name+".md")))
+				if !file.SkipDocs() {
+					sc.Warnings = append(sc.Warnings, fmt.Sprintf("No existing model documentation file was found: %s", filepath.Join(filepath.Join(file.Dirs...), file.Name+".md")))
+				}
 				continue
 			}
 			log.Fatalf("failed to read documentation file at path %s: %s", path, err.Error())

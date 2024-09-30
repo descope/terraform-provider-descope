@@ -9,23 +9,23 @@ import (
 )
 
 var PasskeysAttributes = map[string]schema.Attribute{
-	"enabled":          boolattr.Optional(),
+	"disabled":         boolattr.Default(false),
 	"top_level_domain": stringattr.Optional(),
 }
 
 type PasskeysModel struct {
-	Enabled        types.Bool   `tfsdk:"enabled"`
+	Disabled       types.Bool   `tfsdk:"disabled"`
 	TopLevelDomain types.String `tfsdk:"top_level_domain"`
 }
 
 func (m *PasskeysModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	boolattr.Get(m.Enabled, data, "enabled")
+	boolattr.GetNot(m.Disabled, data, "enabled")
 	stringattr.Get(m.TopLevelDomain, data, "relyingPartyId")
 	return data
 }
 
 func (m *PasskeysModel) SetValues(h *helpers.Handler, data map[string]any) {
-	boolattr.Set(&m.Enabled, data, "enabled")
+	boolattr.SetNot(&m.Disabled, data, "enabled")
 	stringattr.Set(&m.TopLevelDomain, data, "relyingPartyId")
 }

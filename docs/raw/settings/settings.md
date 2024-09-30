@@ -25,8 +25,7 @@ The Domain name for custom domain set up. To read more about custom domain and c
 enable_inactivity
 -----------------
 
-- Type: `bool`
-- Default: `False`
+- Type: `bool` 
 
 Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
 
@@ -56,6 +55,7 @@ user_jwt_template
 - Type: `string` 
 
 Name of the user JWT Template.
+
 
 
 access_key_jwt_template

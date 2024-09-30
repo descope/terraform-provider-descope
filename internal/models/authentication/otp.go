@@ -5,7 +5,7 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/templates"
@@ -14,31 +14,28 @@ import (
 )
 
 var OTPAttributes = map[string]schema.Attribute{
-	"enabled":              boolattr.Optional(),
-	"domain":               stringattr.Optional(),
-	"expiration_time":      intattr.Optional(),
-	"expiration_time_unit": stringattr.Optional(stringattr.TimeUnitValidator),
-	"email_service":        objectattr.Optional(templates.EmailServiceAttributes, templates.EmailServiceValidator),
-	"text_service":         objectattr.Optional(templates.TextServiceAttributes, templates.TextServiceValidator),
-	"voice_service":        objectattr.Optional(templates.VoiceServiceAttributes, templates.VoiceServiceValidator),
+	"disabled":        boolattr.Default(false),
+	"domain":          stringattr.Optional(),
+	"expiration_time": durationattr.Optional(durationattr.MinimumValue("1 minute")),
+	"email_service":   objectattr.Optional(templates.EmailServiceAttributes, templates.EmailServiceValidator),
+	"text_service":    objectattr.Optional(templates.TextServiceAttributes, templates.TextServiceValidator),
+	"voice_service":   objectattr.Optional(templates.VoiceServiceAttributes, templates.VoiceServiceValidator),
 }
 
 type OTPModel struct {
-	Enabled            types.Bool                   `tfsdk:"enabled"`
-	Domain             types.String                 `tfsdk:"domain"`
-	ExpirationTime     types.Int64                  `tfsdk:"expiration_time"`
-	ExpirationTimeUnit types.String                 `tfsdk:"expiration_time_unit"`
-	EmailService       *templates.EmailServiceModel `tfsdk:"email_service"`
-	TextService        *templates.TextServiceModel  `tfsdk:"text_service"`
-	VoiceService       *templates.VoiceServiceModel `tfsdk:"voice_service"`
+	Disabled       types.Bool                   `tfsdk:"disabled"`
+	Domain         types.String                 `tfsdk:"domain"`
+	ExpirationTime types.String                 `tfsdk:"expiration_time"`
+	EmailService   *templates.EmailServiceModel `tfsdk:"email_service"`
+	TextService    *templates.TextServiceModel  `tfsdk:"text_service"`
+	VoiceService   *templates.VoiceServiceModel `tfsdk:"voice_service"`
 }
 
 func (m *OTPModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	boolattr.Get(m.Enabled, data, "enabled")
+	boolattr.GetNot(m.Disabled, data, "enabled")
 	stringattr.Get(m.Domain, data, "domain")
-	intattr.Get(m.ExpirationTime, data, "expirationTime")
-	stringattr.Get(m.ExpirationTimeUnit, data, "expirationTimeUnit")
+	durationattr.Get(m.ExpirationTime, data, "expirationTime")
 	if v := m.EmailService; v != nil {
 		maps.Copy(data, v.Values(h))
 	}
@@ -52,10 +49,9 @@ func (m *OTPModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *OTPModel) SetValues(h *helpers.Handler, data map[string]any) {
-	boolattr.Set(&m.Enabled, data, "enabled")
+	boolattr.SetNot(&m.Disabled, data, "enabled")
 	stringattr.Set(&m.Domain, data, "domain")
-	intattr.Set(&m.ExpirationTime, data, "expirationTime")
-	stringattr.Set(&m.ExpirationTimeUnit, data, "expirationTimeUnit")
+	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
 	if v := m.EmailService; v != nil {
 		v.SetValues(h, data)
 	}

@@ -27,7 +27,7 @@ description: |-
 - `authorization` (Attributes) Define Role-Based Access Control (RBAC) for your users by creating roles and permissions. (see [below for nested schema](#nestedatt--authorization))
 - `connectors` (Attributes) Enrich your flows by interacting with third party services. (see [below for nested schema](#nestedatt--connectors))
 - `environment` (String) This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.
-- `flows` (Attributes Map) (see [below for nested schema](#nestedatt--flows))
+- `flows` (Attributes Map) Custom authentication flows to use in this project. (see [below for nested schema](#nestedatt--flows))
 - `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
@@ -49,16 +49,16 @@ Optional:
 
 Required:
 
-- `name` (String) The name of the application.
+- `name` (String) A name for the OIDC application.
 
 Optional:
 
-- `claims` (List of String) Claims associated with JWT tokens, typically used for user information.
-- `description` (String) A brief description of the application.
-- `disabled` (Boolean) Indicates whether the resource or functionality is disabled.
-- `id` (String) An optional identifier for the application.
-- `login_page_url` (String) The URL of the custom login page for the application.
-- `logo` (String) The URL of the logo associated with the application.
+- `claims` (List of String) A list of supported claims. e.g. `sub`, `email`, `exp`.
+- `description` (String) A description for the OIDC application.
+- `disabled` (Boolean) Whether the application should be enabled or disabled.
+- `id` (String) An optional identifier for the OIDC application.
+- `login_page_url` (String) The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
+- `logo` (String) A logo for the OIDC application. Should be a hosted image URL.
 
 
 <a id="nestedatt--applications--saml_applications"></a>
@@ -66,30 +66,30 @@ Optional:
 
 Required:
 
-- `name` (String) The name of the application.
+- `name` (String) A name for the SAML application.
 
 Optional:
 
-- `acs_allowed_callback_urls` (List of String)
-- `attribute_mapping` (Attributes List) Map user attributes from the third party identity provider to custom attributes in Descope. (see [below for nested schema](#nestedatt--applications--saml_applications--attribute_mapping))
-- `default_relay_state` (String)
-- `description` (String) A brief description of the application.
-- `disabled` (Boolean) Indicates whether the application is disabled.
-- `dynamic_configuration` (Attributes) (see [below for nested schema](#nestedatt--applications--saml_applications--dynamic_configuration))
-- `id` (String) An optional identifier for the application.
-- `login_page_url` (String) The URL of the custom login page for the application.
-- `logo` (String) The URL of the logo associated with the application.
-- `manual_configuration` (Attributes) (see [below for nested schema](#nestedatt--applications--saml_applications--manual_configuration))
-- `subject_name_id_format` (String)
-- `subject_name_id_type` (String)
+- `acs_allowed_callback_urls` (List of String) A list of allowed ACS callback URLS. This configuration is used when the default ACS URL value is unreachable. Supports wildcards.
+- `attribute_mapping` (Attributes List) The `AttributeMapping` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--attribute_mapping))
+- `default_relay_state` (String) The default relay state. When using IdP-initiated authentication, this value may be used as a URL to a resource in the Service Provider.
+- `description` (String) A description for the SAML application.
+- `disabled` (Boolean) Whether the application should be enabled or disabled.
+- `dynamic_configuration` (Attributes) The `DynamicConfiguration` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--dynamic_configuration))
+- `id` (String) An optional identifier for the SAML application.
+- `login_page_url` (String) The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
+- `logo` (String) A logo for the SAML application. Should be a hosted image URL.
+- `manual_configuration` (Attributes) The `ManualConfiguration` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--manual_configuration))
+- `subject_name_id_format` (String) The subject name id format. Choose one of "", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
+- `subject_name_id_type` (String) The subject name id type. Choose one of "", "email", "phone". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 
 <a id="nestedatt--applications--saml_applications--attribute_mapping"></a>
 ### Nested Schema for `applications.saml_applications.attribute_mapping`
 
 Required:
 
-- `name` (String) The name of the user attribute in the third party identity provider.
-- `value` (String) The name of the user custom attribute in Descope.
+- `name` (String) The name of the attribute.
+- `value` (String) The value of the attribute.
 
 
 <a id="nestedatt--applications--saml_applications--dynamic_configuration"></a>
@@ -97,7 +97,7 @@ Required:
 
 Required:
 
-- `metadata_url` (String)
+- `metadata_url` (String) The metadata URL when retrieving the connection details dynamically.
 
 
 <a id="nestedatt--applications--saml_applications--manual_configuration"></a>
@@ -105,9 +105,9 @@ Required:
 
 Required:
 
-- `acs_url` (String)
-- `certificate` (String)
-- `entity_id` (String)
+- `acs_url` (String) Enter the `ACS URL` from the SP.
+- `certificate` (String) Enter the `Certificate` from the SP.
+- `entity_id` (String) Enter the `Entity Id` from the SP.
 
 
 
@@ -117,20 +117,20 @@ Required:
 
 Optional:
 
-- `tenant` (Attributes List) Custom attributes to store additional details about your tenants. (see [below for nested schema](#nestedatt--attributes--tenant))
-- `user` (Attributes List) Custom attributes to store additional details about your users. (see [below for nested schema](#nestedatt--attributes--user))
+- `tenant` (Attributes List) A list of `TenantAttribute`. Read the description below. (see [below for nested schema](#nestedatt--attributes--tenant))
+- `user` (Attributes List) A list of `UserAttribute`. Read the description below. (see [below for nested schema](#nestedatt--attributes--user))
 
 <a id="nestedatt--attributes--tenant"></a>
 ### Nested Schema for `attributes.tenant`
 
 Required:
 
-- `name` (String) The name of the tenant attribute.
-- `type` (String) The type of the tenant attribute. Valid valus are `string`, `number`, `boolean`, `date`, `singleselect`, and `multiselect`.
+- `name` (String) The name of the attribute.
+- `type` (String) The type of the attribute. Choose one of "string", "number", "boolean", "singleselect", "multiselect", "date".
 
 Optional:
 
-- `select_options` (List of String) A list of strings to define the set of options for select attributes.
+- `select_options` (List of String) When the attribute type is "multiselect". A list of options to chose from.
 
 
 <a id="nestedatt--attributes--user"></a>
@@ -138,21 +138,21 @@ Optional:
 
 Required:
 
-- `name` (String) The name of the user attribute.
-- `type` (String) The type of the user attribute. Valid valus are `string`, `number`, `boolean`, `date`, `singleselect`, and `multiselect`.
+- `name` (String) The name of the attribute.
+- `type` (String) The type of the attribute. Choose one of "string", "number", "boolean", "singleselect", "multiselect", "date".
 
 Optional:
 
-- `select_options` (List of String) A list of strings to define the set of options for select attributes.
-- `widget_authorization` (Attributes) When provided, viewing and editing the attribute values in widgets will be restricted to users with the specified permissions. (see [below for nested schema](#nestedatt--attributes--user--widget_authorization))
+- `select_options` (List of String) When the attribute type is "multiselect". A list of options to chose from.
+- `widget_authorization` (Attributes) The `UserAttributeWidgetAuthorization` object. Read the description below. (see [below for nested schema](#nestedatt--attributes--user--widget_authorization))
 
 <a id="nestedatt--attributes--user--widget_authorization"></a>
 ### Nested Schema for `attributes.user.widget_authorization`
 
 Optional:
 
-- `edit_permissions` (List of String) Editing the attribute value in widgets will be restricted to users with the specified permissions.
-- `view_permissions` (List of String) Viewing the attribute value in widgets will be restricted to users with the specified permissions.
+- `edit_permissions` (List of String) A list of permissions by name to set editing permissions to the attribute in widgets. e.g "SSO Admin".
+- `view_permissions` (List of String) A list of permissions by name to set viewing permissions to the attribute in widgets. e.g "SSO Admin".
 
 
 
@@ -177,9 +177,8 @@ Optional:
 
 Optional:
 
-- `enabled` (Boolean)
-- `expiration_time` (Number) The amount of time that the embedded link will be valid for.
-- `expiration_time_unit` (String)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
+- `expiration_time` (String) The amount of time that the embedded link will be valid for.
 
 
 <a id="nestedatt--authentication--enchanted_link"></a>
@@ -187,10 +186,9 @@ Optional:
 
 Optional:
 
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending emails as part of the enchanted link authentication. (see [below for nested schema](#nestedatt--authentication--enchanted_link--email_service))
-- `enabled` (Boolean)
-- `expiration_time` (Number)
-- `expiration_time_unit` (String)
+- `expiration_time` (String)
 - `redirect_url` (String) The URL to redirect users to after they log in using the enchanted link.
 
 <a id="nestedatt--authentication--enchanted_link--email_service"></a>
@@ -231,10 +229,9 @@ Read-Only:
 
 Optional:
 
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending emails as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--email_service))
-- `enabled` (Boolean)
-- `expiration_time` (Number)
-- `expiration_time_unit` (String)
+- `expiration_time` (String)
 - `redirect_url` (String) The URL to redirect users to after they log in using the magic link.
 - `text_service` (Attributes) Settings related to sending SMS messages as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--text_service))
 
@@ -306,7 +303,7 @@ Read-Only:
 Optional:
 
 - `custom` (Attributes Map) Custom OAuth providers configured for this project. (see [below for nested schema](#nestedatt--authentication--oauth--custom))
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `system` (Attributes) Custom configurations for builtin OAuth providers such as Apple, Google, GitHub, Facebook, etc. (see [below for nested schema](#nestedatt--authentication--oauth--system))
 
 <a id="nestedatt--authentication--oauth--custom"></a>
@@ -319,7 +316,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -366,7 +363,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -398,7 +395,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -430,7 +427,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -462,7 +459,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -494,7 +491,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -526,7 +523,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -558,7 +555,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -590,7 +587,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -622,7 +619,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
-- `disabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -651,11 +648,10 @@ Optional:
 
 Optional:
 
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `domain` (String) The domain to embed in OTP messages.
 - `email_service` (Attributes) Settings related to sending emails with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--email_service))
-- `enabled` (Boolean)
-- `expiration_time` (Number) The amount of time that an OTP code will be valid for.
-- `expiration_time_unit` (String)
+- `expiration_time` (String) The amount of time that an OTP code will be valid for.
 - `text_service` (Attributes) Settings related to sending SMS messages with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--text_service))
 - `voice_service` (Attributes) Settings related to voice calls with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--voice_service))
 
@@ -755,7 +751,7 @@ Read-Only:
 
 Optional:
 
-- `enabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `top_level_domain` (String) Passkeys will be usable in the following domain and all its subdomains.
 
 
@@ -764,8 +760,8 @@ Optional:
 
 Optional:
 
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--authentication--password--email_service))
-- `enabled` (Boolean)
 - `expiration` (Boolean) Whether users are required to change their password periodically.
 - `expiration_weeks` (Number) The number of weeks after which a user's password expires and they need to replace it.
 - `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
@@ -816,7 +812,7 @@ Read-Only:
 
 Optional:
 
-- `enabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 
 
@@ -825,7 +821,7 @@ Optional:
 
 Optional:
 
-- `enabled` (Boolean)
+- `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 
 
 
@@ -834,19 +830,19 @@ Optional:
 
 Optional:
 
-- `permissions` (Attributes List) (see [below for nested schema](#nestedatt--authorization--permissions))
-- `roles` (Attributes List) (see [below for nested schema](#nestedatt--authorization--roles))
+- `permissions` (Attributes List) A list of `Permission` objects. (see [below for nested schema](#nestedatt--authorization--permissions))
+- `roles` (Attributes List) A list of `Role` objects. (see [below for nested schema](#nestedatt--authorization--roles))
 
 <a id="nestedatt--authorization--permissions"></a>
 ### Nested Schema for `authorization.permissions`
 
 Required:
 
-- `name` (String)
+- `name` (String) A name for the permission.
 
 Optional:
 
-- `description` (String)
+- `description` (String) A description for the permission.
 
 Read-Only:
 
@@ -858,12 +854,12 @@ Read-Only:
 
 Required:
 
-- `name` (String)
+- `name` (String) A name for the role.
 
 Optional:
 
-- `description` (String)
-- `permissions` (List of String)
+- `description` (String) A description for the role.
+- `permissions` (List of String) A list of permissions by name to be included in the role.
 
 Read-Only:
 
@@ -1734,22 +1730,22 @@ Required:
 
 Optional:
 
-- `access_key_templates` (Attributes List) (see [below for nested schema](#nestedatt--jwt_templates--access_key_templates))
-- `user_templates` (Attributes List) (see [below for nested schema](#nestedatt--jwt_templates--user_templates))
+- `access_key_templates` (Attributes List) A list of `Access Key` type JWT Templates. (see [below for nested schema](#nestedatt--jwt_templates--access_key_templates))
+- `user_templates` (Attributes List) A list of `User` type JWT Templates. (see [below for nested schema](#nestedatt--jwt_templates--user_templates))
 
 <a id="nestedatt--jwt_templates--access_key_templates"></a>
 ### Nested Schema for `jwt_templates.access_key_templates`
 
 Required:
 
-- `name` (String)
+- `name` (String) Name of the JWT Template.
 - `template` (String)
 
 Optional:
 
-- `auth_schema` (String)
+- `auth_schema` (String) The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `conformance_issuer` (Boolean)
-- `description` (String)
+- `description` (String) Description of the JWT Template.
 
 Read-Only:
 
@@ -1761,14 +1757,14 @@ Read-Only:
 
 Required:
 
-- `name` (String)
+- `name` (String) Name of the JWT Template.
 - `template` (String)
 
 Optional:
 
-- `auth_schema` (String)
+- `auth_schema` (String) The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `conformance_issuer` (Boolean)
-- `description` (String)
+- `description` (String) Description of the JWT Template.
 
 Read-Only:
 
@@ -1781,13 +1777,13 @@ Read-Only:
 
 Optional:
 
-- `access_key_jwt_template` (String)
-- `cookie_policy` (String)
-- `domain` (String)
-- `enable_inactivity` (Boolean)
-- `inactivity_time` (String)
-- `refresh_token_expiration` (String)
-- `user_jwt_template` (String)
+- `access_key_jwt_template` (String) Name of the access key JWT Template.
+- `cookie_policy` (String) Use "strict", "lax" or "none". To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+- `domain` (String) The Domain name for custom domain set up. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+- `enable_inactivity` (Boolean) Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
+- `inactivity_time` (String) The inactivity timer, e.g "15 minutes", "1 hour". Minimum is "10 minutes".
+- `refresh_token_expiration` (String) The refresh token expiration timer.  e.g "15 minutes", "1 hour". Minimum is "2 minutes".
+- `user_jwt_template` (String) Name of the user JWT Template.
 
 
 <a id="nestedatt--styles"></a>

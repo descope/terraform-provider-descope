@@ -9,7 +9,7 @@ id
 
 - Type: `string` 
 
-An identifier for the SAML application.
+An optional identifier for the SAML application.
 
 
 

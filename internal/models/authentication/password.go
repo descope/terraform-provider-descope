@@ -14,7 +14,7 @@ import (
 )
 
 var PasswordAttributes = map[string]schema.Attribute{
-	"enabled":          boolattr.Optional(),
+	"disabled":         boolattr.Default(false),
 	"expiration":       boolattr.Optional(),
 	"expiration_weeks": intattr.Optional(int64validator.Between(1, 999)),
 	"lock":             boolattr.Optional(),
@@ -30,7 +30,7 @@ var PasswordAttributes = map[string]schema.Attribute{
 }
 
 type PasswordModel struct {
-	Enabled         types.Bool                   `tfsdk:"enabled"`
+	Disabled        types.Bool                   `tfsdk:"disabled"`
 	Expiration      types.Bool                   `tfsdk:"expiration"`
 	ExpirationWeeks types.Int64                  `tfsdk:"expiration_weeks"`
 	Lock            types.Bool                   `tfsdk:"lock"`
@@ -47,7 +47,7 @@ type PasswordModel struct {
 
 func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	boolattr.Get(m.Enabled, data, "enabled")
+	boolattr.GetNot(m.Disabled, data, "enabled")
 	boolattr.Get(m.Expiration, data, "expiration")
 	intattr.Get(m.ExpirationWeeks, data, "expirationWeeks")
 	boolattr.Get(m.Lock, data, "lock")
@@ -66,7 +66,7 @@ func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
-	boolattr.Set(&m.Enabled, data, "enabled")
+	boolattr.SetNot(&m.Disabled, data, "enabled")
 	boolattr.Set(&m.Expiration, data, "expiration")
 	intattr.Set(&m.ExpirationWeeks, data, "expirationWeeks")
 	boolattr.Set(&m.Lock, data, "lock")

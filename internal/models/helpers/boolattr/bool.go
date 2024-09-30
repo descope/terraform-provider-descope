@@ -45,3 +45,15 @@ func Set(b *types.Bool, data map[string]any, key string) {
 		*b = types.BoolValue(v)
 	}
 }
+
+func GetNot(b types.Bool, data map[string]any, key string) {
+	if !b.IsNull() && !b.IsUnknown() {
+		data[key] = !b.ValueBool()
+	}
+}
+
+func SetNot(b *types.Bool, data map[string]any, key string) {
+	if v, ok := data[key].(bool); ok {
+		*b = types.BoolValue(!v)
+	}
+}

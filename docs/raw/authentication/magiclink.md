@@ -4,30 +4,23 @@ MagicLink
 
 
 
-enabled
--------
+disabled
+--------
 
 - Type: `bool` 
 
-// description for enabled
+Setting this to `true` will disallow using this authentication method directly via
+API and SDK calls. Note that this does not affect authentication flows that are
+configured to use this authentication method.
 
 
 
 expiration_time
 ---------------
 
-- Type: `int` 
+- Type: `duration` 
 
 // description for expiration_time
-
-
-
-expiration_time_unit
---------------------
-
-- Type: `string` 
-
-// description for expiration_time_unit
 
 
 

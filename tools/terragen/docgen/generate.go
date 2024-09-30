@@ -17,6 +17,10 @@ var docfileTemplateData []byte
 func GenerateDocs(root string, schema *schema.Schema) {
 	tpl := utils.LoadTemplate("docfile", docfileTemplateData)
 	for _, file := range schema.Files {
+		if file.SkipDocs() {
+			continue
+		}
+
 		var buf bytes.Buffer
 		if err := tpl.Execute(&buf, file); err != nil {
 			log.Fatalf("error executing template file: %s", err.Error())

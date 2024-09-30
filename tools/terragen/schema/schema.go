@@ -21,18 +21,6 @@ type Schema struct {
 	Packages []string
 }
 
-type File struct {
-	Name   string
-	Dirs   []string
-	Models []*Model
-}
-
-type Model struct {
-	Name    string
-	Package string
-	Fields  []*Field
-}
-
 func ParseSources(root string) *Schema {
 	utils.Debug(0, "Scheme")
 	utils.Debug(0, "======")
