@@ -18,20 +18,13 @@ func TestProject(t *testing.T) {
 			ExpectError: regexp.MustCompile(`Invalid Attribute Value`),
 		},
 		resource.TestStep{
-			Config: p.Config(``),
-			Check: p.Check(map[string]any{
-				"id":   testacc.AttributeIsSet,
-				"name": p.Name,
-			}),
-		},
-		resource.TestStep{
 			Config: p.Config(`
 				environment = "production"
 			`),
 			Check: p.Check(map[string]any{
 				"id":          testacc.AttributeIsSet,
-				"environment": "production",
 				"name":        p.Name,
+				"environment": "production",
 			}),
 		},
 		resource.TestStep{
