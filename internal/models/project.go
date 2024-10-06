@@ -24,7 +24,7 @@ import (
 var ProjectAttributes = map[string]schema.Attribute{
 	"id":               stringattr.Identifier(),
 	"name":             stringattr.Required(),
-	"environment":      stringattr.Optional(stringvalidator.OneOf("production")),
+	"environment":      stringattr.Optional(stringvalidator.OneOf("", "production")),
 	"project_settings": objectattr.Optional(settings.SettingsAttributes),
 	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
 	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),

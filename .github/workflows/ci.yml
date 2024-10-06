@@ -16,6 +16,31 @@ jobs:
       - name: Build
         uses: ./.github/actions/ci/build
 
+  acc_test:
+    name: Acceptance Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Setup Repo
+        uses: ./.github/actions/ci/setup
+      - name: Install Descope CLI
+        uses: descope/descopecli/.github/actions/install@v0.8.10
+      - name: Run Acceptance Tests
+        shell: bash
+        env:
+          DESCOPE_PROJECT_ID: ${{ secrets.DESCOPE_PROJECT_ID }}
+          DESCOPE_MANAGEMENT_KEY: ${{ secrets.DESCOPE_MANAGEMENT_KEY }}
+          DESCOPE_BASE_URL: https://api.descope.com
+          TF_ACC: 1
+        run: |
+          echo "Running acceptance tests"
+          set +e
+          go test -v ./...
+          result=$?
+          descope project list | grep '"name":"testacc-.*' | sed -e 's/.*"id":"\([^"]*\)".*/\1/' | xargs -I {} descope project delete {} --force
+          exit $result
+
   lint:
     name: Run Linter
     runs-on: ubuntu-latest

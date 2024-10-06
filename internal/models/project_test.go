@@ -23,8 +23,8 @@ func TestProject(t *testing.T) {
 			`),
 			Check: p.Check(map[string]any{
 				"id":          testacc.AttributeIsSet,
-				"environment": "production",
 				"name":        p.Name,
+				"environment": "production",
 			}),
 		},
 		resource.TestStep{
