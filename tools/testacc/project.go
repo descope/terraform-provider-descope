@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+	"time"
 
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -11,11 +12,17 @@ import (
 )
 
 func Project(t *testing.T) *ProjectResource {
+	test := strings.TrimPrefix(t.Name(), "Test")
+
+	time := time.Now().Format("01021504") // MMddHHmm
+
 	uuid, err := uuid.GenerateUUID()
 	require.NoError(t, err)
+	suffix := uuid[len(uuid)-8:]
+
 	return &ProjectResource{
-		Resource: Resource{Type: "descope_project", Name: "test"},
-		Name:     fmt.Sprintf("testacc-%s-%s", t.Name(), strings.ReplaceAll(uuid, "-", "")),
+		Resource: Resource{Type: "descope_project", Name: "testproj"},
+		Name:     fmt.Sprintf("testacc-%s-%s-%s", test, time, suffix),
 	}
 }
 
