@@ -57,11 +57,11 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					trusted_domains = ["example.com"]
+					approved_domains = ["example.com"]
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.trusted_domains": []string{"example.com"},
+				"project_settings.approved_domains": []string{"example.com"},
 			}),
 		},
 		resource.TestStep{
@@ -70,43 +70,43 @@ func TestSettings(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.trusted_domains": testacc.AttributeIsNotSet,
+				"project_settings.approved_domains": testacc.AttributeIsNotSet,
 			}),
 		},
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					trusted_domains = ["example.com"]
+					approved_domains = ["example.com"]
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.trusted_domains": []string{"example.com"},
+				"project_settings.approved_domains": []string{"example.com"},
 			}),
 		},
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					trusted_domains = []
+					approved_domains = []
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.trusted_domains": []string{},
+				"project_settings.approved_domains": []string{},
 			}),
 		},
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					trusted_domains = null
+					approved_domains = null
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.trusted_domains": testacc.AttributeIsNotSet,
+				"project_settings.approved_domains": testacc.AttributeIsNotSet,
 			}),
 		},
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					trusted_domains = ["example.com",","]
+					approved_domains = ["example.com",","]
 				}
 			`),
 			ExpectError: regexp.MustCompile(`must not contain commas`),
@@ -118,6 +118,14 @@ func TestSettings(t *testing.T) {
 				}
 			`),
 			ExpectError: regexp.MustCompile(`Unknown JWT template reference`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					access_key_session_token_expiration = "2 minutes"
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Invalid Attribute Value`),
 		},
 		resource.TestStep{
 			Config: p.Config(`

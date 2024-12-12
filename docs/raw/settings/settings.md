@@ -24,8 +24,8 @@ cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/
 
 
 
-trusted_domains
----------------
+approved_domains
+----------------
 
 - Type: `list` of `string` 
 
@@ -49,7 +49,8 @@ inactivity_time
 
 - Type: `duration` 
 
-The inactivity timer, e.g "15 minutes", "1 hour". Minimum is "10 minutes".
+The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum
+value is "10 minutes".
 
 
 
@@ -58,7 +59,18 @@ refresh_token_expiration
 
 - Type: `duration` 
 
-The refresh token expiration timer.  e.g "15 minutes", "1 hour". Minimum is "2 minutes".
+The expiry time for the refresh token, after which the user must log in again. Use values
+such as "4 weeks", "14 days", etc. The minimum value is "3 minutes".
+
+
+
+access_key_session_token_expiration
+-----------------------------------
+
+- Type: `duration` 
+
+The expiry time for access key session tokens. Use values such as "10 minutes", "4 hours", etc. The
+value needs to be at least 3 minutes and can't be longer than 4 weeks.
 
 
 
