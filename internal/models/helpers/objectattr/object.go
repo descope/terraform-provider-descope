@@ -68,7 +68,7 @@ func parseExtras(extras []any) (validators []validator.Object, modifiers []planm
 			modifiers = append(modifiers, modifier)
 		}
 		if !matched {
-			panic(fmt.Sprintf("Unexpected extra value of type %T in object attribute", e))
+			panic(fmt.Sprintf("unexpected extra value of type %T in object attribute", e))
 		}
 	}
 	return

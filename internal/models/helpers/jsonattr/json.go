@@ -54,6 +54,6 @@ func convertValue(value attr.Value) any {
 		}
 		return s
 	default:
-		panic("Unexpected type in JSON object")
+		panic("unexpected type in JSON object")
 	}
 }

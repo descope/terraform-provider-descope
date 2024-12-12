@@ -54,7 +54,7 @@ func (f *Field) StructType() string {
 	case FieldTypeHTTPAuth:
 		return `*HTTPAuthFieldModel`
 	default:
-		panic("Unexpected field type: " + f.Type)
+		panic("unexpected field type: " + f.Type)
 	}
 }
 
@@ -105,7 +105,7 @@ func (f *Field) AttributeType() string {
 		}
 		return `objectattr.Optional(HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
 	default:
-		panic("Unexpected field type: " + f.Type)
+		panic("unexpected field type: " + f.Type)
 	}
 }
 
@@ -122,7 +122,7 @@ func (f *Field) GetValueStatement() string {
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`objectattr.Get(m.%s, c, %q, h)`, f.StructName(), f.Name)
 	default:
-		panic("Unexpected field type: " + f.Type)
+		panic("unexpected field type: " + f.Type)
 	}
 }
 
@@ -146,7 +146,7 @@ func (f *Field) ValidateNonZero() string {
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`%s != nil`, accessor)
 	default:
-		panic("Unexpected field type: " + f.Type)
+		panic("unexpected field type: " + f.Type)
 	}
 }
 
@@ -169,7 +169,7 @@ func (f *Field) GetTestAssignment() string {
     							bearer_token = %q
     						}`, f.TestString())
 	default:
-		panic("Unexpected field type: " + f.Type)
+		panic("unexpected field type: " + f.Type)
 	}
 }
 
@@ -186,7 +186,7 @@ func (f *Field) GetTestCheck(list string, index int) string {
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`"connectors.%s.%d.%s.bearer_token": %q`, list, index, f.AttributeName(), f.TestString())
 	default:
-		panic("Unexpected field type: " + f.Type)
+		panic("unexpected field type: " + f.Type)
 	}
 }
 
