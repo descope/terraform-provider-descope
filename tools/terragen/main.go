@@ -44,4 +44,7 @@ func main() {
 
 	// generates model documentation injection .go source files that are actually compiled into the provider binary
 	srcgen.GenerateSources(paths.Docs, schema)
+
+	// updates the naming.json file if needed
+	conngen.UpdateNaming(paths.Data, conns)
 }

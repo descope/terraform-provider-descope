@@ -38,7 +38,7 @@ func GenerateSources(dir string, conns *Connectors) {
 	}
 }
 
-func UpdateData(dir string, conns *Connectors) {
+func UpdateNaming(dir string, conns *Connectors) {
 	if conns.Naming.HasChanges {
 		conns.Naming.Write(dir)
 	}
