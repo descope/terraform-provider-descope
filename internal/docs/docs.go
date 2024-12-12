@@ -690,6 +690,7 @@ var docsSettings = map[string]string{
 	                            "such as \"4 weeks\", \"14 days\", etc. The minimum value is \"3 minutes\".",
 	"step_up_token_expiration": "The expiry time for the step up token, after which it will not be valid and the user will " +
 	                            "automatically go back to the session token.",
+	"trusted_device_token_expiration": "The expiry time for the trusted device token. The minimum value is \"3 minutes\".",
 	"access_key_session_token_expiration": "The expiry time for access key session tokens. Use values such as \"10 minutes\", \"4 hours\", etc. The " +
 	                                       "value needs to be at least 3 minutes and can't be longer than 4 weeks.",
 	"user_jwt_template": "Name of the user JWT Template.",

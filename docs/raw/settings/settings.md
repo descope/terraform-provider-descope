@@ -74,6 +74,15 @@ automatically go back to the session token.
 
 
 
+trusted_device_token_expiration
+-------------------------------
+
+- Type: `duration` 
+
+The expiry time for the trusted device token. The minimum value is "3 minutes".
+
+
+
 access_key_session_token_expiration
 -----------------------------------
 

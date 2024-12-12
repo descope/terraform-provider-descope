@@ -51,7 +51,7 @@ func TestSettings(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.refresh_token_expiration": "1 days",
+				"project_settings.refresh_token_expiration": "4 weeks",
 			}),
 		},
 		resource.TestStep{
@@ -132,6 +132,16 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					trusted_device_token_expiration = "52 weeks"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.trusted_device_token_expiration": "52 weeks",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					access_key_session_token_expiration = "2 minutes"
 				}
 			`),
@@ -155,7 +165,7 @@ func TestSettings(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.refresh_token_expiration": "1 days",
+				"project_settings.refresh_token_expiration": "4 weeks",
 				"project_settings.domain":                   "example.com",
 				"project_settings.enable_inactivity":        true,
 				"project_settings.inactivity_time":          "1 hour",
