@@ -688,6 +688,8 @@ var docsSettings = map[string]string{
 	                   "value is \"10 minutes\".",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
 	                            "such as \"4 weeks\", \"14 days\", etc. The minimum value is \"3 minutes\".",
+	"session_token_expiration": "The expiry time of the session token, used for accessing the application's resources. The value " +
+	                            "needs to be at least 3 minutes and can't be longer than the refresh token expiration.",
 	"step_up_token_expiration": "The expiry time for the step up token, after which it will not be valid and the user will " +
 	                            "automatically go back to the session token.",
 	"trusted_device_token_expiration": "The expiry time for the trusted device token. The minimum value is \"3 minutes\".",

@@ -40,6 +40,16 @@ func TestSettings(t *testing.T) {
 			ExpectError: regexp.MustCompile(`Invalid Attribute Value`),
 		},
 		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_token_expiration = "1 hour"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.session_token_expiration": "1 hour",
+			}),
+		},
+		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
 				"project_settings": testacc.AttributeIsNotSet,

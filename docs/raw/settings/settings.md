@@ -64,6 +64,16 @@ such as "4 weeks", "14 days", etc. The minimum value is "3 minutes".
 
 
 
+session_token_expiration
+------------------------
+
+- Type: `duration` 
+
+The expiry time of the session token, used for accessing the application's resources. The value
+needs to be at least 3 minutes and can't be longer than the refresh token expiration.
+
+
+
 step_up_token_expiration
 ------------------------
 
