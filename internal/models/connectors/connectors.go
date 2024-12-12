@@ -33,6 +33,8 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"http_static_ip":           listattr.Optional(HttpStaticIPAttributes),
 	"hubspot":                  listattr.Optional(HubSpotAttributes),
 	"intercom":                 listattr.Optional(IntercomAttributes),
+	"lokalise":                 listattr.Optional(LokaliseAttributes),
+	"mparticle":                listattr.Optional(MParticleAttributes),
 	"newrelic":                 listattr.Optional(NewRelicAttributes, NewRelicValidator),
 	"recaptcha":                listattr.Optional(RecaptchaAttributes),
 	"recaptcha_enterprise":     listattr.Optional(RecaptchaEnterpriseAttributes, RecaptchaEnterpriseValidator),
@@ -40,6 +42,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"salesforce":               listattr.Optional(SalesforceAttributes),
 	"segment":                  listattr.Optional(SegmentAttributes),
 	"sendgrid":                 listattr.Optional(SendGridAttributes),
+	"smartling":                listattr.Optional(SmartlingAttributes),
 	"smtp":                     listattr.Optional(SMTPAttributes),
 	"sumologic":                listattr.Optional(SumoLogicAttributes, SumoLogicValidator),
 	"telesign":                 listattr.Optional(TelesignAttributes),
@@ -68,6 +71,8 @@ type ConnectorsModel struct {
 	HttpStaticIP           []*HttpStaticIPModel           `tfsdk:"http_static_ip"`
 	HubSpot                []*HubSpotModel                `tfsdk:"hubspot"`
 	Intercom               []*IntercomModel               `tfsdk:"intercom"`
+	Lokalise               []*LokaliseModel               `tfsdk:"lokalise"`
+	MParticle              []*MParticleModel              `tfsdk:"mparticle"`
 	NewRelic               []*NewRelicModel               `tfsdk:"newrelic"`
 	Recaptcha              []*RecaptchaModel              `tfsdk:"recaptcha"`
 	RecaptchaEnterprise    []*RecaptchaEnterpriseModel    `tfsdk:"recaptcha_enterprise"`
@@ -75,6 +80,7 @@ type ConnectorsModel struct {
 	Salesforce             []*SalesforceModel             `tfsdk:"salesforce"`
 	Segment                []*SegmentModel                `tfsdk:"segment"`
 	SendGrid               []*SendGridModel               `tfsdk:"sendgrid"`
+	Smartling              []*SmartlingModel              `tfsdk:"smartling"`
 	SMTP                   []*SMTPModel                   `tfsdk:"smtp"`
 	SumoLogic              []*SumoLogicModel              `tfsdk:"sumologic"`
 	Telesign               []*TelesignModel               `tfsdk:"telesign"`
@@ -104,6 +110,8 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.HttpStaticIP, data, "http-static-ip", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
 	listattr.Get(m.Intercom, data, "intercom", h)
+	listattr.Get(m.Lokalise, data, "lokalise", h)
+	listattr.Get(m.MParticle, data, "mparticle", h)
 	listattr.Get(m.NewRelic, data, "newrelic", h)
 	listattr.Get(m.Recaptcha, data, "recaptcha", h)
 	listattr.Get(m.RecaptchaEnterprise, data, "recaptcha-enterprise", h)
@@ -111,6 +119,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Salesforce, data, "salesforce", h)
 	listattr.Get(m.Segment, data, "segment", h)
 	listattr.Get(m.SendGrid, data, "sendgrid", h)
+	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
@@ -140,6 +149,8 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "http-static-ip", m.HttpStaticIP)
 	SetConnectorIDs(h, data, "hubspot", m.HubSpot)
 	SetConnectorIDs(h, data, "intercom", m.Intercom)
+	SetConnectorIDs(h, data, "lokalise", m.Lokalise)
+	SetConnectorIDs(h, data, "mparticle", m.MParticle)
 	SetConnectorIDs(h, data, "newrelic", m.NewRelic)
 	SetConnectorIDs(h, data, "recaptcha", m.Recaptcha)
 	SetConnectorIDs(h, data, "recaptcha-enterprise", m.RecaptchaEnterprise)
@@ -147,6 +158,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "salesforce", m.Salesforce)
 	SetConnectorIDs(h, data, "segment", m.Segment)
 	SetConnectorIDs(h, data, "sendgrid", m.SendGrid)
+	SetConnectorIDs(h, data, "smartling", m.Smartling)
 	SetConnectorIDs(h, data, "smtp", m.SMTP)
 	SetConnectorIDs(h, data, "sumologic", m.SumoLogic)
 	SetConnectorIDs(h, data, "telesign", m.Telesign)
@@ -176,6 +188,8 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "http-static-ip", m.HttpStaticIP)
 	addConnectorReferences(refs, "hubspot", m.HubSpot)
 	addConnectorReferences(refs, "intercom", m.Intercom)
+	addConnectorReferences(refs, "lokalise", m.Lokalise)
+	addConnectorReferences(refs, "mparticle", m.MParticle)
 	addConnectorReferences(refs, "newrelic", m.NewRelic)
 	addConnectorReferences(refs, "recaptcha", m.Recaptcha)
 	addConnectorReferences(refs, "recaptcha-enterprise", m.RecaptchaEnterprise)
@@ -183,6 +197,7 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "salesforce", m.Salesforce)
 	addConnectorReferences(refs, "segment", m.Segment)
 	addConnectorReferences(refs, "sendgrid", m.SendGrid)
+	addConnectorReferences(refs, "smartling", m.Smartling)
 	addConnectorReferences(refs, "smtp", m.SMTP)
 	addConnectorReferences(refs, "sumologic", m.SumoLogic)
 	addConnectorReferences(refs, "telesign", m.Telesign)
@@ -213,6 +228,8 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.HttpStaticIP)
 	addConnectorNames(names, m.HubSpot)
 	addConnectorNames(names, m.Intercom)
+	addConnectorNames(names, m.Lokalise)
+	addConnectorNames(names, m.MParticle)
 	addConnectorNames(names, m.NewRelic)
 	addConnectorNames(names, m.Recaptcha)
 	addConnectorNames(names, m.RecaptchaEnterprise)
@@ -220,6 +237,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.Salesforce)
 	addConnectorNames(names, m.Segment)
 	addConnectorNames(names, m.SendGrid)
+	addConnectorNames(names, m.Smartling)
 	addConnectorNames(names, m.SMTP)
 	addConnectorNames(names, m.SumoLogic)
 	addConnectorNames(names, m.Telesign)
@@ -253,6 +271,8 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.HttpStaticIP, state.HttpStaticIP)
 	helpers.MatchModels(ctx, m.HubSpot, state.HubSpot)
 	helpers.MatchModels(ctx, m.Intercom, state.Intercom)
+	helpers.MatchModels(ctx, m.Lokalise, state.Lokalise)
+	helpers.MatchModels(ctx, m.MParticle, state.MParticle)
 	helpers.MatchModels(ctx, m.NewRelic, state.NewRelic)
 	helpers.MatchModels(ctx, m.Recaptcha, state.Recaptcha)
 	helpers.MatchModels(ctx, m.RecaptchaEnterprise, state.RecaptchaEnterprise)
@@ -260,6 +280,7 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.Salesforce, state.Salesforce)
 	helpers.MatchModels(ctx, m.Segment, state.Segment)
 	helpers.MatchModels(ctx, m.SendGrid, state.SendGrid)
+	helpers.MatchModels(ctx, m.Smartling, state.Smartling)
 	helpers.MatchModels(ctx, m.SMTP, state.SMTP)
 	helpers.MatchModels(ctx, m.SumoLogic, state.SumoLogic)
 	helpers.MatchModels(ctx, m.Telesign, state.Telesign)

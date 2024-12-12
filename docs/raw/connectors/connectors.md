@@ -175,6 +175,26 @@ Intercom is a Conversational Relationship Platform (CRP).
 
 
 
+lokalise
+--------
+
+- Type: `list` of `connectors.Lokalise` 
+
+Localize the language of your login and user journey screens with the Lokalise
+connector.
+
+
+
+mparticle
+---------
+
+- Type: `list` of `connectors.MParticle` 
+
+Track and send user event data (e.g. page views, purchases, etc.) across
+connected tools using the mParticle connector.
+
+
+
 newrelic
 --------
 
@@ -242,6 +262,16 @@ sendgrid
 - Type: `list` of `connectors.SendGrid` 
 
 // description for sendgrid
+
+
+
+smartling
+---------
+
+- Type: `list` of `connectors.Smartling` 
+
+Localize the language of your login and user journey screens with the Smartling
+connector.
 
 
 

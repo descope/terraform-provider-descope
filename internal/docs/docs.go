@@ -324,6 +324,10 @@ var docsConnectors = map[string]string{
 	"hubspot": "HubSpot is a CRM platform with software, integrations, and resources needed to " +
 	           "connect marketing, sales, content management, and customer service.",
 	"intercom": "Intercom is a Conversational Relationship Platform (CRP).",
+	"lokalise": "Localize the language of your login and user journey screens with the Lokalise " +
+	            "connector.",
+	"mparticle": "Track and send user event data (e.g. page views, purchases, etc.) across " +
+	             "connected tools using the mParticle connector.",
 	"newrelic": "Use this connector to send audit events and troubleshooting logs to New Relic.",
 	"recaptcha": "reCAPTCHA is a free google service that protects your site from spam and abuse. " +
 	             "It uses advanced risk analysis techniques to tell humans and bots apart.",
@@ -338,6 +342,8 @@ var docsConnectors = map[string]string{
 	           "mobile apps, unify those and use those to better understand your customers " +
 	           "needs.",
 	"sendgrid": "",
+	"smartling": "Localize the language of your login and user journey screens with the Smartling " +
+	             "connector.",
 	"smtp": "",
 	"sumologic": "Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log " +
 	             "analytics",
@@ -467,6 +473,27 @@ var docsIntercom = map[string]string{
 	"region": "Regional Hosting - US, EU, or AU. default: US",
 }
 
+var docsLokalise = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_token": "Lokalise API token.",
+	"project_id": "Lokalise project ID.",
+	"team_id": "Lokalise team ID. If not provided, the oldest available team will be used.",
+	"card_id": "(Optional) The ID of the payment card to use for translation orders. If not " +
+	           "provided, the team credit will be used.",
+	"translation_provider": "The translation provider to use ('gengo', 'google', 'lokalise', 'deepl'), " +
+	                        "default is 'deepl'.",
+}
+
+var docsMParticle = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_key": "The mParticle Server to Server Key generated for the Descope service.",
+	"api_secret": "The mParticle Server to Server Secret generated for the Descope service.",
+	"base_url": "The base URL of the mParticle API, when using a custom domain in mParticle. " +
+	            "default value is https://s2s.mparticle.com/",
+}
+
 var docsNewRelic = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -563,6 +590,14 @@ var docsHTTPAuthBasicField = map[string]string{
 var docsHTTPAuthAPIKeyField = map[string]string{
 	"key": "",
 	"token": "",
+}
+
+var docsSmartling = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"user_identifier": "The user identifier for the Smartling account.",
+	"user_secret": "The user secret for the Smartling account.",
+	"account_uid": "The account UID for the Smartling account.",
 }
 
 var docsSMTP = map[string]string{
