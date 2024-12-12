@@ -57,6 +57,63 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					trusted_domains = ["example.com"]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.trusted_domains": []string{"example.com"},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.trusted_domains": testacc.AttributeIsNotSet,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					trusted_domains = ["example.com"]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.trusted_domains": []string{"example.com"},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					trusted_domains = []
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.trusted_domains": []string{},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					trusted_domains = null
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.trusted_domains": testacc.AttributeIsNotSet,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					trusted_domains = ["example.com",","]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`must not contain commas`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					user_jwt_template = "foo"
 				}
 			`),
