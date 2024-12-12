@@ -122,6 +122,16 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					step_up_token_expiration = "12 minutes"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.step_up_token_expiration": "12 minutes",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					access_key_session_token_expiration = "2 minutes"
 				}
 			`),

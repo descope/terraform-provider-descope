@@ -18,6 +18,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"enable_inactivity":                   boolattr.Optional(),
 	"inactivity_time":                     durationattr.Optional(durationattr.MinimumValue("10 minutes")),
 	"refresh_token_expiration":            durationattr.Optional(durationattr.MinimumValue("3 minutes")),
+	"step_up_token_expiration":            durationattr.Optional(durationattr.MinimumValue("3 minutes")),
 	"access_key_session_token_expiration": durationattr.Optional(durationattr.MinimumValue("3 minutes")),
 	"user_jwt_template":                   stringattr.Optional(),
 	"access_key_jwt_template":             stringattr.Optional(),
@@ -30,6 +31,7 @@ type SettingsModel struct {
 	EnableInactivity                types.Bool   `tfsdk:"enable_inactivity"`
 	InactivityTime                  types.String `tfsdk:"inactivity_time"`
 	RefreshTokenExpiration          types.String `tfsdk:"refresh_token_expiration"`
+	StepUpTokenExpiration           types.String `tfsdk:"step_up_token_expiration"`
 	AccessKeySessionTokenExpiration types.String `tfsdk:"access_key_session_token_expiration"`
 	UserJWTTemplate                 types.String `tfsdk:"user_jwt_template"`
 	AccessKeyJWTTemplate            types.String `tfsdk:"access_key_jwt_template"`
@@ -43,6 +45,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.EnableInactivity, data, "enableInactivity")
 	durationattr.Get(m.InactivityTime, data, "inactivityTime")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
+	durationattr.Get(m.StepUpTokenExpiration, data, "stepupTokenExpiration")
 	durationattr.Get(m.AccessKeySessionTokenExpiration, data, "keySessionTokenExpiration")
 	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", "user", h)
 	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", "key", h)
@@ -56,6 +59,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
 	durationattr.Set(&m.InactivityTime, data, "inactivityTime")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
+	durationattr.Set(&m.StepUpTokenExpiration, data, "stepupTokenExpiration")
 	durationattr.Set(&m.AccessKeySessionTokenExpiration, data, "keySessionTokenExpiration")
 	stringattr.EnsureKnown(&m.UserJWTTemplate)
 	stringattr.EnsureKnown(&m.AccessKeyJWTTemplate)

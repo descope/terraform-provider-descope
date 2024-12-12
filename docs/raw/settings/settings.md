@@ -64,6 +64,16 @@ such as "4 weeks", "14 days", etc. The minimum value is "3 minutes".
 
 
 
+step_up_token_expiration
+------------------------
+
+- Type: `duration` 
+
+The expiry time for the step up token, after which it will not be valid and the user will
+automatically go back to the session token.
+
+
+
 access_key_session_token_expiration
 -----------------------------------
 
