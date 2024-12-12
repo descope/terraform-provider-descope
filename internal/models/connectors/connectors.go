@@ -30,7 +30,6 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"google_cloud_translation": listattr.Optional(GoogleCloudTranslationAttributes),
 	"hibp":                     listattr.Optional(HIBPAttributes),
 	"http":                     listattr.Optional(HTTPAttributes),
-	"http_static_ip":           listattr.Optional(HttpStaticIPAttributes),
 	"hubspot":                  listattr.Optional(HubSpotAttributes),
 	"intercom":                 listattr.Optional(IntercomAttributes),
 	"lokalise":                 listattr.Optional(LokaliseAttributes),
@@ -49,7 +48,6 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"traceable":                listattr.Optional(TraceableAttributes),
 	"twilio_core":              listattr.Optional(TwilioCoreAttributes),
 	"twilio_verify":            listattr.Optional(TwilioVerifyAttributes),
-	"veriff":                   listattr.Optional(VeriffAttributes),
 }
 
 type ConnectorsModel struct {
@@ -68,7 +66,6 @@ type ConnectorsModel struct {
 	GoogleCloudTranslation []*GoogleCloudTranslationModel `tfsdk:"google_cloud_translation"`
 	HIBP                   []*HIBPModel                   `tfsdk:"hibp"`
 	HTTP                   []*HTTPModel                   `tfsdk:"http"`
-	HttpStaticIP           []*HttpStaticIPModel           `tfsdk:"http_static_ip"`
 	HubSpot                []*HubSpotModel                `tfsdk:"hubspot"`
 	Intercom               []*IntercomModel               `tfsdk:"intercom"`
 	Lokalise               []*LokaliseModel               `tfsdk:"lokalise"`
@@ -87,7 +84,6 @@ type ConnectorsModel struct {
 	Traceable              []*TraceableModel              `tfsdk:"traceable"`
 	TwilioCore             []*TwilioCoreModel             `tfsdk:"twilio_core"`
 	TwilioVerify           []*TwilioVerifyModel           `tfsdk:"twilio_verify"`
-	Veriff                 []*VeriffModel                 `tfsdk:"veriff"`
 }
 
 func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
@@ -107,7 +103,6 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
-	listattr.Get(m.HttpStaticIP, data, "http-static-ip", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
 	listattr.Get(m.Intercom, data, "intercom", h)
 	listattr.Get(m.Lokalise, data, "lokalise", h)
@@ -126,7 +121,6 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Traceable, data, "traceable", h)
 	listattr.Get(m.TwilioCore, data, "twilio-core", h)
 	listattr.Get(m.TwilioVerify, data, "twilio-verify", h)
-	listattr.Get(m.Veriff, data, "veriff", h)
 	return data
 }
 
@@ -146,7 +140,6 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "google-cloud-translation", m.GoogleCloudTranslation)
 	SetConnectorIDs(h, data, "hibp", m.HIBP)
 	SetConnectorIDs(h, data, "http", m.HTTP)
-	SetConnectorIDs(h, data, "http-static-ip", m.HttpStaticIP)
 	SetConnectorIDs(h, data, "hubspot", m.HubSpot)
 	SetConnectorIDs(h, data, "intercom", m.Intercom)
 	SetConnectorIDs(h, data, "lokalise", m.Lokalise)
@@ -165,7 +158,6 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "traceable", m.Traceable)
 	SetConnectorIDs(h, data, "twilio-core", m.TwilioCore)
 	SetConnectorIDs(h, data, "twilio-verify", m.TwilioVerify)
-	SetConnectorIDs(h, data, "veriff", m.Veriff)
 }
 
 func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap {
@@ -185,7 +177,6 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "google-cloud-translation", m.GoogleCloudTranslation)
 	addConnectorReferences(refs, "hibp", m.HIBP)
 	addConnectorReferences(refs, "http", m.HTTP)
-	addConnectorReferences(refs, "http-static-ip", m.HttpStaticIP)
 	addConnectorReferences(refs, "hubspot", m.HubSpot)
 	addConnectorReferences(refs, "intercom", m.Intercom)
 	addConnectorReferences(refs, "lokalise", m.Lokalise)
@@ -204,7 +195,6 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "traceable", m.Traceable)
 	addConnectorReferences(refs, "twilio-core", m.TwilioCore)
 	addConnectorReferences(refs, "twilio-verify", m.TwilioVerify)
-	addConnectorReferences(refs, "veriff", m.Veriff)
 	return refs
 }
 
@@ -225,7 +215,6 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.GoogleCloudTranslation)
 	addConnectorNames(names, m.HIBP)
 	addConnectorNames(names, m.HTTP)
-	addConnectorNames(names, m.HttpStaticIP)
 	addConnectorNames(names, m.HubSpot)
 	addConnectorNames(names, m.Intercom)
 	addConnectorNames(names, m.Lokalise)
@@ -244,7 +233,6 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.Traceable)
 	addConnectorNames(names, m.TwilioCore)
 	addConnectorNames(names, m.TwilioVerify)
-	addConnectorNames(names, m.Veriff)
 	for k, v := range names {
 		if v > 1 {
 			h.Error("Connector names must be unique", "The connector name '%s' is used %d times", k, v)
@@ -268,7 +256,6 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.GoogleCloudTranslation, state.GoogleCloudTranslation)
 	helpers.MatchModels(ctx, m.HIBP, state.HIBP)
 	helpers.MatchModels(ctx, m.HTTP, state.HTTP)
-	helpers.MatchModels(ctx, m.HttpStaticIP, state.HttpStaticIP)
 	helpers.MatchModels(ctx, m.HubSpot, state.HubSpot)
 	helpers.MatchModels(ctx, m.Intercom, state.Intercom)
 	helpers.MatchModels(ctx, m.Lokalise, state.Lokalise)
@@ -287,5 +274,4 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.Traceable, state.Traceable)
 	helpers.MatchModels(ctx, m.TwilioCore, state.TwilioCore)
 	helpers.MatchModels(ctx, m.TwilioVerify, state.TwilioVerify)
-	helpers.MatchModels(ctx, m.Veriff, state.Veriff)
 }

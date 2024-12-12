@@ -404,40 +404,6 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
-					"http_static_ip": [
-						{
-							name = "Test http-static-ip Connector"
-							description = "A description for the http-static-ip connector"
-    						base_url = "bceszn6"
-    						authentication = {
-    							bearer_token = "xhmqmkcfhe4mk6"
-    						}
-    						headers = {
-    							"key" = "g6htpmp"
-    						}
-    						hmac_secret = "ooxzct5yxz"
-    						insecure = true
-    						include_headers_in_context = true
-						}
-					]
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"connectors.http_static_ip.#":                             1,
-				"connectors.http_static_ip.0.id":                          testacc.AttributeHasPrefix("CI"),
-				"connectors.http_static_ip.0.name":                        "Test http-static-ip Connector",
-				"connectors.http_static_ip.0.description":                 "A description for the http-static-ip connector",
-				"connectors.http_static_ip.0.base_url":                    "bceszn6",
-				"connectors.http_static_ip.0.authentication.bearer_token": "xhmqmkcfhe4mk6",
-				"connectors.http_static_ip.0.headers.key":                 "g6htpmp",
-				"connectors.http_static_ip.0.hmac_secret":                 "ooxzct5yxz",
-				"connectors.http_static_ip.0.insecure":                    true,
-				"connectors.http_static_ip.0.include_headers_in_context":  true,
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				connectors = {
 					"hubspot": [
 						{
 							name = "Test hubspot Connector"
@@ -830,30 +796,6 @@ func TestConnectors(t *testing.T) {
 				}
 			`),
 			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				connectors = {
-					"veriff": [
-						{
-							name = "Test veriff Connector"
-							description = "A description for the veriff connector"
-    						api_key = "mhvece"
-    						secret_key = "wi4bhwt7a"
-    						base_url = "bceszn6"
-						}
-					]
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"connectors.veriff.#":             1,
-				"connectors.veriff.0.id":          testacc.AttributeHasPrefix("CI"),
-				"connectors.veriff.0.name":        "Test veriff Connector",
-				"connectors.veriff.0.description": "A description for the veriff connector",
-				"connectors.veriff.0.api_key":     "mhvece",
-				"connectors.veriff.0.secret_key":  "wi4bhwt7a",
-				"connectors.veriff.0.base_url":    "bceszn6",
-			}),
 		},
 	)
 }

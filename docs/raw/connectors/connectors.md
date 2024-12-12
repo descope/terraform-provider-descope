@@ -147,15 +147,6 @@ A general purpose HTTP client
 
 
 
-http_static_ip
---------------
-
-- Type: `list` of `connectors.HttpStaticIP` 
-
-// description for http_static_ip
-
-
-
 hubspot
 -------
 
@@ -327,13 +318,3 @@ twilio_verify
 - Type: `list` of `connectors.TwilioVerify` 
 
 // description for twilio_verify
-
-
-
-veriff
-------
-
-- Type: `list` of `connectors.Veriff` 
-
-AI-powered identity verification solution for identity fraud prevention, Know
-Your Customer compliance, and fast conversions of valuable customers.

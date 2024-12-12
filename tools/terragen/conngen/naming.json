@@ -75,11 +75,6 @@
       "file": "http",
       "struct": "HTTP"
     },
-    "http-static-ip": {
-      "attribute": "http_static_ip",
-      "file": "httpstaticip",
-      "struct": "HttpStaticIP"
-    },
     "hubspot": {
       "attribute": "hubspot",
       "file": "hubspot",
@@ -165,11 +160,6 @@
     "twilio-verify": {
       "attribute": "twilio_verify",
       "struct": "TwilioVerify"
-    },
-    "veriff": {
-      "attribute": "veriff",
-      "file": "veriff",
-      "struct": "Veriff"
     }
   },
   "field": {

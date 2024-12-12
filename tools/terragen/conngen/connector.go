@@ -11,13 +11,18 @@ import (
 // Connector
 
 type Connector struct {
-	ID          string   `json:"id"`
-	Name        string   `json:"name"`
-	Description string   `json:"description"`
-	BuiltIn     bool     `json:"builtin"`
-	Fields      []*Field `json:"fields"`
+	ID          string         `json:"id"`
+	Name        string         `json:"name"`
+	Description string         `json:"description"`
+	BuiltIn     bool           `json:"builtin"`
+	Extra       map[string]any `json:"extra"`
+	Fields      []*Field       `json:"fields"`
 
 	naming *Naming
+}
+
+func (c *Connector) IsExperimental() bool {
+	return c.Extra["experimental"] == true
 }
 
 func (c *Connector) StructName() string {

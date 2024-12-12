@@ -72,6 +72,11 @@ func (c *Connectors) readConnector(path string) {
 		log.Fatalf("failed to read connector metadata from path %s: %s", file, err.Error())
 	}
 
+	if connector.IsExperimental() {
+		utils.Debug(1, "- %s (experimental)", connector.ID)
+		return
+	}
+
 	c.Connectors = append(c.Connectors, connector)
 	utils.Debug(1, "- %s", connector.ID)
 }

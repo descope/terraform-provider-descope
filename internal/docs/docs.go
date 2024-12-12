@@ -320,7 +320,6 @@ var docsConnectors = map[string]string{
 	"google_cloud_translation": "",
 	"hibp": "API to check if password appeared previously exposed in data breaches.",
 	"http": "A general purpose HTTP client",
-	"http_static_ip": "",
 	"hubspot": "HubSpot is a CRM platform with software, integrations, and resources needed to " +
 	           "connect marketing, sales, content management, and customer service.",
 	"intercom": "Intercom is a Conversational Relationship Platform (CRP).",
@@ -351,8 +350,6 @@ var docsConnectors = map[string]string{
 	"traceable": "API security for a cloud-first, API-driven world.",
 	"twilio_core": "",
 	"twilio_verify": "",
-	"veriff": "AI-powered identity verification solution for identity fraud prevention, Know " +
-	          "Your Customer compliance, and fast conversions of valuable customers.",
 }
 
 var docsDatadog = map[string]string{
@@ -425,23 +422,6 @@ var docsHIBP = map[string]string{
 }
 
 var docsHTTP = map[string]string{
-	"name": "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"base_url": "The base URL to fetch",
-	"authentication": "Authentication Information",
-	"headers": "The headers to send with the request",
-	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
-	               "used to sign the base64 encoded payload, and the resulting signature will be " +
-	               "sent in the `x-descope-webhook-s256` header. The receiving service should use " +
-	               "this secret to verify the integrity and authenticity of the payload by checking " +
-	               "the provided signature",
-	"insecure": "Will ignore certificate errors raised by the client",
-	"include_headers_in_context": "The connector response context will also include the headers. The context will " +
-	                              "have a \"body\" attribute and a \"headers\" attribute. See more details in the help " +
-	                              "guide",
-}
-
-var docsHttpStaticIP = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
 	"base_url": "The base URL to fetch",
@@ -672,14 +652,6 @@ var docsTwilioVerify = map[string]string{
 	"service_sid": "",
 	"sender": "",
 	"authentication": "",
-}
-
-var docsVeriff = map[string]string{
-	"name": "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"api_key": "The Veriff Public API Key, you can find under Veriff Station - Integrations.",
-	"secret_key": "The Veriff Shared secret key, you can find under Veriff Station - Integrations.",
-	"base_url": "The base URL of the Veriff API, default value is https://stationapi.veriff.com.",
 }
 
 var docsFlow = map[string]string{
