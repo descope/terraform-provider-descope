@@ -41,6 +41,11 @@ func (r *Resource) Check(checks map[string]any, extras ...resource.TestCheckFunc
 			f = append(f, resource.TestCheckResourceAttr(path, k, strconv.Itoa(value)))
 		} else if value, ok := v.(bool); ok {
 			f = append(f, resource.TestCheckResourceAttr(path, k, fmt.Sprintf("%t", value)))
+		} else if value, ok := v.([]string); ok {
+			f = append(f, resource.TestCheckResourceAttr(path, k+".#", strconv.Itoa(len(value))))
+			for i := range value {
+				f = append(f, resource.TestCheckResourceAttr(path, fmt.Sprintf("%s.%d", k, i), value[i]))
+			}
 		} else if value, ok := v.(func(string) error); ok {
 			f = append(f, resource.TestCheckResourceAttrWith(path, k, value))
 		} else if v == AttributeIsSet {
