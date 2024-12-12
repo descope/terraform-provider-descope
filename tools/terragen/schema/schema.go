@@ -153,7 +153,7 @@ func (s *Schema) addFile(root string, dirs []string, filename string) {
 				Declaration: string(source[fileset.Position(value.Pos()).Offset:fileset.Position(value.End()).Offset]),
 			}
 
-			field.Type, ok = fieldTypeFromSelector(f)
+			field.Type, field.Element, ok = fieldTypeFromSelector(f)
 			if !ok {
 				log.Fatalf("unexpected package type in value for field %s in %s in %s: %v", fieldName, varName, path, f.X)
 			}
@@ -180,7 +180,7 @@ func (s *Schema) addFile(root string, dirs []string, filename string) {
 				if variant != "" {
 					field.Element = strings.ToLower(variant)
 					variant = ""
-				} else {
+				} else if field.Element == "" {
 					if len(value.Args) < 1 {
 						log.Fatalf("unexpected empty arguments in %s field %s in %s in %s", field.Type, fieldName, varName, path)
 					}
@@ -310,14 +310,17 @@ func shouldIgnoreFile(path string) bool {
 }
 
 // converts package path in selector to a field type
-func fieldTypeFromSelector(selector *ast.SelectorExpr) (FieldType, bool) {
+func fieldTypeFromSelector(selector *ast.SelectorExpr) (FieldType, string, bool) {
 	if pkg, ok := selector.X.(*ast.Ident); ok {
 		typ := FieldType(strings.TrimSuffix(pkg.Name, "attr"))
 		if typ == FieldTypeBool || typ == FieldTypeDuration || typ == FieldTypeFloat || typ == FieldTypeInt || typ == FieldTypeList || typ == FieldTypeObject || typ == FieldTypeMap || typ == FieldTypeString {
-			return typ, true
+			return typ, "", true
+		}
+		if typ == "strlist" {
+			return FieldTypeList, "string", true
 		}
 	}
-	return "", false
+	return "", "", false
 }
 
 // sorts directory entries by files first, directories later, then in lexical order

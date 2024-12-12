@@ -669,9 +669,14 @@ var docsJWTTemplates = map[string]string{
 }
 
 var docsSettings = map[string]string{
-	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"domain": "The Domain name for custom domain set up. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).",
+	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy " +
+	                 "click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"domain": "The Domain name for custom domain set up. To read more about custom domain and " +
+	          "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"trusted_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
+	                   "for different authentication methods.",
+	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity " +
+	                     "click [here](https://docs.descope.com/project-settings#session-inactivity).",
 	"inactivity_time": "The inactivity timer, e.g \"15 minutes\", \"1 hour\". Minimum is \"10 minutes\".",
 	"refresh_token_expiration": "The refresh token expiration timer.  e.g \"15 minutes\", \"1 hour\". Minimum is \"2 minutes\".",
 	"user_jwt_template": "Name of the user JWT Template.",

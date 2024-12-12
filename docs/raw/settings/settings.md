@@ -9,7 +9,8 @@ cookie_policy
 
 - Type: `string` 
 
-Use "strict", "lax" or "none". To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+Use "strict", "lax" or "none". To read more about custom domain and cookie policy
+click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 
 
 
@@ -18,7 +19,18 @@ domain
 
 - Type: `string` 
 
-The Domain name for custom domain set up. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+The Domain name for custom domain set up. To read more about custom domain and
+cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+
+
+
+trusted_domains
+---------------
+
+- Type: `list` of `string` 
+
+The list of approved domains that are allowed for redirect and verification URLs
+for different authentication methods.
 
 
 
@@ -27,7 +39,8 @@ enable_inactivity
 
 - Type: `bool` 
 
-Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
+Use `True` to enable session inactivity. To read more about session inactivity
+click [here](https://docs.descope.com/project-settings#session-inactivity).
 
 
 
