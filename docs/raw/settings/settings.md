@@ -34,6 +34,16 @@ for different authentication methods.
 
 
 
+refresh_token_rotation
+----------------------
+
+- Type: `bool` 
+
+Every time the user refreshes their session token via their refresh token, the
+refresh token itself is also updated to a new one.
+
+
+
 enable_inactivity
 -----------------
 

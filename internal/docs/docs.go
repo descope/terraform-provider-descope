@@ -682,6 +682,8 @@ var docsSettings = map[string]string{
 	          "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
 	                    "for different authentication methods.",
+	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
+	                          "refresh token itself is also updated to a new one.",
 	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity " +
 	                     "click [here](https://docs.descope.com/project-settings#session-inactivity).",
 	"inactivity_time": "The session inactivity time. Use values such as \"15 minutes\", \"1 hour\", etc. The minimum " +

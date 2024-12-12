@@ -15,7 +15,8 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"cookie_policy":                       stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
 	"domain":                              stringattr.Optional(),
 	"approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
-	"enable_inactivity":                   boolattr.Optional(),
+	"refresh_token_rotation":              boolattr.Default(false),
+	"enable_inactivity":                   boolattr.Default(false),
 	"inactivity_time":                     durationattr.Default("12 minutes", durationattr.MinimumValue("10 minutes")),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"session_token_expiration":            durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
@@ -30,6 +31,7 @@ type SettingsModel struct {
 	CookiePolicy                    types.String `tfsdk:"cookie_policy"`
 	Domain                          types.String `tfsdk:"domain"`
 	ApprovedDomain                  []string     `tfsdk:"approved_domains"`
+	RefreshTokenRotation            types.Bool   `tfsdk:"refresh_token_rotation"`
 	EnableInactivity                types.Bool   `tfsdk:"enable_inactivity"`
 	InactivityTime                  types.String `tfsdk:"inactivity_time"`
 	RefreshTokenExpiration          types.String `tfsdk:"refresh_token_expiration"`
@@ -46,6 +48,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Get(m.Domain, data, "domain")
 	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
+	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
 	boolattr.Get(m.EnableInactivity, data, "enableInactivity")
 	durationattr.Get(m.InactivityTime, data, "inactivityTime")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
@@ -62,6 +65,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Set(&m.Domain, data, "domain")
 	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
+	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
 	durationattr.Set(&m.InactivityTime, data, "inactivityTime")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")

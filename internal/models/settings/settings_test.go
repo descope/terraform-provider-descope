@@ -67,6 +67,25 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					refresh_token_rotation = true
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.refresh_token_rotation": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.refresh_token_rotation": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					approved_domains = ["example.com"]
 				}
 			`),

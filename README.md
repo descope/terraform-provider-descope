@@ -165,10 +165,10 @@ resource "descope_project" "my_project" {
 
 ### Setup
 
-Clone and repository and run `make dev` to prepare your local environmenty for development. This will ensure
-you have the requisite `go` compiler, build and install the Descope project to `$GOPATH/bin`, and create
-a `~/.terraformrc` override file to instruct `terraform` to use the local Descope provider build instead of loading
-it from the Terraform registry.
+Clone the repository and run `make dev` to prepare your local environment for development. This will ensure
+you have the requisite `go` compiler, build and install the Descope Terraform Provider binary to `$GOPATH/bin`,
+and create a `~/.terraformrc` override file to instruct `terraform` to use the local provider binary instead
+of loading it from the Terraform registry.
 
 ```bash
 git clone https://github.com/descope/terraform-provider-descope
