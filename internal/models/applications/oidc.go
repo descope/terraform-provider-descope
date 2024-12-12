@@ -2,8 +2,8 @@ package applications
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -16,7 +16,7 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"disabled":    boolattr.Default(false),
 
 	"login_page_url": stringattr.Default(""),
-	"claims":         listattr.StringOptional(),
+	"claims":         strlistattr.Optional(),
 }
 
 // Model
@@ -35,7 +35,7 @@ func (m *OIDCModel) Values(h *Handler) map[string]any {
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	settings := map[string]any{}
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
-	settings["claims"] = m.Claims
+	strlistattr.Get(m.Claims, settings, "claims")
 	data["oidc"] = settings
 	return data
 }

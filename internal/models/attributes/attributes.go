@@ -5,6 +5,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -39,7 +40,7 @@ var attributeTypeValidator = stringvalidator.OneOf("string", "number", "boolean"
 var TenantAttributeAttributes = map[string]schema.Attribute{
 	"name":           stringattr.Required(stringvalidator.LengthAtMost(20)),
 	"type":           stringattr.Required(attributeTypeValidator),
-	"select_options": listattr.StringOptional(),
+	"select_options": strlistattr.Optional(),
 }
 
 type TenantAttributeModel struct {
@@ -74,7 +75,7 @@ func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any
 var UserAttributeAttributes = map[string]schema.Attribute{
 	"name":                 stringattr.Required(stringvalidator.LengthAtMost(20)),
 	"type":                 stringattr.Required(attributeTypeValidator),
-	"select_options":       listattr.StringOptional(),
+	"select_options":       strlistattr.Optional(),
 	"widget_authorization": objectattr.Optional(UserAttributeWidgetAuthorizationAttributes),
 }
 
@@ -112,8 +113,8 @@ func (m *UserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) 
 // Widget Authorization
 
 var UserAttributeWidgetAuthorizationAttributes = map[string]schema.Attribute{
-	"view_permissions": listattr.StringOptional(),
-	"edit_permissions": listattr.StringOptional(),
+	"view_permissions": strlistattr.Optional(),
+	"edit_permissions": strlistattr.Optional(),
 }
 
 type UserAttributeAuthorizationModel struct {
