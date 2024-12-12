@@ -797,5 +797,11 @@ func TestConnectors(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
 		},
+		resource.TestStep{
+			Config: p.Config(),
+			Check: p.Check(map[string]any{
+				"connectors.%": 0,
+			}),
+		},
 	)
 }
