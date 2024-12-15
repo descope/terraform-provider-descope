@@ -15,6 +15,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"cookie_policy":                       stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
 	"domain":                              stringattr.Optional(),
 	"approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
+	"token_response_method":               stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"enable_inactivity":                   boolattr.Default(false),
 	"inactivity_time":                     durationattr.Default("12 minutes", durationattr.MinimumValue("10 minutes")),
@@ -32,6 +33,7 @@ type SettingsModel struct {
 	CookiePolicy                    types.String `tfsdk:"cookie_policy"`
 	Domain                          types.String `tfsdk:"domain"`
 	ApprovedDomain                  []string     `tfsdk:"approved_domains"`
+	TokenResponseMethod             types.String `tfsdk:"token_response_method"`
 	RefreshTokenRotation            types.Bool   `tfsdk:"refresh_token_rotation"`
 	EnableInactivity                types.Bool   `tfsdk:"enable_inactivity"`
 	InactivityTime                  types.String `tfsdk:"inactivity_time"`
@@ -50,6 +52,11 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Get(m.Domain, data, "domain")
 	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
+	if s := m.TokenResponseMethod.ValueString(); s == "cookies" {
+		data["tokenResponseMethod"] = "cookie"
+	} else if s == "response_body" {
+		data["tokenResponseMethod"] = "onBody"
+	}
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
 	boolattr.Get(m.EnableInactivity, data, "enableInactivity")
 	durationattr.Get(m.InactivityTime, data, "inactivityTime")
@@ -68,6 +75,13 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Set(&m.Domain, data, "domain")
 	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
+	if data["tokenResponseMethod"] == "cookie" {
+		m.TokenResponseMethod = types.StringValue("cookies")
+	} else if data["tokenResponseMethod"] == "onBody" {
+		m.TokenResponseMethod = types.StringValue("response_body")
+	} else {
+		h.Error("Unexpected token response method", "Expected value to be either 'cookie' or 'onBody', found: '%v'", data["tokenResponseMethod"])
+	}
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
 	durationattr.Set(&m.InactivityTime, data, "inactivityTime")

@@ -34,6 +34,17 @@ for different authentication methods.
 
 
 
+token_response_method
+---------------------
+
+- Type: `string` 
+- Default: `"response_body"`
+
+Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body`
+or `cookies`. The default value is `response_body`.
+
+
+
 refresh_token_rotation
 ----------------------
 

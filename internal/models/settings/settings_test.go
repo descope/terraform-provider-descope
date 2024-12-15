@@ -189,6 +189,34 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.token_response_method": "response_body",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					token_response_method = "cookies"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.token_response_method": "cookies",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.token_response_method": "response_body",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					cookie_policy = "foo"
 				}
 			`),
