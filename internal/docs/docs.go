@@ -676,20 +676,16 @@ var docsJWTTemplates = map[string]string{
 }
 
 var docsSettings = map[string]string{
-	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy " +
-	                 "click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"domain": "The Domain name for custom domain set up. To read more about custom domain and " +
 	          "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
 	                    "for different authentication methods.",
 	"token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +
 	                         "or `cookies`. The default value is `response_body`.",
+	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy " +
+	                 "click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 	                          "refresh token itself is also updated to a new one.",
-	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity " +
-	                     "click [here](https://docs.descope.com/project-settings#session-inactivity).",
-	"inactivity_time": "The session inactivity time. Use values such as \"15 minutes\", \"1 hour\", etc. The minimum " +
-	                   "value is \"10 minutes\".",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
 	                            "such as \"4 weeks\", \"14 days\", etc. The minimum value is \"3 minutes\".",
 	"session_token_expiration": "The expiry time of the session token, used for accessing the application's resources. The value " +
@@ -699,6 +695,10 @@ var docsSettings = map[string]string{
 	"trusted_device_token_expiration": "The expiry time for the trusted device token. The minimum value is \"3 minutes\".",
 	"access_key_session_token_expiration": "The expiry time for access key session tokens. Use values such as \"10 minutes\", \"4 hours\", etc. The " +
 	                                       "value needs to be at least 3 minutes and can't be longer than 4 weeks.",
+	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity " +
+	                     "click [here](https://docs.descope.com/project-settings#session-inactivity).",
+	"inactivity_time": "The session inactivity time. Use values such as \"15 minutes\", \"1 hour\", etc. The minimum " +
+	                   "value is \"10 minutes\".",
 	"test_users_loginid_regexp": "Define a regular expression so that whenever a user is created with a matching login ID it will " +
 	                             "automatically be marked as a test user.",
 	"user_jwt_template": "Name of the user JWT Template.",

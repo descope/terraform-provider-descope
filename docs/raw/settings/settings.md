@@ -4,16 +4,6 @@ Settings
 
 
 
-cookie_policy
--------------
-
-- Type: `string` 
-
-Use "strict", "lax" or "none". To read more about custom domain and cookie policy
-click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
-
-
-
 domain
 ------
 
@@ -45,6 +35,16 @@ or `cookies`. The default value is `response_body`.
 
 
 
+cookie_policy
+-------------
+
+- Type: `string` 
+
+Use "strict", "lax" or "none". To read more about custom domain and cookie policy
+click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+
+
+
 refresh_token_rotation
 ----------------------
 
@@ -52,26 +52,6 @@ refresh_token_rotation
 
 Every time the user refreshes their session token via their refresh token, the
 refresh token itself is also updated to a new one.
-
-
-
-enable_inactivity
------------------
-
-- Type: `bool` 
-
-Use `True` to enable session inactivity. To read more about session inactivity
-click [here](https://docs.descope.com/project-settings#session-inactivity).
-
-
-
-inactivity_time
----------------
-
-- Type: `duration` 
-
-The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum
-value is "10 minutes".
 
 
 
@@ -121,6 +101,26 @@ access_key_session_token_expiration
 
 The expiry time for access key session tokens. Use values such as "10 minutes", "4 hours", etc. The
 value needs to be at least 3 minutes and can't be longer than 4 weeks.
+
+
+
+enable_inactivity
+-----------------
+
+- Type: `bool` 
+
+Use `True` to enable session inactivity. To read more about session inactivity
+click [here](https://docs.descope.com/project-settings#session-inactivity).
+
+
+
+inactivity_time
+---------------
+
+- Type: `duration` 
+
+The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum
+value is "10 minutes".
 
 
 
