@@ -179,6 +179,16 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					test_users_loginid_regexp = "^acmetestuser-[0-9]+@acmecorp.com$"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.test_users_loginid_regexp": "^acmetestuser-[0-9]+@acmecorp.com$",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					cookie_policy = "foo"
 				}
 			`),

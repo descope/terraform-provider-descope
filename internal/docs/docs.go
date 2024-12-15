@@ -697,6 +697,8 @@ var docsSettings = map[string]string{
 	"trusted_device_token_expiration": "The expiry time for the trusted device token. The minimum value is \"3 minutes\".",
 	"access_key_session_token_expiration": "The expiry time for access key session tokens. Use values such as \"10 minutes\", \"4 hours\", etc. The " +
 	                                       "value needs to be at least 3 minutes and can't be longer than 4 weeks.",
+	"test_users_loginid_regexp": "Define a regular expression so that whenever a user is created with a matching login ID it will " +
+	                             "automatically be marked as a test user.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
 }

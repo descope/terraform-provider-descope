@@ -113,6 +113,16 @@ value needs to be at least 3 minutes and can't be longer than 4 weeks.
 
 
 
+test_users_loginid_regexp
+-------------------------
+
+- Type: `string` 
+
+Define a regular expression so that whenever a user is created with a matching login ID it will
+automatically be marked as a test user.
+
+
+
 user_jwt_template
 -----------------
 
