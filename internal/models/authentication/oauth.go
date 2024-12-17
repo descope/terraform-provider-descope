@@ -124,7 +124,6 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 	// custom-only validation
 	ensureNoCustomProviderFields(h, m.Description, "description", name)
 	ensureNoCustomProviderFields(h, m.Logo, "logo", name)
-	ensureNoCustomProviderFields(h, m.GrantType, "grant_type", name)
 	ensureNoCustomProviderFields(h, m.Issuer, "issuer", name)
 	ensureNoCustomProviderFields(h, m.AuthorizationEndpoint, "authorization_endpoint", name)
 	ensureNoCustomProviderFields(h, m.TokenEndpoint, "token_endpoint", name)
@@ -135,21 +134,9 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 	}
 }
 
-func ensureNoCustomProviderFields(h *helpers.Handler, field any, fieldKey, name string) {
-	switch v := field.(type) {
-	case types.String:
-		if v.ValueString() != "" {
-			h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey),
-				"%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
-		}
-	case []string:
-		if len(v) > 0 {
-			h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey),
-				"%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
-		}
-	default:
-		h.Error(fmt.Sprintf("Invalid field type for %s", fieldKey),
-			"unexpected type for field %s in system provider %s", fieldKey, name)
+func ensureNoCustomProviderFields(h *helpers.Handler, field types.String, fieldKey, name string) {
+	if !field.IsUnknown() && !field.IsNull() {
+		h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey), "%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
 	}
 }
 
