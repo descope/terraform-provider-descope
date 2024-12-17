@@ -65,6 +65,21 @@ func Default(value string, validators ...validator.String) schema.StringAttribut
 	}
 }
 
+func Deprecated(message string, validators ...validator.String) schema.StringAttribute {
+	return schema.StringAttribute{
+		Optional:           true,
+		Computed:           true,
+		DeprecationMessage: message + " This attribute will be removed in the next major version of the provider.",
+		Validators:         validators,
+		PlanModifiers:      []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+		Default:            NullDefault(),
+	}
+}
+
+func Renamed(oldname, newname string, validators ...validator.String) schema.StringAttribute {
+	return Deprecated("The "+oldname+" attribute has been renamed, set the "+newname+" attribute instead.", validators...)
+}
+
 func Get(s types.String, data map[string]any, key string) {
 	if !s.IsNull() && !s.IsUnknown() {
 		data[key] = s.ValueString()
