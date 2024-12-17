@@ -92,9 +92,6 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field types.String, f
 	if field.ValueString() == "" {
 		h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
 	}
-	if len(app.GrantType) == 0 {
-		h.Error("Custom provider must set their grant_type", "no grant_type found for custom provider %s", name)
-	}
 }
 
 func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
