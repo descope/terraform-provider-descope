@@ -138,7 +138,7 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 func ensureNoCustomProviderFields(h *helpers.Handler, field any, fieldKey, name string) {
 	switch v := field.(type) {
 	case types.String:
-		if !v.IsUnknown() && !v.IsNull() {
+		if v.ValueString() != "" {
 			h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey),
 				"%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
 		}
