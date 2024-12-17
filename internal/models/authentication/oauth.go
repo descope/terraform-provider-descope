@@ -258,7 +258,7 @@ type OAuthProviderModel struct {
 	MergeUserAccounts       types.Bool                         `tfsdk:"merge_user_accounts"`
 	Description             types.String                       `tfsdk:"description"`
 	Logo                    types.String                       `tfsdk:"logo"`
-	GrantType               []string                       `tfsdk:"grant_type"`
+	GrantType               []string                           `tfsdk:"grant_type"`
 	Issuer                  types.String                       `tfsdk:"issuer"`
 	AuthorizationEndpoint   types.String                       `tfsdk:"authorization_endpoint"`
 	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
