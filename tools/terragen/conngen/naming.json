@@ -75,11 +75,6 @@
       "file": "http",
       "struct": "HTTP"
     },
-    "http-static-ip": {
-      "attribute": "http_static_ip",
-      "file": "httpstaticip",
-      "struct": "HttpStaticIP"
-    },
     "hubspot": {
       "attribute": "hubspot",
       "file": "hubspot",
@@ -89,6 +84,16 @@
       "attribute": "intercom",
       "file": "intercom",
       "struct": "Intercom"
+    },
+    "lokalise": {
+      "attribute": "lokalise",
+      "file": "lokalise",
+      "struct": "Lokalise"
+    },
+    "mparticle": {
+      "attribute": "mparticle",
+      "file": "mparticle",
+      "struct": "MParticle"
     },
     "newrelic": {
       "attribute": "newrelic",
@@ -124,6 +129,11 @@
       "attribute": "sendgrid",
       "struct": "SendGrid"
     },
+    "smartling": {
+      "attribute": "smartling",
+      "file": "smartling",
+      "struct": "Smartling"
+    },
     "smtp": {
       "attribute": "smtp",
       "struct": "SMTP"
@@ -150,11 +160,6 @@
     "twilio-verify": {
       "attribute": "twilio_verify",
       "struct": "TwilioVerify"
-    },
-    "veriff": {
-      "attribute": "veriff",
-      "file": "veriff",
-      "struct": "Veriff"
     }
   },
   "field": {
@@ -166,9 +171,21 @@
       "attribute": "access_token",
       "struct": "AccessToken"
     },
+    "accountUid": {
+      "attribute": "account_uid",
+      "struct": "AccountUID"
+    },
     "apiKey": {
       "attribute": "api_key",
       "struct": "APIKey"
+    },
+    "apiSecret": {
+      "attribute": "api_secret",
+      "struct": "APISecret"
+    },
+    "apiToken": {
+      "attribute": "api_token",
+      "struct": "APIToken"
     },
     "assessmentScore": {
       "attribute": "assessment_score",
@@ -193,6 +210,10 @@
     "bucket": {
       "attribute": "bucket",
       "struct": "Bucket"
+    },
+    "cardId": {
+      "attribute": "card_id",
+      "struct": "CardID"
     },
     "clientId": {
       "attribute": "client_id",
@@ -334,9 +355,17 @@
       "attribute": "site_key",
       "struct": "SiteKey"
     },
+    "teamId": {
+      "attribute": "team_id",
+      "struct": "TeamID"
+    },
     "token": {
       "attribute": "token",
       "struct": "Token"
+    },
+    "translationProvider": {
+      "attribute": "translation_provider",
+      "struct": "TranslationProvider"
     },
     "troubleshootLogEnabled": {
       "attribute": "troubleshoot_log_enabled",
@@ -345,6 +374,14 @@
     "useCloudflareIntegration": {
       "attribute": "use_cloudflare_integration",
       "struct": "UseCloudflareIntegration"
+    },
+    "userIdentifier": {
+      "attribute": "user_identifier",
+      "struct": "UserIdentifier"
+    },
+    "userSecret": {
+      "attribute": "user_secret",
+      "struct": "UserSecret"
     },
     "username": {
       "attribute": "username",

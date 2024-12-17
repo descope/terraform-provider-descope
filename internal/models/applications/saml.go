@@ -7,6 +7,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -22,7 +23,7 @@ var SAMLAttributes = map[string]schema.Attribute{
 	"login_page_url":            stringattr.Default(""),
 	"dynamic_configuration":     objectattr.Optional(DynamicConfigurationAttributes),
 	"manual_configuration":      objectattr.Optional(ManualConfigurationAttributes),
-	"acs_allowed_callback_urls": listattr.StringOptional(),
+	"acs_allowed_callback_urls": strlistattr.Optional(),
 	"subject_name_id_type":      stringattr.Default("", stringvalidator.OneOf("", "email", "phone")),
 	"subject_name_id_format":    stringattr.Default("", stringvalidator.OneOf("", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient")),
 	"default_relay_state":       stringattr.Default(""),
@@ -62,7 +63,7 @@ func (m *SAMLModel) Values(h *Handler) map[string]any {
 	stringattr.Get(m.SubjectNameIDFormat, settings, "subjectNameIdFormat")
 	stringattr.Get(m.DefaultRelayState, settings, "defaultRelayState")
 	listattr.Get(m.AttributeMapping, settings, "attributeMapping", h)
-	settings["acsAllowedCallbacks"] = m.ACSAllowedCallbackURLs
+	strlistattr.Get(m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks")
 	data["saml"] = settings
 	return data
 }

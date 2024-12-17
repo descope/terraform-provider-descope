@@ -147,15 +147,6 @@ A general purpose HTTP client
 
 
 
-http_static_ip
---------------
-
-- Type: `list` of `connectors.HttpStaticIP` 
-
-// description for http_static_ip
-
-
-
 hubspot
 -------
 
@@ -172,6 +163,26 @@ intercom
 - Type: `list` of `connectors.Intercom` 
 
 Intercom is a Conversational Relationship Platform (CRP).
+
+
+
+lokalise
+--------
+
+- Type: `list` of `connectors.Lokalise` 
+
+Localize the language of your login and user journey screens with the Lokalise
+connector.
+
+
+
+mparticle
+---------
+
+- Type: `list` of `connectors.MParticle` 
+
+Track and send user event data (e.g. page views, purchases, etc.) across
+connected tools using the mParticle connector.
 
 
 
@@ -245,6 +256,16 @@ sendgrid
 
 
 
+smartling
+---------
+
+- Type: `list` of `connectors.Smartling` 
+
+Localize the language of your login and user journey screens with the Smartling
+connector.
+
+
+
 smtp
 ----
 
@@ -297,13 +318,3 @@ twilio_verify
 - Type: `list` of `connectors.TwilioVerify` 
 
 // description for twilio_verify
-
-
-
-veriff
-------
-
-- Type: `list` of `connectors.Veriff` 
-
-AI-powered identity verification solution for identity fraud prevention, Know
-Your Customer compliance, and fast conversions of valuable customers.

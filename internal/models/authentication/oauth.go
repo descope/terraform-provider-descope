@@ -6,10 +6,10 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -212,8 +212,8 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"client_id":                 stringattr.Optional(),
 	"client_secret":             stringattr.SecretOptional(),
 	"provider_token_management": objectattr.Optional(OAuthProviderTokenManagementAttribute),
-	"prompts":                   listattr.StringOptional(listvalidator.ValueStringsAre(stringvalidator.OneOf("none", "login", "consent", "select_account"))),
-	"scopes":                    listattr.StringOptional(),
+	"prompts":                   strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("none", "login", "consent", "select_account"))),
+	"scopes":                    strlistattr.Optional(),
 	"merge_user_accounts":       boolattr.Default(true),
 	// editable for custom only
 	"description":            stringattr.Optional(),
@@ -260,10 +260,10 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 		data["manageProviderTokens"] = false
 	}
 	if len(m.Prompts) > 0 {
-		data["prompts"] = m.Prompts
+		strlistattr.Get(m.Prompts, data, "prompts")
 	}
 	if len(m.Scopes) > 0 {
-		data["scopes"] = m.Scopes
+		strlistattr.Get(m.Scopes, data, "scopes")
 	}
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")

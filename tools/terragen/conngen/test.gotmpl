@@ -47,5 +47,11 @@ func TestConnectors(t *testing.T) {
 {{- end}}
 		},
 {{- end }}
+		resource.TestStep{
+			Config: p.Config(),
+			Check: p.Check(map[string]any{
+				"connectors.%": 0,
+			}),
+		},
 	)
 }

@@ -404,40 +404,6 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
-					"http_static_ip": [
-						{
-							name = "Test http-static-ip Connector"
-							description = "A description for the http-static-ip connector"
-    						base_url = "bceszn6"
-    						authentication = {
-    							bearer_token = "xhmqmkcfhe4mk6"
-    						}
-    						headers = {
-    							"key" = "g6htpmp"
-    						}
-    						hmac_secret = "ooxzct5yxz"
-    						insecure = true
-    						include_headers_in_context = true
-						}
-					]
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"connectors.http_static_ip.#":                             1,
-				"connectors.http_static_ip.0.id":                          testacc.AttributeHasPrefix("CI"),
-				"connectors.http_static_ip.0.name":                        "Test http-static-ip Connector",
-				"connectors.http_static_ip.0.description":                 "A description for the http-static-ip connector",
-				"connectors.http_static_ip.0.base_url":                    "bceszn6",
-				"connectors.http_static_ip.0.authentication.bearer_token": "xhmqmkcfhe4mk6",
-				"connectors.http_static_ip.0.headers.key":                 "g6htpmp",
-				"connectors.http_static_ip.0.hmac_secret":                 "ooxzct5yxz",
-				"connectors.http_static_ip.0.insecure":                    true,
-				"connectors.http_static_ip.0.include_headers_in_context":  true,
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				connectors = {
 					"hubspot": [
 						{
 							name = "Test hubspot Connector"
@@ -477,6 +443,58 @@ func TestConnectors(t *testing.T) {
 				"connectors.intercom.0.description": "A description for the intercom connector",
 				"connectors.intercom.0.token":       "hrdj5",
 				"connectors.intercom.0.region":      "y2l5fg",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"lokalise": [
+						{
+							name = "Test lokalise Connector"
+							description = "A description for the lokalise connector"
+    						api_token = "mybopddv"
+    						project_id = "yhw7b6yel"
+    						team_id = "ontsaz"
+    						card_id = "uo4way"
+    						translation_provider = "zdmwgn7cvt7zfpsmrww"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.lokalise.#":                      1,
+				"connectors.lokalise.0.id":                   testacc.AttributeHasPrefix("CI"),
+				"connectors.lokalise.0.name":                 "Test lokalise Connector",
+				"connectors.lokalise.0.description":          "A description for the lokalise connector",
+				"connectors.lokalise.0.api_token":            "mybopddv",
+				"connectors.lokalise.0.project_id":           "yhw7b6yel",
+				"connectors.lokalise.0.team_id":              "ontsaz",
+				"connectors.lokalise.0.card_id":              "uo4way",
+				"connectors.lokalise.0.translation_provider": "zdmwgn7cvt7zfpsmrww",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"mparticle": [
+						{
+							name = "Test mparticle Connector"
+							description = "A description for the mparticle connector"
+    						api_key = "mhvece"
+    						api_secret = "hgg666mus"
+    						base_url = "bceszn6"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.mparticle.#":             1,
+				"connectors.mparticle.0.id":          testacc.AttributeHasPrefix("CI"),
+				"connectors.mparticle.0.name":        "Test mparticle Connector",
+				"connectors.mparticle.0.description": "A description for the mparticle connector",
+				"connectors.mparticle.0.api_key":     "mhvece",
+				"connectors.mparticle.0.api_secret":  "hgg666mus",
+				"connectors.mparticle.0.base_url":    "bceszn6",
 			}),
 		},
 		resource.TestStep{
@@ -649,6 +667,30 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"smartling": [
+						{
+							name = "Test smartling Connector"
+							description = "A description for the smartling connector"
+    						user_identifier = "h2sy3jtqq4rxwi"
+    						user_secret = "gchtcl2tno"
+    						account_uid = "7qxonan5tu"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.smartling.#":                 1,
+				"connectors.smartling.0.id":              testacc.AttributeHasPrefix("CI"),
+				"connectors.smartling.0.name":            "Test smartling Connector",
+				"connectors.smartling.0.description":     "A description for the smartling connector",
+				"connectors.smartling.0.user_identifier": "h2sy3jtqq4rxwi",
+				"connectors.smartling.0.user_secret":     "gchtcl2tno",
+				"connectors.smartling.0.account_uid":     "7qxonan5tu",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"smtp": [
 						{
 							name = "Test smtp Connector"
@@ -756,27 +798,9 @@ func TestConnectors(t *testing.T) {
 			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
 		},
 		resource.TestStep{
-			Config: p.Config(`
-				connectors = {
-					"veriff": [
-						{
-							name = "Test veriff Connector"
-							description = "A description for the veriff connector"
-    						api_key = "mhvece"
-    						secret_key = "wi4bhwt7a"
-    						base_url = "bceszn6"
-						}
-					]
-				}
-			`),
+			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.veriff.#":             1,
-				"connectors.veriff.0.id":          testacc.AttributeHasPrefix("CI"),
-				"connectors.veriff.0.name":        "Test veriff Connector",
-				"connectors.veriff.0.description": "A description for the veriff connector",
-				"connectors.veriff.0.api_key":     "mhvece",
-				"connectors.veriff.0.secret_key":  "wi4bhwt7a",
-				"connectors.veriff.0.base_url":    "bceszn6",
+				"connectors.%": 0,
 			}),
 		},
 	)

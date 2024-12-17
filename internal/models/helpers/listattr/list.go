@@ -2,7 +2,6 @@ package listattr
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -30,20 +29,6 @@ func Optional(attributes map[string]schema.Attribute, validators ...validator.Ob
 		Computed:     true,
 		NestedObject: nested,
 		Default:      listdefault.StaticValue(types.ListNull(nested.Type())),
-	}
-}
-
-func StringOptional(validators ...validator.List) schema.ListAttribute {
-	return optionalTypeList(types.StringType, validators...)
-}
-
-func optionalTypeList(elementType attr.Type, validators ...validator.List) schema.ListAttribute {
-	return schema.ListAttribute{
-		Optional:    true,
-		Computed:    true,
-		ElementType: elementType,
-		Default:     listdefault.StaticValue(types.ListNull(elementType)),
-		Validators:  validators,
 	}
 }
 

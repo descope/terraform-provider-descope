@@ -66,7 +66,7 @@ func parseExtras(extras []any) (mapValidators []validator.Map, objectValidators 
 			objectValidators = append(objectValidators, v)
 		}
 		if !matched {
-			panic(fmt.Sprintf("Unexpected extra value of type %T in map attribute", e))
+			panic(fmt.Sprintf("unexpected extra value of type %T in map attribute", e))
 		}
 	}
 	return

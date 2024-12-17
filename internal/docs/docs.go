@@ -320,10 +320,13 @@ var docsConnectors = map[string]string{
 	"google_cloud_translation": "",
 	"hibp": "API to check if password appeared previously exposed in data breaches.",
 	"http": "A general purpose HTTP client",
-	"http_static_ip": "",
 	"hubspot": "HubSpot is a CRM platform with software, integrations, and resources needed to " +
 	           "connect marketing, sales, content management, and customer service.",
 	"intercom": "Intercom is a Conversational Relationship Platform (CRP).",
+	"lokalise": "Localize the language of your login and user journey screens with the Lokalise " +
+	            "connector.",
+	"mparticle": "Track and send user event data (e.g. page views, purchases, etc.) across " +
+	             "connected tools using the mParticle connector.",
 	"newrelic": "Use this connector to send audit events and troubleshooting logs to New Relic.",
 	"recaptcha": "reCAPTCHA is a free google service that protects your site from spam and abuse. " +
 	             "It uses advanced risk analysis techniques to tell humans and bots apart.",
@@ -338,6 +341,8 @@ var docsConnectors = map[string]string{
 	           "mobile apps, unify those and use those to better understand your customers " +
 	           "needs.",
 	"sendgrid": "",
+	"smartling": "Localize the language of your login and user journey screens with the Smartling " +
+	             "connector.",
 	"smtp": "",
 	"sumologic": "Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log " +
 	             "analytics",
@@ -345,8 +350,6 @@ var docsConnectors = map[string]string{
 	"traceable": "API security for a cloud-first, API-driven world.",
 	"twilio_core": "",
 	"twilio_verify": "",
-	"veriff": "AI-powered identity verification solution for identity fraud prevention, Know " +
-	          "Your Customer compliance, and fast conversions of valuable customers.",
 }
 
 var docsDatadog = map[string]string{
@@ -435,23 +438,6 @@ var docsHTTP = map[string]string{
 	                              "guide",
 }
 
-var docsHttpStaticIP = map[string]string{
-	"name": "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"base_url": "The base URL to fetch",
-	"authentication": "Authentication Information",
-	"headers": "The headers to send with the request",
-	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
-	               "used to sign the base64 encoded payload, and the resulting signature will be " +
-	               "sent in the `x-descope-webhook-s256` header. The receiving service should use " +
-	               "this secret to verify the integrity and authenticity of the payload by checking " +
-	               "the provided signature",
-	"insecure": "Will ignore certificate errors raised by the client",
-	"include_headers_in_context": "The connector response context will also include the headers. The context will " +
-	                              "have a \"body\" attribute and a \"headers\" attribute. See more details in the help " +
-	                              "guide",
-}
-
 var docsHubSpot = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -465,6 +451,27 @@ var docsIntercom = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"token": "The Intercom access token.",
 	"region": "Regional Hosting - US, EU, or AU. default: US",
+}
+
+var docsLokalise = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_token": "Lokalise API token.",
+	"project_id": "Lokalise project ID.",
+	"team_id": "Lokalise team ID. If not provided, the oldest available team will be used.",
+	"card_id": "(Optional) The ID of the payment card to use for translation orders. If not " +
+	           "provided, the team credit will be used.",
+	"translation_provider": "The translation provider to use ('gengo', 'google', 'lokalise', 'deepl'), " +
+	                        "default is 'deepl'.",
+}
+
+var docsMParticle = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_key": "The mParticle Server to Server Key generated for the Descope service.",
+	"api_secret": "The mParticle Server to Server Secret generated for the Descope service.",
+	"base_url": "The base URL of the mParticle API, when using a custom domain in mParticle. " +
+	            "default value is https://s2s.mparticle.com/",
 }
 
 var docsNewRelic = map[string]string{
@@ -565,6 +572,14 @@ var docsHTTPAuthAPIKeyField = map[string]string{
 	"token": "",
 }
 
+var docsSmartling = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"user_identifier": "The user identifier for the Smartling account.",
+	"user_secret": "The user secret for the Smartling account.",
+	"account_uid": "The account UID for the Smartling account.",
+}
+
 var docsSMTP = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -639,14 +654,6 @@ var docsTwilioVerify = map[string]string{
 	"authentication": "",
 }
 
-var docsVeriff = map[string]string{
-	"name": "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"api_key": "The Veriff Public API Key, you can find under Veriff Station - Integrations.",
-	"secret_key": "The Veriff Shared secret key, you can find under Veriff Station - Integrations.",
-	"base_url": "The base URL of the Veriff API, default value is https://stationapi.veriff.com.",
-}
-
 var docsFlow = map[string]string{
 	"data": "",
 }
@@ -669,11 +676,31 @@ var docsJWTTemplates = map[string]string{
 }
 
 var docsSettings = map[string]string{
-	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"domain": "The Domain name for custom domain set up. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).",
-	"inactivity_time": "The inactivity timer, e.g \"15 minutes\", \"1 hour\". Minimum is \"10 minutes\".",
-	"refresh_token_expiration": "The refresh token expiration timer.  e.g \"15 minutes\", \"1 hour\". Minimum is \"2 minutes\".",
+	"domain": "The Domain name for custom domain set up. To read more about custom domain and " +
+	          "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
+	                    "for different authentication methods.",
+	"token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +
+	                         "or `cookies`. The default value is `response_body`.",
+	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy " +
+	                 "click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
+	                          "refresh token itself is also updated to a new one.",
+	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
+	                            "such as \"4 weeks\", \"14 days\", etc. The minimum value is \"3 minutes\".",
+	"session_token_expiration": "The expiry time of the session token, used for accessing the application's resources. The value " +
+	                            "needs to be at least 3 minutes and can't be longer than the refresh token expiration.",
+	"step_up_token_expiration": "The expiry time for the step up token, after which it will not be valid and the user will " +
+	                            "automatically go back to the session token.",
+	"trusted_device_token_expiration": "The expiry time for the trusted device token. The minimum value is \"3 minutes\".",
+	"access_key_session_token_expiration": "The expiry time for access key session tokens. Use values such as \"10 minutes\", \"4 hours\", etc. The " +
+	                                       "value needs to be at least 3 minutes and can't be longer than 4 weeks.",
+	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity " +
+	                     "click [here](https://docs.descope.com/project-settings#session-inactivity).",
+	"inactivity_time": "The session inactivity time. Use values such as \"15 minutes\", \"1 hour\", etc. The minimum " +
+	                   "value is \"10 minutes\".",
+	"test_users_loginid_regexp": "Define a regular expression so that whenever a user is created with a matching login ID it will " +
+	                             "automatically be marked as a test user.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
 }

@@ -30,9 +30,10 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"google_cloud_translation": listattr.Optional(GoogleCloudTranslationAttributes),
 	"hibp":                     listattr.Optional(HIBPAttributes),
 	"http":                     listattr.Optional(HTTPAttributes),
-	"http_static_ip":           listattr.Optional(HttpStaticIPAttributes),
 	"hubspot":                  listattr.Optional(HubSpotAttributes),
 	"intercom":                 listattr.Optional(IntercomAttributes),
+	"lokalise":                 listattr.Optional(LokaliseAttributes),
+	"mparticle":                listattr.Optional(MParticleAttributes),
 	"newrelic":                 listattr.Optional(NewRelicAttributes, NewRelicValidator),
 	"recaptcha":                listattr.Optional(RecaptchaAttributes),
 	"recaptcha_enterprise":     listattr.Optional(RecaptchaEnterpriseAttributes, RecaptchaEnterpriseValidator),
@@ -40,13 +41,13 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"salesforce":               listattr.Optional(SalesforceAttributes),
 	"segment":                  listattr.Optional(SegmentAttributes),
 	"sendgrid":                 listattr.Optional(SendGridAttributes),
+	"smartling":                listattr.Optional(SmartlingAttributes),
 	"smtp":                     listattr.Optional(SMTPAttributes),
 	"sumologic":                listattr.Optional(SumoLogicAttributes, SumoLogicValidator),
 	"telesign":                 listattr.Optional(TelesignAttributes),
 	"traceable":                listattr.Optional(TraceableAttributes),
 	"twilio_core":              listattr.Optional(TwilioCoreAttributes),
 	"twilio_verify":            listattr.Optional(TwilioVerifyAttributes),
-	"veriff":                   listattr.Optional(VeriffAttributes),
 }
 
 type ConnectorsModel struct {
@@ -65,9 +66,10 @@ type ConnectorsModel struct {
 	GoogleCloudTranslation []*GoogleCloudTranslationModel `tfsdk:"google_cloud_translation"`
 	HIBP                   []*HIBPModel                   `tfsdk:"hibp"`
 	HTTP                   []*HTTPModel                   `tfsdk:"http"`
-	HttpStaticIP           []*HttpStaticIPModel           `tfsdk:"http_static_ip"`
 	HubSpot                []*HubSpotModel                `tfsdk:"hubspot"`
 	Intercom               []*IntercomModel               `tfsdk:"intercom"`
+	Lokalise               []*LokaliseModel               `tfsdk:"lokalise"`
+	MParticle              []*MParticleModel              `tfsdk:"mparticle"`
 	NewRelic               []*NewRelicModel               `tfsdk:"newrelic"`
 	Recaptcha              []*RecaptchaModel              `tfsdk:"recaptcha"`
 	RecaptchaEnterprise    []*RecaptchaEnterpriseModel    `tfsdk:"recaptcha_enterprise"`
@@ -75,13 +77,13 @@ type ConnectorsModel struct {
 	Salesforce             []*SalesforceModel             `tfsdk:"salesforce"`
 	Segment                []*SegmentModel                `tfsdk:"segment"`
 	SendGrid               []*SendGridModel               `tfsdk:"sendgrid"`
+	Smartling              []*SmartlingModel              `tfsdk:"smartling"`
 	SMTP                   []*SMTPModel                   `tfsdk:"smtp"`
 	SumoLogic              []*SumoLogicModel              `tfsdk:"sumologic"`
 	Telesign               []*TelesignModel               `tfsdk:"telesign"`
 	Traceable              []*TraceableModel              `tfsdk:"traceable"`
 	TwilioCore             []*TwilioCoreModel             `tfsdk:"twilio_core"`
 	TwilioVerify           []*TwilioVerifyModel           `tfsdk:"twilio_verify"`
-	Veriff                 []*VeriffModel                 `tfsdk:"veriff"`
 }
 
 func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
@@ -101,9 +103,10 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
-	listattr.Get(m.HttpStaticIP, data, "http-static-ip", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
 	listattr.Get(m.Intercom, data, "intercom", h)
+	listattr.Get(m.Lokalise, data, "lokalise", h)
+	listattr.Get(m.MParticle, data, "mparticle", h)
 	listattr.Get(m.NewRelic, data, "newrelic", h)
 	listattr.Get(m.Recaptcha, data, "recaptcha", h)
 	listattr.Get(m.RecaptchaEnterprise, data, "recaptcha-enterprise", h)
@@ -111,13 +114,13 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Salesforce, data, "salesforce", h)
 	listattr.Get(m.Segment, data, "segment", h)
 	listattr.Get(m.SendGrid, data, "sendgrid", h)
+	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
 	listattr.Get(m.Traceable, data, "traceable", h)
 	listattr.Get(m.TwilioCore, data, "twilio-core", h)
 	listattr.Get(m.TwilioVerify, data, "twilio-verify", h)
-	listattr.Get(m.Veriff, data, "veriff", h)
 	return data
 }
 
@@ -137,9 +140,10 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "google-cloud-translation", m.GoogleCloudTranslation)
 	SetConnectorIDs(h, data, "hibp", m.HIBP)
 	SetConnectorIDs(h, data, "http", m.HTTP)
-	SetConnectorIDs(h, data, "http-static-ip", m.HttpStaticIP)
 	SetConnectorIDs(h, data, "hubspot", m.HubSpot)
 	SetConnectorIDs(h, data, "intercom", m.Intercom)
+	SetConnectorIDs(h, data, "lokalise", m.Lokalise)
+	SetConnectorIDs(h, data, "mparticle", m.MParticle)
 	SetConnectorIDs(h, data, "newrelic", m.NewRelic)
 	SetConnectorIDs(h, data, "recaptcha", m.Recaptcha)
 	SetConnectorIDs(h, data, "recaptcha-enterprise", m.RecaptchaEnterprise)
@@ -147,13 +151,13 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "salesforce", m.Salesforce)
 	SetConnectorIDs(h, data, "segment", m.Segment)
 	SetConnectorIDs(h, data, "sendgrid", m.SendGrid)
+	SetConnectorIDs(h, data, "smartling", m.Smartling)
 	SetConnectorIDs(h, data, "smtp", m.SMTP)
 	SetConnectorIDs(h, data, "sumologic", m.SumoLogic)
 	SetConnectorIDs(h, data, "telesign", m.Telesign)
 	SetConnectorIDs(h, data, "traceable", m.Traceable)
 	SetConnectorIDs(h, data, "twilio-core", m.TwilioCore)
 	SetConnectorIDs(h, data, "twilio-verify", m.TwilioVerify)
-	SetConnectorIDs(h, data, "veriff", m.Veriff)
 }
 
 func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap {
@@ -173,9 +177,10 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "google-cloud-translation", m.GoogleCloudTranslation)
 	addConnectorReferences(refs, "hibp", m.HIBP)
 	addConnectorReferences(refs, "http", m.HTTP)
-	addConnectorReferences(refs, "http-static-ip", m.HttpStaticIP)
 	addConnectorReferences(refs, "hubspot", m.HubSpot)
 	addConnectorReferences(refs, "intercom", m.Intercom)
+	addConnectorReferences(refs, "lokalise", m.Lokalise)
+	addConnectorReferences(refs, "mparticle", m.MParticle)
 	addConnectorReferences(refs, "newrelic", m.NewRelic)
 	addConnectorReferences(refs, "recaptcha", m.Recaptcha)
 	addConnectorReferences(refs, "recaptcha-enterprise", m.RecaptchaEnterprise)
@@ -183,13 +188,13 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "salesforce", m.Salesforce)
 	addConnectorReferences(refs, "segment", m.Segment)
 	addConnectorReferences(refs, "sendgrid", m.SendGrid)
+	addConnectorReferences(refs, "smartling", m.Smartling)
 	addConnectorReferences(refs, "smtp", m.SMTP)
 	addConnectorReferences(refs, "sumologic", m.SumoLogic)
 	addConnectorReferences(refs, "telesign", m.Telesign)
 	addConnectorReferences(refs, "traceable", m.Traceable)
 	addConnectorReferences(refs, "twilio-core", m.TwilioCore)
 	addConnectorReferences(refs, "twilio-verify", m.TwilioVerify)
-	addConnectorReferences(refs, "veriff", m.Veriff)
 	return refs
 }
 
@@ -210,9 +215,10 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.GoogleCloudTranslation)
 	addConnectorNames(names, m.HIBP)
 	addConnectorNames(names, m.HTTP)
-	addConnectorNames(names, m.HttpStaticIP)
 	addConnectorNames(names, m.HubSpot)
 	addConnectorNames(names, m.Intercom)
+	addConnectorNames(names, m.Lokalise)
+	addConnectorNames(names, m.MParticle)
 	addConnectorNames(names, m.NewRelic)
 	addConnectorNames(names, m.Recaptcha)
 	addConnectorNames(names, m.RecaptchaEnterprise)
@@ -220,13 +226,13 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.Salesforce)
 	addConnectorNames(names, m.Segment)
 	addConnectorNames(names, m.SendGrid)
+	addConnectorNames(names, m.Smartling)
 	addConnectorNames(names, m.SMTP)
 	addConnectorNames(names, m.SumoLogic)
 	addConnectorNames(names, m.Telesign)
 	addConnectorNames(names, m.Traceable)
 	addConnectorNames(names, m.TwilioCore)
 	addConnectorNames(names, m.TwilioVerify)
-	addConnectorNames(names, m.Veriff)
 	for k, v := range names {
 		if v > 1 {
 			h.Error("Connector names must be unique", "The connector name '%s' is used %d times", k, v)
@@ -250,9 +256,10 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.GoogleCloudTranslation, state.GoogleCloudTranslation)
 	helpers.MatchModels(ctx, m.HIBP, state.HIBP)
 	helpers.MatchModels(ctx, m.HTTP, state.HTTP)
-	helpers.MatchModels(ctx, m.HttpStaticIP, state.HttpStaticIP)
 	helpers.MatchModels(ctx, m.HubSpot, state.HubSpot)
 	helpers.MatchModels(ctx, m.Intercom, state.Intercom)
+	helpers.MatchModels(ctx, m.Lokalise, state.Lokalise)
+	helpers.MatchModels(ctx, m.MParticle, state.MParticle)
 	helpers.MatchModels(ctx, m.NewRelic, state.NewRelic)
 	helpers.MatchModels(ctx, m.Recaptcha, state.Recaptcha)
 	helpers.MatchModels(ctx, m.RecaptchaEnterprise, state.RecaptchaEnterprise)
@@ -260,11 +267,11 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.Salesforce, state.Salesforce)
 	helpers.MatchModels(ctx, m.Segment, state.Segment)
 	helpers.MatchModels(ctx, m.SendGrid, state.SendGrid)
+	helpers.MatchModels(ctx, m.Smartling, state.Smartling)
 	helpers.MatchModels(ctx, m.SMTP, state.SMTP)
 	helpers.MatchModels(ctx, m.SumoLogic, state.SumoLogic)
 	helpers.MatchModels(ctx, m.Telesign, state.Telesign)
 	helpers.MatchModels(ctx, m.Traceable, state.Traceable)
 	helpers.MatchModels(ctx, m.TwilioCore, state.TwilioCore)
 	helpers.MatchModels(ctx, m.TwilioVerify, state.TwilioVerify)
-	helpers.MatchModels(ctx, m.Veriff, state.Veriff)
 }

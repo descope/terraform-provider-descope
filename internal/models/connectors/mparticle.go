@@ -7,59 +7,59 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var VeriffAttributes = map[string]schema.Attribute{
+var MParticleAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"api_key":    stringattr.Required(),
-	"secret_key": stringattr.SecretRequired(),
+	"api_key":    stringattr.SecretRequired(),
+	"api_secret": stringattr.SecretRequired(),
 	"base_url":   stringattr.Default(""),
 }
 
 // Model
 
-type VeriffModel struct {
+type MParticleModel struct {
 	ID          types.String `tfsdk:"id"`
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
 	APIKey    types.String `tfsdk:"api_key"`
-	SecretKey types.String `tfsdk:"secret_key"`
+	APISecret types.String `tfsdk:"api_secret"`
 	BaseURL   types.String `tfsdk:"base_url"`
 }
 
-func (m *VeriffModel) Values(h *helpers.Handler) map[string]any {
+func (m *MParticleModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
-	data["type"] = "veriff"
+	data["type"] = "mparticle"
 	data["configuration"] = m.ConfigurationValues(h)
 	return data
 }
 
-func (m *VeriffModel) SetValues(h *helpers.Handler, data map[string]any) {
+func (m *MParticleModel) SetValues(h *helpers.Handler, data map[string]any) {
 	// all connector values are specified in the schema
 }
 
 // Configuration
 
-func (m *VeriffModel) ConfigurationValues(h *helpers.Handler) map[string]any {
+func (m *MParticleModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.APIKey, c, "apiKey")
-	stringattr.Get(m.SecretKey, c, "secretKey")
+	stringattr.Get(m.APISecret, c, "apiSecret")
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	return c
 }
 
 // Matching
 
-func (m *VeriffModel) GetName() types.String {
+func (m *MParticleModel) GetName() types.String {
 	return m.Name
 }
 
-func (m *VeriffModel) GetID() types.String {
+func (m *MParticleModel) GetID() types.String {
 	return m.ID
 }
 
-func (m *VeriffModel) SetID(id types.String) {
+func (m *MParticleModel) SetID(id types.String) {
 	m.ID = id
 }
