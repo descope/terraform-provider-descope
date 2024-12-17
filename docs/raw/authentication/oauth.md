@@ -215,9 +215,9 @@ The URL of the logo associated with the OAuth provider.
 grant_type
 ----------
 
-- Type: `string` 
+- Type: `list` of `string` 
 
-The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens
+The type of grants (`authorization_code` or `implicit`) to use when requesting access tokens
 from the OAuth provider.
 
 

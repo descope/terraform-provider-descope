@@ -88,9 +88,18 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func ensureRequiredCustomProviderField(h *helpers.Handler, field types.String, fieldKey, name string) {
-	if field.ValueString() == "" {
-		h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
+func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, name string) {
+	switch v := field.(type) {
+	case types.String:
+		if v.ValueString() == "" {
+			h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
+		}
+	case []string:
+		if len(v) == 0 {
+			h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
+		}
+	default:
+		h.Error(fmt.Sprintf("Invalid field type for %s", fieldKey), "unexpected type for field %s in custom provider %s", fieldKey, name)
 	}
 }
 
@@ -126,9 +135,21 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 	}
 }
 
-func ensureNoCustomProviderFields(h *helpers.Handler, field types.String, fieldKey, name string) {
-	if !field.IsUnknown() && !field.IsNull() {
-		h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey), "%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
+func ensureNoCustomProviderFields(h *helpers.Handler, field any, fieldKey, name string) {
+	switch v := field.(type) {
+	case types.String:
+		if v.ValueString() != "" {
+			h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey),
+				"%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
+		}
+	case []string:
+		if len(v) > 0 {
+			h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey),
+				"%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
+		}
+	default:
+		h.Error(fmt.Sprintf("Invalid field type for %s", fieldKey),
+			"unexpected type for field %s in system provider %s", fieldKey, name)
 	}
 }
 
@@ -218,7 +239,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	// editable for custom only
 	"description":            stringattr.Optional(),
 	"logo":                   stringattr.Optional(),
-	"grant_type":             stringattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
+	"grant_type":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("authorization_code", "implicit"))),
 	"issuer":                 stringattr.Optional(),
 	"authorization_endpoint": stringattr.Optional(),
 	"token_endpoint":         stringattr.Optional(),
@@ -237,7 +258,7 @@ type OAuthProviderModel struct {
 	MergeUserAccounts       types.Bool                         `tfsdk:"merge_user_accounts"`
 	Description             types.String                       `tfsdk:"description"`
 	Logo                    types.String                       `tfsdk:"logo"`
-	GrantType               types.String                       `tfsdk:"grant_type"`
+	GrantType               []string                           `tfsdk:"grant_type"`
 	Issuer                  types.String                       `tfsdk:"issuer"`
 	AuthorizationEndpoint   types.String                       `tfsdk:"authorization_endpoint"`
 	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
@@ -268,7 +289,9 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
-	stringattr.Get(m.GrantType, data, "grantType")
+	if len(m.GrantType) > 0 {
+		strlistattr.Get(m.GrantType, data, "grantType")
+	}
 	stringattr.Get(m.Issuer, data, "issuer")
 	stringattr.Get(m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Get(m.TokenEndpoint, data, "tokenUrl")
@@ -304,7 +327,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")
-	stringattr.Set(&m.GrantType, data, "grantType")
+	m.GrantType = helpers.AnySliceToStringSlice(data, "grantType")
 	stringattr.Set(&m.Issuer, data, "issuer")
 	stringattr.Set(&m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")

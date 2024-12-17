@@ -317,7 +317,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -364,7 +364,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -396,7 +396,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -428,7 +428,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -460,7 +460,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -492,7 +492,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -524,7 +524,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -556,7 +556,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -588,7 +588,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
@@ -620,7 +620,7 @@ Optional:
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `grant_type` (String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
+- `grant_type` (List of String) The type of grant (`authorization_code` or `implicit`) to use when requesting access tokens from the OAuth provider.
 - `issuer` (String)
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
