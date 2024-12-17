@@ -88,9 +88,18 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func ensureRequiredCustomProviderField(h *helpers.Handler, field types.String, fieldKey, name string) {
-	if field.ValueString() == "" {
-		h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
+func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, name string) {
+	switch v := field.(type) {
+	case types.String:
+		if v.ValueString() == "" {
+			h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
+		}
+	case []string:
+		if len(v) == 0 {
+			h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
+		}
+	default:
+		h.Error(fmt.Sprintf("Invalid field type for %s", fieldKey), "unexpected type for field %s in custom provider %s", fieldKey, name)
 	}
 }
 
@@ -126,9 +135,21 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 	}
 }
 
-func ensureNoCustomProviderFields(h *helpers.Handler, field types.String, fieldKey, name string) {
-	if !field.IsUnknown() && !field.IsNull() {
-		h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey), "%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
+func ensureNoCustomProviderFields(h *helpers.Handler, field any, fieldKey, name string) {
+	switch v := field.(type) {
+	case types.String:
+		if !v.IsUnknown() && !v.IsNull() {
+			h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey),
+				"%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
+		}
+	case []string:
+		if len(v) > 0 {
+			h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey),
+				"%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
+		}
+	default:
+		h.Error(fmt.Sprintf("Invalid field type for %s", fieldKey),
+			"unexpected type for field %s in system provider %s", fieldKey, name)
 	}
 }
 
