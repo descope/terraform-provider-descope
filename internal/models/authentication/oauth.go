@@ -218,7 +218,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	// editable for custom only
 	"description":            stringattr.Optional(),
 	"logo":                   stringattr.Optional(),
-	"grant_type":             stringattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
+	"grant_type":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("authorization_code", "implicit"))),
 	"issuer":                 stringattr.Optional(),
 	"authorization_endpoint": stringattr.Optional(),
 	"token_endpoint":         stringattr.Optional(),
@@ -237,7 +237,7 @@ type OAuthProviderModel struct {
 	MergeUserAccounts       types.Bool                         `tfsdk:"merge_user_accounts"`
 	Description             types.String                       `tfsdk:"description"`
 	Logo                    types.String                       `tfsdk:"logo"`
-	GrantType               types.String                       `tfsdk:"grant_type"`
+	GrantType               []string                       `tfsdk:"grant_type"`
 	Issuer                  types.String                       `tfsdk:"issuer"`
 	AuthorizationEndpoint   types.String                       `tfsdk:"authorization_endpoint"`
 	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
