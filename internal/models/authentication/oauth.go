@@ -92,6 +92,9 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field types.String, f
 	if field.ValueString() == "" {
 		h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
 	}
+	if len(app.GrantType) == 0 {
+		h.Error("Custom provider must set their grant_type", "no grant_type found for custom provider %s", name)
+	}
 }
 
 func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
@@ -268,7 +271,9 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
-	stringattr.Get(m.GrantType, data, "grantType")
+	if len(m.GrantType) > 0 {
+		strlistattr.Get(m.GrantType, data, "grantType")
+	}
 	stringattr.Get(m.Issuer, data, "issuer")
 	stringattr.Get(m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Get(m.TokenEndpoint, data, "tokenUrl")
@@ -304,7 +309,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")
-	stringattr.Set(&m.GrantType, data, "grantType")
+	m.GrantType = helpers.AnySliceToStringSlice(data, "grantType")
 	stringattr.Set(&m.Issuer, data, "issuer")
 	stringattr.Set(&m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")
