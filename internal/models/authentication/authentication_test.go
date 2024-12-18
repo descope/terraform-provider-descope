@@ -76,5 +76,76 @@ func TestAuthentication(t *testing.T) {
 				"authentication.magic_link.expiration_time": "5 minutes",
 			}),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					oauth = {
+						custom = {
+							apple = {
+							}
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Reserved OAuth Provider Name`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					oauth = {
+						system = {
+							apple = {
+								allowed_grant_types = ["authorization_code", "implicit"]
+							}
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.oauth.system.apple":                     testacc.AttributeIsSet,
+				"authentication.oauth.system.apple.allowed_grant_types": []string{"authorization_code", "implicit"},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					oauth = {
+						system = {
+							apple = {
+								client_id = "id"
+							}
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Missing Client Secret`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					oauth = {
+						custom = {
+							mobile_ios = {
+								allowed_grant_types = ["authorization_code", "implicit"]
+								client_id = "id"
+								client_secret = "secret"
+								authorization_endpoint = "https://auth.com"
+								token_endpoint = "https://token.com"
+								user_info_endpoint = "https://user.com"
+							}
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.oauth.custom.%":                                 1,
+				"authentication.oauth.custom.mobile_ios.allowed_grant_types":    []string{"authorization_code", "implicit"},
+				"authentication.oauth.custom.mobile_ios.client_id":              "id",
+				"authentication.oauth.custom.mobile_ios.client_secret":          testacc.AttributeIsSet,
+				"authentication.oauth.custom.mobile_ios.authorization_endpoint": "https://auth.com",
+				"authentication.oauth.custom.mobile_ios.token_endpoint":         "https://token.com",
+				"authentication.oauth.custom.mobile_ios.user_info_endpoint":     "https://user.com",
+			}),
+		},
 	)
 }

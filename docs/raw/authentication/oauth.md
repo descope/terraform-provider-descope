@@ -175,6 +175,16 @@ Custom prompts or consent screens that users may see during OAuth authentication
 
 
 
+allowed_grant_types
+-------------------
+
+- Type: `list` of `string` 
+
+The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens
+from the OAuth provider.
+
+
+
 scopes
 ------
 
@@ -209,16 +219,6 @@ logo
 - Type: `string` 
 
 The URL of the logo associated with the OAuth provider.
-
-
-
-grant_type
-----------
-
-- Type: `list` of `string` 
-
-The type of grants (`authorization_code` or `implicit`) to use when requesting access tokens
-from the OAuth provider.
 
 
 

@@ -156,12 +156,12 @@ var docsOAuthProvider = map[string]string{
 	"client_secret": "The client secret for the OAuth provider, used to authenticate the application with the provider.",
 	"provider_token_management": "Settings related to token management for the OAuth provider.",
 	"prompts": "Custom prompts or consent screens that users may see during OAuth authentication.",
+	"allowed_grant_types": "The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens " +
+	                       "from the OAuth provider.",
 	"scopes": "Scopes of access that the application requests from the user's account on the OAuth provider.",
 	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
 	"description": "A brief description of the OAuth provider.",
 	"logo": "The URL of the logo associated with the OAuth provider.",
-	"grant_type": "The type of grants (`authorization_code` or `implicit`) to use when requesting access tokens " +
-	              "from the OAuth provider.",
 	"issuer": "",
 	"authorization_endpoint": "The URL that users are redirected to for authorization with the OAuth provider.",
 	"token_endpoint": "The URL where the application requests an access token from the OAuth provider.",
