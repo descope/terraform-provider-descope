@@ -36,7 +36,7 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.GetNot(m.Disabled, data, "enabled")
 	providers := map[string]any{}
 	if v := m.System; v != nil {
-		maps.Copy(providers, m.System.Values(h))
+		maps.Copy(providers, v.Values(h))
 	}
 	for name, provider := range m.Custom {
 		data := provider.Values(h)
