@@ -676,14 +676,14 @@ var docsJWTTemplates = map[string]string{
 }
 
 var docsSettings = map[string]string{
-	"domain": "The Domain name for custom domain set up. To read more about custom domain and " +
-	          "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
 	                    "for different authentication methods.",
 	"token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +
 	                         "or `cookies`. The default value is `response_body`.",
 	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy " +
 	                 "click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"cookie_domain": "The domain name for custom domain set up. To read more about custom domain and " +
+	                 "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 	                          "refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
@@ -703,6 +703,7 @@ var docsSettings = map[string]string{
 	                             "automatically be marked as a test user.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
+	"domain": "This attribute has been renamed to `cookie_domain`.",
 }
 
 var docsEmailService = map[string]string{

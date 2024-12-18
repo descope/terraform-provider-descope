@@ -4,6 +4,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -11,11 +12,13 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+var SettingsValidator = objectattr.NewValidator[SettingsModel]("must have a valid configuration")
+
 var SettingsAttributes = map[string]schema.Attribute{
-	"domain":                              stringattr.Optional(),
 	"approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
 	"token_response_method":               stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
 	"cookie_policy":                       stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
+	"cookie_domain":                       stringattr.Default(""),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"session_token_expiration":            durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
@@ -27,13 +30,16 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"test_users_loginid_regexp":           stringattr.Default(""),
 	"user_jwt_template":                   stringattr.Optional(),
 	"access_key_jwt_template":             stringattr.Optional(),
+
+	// Deprecated
+	"domain": stringattr.Renamed("domain", "cookie_domain"),
 }
 
 type SettingsModel struct {
-	Domain                          types.String `tfsdk:"domain"`
 	ApprovedDomain                  []string     `tfsdk:"approved_domains"`
 	TokenResponseMethod             types.String `tfsdk:"token_response_method"`
 	CookiePolicy                    types.String `tfsdk:"cookie_policy"`
+	CookieDomain                    types.String `tfsdk:"cookie_domain"`
 	RefreshTokenRotation            types.Bool   `tfsdk:"refresh_token_rotation"`
 	RefreshTokenExpiration          types.String `tfsdk:"refresh_token_expiration"`
 	SessionTokenExpiration          types.String `tfsdk:"session_token_expiration"`
@@ -45,11 +51,13 @@ type SettingsModel struct {
 	TestUsersLoginIDRegExp          types.String `tfsdk:"test_users_loginid_regexp"`
 	UserJWTTemplate                 types.String `tfsdk:"user_jwt_template"`
 	AccessKeyJWTTemplate            types.String `tfsdk:"access_key_jwt_template"`
+
+	// Deprecated
+	Domain types.String `tfsdk:"domain"`
 }
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	stringattr.Get(m.Domain, data, "domain")
 	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
 	if s := m.TokenResponseMethod.ValueString(); s == "cookies" {
 		data["tokenResponseMethod"] = "cookie"
@@ -59,6 +67,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 		panic("unexpected token_response_method value: " + s)
 	}
 	stringattr.Get(m.CookiePolicy, data, "cookiePolicy")
+	stringattr.Get(m.CookieDomain, data, "domain")
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	durationattr.Get(m.SessionTokenExpiration, data, "sessionTokenExpiration")
@@ -70,11 +79,11 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.TestUsersLoginIDRegExp, data, "testUserRegex")
 	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", "user", h)
 	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", "key", h)
+	stringattr.Get(m.Domain, data, "domain") // deprecated, replaced by cookie_domain
 	return data
 }
 
 func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
-	stringattr.Set(&m.Domain, data, "domain")
 	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
 	if data["tokenResponseMethod"] == "cookie" {
 		m.TokenResponseMethod = types.StringValue("cookies")
@@ -84,6 +93,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 		h.Error("Unexpected token response method", "Expected value to be either 'cookie' or 'onBody', found: '%v'", data["tokenResponseMethod"])
 	}
 	stringattr.Set(&m.CookiePolicy, data, "cookiePolicy")
+	// stringattr.Set(&m.CookieDomain, data, "domain") temporarily ignored until domain is removed to prevent inconsistent values
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	durationattr.Set(&m.SessionTokenExpiration, data, "sessionTokenExpiration")
@@ -95,6 +105,13 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.TestUsersLoginIDRegExp, data, "testUserRegex")
 	stringattr.EnsureKnown(&m.UserJWTTemplate)
 	stringattr.EnsureKnown(&m.AccessKeyJWTTemplate)
+	stringattr.EnsureKnown(&m.Domain) // deprecated, replaced by cookie_domain
+}
+
+func (m *SettingsModel) Validate(h *helpers.Handler) {
+	if m.Domain.ValueString() != "" && m.CookieDomain.ValueString() != "" {
+		h.Error("Conflicting Attributes", "The deprecated domain attribute should not be used together with the cookie_domain attribute")
+	}
 }
 
 func getJWTTemplate(field types.String, data map[string]any, key string, typ string, h *helpers.Handler) {

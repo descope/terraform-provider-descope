@@ -225,18 +225,47 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					domain = "example1.com"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.domain": "example1.com",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					cookie_domain = "example2.com"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.cookie_domain": "example2.com",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					domain = "example.com"
+					cookie_domain = "example.com"
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Conflicting Attributes`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					enable_inactivity = true
 					inactivity_time = "1 hour"
 					cookie_policy = "lax"
+					cookie_domain = "example.com"
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"project_settings.refresh_token_expiration": "4 weeks",
-				"project_settings.domain":                   "example.com",
 				"project_settings.enable_inactivity":        true,
 				"project_settings.inactivity_time":          "1 hour",
 				"project_settings.cookie_policy":            "lax",
+				"project_settings.cookie_domain":            "example.com",
 			}),
 		},
 	)
