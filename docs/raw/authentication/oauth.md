@@ -212,7 +212,7 @@ The URL of the logo associated with the OAuth provider.
 
 
 
-grant_type
+grant_types
 ----------
 
 - Type: `list` of `string` 

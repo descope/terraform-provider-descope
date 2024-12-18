@@ -78,7 +78,7 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 		}
 		ensureRequiredCustomProviderField(h, app.ClientID, "client_id", name)
 		ensureRequiredCustomProviderField(h, app.ClientSecret, "client_secret", name)
-		ensureRequiredCustomProviderField(h, app.GrantType, "grant_type", name)
+		ensureRequiredCustomProviderField(h, app.GrantTypes, "grant_types", name)
 		ensureRequiredCustomProviderField(h, app.AuthorizationEndpoint, "token_endpoint", name)
 		ensureRequiredCustomProviderField(h, app.TokenEndpoint, "client_id", name)
 		ensureRequiredCustomProviderField(h, app.UserInfoEndpoint, "user_info_endpoint", name)
@@ -226,7 +226,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	// editable for custom only
 	"description":            stringattr.Optional(),
 	"logo":                   stringattr.Optional(),
-	"grant_type":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("authorization_code", "implicit"))),
+	"grant_types":            strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("authorization_code", "implicit"))),
 	"issuer":                 stringattr.Optional(),
 	"authorization_endpoint": stringattr.Optional(),
 	"token_endpoint":         stringattr.Optional(),
@@ -245,7 +245,7 @@ type OAuthProviderModel struct {
 	MergeUserAccounts       types.Bool                         `tfsdk:"merge_user_accounts"`
 	Description             types.String                       `tfsdk:"description"`
 	Logo                    types.String                       `tfsdk:"logo"`
-	GrantType               []string                           `tfsdk:"grant_type"`
+	GrantTypes              []string                           `tfsdk:"grant_types"`
 	Issuer                  types.String                       `tfsdk:"issuer"`
 	AuthorizationEndpoint   types.String                       `tfsdk:"authorization_endpoint"`
 	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
@@ -276,8 +276,8 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
-	if len(m.GrantType) > 0 {
-		strlistattr.Get(m.GrantType, data, "grantType")
+	if len(m.GrantTypes) > 0 {
+		strlistattr.Get(m.GrantTypes, data, "grantTypes")
 	}
 	stringattr.Get(m.Issuer, data, "issuer")
 	stringattr.Get(m.AuthorizationEndpoint, data, "authUrl")
@@ -314,7 +314,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")
-	m.GrantType = helpers.AnySliceToStringSlice(data, "grantType")
+	m.GrantTypes = helpers.AnySliceToStringSlice(data, "grantTypes")
 	stringattr.Set(&m.Issuer, data, "issuer")
 	stringattr.Set(&m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")

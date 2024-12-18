@@ -160,7 +160,7 @@ var docsOAuthProvider = map[string]string{
 	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
 	"description": "A brief description of the OAuth provider.",
 	"logo": "The URL of the logo associated with the OAuth provider.",
-	"grant_type": "The type of grants (`authorization_code` or `implicit`) to use when requesting access tokens " +
+	"grant_types": "The type of grants (`authorization_code` or `implicit`) to use when requesting access tokens " +
 	              "from the OAuth provider.",
 	"issuer": "",
 	"authorization_endpoint": "The URL that users are redirected to for authorization with the OAuth provider.",
