@@ -4,16 +4,6 @@ Settings
 
 
 
-domain
-------
-
-- Type: `string` 
-
-The Domain name for custom domain set up. To read more about custom domain and
-cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
-
-
-
 approved_domains
 ----------------
 
@@ -42,6 +32,16 @@ cookie_policy
 
 Use "strict", "lax" or "none". To read more about custom domain and cookie policy
 click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+
+
+
+cookie_domain
+-------------
+
+- Type: `string` 
+
+The domain name for custom domain set up. To read more about custom domain and
+cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 
 
 
@@ -149,3 +149,12 @@ access_key_jwt_template
 - Type: `string` 
 
 Name of the access key JWT Template.
+
+
+
+domain
+------
+
+- Type: `string` 
+
+This attribute has been renamed to `cookie_domain`.
