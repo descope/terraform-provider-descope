@@ -2,6 +2,7 @@ package authentication
 
 import (
 	"fmt"
+	"maps"
 	"slices"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -33,7 +34,10 @@ type OAuthModel struct {
 func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	boolattr.GetNot(m.Disabled, data, "enabled")
-	providers := m.System.Values(h)
+	providers := map[string]any{}
+	if v := m.System; v != nil {
+		maps.Copy(providers, m.System.Values(h))
+	}
 	for name, provider := range m.Custom {
 		data := provider.Values(h)
 		data["useSelfAccount"] = true
@@ -49,7 +53,9 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 func (m *OAuthModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	if providers, ok := data["providerSettings"].(map[string]any); ok {
-		m.System.SetValues(h, providers)
+		if v := m.System; v != nil {
+			v.SetValues(h, providers)
+		}
 		for k, v := range m.Custom {
 			if data, ok := providers[k].(map[string]any); ok {
 				v.SetValues(h, data)
@@ -74,32 +80,35 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 	}
 	for name, app := range m.Custom {
 		if slices.Contains(systemProviderNames, name) {
-			h.Error(fmt.Sprintf("%s is a reserved system provider name", name), "Please use a different name than %s for your custom oauth provider as it is reserved", name)
+			h.Error("Reserved OAuth Provider Name", "The %s name is reserved for system providers and cannot be used for a custom provider", name)
+			continue
 		}
 		ensureRequiredCustomProviderField(h, app.ClientID, "client_id", name)
 		ensureRequiredCustomProviderField(h, app.ClientSecret, "client_secret", name)
-		ensureRequiredCustomProviderField(h, app.GrantTypes, "grant_types", name)
-		ensureRequiredCustomProviderField(h, app.AuthorizationEndpoint, "token_endpoint", name)
-		ensureRequiredCustomProviderField(h, app.TokenEndpoint, "client_id", name)
+		ensureRequiredCustomProviderField(h, app.AllowedGrantTypes, "allowed_grant_types", name)
+		ensureRequiredCustomProviderField(h, app.AuthorizationEndpoint, "authorization_endpoint", name)
+		ensureRequiredCustomProviderField(h, app.TokenEndpoint, "token_endpoint", name)
 		ensureRequiredCustomProviderField(h, app.UserInfoEndpoint, "user_info_endpoint", name)
 		if _, ok := app.ClaimMapping["loginId"]; !ok && len(app.ClaimMapping) > 0 {
-			h.Error("When setting the custom provider claim mapping, 'loginId' must be mapped to something", "Claim mapping set for custom provider %s but 'loginId' was not mapped", name)
+			h.Error("Invalid Claim Mapping", "Claim mapping set for custom provider %s but 'loginId' was not mapped", name)
 		}
 	}
 }
 
 func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, name string) {
+	invalid := false
+
 	switch v := field.(type) {
 	case types.String:
-		if v.ValueString() == "" {
-			h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
-		}
+		invalid = v.ValueString() == ""
 	case []string:
-		if len(v) == 0 {
-			h.Error(fmt.Sprintf("Custom provider must set their %s", fieldKey), "no %s found for custom provider %s", fieldKey, name)
-		}
+		invalid = len(v) == 0
 	default:
-		h.Error(fmt.Sprintf("Invalid field type for %s", fieldKey), "unexpected type for field %s in custom provider %s", fieldKey, name)
+		panic(fmt.Sprintf("unexpected type %T for attribute %s in custom provider %s", field, fieldKey, name))
+	}
+
+	if invalid {
+		h.Error("Invalid Custom OAuth Provider", "Custom provider %s must set a non-empty value for the %s attribute", name, fieldKey)
 	}
 }
 
@@ -111,14 +120,14 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 	ownAccount := m.ClientID.ValueString() != ""
 	if ownAccount {
 		if m.ClientSecret.ValueString() == "" {
-			h.Error("When providing your own clint ID, the client secret is required", "%s client_id was provided but client_secret was not", name)
+			h.Error("Missing Client Secret", "The client_id attribute was set for the %s system provider but the client_secret attribute was not", name)
 		}
 	} else {
-		if m.Scopes != nil {
-			h.Error("scopes can only be set when using your own account", "Provide a client ID and secret for %s system provider in order to set the scopes", name)
+		if len(m.Scopes) > 0 {
+			h.Error("Invalid Attribute Value", "Set a client_id and client_secret for the %s system provider in order to set the scopes attribute", name)
 		}
 		if m.ProviderTokenManagement != nil {
-			h.Error("provider_token_management can only be set when using your own account", "Provide a client ID and secret for %s system provider in order to set provider_token_management", name)
+			h.Error("Invalid Attribute Value", "Set a client_id and client_secret for the %s system provider in order to set the provider_token_management attribute", name)
 		}
 	}
 	// custom-only validation
@@ -130,13 +139,13 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 	ensureNoCustomProviderFields(h, m.UserInfoEndpoint, "user_info_endpoint", name)
 	ensureNoCustomProviderFields(h, m.JWKsEndpoint, "jwks_endpoint", name)
 	if len(m.ClaimMapping) > 0 {
-		h.Error("The claim_mapping field is reserved for custom providers", "%s is a system provider and cannot specify claim_mapping reserved for custom provider", name)
+		h.Error("Reserved Attribute", "The %s OAuth provider is a system provider and its claim_mapping attribute is reserved", name)
 	}
 }
 
 func ensureNoCustomProviderFields(h *helpers.Handler, field types.String, fieldKey, name string) {
 	if !field.IsUnknown() && !field.IsNull() {
-		h.Error(fmt.Sprintf("The %s field is reserved for custom providers", fieldKey), "%s is a system provider and cannot specify %s reserved for custom provider", name, fieldKey)
+		h.Error("Reserved Attribute", "The %s OAuth provider is a system provider and its %s attribute is reserved", name, fieldKey)
 	}
 }
 
@@ -221,12 +230,12 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"client_secret":             stringattr.SecretOptional(),
 	"provider_token_management": objectattr.Optional(OAuthProviderTokenManagementAttribute),
 	"prompts":                   strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("none", "login", "consent", "select_account"))),
+	"allowed_grant_types":       strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("authorization_code", "implicit"))),
 	"scopes":                    strlistattr.Optional(),
 	"merge_user_accounts":       boolattr.Default(true),
 	// editable for custom only
 	"description":            stringattr.Optional(),
 	"logo":                   stringattr.Optional(),
-	"grant_types":            strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("authorization_code", "implicit"))),
 	"issuer":                 stringattr.Optional(),
 	"authorization_endpoint": stringattr.Optional(),
 	"token_endpoint":         stringattr.Optional(),
@@ -245,7 +254,7 @@ type OAuthProviderModel struct {
 	MergeUserAccounts       types.Bool                         `tfsdk:"merge_user_accounts"`
 	Description             types.String                       `tfsdk:"description"`
 	Logo                    types.String                       `tfsdk:"logo"`
-	GrantTypes              []string                           `tfsdk:"grant_types"`
+	AllowedGrantTypes       []string                           `tfsdk:"allowed_grant_types"`
 	Issuer                  types.String                       `tfsdk:"issuer"`
 	AuthorizationEndpoint   types.String                       `tfsdk:"authorization_endpoint"`
 	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
@@ -276,8 +285,8 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
-	if len(m.GrantTypes) > 0 {
-		strlistattr.Get(m.GrantTypes, data, "grantTypes")
+	if len(m.AllowedGrantTypes) > 0 {
+		strlistattr.Get(m.AllowedGrantTypes, data, "allowedGrantTypes")
 	}
 	stringattr.Get(m.Issuer, data, "issuer")
 	stringattr.Get(m.AuthorizationEndpoint, data, "authUrl")
@@ -309,12 +318,12 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 		stringattr.Set(&m.ProviderTokenManagement.CallbackDomain, data, "callbackDomain")
 		stringattr.Set(&m.ProviderTokenManagement.RedirectURL, data, "redirectUrl")
 	}
-	m.Prompts = helpers.AnySliceToStringSlice(data, "prompts")
+	// Skipped for now: m.Prompts = helpers.AnySliceToStringSlice(data, "prompts")
 	m.Scopes = helpers.AnySliceToStringSlice(data, "scopes")
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")
-	m.GrantTypes = helpers.AnySliceToStringSlice(data, "grantTypes")
+	// Skipped for now: m.AllowedGrantTypes = helpers.AnySliceToStringSlice(data, "allowedGrantTypes")
 	stringattr.Set(&m.Issuer, data, "issuer")
 	stringattr.Set(&m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")
