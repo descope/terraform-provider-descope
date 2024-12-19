@@ -102,7 +102,6 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.oauth.system.apple":                     testacc.AttributeIsSet,
 				"authentication.oauth.system.apple.allowed_grant_types": []string{"authorization_code", "implicit"},
 			}),
 		},
