@@ -17,10 +17,11 @@ require (
 	github.com/stretchr/testify v1.10.0
 )
 
+require github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
+
 require (
 	github.com/ProtonMail/go-crypto v1.1.3 // indirect
 	github.com/agext/levenshtein v1.2.3 // indirect
-	github.com/apparentlymart/go-textseg/v15 v15.0.0 // indirect
 	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.3.0 // indirect
