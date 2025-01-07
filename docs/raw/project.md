@@ -23,6 +23,15 @@ left unset for development or staging projects.
 
 
 
+tags
+----
+
+- Type: `list` of `string` 
+
+Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
+
+
+
 project_settings
 ----------------
 

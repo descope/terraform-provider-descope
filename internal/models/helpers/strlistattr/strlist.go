@@ -26,6 +26,7 @@ func Get(s []string, data map[string]any, key string) {
 
 func Set(s *[]string, data map[string]any, key string) {
 	if v, ok := data[key].([]any); ok {
+		*s = []string{}
 		if len(v) > 0 {
 			for i := range v {
 				str, ok := v[i].(string)

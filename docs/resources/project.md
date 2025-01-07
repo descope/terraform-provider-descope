@@ -31,6 +31,7 @@ description: |-
 - `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
+- `tags` (List of String) Descriptive tags for your Descope project. Tags can contain any character but must be no more than 50 characters long.
 
 ### Read-Only
 
