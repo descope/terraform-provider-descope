@@ -19,6 +19,14 @@ const (
 	FieldTypeAuditFilters = "auditFilters"
 )
 
+// Generated
+
+var UseStaticIPsField = &Field{
+	Name:        "useStaticIps",
+	Description: "Whether the connector should send all requests from specific static IPs.",
+	Type:        FieldTypeBool,
+}
+
 // Field
 
 type Field struct {

@@ -2,6 +2,7 @@ package connectors
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -12,8 +13,9 @@ var HubSpotAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"access_token": stringattr.SecretRequired(),
-	"base_url":     stringattr.Default(""),
+	"access_token":   stringattr.SecretRequired(),
+	"base_url":       stringattr.Default(""),
+	"use_static_ips": boolattr.Default(false),
 }
 
 // Model
@@ -23,8 +25,9 @@ type HubSpotModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	AccessToken types.String `tfsdk:"access_token"`
-	BaseURL     types.String `tfsdk:"base_url"`
+	AccessToken  types.String `tfsdk:"access_token"`
+	BaseURL      types.String `tfsdk:"base_url"`
+	UseStaticIPs types.Bool   `tfsdk:"use_static_ips"`
 }
 
 func (m *HubSpotModel) Values(h *helpers.Handler) map[string]any {
@@ -44,6 +47,7 @@ func (m *HubSpotModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.AccessToken, c, "accessToken")
 	stringattr.Get(m.BaseURL, c, "baseUrl")
+	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
 	return c
 }
 

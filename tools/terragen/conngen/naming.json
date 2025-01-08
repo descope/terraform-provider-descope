@@ -80,6 +80,11 @@
       "file": "hubspot",
       "struct": "HubSpot"
     },
+    "incode": {
+      "attribute": "incode",
+      "file": "incode",
+      "struct": "Incode"
+    },
     "intercom": {
       "attribute": "intercom",
       "file": "intercom",
@@ -119,6 +124,11 @@
       "attribute": "salesforce",
       "file": "salesforce",
       "struct": "Salesforce"
+    },
+    "salesforce-marketing-cloud": {
+      "attribute": "salesforce_marketing_cloud",
+      "file": "salesforcemarketingcloud",
+      "struct": "SalesforceMarketingCloud"
     },
     "segment": {
       "attribute": "segment",
@@ -171,6 +181,10 @@
       "attribute": "access_token",
       "struct": "AccessToken"
     },
+    "accountId": {
+      "attribute": "account_id",
+      "struct": "AccountId"
+    },
     "accountUid": {
       "attribute": "account_uid",
       "struct": "AccountUID"
@@ -186,6 +200,10 @@
     "apiToken": {
       "attribute": "api_token",
       "struct": "APIToken"
+    },
+    "apiUrl": {
+      "attribute": "api_url",
+      "struct": "ApiUrl"
     },
     "assessmentScore": {
       "attribute": "assessment_score",
@@ -247,9 +265,17 @@
       "attribute": "data_center",
       "struct": "DataCenter"
     },
+    "defaultEnvironment": {
+      "attribute": "default_environment",
+      "struct": "DefaultEnvironment"
+    },
     "euRegion": {
       "attribute": "eu_region",
       "struct": "EURegion"
+    },
+    "flowId": {
+      "attribute": "flow_id",
+      "struct": "FlowId"
     },
     "headers": {
       "attribute": "headers",
@@ -315,6 +341,10 @@
       "attribute": "region",
       "struct": "Region"
     },
+    "scope": {
+      "attribute": "scope",
+      "struct": "Scope"
+    },
     "secretAccessKey": {
       "attribute": "secret_access_key",
       "struct": "SecretAccessKey"
@@ -355,6 +385,10 @@
       "attribute": "site_key",
       "struct": "SiteKey"
     },
+    "subdomain": {
+      "attribute": "subdomain",
+      "struct": "Subdomain"
+    },
     "teamId": {
       "attribute": "team_id",
       "struct": "TeamID"
@@ -374,6 +408,10 @@
     "useCloudflareIntegration": {
       "attribute": "use_cloudflare_integration",
       "struct": "UseCloudflareIntegration"
+    },
+    "useStaticIps": {
+      "attribute": "use_static_ips",
+      "struct": "UseStaticIPs"
     },
     "userIdentifier": {
       "attribute": "user_identifier",
