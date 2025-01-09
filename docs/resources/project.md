@@ -1222,6 +1222,7 @@ Optional:
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `include_headers_in_context` (Boolean) The connector response context will also include the headers. The context will have a "body" attribute and a "headers" attribute. See more details in the help guide
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 Read-Only:
 
@@ -1268,6 +1269,7 @@ Optional:
 
 - `base_url` (String) The base URL of the HubSpot API, when using a custom domain in HubSpot, default value is https://api.hubapi.com .
 - `description` (String) A description of what your connector is used for.
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 Read-Only:
 

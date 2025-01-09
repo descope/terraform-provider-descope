@@ -437,6 +437,7 @@ var docsHTTP = map[string]string{
 	"include_headers_in_context": "The connector response context will also include the headers. The context will " +
 	                              "have a \"body\" attribute and a \"headers\" attribute. See more details in the help " +
 	                              "guide",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
 var docsHubSpot = map[string]string{
@@ -445,6 +446,7 @@ var docsHubSpot = map[string]string{
 	"access_token": "The HubSpot private API access token generated for the Descope service.",
 	"base_url": "The base URL of the HubSpot API, when using a custom domain in HubSpot, default " +
 	            "value is https://api.hubapi.com .",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
 var docsIntercom = map[string]string{

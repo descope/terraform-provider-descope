@@ -21,6 +21,7 @@ var HTTPAttributes = map[string]schema.Attribute{
 	"hmac_secret":                stringattr.SecretOptional(),
 	"insecure":                   boolattr.Default(false),
 	"include_headers_in_context": boolattr.Default(false),
+	"use_static_ips":             boolattr.Default(false),
 }
 
 // Model
@@ -36,6 +37,7 @@ type HTTPModel struct {
 	HMACSecret              types.String        `tfsdk:"hmac_secret"`
 	Insecure                types.Bool          `tfsdk:"insecure"`
 	IncludeHeadersInContext types.Bool          `tfsdk:"include_headers_in_context"`
+	UseStaticIPs            types.Bool          `tfsdk:"use_static_ips"`
 }
 
 func (m *HTTPModel) Values(h *helpers.Handler) map[string]any {
@@ -59,6 +61,7 @@ func (m *HTTPModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.IncludeHeadersInContext, c, "includeHeadersInContext")
+	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
 	return c
 }
 

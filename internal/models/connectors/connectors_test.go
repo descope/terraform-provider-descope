@@ -384,6 +384,7 @@ func TestConnectors(t *testing.T) {
     						hmac_secret = "ooxzct5yxz"
     						insecure = true
     						include_headers_in_context = true
+    						use_static_ips = true
 						}
 					]
 				}
@@ -399,6 +400,7 @@ func TestConnectors(t *testing.T) {
 				"connectors.http.0.hmac_secret":                 "ooxzct5yxz",
 				"connectors.http.0.insecure":                    true,
 				"connectors.http.0.include_headers_in_context":  true,
+				"connectors.http.0.use_static_ips":              true,
 			}),
 		},
 		resource.TestStep{

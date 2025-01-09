@@ -25,6 +25,10 @@ func (c *Connector) IsExperimental() bool {
 	return c.Extra["experimental"] == true
 }
 
+func (c *Connector) SupportsStaticIPs() bool {
+	return c.Extra["supportStaticIps"] == true
+}
+
 func (c *Connector) StructName() string {
 	return c.naming.GetName("connector", c.ID, "struct", c.defaultStructName())
 }
