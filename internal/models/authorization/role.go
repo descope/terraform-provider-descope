@@ -36,7 +36,7 @@ func (m *RoleModel) Values(h *helpers.Handler) map[string]any {
 		h.Log("Updating reference for role '%s' to: %s", roleName, refValue)
 		data["id"] = refValue
 	} else {
-		h.Error("Unknown role reference", "No role named '"+roleName+"' was defined")
+		h.Error("Unknown role reference", "No role named '%s' was defined", roleName)
 		data["id"] = m.ID.ValueString()
 	}
 

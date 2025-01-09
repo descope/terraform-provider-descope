@@ -28,7 +28,7 @@ func (m *EmailServiceModel) Values(h *helpers.Handler) map[string]any {
 		h.Log("Setting emailServiceProvider reference to connector '%s'", connector)
 		data["emailServiceProvider"] = ref.ProviderValue()
 	} else {
-		h.Error("Unknown connector reference", "No connector named '"+connector+"' for email service was defined")
+		h.Error("Unknown connector reference", "No connector named '%s' for email service was defined", connector)
 	}
 	listattr.Get(m.Templates, data, "emailTemplates", h)
 	return data
@@ -37,14 +37,14 @@ func (m *EmailServiceModel) Values(h *helpers.Handler) map[string]any {
 func (m *EmailServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	for _, template := range m.Templates {
 		name := template.Name.ValueString()
-		h.Log("Looking for email template named '" + name + "'")
+		h.Log("Looking for email template named '%s'", name)
 		if id, ok := requireTemplateID(h, data, "emailTemplates", name); ok {
 			value := types.StringValue(id)
 			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '" + id + "' for email template named '" + name + "'")
+				h.Log("Setting new ID '%s' for email template named '%s'", id, name)
 				template.ID = value
 			} else {
-				h.Log("Keeping existing ID '" + id + "' for email template named '" + name + "'")
+				h.Log("Keeping existing ID '%s' for email template named '%s'", id, name)
 			}
 		}
 	}

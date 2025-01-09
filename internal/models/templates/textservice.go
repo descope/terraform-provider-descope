@@ -28,7 +28,7 @@ func (m *TextServiceModel) Values(h *helpers.Handler) map[string]any {
 		h.Log("Setting textServiceProvider reference to connector '%s'", connector)
 		data["textServiceProvider"] = ref.ProviderValue()
 	} else {
-		h.Error("Unknown connector reference", "No connector named '"+connector+"' for text service was defined")
+		h.Error("Unknown connector reference", "No connector named '%s' for text service was defined", connector)
 	}
 	listattr.Get(m.Templates, data, "textTemplates", h)
 	return data
@@ -37,14 +37,14 @@ func (m *TextServiceModel) Values(h *helpers.Handler) map[string]any {
 func (m *TextServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	for _, template := range m.Templates {
 		name := template.Name.ValueString()
-		h.Log("Looking for text template named '" + name + "'")
+		h.Log("Looking for text template named '%s'", name)
 		if id, ok := requireTemplateID(h, data, "textTemplates", name); ok {
 			value := types.StringValue(id)
 			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '" + id + "' for text template named '" + name + "'")
+				h.Log("Setting new ID '%s' for text template named '%s'", id, name)
 				template.ID = value
 			} else {
-				h.Log("Keeping existing ID '" + id + "' for text template named '" + name + "'")
+				h.Log("Keeping existing ID '%s' for text template named '%s'", id, name)
 			}
 		}
 	}

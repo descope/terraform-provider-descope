@@ -24,7 +24,7 @@ func connectorValues(id, name, description types.String, h *helpers.Handler) map
 		h.Log("Updating reference for connector '%s' to: %s", connectorName, refValue)
 		data["id"] = refValue
 	} else {
-		h.Error("Unknown connector reference", "No connector named '"+connectorName+"' was defined")
+		h.Error("Unknown connector reference", "No connector named '%s' was defined", connectorName)
 		data["id"] = id.ValueString()
 	}
 
@@ -36,14 +36,14 @@ func connectorValues(id, name, description types.String, h *helpers.Handler) map
 func SetConnectorIDs[T any, M helpers.MatchableModel[T]](h *helpers.Handler, data map[string]any, key string, connectors []M) {
 	for _, connector := range connectors {
 		n := connector.GetName().ValueString()
-		h.Log("Looking for " + key + " connector named '" + n + "'")
+		h.Log("Looking for %s connector named '%s'", key, n)
 		if connectorID, ok := findConnectorID(h, data, key, n); ok {
 			value := types.StringValue(connectorID)
 			if !connector.GetID().Equal(value) {
-				h.Log("Setting new ID '" + connectorID + "' for " + key + " connector named '" + n + "'")
+				h.Log("Setting new ID '%s' for %s connector named '%s'", connectorID, key, n)
 				connector.SetID(value)
 			} else {
-				h.Log("Keeping existing ID '" + connectorID + "' for " + key + " connector named '" + n + "'")
+				h.Log("Keeping existing ID '%s' for %s connector named '%s'", connectorID, key, n)
 			}
 		}
 
@@ -73,7 +73,7 @@ func findConnectorID(h *helpers.Handler, data map[string]any, key string, name s
 		}
 	}
 
-	h.Error("Connector not found", "Expected to find connector of type '"+key+"' to match with '"+name+"' connector")
+	h.Error("Connector not found", "Expected to find connector of type '%s' to match with '%s' connector", key, name)
 	return "", false
 }
 
