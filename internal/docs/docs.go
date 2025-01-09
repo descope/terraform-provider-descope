@@ -6,6 +6,7 @@ var docsProject = map[string]string{
 	"name": "The name of the Descope project.",
 	"environment": "This can be set to `production` to mark production projects, otherwise this should be " +
 	               "left unset for development or staging projects.",
+	"tags": "Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.",
 	"project_settings": "General settings for the Descope project.",
 	"authentication": "Settings for each authentication method.",
 	"authorization": "Define Role-Based Access Control (RBAC) for your users by creating roles and permissions.",
