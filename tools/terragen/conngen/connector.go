@@ -89,16 +89,16 @@ func (c *Connector) HasValidator() bool {
 			}
 			// a few sanity checks to make sure we support what's expected
 			if f.Required {
-				log.Fatalf("Unexpected required field with dependency " + f.Name)
+				log.Fatalf("Unexpected required field with dependency %s", f.Name)
 			}
 			if f.Dependency.Field == nil {
-				log.Fatalf("Failed to find matching field for dependency " + f.Dependency.Name + " in connector " + c.ID)
+				log.Fatalf("Failed to find matching field for dependency %s in connector %s", f.Dependency.Name, c.ID)
 			}
 			if f.Dependency.Field.Type != FieldTypeBool {
-				log.Fatalf("Field " + f.Name + " has a dependency on " + f.Dependency.Field.Name + " whose type is not a boolean (other types are not currently supported)")
+				log.Fatalf("Field %s has a dependency on %s whose type is not a boolean (other types are not currently supported)", f.Name, f.Dependency.Field.Name)
 			}
 			if f.Dependency.Value != true {
-				log.Fatalf("Field " + f.Name + " has a dependency whose value is not true (other values are not currently supported)")
+				log.Fatalf("Field %s has a dependency whose value is not true (other values are not currently supported)", f.Name)
 			}
 		}
 	}

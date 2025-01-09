@@ -34,11 +34,35 @@ type OAuthModel struct {
 func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	boolattr.GetNot(m.Disabled, data, "enabled")
+
 	providers := map[string]any{}
+
 	if v := m.System; v != nil {
+		ensureSystemProvider(h, v.Apple, "apple")
+		ensureSystemProvider(h, v.Discord, "discord")
+		ensureSystemProvider(h, v.Facebook, "facebook")
+		ensureSystemProvider(h, v.Github, "github")
+		ensureSystemProvider(h, v.Gitlab, "gitlab")
+		ensureSystemProvider(h, v.Google, "google")
+		ensureSystemProvider(h, v.Linkedin, "linkedin")
+		ensureSystemProvider(h, v.Microsoft, "microsoft")
+		ensureSystemProvider(h, v.Slack, "slack")
+
 		maps.Copy(providers, v.Values(h))
 	}
+
 	for name, provider := range m.Custom {
+		if _, ok := provider.ClaimMapping["loginId"]; !ok && len(provider.ClaimMapping) > 0 {
+			h.Error("Invalid Claim Mapping", "Claim mapping set for custom provider %s but 'loginId' was not mapped", name)
+		}
+
+		ensureRequiredCustomProviderField(h, provider.ClientID, "client_id", name)
+		ensureRequiredCustomProviderField(h, provider.ClientSecret, "client_secret", name)
+		ensureRequiredCustomProviderField(h, provider.AllowedGrantTypes, "allowed_grant_types", name)
+		ensureRequiredCustomProviderField(h, provider.AuthorizationEndpoint, "authorization_endpoint", name)
+		ensureRequiredCustomProviderField(h, provider.TokenEndpoint, "token_endpoint", name)
+		ensureRequiredCustomProviderField(h, provider.UserInfoEndpoint, "user_info_endpoint", name)
+
 		data := provider.Values(h)
 		data["useSelfAccount"] = true
 		data["custom"] = true
@@ -46,6 +70,7 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 		data["name"] = name
 		providers[name] = data
 	}
+
 	data["providerSettings"] = providers
 	return data
 }
@@ -78,19 +103,10 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 		validateSystemProvider(h, v.Microsoft, "microsoft")
 		validateSystemProvider(h, v.Slack, "slack")
 	}
-	for name, app := range m.Custom {
+	for name := range m.Custom {
 		if slices.Contains(systemProviderNames, name) {
 			h.Error("Reserved OAuth Provider Name", "The %s name is reserved for system providers and cannot be used for a custom provider", name)
 			continue
-		}
-		ensureRequiredCustomProviderField(h, app.ClientID, "client_id", name)
-		ensureRequiredCustomProviderField(h, app.ClientSecret, "client_secret", name)
-		ensureRequiredCustomProviderField(h, app.AllowedGrantTypes, "allowed_grant_types", name)
-		ensureRequiredCustomProviderField(h, app.AuthorizationEndpoint, "authorization_endpoint", name)
-		ensureRequiredCustomProviderField(h, app.TokenEndpoint, "token_endpoint", name)
-		ensureRequiredCustomProviderField(h, app.UserInfoEndpoint, "user_info_endpoint", name)
-		if _, ok := app.ClaimMapping["loginId"]; !ok && len(app.ClaimMapping) > 0 {
-			h.Error("Invalid Claim Mapping", "Claim mapping set for custom provider %s but 'loginId' was not mapped", name)
 		}
 	}
 }
@@ -112,7 +128,7 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, 
 	}
 }
 
-func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
+func ensureSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
 	if m == nil {
 		return
 	}
@@ -130,7 +146,12 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 			h.Error("Invalid Attribute Value", "Set a client_id and client_secret for the %s system provider in order to set the provider_token_management attribute", name)
 		}
 	}
-	// custom-only validation
+}
+
+func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
+	if m == nil {
+		return
+	}
 	ensureNoCustomProviderFields(h, m.Description, "description", name)
 	ensureNoCustomProviderFields(h, m.Logo, "logo", name)
 	ensureNoCustomProviderFields(h, m.Issuer, "issuer", name)

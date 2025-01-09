@@ -49,11 +49,6 @@ func (r *projectResource) ValidateConfig(ctx context.Context, req resource.Valid
 		return
 	}
 
-	_ = entity.Values(ctx)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
 	tflog.Info(ctx, "Project resource validated")
 }
 
