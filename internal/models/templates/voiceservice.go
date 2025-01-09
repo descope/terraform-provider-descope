@@ -28,7 +28,7 @@ func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
 		h.Log("Setting voiceServiceProvider reference to connector '%s'", connector)
 		data["voiceServiceProvider"] = ref.ProviderValue()
 	} else {
-		h.Error("Unknown connector reference", "No connector named '"+connector+"' for voice service was defined")
+		h.Error("Unknown connector reference", "No connector named '%s' for voice service was defined", connector)
 	}
 	listattr.Get(m.Templates, data, "voiceTemplates", h)
 	return data
@@ -37,14 +37,14 @@ func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
 func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	for _, template := range m.Templates {
 		name := template.Name.ValueString()
-		h.Log("Looking for voice template named '" + name + "'")
+		h.Log("Looking for voice template named '%s'", name)
 		if id, ok := requireTemplateID(h, data, "voiceTemplates", name); ok {
 			value := types.StringValue(id)
 			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '" + id + "' for voice template named '" + name + "'")
+				h.Log("Setting new ID '%s' for voice template named '%s'", id, name)
 				template.ID = value
 			} else {
-				h.Log("Keeping existing ID '" + id + "' for voice template named '" + name + "'")
+				h.Log("Keeping existing ID '%s' for voice template named '%s'", id, name)
 			}
 		}
 	}

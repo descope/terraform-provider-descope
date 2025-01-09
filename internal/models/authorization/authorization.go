@@ -38,13 +38,13 @@ func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) 
 		if found {
 			value := types.StringValue(id)
 			if !role.ID.Equal(value) {
-				h.Log("Setting new ID '" + id + "' for role named '" + name + "'")
+				h.Log("Setting new ID '%s' for role named '%s'", id, name)
 				role.ID = value
 			} else {
-				h.Log("Keeping existing ID '" + id + "' for role named '" + name + "'")
+				h.Log("Keeping existing ID '%s' for role named '%s'", id, name)
 			}
 		} else {
-			h.Error("Role not found", "Expected to find role to match with '"+name+"'")
+			h.Error("Role not found", "Expected to find role to match with '%s'", name)
 		}
 	}
 
@@ -54,13 +54,13 @@ func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) 
 		if found {
 			value := types.StringValue(id)
 			if !permission.ID.Equal(value) {
-				h.Log("Setting new ID '" + id + "' for permission named '" + name + "'")
+				h.Log("Setting new ID '%s' for permission named '%s'", id, name)
 				permission.ID = value
 			} else {
-				h.Log("Keeping existing ID '" + id + "' for permission named '" + name + "'")
+				h.Log("Keeping existing ID '%s' for permission named '%s'", id, name)
 			}
 		} else {
-			h.Error("Permission not found", "Expected to find permission to match with '"+name+"'")
+			h.Error("Permission not found", "Expected to find permission to match with '%s'", name)
 		}
 	}
 }

@@ -7,7 +7,7 @@ import (
 func requireTemplateID(h *helpers.Handler, data map[string]any, typ string, name string) (string, bool) {
 	list, ok := data[typ].([]any)
 	if !ok {
-		h.Error("Unexpected server response", "Expected to find list of templates in '"+typ+"' to match with '"+name+"' template")
+		h.Error("Unexpected server response", "Expected to find list of templates in '%s' to match with '%s' template", typ, name)
 		return "", false
 	}
 
@@ -21,6 +21,6 @@ func requireTemplateID(h *helpers.Handler, data map[string]any, typ string, name
 		}
 	}
 
-	h.Error("Template not found", "Expected to find template in '"+typ+"' to match with '"+name+"' template")
+	h.Error("Template not found", "Expected to find template in '%s' to match with '%s' template", typ, name)
 	return "", false
 }

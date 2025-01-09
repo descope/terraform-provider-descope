@@ -25,6 +25,7 @@ func TestProject(t *testing.T) {
 				"id":          testacc.AttributeIsSet,
 				"name":        p.Name,
 				"environment": "production",
+				"tags":        []string{},
 			}),
 		},
 		resource.TestStep{
@@ -38,7 +39,19 @@ func TestProject(t *testing.T) {
 			},
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"name": p.Name,
+				"name":        p.Name,
+				"environment": "production",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				environment = ""
+				tags = ["foo", "bar"]
+			`),
+			Check: p.Check(map[string]any{
+				"name":        p.Name,
+				"tags":        []string{"foo", "bar"},
+				"environment": "",
 			}),
 		},
 	)
