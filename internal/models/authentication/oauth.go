@@ -136,14 +136,14 @@ func ensureSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string
 	ownAccount := m.ClientID.ValueString() != ""
 	if ownAccount {
 		if m.ClientSecret.ValueString() == "" {
-			h.Error("Missing Client Secret", "The client_id attribute was set for the %s system provider but the client_secret attribute was not", name)
+			h.Missing("The client_id attribute was set for the %s system provider but the client_secret attribute was not", name)
 		}
 	} else {
 		if len(m.Scopes) > 0 {
-			h.Error("Invalid Attribute Value", "Set a client_id and client_secret for the %s system provider in order to set the scopes attribute", name)
+			h.Invalid("Set a client_id and client_secret for the %s system provider in order to set the scopes attribute", name)
 		}
 		if m.ProviderTokenManagement != nil {
-			h.Error("Invalid Attribute Value", "Set a client_id and client_secret for the %s system provider in order to set the provider_token_management attribute", name)
+			h.Invalid("Set a client_id and client_secret for the %s system provider in order to set the provider_token_management attribute", name)
 		}
 	}
 }
