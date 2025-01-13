@@ -36,6 +36,9 @@ func Optional(attributes map[string]schema.Attribute, extras ...any) schema.Sing
 
 func Get[T any, M helpers.Model[T]](o M, data map[string]any, key string, h *helpers.Handler) {
 	if o != nil {
+		if o, ok := any(o).(checkableModel); ok {
+			o.Check(h)
+		}
 		data[key] = o.Values(h)
 	}
 }
@@ -46,6 +49,10 @@ func Set[T any, M helpers.Model[T]](o *M, data map[string]any, key string, h *he
 			(*o).SetValues(h, v)
 		}
 	}
+}
+
+type checkableModel interface {
+	Check(*helpers.Handler)
 }
 
 func getAttributeTypes(attributes map[string]schema.Attribute) map[string]attr.Type {

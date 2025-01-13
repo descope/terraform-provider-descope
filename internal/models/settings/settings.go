@@ -1,6 +1,9 @@
 package settings
 
 import (
+	"net/url"
+	"strings"
+
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
@@ -15,6 +18,8 @@ import (
 var SettingsValidator = objectattr.NewValidator[SettingsModel]("must have a valid configuration")
 
 var SettingsAttributes = map[string]schema.Attribute{
+	"app_url":                             stringattr.Optional(),
+	"custom_domain":                       stringattr.Optional(),
 	"approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
 	"token_response_method":               stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
 	"cookie_policy":                       stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
@@ -36,6 +41,8 @@ var SettingsAttributes = map[string]schema.Attribute{
 }
 
 type SettingsModel struct {
+	AppURL                          types.String `tfsdk:"app_url"`
+	CustomDomain                    types.String `tfsdk:"custom_domain"`
 	ApprovedDomain                  []string     `tfsdk:"approved_domains"`
 	TokenResponseMethod             types.String `tfsdk:"token_response_method"`
 	CookiePolicy                    types.String `tfsdk:"cookie_policy"`
@@ -58,6 +65,8 @@ type SettingsModel struct {
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
+	stringattr.Get(m.AppURL, data, "appUrl")
+	stringattr.Get(m.CustomDomain, data, "customDomain")
 	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
 	if s := m.TokenResponseMethod.ValueString(); s == "cookies" {
 		data["tokenResponseMethod"] = "cookie"
@@ -84,6 +93,8 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Get(m.AppURL, data, "appUrl")
+	stringattr.Get(m.CustomDomain, data, "customDomain")
 	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
 	if data["tokenResponseMethod"] == "cookie" {
 		m.TokenResponseMethod = types.StringValue("cookies")
@@ -110,7 +121,53 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *SettingsModel) Validate(h *helpers.Handler) {
 	if m.Domain.ValueString() != "" && m.CookieDomain.ValueString() != "" {
-		h.Error("Conflicting Attributes", "The deprecated domain attribute should not be used together with the cookie_domain attribute")
+		h.Error("Conflicting Attribute Value", "The deprecated domain attribute should not be used together with the cookie_domain attribute")
+	}
+}
+
+func (m *SettingsModel) Check(h *helpers.Handler) {
+	if m.CookieDomain.ValueString() != "" && m.AppURL.ValueString() == "" { // temporary warning instead of error
+		h.Warn("Missing Attribute Value", "The cookie_domain attribute should be used together with app_url and custom_domain")
+		return
+	}
+
+	appDomain := ""
+	if v := m.AppURL.ValueString(); v != "" {
+		if appURL, err := url.Parse(v); err == nil {
+			appDomain = appURL.Hostname()
+		}
+		if appDomain == "" {
+			h.Invalid("The app_url attribute must be a valid URL")
+		}
+	}
+
+	customDomain := ""
+	if v := m.CustomDomain.ValueString(); v != "" {
+		if appDomain == "" {
+			h.Missing("The custom_domain attribute requires the app_url attribute to be set")
+		} else if strings.Contains(v, "://") {
+			h.Missing("The custom_domain attribute must be a domain name and not a full URL")
+		} else if !strings.HasSuffix(v, "."+appDomain) {
+			h.Invalid("The custom_domain attribute must be a subdomain of the app_url domain")
+		} else if strings.HasSuffix(v, ".localhost") {
+			h.Invalid("The custom_domain attribute cannot be used with the reserved domain 'localhost'")
+		}
+		for _, domain := range []string{"test", "example", "invalid"} {
+			for _, tld := range []string{"com", "net", "org"} {
+				if strings.HasSuffix(v, "."+domain+"."+tld) {
+					h.Invalid("The custom_domain attribute cannot be used with the reserved domain '%s'", domain+"."+tld)
+				}
+			}
+		}
+		customDomain = v
+	}
+
+	if v := m.CookieDomain.ValueString(); v != "" && !strings.HasSuffix(v, ".descope.com") && !strings.HasSuffix(v, ".descope.org") {
+		if customDomain == "" {
+			h.Missing("The cookie_domain attribute requires the custom_domain attribute to be set")
+		} else if v != customDomain && !strings.HasSuffix(customDomain, "."+v) {
+			h.Invalid("The cookie_domain attribute must be set to the same domain as the custom_domain attribute or one of its top level domains")
+		}
 	}
 }
 
