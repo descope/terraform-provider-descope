@@ -33,13 +33,13 @@ type AWSS3Model struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	AccessKeyID            types.String		`tfsdk:"access_key_id"`
-	SecretAccessKey        types.String		`tfsdk:"secret_access_key"`
-	Region                 types.String		`tfsdk:"region"`
-	Bucket                 types.String		`tfsdk:"bucket"`
-	AuditEnabled           types.Bool		`tfsdk:"audit_enabled"`
-	AuditFilters           []types.String	`tfsdk:"audit_filters"`
-	TroubleshootLogEnabled types.Bool		`tfsdk:"troubleshoot_log_enabled"`
+	AccessKeyID            types.String   `tfsdk:"access_key_id"`
+	SecretAccessKey        types.String   `tfsdk:"secret_access_key"`
+	Region                 types.String   `tfsdk:"region"`
+	Bucket                 types.String   `tfsdk:"bucket"`
+	AuditEnabled           types.Bool     `tfsdk:"audit_enabled"`
+	AuditFilters           []types.String `tfsdk:"audit_filters"`
+	TroubleshootLogEnabled types.Bool     `tfsdk:"troubleshoot_log_enabled"`
 }
 
 func (m *AWSS3Model) Values(h *helpers.Handler) map[string]any {
@@ -54,7 +54,7 @@ func (m *AWSS3Model) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *AWSS3Model) Validate(h *helpers.Handler) {
-	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+	if len(m.AuditFilters) > 0 && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Error("Invalid connector configuration", "The audit_filters field cannot be used when audit_enabled is set to false")
 	}
 }
@@ -68,7 +68,7 @@ func (m *AWSS3Model) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Region, c, "region")
 	stringattr.Get(m.Bucket, c, "bucket")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	
+
 	// Convert list of types.String to a standard Go slice of strings
 	var auditFilters []string
 	for _, filter := range m.AuditFilters {
@@ -77,7 +77,7 @@ func (m *AWSS3Model) ConfigurationValues(h *helpers.Handler) map[string]any {
 		}
 	}
 	c["auditFilters"] = auditFilters
-	
+
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }
