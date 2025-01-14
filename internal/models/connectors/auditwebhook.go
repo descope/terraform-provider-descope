@@ -3,10 +3,10 @@ package connectors
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-        "github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -21,7 +21,7 @@ var AuditWebhookAttributes = map[string]schema.Attribute{
 	"headers":        mapattr.StringOptional(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
-	"audit_filters":  listattr.Optional(),
+	"audit_filters":  strlistattr.Optional(),
 }
 
 // Model
