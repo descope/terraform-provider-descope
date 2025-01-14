@@ -31,6 +31,7 @@ var docsOIDC = map[string]string{
 	"disabled": "Whether the application should be enabled or disabled.",
 	"login_page_url": "The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
 	"claims": "A list of supported claims. e.g. `sub`, `email`, `exp`.",
+	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
 }
 
 var docsSAML = map[string]string{
@@ -47,6 +48,7 @@ var docsSAML = map[string]string{
 	"subject_name_id_format": "The subject name id format. Choose one of \"\", \"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\", \"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\", \"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent\", \"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
 	"default_relay_state": "The default relay state. When using IdP-initiated authentication, this value may be used as a URL to a resource in the Service Provider.",
 	"attribute_mapping": "The `AttributeMapping` object. Read the description below.",
+	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
 }
 
 var docsAttributeMapping = map[string]string{

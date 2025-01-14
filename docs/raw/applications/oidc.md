@@ -64,3 +64,12 @@ claims
 - Type: `list` of `string` 
 
 A list of supported claims. e.g. `sub`, `email`, `exp`.
+
+
+
+force_authentication
+--------------
+
+- Type: `bool` 
+
+This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.

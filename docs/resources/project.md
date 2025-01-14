@@ -60,6 +60,7 @@ Optional:
 - `id` (String) An optional identifier for the OIDC application.
 - `login_page_url` (String) The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 - `logo` (String) A logo for the OIDC application. Should be a hosted image URL.
+- `force_authentication` (Boolean) This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
 
 
 <a id="nestedatt--applications--saml_applications"></a>
@@ -80,6 +81,7 @@ Optional:
 - `id` (String) An optional identifier for the SAML application.
 - `login_page_url` (String) The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 - `logo` (String) A logo for the SAML application. Should be a hosted image URL.
+- `force_authentication` (Boolean) This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
 - `manual_configuration` (Attributes) The `ManualConfiguration` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--manual_configuration))
 - `subject_name_id_format` (String) The subject name id format. Choose one of "", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 - `subject_name_id_type` (String) The subject name id type. Choose one of "", "email", "phone". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
