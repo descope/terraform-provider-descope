@@ -20,7 +20,7 @@ var AuditWebhookAttributes = map[string]schema.Attribute{
 	"headers":        mapattr.StringOptional(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
-	"audit_filters":  stringattr.Default(""),
+	"audit_filters":  listattr.StringOptional(),
 }
 
 // Model
@@ -35,7 +35,7 @@ type AuditWebhookModel struct {
 	Headers        map[string]string   `tfsdk:"headers"`
 	HMACSecret     types.String        `tfsdk:"hmac_secret"`
 	Insecure       types.Bool          `tfsdk:"insecure"`
-	AuditFilters   types.String        `tfsdk:"audit_filters"`
+	AuditFilters   []types.String      `tfsdk:"audit_filters"`
 }
 
 func (m *AuditWebhookModel) Values(h *helpers.Handler) map[string]any {
@@ -58,7 +58,16 @@ func (m *AuditWebhookModel) ConfigurationValues(h *helpers.Handler) map[string]a
 	c["headers"] = m.Headers
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
-	stringattr.Get(m.AuditFilters, c, "auditFilters")
+
+	// Convert list of types.String to a standard Go slice of strings
+	var auditFilters []string
+	for _, filter := range m.AuditFilters {
+		if !filter.IsNull() && !filter.IsUnknown() {
+			auditFilters = append(auditFilters, filter.ValueString())
+		}
+	}
+	c["auditFilters"] = auditFilters
+	
 	return c
 }
 
