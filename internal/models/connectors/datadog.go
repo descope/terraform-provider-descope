@@ -20,7 +20,7 @@ var DatadogAttributes = map[string]schema.Attribute{
 	"api_key":                  stringattr.SecretRequired(),
 	"site":                     stringattr.Default(""),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            strlistattr.Optional(),,
+	"audit_filters":            strlistattr.Optional(),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -31,11 +31,11 @@ type DatadogModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	APIKey                 types.String		`tfsdk:"api_key"`
-	Site                   types.String		`tfsdk:"site"`
-	AuditEnabled           types.Bool		`tfsdk:"audit_enabled"`
-	AuditFilters           []types.String	`tfsdk:"audit_filters"`
-	TroubleshootLogEnabled types.Bool		`tfsdk:"troubleshoot_log_enabled"`
+	APIKey                 types.String   `tfsdk:"api_key"`
+	Site                   types.String   `tfsdk:"site"`
+	AuditEnabled           types.Bool     `tfsdk:"audit_enabled"`
+	AuditFilters           []types.String `tfsdk:"audit_filters"`
+	TroubleshootLogEnabled types.Bool     `tfsdk:"troubleshoot_log_enabled"`
 }
 
 func (m *DatadogModel) Values(h *helpers.Handler) map[string]any {
@@ -71,7 +71,7 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 		}
 	}
 	c["auditFilters"] = auditFilters
-	
+
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }
