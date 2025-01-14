@@ -68,7 +68,6 @@ func (m *AuditWebhookModel) ConfigurationValues(h *helpers.Handler) map[string]a
 		}
 	}
 	c["auditFilters"] = auditFilters
-	
 	return c
 }
 
