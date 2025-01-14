@@ -21,7 +21,7 @@ var AuditWebhookAttributes = map[string]schema.Attribute{
 	"headers":        mapattr.StringOptional(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
-	"audit_filters":  listattr.StringOptional(),
+	"audit_filters":  listattr.Optional(),
 }
 
 // Model
