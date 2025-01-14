@@ -264,7 +264,7 @@ var docsAuditWebhook = map[string]string{
 	               "verify the integrity and authenticity of the payload by checking the provided " +
 	               "signature",
 	"insecure": "Will ignore certificate errors raised by the client",
-	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	"audit_filters": "Specify list of events will be sent to the external audit service (including " +
 	                 "tenant selection).",
 }
 
@@ -276,7 +276,7 @@ var docsAWSS3 = map[string]string{
 	"region": "The AWS S3 region, e.g. `us-east-1`.",
 	"bucket": "The AWS S3 bucket. This bucket should already exist for the connector to work.",
 	"audit_enabled": "",
-	"audit_filters": "",
+	"audit_filters": [],
 	"troubleshoot_log_enabled": "",
 }
 
@@ -360,7 +360,7 @@ var docsDatadog = map[string]string{
 	"site": "The Datadog site to send logs to. Default is `datadoghq.com`. European, free " +
 	        "tier and other customers should set their site accordingly.",
 	"audit_enabled": "",
-	"audit_filters": "",
+	"audit_filters": [],
 	"troubleshoot_log_enabled": "",
 }
 
@@ -484,7 +484,7 @@ var docsNewRelic = map[string]string{
 	"data_center": "The New Relic data center the account belongs to. Possible values are: `US`, " +
 	               "`EU`, `FedRAMP`. Default is `US`.",
 	"audit_enabled": "",
-	"audit_filters": "",
+	"audit_filters": [],
 	"troubleshoot_log_enabled": "",
 	"override_logs_prefix": "Enable this option to use a custom prefix for log fields.",
 	"logs_prefix": "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
@@ -602,7 +602,7 @@ var docsSumoLogic = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"http_source_url": "The URL associated with an HTTP Hosted collector",
 	"audit_enabled": "",
-	"audit_filters": "",
+	"audit_filters": [],
 	"troubleshoot_log_enabled": "",
 }
 

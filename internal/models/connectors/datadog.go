@@ -5,6 +5,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -19,7 +20,7 @@ var DatadogAttributes = map[string]schema.Attribute{
 	"api_key":                  stringattr.SecretRequired(),
 	"site":                     stringattr.Default(""),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            stringattr.Default(""),
+	"audit_filters":            strlistattr.Optional(),,
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -30,11 +31,11 @@ type DatadogModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	APIKey                 types.String `tfsdk:"api_key"`
-	Site                   types.String `tfsdk:"site"`
-	AuditEnabled           types.Bool   `tfsdk:"audit_enabled"`
-	AuditFilters           types.String `tfsdk:"audit_filters"`
-	TroubleshootLogEnabled types.Bool   `tfsdk:"troubleshoot_log_enabled"`
+	APIKey                 types.String		`tfsdk:"api_key"`
+	Site                   types.String		`tfsdk:"site"`
+	AuditEnabled           types.Bool		`tfsdk:"audit_enabled"`
+	AuditFilters           []types.String	`tfsdk:"audit_filters"`
+	TroubleshootLogEnabled types.Bool		`tfsdk:"troubleshoot_log_enabled"`
 }
 
 func (m *DatadogModel) Values(h *helpers.Handler) map[string]any {
@@ -61,7 +62,16 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.Site, c, "site")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	stringattr.Get(m.AuditFilters, c, "auditFilters")
+
+	// Convert list of types.String to a standard Go slice of strings
+	var auditFilters []string
+	for _, filter := range m.AuditFilters {
+		if !filter.IsNull() && !filter.IsUnknown() {
+			auditFilters = append(auditFilters, filter.ValueString())
+		}
+	}
+	c["auditFilters"] = auditFilters
+	
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }

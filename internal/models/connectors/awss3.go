@@ -5,6 +5,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -21,7 +22,7 @@ var AWSS3Attributes = map[string]schema.Attribute{
 	"region":                   stringattr.Required(),
 	"bucket":                   stringattr.Required(),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            stringattr.Default(""),
+	"audit_filters":            strlistattr.Optional(),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -32,13 +33,13 @@ type AWSS3Model struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	AccessKeyID            types.String `tfsdk:"access_key_id"`
-	SecretAccessKey        types.String `tfsdk:"secret_access_key"`
-	Region                 types.String `tfsdk:"region"`
-	Bucket                 types.String `tfsdk:"bucket"`
-	AuditEnabled           types.Bool   `tfsdk:"audit_enabled"`
-	AuditFilters           types.String `tfsdk:"audit_filters"`
-	TroubleshootLogEnabled types.Bool   `tfsdk:"troubleshoot_log_enabled"`
+	AccessKeyID            types.String		`tfsdk:"access_key_id"`
+	SecretAccessKey        types.String		`tfsdk:"secret_access_key"`
+	Region                 types.String		`tfsdk:"region"`
+	Bucket                 types.String		`tfsdk:"bucket"`
+	AuditEnabled           types.Bool		`tfsdk:"audit_enabled"`
+	AuditFilters           []types.String	`tfsdk:"audit_filters"`
+	TroubleshootLogEnabled types.Bool		`tfsdk:"troubleshoot_log_enabled"`
 }
 
 func (m *AWSS3Model) Values(h *helpers.Handler) map[string]any {
@@ -67,7 +68,16 @@ func (m *AWSS3Model) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Region, c, "region")
 	stringattr.Get(m.Bucket, c, "bucket")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	stringattr.Get(m.AuditFilters, c, "auditFilters")
+	
+	// Convert list of types.String to a standard Go slice of strings
+	var auditFilters []string
+	for _, filter := range m.AuditFilters {
+		if !filter.IsNull() && !filter.IsUnknown() {
+			auditFilters = append(auditFilters, filter.ValueString())
+		}
+	}
+	c["auditFilters"] = auditFilters
+	
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }
