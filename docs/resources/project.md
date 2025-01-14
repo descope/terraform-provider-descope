@@ -953,7 +953,7 @@ Required:
 
 Optional:
 
-- `audit_filters` (String) Specify which events will be sent to the external audit service (including tenant selection).
+- `audit_filters` (List of String) Specify which events will be sent to the external audit service (including tenant selection).
 - `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication))
 - `description` (String) A description of what your connector is used for.
 - `headers` (Map of String) The headers to send with the request
@@ -1007,7 +1007,7 @@ Required:
 Optional:
 
 - `audit_enabled` (Boolean)
-- `audit_filters` (String)
+- `audit_filters` (List of String)
 - `description` (String) A description of what your connector is used for.
 - `troubleshoot_log_enabled` (Boolean)
 
@@ -1065,7 +1065,7 @@ Required:
 Optional:
 
 - `audit_enabled` (Boolean)
-- `audit_filters` (String)
+- `audit_filters` (List of String)
 - `description` (String) A description of what your connector is used for.
 - `site` (String) The Datadog site to send logs to. Default is `datadoghq.com`. European, free tier and other customers should set their site accordingly.
 - `troubleshoot_log_enabled` (Boolean)
@@ -1345,7 +1345,7 @@ Required:
 Optional:
 
 - `audit_enabled` (Boolean)
-- `audit_filters` (String)
+- `audit_filters` (List of String)
 - `data_center` (String) The New Relic data center the account belongs to. Possible values are: `US`, `EU`, `FedRAMP`. Default is `US`.
 - `description` (String) A description of what your connector is used for.
 - `logs_prefix` (String) Specify a custom prefix for all log fields. The default prefix is `descope.`.
@@ -1577,7 +1577,7 @@ Required:
 Optional:
 
 - `audit_enabled` (Boolean)
-- `audit_filters` (String)
+- `audit_filters` (List of String)
 - `description` (String) A description of what your connector is used for.
 - `troubleshoot_log_enabled` (Boolean)
 
