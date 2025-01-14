@@ -15,20 +15,22 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"login_page_url": stringattr.Default(""),
-	"claims":         strlistattr.Optional(),
+	"login_page_url":       stringattr.Default(""),
+	"claims":               strlistattr.Optional(),
+	"force_authentication": boolattr.Default(false),
 }
 
 // Model
 
 type OIDCModel struct {
-	ID           types.String `tfsdk:"id"`
-	Name         types.String `tfsdk:"name"`
-	Description  types.String `tfsdk:"description"`
-	Logo         types.String `tfsdk:"logo"`
-	Disabled     types.Bool   `tfsdk:"disabled"`
-	LoginPageURL types.String `tfsdk:"login_page_url"`
-	Claims       []string     `tfsdk:"claims"`
+	ID                  types.String `tfsdk:"id"`
+	Name                types.String `tfsdk:"name"`
+	Description         types.String `tfsdk:"description"`
+	Logo                types.String `tfsdk:"logo"`
+	Disabled            types.Bool   `tfsdk:"disabled"`
+	LoginPageURL        types.String `tfsdk:"login_page_url"`
+	Claims              []string     `tfsdk:"claims"`
+	ForceAuthentication types.Bool   `tfsdk:"force_authentication"`
 }
 
 func (m *OIDCModel) Values(h *Handler) map[string]any {
@@ -36,6 +38,7 @@ func (m *OIDCModel) Values(h *Handler) map[string]any {
 	settings := map[string]any{}
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
 	strlistattr.Get(m.Claims, settings, "claims")
+	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
 	data["oidc"] = settings
 	return data
 }

@@ -28,6 +28,7 @@ var SAMLAttributes = map[string]schema.Attribute{
 	"subject_name_id_format":    stringattr.Default("", stringvalidator.OneOf("", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient")),
 	"default_relay_state":       stringattr.Default(""),
 	"attribute_mapping":         listattr.Optional(AttributeMappingAttributes),
+	"force_authentication":      boolattr.Default(false),
 }
 
 // Model
@@ -46,6 +47,7 @@ type SAMLModel struct {
 	SubjectNameIDFormat    types.String               `tfsdk:"subject_name_id_format"`
 	DefaultRelayState      types.String               `tfsdk:"default_relay_state"`
 	AttributeMapping       []*AttributeMappingModel   `tfsdk:"attribute_mapping"`
+	ForceAuthentication    types.Bool                 `tfsdk:"force_authentication"`
 }
 
 func (m *SAMLModel) Values(h *Handler) map[string]any {
@@ -64,6 +66,7 @@ func (m *SAMLModel) Values(h *Handler) map[string]any {
 	stringattr.Get(m.DefaultRelayState, settings, "defaultRelayState")
 	listattr.Get(m.AttributeMapping, settings, "attributeMapping", h)
 	strlistattr.Get(m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks")
+	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
 	data["saml"] = settings
 	return data
 }
