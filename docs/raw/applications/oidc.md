@@ -68,7 +68,7 @@ A list of supported claims. e.g. `sub`, `email`, `exp`.
 
 
 force_authentication
---------------
+--------------------
 
 - Type: `bool` 
 

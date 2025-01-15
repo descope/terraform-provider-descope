@@ -58,15 +58,6 @@ The Flow Hosting URL. Read more about using this parameter with custom domain [h
 
 
 
-force_authentication
---------------
-
-- Type: `bool` 
-
-This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
-
-
-
 dynamic_configuration
 ---------------------
 
@@ -127,6 +118,15 @@ attribute_mapping
 - Type: `list` of `applications.AttributeMapping` 
 
 The `AttributeMapping` object. Read the description below.
+
+
+
+force_authentication
+--------------------
+
+- Type: `bool` 
+
+This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
 
 
 

@@ -77,7 +77,7 @@ func TestConnectors(t *testing.T) {
     						}
     						hmac_secret = "ooxzct5yxz"
     						insecure = true
-    						audit_filters = "kekpon4oj34w"
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
 						}
 					]
 				}
@@ -92,7 +92,7 @@ func TestConnectors(t *testing.T) {
 				"connectors.audit_webhook.0.headers.key":                 "g6htpmp",
 				"connectors.audit_webhook.0.hmac_secret":                 "ooxzct5yxz",
 				"connectors.audit_webhook.0.insecure":                    true,
-				"connectors.audit_webhook.0.audit_filters":               "kekpon4oj34w",
+				"connectors.audit_webhook.0.audit_filters.0.values":      []string{"kekpon4oj34w"},
 			}),
 		},
 		resource.TestStep{
@@ -107,7 +107,7 @@ func TestConnectors(t *testing.T) {
     						region = "y2l5fg"
     						bucket = "ywdzxd"
     						audit_enabled = true
-    						audit_filters = "kekpon4oj34w"
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
     						troubleshoot_log_enabled = true
 						}
 					]
@@ -123,7 +123,7 @@ func TestConnectors(t *testing.T) {
 				"connectors.aws_s3.0.region":                   "y2l5fg",
 				"connectors.aws_s3.0.bucket":                   "ywdzxd",
 				"connectors.aws_s3.0.audit_enabled":            true,
-				"connectors.aws_s3.0.audit_filters":            "kekpon4oj34w",
+				"connectors.aws_s3.0.audit_filters.0.values":   []string{"kekpon4oj34w"},
 				"connectors.aws_s3.0.troubleshoot_log_enabled": true,
 			}),
 		},
@@ -185,7 +185,7 @@ func TestConnectors(t *testing.T) {
     						api_key = "mhvece"
     						site = "7oxa"
     						audit_enabled = true
-    						audit_filters = "kekpon4oj34w"
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
     						troubleshoot_log_enabled = true
 						}
 					]
@@ -199,7 +199,7 @@ func TestConnectors(t *testing.T) {
 				"connectors.datadog.0.api_key":                  "mhvece",
 				"connectors.datadog.0.site":                     "7oxa",
 				"connectors.datadog.0.audit_enabled":            true,
-				"connectors.datadog.0.audit_filters":            "kekpon4oj34w",
+				"connectors.datadog.0.audit_filters.0.values":   []string{"kekpon4oj34w"},
 				"connectors.datadog.0.troubleshoot_log_enabled": true,
 			}),
 		},
@@ -412,17 +412,19 @@ func TestConnectors(t *testing.T) {
 							description = "A description for the hubspot connector"
     						access_token = "ssrho3t3233"
     						base_url = "bceszn6"
+    						use_static_ips = true
 						}
 					]
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.hubspot.#":              1,
-				"connectors.hubspot.0.id":           testacc.AttributeHasPrefix("CI"),
-				"connectors.hubspot.0.name":         "Test hubspot Connector",
-				"connectors.hubspot.0.description":  "A description for the hubspot connector",
-				"connectors.hubspot.0.access_token": "ssrho3t3233",
-				"connectors.hubspot.0.base_url":     "bceszn6",
+				"connectors.hubspot.#":                1,
+				"connectors.hubspot.0.id":             testacc.AttributeHasPrefix("CI"),
+				"connectors.hubspot.0.name":           "Test hubspot Connector",
+				"connectors.hubspot.0.description":    "A description for the hubspot connector",
+				"connectors.hubspot.0.access_token":   "ssrho3t3233",
+				"connectors.hubspot.0.base_url":       "bceszn6",
+				"connectors.hubspot.0.use_static_ips": true,
 			}),
 		},
 		resource.TestStep{
@@ -485,18 +487,22 @@ func TestConnectors(t *testing.T) {
     						api_key = "mhvece"
     						api_secret = "hgg666mus"
     						base_url = "bceszn6"
+    						default_environment = "mekqliza6drwrn7azt"
+    						use_static_ips = true
 						}
 					]
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.mparticle.#":             1,
-				"connectors.mparticle.0.id":          testacc.AttributeHasPrefix("CI"),
-				"connectors.mparticle.0.name":        "Test mparticle Connector",
-				"connectors.mparticle.0.description": "A description for the mparticle connector",
-				"connectors.mparticle.0.api_key":     "mhvece",
-				"connectors.mparticle.0.api_secret":  "hgg666mus",
-				"connectors.mparticle.0.base_url":    "bceszn6",
+				"connectors.mparticle.#":                     1,
+				"connectors.mparticle.0.id":                  testacc.AttributeHasPrefix("CI"),
+				"connectors.mparticle.0.name":                "Test mparticle Connector",
+				"connectors.mparticle.0.description":         "A description for the mparticle connector",
+				"connectors.mparticle.0.api_key":             "mhvece",
+				"connectors.mparticle.0.api_secret":          "hgg666mus",
+				"connectors.mparticle.0.base_url":            "bceszn6",
+				"connectors.mparticle.0.default_environment": "mekqliza6drwrn7azt",
+				"connectors.mparticle.0.use_static_ips":      true,
 			}),
 		},
 		resource.TestStep{
@@ -509,7 +515,7 @@ func TestConnectors(t *testing.T) {
     						api_key = "mhvece"
     						data_center = "wjih4vgzrt"
     						audit_enabled = true
-    						audit_filters = "kekpon4oj34w"
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
     						troubleshoot_log_enabled = true
     						override_logs_prefix = true
     						logs_prefix = "2zcsbfwbhp"
@@ -525,7 +531,7 @@ func TestConnectors(t *testing.T) {
 				"connectors.newrelic.0.api_key":                  "mhvece",
 				"connectors.newrelic.0.data_center":              "wjih4vgzrt",
 				"connectors.newrelic.0.audit_enabled":            true,
-				"connectors.newrelic.0.audit_filters":            "kekpon4oj34w",
+				"connectors.newrelic.0.audit_filters.0.values":   []string{"kekpon4oj34w"},
 				"connectors.newrelic.0.troubleshoot_log_enabled": true,
 				"connectors.newrelic.0.override_logs_prefix":     true,
 				"connectors.newrelic.0.logs_prefix":              "2zcsbfwbhp",
@@ -712,7 +718,7 @@ func TestConnectors(t *testing.T) {
 							description = "A description for the sumologic connector"
     						http_source_url = "shhxfygq6qspm"
     						audit_enabled = true
-    						audit_filters = "kekpon4oj34w"
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
     						troubleshoot_log_enabled = true
 						}
 					]
@@ -725,7 +731,7 @@ func TestConnectors(t *testing.T) {
 				"connectors.sumologic.0.description":              "A description for the sumologic connector",
 				"connectors.sumologic.0.http_source_url":          "shhxfygq6qspm",
 				"connectors.sumologic.0.audit_enabled":            true,
-				"connectors.sumologic.0.audit_filters":            "kekpon4oj34w",
+				"connectors.sumologic.0.audit_filters.0.values":   []string{"kekpon4oj34w"},
 				"connectors.sumologic.0.troubleshoot_log_enabled": true,
 			}),
 		},

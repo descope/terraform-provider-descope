@@ -3,6 +3,7 @@ package connectors
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -18,7 +19,7 @@ var SumoLogicAttributes = map[string]schema.Attribute{
 
 	"http_source_url":          stringattr.SecretRequired(),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            stringattr.Default(""),
+	"audit_filters":            listattr.Optional(AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -29,10 +30,10 @@ type SumoLogicModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	HTTPSourceURL          types.String `tfsdk:"http_source_url"`
-	AuditEnabled           types.Bool   `tfsdk:"audit_enabled"`
-	AuditFilters           types.String `tfsdk:"audit_filters"`
-	TroubleshootLogEnabled types.Bool   `tfsdk:"troubleshoot_log_enabled"`
+	HTTPSourceURL          types.String             `tfsdk:"http_source_url"`
+	AuditEnabled           types.Bool               `tfsdk:"audit_enabled"`
+	AuditFilters           []*AuditFilterFieldModel `tfsdk:"audit_filters"`
+	TroubleshootLogEnabled types.Bool               `tfsdk:"troubleshoot_log_enabled"`
 }
 
 func (m *SumoLogicModel) Values(h *helpers.Handler) map[string]any {
@@ -47,7 +48,7 @@ func (m *SumoLogicModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *SumoLogicModel) Validate(h *helpers.Handler) {
-	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+	if len(m.AuditFilters) != 0 && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Error("Invalid connector configuration", "The audit_filters field cannot be used when audit_enabled is set to false")
 	}
 }
@@ -58,7 +59,7 @@ func (m *SumoLogicModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 	c := map[string]any{}
 	stringattr.Get(m.HTTPSourceURL, c, "httpSourceUrl")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	stringattr.Get(m.AuditFilters, c, "auditFilters")
+	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }

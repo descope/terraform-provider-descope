@@ -3,6 +3,7 @@ package connectors
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -19,7 +20,7 @@ var DatadogAttributes = map[string]schema.Attribute{
 	"api_key":                  stringattr.SecretRequired(),
 	"site":                     stringattr.Default(""),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            stringattr.Default(""),
+	"audit_filters":            listattr.Optional(AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -30,11 +31,11 @@ type DatadogModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	APIKey                 types.String `tfsdk:"api_key"`
-	Site                   types.String `tfsdk:"site"`
-	AuditEnabled           types.Bool   `tfsdk:"audit_enabled"`
-	AuditFilters           types.String `tfsdk:"audit_filters"`
-	TroubleshootLogEnabled types.Bool   `tfsdk:"troubleshoot_log_enabled"`
+	APIKey                 types.String             `tfsdk:"api_key"`
+	Site                   types.String             `tfsdk:"site"`
+	AuditEnabled           types.Bool               `tfsdk:"audit_enabled"`
+	AuditFilters           []*AuditFilterFieldModel `tfsdk:"audit_filters"`
+	TroubleshootLogEnabled types.Bool               `tfsdk:"troubleshoot_log_enabled"`
 }
 
 func (m *DatadogModel) Values(h *helpers.Handler) map[string]any {
@@ -49,7 +50,7 @@ func (m *DatadogModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *DatadogModel) Validate(h *helpers.Handler) {
-	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+	if len(m.AuditFilters) != 0 && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Error("Invalid connector configuration", "The audit_filters field cannot be used when audit_enabled is set to false")
 	}
 }
@@ -61,7 +62,7 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.Site, c, "site")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	stringattr.Get(m.AuditFilters, c, "auditFilters")
+	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }

@@ -5,6 +5,9 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -137,6 +140,34 @@ func (m *ServerFieldModel) Values(h *helpers.Handler) map[string]any {
 func (m *ServerFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Host, data, "host")
 	intattr.Set(&m.Port, data, "port")
+}
+
+// Audit Filter Field
+
+var AuditFilterFieldAttributes = map[string]schema.Attribute{
+	"key":      stringattr.Required(stringvalidator.OneOf("actions", "tenants")),
+	"operator": stringattr.Required(stringvalidator.OneOf("includes", "excludes")),
+	"values":   strlistattr.Required(listvalidator.SizeAtLeast(1)),
+}
+
+type AuditFilterFieldModel struct {
+	Key      types.String `tfsdk:"key"`
+	Operator types.String `tfsdk:"operator"`
+	Vals     []string     `tfsdk:"values"`
+}
+
+func (m *AuditFilterFieldModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	stringattr.Get(m.Key, data, "key")
+	stringattr.Get(m.Operator, data, "operator")
+	strlistattr.Get(m.Vals, data, "values")
+	return data
+}
+
+func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.Key, data, "key")
+	stringattr.Set(&m.Operator, data, "operator")
+	strlistattr.Set(&m.Vals, data, "values")
 }
 
 // HTTP Auth Field

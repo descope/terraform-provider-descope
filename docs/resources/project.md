@@ -57,10 +57,10 @@ Optional:
 - `claims` (List of String) A list of supported claims. e.g. `sub`, `email`, `exp`.
 - `description` (String) A description for the OIDC application.
 - `disabled` (Boolean) Whether the application should be enabled or disabled.
+- `force_authentication` (Boolean) This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
 - `id` (String) An optional identifier for the OIDC application.
 - `login_page_url` (String) The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 - `logo` (String) A logo for the OIDC application. Should be a hosted image URL.
-- `force_authentication` (Boolean) This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
 
 
 <a id="nestedatt--applications--saml_applications"></a>
@@ -78,10 +78,10 @@ Optional:
 - `description` (String) A description for the SAML application.
 - `disabled` (Boolean) Whether the application should be enabled or disabled.
 - `dynamic_configuration` (Attributes) The `DynamicConfiguration` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--dynamic_configuration))
+- `force_authentication` (Boolean) This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
 - `id` (String) An optional identifier for the SAML application.
 - `login_page_url` (String) The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 - `logo` (String) A logo for the SAML application. Should be a hosted image URL.
-- `force_authentication` (Boolean) This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
 - `manual_configuration` (Attributes) The `ManualConfiguration` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--manual_configuration))
 - `subject_name_id_format` (String) The subject name id format. Choose one of "", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 - `subject_name_id_type` (String) The subject name id type. Choose one of "", "email", "phone". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
@@ -955,7 +955,7 @@ Required:
 
 Optional:
 
-- `audit_filters` (String) Specify which events will be sent to the external audit service (including tenant selection).
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--audit_webhook--audit_filters))
 - `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication))
 - `description` (String) A description of what your connector is used for.
 - `headers` (Map of String) The headers to send with the request
@@ -965,6 +965,16 @@ Optional:
 Read-Only:
 
 - `id` (String)
+
+<a id="nestedatt--connectors--audit_webhook--audit_filters"></a>
+### Nested Schema for `connectors.audit_webhook.audit_filters`
+
+Required:
+
+- `key` (String)
+- `operator` (String)
+- `values` (List of String)
+
 
 <a id="nestedatt--connectors--audit_webhook--authentication"></a>
 ### Nested Schema for `connectors.audit_webhook.authentication`
@@ -1009,13 +1019,23 @@ Required:
 Optional:
 
 - `audit_enabled` (Boolean)
-- `audit_filters` (String)
+- `audit_filters` (Attributes List) (see [below for nested schema](#nestedatt--connectors--aws_s3--audit_filters))
 - `description` (String) A description of what your connector is used for.
 - `troubleshoot_log_enabled` (Boolean)
 
 Read-Only:
 
 - `id` (String)
+
+<a id="nestedatt--connectors--aws_s3--audit_filters"></a>
+### Nested Schema for `connectors.aws_s3.audit_filters`
+
+Required:
+
+- `key` (String)
+- `operator` (String)
+- `values` (List of String)
+
 
 
 <a id="nestedatt--connectors--aws_translate"></a>
@@ -1067,7 +1087,7 @@ Required:
 Optional:
 
 - `audit_enabled` (Boolean)
-- `audit_filters` (String)
+- `audit_filters` (Attributes List) (see [below for nested schema](#nestedatt--connectors--datadog--audit_filters))
 - `description` (String) A description of what your connector is used for.
 - `site` (String) The Datadog site to send logs to. Default is `datadoghq.com`. European, free tier and other customers should set their site accordingly.
 - `troubleshoot_log_enabled` (Boolean)
@@ -1075,6 +1095,16 @@ Optional:
 Read-Only:
 
 - `id` (String)
+
+<a id="nestedatt--connectors--datadog--audit_filters"></a>
+### Nested Schema for `connectors.datadog.audit_filters`
+
+Required:
+
+- `key` (String)
+- `operator` (String)
+- `values` (List of String)
+
 
 
 <a id="nestedatt--connectors--devrev_grow"></a>
@@ -1329,7 +1359,9 @@ Required:
 Optional:
 
 - `base_url` (String) The base URL of the mParticle API, when using a custom domain in mParticle. default value is https://s2s.mparticle.com/
+- `default_environment` (String) The default environment of which connector send data to, either “production” or “development“. default value: production. This field can be overridden per event (see at flows).
 - `description` (String) A description of what your connector is used for.
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 Read-Only:
 
@@ -1347,7 +1379,7 @@ Required:
 Optional:
 
 - `audit_enabled` (Boolean)
-- `audit_filters` (String)
+- `audit_filters` (Attributes List) (see [below for nested schema](#nestedatt--connectors--newrelic--audit_filters))
 - `data_center` (String) The New Relic data center the account belongs to. Possible values are: `US`, `EU`, `FedRAMP`. Default is `US`.
 - `description` (String) A description of what your connector is used for.
 - `logs_prefix` (String) Specify a custom prefix for all log fields. The default prefix is `descope.`.
@@ -1357,6 +1389,16 @@ Optional:
 Read-Only:
 
 - `id` (String)
+
+<a id="nestedatt--connectors--newrelic--audit_filters"></a>
+### Nested Schema for `connectors.newrelic.audit_filters`
+
+Required:
+
+- `key` (String)
+- `operator` (String)
+- `values` (List of String)
+
 
 
 <a id="nestedatt--connectors--recaptcha"></a>
@@ -1579,13 +1621,23 @@ Required:
 Optional:
 
 - `audit_enabled` (Boolean)
-- `audit_filters` (String)
+- `audit_filters` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sumologic--audit_filters))
 - `description` (String) A description of what your connector is used for.
 - `troubleshoot_log_enabled` (Boolean)
 
 Read-Only:
 
 - `id` (String)
+
+<a id="nestedatt--connectors--sumologic--audit_filters"></a>
+### Nested Schema for `connectors.sumologic.audit_filters`
+
+Required:
+
+- `key` (String)
+- `operator` (String)
+- `values` (List of String)
+
 
 
 <a id="nestedatt--connectors--telesign"></a>

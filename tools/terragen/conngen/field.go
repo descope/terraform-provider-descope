@@ -51,7 +51,7 @@ func (f *Field) defaultStructName() string {
 
 func (f *Field) StructType() string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret, FieldTypeAuditFilters:
+	case FieldTypeString, FieldTypeSecret:
 		return `types.String`
 	case FieldTypeBool:
 		return `types.Bool`
@@ -59,6 +59,8 @@ func (f *Field) StructType() string {
 		return `types.Float64`
 	case FieldTypeObject:
 		return `map[string]string`
+	case FieldTypeAuditFilters:
+		return `[]*AuditFilterFieldModel`
 	case FieldTypeHTTPAuth:
 		return `*HTTPAuthFieldModel`
 	default:
@@ -76,7 +78,7 @@ func (f *Field) defaultAttributeName() string {
 
 func (f *Field) AttributeType() string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeAuditFilters:
+	case FieldTypeString:
 		if f.Required {
 			return `stringattr.Required()`
 		}
@@ -107,6 +109,8 @@ func (f *Field) AttributeType() string {
 		return `floatattr.Default(0)`
 	case FieldTypeObject:
 		return `mapattr.StringOptional()`
+	case FieldTypeAuditFilters:
+		return `listattr.Optional(AuditFilterFieldAttributes)`
 	case FieldTypeHTTPAuth:
 		if f.Required {
 			return `objectattr.Required(HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
@@ -118,17 +122,20 @@ func (f *Field) AttributeType() string {
 }
 
 func (f *Field) GetValueStatement() string {
+	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret, FieldTypeAuditFilters:
-		return fmt.Sprintf(`stringattr.Get(m.%s, c, %q)`, f.StructName(), f.Name)
+	case FieldTypeString, FieldTypeSecret:
+		return fmt.Sprintf(`stringattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeBool:
-		return fmt.Sprintf(`boolattr.Get(m.%s, c, %q)`, f.StructName(), f.Name)
+		return fmt.Sprintf(`boolattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeNumber:
-		return fmt.Sprintf(`floatattr.Get(m.%s, c, %q)`, f.StructName(), f.Name)
+		return fmt.Sprintf(`floatattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeObject:
-		return fmt.Sprintf(`c[%q] = m.%s`, f.Name, f.StructName())
+		return fmt.Sprintf(`c[%q] = %s`, f.Name, accessor)
+	case FieldTypeAuditFilters:
+		return fmt.Sprintf(`listattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`objectattr.Get(m.%s, c, %q, h)`, f.StructName(), f.Name)
+		return fmt.Sprintf(`objectattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
@@ -137,7 +144,7 @@ func (f *Field) GetValueStatement() string {
 func (f *Field) ValidateNonZero() string {
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret, FieldTypeAuditFilters:
+	case FieldTypeString, FieldTypeSecret:
 		initial, _ := f.Initial.(string)
 		return fmt.Sprintf(`%s.ValueString() != %q`, accessor, initial)
 	case FieldTypeBool:
@@ -151,6 +158,22 @@ func (f *Field) ValidateNonZero() string {
 		return fmt.Sprintf(`%s.ValueFloat64() != %g`, accessor, initial)
 	case FieldTypeObject:
 		return fmt.Sprintf(`len(%s) != 0`, accessor)
+	case FieldTypeAuditFilters:
+		return fmt.Sprintf(`len(%s) != 0`, accessor)
+	case FieldTypeHTTPAuth:
+		return fmt.Sprintf(`%s != nil`, accessor)
+	default:
+		panic("unexpected field type: " + f.Type)
+	}
+}
+
+func (f *Field) IsNotNull() string {
+	accessor := fmt.Sprintf(`m.%s`, f.StructName())
+	switch f.Type {
+	case FieldTypeString, FieldTypeSecret, FieldTypeBool, FieldTypeNumber:
+		return fmt.Sprintf(`!%s.IsNull()`, accessor)
+	case FieldTypeObject, FieldTypeAuditFilters:
+		return fmt.Sprintf(`len(%s) != 0`, accessor)
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`%s != nil`, accessor)
 	default:
@@ -162,7 +185,7 @@ func (f *Field) ValidateNonZero() string {
 
 func (f *Field) GetTestAssignment() string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret, FieldTypeAuditFilters:
+	case FieldTypeString, FieldTypeSecret:
 		return fmt.Sprintf(`%q`, f.TestString())
 	case FieldTypeBool:
 		return `true`
@@ -172,6 +195,8 @@ func (f *Field) GetTestAssignment() string {
 		return fmt.Sprintf(`{
     							"key" = %q
     						}`, f.TestString())
+	case FieldTypeAuditFilters:
+		return fmt.Sprintf(`[{ key = "actions", operator = "includes", values = [%q] }]`, f.TestString())
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`{
     							bearer_token = %q
@@ -183,7 +208,7 @@ func (f *Field) GetTestAssignment() string {
 
 func (f *Field) GetTestCheck(list string, index int) string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret, FieldTypeAuditFilters:
+	case FieldTypeString, FieldTypeSecret:
 		return fmt.Sprintf(`"connectors.%s.%d.%s": %q`, list, index, f.AttributeName(), f.TestString())
 	case FieldTypeBool:
 		return fmt.Sprintf(`"connectors.%s.%d.%s": true`, list, index, f.AttributeName())
@@ -191,6 +216,8 @@ func (f *Field) GetTestCheck(list string, index int) string {
 		return fmt.Sprintf(`"connectors.%s.%d.%s": %d`, list, index, f.AttributeName(), f.TestNumber())
 	case FieldTypeObject:
 		return fmt.Sprintf(`"connectors.%s.%d.%s.key": %q`, list, index, f.AttributeName(), f.TestString())
+	case FieldTypeAuditFilters:
+		return fmt.Sprintf(`"connectors.%s.%d.%s.0.values": []string{%q}`, list, index, f.AttributeName(), f.TestString())
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`"connectors.%s.%d.%s.bearer_token": %q`, list, index, f.AttributeName(), f.TestString())
 	default:
