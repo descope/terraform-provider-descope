@@ -50,6 +50,40 @@ port
 
 
 
+AuditFilterField
+================
+
+
+
+key
+----
+
+- Type: `string` (required)
+
+// description for key
+
+
+
+operator
+--------
+
+- Type: `string` (required)
+
+// description for operator
+
+
+
+values
+------
+
+- Type: `list` of `string` (required)
+
+// description for values
+
+
+
+
+
 HTTPAuthField
 =============
 

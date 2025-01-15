@@ -477,6 +477,10 @@ var docsMParticle = map[string]string{
 	"api_secret": "The mParticle Server to Server Secret generated for the Descope service.",
 	"base_url": "The base URL of the mParticle API, when using a custom domain in mParticle. " +
 	            "default value is https://s2s.mparticle.com/",
+	"default_environment": "The default environment of which connector send data to, either “production” or " +
+	                       "“development“. default value: production. This field can be overridden per event " +
+	                       "(see at flows).",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
 var docsNewRelic = map[string]string{
@@ -559,6 +563,12 @@ var docsSenderField = map[string]string{
 var docsServerField = map[string]string{
 	"host": "",
 	"port": "",
+}
+
+var docsAuditFilterField = map[string]string{
+	"key": "",
+	"operator": "",
+	"values": "",
 }
 
 var docsHTTPAuthField = map[string]string{

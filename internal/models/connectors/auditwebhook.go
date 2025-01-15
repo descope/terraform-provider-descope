@@ -3,10 +3,10 @@ package connectors
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -21,7 +21,7 @@ var AuditWebhookAttributes = map[string]schema.Attribute{
 	"headers":        mapattr.StringOptional(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
-	"audit_filters":  strlistattr.Optional(),
+	"audit_filters":  listattr.Optional(AuditFilterFieldAttributes),
 }
 
 // Model
@@ -31,12 +31,12 @@ type AuditWebhookModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	BaseURL        types.String        `tfsdk:"base_url"`
-	Authentication *HTTPAuthFieldModel `tfsdk:"authentication"`
-	Headers        map[string]string   `tfsdk:"headers"`
-	HMACSecret     types.String        `tfsdk:"hmac_secret"`
-	Insecure       types.Bool          `tfsdk:"insecure"`
-	AuditFilters   []types.String      `tfsdk:"audit_filters"`
+	BaseURL        types.String             `tfsdk:"base_url"`
+	Authentication *HTTPAuthFieldModel      `tfsdk:"authentication"`
+	Headers        map[string]string        `tfsdk:"headers"`
+	HMACSecret     types.String             `tfsdk:"hmac_secret"`
+	Insecure       types.Bool               `tfsdk:"insecure"`
+	AuditFilters   []*AuditFilterFieldModel `tfsdk:"audit_filters"`
 }
 
 func (m *AuditWebhookModel) Values(h *helpers.Handler) map[string]any {
@@ -59,15 +59,7 @@ func (m *AuditWebhookModel) ConfigurationValues(h *helpers.Handler) map[string]a
 	c["headers"] = m.Headers
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
-
-	// Convert list of types.String to a standard Go slice of strings
-	var auditFilters []string
-	for _, filter := range m.AuditFilters {
-		if !filter.IsNull() && !filter.IsUnknown() {
-			auditFilters = append(auditFilters, filter.ValueString())
-		}
-	}
-	c["auditFilters"] = auditFilters
+	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	return c
 }
 

@@ -10,6 +10,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+func Required(validators ...validator.List) schema.ListAttribute {
+	return schema.ListAttribute{
+		Required:    true,
+		ElementType: types.StringType,
+		Validators:  validators,
+	}
+}
+
 func Optional(validators ...validator.List) schema.ListAttribute {
 	return schema.ListAttribute{
 		Optional:    true,

@@ -75,6 +75,7 @@ func InjectModels() {
 	inject(connectors.SendGridAuthFieldAttributes, docsSendGridAuthField)
 	inject(connectors.SenderFieldAttributes, docsSenderField)
 	inject(connectors.ServerFieldAttributes, docsServerField)
+	inject(connectors.AuditFilterFieldAttributes, docsAuditFilterField)
 	inject(connectors.HTTPAuthFieldAttributes, docsHTTPAuthField)
 	inject(connectors.HTTPAuthBasicFieldAttributes, docsHTTPAuthBasicField)
 	inject(connectors.HTTPAuthAPIKeyFieldAttributes, docsHTTPAuthAPIKeyField)

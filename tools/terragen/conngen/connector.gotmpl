@@ -8,6 +8,9 @@ import (
     {{- if .HasField "number" }}
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/floatattr"
     {{- end }}
+    {{- if .HasField "auditFilters" }}
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
+    {{- end }}
     {{- if .HasField "object" }}
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
     {{- end }}
@@ -60,11 +63,11 @@ func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any
 func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
     {{- range .Fields }}{{ if .Dependency }}
 	{{- if .Dependency.DefaultValue }}
-	if !m.{{.StructName}}.IsNull() && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
+	if {{.IsNotNull}} && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
 		h.Error("Invalid connector configuration", "The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} is set to false")
 	}
 	{{- else }}
-	if !m.{{.StructName}}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
+	if {{.IsNotNull}} && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
 		h.Error("Invalid connector configuration", "The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to true")
 	}
 	{{- end }}
