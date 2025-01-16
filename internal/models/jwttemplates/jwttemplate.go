@@ -17,6 +17,7 @@ var JWTTemplateAttributes = map[string]schema.Attribute{
 	"description":        stringattr.Default(""),
 	"auth_schema":        stringattr.Default("default", stringvalidator.OneOf("default", "tenantOnly", "none")),
 	"conformance_issuer": boolattr.Default(false),
+	"enforce_issuer":     boolattr.Default(false),
 	"template":           stringattr.Required(),
 }
 
@@ -26,6 +27,7 @@ type JWTTemplateModel struct {
 	Description       types.String `tfsdk:"description"`
 	AuthSchema        types.String `tfsdk:"auth_schema"`
 	ConformanceIssuer types.Bool   `tfsdk:"conformance_issuer"`
+	EnforceIssuer     types.Bool   `tfsdk:"enforce_issuer"`
 	Template          types.String `tfsdk:"template"`
 }
 
@@ -35,6 +37,7 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.AuthSchema, data, "authSchema")
 	boolattr.Get(m.ConformanceIssuer, data, "conformanceIssuer")
+	boolattr.Get(m.EnforceIssuer, data, "enforceIssuer")
 
 	// convert template JSON string to map
 	template := map[string]any{}
