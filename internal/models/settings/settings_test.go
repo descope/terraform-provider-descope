@@ -153,6 +153,15 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.project_self_provisioning": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					user_jwt_template = "foo"
 				}
 			`),

@@ -19,7 +19,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"token_response_method":               stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
 	"cookie_policy":                       stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
 	"cookie_domain":                       stringattr.Default(""),
-	"project_self_provisioning":           stringattr.Default(true),
+	"project_self_provisioning":           boolattr.Default(true),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"session_token_expiration":            durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
