@@ -71,7 +71,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Get(m.CookieDomain, data, "domain")
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
-	boolattr.Set(m.ProjectSelfProvisioning, data, "projectSelfProvisioning")
+	boolattr.Get(m.ProjectSelfProvisioning, data, "projectSelfProvisioning")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	durationattr.Get(m.SessionTokenExpiration, data, "sessionTokenExpiration")
 	durationattr.Get(m.StepUpTokenExpiration, data, "stepupTokenExpiration")
