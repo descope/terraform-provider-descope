@@ -45,6 +45,15 @@ cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/
 
 
 
+project_self_provisioning
+----------------------
+
+- Type: `bool` 
+
+Blocks self-registration sign up for your Descope Project.
+
+
+
 refresh_token_rotation
 ----------------------
 

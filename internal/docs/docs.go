@@ -699,6 +699,7 @@ var docsSettings = map[string]string{
 	                 "click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"cookie_domain": "The domain name for custom domain set up. To read more about custom domain and " +
 	                 "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"project_self_provisioning": "Blocks self-registration sign up for your Descope Project.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 	                          "refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +

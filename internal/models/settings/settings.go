@@ -19,6 +19,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"token_response_method":               stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
 	"cookie_policy":                       stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
 	"cookie_domain":                       stringattr.Default(""),
+	"project_self_provisioning":           stringattr.Default(true),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"session_token_expiration":            durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
@@ -40,6 +41,7 @@ type SettingsModel struct {
 	TokenResponseMethod             types.String `tfsdk:"token_response_method"`
 	CookiePolicy                    types.String `tfsdk:"cookie_policy"`
 	CookieDomain                    types.String `tfsdk:"cookie_domain"`
+	ProjectSelfProvisioning         types.Bool   `tfsdk:"project_self_provisioning"`
 	RefreshTokenRotation            types.Bool   `tfsdk:"refresh_token_rotation"`
 	RefreshTokenExpiration          types.String `tfsdk:"refresh_token_expiration"`
 	SessionTokenExpiration          types.String `tfsdk:"session_token_expiration"`
@@ -69,6 +71,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Get(m.CookieDomain, data, "domain")
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
+	boolattr.Set(m.ProjectSelfProvisioning, data, "projectSelfProvisioning")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	durationattr.Get(m.SessionTokenExpiration, data, "sessionTokenExpiration")
 	durationattr.Get(m.StepUpTokenExpiration, data, "stepupTokenExpiration")
@@ -95,6 +98,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.CookiePolicy, data, "cookiePolicy")
 	// stringattr.Set(&m.CookieDomain, data, "domain") temporarily ignored until domain is removed to prevent inconsistent values
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
+	boolattr.Set(&m.ProjectSelfProvisioning, data, "projectSelfProvisioning")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	durationattr.Set(&m.SessionTokenExpiration, data, "sessionTokenExpiration")
 	durationattr.Set(&m.StepUpTokenExpiration, data, "stepupTokenExpiration")
