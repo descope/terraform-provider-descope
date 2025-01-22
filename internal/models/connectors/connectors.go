@@ -27,10 +27,12 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"fingerprint":              listattr.Optional(FingerprintAttributes, FingerprintValidator),
 	"fingerprint_descope":      listattr.Optional(FingerprintDescopeAttributes),
 	"forter":                   listattr.Optional(ForterAttributes, ForterValidator),
+	"generic_sms_gateway":      listattr.Optional(GenericSmsGatewayAttributes),
 	"google_cloud_translation": listattr.Optional(GoogleCloudTranslationAttributes),
 	"hibp":                     listattr.Optional(HIBPAttributes),
 	"http":                     listattr.Optional(HTTPAttributes),
 	"hubspot":                  listattr.Optional(HubSpotAttributes),
+	"incode":                   listattr.Optional(IncodeAttributes),
 	"intercom":                 listattr.Optional(IntercomAttributes),
 	"lokalise":                 listattr.Optional(LokaliseAttributes),
 	"mparticle":                listattr.Optional(MParticleAttributes),
@@ -41,6 +43,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"salesforce":               listattr.Optional(SalesforceAttributes),
 	"segment":                  listattr.Optional(SegmentAttributes),
 	"sendgrid":                 listattr.Optional(SendGridAttributes),
+	"slack":                    listattr.Optional(SlackAttributes),
 	"smartling":                listattr.Optional(SmartlingAttributes),
 	"smtp":                     listattr.Optional(SMTPAttributes),
 	"sumologic":                listattr.Optional(SumoLogicAttributes, SumoLogicValidator),
@@ -63,10 +66,12 @@ type ConnectorsModel struct {
 	Fingerprint            []*FingerprintModel            `tfsdk:"fingerprint"`
 	FingerprintDescope     []*FingerprintDescopeModel     `tfsdk:"fingerprint_descope"`
 	Forter                 []*ForterModel                 `tfsdk:"forter"`
+	GenericSmsGateway      []*GenericSmsGatewayModel      `tfsdk:"generic_sms_gateway"`
 	GoogleCloudTranslation []*GoogleCloudTranslationModel `tfsdk:"google_cloud_translation"`
 	HIBP                   []*HIBPModel                   `tfsdk:"hibp"`
 	HTTP                   []*HTTPModel                   `tfsdk:"http"`
 	HubSpot                []*HubSpotModel                `tfsdk:"hubspot"`
+	Incode                 []*IncodeModel                 `tfsdk:"incode"`
 	Intercom               []*IntercomModel               `tfsdk:"intercom"`
 	Lokalise               []*LokaliseModel               `tfsdk:"lokalise"`
 	MParticle              []*MParticleModel              `tfsdk:"mparticle"`
@@ -77,6 +82,7 @@ type ConnectorsModel struct {
 	Salesforce             []*SalesforceModel             `tfsdk:"salesforce"`
 	Segment                []*SegmentModel                `tfsdk:"segment"`
 	SendGrid               []*SendGridModel               `tfsdk:"sendgrid"`
+	Slack                  []*SlackModel                  `tfsdk:"slack"`
 	Smartling              []*SmartlingModel              `tfsdk:"smartling"`
 	SMTP                   []*SMTPModel                   `tfsdk:"smtp"`
 	SumoLogic              []*SumoLogicModel              `tfsdk:"sumologic"`
@@ -100,10 +106,12 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Fingerprint, data, "fingerprint", h)
 	listattr.Get(m.FingerprintDescope, data, "fingerprint-descope", h)
 	listattr.Get(m.Forter, data, "forter", h)
+	listattr.Get(m.GenericSmsGateway, data, "generic-sms-gateway", h)
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
+	listattr.Get(m.Incode, data, "incode", h)
 	listattr.Get(m.Intercom, data, "intercom", h)
 	listattr.Get(m.Lokalise, data, "lokalise", h)
 	listattr.Get(m.MParticle, data, "mparticle", h)
@@ -114,6 +122,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Salesforce, data, "salesforce", h)
 	listattr.Get(m.Segment, data, "segment", h)
 	listattr.Get(m.SendGrid, data, "sendgrid", h)
+	listattr.Get(m.Slack, data, "slack", h)
 	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
@@ -137,10 +146,12 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "fingerprint", m.Fingerprint)
 	SetConnectorIDs(h, data, "fingerprint-descope", m.FingerprintDescope)
 	SetConnectorIDs(h, data, "forter", m.Forter)
+	SetConnectorIDs(h, data, "generic-sms-gateway", m.GenericSmsGateway)
 	SetConnectorIDs(h, data, "google-cloud-translation", m.GoogleCloudTranslation)
 	SetConnectorIDs(h, data, "hibp", m.HIBP)
 	SetConnectorIDs(h, data, "http", m.HTTP)
 	SetConnectorIDs(h, data, "hubspot", m.HubSpot)
+	SetConnectorIDs(h, data, "incode", m.Incode)
 	SetConnectorIDs(h, data, "intercom", m.Intercom)
 	SetConnectorIDs(h, data, "lokalise", m.Lokalise)
 	SetConnectorIDs(h, data, "mparticle", m.MParticle)
@@ -151,6 +162,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "salesforce", m.Salesforce)
 	SetConnectorIDs(h, data, "segment", m.Segment)
 	SetConnectorIDs(h, data, "sendgrid", m.SendGrid)
+	SetConnectorIDs(h, data, "slack", m.Slack)
 	SetConnectorIDs(h, data, "smartling", m.Smartling)
 	SetConnectorIDs(h, data, "smtp", m.SMTP)
 	SetConnectorIDs(h, data, "sumologic", m.SumoLogic)
@@ -174,10 +186,12 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "fingerprint", m.Fingerprint)
 	addConnectorReferences(refs, "fingerprint-descope", m.FingerprintDescope)
 	addConnectorReferences(refs, "forter", m.Forter)
+	addConnectorReferences(refs, "generic-sms-gateway", m.GenericSmsGateway)
 	addConnectorReferences(refs, "google-cloud-translation", m.GoogleCloudTranslation)
 	addConnectorReferences(refs, "hibp", m.HIBP)
 	addConnectorReferences(refs, "http", m.HTTP)
 	addConnectorReferences(refs, "hubspot", m.HubSpot)
+	addConnectorReferences(refs, "incode", m.Incode)
 	addConnectorReferences(refs, "intercom", m.Intercom)
 	addConnectorReferences(refs, "lokalise", m.Lokalise)
 	addConnectorReferences(refs, "mparticle", m.MParticle)
@@ -188,6 +202,7 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "salesforce", m.Salesforce)
 	addConnectorReferences(refs, "segment", m.Segment)
 	addConnectorReferences(refs, "sendgrid", m.SendGrid)
+	addConnectorReferences(refs, "slack", m.Slack)
 	addConnectorReferences(refs, "smartling", m.Smartling)
 	addConnectorReferences(refs, "smtp", m.SMTP)
 	addConnectorReferences(refs, "sumologic", m.SumoLogic)
@@ -212,10 +227,12 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.Fingerprint)
 	addConnectorNames(names, m.FingerprintDescope)
 	addConnectorNames(names, m.Forter)
+	addConnectorNames(names, m.GenericSmsGateway)
 	addConnectorNames(names, m.GoogleCloudTranslation)
 	addConnectorNames(names, m.HIBP)
 	addConnectorNames(names, m.HTTP)
 	addConnectorNames(names, m.HubSpot)
+	addConnectorNames(names, m.Incode)
 	addConnectorNames(names, m.Intercom)
 	addConnectorNames(names, m.Lokalise)
 	addConnectorNames(names, m.MParticle)
@@ -226,6 +243,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.Salesforce)
 	addConnectorNames(names, m.Segment)
 	addConnectorNames(names, m.SendGrid)
+	addConnectorNames(names, m.Slack)
 	addConnectorNames(names, m.Smartling)
 	addConnectorNames(names, m.SMTP)
 	addConnectorNames(names, m.SumoLogic)
@@ -253,10 +271,12 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.Fingerprint, state.Fingerprint)
 	helpers.MatchModels(ctx, m.FingerprintDescope, state.FingerprintDescope)
 	helpers.MatchModels(ctx, m.Forter, state.Forter)
+	helpers.MatchModels(ctx, m.GenericSmsGateway, state.GenericSmsGateway)
 	helpers.MatchModels(ctx, m.GoogleCloudTranslation, state.GoogleCloudTranslation)
 	helpers.MatchModels(ctx, m.HIBP, state.HIBP)
 	helpers.MatchModels(ctx, m.HTTP, state.HTTP)
 	helpers.MatchModels(ctx, m.HubSpot, state.HubSpot)
+	helpers.MatchModels(ctx, m.Incode, state.Incode)
 	helpers.MatchModels(ctx, m.Intercom, state.Intercom)
 	helpers.MatchModels(ctx, m.Lokalise, state.Lokalise)
 	helpers.MatchModels(ctx, m.MParticle, state.MParticle)
@@ -267,6 +287,7 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.Salesforce, state.Salesforce)
 	helpers.MatchModels(ctx, m.Segment, state.Segment)
 	helpers.MatchModels(ctx, m.SendGrid, state.SendGrid)
+	helpers.MatchModels(ctx, m.Slack, state.Slack)
 	helpers.MatchModels(ctx, m.Smartling, state.Smartling)
 	helpers.MatchModels(ctx, m.SMTP, state.SMTP)
 	helpers.MatchModels(ctx, m.SumoLogic, state.SumoLogic)

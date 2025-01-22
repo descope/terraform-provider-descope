@@ -125,11 +125,6 @@
       "file": "salesforce",
       "struct": "Salesforce"
     },
-    "salesforce-marketing-cloud": {
-      "attribute": "salesforce_marketing_cloud",
-      "file": "salesforcemarketingcloud",
-      "struct": "SalesforceMarketingCloud"
-    },
     "segment": {
       "attribute": "segment",
       "file": "segment",
