@@ -170,6 +170,31 @@ func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]an
 	strlistattr.Set(&m.Vals, data, "values")
 }
 
+// HTTP Headers
+
+func getHeaders(s map[string]string, data map[string]any, key string) {
+	headers := []any{}
+	for k, v := range s {
+		headers = append(headers, map[string]any{"key": k, "value": v})
+	}
+	data[key] = headers
+}
+
+func setHeaders(s *map[string]string, data map[string]any, key string) {
+	if v, ok := data[key].([]any); ok {
+		*s = map[string]string{}
+		for i := range v {
+			if m, ok := v[i].(map[string]any); ok {
+				key, _ := m["key"].(string)
+				value, _ := m["value"].(string)
+				(*s)[key] = value
+			}
+		}
+	}
+}
+
+var _ = setHeaders // ignore for now
+
 // HTTP Auth Field
 
 var HTTPAuthFieldValidator = objectattr.NewValidator[HTTPAuthFieldModel]("must specify exactly one authentication method")

@@ -60,6 +60,11 @@
       "file": "forter",
       "struct": "Forter"
     },
+    "generic-sms-gateway": {
+      "attribute": "generic_sms_gateway",
+      "file": "genericsmsgateway",
+      "struct": "GenericSMSGateway"
+    },
     "google-cloud-translation": {
       "attribute": "google_cloud_translation",
       "file": "googlecloudtranslation",
@@ -138,6 +143,11 @@
     "sendgrid": {
       "attribute": "sendgrid",
       "struct": "SendGrid"
+    },
+    "slack": {
+      "attribute": "slack",
+      "file": "slack",
+      "struct": "Slack"
     },
     "smartling": {
       "attribute": "smartling",
@@ -329,6 +339,10 @@
       "attribute": "password",
       "struct": "Password"
     },
+    "postUrl": {
+      "attribute": "post_url",
+      "struct": "PostURL"
+    },
     "projectId": {
       "attribute": "project_id",
       "struct": "ProjectID"
@@ -356,6 +370,10 @@
     "secretKey": {
       "attribute": "secret_key",
       "struct": "SecretKey"
+    },
+    "sender": {
+      "attribute": "sender",
+      "struct": "Sender"
     },
     "serverUrl": {
       "attribute": "server_url",
@@ -392,6 +410,10 @@
     "teamId": {
       "attribute": "team_id",
       "struct": "TeamID"
+    },
+    "timeout": {
+      "attribute": "timeout",
+      "struct": "Timeout"
     },
     "token": {
       "attribute": "token",

@@ -131,7 +131,7 @@ func (f *Field) GetValueStatement() string {
 	case FieldTypeNumber:
 		return fmt.Sprintf(`floatattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeObject:
-		return fmt.Sprintf(`c[%q] = %s`, f.Name, accessor)
+		return fmt.Sprintf(`getHeaders(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`listattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:

@@ -64,6 +64,7 @@ type SettingsModel struct {
 }
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
+	m.Check(h)
 	data := map[string]any{}
 	stringattr.Get(m.AppURL, data, "appUrl")
 	stringattr.Get(m.CustomDomain, data, "customDomain")

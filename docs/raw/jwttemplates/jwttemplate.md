@@ -41,6 +41,15 @@ conformance_issuer
 
 
 
+enforce_issuer
+--------------
+
+- Type: `bool` 
+
+// description for enforce_issuer
+
+
+
 template
 --------
 
