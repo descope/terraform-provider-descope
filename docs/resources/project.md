@@ -28,6 +28,7 @@ description: |-
 - `connectors` (Attributes) Enrich your flows by interacting with third party services. (see [below for nested schema](#nestedatt--connectors))
 - `environment` (String) This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.
 - `flows` (Attributes Map) Custom authentication flows to use in this project. (see [below for nested schema](#nestedatt--flows))
+- `invite_settings` (Attributes) (see [below for nested schema](#nestedatt--invite_settings))
 - `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
@@ -887,10 +888,12 @@ Optional:
 - `fingerprint` (Attributes List) Use the Fingerprint (formerly FingerprintJS) connector to add device intelligence and prevent fraud. (see [below for nested schema](#nestedatt--connectors--fingerprint))
 - `fingerprint_descope` (Attributes List) (see [below for nested schema](#nestedatt--connectors--fingerprint_descope))
 - `forter` (Attributes List) Use the Forter connector for account fraud prevention. (see [below for nested schema](#nestedatt--connectors--forter))
+- `generic_sms_gateway` (Attributes List) (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway))
 - `google_cloud_translation` (Attributes List) (see [below for nested schema](#nestedatt--connectors--google_cloud_translation))
 - `hibp` (Attributes List) API to check if password appeared previously exposed in data breaches. (see [below for nested schema](#nestedatt--connectors--hibp))
 - `http` (Attributes List) A general purpose HTTP client (see [below for nested schema](#nestedatt--connectors--http))
 - `hubspot` (Attributes List) HubSpot is a CRM platform with software, integrations, and resources needed to connect marketing, sales, content management, and customer service. (see [below for nested schema](#nestedatt--connectors--hubspot))
+- `incode` (Attributes List) Use the Incode connection to run identity verification processes like document checks or facial recognition. (see [below for nested schema](#nestedatt--connectors--incode))
 - `intercom` (Attributes List) Intercom is a Conversational Relationship Platform (CRP). (see [below for nested schema](#nestedatt--connectors--intercom))
 - `lokalise` (Attributes List) Localize the language of your login and user journey screens with the Lokalise connector. (see [below for nested schema](#nestedatt--connectors--lokalise))
 - `mparticle` (Attributes List) Track and send user event data (e.g. page views, purchases, etc.) across connected tools using the mParticle connector. (see [below for nested schema](#nestedatt--connectors--mparticle))
@@ -899,8 +902,10 @@ Optional:
 - `recaptcha_enterprise` (Attributes List) (see [below for nested schema](#nestedatt--connectors--recaptcha_enterprise))
 - `rekognition` (Attributes List) AWS Rekognition, cloud-based AI service that offers computer vision capabilities for analyzing and processing images. Useful for registration and verification processes, and can be used to detect fraud and prevent identity theft. (see [below for nested schema](#nestedatt--connectors--rekognition))
 - `salesforce` (Attributes List) Salesforce is a leading cloud-based Customer Relationship Management (CRM) platform that helps businesses streamline their sales, service, and marketing operations. (see [below for nested schema](#nestedatt--connectors--salesforce))
+- `salesforce_marketing_cloud` (Attributes List) (see [below for nested schema](#nestedatt--connectors--salesforce_marketing_cloud))
 - `segment` (Attributes List) Segment, an analytics product that allows you to collects events from web and mobile apps, unify those and use those to better understand your customers needs. (see [below for nested schema](#nestedatt--connectors--segment))
 - `sendgrid` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sendgrid))
+- `slack` (Attributes List) Send updates to your team on Slack. (see [below for nested schema](#nestedatt--connectors--slack))
 - `smartling` (Attributes List) Localize the language of your login and user journey screens with the Smartling connector. (see [below for nested schema](#nestedatt--connectors--smartling))
 - `smtp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--smtp))
 - `sumologic` (Attributes List) Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log analytics (see [below for nested schema](#nestedatt--connectors--sumologic))
@@ -1204,6 +1209,58 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--generic_sms_gateway"></a>
+### Nested Schema for `connectors.generic_sms_gateway`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `post_url` (String) The URL of the post message request
+
+Optional:
+
+- `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication))
+- `description` (String) A description of what your connector is used for.
+- `headers` (Map of String) The headers to send with the request
+- `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
+- `insecure` (Boolean) Will ignore certificate errors raised by the client
+- `sender` (String) The sender number
+- `timeout` (Number) The timeout for the request
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--generic_sms_gateway--authentication"></a>
+### Nested Schema for `connectors.generic_sms_gateway.authentication`
+
+Optional:
+
+- `api_key` (Attributes) (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--api_key))
+- `basic` (Attributes) (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--basic))
+- `bearer_token` (String, Sensitive)
+
+<a id="nestedatt--connectors--generic_sms_gateway--authentication--api_key"></a>
+### Nested Schema for `connectors.generic_sms_gateway.authentication.api_key`
+
+Required:
+
+- `key` (String)
+- `token` (String, Sensitive)
+
+
+<a id="nestedatt--connectors--generic_sms_gateway--authentication--basic"></a>
+### Nested Schema for `connectors.generic_sms_gateway.authentication.basic`
+
+Required:
+
+- `password` (String, Sensitive)
+- `username` (String)
+
+
+
+
 <a id="nestedatt--connectors--google_cloud_translation"></a>
 ### Nested Schema for `connectors.google_cloud_translation`
 
@@ -1302,6 +1359,25 @@ Optional:
 - `base_url` (String) The base URL of the HubSpot API, when using a custom domain in HubSpot, default value is https://api.hubapi.com .
 - `description` (String) A description of what your connector is used for.
 - `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--incode"></a>
+### Nested Schema for `connectors.incode`
+
+Required:
+
+- `api_key` (String, Sensitive) Your InCode API key.
+- `api_url` (String) The base URL of the Incode API
+- `flow_id` (String) Your wanted InCode's flow ID.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1479,6 +1555,27 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--salesforce_marketing_cloud"></a>
+### Nested Schema for `connectors.salesforce_marketing_cloud`
+
+Required:
+
+- `client_id` (String) Client ID issued when you create the API integration in Installed Packages.
+- `client_secret` (String, Sensitive) Client secret issued when you create the API integration in Installed Packages.
+- `name` (String) A custom name for your connector.
+- `subdomain` (String) The Salesforce Marketing Cloud endpoint subdomain.
+
+Optional:
+
+- `account_id` (String) Account identifier, or MID, of the target business unit.
+- `description` (String) A description of what your connector is used for.
+- `scope` (String) Space-separated list of data-access permissions for your connector.
+
+Read-Only:
+
+- `id` (String)
+
+
 <a id="nestedatt--connectors--segment"></a>
 ### Nested Schema for `connectors.segment`
 
@@ -1533,6 +1630,23 @@ Optional:
 
 - `name` (String)
 
+
+
+<a id="nestedatt--connectors--slack"></a>
+### Nested Schema for `connectors.slack`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `token` (String, Sensitive) The OAuth token for Slack's Bot User, used to authenticate API requests.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
 
 
 <a id="nestedatt--connectors--smartling"></a>
@@ -1773,6 +1887,18 @@ Required:
 - `data` (String)
 
 
+<a id="nestedatt--invite_settings"></a>
+### Nested Schema for `invite_settings`
+
+Optional:
+
+- `add_magiclink_token` (Boolean)
+- `invite_url` (String)
+- `require_invitation` (Boolean)
+- `send_email` (Boolean)
+- `send_text` (Boolean)
+
+
 <a id="nestedatt--jwt_templates"></a>
 ### Nested Schema for `jwt_templates`
 
@@ -1794,6 +1920,7 @@ Optional:
 - `auth_schema` (String) The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `conformance_issuer` (Boolean)
 - `description` (String) Description of the JWT Template.
+- `enforce_issuer` (Boolean)
 
 Read-Only:
 
@@ -1813,6 +1940,7 @@ Optional:
 - `auth_schema` (String) The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `conformance_issuer` (Boolean)
 - `description` (String) Description of the JWT Template.
+- `enforce_issuer` (Boolean)
 
 Read-Only:
 
@@ -1827,9 +1955,11 @@ Optional:
 
 - `access_key_jwt_template` (String) Name of the access key JWT Template.
 - `access_key_session_token_expiration` (String) The expiry time for access key session tokens. Use values such as "10 minutes", "4 hours", etc. The value needs to be at least 3 minutes and can't be longer than 4 weeks.
+- `app_url` (String)
 - `approved_domains` (List of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `cookie_domain` (String) The domain name for custom domain set up. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `cookie_policy` (String) Use "strict", "lax" or "none". To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+- `custom_domain` (String)
 - `domain` (String, Deprecated) This attribute has been renamed to `cookie_domain`.
 - `enable_inactivity` (Boolean) Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
 - `inactivity_time` (String) The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum value is "10 minutes".

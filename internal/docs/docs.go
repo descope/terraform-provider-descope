@@ -8,6 +8,7 @@ var docsProject = map[string]string{
 	               "left unset for development or staging projects.",
 	"tags": "Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.",
 	"project_settings": "General settings for the Descope project.",
+	"invite_settings": "",
 	"authentication": "Settings for each authentication method.",
 	"authorization": "Define Role-Based Access Control (RBAC) for your users by creating roles and permissions.",
 	"attributes": "Custom attributes that can be attached to users and tenants.",
@@ -320,11 +321,14 @@ var docsConnectors = map[string]string{
 	               "intelligence and prevent fraud.",
 	"fingerprint_descope": "",
 	"forter": "Use the Forter connector for account fraud prevention.",
+	"generic_sms_gateway": "",
 	"google_cloud_translation": "",
 	"hibp": "API to check if password appeared previously exposed in data breaches.",
 	"http": "A general purpose HTTP client",
 	"hubspot": "HubSpot is a CRM platform with software, integrations, and resources needed to " +
 	           "connect marketing, sales, content management, and customer service.",
+	"incode": "Use the Incode connection to run identity verification processes like document " +
+	          "checks or facial recognition.",
 	"intercom": "Intercom is a Conversational Relationship Platform (CRP).",
 	"lokalise": "Localize the language of your login and user journey screens with the Lokalise " +
 	            "connector.",
@@ -340,10 +344,12 @@ var docsConnectors = map[string]string{
 	"salesforce": "Salesforce is a leading cloud-based Customer Relationship Management (CRM) " +
 	              "platform that helps businesses streamline their sales, service, and marketing " +
 	              "operations.",
+	"salesforce_marketing_cloud": "",
 	"segment": "Segment, an analytics product that allows you to collects events from web and " +
 	           "mobile apps, unify those and use those to better understand your customers " +
 	           "needs.",
 	"sendgrid": "",
+	"slack": "Send updates to your team on Slack.",
 	"smartling": "Localize the language of your login and user journey screens with the Smartling " +
 	             "connector.",
 	"smtp": "",
@@ -412,6 +418,23 @@ var docsForter = map[string]string{
 	"override_user_email": "Override the user email.",
 }
 
+var docsGenericSMSGateway = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"post_url": "The URL of the post message request",
+	"sender": "The sender number",
+	"timeout": "The timeout for the request",
+	"authentication": "Authentication Information",
+	"headers": "The headers to send with the request",
+	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
+	               "used to sign the base64 encoded payload, and the resulting signature will be " +
+	               "sent in the `x-descope-webhook-s256` header. The receiving service should use " +
+	               "this secret to verify the integrity and authenticity of the payload by checking " +
+	               "the provided signature",
+	"insecure": "Will ignore certificate errors raised by the client",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+}
+
 var docsGoogleCloudTranslation = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -449,6 +472,14 @@ var docsHubSpot = map[string]string{
 	"base_url": "The base URL of the HubSpot API, when using a custom domain in HubSpot, default " +
 	            "value is https://api.hubapi.com .",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+}
+
+var docsIncode = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_key": "Your InCode API key.",
+	"api_url": "The base URL of the Incode API",
+	"flow_id": "Your wanted InCode's flow ID.",
 }
 
 var docsIntercom = map[string]string{
@@ -537,6 +568,16 @@ var docsSalesforce = map[string]string{
 	"version": "REST API Version.",
 }
 
+var docsSalesforceMarketingCloud = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"subdomain": "The Salesforce Marketing Cloud endpoint subdomain.",
+	"client_id": "Client ID issued when you create the API integration in Installed Packages.",
+	"client_secret": "Client secret issued when you create the API integration in Installed Packages.",
+	"scope": "Space-separated list of data-access permissions for your connector.",
+	"account_id": "Account identifier, or MID, of the target business unit.",
+}
+
 var docsSegment = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -585,6 +626,12 @@ var docsHTTPAuthBasicField = map[string]string{
 var docsHTTPAuthAPIKeyField = map[string]string{
 	"key": "",
 	"token": "",
+}
+
+var docsSlack = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"token": "The OAuth token for Slack's Bot User, used to authenticate API requests.",
 }
 
 var docsSmartling = map[string]string{
@@ -682,6 +729,7 @@ var docsJWTTemplate = map[string]string{
 	"description": "Description of the JWT Template.",
 	"auth_schema": "The authorization claims format - \"default\", \"tenantOnly\" or \"none\". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).",
 	"conformance_issuer": "",
+	"enforce_issuer": "",
 	"template": "",
 }
 
@@ -690,7 +738,17 @@ var docsJWTTemplates = map[string]string{
 	"access_key_templates": "A list of `Access Key` type JWT Templates.",
 }
 
+var docsInviteSettings = map[string]string{
+	"require_invitation": "",
+	"invite_url": "",
+	"add_magiclink_token": "",
+	"send_email": "",
+	"send_text": "",
+}
+
 var docsSettings = map[string]string{
+	"app_url": "",
+	"custom_domain": "",
 	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
 	                    "for different authentication methods.",
 	"token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +

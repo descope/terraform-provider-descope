@@ -29,6 +29,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"environment":      stringattr.Optional(stringvalidator.OneOf("", "production")),
 	"tags":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.LengthBetween(1, 50))),
 	"project_settings": objectattr.Optional(settings.SettingsAttributes, settings.SettingsValidator),
+	"invite_settings":  objectattr.Optional(settings.InviteSettingsAttributes),
 	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
 	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
 	"attributes":       objectattr.Optional(attributes.AttributesAttributes),
@@ -45,6 +46,7 @@ type ProjectModel struct {
 	Environment    types.String                        `tfsdk:"environment"`
 	Tags           []string                            `tfsdk:"tags"`
 	Settings       *settings.SettingsModel             `tfsdk:"project_settings"`
+	Invite         *settings.InviteSettingsModel       `tfsdk:"invite_settings"`
 	Authentication *authentication.AuthenticationModel `tfsdk:"authentication"`
 	Authorization  *authorization.AuthorizationModel   `tfsdk:"authorization"`
 	Attributes     *attributes.AttributesModel         `tfsdk:"attributes"`
@@ -62,6 +64,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Environment, data, "environment")
 	strlistattr.Get(m.Tags, data, "tags")
 	objectattr.Get(m.Settings, data, "settings", h)
+	objectattr.Get(m.Invite, data, "settings", h)
 	objectattr.Get(m.Authentication, data, "authentication", h)
 	objectattr.Get(m.Connectors, data, "connectors", h)
 	objectattr.Get(m.Applications, data, "applications", h)
@@ -82,6 +85,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Environment, data, "environment")
 	strlistattr.Set(&m.Tags, data, "tags")
 	objectattr.Set(&m.Settings, data, "settings", h)
+	objectattr.Set(&m.Invite, data, "settings", h)
 	objectattr.Set(&m.Authentication, data, "authentication", h)
 	objectattr.Set(&m.Connectors, data, "connectors", h)
 	objectattr.Set(&m.Applications, data, "applications", h)

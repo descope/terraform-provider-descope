@@ -4,6 +4,24 @@ Settings
 
 
 
+app_url
+-------
+
+- Type: `string` 
+
+// description for app_url
+
+
+
+custom_domain
+-------------
+
+- Type: `string` 
+
+// description for custom_domain
+
+
+
 approved_domains
 ----------------
 

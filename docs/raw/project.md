@@ -41,6 +41,15 @@ General settings for the Descope project.
 
 
 
+invite_settings
+---------------
+
+- Type: `object` of `settings.InviteSettings` 
+
+// description for invite_settings
+
+
+
 authentication
 --------------
 

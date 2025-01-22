@@ -15,75 +15,83 @@ var ConnectorsValidator = objectattr.NewValidator[ConnectorsModel]("must have un
 var ConnectorsModifier = objectattr.NewModifier[ConnectorsModel]("maintains connector identifiers between plan changes")
 
 var ConnectorsAttributes = map[string]schema.Attribute{
-	"abuseipdb":                listattr.Optional(AbuseIPDBAttributes),
-	"amplitude":                listattr.Optional(AmplitudeAttributes),
-	"audit_webhook":            listattr.Optional(AuditWebhookAttributes),
-	"aws_s3":                   listattr.Optional(AWSS3Attributes, AWSS3Validator),
-	"aws_translate":            listattr.Optional(AWSTranslateAttributes),
-	"clear":                    listattr.Optional(ClearAttributes),
-	"datadog":                  listattr.Optional(DatadogAttributes, DatadogValidator),
-	"devrev_grow":              listattr.Optional(DevRevGrowAttributes),
-	"docebo":                   listattr.Optional(DoceboAttributes),
-	"fingerprint":              listattr.Optional(FingerprintAttributes, FingerprintValidator),
-	"fingerprint_descope":      listattr.Optional(FingerprintDescopeAttributes),
-	"forter":                   listattr.Optional(ForterAttributes, ForterValidator),
-	"google_cloud_translation": listattr.Optional(GoogleCloudTranslationAttributes),
-	"hibp":                     listattr.Optional(HIBPAttributes),
-	"http":                     listattr.Optional(HTTPAttributes),
-	"hubspot":                  listattr.Optional(HubSpotAttributes),
-	"intercom":                 listattr.Optional(IntercomAttributes),
-	"lokalise":                 listattr.Optional(LokaliseAttributes),
-	"mparticle":                listattr.Optional(MParticleAttributes),
-	"newrelic":                 listattr.Optional(NewRelicAttributes, NewRelicValidator),
-	"recaptcha":                listattr.Optional(RecaptchaAttributes),
-	"recaptcha_enterprise":     listattr.Optional(RecaptchaEnterpriseAttributes, RecaptchaEnterpriseValidator),
-	"rekognition":              listattr.Optional(RekognitionAttributes),
-	"salesforce":               listattr.Optional(SalesforceAttributes),
-	"segment":                  listattr.Optional(SegmentAttributes),
-	"sendgrid":                 listattr.Optional(SendGridAttributes),
-	"smartling":                listattr.Optional(SmartlingAttributes),
-	"smtp":                     listattr.Optional(SMTPAttributes),
-	"sumologic":                listattr.Optional(SumoLogicAttributes, SumoLogicValidator),
-	"telesign":                 listattr.Optional(TelesignAttributes),
-	"traceable":                listattr.Optional(TraceableAttributes),
-	"twilio_core":              listattr.Optional(TwilioCoreAttributes),
-	"twilio_verify":            listattr.Optional(TwilioVerifyAttributes),
+	"abuseipdb":                  listattr.Optional(AbuseIPDBAttributes),
+	"amplitude":                  listattr.Optional(AmplitudeAttributes),
+	"audit_webhook":              listattr.Optional(AuditWebhookAttributes),
+	"aws_s3":                     listattr.Optional(AWSS3Attributes, AWSS3Validator),
+	"aws_translate":              listattr.Optional(AWSTranslateAttributes),
+	"clear":                      listattr.Optional(ClearAttributes),
+	"datadog":                    listattr.Optional(DatadogAttributes, DatadogValidator),
+	"devrev_grow":                listattr.Optional(DevRevGrowAttributes),
+	"docebo":                     listattr.Optional(DoceboAttributes),
+	"fingerprint":                listattr.Optional(FingerprintAttributes, FingerprintValidator),
+	"fingerprint_descope":        listattr.Optional(FingerprintDescopeAttributes),
+	"forter":                     listattr.Optional(ForterAttributes, ForterValidator),
+	"generic_sms_gateway":        listattr.Optional(GenericSMSGatewayAttributes),
+	"google_cloud_translation":   listattr.Optional(GoogleCloudTranslationAttributes),
+	"hibp":                       listattr.Optional(HIBPAttributes),
+	"http":                       listattr.Optional(HTTPAttributes),
+	"hubspot":                    listattr.Optional(HubSpotAttributes),
+	"incode":                     listattr.Optional(IncodeAttributes),
+	"intercom":                   listattr.Optional(IntercomAttributes),
+	"lokalise":                   listattr.Optional(LokaliseAttributes),
+	"mparticle":                  listattr.Optional(MParticleAttributes),
+	"newrelic":                   listattr.Optional(NewRelicAttributes, NewRelicValidator),
+	"recaptcha":                  listattr.Optional(RecaptchaAttributes),
+	"recaptcha_enterprise":       listattr.Optional(RecaptchaEnterpriseAttributes, RecaptchaEnterpriseValidator),
+	"rekognition":                listattr.Optional(RekognitionAttributes),
+	"salesforce":                 listattr.Optional(SalesforceAttributes),
+	"salesforce_marketing_cloud": listattr.Optional(SalesforceMarketingCloudAttributes),
+	"segment":                    listattr.Optional(SegmentAttributes),
+	"sendgrid":                   listattr.Optional(SendGridAttributes),
+	"slack":                      listattr.Optional(SlackAttributes),
+	"smartling":                  listattr.Optional(SmartlingAttributes),
+	"smtp":                       listattr.Optional(SMTPAttributes),
+	"sumologic":                  listattr.Optional(SumoLogicAttributes, SumoLogicValidator),
+	"telesign":                   listattr.Optional(TelesignAttributes),
+	"traceable":                  listattr.Optional(TraceableAttributes),
+	"twilio_core":                listattr.Optional(TwilioCoreAttributes),
+	"twilio_verify":              listattr.Optional(TwilioVerifyAttributes),
 }
 
 type ConnectorsModel struct {
-	AbuseIPDB              []*AbuseIPDBModel              `tfsdk:"abuseipdb"`
-	Amplitude              []*AmplitudeModel              `tfsdk:"amplitude"`
-	AuditWebhook           []*AuditWebhookModel           `tfsdk:"audit_webhook"`
-	AWSS3                  []*AWSS3Model                  `tfsdk:"aws_s3"`
-	AWSTranslate           []*AWSTranslateModel           `tfsdk:"aws_translate"`
-	Clear                  []*ClearModel                  `tfsdk:"clear"`
-	Datadog                []*DatadogModel                `tfsdk:"datadog"`
-	DevRevGrow             []*DevRevGrowModel             `tfsdk:"devrev_grow"`
-	Docebo                 []*DoceboModel                 `tfsdk:"docebo"`
-	Fingerprint            []*FingerprintModel            `tfsdk:"fingerprint"`
-	FingerprintDescope     []*FingerprintDescopeModel     `tfsdk:"fingerprint_descope"`
-	Forter                 []*ForterModel                 `tfsdk:"forter"`
-	GoogleCloudTranslation []*GoogleCloudTranslationModel `tfsdk:"google_cloud_translation"`
-	HIBP                   []*HIBPModel                   `tfsdk:"hibp"`
-	HTTP                   []*HTTPModel                   `tfsdk:"http"`
-	HubSpot                []*HubSpotModel                `tfsdk:"hubspot"`
-	Intercom               []*IntercomModel               `tfsdk:"intercom"`
-	Lokalise               []*LokaliseModel               `tfsdk:"lokalise"`
-	MParticle              []*MParticleModel              `tfsdk:"mparticle"`
-	NewRelic               []*NewRelicModel               `tfsdk:"newrelic"`
-	Recaptcha              []*RecaptchaModel              `tfsdk:"recaptcha"`
-	RecaptchaEnterprise    []*RecaptchaEnterpriseModel    `tfsdk:"recaptcha_enterprise"`
-	Rekognition            []*RekognitionModel            `tfsdk:"rekognition"`
-	Salesforce             []*SalesforceModel             `tfsdk:"salesforce"`
-	Segment                []*SegmentModel                `tfsdk:"segment"`
-	SendGrid               []*SendGridModel               `tfsdk:"sendgrid"`
-	Smartling              []*SmartlingModel              `tfsdk:"smartling"`
-	SMTP                   []*SMTPModel                   `tfsdk:"smtp"`
-	SumoLogic              []*SumoLogicModel              `tfsdk:"sumologic"`
-	Telesign               []*TelesignModel               `tfsdk:"telesign"`
-	Traceable              []*TraceableModel              `tfsdk:"traceable"`
-	TwilioCore             []*TwilioCoreModel             `tfsdk:"twilio_core"`
-	TwilioVerify           []*TwilioVerifyModel           `tfsdk:"twilio_verify"`
+	AbuseIPDB                []*AbuseIPDBModel                `tfsdk:"abuseipdb"`
+	Amplitude                []*AmplitudeModel                `tfsdk:"amplitude"`
+	AuditWebhook             []*AuditWebhookModel             `tfsdk:"audit_webhook"`
+	AWSS3                    []*AWSS3Model                    `tfsdk:"aws_s3"`
+	AWSTranslate             []*AWSTranslateModel             `tfsdk:"aws_translate"`
+	Clear                    []*ClearModel                    `tfsdk:"clear"`
+	Datadog                  []*DatadogModel                  `tfsdk:"datadog"`
+	DevRevGrow               []*DevRevGrowModel               `tfsdk:"devrev_grow"`
+	Docebo                   []*DoceboModel                   `tfsdk:"docebo"`
+	Fingerprint              []*FingerprintModel              `tfsdk:"fingerprint"`
+	FingerprintDescope       []*FingerprintDescopeModel       `tfsdk:"fingerprint_descope"`
+	Forter                   []*ForterModel                   `tfsdk:"forter"`
+	GenericSMSGateway        []*GenericSMSGatewayModel        `tfsdk:"generic_sms_gateway"`
+	GoogleCloudTranslation   []*GoogleCloudTranslationModel   `tfsdk:"google_cloud_translation"`
+	HIBP                     []*HIBPModel                     `tfsdk:"hibp"`
+	HTTP                     []*HTTPModel                     `tfsdk:"http"`
+	HubSpot                  []*HubSpotModel                  `tfsdk:"hubspot"`
+	Incode                   []*IncodeModel                   `tfsdk:"incode"`
+	Intercom                 []*IntercomModel                 `tfsdk:"intercom"`
+	Lokalise                 []*LokaliseModel                 `tfsdk:"lokalise"`
+	MParticle                []*MParticleModel                `tfsdk:"mparticle"`
+	NewRelic                 []*NewRelicModel                 `tfsdk:"newrelic"`
+	Recaptcha                []*RecaptchaModel                `tfsdk:"recaptcha"`
+	RecaptchaEnterprise      []*RecaptchaEnterpriseModel      `tfsdk:"recaptcha_enterprise"`
+	Rekognition              []*RekognitionModel              `tfsdk:"rekognition"`
+	Salesforce               []*SalesforceModel               `tfsdk:"salesforce"`
+	SalesforceMarketingCloud []*SalesforceMarketingCloudModel `tfsdk:"salesforce_marketing_cloud"`
+	Segment                  []*SegmentModel                  `tfsdk:"segment"`
+	SendGrid                 []*SendGridModel                 `tfsdk:"sendgrid"`
+	Slack                    []*SlackModel                    `tfsdk:"slack"`
+	Smartling                []*SmartlingModel                `tfsdk:"smartling"`
+	SMTP                     []*SMTPModel                     `tfsdk:"smtp"`
+	SumoLogic                []*SumoLogicModel                `tfsdk:"sumologic"`
+	Telesign                 []*TelesignModel                 `tfsdk:"telesign"`
+	Traceable                []*TraceableModel                `tfsdk:"traceable"`
+	TwilioCore               []*TwilioCoreModel               `tfsdk:"twilio_core"`
+	TwilioVerify             []*TwilioVerifyModel             `tfsdk:"twilio_verify"`
 }
 
 func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
@@ -100,10 +108,12 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Fingerprint, data, "fingerprint", h)
 	listattr.Get(m.FingerprintDescope, data, "fingerprint-descope", h)
 	listattr.Get(m.Forter, data, "forter", h)
+	listattr.Get(m.GenericSMSGateway, data, "generic-sms-gateway", h)
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
+	listattr.Get(m.Incode, data, "incode", h)
 	listattr.Get(m.Intercom, data, "intercom", h)
 	listattr.Get(m.Lokalise, data, "lokalise", h)
 	listattr.Get(m.MParticle, data, "mparticle", h)
@@ -112,8 +122,10 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.RecaptchaEnterprise, data, "recaptcha-enterprise", h)
 	listattr.Get(m.Rekognition, data, "rekognition", h)
 	listattr.Get(m.Salesforce, data, "salesforce", h)
+	listattr.Get(m.SalesforceMarketingCloud, data, "salesforce-marketing-cloud", h)
 	listattr.Get(m.Segment, data, "segment", h)
 	listattr.Get(m.SendGrid, data, "sendgrid", h)
+	listattr.Get(m.Slack, data, "slack", h)
 	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
@@ -137,10 +149,12 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "fingerprint", m.Fingerprint)
 	SetConnectorIDs(h, data, "fingerprint-descope", m.FingerprintDescope)
 	SetConnectorIDs(h, data, "forter", m.Forter)
+	SetConnectorIDs(h, data, "generic-sms-gateway", m.GenericSMSGateway)
 	SetConnectorIDs(h, data, "google-cloud-translation", m.GoogleCloudTranslation)
 	SetConnectorIDs(h, data, "hibp", m.HIBP)
 	SetConnectorIDs(h, data, "http", m.HTTP)
 	SetConnectorIDs(h, data, "hubspot", m.HubSpot)
+	SetConnectorIDs(h, data, "incode", m.Incode)
 	SetConnectorIDs(h, data, "intercom", m.Intercom)
 	SetConnectorIDs(h, data, "lokalise", m.Lokalise)
 	SetConnectorIDs(h, data, "mparticle", m.MParticle)
@@ -149,8 +163,10 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "recaptcha-enterprise", m.RecaptchaEnterprise)
 	SetConnectorIDs(h, data, "rekognition", m.Rekognition)
 	SetConnectorIDs(h, data, "salesforce", m.Salesforce)
+	SetConnectorIDs(h, data, "salesforce-marketing-cloud", m.SalesforceMarketingCloud)
 	SetConnectorIDs(h, data, "segment", m.Segment)
 	SetConnectorIDs(h, data, "sendgrid", m.SendGrid)
+	SetConnectorIDs(h, data, "slack", m.Slack)
 	SetConnectorIDs(h, data, "smartling", m.Smartling)
 	SetConnectorIDs(h, data, "smtp", m.SMTP)
 	SetConnectorIDs(h, data, "sumologic", m.SumoLogic)
@@ -174,10 +190,12 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "fingerprint", m.Fingerprint)
 	addConnectorReferences(refs, "fingerprint-descope", m.FingerprintDescope)
 	addConnectorReferences(refs, "forter", m.Forter)
+	addConnectorReferences(refs, "generic-sms-gateway", m.GenericSMSGateway)
 	addConnectorReferences(refs, "google-cloud-translation", m.GoogleCloudTranslation)
 	addConnectorReferences(refs, "hibp", m.HIBP)
 	addConnectorReferences(refs, "http", m.HTTP)
 	addConnectorReferences(refs, "hubspot", m.HubSpot)
+	addConnectorReferences(refs, "incode", m.Incode)
 	addConnectorReferences(refs, "intercom", m.Intercom)
 	addConnectorReferences(refs, "lokalise", m.Lokalise)
 	addConnectorReferences(refs, "mparticle", m.MParticle)
@@ -186,8 +204,10 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "recaptcha-enterprise", m.RecaptchaEnterprise)
 	addConnectorReferences(refs, "rekognition", m.Rekognition)
 	addConnectorReferences(refs, "salesforce", m.Salesforce)
+	addConnectorReferences(refs, "salesforce-marketing-cloud", m.SalesforceMarketingCloud)
 	addConnectorReferences(refs, "segment", m.Segment)
 	addConnectorReferences(refs, "sendgrid", m.SendGrid)
+	addConnectorReferences(refs, "slack", m.Slack)
 	addConnectorReferences(refs, "smartling", m.Smartling)
 	addConnectorReferences(refs, "smtp", m.SMTP)
 	addConnectorReferences(refs, "sumologic", m.SumoLogic)
@@ -212,10 +232,12 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.Fingerprint)
 	addConnectorNames(names, m.FingerprintDescope)
 	addConnectorNames(names, m.Forter)
+	addConnectorNames(names, m.GenericSMSGateway)
 	addConnectorNames(names, m.GoogleCloudTranslation)
 	addConnectorNames(names, m.HIBP)
 	addConnectorNames(names, m.HTTP)
 	addConnectorNames(names, m.HubSpot)
+	addConnectorNames(names, m.Incode)
 	addConnectorNames(names, m.Intercom)
 	addConnectorNames(names, m.Lokalise)
 	addConnectorNames(names, m.MParticle)
@@ -224,8 +246,10 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.RecaptchaEnterprise)
 	addConnectorNames(names, m.Rekognition)
 	addConnectorNames(names, m.Salesforce)
+	addConnectorNames(names, m.SalesforceMarketingCloud)
 	addConnectorNames(names, m.Segment)
 	addConnectorNames(names, m.SendGrid)
+	addConnectorNames(names, m.Slack)
 	addConnectorNames(names, m.Smartling)
 	addConnectorNames(names, m.SMTP)
 	addConnectorNames(names, m.SumoLogic)
@@ -253,10 +277,12 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.Fingerprint, state.Fingerprint)
 	helpers.MatchModels(ctx, m.FingerprintDescope, state.FingerprintDescope)
 	helpers.MatchModels(ctx, m.Forter, state.Forter)
+	helpers.MatchModels(ctx, m.GenericSMSGateway, state.GenericSMSGateway)
 	helpers.MatchModels(ctx, m.GoogleCloudTranslation, state.GoogleCloudTranslation)
 	helpers.MatchModels(ctx, m.HIBP, state.HIBP)
 	helpers.MatchModels(ctx, m.HTTP, state.HTTP)
 	helpers.MatchModels(ctx, m.HubSpot, state.HubSpot)
+	helpers.MatchModels(ctx, m.Incode, state.Incode)
 	helpers.MatchModels(ctx, m.Intercom, state.Intercom)
 	helpers.MatchModels(ctx, m.Lokalise, state.Lokalise)
 	helpers.MatchModels(ctx, m.MParticle, state.MParticle)
@@ -265,8 +291,10 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.RecaptchaEnterprise, state.RecaptchaEnterprise)
 	helpers.MatchModels(ctx, m.Rekognition, state.Rekognition)
 	helpers.MatchModels(ctx, m.Salesforce, state.Salesforce)
+	helpers.MatchModels(ctx, m.SalesforceMarketingCloud, state.SalesforceMarketingCloud)
 	helpers.MatchModels(ctx, m.Segment, state.Segment)
 	helpers.MatchModels(ctx, m.SendGrid, state.SendGrid)
+	helpers.MatchModels(ctx, m.Slack, state.Slack)
 	helpers.MatchModels(ctx, m.Smartling, state.Smartling)
 	helpers.MatchModels(ctx, m.SMTP, state.SMTP)
 	helpers.MatchModels(ctx, m.SumoLogic, state.SumoLogic)

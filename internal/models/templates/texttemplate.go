@@ -40,6 +40,6 @@ func (m *TextTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *TextTemplateModel) Validate(h *helpers.Handler) {
 	if m.Name.ValueString() == helpers.DescopeTemplate || m.ID.ValueString() == helpers.DescopeTemplate {
-		h.Error("Invalid text template", "Cannot use 'System' as the name or id of a template.")
+		h.Error("Invalid text template", "Cannot use 'System' as the name or id of a template")
 	}
 }

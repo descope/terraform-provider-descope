@@ -32,7 +32,7 @@ func (m *FlowModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *FlowModel) Validate(h *helpers.Handler) {
 	data := getFlowData(m.Data, h)
-	for _, field := range []string{"metadata", "contents", "screens"} {
+	for _, field := range []string{"metadata", "contents"} {
 		if data[field] == nil {
 			h.Error("Invalid flow data", "Expected a JSON object with a %s field", field)
 		}

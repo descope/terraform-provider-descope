@@ -330,6 +330,44 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"generic_sms_gateway": [
+						{
+							name = "Test generic-sms-gateway Connector"
+							description = "A description for the generic-sms-gateway connector"
+    						post_url = "efnv6ac"
+    						sender = "bi3hxe"
+    						timeout = 7
+    						authentication = {
+    							bearer_token = "xhmqmkcfhe4mk6"
+    						}
+    						headers = {
+    							"key" = "g6htpmp"
+    						}
+    						hmac_secret = "ooxzct5yxz"
+    						insecure = true
+    						use_static_ips = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.generic_sms_gateway.#":                             1,
+				"connectors.generic_sms_gateway.0.id":                          testacc.AttributeHasPrefix("CI"),
+				"connectors.generic_sms_gateway.0.name":                        "Test generic-sms-gateway Connector",
+				"connectors.generic_sms_gateway.0.description":                 "A description for the generic-sms-gateway connector",
+				"connectors.generic_sms_gateway.0.post_url":                    "efnv6ac",
+				"connectors.generic_sms_gateway.0.sender":                      "bi3hxe",
+				"connectors.generic_sms_gateway.0.timeout":                     7,
+				"connectors.generic_sms_gateway.0.authentication.bearer_token": "xhmqmkcfhe4mk6",
+				"connectors.generic_sms_gateway.0.headers.key":                 "g6htpmp",
+				"connectors.generic_sms_gateway.0.hmac_secret":                 "ooxzct5yxz",
+				"connectors.generic_sms_gateway.0.insecure":                    true,
+				"connectors.generic_sms_gateway.0.use_static_ips":              true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"google_cloud_translation": [
 						{
 							name = "Test google-cloud-translation Connector"
@@ -425,6 +463,30 @@ func TestConnectors(t *testing.T) {
 				"connectors.hubspot.0.access_token":   "ssrho3t3233",
 				"connectors.hubspot.0.base_url":       "bceszn6",
 				"connectors.hubspot.0.use_static_ips": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"incode": [
+						{
+							name = "Test incode Connector"
+							description = "A description for the incode connector"
+    						api_key = "mhvece"
+    						api_url = "dg2kp4"
+    						flow_id = "xkg6re"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.incode.#":             1,
+				"connectors.incode.0.id":          testacc.AttributeHasPrefix("CI"),
+				"connectors.incode.0.name":        "Test incode Connector",
+				"connectors.incode.0.description": "A description for the incode connector",
+				"connectors.incode.0.api_key":     "mhvece",
+				"connectors.incode.0.api_url":     "dg2kp4",
+				"connectors.incode.0.flow_id":     "xkg6re",
 			}),
 		},
 		resource.TestStep{
@@ -640,6 +702,34 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"salesforce_marketing_cloud": [
+						{
+							name = "Test salesforce-marketing-cloud Connector"
+							description = "A description for the salesforce-marketing-cloud connector"
+    						subdomain = "ko54m53in"
+    						client_id = "sgetgyvq"
+    						client_secret = "tjpxl7uy4wbb"
+    						scope = "l4lbz"
+    						account_id = "4bpveggea"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.salesforce_marketing_cloud.#":               1,
+				"connectors.salesforce_marketing_cloud.0.id":            testacc.AttributeHasPrefix("CI"),
+				"connectors.salesforce_marketing_cloud.0.name":          "Test salesforce-marketing-cloud Connector",
+				"connectors.salesforce_marketing_cloud.0.description":   "A description for the salesforce-marketing-cloud connector",
+				"connectors.salesforce_marketing_cloud.0.subdomain":     "ko54m53in",
+				"connectors.salesforce_marketing_cloud.0.client_id":     "sgetgyvq",
+				"connectors.salesforce_marketing_cloud.0.client_secret": "tjpxl7uy4wbb",
+				"connectors.salesforce_marketing_cloud.0.scope":         "l4lbz",
+				"connectors.salesforce_marketing_cloud.0.account_id":    "4bpveggea",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"segment": [
 						{
 							name = "Test segment Connector"
@@ -671,6 +761,26 @@ func TestConnectors(t *testing.T) {
 				}
 			`),
 			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"slack": [
+						{
+							name = "Test slack Connector"
+							description = "A description for the slack connector"
+    						token = "hrdj5"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.slack.#":             1,
+				"connectors.slack.0.id":          testacc.AttributeHasPrefix("CI"),
+				"connectors.slack.0.name":        "Test slack Connector",
+				"connectors.slack.0.description": "A description for the slack connector",
+				"connectors.slack.0.token":       "hrdj5",
+			}),
 		},
 		resource.TestStep{
 			Config: p.Config(`

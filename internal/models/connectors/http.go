@@ -57,7 +57,7 @@ func (m *HTTPModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	objectattr.Get(m.Authentication, c, "authentication", h)
-	c["headers"] = m.Headers
+	getHeaders(m.Headers, c, "headers")
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.IncludeHeadersInContext, c, "includeHeadersInContext")

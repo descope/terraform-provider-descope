@@ -120,6 +120,15 @@ Use the Forter connector for account fraud prevention.
 
 
 
+generic_sms_gateway
+-------------------
+
+- Type: `list` of `connectors.GenericSMSGateway` 
+
+// description for generic_sms_gateway
+
+
+
 google_cloud_translation
 ------------------------
 
@@ -154,6 +163,16 @@ hubspot
 
 HubSpot is a CRM platform with software, integrations, and resources needed to
 connect marketing, sales, content management, and customer service.
+
+
+
+incode
+------
+
+- Type: `list` of `connectors.Incode` 
+
+Use the Incode connection to run identity verification processes like document
+checks or facial recognition.
 
 
 
@@ -236,6 +255,15 @@ operations.
 
 
 
+salesforce_marketing_cloud
+--------------------------
+
+- Type: `list` of `connectors.SalesforceMarketingCloud` 
+
+// description for salesforce_marketing_cloud
+
+
+
 segment
 -------
 
@@ -253,6 +281,15 @@ sendgrid
 - Type: `list` of `connectors.SendGrid` 
 
 // description for sendgrid
+
+
+
+slack
+-----
+
+- Type: `list` of `connectors.Slack` 
+
+Send updates to your team on Slack.
 
 
 
