@@ -34,3 +34,15 @@ func (h *Handler) Warn(summary string, format string, a ...any) {
 func (h *Handler) Error(summary string, format string, a ...any) {
 	h.Diagnostics.AddError(summary, fmt.Sprintf(format, a...))
 }
+
+func (h *Handler) Invalid(format string, a ...any) {
+	if !h.Diagnostics.HasError() {
+		h.Diagnostics.AddError("Invalid Attribute Value", fmt.Sprintf(format, a...))
+	}
+}
+
+func (h *Handler) Missing(format string, a ...any) {
+	if !h.Diagnostics.HasError() {
+		h.Diagnostics.AddError("Missing Attribute Value", fmt.Sprintf(format, a...))
+	}
+}
