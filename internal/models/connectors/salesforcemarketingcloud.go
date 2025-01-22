@@ -30,7 +30,7 @@ type SalesforceMarketingCloudModel struct {
 	ClientID     types.String `tfsdk:"client_id"`
 	ClientSecret types.String `tfsdk:"client_secret"`
 	Scope        types.String `tfsdk:"scope"`
-	AccountId    types.String `tfsdk:"account_id"`
+	AccountID    types.String `tfsdk:"account_id"`
 }
 
 func (m *SalesforceMarketingCloudModel) Values(h *helpers.Handler) map[string]any {
@@ -52,7 +52,7 @@ func (m *SalesforceMarketingCloudModel) ConfigurationValues(h *helpers.Handler) 
 	stringattr.Get(m.ClientID, c, "clientId")
 	stringattr.Get(m.ClientSecret, c, "clientSecret")
 	stringattr.Get(m.Scope, c, "scope")
-	stringattr.Get(m.AccountId, c, "accountId")
+	stringattr.Get(m.AccountID, c, "accountId")
 	return c
 }
 

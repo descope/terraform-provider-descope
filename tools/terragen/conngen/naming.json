@@ -193,7 +193,7 @@
     },
     "accountId": {
       "attribute": "account_id",
-      "struct": "AccountId"
+      "struct": "AccountID"
     },
     "accountUid": {
       "attribute": "account_uid",
@@ -285,7 +285,7 @@
     },
     "flowId": {
       "attribute": "flow_id",
-      "struct": "FlowId"
+      "struct": "FlowID"
     },
     "headers": {
       "attribute": "headers",
