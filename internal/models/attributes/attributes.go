@@ -6,6 +6,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -30,7 +31,10 @@ func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all attribute values are specified in the configuration
+	m.Tenant = []*TenantAttributeModel{}
+	listattr.Set(&m.Tenant, data, "tenant", h)
+	m.User = []*UserAttributeModel{}
+	listattr.Set(&m.User, data, "user", h)
 }
 
 // Tenant Attributes
@@ -72,7 +76,19 @@ func (m *TenantAttributeModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all attribute values are specified in the configuration
+	m.Authorization = utils.ZVL(m.Authorization)
+	m.Authorization.SetValues(h, data)
+	stringattr.Set(&m.Name, data, "displayName")
+	stringattr.Set(&m.Type, data, "type")
+	if vs, ok := data["options"].([]any); ok {
+		for _, v := range vs {
+			if os, ok := v.(map[string]any); ok {
+				if option, ok := os["label"].(string); ok {
+					m.SelectOptions = append(m.SelectOptions, option)
+				}
+			}
+		}
+	}
 }
 
 // Widget Authorization
@@ -132,7 +148,19 @@ func (m *UserAttributeModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *UserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all attribute values are specified in the configuration
+	m.WidgetAuthorization = utils.ZVL(m.WidgetAuthorization)
+	m.WidgetAuthorization.SetValues(h, data)
+	stringattr.Set(&m.Name, data, "displayName")
+	stringattr.Set(&m.Type, data, "type")
+	if vs, ok := data["options"].([]any); ok {
+		for _, v := range vs {
+			if os, ok := v.(map[string]any); ok {
+				if option, ok := os["label"].(string); ok {
+					m.SelectOptions = append(m.SelectOptions, option)
+				}
+			}
+		}
+	}
 }
 
 // Widget Authorization
@@ -155,5 +183,6 @@ func (m *UserAttributeAuthorizationModel) Values(h *helpers.Handler) map[string]
 }
 
 func (m *UserAttributeAuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all attribute values are specified in the configuration
+	strlistattr.Set(&m.ViewPermissions, data, "viewPermissions", h)
+	strlistattr.Set(&m.EditPermissions, data, "editPermissions", h)
 }
