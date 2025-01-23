@@ -56,7 +56,12 @@ func (m *{{.StructName}}Model) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	{{ .GetConfigurationIterationStartStatement }} 
+		{{- range .Fields}}
+		{{.SetValueStatement}}
+		{{- end }}
+	{{.GetConfigurationIterationEndStatement}}
 }
 
 {{ if .HasValidator }}

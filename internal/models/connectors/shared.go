@@ -3,6 +3,7 @@ package connectors
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
@@ -34,10 +35,16 @@ func connectorValues(id, name, description types.String, h *helpers.Handler) map
 	return data
 }
 
+func setConnectorValues(id, name, description *types.String, data map[string]any, _ *helpers.Handler) {
+	stringattr.Set(id, data, "id")
+	stringattr.Set(name, data, "name")
+	stringattr.Set(description, data, "description")
+}
+
 // Connector Identifiers
 
-func SetConnectorIDs[T any, M helpers.MatchableModel[T]](h *helpers.Handler, data map[string]any, key string, connectors []M) {
-	for _, connector := range connectors {
+func SetConnectorIDs[T any, M helpers.MatchableModel[T]](h *helpers.Handler, data map[string]any, key string, connectors *[]M) {
+	for _, connector := range *connectors {
 		n := connector.GetName().ValueString()
 		h.Log("Looking for %s connector named '%s'", key, n)
 		if connectorID, ok := findConnectorID(h, data, key, n); ok {
@@ -49,7 +56,11 @@ func SetConnectorIDs[T any, M helpers.MatchableModel[T]](h *helpers.Handler, dat
 				h.Log("Keeping existing ID '%s' for %s connector named '%s'", connectorID, key, n)
 			}
 		}
+	}
 
+	if *connectors == nil {
+		*connectors = []M{}
+		listattr.Set(connectors, data, key, h)
 	}
 }
 

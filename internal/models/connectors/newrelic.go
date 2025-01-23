@@ -50,7 +50,16 @@ func (m *NewRelicModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *NewRelicModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.APIKey, c, "apiKey")
+		stringattr.Set(&m.DataCenter, c, "dataCenter")
+		boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
+		listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+		boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+		boolattr.Set(&m.OverrideLogsPrefix, c, "overrideLogsPrefix")
+		stringattr.Set(&m.LogsPrefix, c, "logsPrefix")
+	}
 }
 
 func (m *NewRelicModel) Validate(h *helpers.Handler) {

@@ -36,7 +36,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
     {{- range .Connectors }}
-	SetConnectorIDs(h, data, "{{.DataName}}", m.{{.StructName}})
+	SetConnectorIDs(h, data, "{{.DataName}}", &m.{{.StructName}})
     {{- end }}
 }
 

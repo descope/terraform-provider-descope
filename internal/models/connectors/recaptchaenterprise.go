@@ -46,7 +46,14 @@ func (m *RecaptchaEnterpriseModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *RecaptchaEnterpriseModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.ProjectID, c, "projectId")
+		stringattr.Set(&m.SiteKey, c, "siteKey")
+		stringattr.Set(&m.APIKey, c, "apiKey")
+		boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
+		floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
+	}
 }
 
 func (m *RecaptchaEnterpriseModel) Validate(h *helpers.Handler) {

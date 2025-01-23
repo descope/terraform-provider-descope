@@ -38,7 +38,12 @@ func (m *HubSpotModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *HubSpotModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.AccessToken, c, "accessToken")
+		stringattr.Set(&m.BaseURL, c, "baseUrl")
+		boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
+	}
 }
 
 // Configuration
