@@ -48,6 +48,13 @@ func (m *TextServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 			}
 		}
 	}
+	if m.Connector.ValueString() == "" {
+		stringattr.Set(&m.Connector, data, "textServiceProvider")
+	}
+	if m.Templates == nil {
+		m.Templates = []*TextTemplateModel{}
+		listattr.Set(&m.Templates, data, "textTemplates", h)
+	}
 }
 
 func (m *TextServiceModel) Validate(h *helpers.Handler) {

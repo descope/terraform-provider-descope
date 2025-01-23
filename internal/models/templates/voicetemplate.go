@@ -35,7 +35,10 @@ func (m *VoiceTemplateModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *VoiceTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all template values are specified in the configuration
+	stringattr.Set(&m.ID, data, "id")
+	boolattr.Set(&m.Active, data, "active")
+	stringattr.Set(&m.Name, data, "name")
+	stringattr.Set(&m.Body, data, "body")
 }
 
 func (m *VoiceTemplateModel) Validate(h *helpers.Handler) {

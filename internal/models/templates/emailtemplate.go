@@ -44,7 +44,13 @@ func (m *EmailTemplateModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *EmailTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all template values are specified in the configuration
+	stringattr.Set(&m.ID, data, "id")
+	boolattr.Set(&m.Active, data, "active")
+	stringattr.Set(&m.Name, data, "name")
+	stringattr.Set(&m.Subject, data, "subject")
+	stringattr.Set(&m.HTMLBody, data, "body")
+	stringattr.Set(&m.PlainTextBody, data, "bodyPlainText")
+	boolattr.Set(&m.UsePlainTextBody, data, "useBodyPlainText")
 }
 
 func (m *EmailTemplateModel) Validate(h *helpers.Handler) {

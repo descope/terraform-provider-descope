@@ -48,6 +48,13 @@ func (m *EmailServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 			}
 		}
 	}
+	if m.Connector.ValueString() == "" {
+		stringattr.Set(&m.Connector, data, "emailServiceProvider")
+	}
+	if m.Templates == nil {
+		m.Templates = []*EmailTemplateModel{}
+		listattr.Set(&m.Templates, data, "emailTemplates", h)
+	}
 }
 
 func (m *EmailServiceModel) Validate(h *helpers.Handler) {

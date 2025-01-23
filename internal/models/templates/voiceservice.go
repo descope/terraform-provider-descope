@@ -48,6 +48,13 @@ func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 			}
 		}
 	}
+	if m.Connector.ValueString() == "" {
+		stringattr.Set(&m.Connector, data, "voiceServiceProvider")
+	}
+	if m.Templates == nil {
+		m.Templates = []*VoiceTemplateModel{}
+		listattr.Set(&m.Templates, data, "voiceTemplates", h)
+	}
 }
 
 func (m *VoiceServiceModel) Validate(h *helpers.Handler) {
