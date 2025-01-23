@@ -37,7 +37,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"access_key_jwt_template":             stringattr.Optional(),
 
 	// Deprecated
-	"domain": stringattr.Renamed("domain", "cookie_domain"),
+	"domain": stringattr.Optional(stringattr.DeprecatedValidator("cookie_domain")),
 }
 
 type SettingsModel struct {

@@ -18,6 +18,10 @@ var FlowIDValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[A-Za-z0
 
 var NonEmptyValidator validator.String = &nonEmptyValidator{}
 
+func DeprecatedValidator(replacement string) validator.String {
+	return &deprecatedValidator{replacement: replacement}
+}
+
 // Non-Empty
 
 type nonEmptyValidator struct {
@@ -39,5 +43,30 @@ func (v nonEmptyValidator) ValidateString(ctx context.Context, req validator.Str
 	value := req.ConfigValue.ValueString()
 	if len(value) == 0 {
 		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Empty Attribute Value", fmt.Sprintf("Attribute %s must not be empty", req.Path)))
+	}
+}
+
+// Deprecated
+
+type deprecatedValidator struct {
+	replacement string
+}
+
+func (v deprecatedValidator) Description(_ context.Context) string {
+	return "This attribute will be removed in the next major version of the provider."
+}
+
+func (v deprecatedValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v deprecatedValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+
+	value := req.ConfigValue.ValueString()
+	if value != "" {
+		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Deprecated Attribute", fmt.Sprintf("Attribute %s is deprecated. Use %s instead", req.Path, v.replacement)))
 	}
 }
