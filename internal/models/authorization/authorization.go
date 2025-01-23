@@ -63,6 +63,28 @@ func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) 
 			h.Error("Permission not found", "Expected to find permission to match with '%s'", name)
 		}
 	}
+
+	if m.Permissions == nil && len(permissions) > 0 {
+		ps, _ := data["permissions"].([]any)
+		for _, v := range ps {
+			if p, ok := v.(map[string]any); ok {
+				permission := &PermissionModel{}
+				permission.SetValues(h, p)
+				m.Permissions = append(m.Permissions, permission)
+			}
+		}
+	}
+
+	if m.Roles == nil && len(roles) > 0 {
+		rs, _ := data["roles"].([]any)
+		for _, v := range rs {
+			if r, ok := v.(map[string]any); ok {
+				role := &RoleModel{}
+				role.SetValues(h, r)
+				m.Roles = append(m.Roles, role)
+			}
+		}
+	}
 }
 
 func (m *AuthorizationModel) References(ctx context.Context) helpers.ReferencesMap {
