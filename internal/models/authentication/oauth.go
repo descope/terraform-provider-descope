@@ -298,16 +298,16 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 		data["manageProviderTokens"] = false
 	}
 	if len(m.Prompts) > 0 {
-		strlistattr.Get(m.Prompts, data, "prompts")
+		strlistattr.Get(m.Prompts, data, "prompts", h)
 	}
 	if len(m.Scopes) > 0 {
-		strlistattr.Get(m.Scopes, data, "scopes")
+		strlistattr.Get(m.Scopes, data, "scopes", h)
 	}
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
 	if len(m.AllowedGrantTypes) > 0 {
-		strlistattr.Get(m.AllowedGrantTypes, data, "allowedGrantTypes")
+		strlistattr.Get(m.AllowedGrantTypes, data, "allowedGrantTypes", h)
 	}
 	stringattr.Get(m.Issuer, data, "issuer")
 	stringattr.Get(m.AuthorizationEndpoint, data, "authUrl")

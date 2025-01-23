@@ -1,9 +1,9 @@
 package strlistattr
 
 import (
-	"fmt"
 	"strings"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -28,23 +28,19 @@ func Optional(validators ...validator.List) schema.ListAttribute {
 	}
 }
 
-func Get(s []string, data map[string]any, key string) {
+func Get(s []string, data map[string]any, key string, _ *helpers.Handler) {
 	data[key] = s
 }
 
-func Set(s *[]string, data map[string]any, key string) {
-	if v, ok := data[key].([]any); ok {
-		*s = []string{}
-		if len(v) > 0 {
-			for i := range v {
-				str, ok := v[i].(string)
-				if !ok {
-					panic(fmt.Sprintf("unexpected value of type %T in string list: %s", v[i], key))
-				}
-				*s = append(*s, str)
-			}
+func Set(s *[]string, data map[string]any, key string, h *helpers.Handler) {
+	values := helpers.AnySliceToStringSlice(data, key)
+	if len(*s) > 0 {
+		if !helpers.EqualStringSliceElements(*s, values) {
+			h.Mismatch("Mismatched string array value in '%s' key: received [%s], expected [%s]", key, strings.Join(values, ","), strings.Join(*s, ","))
 		}
+		return
 	}
+	*s = values
 }
 
 func GetCommaSeparated(s []string, data map[string]any, key string) {

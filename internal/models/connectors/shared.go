@@ -160,14 +160,14 @@ func (m *AuditFilterFieldModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.Key, data, "key")
 	stringattr.Get(m.Operator, data, "operator")
-	strlistattr.Get(m.Vals, data, "values")
+	strlistattr.Get(m.Vals, data, "values", h)
 	return data
 }
 
 func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Key, data, "key")
 	stringattr.Set(&m.Operator, data, "operator")
-	strlistattr.Set(&m.Vals, data, "values")
+	strlistattr.Set(&m.Vals, data, "values", h)
 }
 
 // HTTP Headers

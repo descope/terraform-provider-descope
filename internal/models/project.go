@@ -62,7 +62,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	data["version"] = ModelVersion
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Environment, data, "environment")
-	strlistattr.Get(m.Tags, data, "tags")
+	strlistattr.Get(m.Tags, data, "tags", h)
 	objectattr.Get(m.Settings, data, "settings", h)
 	objectattr.Get(m.Invite, data, "settings", h)
 	objectattr.Get(m.Authentication, data, "authentication", h)
@@ -83,7 +83,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Environment, data, "environment")
-	strlistattr.Set(&m.Tags, data, "tags")
+	strlistattr.Set(&m.Tags, data, "tags", h)
 	objectattr.Set(&m.Settings, data, "settings", h)
 	objectattr.Set(&m.Invite, data, "settings", h)
 	objectattr.Set(&m.Authentication, data, "authentication", h)
