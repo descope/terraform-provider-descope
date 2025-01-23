@@ -27,7 +27,7 @@ func (m *RoleModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Description, data, "description")
-	strlistattr.Get(m.Permissions, data, "permissions")
+	strlistattr.Get(m.Permissions, data, "permissions", h)
 
 	// use the name as a lookup key to set the role reference or existing id
 	roleName := m.Name.ValueString()

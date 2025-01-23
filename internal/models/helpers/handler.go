@@ -31,6 +31,10 @@ func (h *Handler) Warn(summary string, format string, a ...any) {
 	h.Diagnostics.AddWarning(summary, fmt.Sprintf(format, a...))
 }
 
+func (h *Handler) Mismatch(format string, a ...any) {
+	h.Diagnostics.AddWarning("Attribute Value Mismatch", fmt.Sprintf(format, a...))
+}
+
 func (h *Handler) Error(summary string, format string, a ...any) {
 	h.Diagnostics.AddError(summary, fmt.Sprintf(format, a...))
 }
