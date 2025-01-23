@@ -94,8 +94,8 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
-	stringattr.Get(m.AppURL, data, "appUrl")
-	stringattr.Get(m.CustomDomain, data, "customDomain")
+	stringattr.Set(&m.AppURL, data, "appUrl")
+	stringattr.Set(&m.CustomDomain, data, "customDomain")
 	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
 	if data["tokenResponseMethod"] == "cookie" {
 		m.TokenResponseMethod = types.StringValue("cookies")
