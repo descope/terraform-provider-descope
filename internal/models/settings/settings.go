@@ -118,6 +118,12 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.EnsureKnown(&m.UserJWTTemplate)
 	stringattr.EnsureKnown(&m.AccessKeyJWTTemplate)
 	stringattr.EnsureKnown(&m.Domain) // deprecated, replaced by cookie_domain
+	if m.UserJWTTemplate.ValueString() == "" {
+		stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")
+	}
+	if m.AccessKeyJWTTemplate.ValueString() == "" {
+		stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId")
+	}
 }
 
 func (m *SettingsModel) Validate(h *helpers.Handler) {
