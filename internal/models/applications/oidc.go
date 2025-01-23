@@ -44,5 +44,9 @@ func (m *OIDCModel) Values(h *Handler) map[string]any {
 }
 
 func (m *OIDCModel) SetValues(h *Handler, data map[string]any) {
-	// all oidc application values are specified in the configuration
+	setSharedApplicationData(h, data, &m.ID, &m.Name, &m.Description, &m.Logo, &m.Disabled)
+	if settings, ok := data["oidc"].(map[string]any); ok {
+		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
+		strlistattr.Set(&m.Claims, settings, "claims", h)
+	}
 }

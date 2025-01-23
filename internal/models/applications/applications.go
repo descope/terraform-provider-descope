@@ -33,6 +33,14 @@ func (m *ApplicationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	for _, app := range m.SAMLApplications {
 		RequireID(h, data, "saml", app.Name, &app.ID)
 	}
+	if m.OIDCApplications == nil {
+		m.OIDCApplications = []*OIDCModel{}
+		listattr.Set(&m.OIDCApplications, data, "oidc", h)
+	}
+	if m.SAMLApplications == nil {
+		m.SAMLApplications = []*SAMLModel{}
+		listattr.Set(&m.SAMLApplications, data, "saml", h)
+	}
 }
 
 func (m *ApplicationModel) Validate(h *helpers.Handler) {

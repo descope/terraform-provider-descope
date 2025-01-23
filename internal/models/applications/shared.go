@@ -2,6 +2,7 @@ package applications
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -16,6 +17,14 @@ func sharedApplicationData(_ *Handler, id, name, description, logo types.String,
 	stringattr.Get(logo, data, "logo")
 	data["enabled"] = !disabled.ValueBool()
 	return data
+}
+
+func setSharedApplicationData(_ *Handler, data map[string]any, id, name, description, logo *types.String, disabled *types.Bool) {
+	stringattr.Set(id, data, "id")
+	stringattr.Set(name, data, "name")
+	stringattr.Set(description, data, "description")
+	stringattr.Set(logo, data, "logo")
+	boolattr.SetNot(disabled, data, "enabled")
 }
 
 // Match identifiers
