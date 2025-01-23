@@ -32,6 +32,14 @@ func (m *JWTTemplatesModel) Values(h *helpers.Handler) map[string]any {
 func (m *JWTTemplatesModel) SetValues(h *helpers.Handler, data map[string]any) {
 	m.setTemplateValues(h, data, "userTemplates", m.UserTemplates)
 	m.setTemplateValues(h, data, "keyTemplates", m.AccessKeyTemplates)
+	if m.UserTemplates == nil {
+		m.UserTemplates = []*JWTTemplateModel{}
+		listattr.Set(&m.UserTemplates, data, "userTemplates", h)
+	}
+	if m.AccessKeyTemplates == nil {
+		m.AccessKeyTemplates = []*JWTTemplateModel{}
+		listattr.Set(&m.AccessKeyTemplates, data, "keyTemplates", h)
+	}
 }
 
 func (m *JWTTemplatesModel) References(ctx context.Context) helpers.ReferencesMap {

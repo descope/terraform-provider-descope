@@ -53,12 +53,23 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 		h.Log("Updating reference for JWT template '%s' to: %s", templateName, refValue)
 		data["id"] = refValue
 	} else {
-		h.Error("Unknown JWT template reference", "No JWT template named '"+templateName+"' was defined")
+		h.Error("Unknown JWT template reference", "No JWT template named '%s' was defined", templateName)
 	}
 
 	return data
 }
 
 func (m *JWTTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all JWT template values are specified in the configuration
+	stringattr.Set(&m.ID, data, "id")
+	stringattr.Set(&m.Name, data, "name")
+	stringattr.Set(&m.Description, data, "description")
+	stringattr.Set(&m.AuthSchema, data, "authSchema")
+	boolattr.Set(&m.ConformanceIssuer, data, "conformanceIssuer")
+	template := "{}"
+	if t, ok := data["template"].(map[string]any); ok {
+		if b, err := json.Marshal(t); err == nil {
+			template = string(b)
+		}
+	}
+	m.Template = types.StringValue(template)
 }
