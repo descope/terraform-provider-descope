@@ -9,6 +9,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/templates"
+	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -42,7 +43,10 @@ func (m *EnchantedLinkModel) SetValues(h *helpers.Handler, data map[string]any) 
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
-	if v := m.EmailService; v != nil {
-		v.SetValues(h, data)
+	emailService := utils.ZVL(m.EmailService)
+	emailService.SetValues(h, data)
+	if emailService.Connector.ValueString() != "" {
+		m.EmailService = emailService
+	}
 	}
 }

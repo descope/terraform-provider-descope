@@ -8,6 +8,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/templates"
+	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -78,7 +79,10 @@ func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.Reuse, data, "reuse")
 	intattr.Set(&m.ReuseAmount, data, "reuseAmount")
 	boolattr.Set(&m.Uppercase, data, "uppercase")
-	if v := m.EmailService; v != nil {
-		v.SetValues(h, data)
+	emailService := utils.ZVL(m.EmailService)
+	emailService.SetValues(h, data)
+	if emailService.Connector.ValueString() != "" {
+		m.EmailService = emailService
+	}
 	}
 }

@@ -3,6 +3,7 @@ package authentication
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -45,6 +46,16 @@ func (m *AuthenticationModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AuthenticationModel) SetValues(h *helpers.Handler, data map[string]any) {
+	m.OTP = utils.ZVL(m.OTP)
+	m.MagicLink = utils.ZVL(m.MagicLink)
+	m.EnchantedLink = utils.ZVL(m.EnchantedLink)
+	m.EmbeddedLink = utils.ZVL(m.EmbeddedLink)
+	m.Password = utils.ZVL(m.Password)
+	m.OAuth = utils.ZVL(m.OAuth)
+	m.SSO = utils.ZVL(m.SSO)
+	m.TOTP = utils.ZVL(m.TOTP)
+	m.Passkeys = utils.ZVL(m.Passkeys)
+
 	objectattr.Set(&m.OTP, data, "otp", h)
 	objectattr.Set(&m.MagicLink, data, "magiclink", h)
 	objectattr.Set(&m.EnchantedLink, data, "enchantedlink", h)
