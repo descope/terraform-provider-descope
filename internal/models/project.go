@@ -17,6 +17,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/descope/terraform-provider-descope/internal/models/jwttemplates"
 	"github.com/descope/terraform-provider-descope/internal/models/settings"
+	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -84,6 +85,15 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Environment, data, "environment")
 	strlistattr.Set(&m.Tags, data, "tags", h)
+
+	m.Settings = utils.ZVL(m.Settings)
+	m.Authentication = utils.ZVL(m.Authentication)
+	m.Authorization = utils.ZVL(m.Authorization)
+	m.Applications = utils.ZVL(m.Applications)
+	m.Attributes = utils.ZVL(m.Attributes)
+	m.Connectors = utils.ZVL(m.Connectors)
+	m.JWTTemplates = utils.ZVL(m.JWTTemplates)
+
 	objectattr.Set(&m.Settings, data, "settings", h)
 	objectattr.Set(&m.Invite, data, "settings", h)
 	objectattr.Set(&m.Authentication, data, "authentication", h)
