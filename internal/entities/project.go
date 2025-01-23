@@ -44,6 +44,10 @@ func (e *ProjectEntity) SetValues(ctx context.Context, data map[string]any) {
 	refs := e.Model.References(ctx) // references aren't really needed here
 	handler := helpers.NewHandler(ctx, e.Diagnostics, refs)
 	e.Model.SetValues(handler, data)
+	// now that the values are set, gather the refs
+	// and apply them instead of any server IDs
+	handler.Refs = e.Model.References(ctx)
+	e.Model.UseReferences(handler)
 }
 
 // Returns the projectID value from the model.

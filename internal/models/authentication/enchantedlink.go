@@ -48,5 +48,10 @@ func (m *EnchantedLinkModel) SetValues(h *helpers.Handler, data map[string]any) 
 	if emailService.Connector.ValueString() != "" {
 		m.EmailService = emailService
 	}
+}
+
+func (m *EnchantedLinkModel) UseReferences(h *helpers.Handler) {
+	if m.EmailService != nil {
+		m.EmailService.UseReferences(h)
 	}
 }

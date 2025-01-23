@@ -78,3 +78,7 @@ func (m *TextServiceModel) Validate(h *helpers.Handler) {
 		h.Error("Invalid text service connector", "The connector attribute must not be set to Descope if any template is marked as active")
 	}
 }
+
+func (m *TextServiceModel) UseReferences(h *helpers.Handler) {
+	replaceConnectorIDWithReference(&m.Connector, h)
+}

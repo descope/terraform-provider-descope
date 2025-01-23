@@ -119,3 +119,12 @@ func (m *ProjectModel) References(ctx context.Context) helpers.ReferencesMap {
 	}
 	return refs
 }
+
+func (m *ProjectModel) UseReferences(h *helpers.Handler) {
+	if m.Authentication != nil {
+		m.Authentication.UseReferences(h)
+	}
+	if m.Settings != nil {
+		m.Settings.UseReferences(h)
+	}
+}

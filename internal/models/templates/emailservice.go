@@ -76,3 +76,7 @@ func (m *EmailServiceModel) Validate(h *helpers.Handler) {
 		h.Error("Invalid email service connector", "The connector attribute must not be set to Descope if any template is marked as active")
 	}
 }
+
+func (m *EmailServiceModel) UseReferences(h *helpers.Handler) {
+	replaceConnectorIDWithReference(&m.Connector, h)
+}

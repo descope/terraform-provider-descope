@@ -78,3 +78,7 @@ func (m *VoiceServiceModel) Validate(h *helpers.Handler) {
 		h.Error("Invalid voice service connector", "The connector attribute must not be set to Descope if any template is marked as active")
 	}
 }
+
+func (m *VoiceServiceModel) UseReferences(h *helpers.Handler) {
+	replaceConnectorIDWithReference(&m.Connector, h)
+}

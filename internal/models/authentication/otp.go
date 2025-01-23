@@ -68,5 +68,16 @@ func (m *OTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if voiceService.Connector.ValueString() != "" {
 		m.VoiceService = voiceService
 	}
+}
+
+func (m *OTPModel) UseReferences(h *helpers.Handler) {
+	if m.EmailService != nil {
+		m.EmailService.UseReferences(h)
+	}
+	if m.TextService != nil {
+		m.TextService.UseReferences(h)
+	}
+	if m.VoiceService != nil {
+		m.VoiceService.UseReferences(h)
 	}
 }

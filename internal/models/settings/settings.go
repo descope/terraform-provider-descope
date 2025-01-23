@@ -193,3 +193,21 @@ func getJWTTemplate(field types.String, data map[string]any, key string, typ str
 		}
 	}
 }
+
+func (m *SettingsModel) UseReferences(h *helpers.Handler) {
+	if m.AccessKeyJWTTemplate.ValueString() != "" {
+		replaceJWTTemplateIDWithReference(&m.AccessKeyJWTTemplate, "key", h)
+	}
+	if m.UserJWTTemplate.ValueString() != "" {
+		replaceJWTTemplateIDWithReference(&m.UserJWTTemplate, "user", h)
+	}
+}
+
+func replaceJWTTemplateIDWithReference(s *types.String, typ string, h *helpers.Handler) {
+	if id := s.ValueString(); id != "" {
+		ref := h.Refs.Name(typ, id)
+		if ref != "" {
+			*s = types.StringValue(ref)
+		}
+	}
+}

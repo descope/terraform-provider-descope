@@ -15,6 +15,7 @@ type ModelReference struct {
 	Type string
 	ID   string
 	Key  string
+	Name string
 }
 
 func (r *ModelReference) ReferenceValue() string {
@@ -36,7 +37,7 @@ func (r *ModelReference) ProviderValue() string {
 type ReferencesMap map[string]*ModelReference
 
 func (r ReferencesMap) Add(key, typ, id, name string) {
-	ref := &ModelReference{Type: typ, ID: id}
+	ref := &ModelReference{Type: typ, ID: id, Name: name}
 	if ref.ID == "" {
 		ref.Key = generateReferenceKey(key)
 	}
@@ -50,6 +51,18 @@ func (r ReferencesMap) Get(key, name string) *ModelReference {
 	}
 	refName := fmt.Sprintf("%s:%s", key, name)
 	return r[refName]
+}
+
+func (r ReferencesMap) Name(typ, id string) string {
+	if id == DescopeConnector {
+		return DescopeConnector
+	}
+	for _, value := range r {
+		if value.ID == id && value.Type == typ {
+			return value.Name
+		}
+	}
+	return ""
 }
 
 var referencesMapCounter atomic.Int64

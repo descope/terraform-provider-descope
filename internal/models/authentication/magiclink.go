@@ -58,5 +58,13 @@ func (m *MagicLinkModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if textService.Connector.ValueString() != "" {
 		m.TextService = textService
 	}
+}
+
+func (m *MagicLinkModel) UseReferences(h *helpers.Handler) {
+	if m.EmailService != nil {
+		m.EmailService.UseReferences(h)
+	}
+	if m.TextService != nil {
+		m.TextService.UseReferences(h)
 	}
 }
