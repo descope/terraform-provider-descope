@@ -93,6 +93,8 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	m.Attributes = utils.ZVL(m.Attributes)
 	m.Connectors = utils.ZVL(m.Connectors)
 	m.JWTTemplates = utils.ZVL(m.JWTTemplates)
+	emptyFlows := flows.New()
+	m.Flows = utils.ZVL(m.Flows, &emptyFlows)
 
 	objectattr.Set(&m.Settings, data, "settings", h)
 	objectattr.Set(&m.Invite, data, "settings", h)

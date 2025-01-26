@@ -10,6 +10,10 @@ var FlowsValidator = mapvalidator.KeysAre(stringattr.FlowIDValidator)
 
 type FlowsModel map[string]*FlowModel
 
+func New() FlowsModel {
+	return map[string]*FlowModel{}
+}
+
 func (m *FlowsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	for flowID, flow := range *m {
@@ -23,6 +27,12 @@ func (m *FlowsModel) Values(h *helpers.Handler) map[string]any {
 	return data
 }
 
-func (m *FlowsModel) SetValues(_ *helpers.Handler, _ map[string]any) {
-	// not reading flows for now
+func (m *FlowsModel) SetValues(h *helpers.Handler, data map[string]any) {
+	for flowID, v := range data {
+		if flowData, ok := v.(map[string]any); ok {
+			flow := &FlowModel{}
+			flow.SetValues(h, flowData)
+			(*m)[flowID] = flow
+		}
+	}
 }

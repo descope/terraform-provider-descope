@@ -27,7 +27,12 @@ func (m *FlowModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *FlowModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all styles values are specified in the configuration
+	b, err := json.Marshal(data)
+	if err != nil {
+		h.Error("Invalid flow data", "Failed to parse JSON: %s", err.Error())
+		return
+	}
+	m.Data = types.StringValue(string(b))
 }
 
 func (m *FlowModel) Validate(h *helpers.Handler) {
