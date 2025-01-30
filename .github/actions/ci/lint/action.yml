@@ -9,7 +9,7 @@ runs:
       uses: ./.github/actions/ci/setup
 
     - name: Run Linter
-      uses: golangci/golangci-lint-action@v6
+      uses: golangci/golangci-lint-action@ec5d18412c0aeab7936cb16880d708ba2a64e1ae # v6
       with:
         version: v1.60.3
         args: --config=.github/actions/ci/lint/golangci.yml

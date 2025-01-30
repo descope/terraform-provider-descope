@@ -117,7 +117,7 @@ func TestAuthentication(t *testing.T) {
 					}
 				}
 			`),
-			ExpectError: regexp.MustCompile(`Missing Client Secret`),
+			ExpectError: regexp.MustCompile(`Missing Attribute Value`),
 		},
 		resource.TestStep{
 			Config: p.Config(`

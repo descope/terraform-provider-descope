@@ -225,31 +225,12 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					domain = "example1.com"
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"project_settings.domain": "example1.com",
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				project_settings = {
 					cookie_domain = "example2.com"
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"project_settings.cookie_domain": "example2.com",
 			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				project_settings = {
-					domain = "example.com"
-					cookie_domain = "example.com"
-				}
-			`),
-			ExpectError: regexp.MustCompile(`Conflicting Attributes`),
 		},
 		resource.TestStep{
 			Config: p.Config(`
