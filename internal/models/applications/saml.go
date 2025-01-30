@@ -3,6 +3,7 @@ package applications
 import (
 	"maps"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
@@ -76,10 +77,10 @@ func (m *SAMLModel) SetValues(h *Handler, data map[string]any) {
 	if settings, ok := data["saml"].(map[string]any); ok {
 		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
 		if useMetadataInfo, ok := settings["useMetadataInfo"].(bool); ok && useMetadataInfo {
-			m.DynamicConfiguration = &DynamicConfigurationModel{}
+			m.DynamicConfiguration = helpers.ZVL(m.DynamicConfiguration)
 			m.DynamicConfiguration.SetValues(h, settings)
 		} else {
-			m.ManualConfiguration = &ManualConfigurationModel{}
+			m.ManualConfiguration = helpers.ZVL(m.ManualConfiguration)
 			m.ManualConfiguration.SetValues(h, settings)
 		}
 		stringattr.Set(&m.SubjectNameIDType, settings, "subjectNameIdType")

@@ -48,6 +48,9 @@ func Get[T any, M helpers.Model[T]](o M, data map[string]any, key string, h *hel
 
 func Set[T any, M helpers.Model[T]](o *M, data map[string]any, key string, h *helpers.Handler) { // using *M to stay consistent with other Set functions
 	if v, ok := data[key].(map[string]any); ok {
+		if *o == nil && helpers.IsImport(h.Ctx) {
+			*o = new(T)
+		}
 		if *o != nil {
 			(*o).SetValues(h, v)
 		}

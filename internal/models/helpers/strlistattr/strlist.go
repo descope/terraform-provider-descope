@@ -33,6 +33,9 @@ func Get(s []string, data map[string]any, key string, _ *helpers.Handler) {
 }
 
 func Set(s *[]string, data map[string]any, key string, h *helpers.Handler) {
+	if *s == nil {
+		return
+	}
 	values := helpers.AnySliceToStringSlice(data, key)
 	if len(*s) > 0 {
 		if !helpers.EqualStringSliceElements(*s, values) {

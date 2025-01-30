@@ -32,6 +32,7 @@ func (m *AuthorizationModel) Values(h *helpers.Handler) map[string]any {
 func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	roles, permissions := m.getAuthorizationIDs(data)
 
+	// updated known roles and permissions with their new values
 	for _, role := range m.Roles {
 		name := role.Name.ValueString()
 		id, found := roles[name]
@@ -64,26 +65,13 @@ func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) 
 		}
 	}
 
-	if m.Permissions == nil && len(permissions) > 0 {
-		ps, _ := data["permissions"].([]any)
-		for _, v := range ps {
-			if p, ok := v.(map[string]any); ok {
-				permission := &PermissionModel{}
-				permission.SetValues(h, p)
-				m.Permissions = append(m.Permissions, permission)
-			}
-		}
+	// we allow setting the roles and permissions on import
+	if m.Permissions == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.Permissions, data, "permissions", h)
 	}
 
-	if m.Roles == nil && len(roles) > 0 {
-		rs, _ := data["roles"].([]any)
-		for _, v := range rs {
-			if r, ok := v.(map[string]any); ok {
-				role := &RoleModel{}
-				role.SetValues(h, r)
-				m.Roles = append(m.Roles, role)
-			}
-		}
+	if m.Roles == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.Roles, data, "roles", h)
 	}
 }
 

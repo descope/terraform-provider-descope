@@ -71,12 +71,10 @@ func Get(s types.String, data map[string]any, key string) {
 	}
 }
 
-func Set(s *types.String, data map[string]any, key string) bool {
+func Set(s *types.String, data map[string]any, key string) {
 	if v, ok := data[key].(string); ok {
 		*s = types.StringValue(v)
-		return v != ""
 	}
-	return false
 }
 
 func EnsureKnown(s *types.String, defaultValue ...string) {

@@ -6,7 +6,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -42,8 +41,6 @@ func (m *TwilioCoreModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *TwilioCoreModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
-	m.Senders = utils.ZVL(m.Senders)
-	m.Auth = utils.ZVL(m.Auth)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		stringattr.Set(&m.AccountSID, c, "accountSid")
 	}
@@ -121,16 +118,11 @@ func (m *TwilioCoreSendersFieldModel) Values(h *helpers.Handler) map[string]any 
 }
 
 func (m *TwilioCoreSendersFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	sms := utils.ZVL(m.SMS)
-	changed := stringattr.Set(&sms.PhoneNumber, data, "fromPhone")
-	changed = stringattr.Set(&sms.MessagingServiceSID, data, "messagingServiceSid") || changed
-	if changed {
-		m.SMS = sms
-	}
-	voice := utils.ZVL(m.Voice)
-	if stringattr.Set(&voice.PhoneNumber, data, "fromPhoneVoice") {
-		m.Voice = voice
-	}
+	m.SMS = helpers.ZVL(m.SMS)
+	stringattr.Set(&m.SMS.PhoneNumber, data, "fromPhone")
+	stringattr.Set(&m.SMS.MessagingServiceSID, data, "messagingServiceSid")
+	m.Voice = helpers.ZVL(m.Voice)
+	stringattr.Set(&m.Voice.PhoneNumber, data, "fromPhoneVoice")
 }
 
 func (m *TwilioCoreSendersFieldModel) Validate(h *helpers.Handler) {

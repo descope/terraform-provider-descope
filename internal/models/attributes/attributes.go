@@ -6,7 +6,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
-	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -31,9 +30,7 @@ func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	m.Tenant = []*TenantAttributeModel{}
 	listattr.Set(&m.Tenant, data, "tenant", h)
-	m.User = []*UserAttributeModel{}
 	listattr.Set(&m.User, data, "user", h)
 }
 
@@ -76,8 +73,9 @@ func (m *TenantAttributeModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	m.Authorization = utils.ZVL(m.Authorization)
-	m.Authorization.SetValues(h, data)
+	if m.Authorization = helpers.InitIfImport(h.Ctx, m.Authorization); m.Authorization != nil {
+		m.Authorization.SetValues(h, data)
+	}
 	stringattr.Set(&m.Name, data, "displayName")
 	stringattr.Set(&m.Type, data, "type")
 	if vs, ok := data["options"].([]any); ok {
@@ -148,8 +146,9 @@ func (m *UserAttributeModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *UserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	m.WidgetAuthorization = utils.ZVL(m.WidgetAuthorization)
-	m.WidgetAuthorization.SetValues(h, data)
+	if m.WidgetAuthorization = helpers.InitIfImport(h.Ctx, m.WidgetAuthorization); m.WidgetAuthorization != nil {
+		m.WidgetAuthorization.SetValues(h, data)
+	}
 	stringattr.Set(&m.Name, data, "displayName")
 	stringattr.Set(&m.Type, data, "type")
 	if vs, ok := data["options"].([]any); ok {
@@ -183,6 +182,10 @@ func (m *UserAttributeAuthorizationModel) Values(h *helpers.Handler) map[string]
 }
 
 func (m *UserAttributeAuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
+	if helpers.IsImport(h.Ctx) {
+		m.ViewPermissions = []string{}
+		m.EditPermissions = []string{}
+	}
 	strlistattr.Set(&m.ViewPermissions, data, "viewPermissions", h)
 	strlistattr.Set(&m.EditPermissions, data, "editPermissions", h)
 }

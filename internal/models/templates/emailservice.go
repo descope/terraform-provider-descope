@@ -35,6 +35,8 @@ func (m *EmailServiceModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *EmailServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.Connector, data, "emailServiceProvider")
+	// update known templates with their new values
 	for _, template := range m.Templates {
 		name := template.Name.ValueString()
 		h.Log("Looking for email template named '%s'", name)
@@ -48,11 +50,8 @@ func (m *EmailServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 			}
 		}
 	}
-	if m.Connector.ValueString() == "" {
-		stringattr.Set(&m.Connector, data, "emailServiceProvider")
-	}
-	if m.Templates == nil {
-		m.Templates = []*EmailTemplateModel{}
+	// we allow to set templates on import
+	if m.Templates == nil && helpers.IsImport(h.Ctx) {
 		listattr.Set(&m.Templates, data, "emailTemplates", h)
 	}
 }

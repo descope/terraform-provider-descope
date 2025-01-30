@@ -9,7 +9,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/templates"
-	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -53,20 +52,14 @@ func (m *OTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	stringattr.Set(&m.Domain, data, "domain")
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
-	emailService := utils.ZVL(m.EmailService)
-	emailService.SetValues(h, data)
-	if emailService.Connector.ValueString() != "" {
-		m.EmailService = emailService
+	if m.EmailService = helpers.InitIfImport(h.Ctx, m.EmailService); m.EmailService != nil {
+		m.EmailService.SetValues(h, data)
 	}
-	textService := utils.ZVL(m.TextService)
-	textService.SetValues(h, data)
-	if textService.Connector.ValueString() != "" {
-		m.TextService = textService
+	if m.TextService = helpers.InitIfImport(h.Ctx, m.TextService); m.TextService != nil {
+		m.TextService.SetValues(h, data)
 	}
-	voiceService := utils.ZVL(m.VoiceService)
-	voiceService.SetValues(h, data)
-	if voiceService.Connector.ValueString() != "" {
-		m.VoiceService = voiceService
+	if m.VoiceService = helpers.InitIfImport(h.Ctx, m.VoiceService); m.VoiceService != nil {
+		m.VoiceService.SetValues(h, data)
 	}
 }
 

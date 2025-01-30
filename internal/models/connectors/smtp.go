@@ -6,7 +6,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/utils"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -42,9 +41,6 @@ func (m *SMTPModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SMTPModel) SetValues(h *helpers.Handler, data map[string]any) {
-	m.Sender = utils.ZVL(m.Sender)
-	m.Server = utils.ZVL(m.Server)
-	m.Auth = utils.ZVL(m.Auth)
 	objectattr.Set(&m.Sender, data, "configuration", h)
 	objectattr.Set(&m.Auth, data, "configuration", h)
 	objectattr.Set(&m.Server, data, "configuration", h)

@@ -35,6 +35,8 @@ func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.Connector, data, "voiceServiceProvider")
+	// update known templates with their new values
 	for _, template := range m.Templates {
 		name := template.Name.ValueString()
 		h.Log("Looking for voice template named '%s'", name)
@@ -48,11 +50,8 @@ func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 			}
 		}
 	}
-	if m.Connector.ValueString() == "" {
-		stringattr.Set(&m.Connector, data, "voiceServiceProvider")
-	}
-	if m.Templates == nil {
-		m.Templates = []*VoiceTemplateModel{}
+	// we allow to set templates on import
+	if m.Templates == nil && helpers.IsImport(h.Ctx) {
 		listattr.Set(&m.Templates, data, "voiceTemplates", h)
 	}
 }
