@@ -89,10 +89,10 @@ type TwilioCoreSendersFieldModel struct {
 	SMS *struct {
 		PhoneNumber         types.String `tfsdk:"phone_number"`
 		MessagingServiceSID types.String `tfsdk:"messaging_service_sid"`
-	} `tfksd:"sms"`
+	} `tfsdk:"sms"`
 	Voice *struct {
 		PhoneNumber types.String `tfsdk:"phone_number"`
-	} `tfksd:"voice"`
+	} `tfsdk:"voice"`
 }
 
 func (m *TwilioCoreSendersFieldModel) Values(h *helpers.Handler) map[string]any {
@@ -119,10 +119,10 @@ func (m *TwilioCoreSendersFieldModel) SetValues(h *helpers.Handler, data map[str
 func (m *TwilioCoreSendersFieldModel) Validate(h *helpers.Handler) {
 	if v := m.SMS; v != nil {
 		if m.SMS.PhoneNumber.ValueString() == "" && m.SMS.MessagingServiceSID.ValueString() == "" {
-			h.Error("Invalid Twilio Core senders field", "The connector requires an SMS sender field to be set")
+			h.Missing("The Twilio Core connector SMS sender requires either the phone_number or messaging_service_sid attribute to be set")
 		}
 		if m.SMS.PhoneNumber.ValueString() != "" && m.SMS.MessagingServiceSID.ValueString() != "" {
-			h.Error("Invalid Twilio Core senders field", "The connector requires only one one SMS sender field to be set")
+			h.Invalid("The Twilio Core connector SMS sender must only have one of its attributes set")
 		}
 	}
 }
@@ -162,12 +162,12 @@ func (m *TwilioAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any
 
 func (m *TwilioAuthFieldModel) Validate(h *helpers.Handler) {
 	if m.AuthToken.ValueString() == "" && (m.APIKey.ValueString() == "" && m.APISecret.ValueString() == "") {
-		h.Error("Invalid Twilio authentication field", "The connector requires an authentication method to be set")
+		h.Missing("The Twilio Core connector requires an authentication method to be set")
 	}
 	if m.AuthToken.ValueString() == "" && (m.APIKey.ValueString() == "" || m.APISecret.ValueString() == "") {
-		h.Error("Invalid Twilio authentication field", "The api_key and api_secret fields must be specified together")
+		h.Missing("The Twilio Core connector authentication attribute requires both api_key and api_secret to be specified together")
 	}
 	if m.AuthToken.ValueString() != "" && (m.APIKey.ValueString() != "" || m.APISecret.ValueString() != "") {
-		h.Error("Invalid Twilio authentication field", "The connector requires only one one authentication method to be set")
+		h.Invalid("The Twilio Core connector must only have one authentication method set")
 	}
 }
