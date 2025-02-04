@@ -2,7 +2,7 @@ module github.com/descope/terraform-provider-descope
 
 go 1.22.7
 
-toolchain go1.22.10
+toolchain go1.23.4
 
 require (
 	github.com/descope/go-sdk v1.6.9
