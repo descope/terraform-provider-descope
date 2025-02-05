@@ -13,6 +13,9 @@ var (
 	//go:embed tests/emptystyle.json
 	emptyStyle string
 
+	//go:embed tests/basicstyle.json
+	basicStyle string
+
 	//go:embed tests/basicflow.json
 	basicFlow string
 
@@ -38,6 +41,16 @@ func TestFlows(t *testing.T) {
 			`),
 			Check: p.Check(map[string]any{
 				"styles.data": testacc.AttributeMatchesJSON(emptyStyle),
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				styles = {
+					data = jsonencode(` + basicStyle + `)
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"styles.data": testacc.AttributeMatchesJSON(basicStyle),
 			}),
 		},
 		resource.TestStep{

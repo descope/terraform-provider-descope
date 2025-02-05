@@ -21,7 +21,9 @@ type StylesModel struct {
 }
 
 func (m *StylesModel) Values(h *helpers.Handler) map[string]any {
-	return getStylesData(m.Data, h)
+	data := map[string]any{}
+	data["data"] = getStylesData(m.Data, h)
+	return data
 }
 
 func (m *StylesModel) SetValues(h *helpers.Handler, data map[string]any) {

@@ -71,9 +71,7 @@ func (m *TextServiceModel) Validate(h *helpers.Handler) {
 	}
 
 	connector := m.Connector.ValueString()
-	if connector == "" {
-		h.Error("Invalid text service connector", "The connector attribute must be set to Descope or the name of a connector")
-	} else if hasActive && connector == helpers.DescopeConnector {
+	if hasActive && connector == helpers.DescopeConnector {
 		h.Error("Invalid text service connector", "The connector attribute must not be set to Descope if any template is marked as active")
 	}
 }
