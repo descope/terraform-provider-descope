@@ -47,6 +47,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"slack":                      listattr.Optional(SlackAttributes),
 	"smartling":                  listattr.Optional(SmartlingAttributes),
 	"smtp":                       listattr.Optional(SMTPAttributes),
+	"smtp_static_ip":             listattr.Optional(SmtpStaticIpAttributes),
 	"sumologic":                  listattr.Optional(SumoLogicAttributes, SumoLogicValidator),
 	"telesign":                   listattr.Optional(TelesignAttributes),
 	"traceable":                  listattr.Optional(TraceableAttributes),
@@ -87,6 +88,7 @@ type ConnectorsModel struct {
 	Slack                    []*SlackModel                    `tfsdk:"slack"`
 	Smartling                []*SmartlingModel                `tfsdk:"smartling"`
 	SMTP                     []*SMTPModel                     `tfsdk:"smtp"`
+	SmtpStaticIp             []*SmtpStaticIpModel             `tfsdk:"smtp_static_ip"`
 	SumoLogic                []*SumoLogicModel                `tfsdk:"sumologic"`
 	Telesign                 []*TelesignModel                 `tfsdk:"telesign"`
 	Traceable                []*TraceableModel                `tfsdk:"traceable"`
@@ -128,6 +130,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Slack, data, "slack", h)
 	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
+	listattr.Get(m.SmtpStaticIp, data, "smtp-static-ip", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
 	listattr.Get(m.Traceable, data, "traceable", h)
@@ -169,6 +172,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "slack", m.Slack)
 	SetConnectorIDs(h, data, "smartling", m.Smartling)
 	SetConnectorIDs(h, data, "smtp", m.SMTP)
+	SetConnectorIDs(h, data, "smtp-static-ip", m.SmtpStaticIp)
 	SetConnectorIDs(h, data, "sumologic", m.SumoLogic)
 	SetConnectorIDs(h, data, "telesign", m.Telesign)
 	SetConnectorIDs(h, data, "traceable", m.Traceable)
@@ -210,6 +214,7 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "slack", m.Slack)
 	addConnectorReferences(refs, "smartling", m.Smartling)
 	addConnectorReferences(refs, "smtp", m.SMTP)
+	addConnectorReferences(refs, "smtp-static-ip", m.SmtpStaticIp)
 	addConnectorReferences(refs, "sumologic", m.SumoLogic)
 	addConnectorReferences(refs, "telesign", m.Telesign)
 	addConnectorReferences(refs, "traceable", m.Traceable)
@@ -252,6 +257,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.Slack)
 	addConnectorNames(names, m.Smartling)
 	addConnectorNames(names, m.SMTP)
+	addConnectorNames(names, m.SmtpStaticIp)
 	addConnectorNames(names, m.SumoLogic)
 	addConnectorNames(names, m.Telesign)
 	addConnectorNames(names, m.Traceable)
@@ -297,6 +303,7 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.Slack, state.Slack)
 	helpers.MatchModels(ctx, m.Smartling, state.Smartling)
 	helpers.MatchModels(ctx, m.SMTP, state.SMTP)
+	helpers.MatchModels(ctx, m.SmtpStaticIp, state.SmtpStaticIp)
 	helpers.MatchModels(ctx, m.SumoLogic, state.SumoLogic)
 	helpers.MatchModels(ctx, m.Telesign, state.Telesign)
 	helpers.MatchModels(ctx, m.Traceable, state.Traceable)
