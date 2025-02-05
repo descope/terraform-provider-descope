@@ -55,11 +55,11 @@ func (m *MagicLinkModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 }
 
-func (m *MagicLinkModel) UseReferences(h *helpers.Handler) {
+func (m *MagicLinkModel) SetReferences(h *helpers.Handler) {
 	if m.EmailService != nil {
-		m.EmailService.UseReferences(h)
+		m.EmailService.SetReferences(h)
 	}
 	if m.TextService != nil {
-		m.TextService.UseReferences(h)
+		m.TextService.SetReferences(h)
 	}
 }

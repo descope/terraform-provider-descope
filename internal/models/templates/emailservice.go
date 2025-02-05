@@ -76,6 +76,6 @@ func (m *EmailServiceModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *EmailServiceModel) UseReferences(h *helpers.Handler) {
+func (m *EmailServiceModel) SetReferences(h *helpers.Handler) {
 	replaceConnectorIDWithReference(&m.Connector, h)
 }

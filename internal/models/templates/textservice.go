@@ -78,6 +78,6 @@ func (m *TextServiceModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *TextServiceModel) UseReferences(h *helpers.Handler) {
+func (m *TextServiceModel) SetReferences(h *helpers.Handler) {
 	replaceConnectorIDWithReference(&m.Connector, h)
 }

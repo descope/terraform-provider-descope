@@ -53,12 +53,12 @@ func (r ReferencesMap) Get(key, name string) *ModelReference {
 	return r[refName]
 }
 
-func (r ReferencesMap) Name(typ, id string) string {
+func (r ReferencesMap) Name(id string) string {
 	if id == DescopeConnector {
 		return DescopeConnector
 	}
 	for _, value := range r {
-		if value.ID == id && value.Type == typ {
+		if value.ID == id {
 			return value.Name
 		}
 	}

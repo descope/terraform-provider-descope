@@ -186,6 +186,10 @@ func (m *UserAttributeAuthorizationModel) SetValues(h *helpers.Handler, data map
 		m.ViewPermissions = []string{}
 		m.EditPermissions = []string{}
 	}
-	strlistattr.Set(&m.ViewPermissions, data, "viewPermissions", h)
-	strlistattr.Set(&m.EditPermissions, data, "editPermissions", h)
+	if m.ViewPermissions != nil {
+		strlistattr.Set(&m.ViewPermissions, data, "viewPermissions", h)
+	}
+	if m.EditPermissions != nil {
+		strlistattr.Set(&m.EditPermissions, data, "editPermissions", h)
+	}
 }

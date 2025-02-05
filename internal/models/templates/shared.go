@@ -30,12 +30,7 @@ func requireTemplateID(h *helpers.Handler, data map[string]any, typ string, name
 
 func replaceConnectorIDWithReference(s *types.String, h *helpers.Handler) {
 	if connector := strings.Split(s.ValueString(), ":"); len(connector) == 2 {
-		typ := connector[0]
-		// twilio core type arrives as 'twilio'
-		if typ == "twilio" {
-			typ = "twilio-core"
-		}
-		ref := h.Refs.Name(typ, connector[1])
+		ref := h.Refs.Name(connector[1])
 		if ref != "" {
 			*s = types.StringValue(ref)
 		}

@@ -83,8 +83,8 @@ func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 }
 
-func (m *PasswordModel) UseReferences(h *helpers.Handler) {
+func (m *PasswordModel) SetReferences(h *helpers.Handler) {
 	if m.EmailService != nil {
-		m.EmailService.UseReferences(h)
+		m.EmailService.SetReferences(h)
 	}
 }

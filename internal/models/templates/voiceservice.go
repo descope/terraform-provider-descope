@@ -78,6 +78,6 @@ func (m *VoiceServiceModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *VoiceServiceModel) UseReferences(h *helpers.Handler) {
+func (m *VoiceServiceModel) SetReferences(h *helpers.Handler) {
 	replaceConnectorIDWithReference(&m.Connector, h)
 }

@@ -58,7 +58,7 @@ func SetConnectorIDs[T any, M helpers.MatchableModel[T]](h *helpers.Handler, dat
 		}
 	}
 	// we allow setting the connectors in import
-	if *connectors != nil && helpers.IsImport(h.Ctx) {
+	if len(*connectors) == 0 && helpers.IsImport(h.Ctx) {
 		listattr.Set(connectors, data, key, h)
 	}
 }

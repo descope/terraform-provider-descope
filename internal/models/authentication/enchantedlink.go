@@ -47,8 +47,8 @@ func (m *EnchantedLinkModel) SetValues(h *helpers.Handler, data map[string]any) 
 	}
 }
 
-func (m *EnchantedLinkModel) UseReferences(h *helpers.Handler) {
+func (m *EnchantedLinkModel) SetReferences(h *helpers.Handler) {
 	if m.EmailService != nil {
-		m.EmailService.UseReferences(h)
+		m.EmailService.SetReferences(h)
 	}
 }

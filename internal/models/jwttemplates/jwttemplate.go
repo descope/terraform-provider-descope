@@ -65,11 +65,13 @@ func (m *JWTTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.AuthSchema, data, "authSchema")
 	boolattr.Set(&m.ConformanceIssuer, data, "conformanceIssuer")
-	template := "{}"
-	if t, ok := data["template"].(map[string]any); ok {
-		if b, err := json.Marshal(t); err == nil {
-			template = string(b)
+	if m.Template.ValueString() == "" {
+		template := "{}"
+		if t, ok := data["template"].(map[string]any); ok {
+			if b, err := json.Marshal(t); err == nil {
+				template = string(b)
+			}
 		}
+		m.Template = types.StringValue(template)
 	}
-	m.Template = types.StringValue(template)
 }

@@ -63,14 +63,14 @@ func (m *OTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 }
 
-func (m *OTPModel) UseReferences(h *helpers.Handler) {
+func (m *OTPModel) SetReferences(h *helpers.Handler) {
 	if m.EmailService != nil {
-		m.EmailService.UseReferences(h)
+		m.EmailService.SetReferences(h)
 	}
 	if m.TextService != nil {
-		m.TextService.UseReferences(h)
+		m.TextService.SetReferences(h)
 	}
 	if m.VoiceService != nil {
-		m.VoiceService.UseReferences(h)
+		m.VoiceService.SetReferences(h)
 	}
 }

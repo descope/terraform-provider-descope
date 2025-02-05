@@ -776,7 +776,6 @@ var docsSettings = map[string]string{
 	                             "automatically be marked as a test user.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
-	"domain": "This attribute has been renamed to `cookie_domain`.",
 }
 
 var docsEmailService = map[string]string{

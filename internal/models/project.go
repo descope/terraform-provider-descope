@@ -28,7 +28,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"name":             stringattr.Required(),
 	"environment":      stringattr.Optional(stringvalidator.OneOf("", "production")),
 	"tags":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.LengthBetween(1, 50))),
-	"project_settings": objectattr.Optional(settings.SettingsAttributes, settings.SettingsValidator),
+	"project_settings": objectattr.Optional(settings.SettingsAttributes),
 	"invite_settings":  objectattr.Optional(settings.InviteSettingsAttributes),
 	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
 	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
@@ -84,7 +84,6 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Environment, data, "environment")
 	strlistattr.Set(&m.Tags, data, "tags", h)
-
 	objectattr.Set(&m.Settings, data, "settings", h)
 	objectattr.Set(&m.Invite, data, "settings", h)
 	objectattr.Set(&m.Authentication, data, "authentication", h)
@@ -111,11 +110,11 @@ func (m *ProjectModel) References(ctx context.Context) helpers.ReferencesMap {
 	return refs
 }
 
-func (m *ProjectModel) UseReferences(h *helpers.Handler) {
+func (m *ProjectModel) SetReferences(h *helpers.Handler) {
 	if m.Authentication != nil {
-		m.Authentication.UseReferences(h)
+		m.Authentication.SetReferences(h)
 	}
 	if m.Settings != nil {
-		m.Settings.UseReferences(h)
+		m.Settings.SetReferences(h)
 	}
 }
