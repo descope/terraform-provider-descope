@@ -22,6 +22,7 @@ var RecaptchaEnterpriseAttributes = map[string]schema.Attribute{
 	"api_key":             stringattr.SecretRequired(),
 	"override_assessment": boolattr.Default(false),
 	"assessment_score":    floatattr.Default(0.5),
+	"enterprise":          boolattr.Default(true),
 }
 
 // Model
@@ -36,6 +37,7 @@ type RecaptchaEnterpriseModel struct {
 	APIKey             types.String  `tfsdk:"api_key"`
 	OverrideAssessment types.Bool    `tfsdk:"override_assessment"`
 	AssessmentScore    types.Float64 `tfsdk:"assessment_score"`
+	Enterprise         types.Bool    `tfsdk:"enterprise"`
 }
 
 func (m *RecaptchaEnterpriseModel) Values(h *helpers.Handler) map[string]any {
@@ -53,6 +55,7 @@ func (m *RecaptchaEnterpriseModel) SetValues(h *helpers.Handler, data map[string
 		stringattr.Set(&m.APIKey, c, "apiKey")
 		boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
 		floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
+		boolattr.Set(&m.Enterprise, c, "enterprise")
 	}
 }
 
@@ -71,6 +74,7 @@ func (m *RecaptchaEnterpriseModel) ConfigurationValues(h *helpers.Handler) map[s
 	stringattr.Get(m.APIKey, c, "apiKey")
 	boolattr.Get(m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Get(m.AssessmentScore, c, "assessmentScore")
+	boolattr.Get(m.Enterprise, c, "enterprise")
 	return c
 }
 

@@ -633,6 +633,7 @@ func TestConnectors(t *testing.T) {
     						api_key = "mhvece"
     						override_assessment = true
     						assessment_score = 15
+    						enterprise = true
 						}
 					]
 				}
@@ -647,6 +648,7 @@ func TestConnectors(t *testing.T) {
 				"connectors.recaptcha_enterprise.0.api_key":             "mhvece",
 				"connectors.recaptcha_enterprise.0.override_assessment": true,
 				"connectors.recaptcha_enterprise.0.assessment_score":    15,
+				"connectors.recaptcha_enterprise.0.enterprise":          true,
 			}),
 		},
 		resource.TestStep{
