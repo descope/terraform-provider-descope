@@ -822,6 +822,40 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"smtp_static_ip": [
+						{
+							name = "Test smtp-static-ip Connector"
+							description = "A description for the smtp-static-ip connector"
+    						host = "i5ak"
+    						port = 4
+    						auth_method = "sc7nmnmul6"
+    						username = "c33yu7ld"
+    						password = "l2eergg2"
+    						from_email = "pkik6p7rr"
+    						from_name = "qquro4c7"
+    						use_static_ips = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.smtp_static_ip.#":                1,
+				"connectors.smtp_static_ip.0.id":             testacc.AttributeHasPrefix("CI"),
+				"connectors.smtp_static_ip.0.name":           "Test smtp-static-ip Connector",
+				"connectors.smtp_static_ip.0.description":    "A description for the smtp-static-ip connector",
+				"connectors.smtp_static_ip.0.host":           "i5ak",
+				"connectors.smtp_static_ip.0.port":           4,
+				"connectors.smtp_static_ip.0.auth_method":    "sc7nmnmul6",
+				"connectors.smtp_static_ip.0.username":       "c33yu7ld",
+				"connectors.smtp_static_ip.0.password":       "l2eergg2",
+				"connectors.smtp_static_ip.0.from_email":     "pkik6p7rr",
+				"connectors.smtp_static_ip.0.from_name":      "qquro4c7",
+				"connectors.smtp_static_ip.0.use_static_ips": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"sumologic": [
 						{
 							name = "Test sumologic Connector"

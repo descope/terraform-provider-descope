@@ -908,6 +908,7 @@ Optional:
 - `slack` (Attributes List) Send updates to your team on Slack. (see [below for nested schema](#nestedatt--connectors--slack))
 - `smartling` (Attributes List) Localize the language of your login and user journey screens with the Smartling connector. (see [below for nested schema](#nestedatt--connectors--smartling))
 - `smtp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--smtp))
+- `smtp_static_ip` (Attributes List) (see [below for nested schema](#nestedatt--connectors--smtp_static_ip))
 - `sumologic` (Attributes List) Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log analytics (see [below for nested schema](#nestedatt--connectors--sumologic))
 - `telesign` (Attributes List) Telesign Phone number intelligence API provides risk score for phone numbers. (see [below for nested schema](#nestedatt--connectors--telesign))
 - `traceable` (Attributes List) API security for a cloud-first, API-driven world. (see [below for nested schema](#nestedatt--connectors--traceable))
@@ -1509,6 +1510,7 @@ Optional:
 
 - `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
 - `description` (String) A description of what your connector is used for.
+- `enterprise` (Boolean)
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
 Read-Only:
@@ -1722,6 +1724,30 @@ Optional:
 
 - `port` (Number)
 
+
+
+<a id="nestedatt--connectors--smtp_static_ip"></a>
+### Nested Schema for `connectors.smtp_static_ip`
+
+Required:
+
+- `from_email` (String)
+- `host` (String)
+- `name` (String)
+- `password` (String, Sensitive)
+- `username` (String)
+
+Optional:
+
+- `auth_method` (String)
+- `description` (String)
+- `from_name` (String)
+- `port` (Number)
+- `use_static_ips` (Boolean)
+
+Read-Only:
+
+- `id` (String)
 
 
 <a id="nestedatt--connectors--sumologic"></a>

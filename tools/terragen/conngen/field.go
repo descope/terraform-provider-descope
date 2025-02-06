@@ -17,6 +17,7 @@ const (
 	FieldTypeHTTPAuth     = "httpAuth"
 	FieldTypeObject       = "object"
 	FieldTypeAuditFilters = "auditFilters"
+	FieldTypeSMTPAuth     = "smtpAuth"
 )
 
 // Generated
@@ -51,7 +52,7 @@ func (f *Field) defaultStructName() string {
 
 func (f *Field) StructType() string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSMTPAuth:
 		return `types.String`
 	case FieldTypeBool:
 		return `types.Bool`
@@ -78,7 +79,7 @@ func (f *Field) defaultAttributeName() string {
 
 func (f *Field) AttributeType() string {
 	switch f.Type {
-	case FieldTypeString:
+	case FieldTypeString, FieldTypeSMTPAuth:
 		if f.Required {
 			return `stringattr.Required()`
 		}
@@ -124,7 +125,7 @@ func (f *Field) AttributeType() string {
 func (f *Field) GetValueStatement() string {
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSMTPAuth:
 		return fmt.Sprintf(`stringattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeBool:
 		return fmt.Sprintf(`boolattr.Get(%s, c, %q)`, accessor, f.Name)
@@ -144,7 +145,7 @@ func (f *Field) GetValueStatement() string {
 func (f *Field) ValidateNonZero() string {
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSMTPAuth:
 		initial, _ := f.Initial.(string)
 		return fmt.Sprintf(`%s.ValueString() != %q`, accessor, initial)
 	case FieldTypeBool:
@@ -170,7 +171,7 @@ func (f *Field) ValidateNonZero() string {
 func (f *Field) IsNotNull() string {
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret, FieldTypeBool, FieldTypeNumber:
+	case FieldTypeString, FieldTypeSecret, FieldTypeBool, FieldTypeNumber, FieldTypeSMTPAuth:
 		return fmt.Sprintf(`!%s.IsNull()`, accessor)
 	case FieldTypeObject, FieldTypeAuditFilters:
 		return fmt.Sprintf(`len(%s) != 0`, accessor)
@@ -185,7 +186,7 @@ func (f *Field) IsNotNull() string {
 
 func (f *Field) GetTestAssignment() string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSMTPAuth:
 		return fmt.Sprintf(`%q`, f.TestString())
 	case FieldTypeBool:
 		return `true`
@@ -208,7 +209,7 @@ func (f *Field) GetTestAssignment() string {
 
 func (f *Field) GetTestCheck(list string, index int) string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSMTPAuth:
 		return fmt.Sprintf(`"connectors.%s.%d.%s": %q`, list, index, f.AttributeName(), f.TestString())
 	case FieldTypeBool:
 		return fmt.Sprintf(`"connectors.%s.%d.%s": true`, list, index, f.AttributeName())
