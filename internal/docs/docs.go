@@ -423,7 +423,6 @@ var docsGenericSMSGateway = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"post_url": "The URL of the post message request",
 	"sender": "The sender number",
-	"timeout": "The timeout for the request",
 	"authentication": "Authentication Information",
 	"headers": "The headers to send with the request",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
