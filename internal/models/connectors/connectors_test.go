@@ -336,7 +336,6 @@ func TestConnectors(t *testing.T) {
 							description = "A description for the generic-sms-gateway connector"
     						post_url = "efnv6ac"
     						sender = "bi3hxe"
-    						timeout = 7
     						authentication = {
     							bearer_token = "xhmqmkcfhe4mk6"
     						}
@@ -357,7 +356,6 @@ func TestConnectors(t *testing.T) {
 				"connectors.generic_sms_gateway.0.description":                 "A description for the generic-sms-gateway connector",
 				"connectors.generic_sms_gateway.0.post_url":                    "efnv6ac",
 				"connectors.generic_sms_gateway.0.sender":                      "bi3hxe",
-				"connectors.generic_sms_gateway.0.timeout":                     7,
 				"connectors.generic_sms_gateway.0.authentication.bearer_token": "xhmqmkcfhe4mk6",
 				"connectors.generic_sms_gateway.0.headers.key":                 "g6htpmp",
 				"connectors.generic_sms_gateway.0.hmac_secret":                 "ooxzct5yxz",
