@@ -37,7 +37,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"applications":     objectattr.Optional(applications.ApplicationAttributes, applications.ApplicationValidator),
 	"jwt_templates":    objectattr.Optional(jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
 	"styles":           objectattr.Optional(flows.StylesAttributes, flows.StylesValidator),
-	"flows":            mapattr.Optional(flows.FlowAttributes, flows.FlowsValidator, flows.FlowValidator),
+	"flows":            mapattr.Optional(flows.FlowAttributes, flows.FlowsValidator),
 }
 
 type ProjectModel struct {

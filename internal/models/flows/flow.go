@@ -4,13 +4,10 @@ import (
 	"encoding/json"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
-
-var FlowValidator = objectattr.NewValidator[FlowModel]("must be valid JSON data")
 
 var FlowAttributes = map[string]schema.Attribute{
 	"data": stringattr.Required(),
@@ -21,33 +18,23 @@ type FlowModel struct {
 }
 
 func (m *FlowModel) Values(h *helpers.Handler) map[string]any {
-	data := getFlowData(m.Data, h)
-	checkReferences(h, data)
-	return data
+	m.Check(h)
+	return getFlowData(m.Data, h)
 }
 
 func (m *FlowModel) SetValues(h *helpers.Handler, data map[string]any) {
 	// all styles values are specified in the configuration
 }
 
-func (m *FlowModel) Validate(h *helpers.Handler) {
+func (m *FlowModel) Check(h *helpers.Handler) {
 	data := getFlowData(m.Data, h)
+
 	for _, field := range []string{"metadata", "contents"} {
 		if data[field] == nil {
 			h.Error("Invalid flow data", "Expected a JSON object with a %s field", field)
 		}
 	}
-}
 
-func getFlowData(data types.String, h *helpers.Handler) map[string]any {
-	m := map[string]any{}
-	if err := json.Unmarshal([]byte(data.ValueString()), &m); err != nil {
-		h.Error("Invalid flow data", "Failed to parse JSON: %s", err.Error())
-	}
-	return m
-}
-
-func checkReferences(h *helpers.Handler, data map[string]any) {
 	references, ok := data["references"].(map[string]any)
 	if !ok {
 		return
@@ -61,4 +48,12 @@ func checkReferences(h *helpers.Handler, data map[string]any) {
 			}
 		}
 	}
+}
+
+func getFlowData(data types.String, h *helpers.Handler) map[string]any {
+	m := map[string]any{}
+	if err := json.Unmarshal([]byte(data.ValueString()), &m); err != nil {
+		h.Error("Invalid flow data", "Failed to parse JSON: %s", err.Error())
+	}
+	return m
 }
