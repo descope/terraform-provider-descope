@@ -3,7 +3,6 @@ package connectors
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/floatattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
@@ -18,7 +17,6 @@ var GenericSMSGatewayAttributes = map[string]schema.Attribute{
 
 	"post_url":       stringattr.Required(),
 	"sender":         stringattr.Default(""),
-	"timeout":        floatattr.Default(0),
 	"authentication": objectattr.Optional(HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
 	"headers":        mapattr.StringOptional(),
 	"hmac_secret":    stringattr.SecretOptional(),
@@ -35,7 +33,6 @@ type GenericSMSGatewayModel struct {
 
 	PostURL        types.String        `tfsdk:"post_url"`
 	Sender         types.String        `tfsdk:"sender"`
-	Timeout        types.Float64       `tfsdk:"timeout"`
 	Authentication *HTTPAuthFieldModel `tfsdk:"authentication"`
 	Headers        map[string]string   `tfsdk:"headers"`
 	HMACSecret     types.String        `tfsdk:"hmac_secret"`
@@ -55,7 +52,6 @@ func (m *GenericSMSGatewayModel) SetValues(h *helpers.Handler, data map[string]a
 	if c, ok := data["configuration"].(map[string]any); ok {
 		stringattr.Set(&m.PostURL, c, "postUrl")
 		stringattr.Set(&m.Sender, c, "sender")
-		floatattr.Set(&m.Timeout, c, "timeout")
 		objectattr.Set(&m.Authentication, c, "authentication", h)
 		if vs, ok := c["headers"].(map[string]any); ok {
 			for k, v := range vs {
@@ -76,7 +72,6 @@ func (m *GenericSMSGatewayModel) ConfigurationValues(h *helpers.Handler) map[str
 	c := map[string]any{}
 	stringattr.Get(m.PostURL, c, "postUrl")
 	stringattr.Get(m.Sender, c, "sender")
-	floatattr.Get(m.Timeout, c, "timeout")
 	objectattr.Get(m.Authentication, c, "authentication", h)
 	getHeaders(m.Headers, c, "headers")
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")

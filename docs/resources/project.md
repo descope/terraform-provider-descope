@@ -1234,7 +1234,6 @@ Optional:
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
 - `sender` (String) The sender number
-- `timeout` (Number) The timeout for the request
 - `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 Read-Only:

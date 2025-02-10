@@ -411,10 +411,6 @@
       "attribute": "team_id",
       "struct": "TeamID"
     },
-    "timeout": {
-      "attribute": "timeout",
-      "struct": "Timeout"
-    },
     "token": {
       "attribute": "token",
       "struct": "Token"
