@@ -24,11 +24,13 @@ func (m *FlowsModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *FlowsModel) SetValues(h *helpers.Handler, data map[string]any) {
-	for flowID, v := range data {
-		if flowData, ok := v.(map[string]any); ok {
-			flow := &FlowModel{}
-			flow.SetValues(h, flowData)
-			(*m)[flowID] = flow
+	if len(*m) == 0 {
+		for flowID, v := range data {
+			if flowData, ok := v.(map[string]any); ok {
+				flow := &FlowModel{}
+				flow.SetValues(h, flowData)
+				(*m)[flowID] = flow
+			}
 		}
 	}
 }
