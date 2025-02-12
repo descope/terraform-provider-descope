@@ -90,6 +90,7 @@ func (r *projectResource) Read(ctx context.Context, req resource.ReadRequest, re
 	tflog.Info(ctx, "Reading project resource")
 	if value, _ := req.Private.GetKey(ctx, importKey); value != nil {
 		ctx = helpers.SetImport(ctx)
+		resp.Private.SetKey(ctx, importKey, nil)
 	}
 
 	entity := entities.NewProjectEntity(ctx, req.State, &resp.Diagnostics)
