@@ -16,6 +16,7 @@ var JWTTemplateAttributes = map[string]schema.Attribute{
 	"name":               stringattr.Required(),
 	"description":        stringattr.Default(""),
 	"auth_schema":        stringattr.Default("default", stringvalidator.OneOf("default", "tenantOnly", "none")),
+	"empty_claim_policy": stringattr.Default("", stringvalidator.OneOf("none", "nil", "delete")),
 	"conformance_issuer": boolattr.Default(false),
 	"enforce_issuer":     boolattr.Default(false),
 	"template":           stringattr.Required(),
@@ -26,6 +27,7 @@ type JWTTemplateModel struct {
 	Name              types.String `tfsdk:"name"`
 	Description       types.String `tfsdk:"description"`
 	AuthSchema        types.String `tfsdk:"auth_schema"`
+	EmptyClaimPolicy  types.String `tfsdk:"empty_claim_policy"`
 	ConformanceIssuer types.Bool   `tfsdk:"conformance_issuer"`
 	EnforceIssuer     types.Bool   `tfsdk:"enforce_issuer"`
 	Template          types.String `tfsdk:"template"`
@@ -36,6 +38,7 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.AuthSchema, data, "authSchema")
+	stringattr.Get(m.EmptyClaimPolicy, data, "emptyClaimPolicy")
 	boolattr.Get(m.ConformanceIssuer, data, "conformanceIssuer")
 	boolattr.Get(m.EnforceIssuer, data, "enforceIssuer")
 
