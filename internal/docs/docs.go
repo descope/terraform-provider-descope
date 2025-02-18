@@ -727,6 +727,7 @@ var docsJWTTemplate = map[string]string{
 	"name": "Name of the JWT Template.",
 	"description": "Description of the JWT Template.",
 	"auth_schema": "The authorization claims format - \"default\", \"tenantOnly\" or \"none\". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).",
+	"empty_claim_policy": "Policy for empty claims - \"none\", \"nil\" or \"delete\".",
 	"conformance_issuer": "",
 	"enforce_issuer": "",
 	"template": "",

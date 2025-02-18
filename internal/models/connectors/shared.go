@@ -100,7 +100,9 @@ func addConnectorReferences[T any, M helpers.MatchableModel[T]](refs helpers.Ref
 
 func addConnectorNames[T any, M helpers.MatchableModel[T]](names map[string]int, connectors []M) {
 	for _, connector := range connectors {
-		names[connector.GetName().ValueString()] += 1
+		if v := connector.GetName().ValueString(); v != "" {
+			names[v] += 1
+		}
 	}
 }
 

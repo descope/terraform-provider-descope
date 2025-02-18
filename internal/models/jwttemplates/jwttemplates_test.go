@@ -30,6 +30,7 @@ func TestJWTTemplates(t *testing.T) {
 							"description": "a",
 							"template": "{}",
 							"auth_schema": "tenantOnly",
+							"empty_claim_policy": "delete",
 						}
 					]
 				}
@@ -41,6 +42,7 @@ func TestJWTTemplates(t *testing.T) {
 				"jwt_templates.user_templates.0.description":        "a",
 				"jwt_templates.user_templates.0.conformance_issuer": false,
 				"jwt_templates.user_templates.0.auth_schema":        "tenantOnly",
+				"jwt_templates.user_templates.0.empty_claim_policy": "delete",
 				"jwt_templates.user_templates.0.template":           "{}",
 			}),
 		},
