@@ -48,7 +48,22 @@ func (m *HTTPModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *HTTPModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.BaseURL, c, "baseUrl")
+		objectattr.Set(&m.Authentication, c, "authentication", h)
+		if vs, ok := c["headers"].(map[string]any); ok {
+			for k, v := range vs {
+				if s, ok := v.(string); ok {
+					m.Headers[k] = s
+				}
+			}
+		}
+		stringattr.Set(&m.HMACSecret, c, "hmacSecret")
+		boolattr.Set(&m.Insecure, c, "insecure")
+		boolattr.Set(&m.IncludeHeadersInContext, c, "includeHeadersInContext")
+		boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
+	}
 }
 
 // Configuration

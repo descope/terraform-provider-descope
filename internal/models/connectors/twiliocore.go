@@ -40,7 +40,12 @@ func (m *TwilioCoreModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TwilioCoreModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the configuration
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.AccountSID, c, "accountSid")
+	}
+	objectattr.Set(&m.Senders, data, "configuration", h)
+	objectattr.Set(&m.Auth, data, "configuration", h)
 }
 
 // Configuration
@@ -113,7 +118,11 @@ func (m *TwilioCoreSendersFieldModel) Values(h *helpers.Handler) map[string]any 
 }
 
 func (m *TwilioCoreSendersFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the configuration
+	m.SMS = helpers.ZVL(m.SMS)
+	stringattr.Set(&m.SMS.PhoneNumber, data, "fromPhone")
+	stringattr.Set(&m.SMS.MessagingServiceSID, data, "messagingServiceSid")
+	m.Voice = helpers.ZVL(m.Voice)
+	stringattr.Set(&m.Voice.PhoneNumber, data, "fromPhoneVoice")
 }
 
 func (m *TwilioCoreSendersFieldModel) Validate(h *helpers.Handler) {
@@ -157,7 +166,9 @@ func (m *TwilioAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TwilioAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the configuration
+	stringattr.Set(&m.AuthToken, data, "authToken")
+	stringattr.Set(&m.APIKey, data, "apiKey")
+	stringattr.Set(&m.APISecret, data, "apiSecret")
 }
 
 func (m *TwilioAuthFieldModel) Validate(h *helpers.Handler) {

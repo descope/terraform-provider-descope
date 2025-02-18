@@ -3,6 +3,7 @@ package applications
 import (
 	"maps"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
@@ -72,7 +73,24 @@ func (m *SAMLModel) Values(h *Handler) map[string]any {
 }
 
 func (m *SAMLModel) SetValues(h *Handler, data map[string]any) {
-	// all saml application values are specified in the configuration
+	setSharedApplicationData(h, data, &m.ID, &m.Name, &m.Description, &m.Logo, &m.Disabled)
+	if settings, ok := data["saml"].(map[string]any); ok {
+		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
+		if useMetadataInfo, ok := settings["useMetadataInfo"].(bool); ok && useMetadataInfo {
+			m.DynamicConfiguration = helpers.ZVL(m.DynamicConfiguration)
+			m.DynamicConfiguration.SetValues(h, settings)
+		} else {
+			m.ManualConfiguration = helpers.ZVL(m.ManualConfiguration)
+			m.ManualConfiguration.SetValues(h, settings)
+		}
+		stringattr.Set(&m.SubjectNameIDType, settings, "subjectNameIdType")
+		stringattr.Set(&m.SubjectNameIDFormat, settings, "subjectNameIdFormat")
+		stringattr.Set(&m.DefaultRelayState, settings, "defaultRelayState")
+		m.AttributeMapping = []*AttributeMappingModel{}
+		listattr.Set(&m.AttributeMapping, settings, "attributeMapping", h)
+		m.ACSAllowedCallbackURLs = []string{}
+		strlistattr.Set(&m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
+	}
 }
 
 // Attribute Mapping
@@ -83,19 +101,20 @@ var AttributeMappingAttributes = map[string]schema.Attribute{
 }
 
 type AttributeMappingModel struct {
-	Name  string `tfsdk:"name"`
-	Value string `tfsdk:"value"`
+	Name  types.String `tfsdk:"name"`
+	Value types.String `tfsdk:"value"`
 }
 
 func (m *AttributeMappingModel) Values(h *Handler) map[string]any {
-	return map[string]any{
-		"name":  m.Name,
-		"value": m.Value,
-	}
+	data := map[string]any{}
+	stringattr.Get(m.Name, data, "name")
+	stringattr.Get(m.Value, data, "value")
+	return data
 }
 
 func (m *AttributeMappingModel) SetValues(h *Handler, data map[string]any) {
-	// all attribute mapping values are specified in the configuration
+	stringattr.Set(&m.Name, data, "name")
+	stringattr.Set(&m.Value, data, "value")
 }
 
 // Dynamic Configuration
@@ -105,17 +124,17 @@ var DynamicConfigurationAttributes = map[string]schema.Attribute{
 }
 
 type DynamicConfigurationModel struct {
-	MetadataURL string `tfsdk:"metadata_url"`
+	MetadataURL types.String `tfsdk:"metadata_url"`
 }
 
 func (m *DynamicConfigurationModel) Values(h *Handler) map[string]any {
-	return map[string]any{
-		"metadataUrl": m.MetadataURL,
-	}
+	data := map[string]any{}
+	stringattr.Get(m.MetadataURL, data, "metadataUrl")
+	return data
 }
 
 func (m *DynamicConfigurationModel) SetValues(h *Handler, data map[string]any) {
-	// all dynamic configuration mapping values are specified in the configuration
+	stringattr.Set(&m.MetadataURL, data, "metadataUrl")
 }
 
 // Manual Configuration
@@ -127,19 +146,21 @@ var ManualConfigurationAttributes = map[string]schema.Attribute{
 }
 
 type ManualConfigurationModel struct {
-	ACSURL      string `tfsdk:"acs_url"`
-	EntityID    string `tfsdk:"entity_id"`
-	Certificate string `tfsdk:"certificate"`
+	ACSURL      types.String `tfsdk:"acs_url"`
+	EntityID    types.String `tfsdk:"entity_id"`
+	Certificate types.String `tfsdk:"certificate"`
 }
 
 func (m *ManualConfigurationModel) Values(h *Handler) map[string]any {
-	return map[string]any{
-		"acsUrl":      m.ACSURL,
-		"entityId":    m.EntityID,
-		"certificate": m.Certificate,
-	}
+	data := map[string]any{}
+	stringattr.Get(m.ACSURL, data, "acsUrl")
+	stringattr.Get(m.EntityID, data, "entityId")
+	stringattr.Get(m.Certificate, data, "certificate")
+	return data
 }
 
 func (m *ManualConfigurationModel) SetValues(h *Handler, data map[string]any) {
-	// all manual configuration mapping values are specified in the configuration
+	stringattr.Set(&m.ACSURL, data, "acsUrl")
+	stringattr.Set(&m.EntityID, data, "entityId")
+	stringattr.Set(&m.Certificate, data, "certificate")
 }

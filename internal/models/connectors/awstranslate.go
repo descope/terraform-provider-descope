@@ -39,7 +39,13 @@ func (m *AWSTranslateModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AWSTranslateModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
+		stringattr.Set(&m.SecretAccessKey, c, "secretAccessKey")
+		stringattr.Set(&m.SessionToken, c, "sessionToken")
+		stringattr.Set(&m.Region, c, "region")
+	}
 }
 
 // Configuration

@@ -44,5 +44,8 @@ func (m *RoleModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *RoleModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all roles values are specified in the configuration
+	stringattr.Set(&m.ID, data, "id")
+	stringattr.Set(&m.Name, data, "name")
+	stringattr.Set(&m.Description, data, "description")
+	strlistattr.Set(&m.Permissions, data, "permissions", h)
 }

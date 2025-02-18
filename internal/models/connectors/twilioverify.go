@@ -42,7 +42,13 @@ func (m *TwilioVerifyModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TwilioVerifyModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the configuration
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.AccountSID, c, "accountSid")
+		stringattr.Set(&m.ServiceSID, c, "verifyServiceSid")
+		stringattr.Set(&m.Sender, c, "from")
+	}
+	objectattr.Set(&m.Auth, data, "configuration", h)
 }
 
 // Configuration

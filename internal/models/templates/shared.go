@@ -1,7 +1,10 @@
 package templates
 
 import (
+	"strings"
+
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 func requireTemplateID(h *helpers.Handler, data map[string]any, typ string, name string) (string, bool) {
@@ -23,4 +26,13 @@ func requireTemplateID(h *helpers.Handler, data map[string]any, typ string, name
 
 	h.Error("Template not found", "Expected to find template in '%s' to match with '%s' template", typ, name)
 	return "", false
+}
+
+func replaceConnectorIDWithReference(s *types.String, h *helpers.Handler) {
+	if connector := strings.Split(s.ValueString(), ":"); len(connector) == 2 {
+		ref := h.Refs.Name(connector[1])
+		if ref != "" {
+			*s = types.StringValue(ref)
+		}
+	}
 }

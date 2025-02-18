@@ -35,7 +35,11 @@ func (m *SegmentModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SegmentModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.WriteKey, c, "writeKey")
+		stringattr.Set(&m.Host, c, "host")
+	}
 }
 
 // Configuration

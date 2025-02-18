@@ -43,3 +43,18 @@ func valuesFromModels[T any, M helpers.Model[T]](h *helpers.Handler, list []M) [
 	}
 	return values
 }
+
+func Set[T any, M helpers.Model[T]](list *[]M, data map[string]any, key string, h *helpers.Handler) {
+	if vs, ok := data[key].([]any); ok {
+		*list = []M{} // start from scratch to avoid unwanted duplications / collisions
+		for _, v := range vs {
+			if modelData, ok := v.(map[string]any); ok {
+				var m M
+				model := &m
+				*model = new(T)
+				(*model).SetValues(h, modelData)
+				*list = append(*list, *model)
+			}
+		}
+	}
+}

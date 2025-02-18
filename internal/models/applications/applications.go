@@ -27,11 +27,19 @@ func (m *ApplicationModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *ApplicationModel) SetValues(h *helpers.Handler, data map[string]any) {
+	// update known apps with their new values
 	for _, app := range m.OIDCApplications {
 		RequireID(h, data, "oidc", app.Name, &app.ID)
 	}
 	for _, app := range m.SAMLApplications {
 		RequireID(h, data, "saml", app.Name, &app.ID)
+	}
+	// we allow setting the apps on import
+	if m.OIDCApplications == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.OIDCApplications, data, "oidc", h)
+	}
+	if m.SAMLApplications == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.SAMLApplications, data, "saml", h)
 	}
 }
 

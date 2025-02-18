@@ -42,7 +42,13 @@ func (m *EnchantedLinkModel) SetValues(h *helpers.Handler, data map[string]any) 
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
-	if v := m.EmailService; v != nil {
-		v.SetValues(h, data)
+	if m.EmailService = helpers.InitIfImport(h.Ctx, m.EmailService); m.EmailService != nil {
+		m.EmailService.SetValues(h, data)
+	}
+}
+
+func (m *EnchantedLinkModel) SetReferences(h *helpers.Handler) {
+	if m.EmailService != nil {
+		m.EmailService.SetReferences(h)
 	}
 }

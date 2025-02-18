@@ -55,3 +55,18 @@ func (m *AuthenticationModel) SetValues(h *helpers.Handler, data map[string]any)
 	objectattr.Set(&m.TOTP, data, "totp", h)
 	objectattr.Set(&m.Passkeys, data, "webauthn", h)
 }
+
+func (m *AuthenticationModel) SetReferences(h *helpers.Handler) {
+	if m.OTP != nil {
+		m.OTP.SetReferences(h)
+	}
+	if m.MagicLink != nil {
+		m.MagicLink.SetReferences(h)
+	}
+	if m.EnchantedLink != nil {
+		m.EnchantedLink.SetReferences(h)
+	}
+	if m.Password != nil {
+		m.Password.SetReferences(h)
+	}
+}
