@@ -16,7 +16,7 @@ var JWTTemplateAttributes = map[string]schema.Attribute{
 	"name":               stringattr.Required(),
 	"description":        stringattr.Default(""),
 	"auth_schema":        stringattr.Default("default", stringvalidator.OneOf("default", "tenantOnly", "none")),
-	"empty_claim_policy": stringattr.Default("", stringvalidator.OneOf("none", "nil", "delete")),
+	"empty_claim_policy": stringattr.Default("none", stringvalidator.OneOf("none", "nil", "delete")),
 	"conformance_issuer": boolattr.Default(false),
 	"enforce_issuer":     boolattr.Default(false),
 	"template":           stringattr.Required(),
