@@ -167,4 +167,3 @@ access_key_jwt_template
 - Type: `string` 
 
 Name of the access key JWT Template.
-

@@ -1929,6 +1929,7 @@ Optional:
 - `auth_schema` (String) The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `conformance_issuer` (Boolean)
 - `description` (String) Description of the JWT Template.
+- `empty_claim_policy` (String) Policy for empty claims - "none", "nil" or "delete".
 - `enforce_issuer` (Boolean)
 
 Read-Only:
@@ -1949,6 +1950,7 @@ Optional:
 - `auth_schema` (String) The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `conformance_issuer` (Boolean)
 - `description` (String) Description of the JWT Template.
+- `empty_claim_policy` (String) Policy for empty claims - "none", "nil" or "delete".
 - `enforce_issuer` (Boolean)
 
 Read-Only:

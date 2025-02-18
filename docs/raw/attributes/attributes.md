@@ -56,6 +56,31 @@ When the attribute type is "multiselect". A list of options to chose from.
 
 
 
+authorization
+-------------
+
+- Type: `object` of `attributes.TenantAttributeAuthorization` 
+
+// description for authorization
+
+
+
+
+
+TenantAttributeAuthorization
+============================
+
+
+
+view_permissions
+----------------
+
+- Type: `list` of `string` 
+
+// description for view_permissions
+
+
+
 
 
 UserAttribute

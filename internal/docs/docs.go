@@ -76,6 +76,11 @@ var docsTenantAttribute = map[string]string{
 	"name": "The name of the attribute.",
 	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", \"multiselect\", \"date\".",
 	"select_options": "When the attribute type is \"multiselect\". A list of options to chose from.",
+	"authorization": "",
+}
+
+var docsTenantAttributeAuthorization = map[string]string{
+	"view_permissions": "",
 }
 
 var docsUserAttribute = map[string]string{
