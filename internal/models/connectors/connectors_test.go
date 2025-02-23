@@ -763,6 +763,19 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"ses": [
+						{
+							name = "Test ses Connector"
+							description = "A description for the ses connector"
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"slack": [
 						{
 							name = "Test slack Connector"
@@ -811,6 +824,19 @@ func TestConnectors(t *testing.T) {
 						{
 							name = "Test smtp Connector"
 							description = "A description for the smtp connector"
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"sns": [
+						{
+							name = "Test sns Connector"
+							description = "A description for the sns connector"
 						}
 					]
 				}
