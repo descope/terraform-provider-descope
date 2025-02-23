@@ -589,7 +589,7 @@ var docsSegment = map[string]string{
 var docsSendGrid = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"sender": "",
+	"sender": "The sender details that should be displayed in the email message.",
 	"authentication": "",
 }
 
@@ -656,7 +656,7 @@ var docsSmartling = map[string]string{
 var docsSMTP = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"sender": "",
+	"sender": "The sender details that should be displayed in the email message.",
 	"server": "",
 	"authentication": "",
 }
