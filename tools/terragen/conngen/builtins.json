@@ -10,5 +10,11 @@
   },
   {
     "id": "twilio-verify"
+  },
+  {
+    "id": "ses"
+  },
+  {
+    "id": "sns"
   }
 ]

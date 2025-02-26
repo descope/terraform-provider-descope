@@ -9,7 +9,7 @@ sender
 
 - Type: `object` of `connectors.SenderField` (required)
 
-// description for sender
+The sender details that should be displayed in the email message.
 
 
 

@@ -144,6 +144,10 @@
       "attribute": "sendgrid",
       "struct": "SendGrid"
     },
+    "ses": {
+      "attribute": "ses",
+      "struct": "SES"
+    },
     "slack": {
       "attribute": "slack",
       "file": "slack",
@@ -157,6 +161,10 @@
     "smtp": {
       "attribute": "smtp",
       "struct": "SMTP"
+    },
+    "sns": {
+      "attribute": "sns",
+      "struct": "SNS"
     },
     "sumologic": {
       "attribute": "sumologic",
