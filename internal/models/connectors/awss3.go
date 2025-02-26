@@ -50,7 +50,16 @@ func (m *AWSS3Model) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AWSS3Model) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
+		stringattr.Set(&m.SecretAccessKey, c, "secretAccessKey")
+		stringattr.Set(&m.Region, c, "region")
+		stringattr.Set(&m.Bucket, c, "bucket")
+		boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
+		listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+		boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	}
 }
 
 func (m *AWSS3Model) Validate(h *helpers.Handler) {

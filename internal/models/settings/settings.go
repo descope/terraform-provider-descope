@@ -7,15 +7,12 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
-
-var SettingsValidator = objectattr.NewValidator[SettingsModel]("must have a valid configuration")
 
 var SettingsAttributes = map[string]schema.Attribute{
 	"app_url":                             stringattr.Optional(),
@@ -35,9 +32,6 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"test_users_loginid_regexp":           stringattr.Default(""),
 	"user_jwt_template":                   stringattr.Optional(),
 	"access_key_jwt_template":             stringattr.Optional(),
-
-	// Deprecated
-	"domain": stringattr.Renamed("domain", "cookie_domain"),
 }
 
 type SettingsModel struct {
@@ -58,9 +52,6 @@ type SettingsModel struct {
 	TestUsersLoginIDRegExp          types.String `tfsdk:"test_users_loginid_regexp"`
 	UserJWTTemplate                 types.String `tfsdk:"user_jwt_template"`
 	AccessKeyJWTTemplate            types.String `tfsdk:"access_key_jwt_template"`
-
-	// Deprecated
-	Domain types.String `tfsdk:"domain"`
 }
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -89,7 +80,6 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.TestUsersLoginIDRegExp, data, "testUserRegex")
 	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", "user", h)
 	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", "key", h)
-	stringattr.Get(m.Domain, data, "domain") // deprecated, replaced by cookie_domain
 	return data
 }
 
@@ -105,7 +95,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 		h.Error("Unexpected token response method", "Expected value to be either 'cookie' or 'onBody', found: '%v'", data["tokenResponseMethod"])
 	}
 	stringattr.Set(&m.CookiePolicy, data, "cookiePolicy")
-	// stringattr.Set(&m.CookieDomain, data, "domain") temporarily ignored until domain is removed to prevent inconsistent values
+	stringattr.Set(&m.CookieDomain, data, "domain")
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	durationattr.Set(&m.SessionTokenExpiration, data, "sessionTokenExpiration")
@@ -115,15 +105,8 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
 	durationattr.Set(&m.InactivityTime, data, "inactivityTime")
 	stringattr.Set(&m.TestUsersLoginIDRegExp, data, "testUserRegex")
-	stringattr.EnsureKnown(&m.UserJWTTemplate)
-	stringattr.EnsureKnown(&m.AccessKeyJWTTemplate)
-	stringattr.EnsureKnown(&m.Domain) // deprecated, replaced by cookie_domain
-}
-
-func (m *SettingsModel) Validate(h *helpers.Handler) {
-	if m.Domain.ValueString() != "" && m.CookieDomain.ValueString() != "" {
-		h.Error("Conflicting Attribute Value", "The deprecated domain attribute should not be used together with the cookie_domain attribute")
-	}
+	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")
+	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId")
 }
 
 func (m *SettingsModel) Check(h *helpers.Handler) {
@@ -184,6 +167,24 @@ func getJWTTemplate(field types.String, data map[string]any, key string, typ str
 		} else {
 			h.Log("Setting %s reference to JWT template '%s'", key, jwtTemplateName)
 			data[key] = ref.ReferenceValue()
+		}
+	}
+}
+
+func (m *SettingsModel) SetReferences(h *helpers.Handler) {
+	if m.AccessKeyJWTTemplate.ValueString() != "" {
+		replaceJWTTemplateIDWithReference(&m.AccessKeyJWTTemplate, h)
+	}
+	if m.UserJWTTemplate.ValueString() != "" {
+		replaceJWTTemplateIDWithReference(&m.UserJWTTemplate, h)
+	}
+}
+
+func replaceJWTTemplateIDWithReference(s *types.String, h *helpers.Handler) {
+	if id := s.ValueString(); id != "" {
+		ref := h.Refs.Name(id)
+		if ref != "" {
+			*s = types.StringValue(ref)
 		}
 	}
 }

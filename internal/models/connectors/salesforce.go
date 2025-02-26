@@ -39,7 +39,13 @@ func (m *SalesforceModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SalesforceModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.BaseURL, c, "baseUrl")
+		stringattr.Set(&m.ClientID, c, "clientId")
+		stringattr.Set(&m.ClientSecret, c, "clientSecret")
+		stringattr.Set(&m.Version, c, "version")
+	}
 }
 
 // Configuration

@@ -41,7 +41,14 @@ func (m *LokaliseModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *LokaliseModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.APIToken, c, "apiToken")
+		stringattr.Set(&m.ProjectID, c, "projectId")
+		stringattr.Set(&m.TeamID, c, "teamId")
+		stringattr.Set(&m.CardID, c, "cardId")
+		stringattr.Set(&m.TranslationProvider, c, "translationProvider")
+	}
 }
 
 // Configuration

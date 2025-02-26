@@ -45,7 +45,14 @@ func (m *ForterModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *ForterModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.SiteID, c, "siteId")
+		stringattr.Set(&m.SecretKey, c, "secretKey")
+		boolattr.Set(&m.Overrides, c, "overrides")
+		stringattr.Set(&m.OverrideIPAddress, c, "overrideIpAddress")
+		stringattr.Set(&m.OverrideUserEmail, c, "overrideUserEmail")
+	}
 }
 
 func (m *ForterModel) Validate(h *helpers.Handler) {

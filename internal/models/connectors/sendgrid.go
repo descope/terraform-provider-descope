@@ -38,7 +38,9 @@ func (m *SendGridModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SendGridModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the configuration
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	objectattr.Set(&m.Sender, data, "configuration", h)
+	objectattr.Set(&m.Auth, data, "configuration", h)
 }
 
 // Configuration
@@ -81,5 +83,5 @@ func (m *SendGridAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SendGridAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the configuration
+	stringattr.Set(&m.ApiKey, data, "apiKey")
 }

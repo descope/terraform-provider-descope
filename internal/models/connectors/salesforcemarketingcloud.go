@@ -41,7 +41,14 @@ func (m *SalesforceMarketingCloudModel) Values(h *helpers.Handler) map[string]an
 }
 
 func (m *SalesforceMarketingCloudModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.Subdomain, c, "subdomain")
+		stringattr.Set(&m.ClientID, c, "clientId")
+		stringattr.Set(&m.ClientSecret, c, "clientSecret")
+		stringattr.Set(&m.Scope, c, "scope")
+		stringattr.Set(&m.AccountID, c, "accountId")
+	}
 }
 
 // Configuration

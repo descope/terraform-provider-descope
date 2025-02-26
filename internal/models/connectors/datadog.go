@@ -46,7 +46,14 @@ func (m *DatadogModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *DatadogModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.APIKey, c, "apiKey")
+		stringattr.Set(&m.Site, c, "site")
+		boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
+		listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+		boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	}
 }
 
 func (m *DatadogModel) Validate(h *helpers.Handler) {

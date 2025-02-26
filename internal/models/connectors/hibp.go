@@ -29,7 +29,8 @@ func (m *HIBPModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *HIBPModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+
 }
 
 // Configuration

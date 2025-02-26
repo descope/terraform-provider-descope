@@ -33,7 +33,10 @@ func (m *DevRevGrowModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *DevRevGrowModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.APIKey, c, "apiKey")
+	}
 }
 
 // Configuration

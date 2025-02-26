@@ -141,6 +141,31 @@ func (f *Field) GetValueStatement() string {
 	}
 }
 
+func (f *Field) SetValueStatement() string {
+	switch f.Type {
+	case FieldTypeString, FieldTypeSecret:
+		return fmt.Sprintf(`stringattr.Set(&m.%s, c, %q)`, f.StructName(), f.Name)
+	case FieldTypeBool:
+		return fmt.Sprintf(`boolattr.Set(&m.%s, c, %q)`, f.StructName(), f.Name)
+	case FieldTypeNumber:
+		return fmt.Sprintf(`floatattr.Set(&m.%s, c, %q)`, f.StructName(), f.Name)
+	case FieldTypeObject:
+		return fmt.Sprintf(`if vs, ok := c[%q].(map[string]any); ok {
+			for k, v := range vs {
+				if s, ok := v.(string); ok {
+					m.%s[k] = s
+				}
+			}	
+		}`, f.Name, f.StructName())
+	case FieldTypeAuditFilters:
+		return fmt.Sprintf(`listattr.Set(&m.%s, c, %q, h)`, f.StructName(), f.Name)
+	case FieldTypeHTTPAuth:
+		return fmt.Sprintf(`objectattr.Set(&m.%s, c, %q, h)`, f.StructName(), f.Name)
+	default:
+		panic("unexpected field type: " + f.Type)
+	}
+}
+
 func (f *Field) ValidateNonZero() string {
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {

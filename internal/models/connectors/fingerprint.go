@@ -45,7 +45,14 @@ func (m *FingerprintModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *FingerprintModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.PublicAPIKey, c, "publicApiKey")
+		stringattr.Set(&m.SecretAPIKey, c, "secretApiKey")
+		boolattr.Set(&m.UseCloudflareIntegration, c, "useCloudflareIntegration")
+		stringattr.Set(&m.CloudflareScriptURL, c, "cloudflareScriptUrl")
+		stringattr.Set(&m.CloudflareEndpointURL, c, "cloudflareEndpointUrl")
+	}
 }
 
 func (m *FingerprintModel) Validate(h *helpers.Handler) {
