@@ -78,7 +78,13 @@ func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.Reuse, data, "reuse")
 	intattr.Set(&m.ReuseAmount, data, "reuseAmount")
 	boolattr.Set(&m.Uppercase, data, "uppercase")
-	if v := m.EmailService; v != nil {
-		v.SetValues(h, data)
+	if m.EmailService = helpers.InitIfImport(h.Ctx, m.EmailService); m.EmailService != nil {
+		m.EmailService.SetValues(h, data)
+	}
+}
+
+func (m *PasswordModel) SetReferences(h *helpers.Handler) {
+	if m.EmailService != nil {
+		m.EmailService.SetReferences(h)
 	}
 }

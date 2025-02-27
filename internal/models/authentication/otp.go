@@ -52,13 +52,25 @@ func (m *OTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	stringattr.Set(&m.Domain, data, "domain")
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
-	if v := m.EmailService; v != nil {
-		v.SetValues(h, data)
+	if m.EmailService = helpers.InitIfImport(h.Ctx, m.EmailService); m.EmailService != nil {
+		m.EmailService.SetValues(h, data)
 	}
-	if v := m.TextService; v != nil {
-		v.SetValues(h, data)
+	if m.TextService = helpers.InitIfImport(h.Ctx, m.TextService); m.TextService != nil {
+		m.TextService.SetValues(h, data)
 	}
-	if v := m.VoiceService; v != nil {
-		v.SetValues(h, data)
+	if m.VoiceService = helpers.InitIfImport(h.Ctx, m.VoiceService); m.VoiceService != nil {
+		m.VoiceService.SetValues(h, data)
+	}
+}
+
+func (m *OTPModel) SetReferences(h *helpers.Handler) {
+	if m.EmailService != nil {
+		m.EmailService.SetReferences(h)
+	}
+	if m.TextService != nil {
+		m.TextService.SetReferences(h)
+	}
+	if m.VoiceService != nil {
+		m.VoiceService.SetReferences(h)
 	}
 }

@@ -35,6 +35,8 @@ func (m *TextServiceModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TextServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.Connector, data, "textServiceProvider")
+	// update known templates with their new values
 	for _, template := range m.Templates {
 		name := template.Name.ValueString()
 		h.Log("Looking for text template named '%s'", name)
@@ -47,6 +49,10 @@ func (m *TextServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 				h.Log("Keeping existing ID '%s' for text template named '%s'", id, name)
 			}
 		}
+	}
+	// we allow to set templates on import
+	if m.Templates == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.Templates, data, "textTemplates", h)
 	}
 }
 
@@ -68,4 +74,8 @@ func (m *TextServiceModel) Validate(h *helpers.Handler) {
 	if hasActive && connector == helpers.DescopeConnector {
 		h.Error("Invalid text service connector", "The connector attribute must not be set to Descope if any template is marked as active")
 	}
+}
+
+func (m *TextServiceModel) SetReferences(h *helpers.Handler) {
+	replaceConnectorIDWithReference(&m.Connector, h)
 }

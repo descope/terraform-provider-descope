@@ -44,7 +44,14 @@ func (m *SESModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SESModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the schema
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		stringattr.Set(&m.AccessKeyId, c, "accessKeyId")
+		stringattr.Set(&m.Secret, c, "secretAccessKey")
+		stringattr.Set(&m.Region, c, "awsSNSRegion")
+		stringattr.Set(&m.Endpoint, c, "awsEndpoint")
+	}
+	objectattr.Set(&m.Sender, data, "configuration", h)
 }
 
 // Configuration

@@ -134,7 +134,16 @@ Required:
 
 Optional:
 
+- `authorization` (Attributes) (see [below for nested schema](#nestedatt--attributes--tenant--authorization))
 - `select_options` (List of String) When the attribute type is "multiselect". A list of options to chose from.
+
+<a id="nestedatt--attributes--tenant--authorization"></a>
+### Nested Schema for `attributes.tenant.authorization`
+
+Optional:
+
+- `view_permissions` (List of String)
+
 
 
 <a id="nestedatt--attributes--user"></a>
@@ -1510,6 +1519,7 @@ Optional:
 
 - `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
 - `description` (String) A description of what your connector is used for.
+- `enterprise` (Boolean)
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
 Read-Only:
@@ -2020,7 +2030,6 @@ Optional:
 - `cookie_domain` (String) The domain name for custom domain set up. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `cookie_policy` (String) Use "strict", "lax" or "none". To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `custom_domain` (String)
-- `domain` (String, Deprecated) This attribute has been renamed to `cookie_domain`.
 - `enable_inactivity` (Boolean) Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
 - `inactivity_time` (String) The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum value is "10 minutes".
 - `refresh_token_expiration` (String) The expiry time for the refresh token, after which the user must log in again. Use values such as "4 weeks", "14 days", etc. The minimum value is "3 minutes".

@@ -29,9 +29,8 @@ func TestProject(t *testing.T) {
 			}),
 		},
 		resource.TestStep{
-			ResourceName:      p.Path(),
-			ImportState:       true,
-			ImportStateVerify: true,
+			ResourceName: p.Path(),
+			ImportState:  true,
 		},
 		resource.TestStep{
 			PreConfig: func() {

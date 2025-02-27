@@ -30,8 +30,16 @@ func (m *JWTTemplatesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *JWTTemplatesModel) SetValues(h *helpers.Handler, data map[string]any) {
+	// update templates with their new values
 	m.setTemplateValues(h, data, "userTemplates", m.UserTemplates)
 	m.setTemplateValues(h, data, "keyTemplates", m.AccessKeyTemplates)
+	// we allow setting the templates on import
+	if m.UserTemplates == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.UserTemplates, data, "userTemplates", h)
+	}
+	if m.AccessKeyTemplates == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.AccessKeyTemplates, data, "keyTemplates", h)
+	}
 }
 
 func (m *JWTTemplatesModel) References(ctx context.Context) helpers.ReferencesMap {

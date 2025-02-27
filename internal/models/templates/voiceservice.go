@@ -35,6 +35,8 @@ func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.Connector, data, "voiceServiceProvider")
+	// update known templates with their new values
 	for _, template := range m.Templates {
 		name := template.Name.ValueString()
 		h.Log("Looking for voice template named '%s'", name)
@@ -47,6 +49,10 @@ func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 				h.Log("Keeping existing ID '%s' for voice template named '%s'", id, name)
 			}
 		}
+	}
+	// we allow to set templates on import
+	if m.Templates == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.Templates, data, "voiceTemplates", h)
 	}
 }
 
@@ -68,4 +74,8 @@ func (m *VoiceServiceModel) Validate(h *helpers.Handler) {
 	if hasActive && connector == helpers.DescopeConnector {
 		h.Error("Invalid voice service connector", "The connector attribute must not be set to Descope if any template is marked as active")
 	}
+}
+
+func (m *VoiceServiceModel) SetReferences(h *helpers.Handler) {
+	replaceConnectorIDWithReference(&m.Connector, h)
 }

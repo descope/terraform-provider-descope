@@ -28,7 +28,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"name":             stringattr.Required(),
 	"environment":      stringattr.Optional(stringvalidator.OneOf("", "production")),
 	"tags":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.LengthBetween(1, 50))),
-	"project_settings": objectattr.Optional(settings.SettingsAttributes, settings.SettingsValidator),
+	"project_settings": objectattr.Optional(settings.SettingsAttributes),
 	"invite_settings":  objectattr.Optional(settings.InviteSettingsAttributes),
 	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
 	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
@@ -108,4 +108,13 @@ func (m *ProjectModel) References(ctx context.Context) helpers.ReferencesMap {
 		maps.Copy(refs, m.JWTTemplates.References(ctx))
 	}
 	return refs
+}
+
+func (m *ProjectModel) SetReferences(h *helpers.Handler) {
+	if m.Authentication != nil {
+		m.Authentication.SetReferences(h)
+	}
+	if m.Settings != nil {
+		m.Settings.SetReferences(h)
+	}
 }

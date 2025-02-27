@@ -41,7 +41,10 @@ func (m *SMTPModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SMTPModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the configuration
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	objectattr.Set(&m.Sender, data, "configuration", h)
+	objectattr.Set(&m.Auth, data, "configuration", h)
+	objectattr.Set(&m.Server, data, "configuration", h)
 }
 
 // Configuration
@@ -91,5 +94,7 @@ func (m *SMTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SMTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all connector values are specified in the configuration
+	stringattr.Set(&m.Username, data, "username")
+	stringattr.Set(&m.Password, data, "password")
+	stringattr.Set(&m.Method, data, "authMethod")
 }

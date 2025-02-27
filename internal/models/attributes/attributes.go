@@ -30,7 +30,8 @@ func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all attribute values are specified in the configuration
+	listattr.Set(&m.Tenant, data, "tenant", h)
+	listattr.Set(&m.User, data, "user", h)
 }
 
 // Tenant Attributes
@@ -41,16 +42,21 @@ var TenantAttributeAttributes = map[string]schema.Attribute{
 	"name":           stringattr.Required(stringvalidator.LengthAtMost(20)),
 	"type":           stringattr.Required(attributeTypeValidator),
 	"select_options": strlistattr.Optional(),
+	"authorization":  objectattr.Optional(TenantAttributeAuthorizationAttributes),
 }
 
 type TenantAttributeModel struct {
-	Name          types.String `tfsdk:"name"`
-	Type          types.String `tfsdk:"type"`
-	SelectOptions []string     `tfsdk:"select_options"`
+	Name          types.String                       `tfsdk:"name"`
+	Type          types.String                       `tfsdk:"type"`
+	SelectOptions []string                           `tfsdk:"select_options"`
+	Authorization *TenantAttributeAuthorizationModel `tfsdk:"authorization"`
 }
 
 func (m *TenantAttributeModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
+	if m.Authorization != nil {
+		data = m.Authorization.Values(h)
+	}
 	stringattr.Get(m.Name, data, "displayName")
 	stringattr.Get(m.Type, data, "type")
 	data["name"] = strcase.ToLowerCamel(m.Name.ValueString())
@@ -67,7 +73,40 @@ func (m *TenantAttributeModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all attribute values are specified in the configuration
+	if m.Authorization = helpers.InitIfImport(h.Ctx, m.Authorization); m.Authorization != nil {
+		m.Authorization.SetValues(h, data)
+	}
+	stringattr.Set(&m.Name, data, "displayName")
+	stringattr.Set(&m.Type, data, "type")
+	if vs, ok := data["options"].([]any); ok {
+		for _, v := range vs {
+			if os, ok := v.(map[string]any); ok {
+				if option, ok := os["label"].(string); ok {
+					m.SelectOptions = append(m.SelectOptions, option)
+				}
+			}
+		}
+	}
+}
+
+// Widget Authorization
+
+var TenantAttributeAuthorizationAttributes = map[string]schema.Attribute{
+	"view_permissions": strlistattr.Optional(),
+}
+
+type TenantAttributeAuthorizationModel struct {
+	ViewPermissions []string `tfsdk:"view_permissions"`
+}
+
+func (m *TenantAttributeAuthorizationModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	strlistattr.Get(m.ViewPermissions, data, "viewPermissions", h)
+	return data
+}
+
+func (m *TenantAttributeAuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
+	strlistattr.Set(&m.ViewPermissions, data, "viewPermissions", h)
 }
 
 // User Attributes
@@ -107,7 +146,20 @@ func (m *UserAttributeModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *UserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all attribute values are specified in the configuration
+	if m.WidgetAuthorization = helpers.InitIfImport(h.Ctx, m.WidgetAuthorization); m.WidgetAuthorization != nil {
+		m.WidgetAuthorization.SetValues(h, data)
+	}
+	stringattr.Set(&m.Name, data, "displayName")
+	stringattr.Set(&m.Type, data, "type")
+	if vs, ok := data["options"].([]any); ok {
+		for _, v := range vs {
+			if os, ok := v.(map[string]any); ok {
+				if option, ok := os["label"].(string); ok {
+					m.SelectOptions = append(m.SelectOptions, option)
+				}
+			}
+		}
+	}
 }
 
 // Widget Authorization
@@ -123,12 +175,21 @@ type UserAttributeAuthorizationModel struct {
 }
 
 func (m *UserAttributeAuthorizationModel) Values(h *helpers.Handler) map[string]any {
-	return map[string]any{
-		"viewPermissions": m.ViewPermissions,
-		"editPermissions": m.EditPermissions,
-	}
+	data := map[string]any{}
+	strlistattr.Get(m.ViewPermissions, data, "viewPermissions", h)
+	strlistattr.Get(m.EditPermissions, data, "editPermissions", h)
+	return data
 }
 
 func (m *UserAttributeAuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all attribute values are specified in the configuration
+	if helpers.IsImport(h.Ctx) {
+		m.ViewPermissions = []string{}
+		m.EditPermissions = []string{}
+	}
+	if m.ViewPermissions != nil {
+		strlistattr.Set(&m.ViewPermissions, data, "viewPermissions", h)
+	}
+	if m.EditPermissions != nil {
+		strlistattr.Set(&m.EditPermissions, data, "editPermissions", h)
+	}
 }

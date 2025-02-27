@@ -27,7 +27,16 @@ func (m *StylesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *StylesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all styles values are specified in the configuration
+	if m.Data.IsUnknown() {
+		if styleMap, ok := data["data"].(map[string]any); ok {
+			b, err := json.Marshal(styleMap)
+			if err != nil {
+				h.Error("Invalid style data", "Failed to parse JSON: %s", err.Error())
+				return
+			}
+			m.Data = types.StringValue(string(b))
+		}
+	}
 }
 
 func (m *StylesModel) Validate(h *helpers.Handler) {

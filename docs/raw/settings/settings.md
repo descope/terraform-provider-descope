@@ -167,12 +167,3 @@ access_key_jwt_template
 - Type: `string` 
 
 Name of the access key JWT Template.
-
-
-
-domain
-------
-
-- Type: `string` 
-
-This attribute has been renamed to `cookie_domain`.

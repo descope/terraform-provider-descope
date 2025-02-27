@@ -32,6 +32,7 @@ func (m *AuthorizationModel) Values(h *helpers.Handler) map[string]any {
 func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	roles, permissions := m.getAuthorizationIDs(data)
 
+	// updated known roles and permissions with their new values
 	for _, role := range m.Roles {
 		name := role.Name.ValueString()
 		id, found := roles[name]
@@ -62,6 +63,15 @@ func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) 
 		} else {
 			h.Error("Permission not found", "Expected to find permission to match with '%s'", name)
 		}
+	}
+
+	// we allow setting the roles and permissions on import
+	if m.Permissions == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.Permissions, data, "permissions", h)
+	}
+
+	if m.Roles == nil && helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.Roles, data, "roles", h)
 	}
 }
 
