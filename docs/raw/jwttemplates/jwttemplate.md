@@ -28,7 +28,17 @@ auth_schema
 - Type: `string` 
 - Default: `"default"`
 
-The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+
+
+
+empty_claim_policy
+------------------
+
+- Type: `string` 
+- Default: `"none"`
+
+Policy for empty claims - `none`, `nil` or `delete`.
 
 
 

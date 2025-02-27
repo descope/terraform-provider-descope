@@ -44,9 +44,11 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"salesforce_marketing_cloud": listattr.Optional(SalesforceMarketingCloudAttributes),
 	"segment":                    listattr.Optional(SegmentAttributes),
 	"sendgrid":                   listattr.Optional(SendGridAttributes),
+	"ses":                        listattr.Optional(SESAttributes),
 	"slack":                      listattr.Optional(SlackAttributes),
 	"smartling":                  listattr.Optional(SmartlingAttributes),
 	"smtp":                       listattr.Optional(SMTPAttributes),
+	"sns":                        listattr.Optional(SNSAttributes),
 	"sumologic":                  listattr.Optional(SumoLogicAttributes, SumoLogicValidator),
 	"telesign":                   listattr.Optional(TelesignAttributes),
 	"traceable":                  listattr.Optional(TraceableAttributes),
@@ -84,9 +86,11 @@ type ConnectorsModel struct {
 	SalesforceMarketingCloud []*SalesforceMarketingCloudModel `tfsdk:"salesforce_marketing_cloud"`
 	Segment                  []*SegmentModel                  `tfsdk:"segment"`
 	SendGrid                 []*SendGridModel                 `tfsdk:"sendgrid"`
+	SES                      []*SESModel                      `tfsdk:"ses"`
 	Slack                    []*SlackModel                    `tfsdk:"slack"`
 	Smartling                []*SmartlingModel                `tfsdk:"smartling"`
 	SMTP                     []*SMTPModel                     `tfsdk:"smtp"`
+	SNS                      []*SNSModel                      `tfsdk:"sns"`
 	SumoLogic                []*SumoLogicModel                `tfsdk:"sumologic"`
 	Telesign                 []*TelesignModel                 `tfsdk:"telesign"`
 	Traceable                []*TraceableModel                `tfsdk:"traceable"`
@@ -125,9 +129,11 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.SalesforceMarketingCloud, data, "salesforce-marketing-cloud", h)
 	listattr.Get(m.Segment, data, "segment", h)
 	listattr.Get(m.SendGrid, data, "sendgrid", h)
+	listattr.Get(m.SES, data, "ses", h)
 	listattr.Get(m.Slack, data, "slack", h)
 	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
+	listattr.Get(m.SNS, data, "sns", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
 	listattr.Get(m.Traceable, data, "traceable", h)
@@ -166,9 +172,11 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	SetConnectorIDs(h, data, "salesforce-marketing-cloud", &m.SalesforceMarketingCloud)
 	SetConnectorIDs(h, data, "segment", &m.Segment)
 	SetConnectorIDs(h, data, "sendgrid", &m.SendGrid)
+	SetConnectorIDs(h, data, "ses", &m.SES)
 	SetConnectorIDs(h, data, "slack", &m.Slack)
 	SetConnectorIDs(h, data, "smartling", &m.Smartling)
 	SetConnectorIDs(h, data, "smtp", &m.SMTP)
+	SetConnectorIDs(h, data, "sns", &m.SNS)
 	SetConnectorIDs(h, data, "sumologic", &m.SumoLogic)
 	SetConnectorIDs(h, data, "telesign", &m.Telesign)
 	SetConnectorIDs(h, data, "traceable", &m.Traceable)
@@ -207,9 +215,11 @@ func (m *ConnectorsModel) References(ctx context.Context) helpers.ReferencesMap 
 	addConnectorReferences(refs, "salesforce-marketing-cloud", m.SalesforceMarketingCloud)
 	addConnectorReferences(refs, "segment", m.Segment)
 	addConnectorReferences(refs, "sendgrid", m.SendGrid)
+	addConnectorReferences(refs, "ses", m.SES)
 	addConnectorReferences(refs, "slack", m.Slack)
 	addConnectorReferences(refs, "smartling", m.Smartling)
 	addConnectorReferences(refs, "smtp", m.SMTP)
+	addConnectorReferences(refs, "sns", m.SNS)
 	addConnectorReferences(refs, "sumologic", m.SumoLogic)
 	addConnectorReferences(refs, "telesign", m.Telesign)
 	addConnectorReferences(refs, "traceable", m.Traceable)
@@ -249,9 +259,11 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(names, m.SalesforceMarketingCloud)
 	addConnectorNames(names, m.Segment)
 	addConnectorNames(names, m.SendGrid)
+	addConnectorNames(names, m.SES)
 	addConnectorNames(names, m.Slack)
 	addConnectorNames(names, m.Smartling)
 	addConnectorNames(names, m.SMTP)
+	addConnectorNames(names, m.SNS)
 	addConnectorNames(names, m.SumoLogic)
 	addConnectorNames(names, m.Telesign)
 	addConnectorNames(names, m.Traceable)
@@ -294,9 +306,11 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
 	helpers.MatchModels(ctx, m.SalesforceMarketingCloud, state.SalesforceMarketingCloud)
 	helpers.MatchModels(ctx, m.Segment, state.Segment)
 	helpers.MatchModels(ctx, m.SendGrid, state.SendGrid)
+	helpers.MatchModels(ctx, m.SES, state.SES)
 	helpers.MatchModels(ctx, m.Slack, state.Slack)
 	helpers.MatchModels(ctx, m.Smartling, state.Smartling)
 	helpers.MatchModels(ctx, m.SMTP, state.SMTP)
+	helpers.MatchModels(ctx, m.SNS, state.SNS)
 	helpers.MatchModels(ctx, m.SumoLogic, state.SumoLogic)
 	helpers.MatchModels(ctx, m.Telesign, state.Telesign)
 	helpers.MatchModels(ctx, m.Traceable, state.Traceable)

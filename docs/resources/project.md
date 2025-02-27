@@ -914,9 +914,11 @@ Optional:
 - `salesforce_marketing_cloud` (Attributes List) (see [below for nested schema](#nestedatt--connectors--salesforce_marketing_cloud))
 - `segment` (Attributes List) Segment, an analytics product that allows you to collects events from web and mobile apps, unify those and use those to better understand your customers needs. (see [below for nested schema](#nestedatt--connectors--segment))
 - `sendgrid` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sendgrid))
+- `ses` (Attributes List) (see [below for nested schema](#nestedatt--connectors--ses))
 - `slack` (Attributes List) Send updates to your team on Slack. (see [below for nested schema](#nestedatt--connectors--slack))
 - `smartling` (Attributes List) Localize the language of your login and user journey screens with the Smartling connector. (see [below for nested schema](#nestedatt--connectors--smartling))
 - `smtp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--smtp))
+- `sns` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sns))
 - `sumologic` (Attributes List) Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log analytics (see [below for nested schema](#nestedatt--connectors--sumologic))
 - `telesign` (Attributes List) Telesign Phone number intelligence API provides risk score for phone numbers. (see [below for nested schema](#nestedatt--connectors--telesign))
 - `traceable` (Attributes List) API security for a cloud-first, API-driven world. (see [below for nested schema](#nestedatt--connectors--traceable))
@@ -1610,7 +1612,7 @@ Required:
 
 - `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--sendgrid--authentication))
 - `name` (String) A custom name for your connector.
-- `sender` (Attributes) (see [below for nested schema](#nestedatt--connectors--sendgrid--sender))
+- `sender` (Attributes) The sender details that should be displayed in the email message. (see [below for nested schema](#nestedatt--connectors--sendgrid--sender))
 
 Optional:
 
@@ -1630,6 +1632,39 @@ Required:
 
 <a id="nestedatt--connectors--sendgrid--sender"></a>
 ### Nested Schema for `connectors.sendgrid.sender`
+
+Required:
+
+- `email` (String)
+
+Optional:
+
+- `name` (String)
+
+
+
+<a id="nestedatt--connectors--ses"></a>
+### Nested Schema for `connectors.ses`
+
+Required:
+
+- `access_key_id` (String) AWS Access key ID.
+- `name` (String) A custom name for your connector.
+- `region` (String) AWS region to send requests to (e.g. `us-west-2`).
+- `secret` (String, Sensitive) AWS Secret Access Key.
+- `sender` (Attributes) The sender details that should be displayed in the email message. (see [below for nested schema](#nestedatt--connectors--ses--sender))
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+- `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--ses--sender"></a>
+### Nested Schema for `connectors.ses.sender`
 
 Required:
 
@@ -1684,7 +1719,7 @@ Required:
 
 - `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--smtp--authentication))
 - `name` (String) A custom name for your connector.
-- `sender` (Attributes) (see [below for nested schema](#nestedatt--connectors--smtp--sender))
+- `sender` (Attributes) The sender details that should be displayed in the email message. (see [below for nested schema](#nestedatt--connectors--smtp--sender))
 - `server` (Attributes) (see [below for nested schema](#nestedatt--connectors--smtp--server))
 
 Optional:
@@ -1731,6 +1766,30 @@ Optional:
 
 - `port` (Number)
 
+
+
+<a id="nestedatt--connectors--sns"></a>
+### Nested Schema for `connectors.sns`
+
+Required:
+
+- `access_key_id` (String) AWS Access key ID.
+- `name` (String) A custom name for your connector.
+- `region` (String) AWS region to send requests to (e.g. `us-west-2`).
+- `secret` (String, Sensitive) AWS Secret Access Key.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+- `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
+- `entity_id` (String) The entity ID or principal entity (PE) ID for sending text messages to recipients in India.
+- `organization_number` (String) An optional phone number from which the text messages are going to be sent. Make sure it is registered properly in your server.
+- `sender_id` (String) The name of the sender from which the text message is going to be sent (see SNS documentation regarding acceptable IDs and supported regions/countries).
+- `template_id` (String) The template for sending text messages to recipients in India. The template ID must be associated with the sender ID.
+
+Read-Only:
+
+- `id` (String)
 
 
 <a id="nestedatt--connectors--sumologic"></a>
@@ -1926,10 +1985,10 @@ Required:
 
 Optional:
 
-- `auth_schema` (String) The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+- `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `conformance_issuer` (Boolean)
 - `description` (String) Description of the JWT Template.
-- `empty_claim_policy` (String) Policy for empty claims - "none", "nil" or "delete".
+- `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
 - `enforce_issuer` (Boolean)
 
 Read-Only:
@@ -1947,10 +2006,10 @@ Required:
 
 Optional:
 
-- `auth_schema` (String) The authorization claims format - "default", "tenantOnly" or "none". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+- `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `conformance_issuer` (Boolean)
 - `description` (String) Description of the JWT Template.
-- `empty_claim_policy` (String) Policy for empty claims - "none", "nil" or "delete".
+- `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
 - `enforce_issuer` (Boolean)
 
 Read-Only:

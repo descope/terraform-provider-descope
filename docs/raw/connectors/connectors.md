@@ -284,6 +284,15 @@ sendgrid
 
 
 
+ses
+----
+
+- Type: `list` of `connectors.SES` 
+
+// description for ses
+
+
+
 slack
 -----
 
@@ -309,6 +318,15 @@ smtp
 - Type: `list` of `connectors.SMTP` 
 
 // description for smtp
+
+
+
+sns
+----
+
+- Type: `list` of `connectors.SNS` 
+
+// description for sns
 
 
 

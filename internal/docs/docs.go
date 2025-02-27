@@ -354,10 +354,12 @@ var docsConnectors = map[string]string{
 	           "mobile apps, unify those and use those to better understand your customers " +
 	           "needs.",
 	"sendgrid": "",
+	"ses": "",
 	"slack": "Send updates to your team on Slack.",
 	"smartling": "Localize the language of your login and user journey screens with the Smartling " +
 	             "connector.",
 	"smtp": "",
+	"sns": "",
 	"sumologic": "Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log " +
 	             "analytics",
 	"telesign": "Telesign Phone number intelligence API provides risk score for phone numbers.",
@@ -592,12 +594,22 @@ var docsSegment = map[string]string{
 var docsSendGrid = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"sender": "",
+	"sender": "The sender details that should be displayed in the email message.",
 	"authentication": "",
 }
 
 var docsSendGridAuthField = map[string]string{
 	"api_key": "",
+}
+
+var docsSES = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"access_key_id": "AWS Access key ID.",
+	"secret": "AWS Secret Access Key.",
+	"region": "AWS region to send requests to (e.g. `us-west-2`).",
+	"endpoint": "An optional endpoint URL (hostname only or fully qualified URI).",
+	"sender": "The sender details that should be displayed in the email message.",
 }
 
 var docsSenderField = map[string]string{
@@ -649,7 +661,7 @@ var docsSmartling = map[string]string{
 var docsSMTP = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"sender": "",
+	"sender": "The sender details that should be displayed in the email message.",
 	"server": "",
 	"authentication": "",
 }
@@ -658,6 +670,22 @@ var docsSMTPAuthField = map[string]string{
 	"username": "",
 	"password": "",
 	"method": "",
+}
+
+var docsSNS = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"access_key_id": "AWS Access key ID.",
+	"secret": "AWS Secret Access Key.",
+	"region": "AWS region to send requests to (e.g. `us-west-2`).",
+	"endpoint": "An optional endpoint URL (hostname only or fully qualified URI).",
+	"organization_number": "An optional phone number from which the text messages are going to be sent. Make sure it " +
+	                       "is registered properly in your server.",
+	"sender_id": "The name of the sender from which the text message is going to be sent (see SNS documentation " +
+	             "regarding acceptable IDs and supported regions/countries).",
+	"entity_id": "The entity ID or principal entity (PE) ID for sending text messages to recipients in India.",
+	"template_id": "The template for sending text messages to recipients in India. The template ID must be " +
+	               "associated with the sender ID.",
 }
 
 var docsSumoLogic = map[string]string{
@@ -731,8 +759,8 @@ var docsStyles = map[string]string{
 var docsJWTTemplate = map[string]string{
 	"name": "Name of the JWT Template.",
 	"description": "Description of the JWT Template.",
-	"auth_schema": "The authorization claims format - \"default\", \"tenantOnly\" or \"none\". Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).",
-	"empty_claim_policy": "Policy for empty claims - \"none\", \"nil\" or \"delete\".",
+	"auth_schema": "The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).",
+	"empty_claim_policy": "Policy for empty claims - `none`, `nil` or `delete`.",
 	"conformance_issuer": "",
 	"enforce_issuer": "",
 	"template": "",

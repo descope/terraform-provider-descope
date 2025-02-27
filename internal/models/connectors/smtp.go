@@ -41,6 +41,7 @@ func (m *SMTPModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SMTPModel) SetValues(h *helpers.Handler, data map[string]any) {
+	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	objectattr.Set(&m.Sender, data, "configuration", h)
 	objectattr.Set(&m.Auth, data, "configuration", h)
 	objectattr.Set(&m.Server, data, "configuration", h)
