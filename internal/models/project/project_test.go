@@ -1,4 +1,4 @@
-package models_test
+package project_test
 
 import (
 	"regexp"

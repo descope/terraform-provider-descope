@@ -7,7 +7,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
-	"github.com/descope/terraform-provider-descope/internal/models/templates"
+	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"

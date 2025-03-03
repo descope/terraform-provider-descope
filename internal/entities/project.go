@@ -3,25 +3,25 @@ package entities
 import (
 	"context"
 
-	"github.com/descope/terraform-provider-descope/internal/models"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/project"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var ProjectSchema = schema.Schema{
-	Attributes: models.ProjectAttributes,
+	Attributes: project.ProjectAttributes,
 }
 
 type ProjectEntity struct {
-	Model       *models.ProjectModel
+	Model       *project.ProjectModel
 	Diagnostics *diag.Diagnostics
 }
 
 // Creates a new project entity by loading data from the source Terraform plan or state.
 func NewProjectEntity(ctx context.Context, source entitySource, diagnostics *diag.Diagnostics) *ProjectEntity {
-	e := &ProjectEntity{Model: &models.ProjectModel{}, Diagnostics: diagnostics}
+	e := &ProjectEntity{Model: &project.ProjectModel{}, Diagnostics: diagnostics}
 	load(ctx, source, e.Model, e.Diagnostics)
 	return e
 }

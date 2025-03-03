@@ -1,22 +1,22 @@
-package models
+package project
 
 import (
 	"context"
 	"maps"
 
-	"github.com/descope/terraform-provider-descope/internal/models/applications"
-	"github.com/descope/terraform-provider-descope/internal/models/attributes"
-	"github.com/descope/terraform-provider-descope/internal/models/authentication"
-	"github.com/descope/terraform-provider-descope/internal/models/authorization"
-	"github.com/descope/terraform-provider-descope/internal/models/connectors"
-	"github.com/descope/terraform-provider-descope/internal/models/flows"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
-	"github.com/descope/terraform-provider-descope/internal/models/jwttemplates"
-	"github.com/descope/terraform-provider-descope/internal/models/settings"
+	"github.com/descope/terraform-provider-descope/internal/models/project/applications"
+	"github.com/descope/terraform-provider-descope/internal/models/project/attributes"
+	"github.com/descope/terraform-provider-descope/internal/models/project/authentication"
+	"github.com/descope/terraform-provider-descope/internal/models/project/authorization"
+	"github.com/descope/terraform-provider-descope/internal/models/project/connectors"
+	"github.com/descope/terraform-provider-descope/internal/models/project/flows"
+	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
+	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -59,7 +59,7 @@ type ProjectModel struct {
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	data["version"] = ModelVersion
+	data["version"] = helpers.ModelVersion
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Environment, data, "environment")
 	strlistattr.Get(m.Tags, data, "tags", h)
@@ -78,7 +78,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if v, ok := data["version"].(float64); ok {
-		ensureModelVersion(v, h.Diagnostics)
+		helpers.EnsureModelVersion(v, h.Diagnostics)
 	}
 
 	stringattr.Set(&m.Name, data, "name")
