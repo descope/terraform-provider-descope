@@ -95,7 +95,7 @@ func NewObjectValueOf[T any](ctx context.Context, t *T) (ObjectValueOf[T], diag.
 }
 
 func NewObjectValueOfMust[T any](ctx context.Context, t *T) ObjectValueOf[T] {
-	return diagsMust(NewObjectValueOf[T](ctx, t))
+	return diagsMust(NewObjectValueOf(ctx, t))
 }
 
 func NullValueOf(ctx context.Context, v any) (attr.Value, error) {
