@@ -92,7 +92,7 @@ func findConnectorModel(sc *schema.Schema, name string) *schema.Model {
 
 func findConnectorsContainer(sc *schema.Schema) *schema.Model {
 	for _, f := range sc.Files {
-		if len(f.Dirs) == 1 && f.Dirs[0] == "connectors" && f.Name == "connectors" {
+		if slices.Equal(f.Dirs, []string{"project", "connectors"}) && f.Name == "connectors" {
 			if len(f.Models) != 1 {
 				log.Fatalf("unexpected connectors container file with multiple models")
 			}
