@@ -37,7 +37,7 @@ func PreparePaths() *Paths {
 
 	raw := EnsurePath(root, "docs", "raw")
 
-	connectors := filepath.Join(models, "connectors")
+	connectors := filepath.Join(models, "project", "connectors")
 
 	data := filepath.Join(root, "tools", "terragen", "conngen")
 

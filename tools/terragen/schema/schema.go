@@ -43,7 +43,7 @@ func (s *Schema) parseDir(root string, dirs []string) {
 		fullpath := filepath.Join(path, name)
 		if entry.IsDir() && !shouldIgnoreDir(fullpath) {
 			utils.Debug(len(dirs), "+ %s:", name)
-			s.Packages = append(s.Packages, name)
+			s.Packages = append(s.Packages, strings.Join(append(dirs, name), "/"))
 			s.parseDir(root, append(dirs, name))
 		} else if !shouldIgnoreFile(fullpath) {
 			s.addFile(root, dirs, name)

@@ -5,10 +5,9 @@ package docs
 import (
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models"
-{{- range .Packages }}
+{{ range .Packages -}}
 	"github.com/descope/terraform-provider-descope/internal/models/{{.}}"
-{{- end }}
+{{ end -}}
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 

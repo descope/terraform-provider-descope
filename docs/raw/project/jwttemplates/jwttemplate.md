@@ -42,16 +42,6 @@ Policy for empty claims - `none`, `nil` or `delete`.
 
 
 
-empty_claim_policy
-------------------
-
-- Type: `string` 
-- Default: `"none"`
-
-Policy for empty claims - "none", "nil" or "delete".
-
-
-
 conformance_issuer
 ------------------
 

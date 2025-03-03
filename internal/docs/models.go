@@ -5,21 +5,21 @@ package docs
 import (
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models"
-	"github.com/descope/terraform-provider-descope/internal/models/applications"
-	"github.com/descope/terraform-provider-descope/internal/models/attributes"
-	"github.com/descope/terraform-provider-descope/internal/models/authentication"
-	"github.com/descope/terraform-provider-descope/internal/models/authorization"
-	"github.com/descope/terraform-provider-descope/internal/models/connectors"
-	"github.com/descope/terraform-provider-descope/internal/models/flows"
-	"github.com/descope/terraform-provider-descope/internal/models/jwttemplates"
-	"github.com/descope/terraform-provider-descope/internal/models/settings"
-	"github.com/descope/terraform-provider-descope/internal/models/templates"
+	"github.com/descope/terraform-provider-descope/internal/models/project"
+	"github.com/descope/terraform-provider-descope/internal/models/project/applications"
+	"github.com/descope/terraform-provider-descope/internal/models/project/attributes"
+	"github.com/descope/terraform-provider-descope/internal/models/project/authentication"
+	"github.com/descope/terraform-provider-descope/internal/models/project/authorization"
+	"github.com/descope/terraform-provider-descope/internal/models/project/connectors"
+	"github.com/descope/terraform-provider-descope/internal/models/project/flows"
+	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
+	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
+	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
 func InjectModels() {
-	inject(models.ProjectAttributes, docsProject)
+	inject(project.ProjectAttributes, docsProject)
 	inject(applications.ApplicationAttributes, docsApplication)
 	inject(applications.OIDCAttributes, docsOIDC)
 	inject(applications.SAMLAttributes, docsSAML)
