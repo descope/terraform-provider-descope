@@ -24,7 +24,7 @@ type InviteSettingsModel struct {
 	SendText          types.Bool   `tfsdk:"send_text"`
 }
 
-var InviteSettingsDefault = InviteSettingsModel{
+var InviteSettingsDefault = &InviteSettingsModel{
 	RequireInvitation: types.BoolValue(false),
 	InviteURL:         types.StringValue(""),
 	AddMagicLinkToken: types.BoolValue(false),

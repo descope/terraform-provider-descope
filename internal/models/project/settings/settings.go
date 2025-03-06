@@ -8,16 +8,15 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var SettingsAttributes = map[string]schema.Attribute{
-	"app_url":                             stringattr.Optional(),
-	"custom_domain":                       stringattr.Optional(),
-	"approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
+	"app_url":       stringattr.Optional(),
+	"custom_domain": stringattr.Optional(),
+	// "approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
 	"token_response_method":               stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
 	"cookie_policy":                       stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
 	"cookie_domain":                       stringattr.Default(""),
@@ -35,9 +34,9 @@ var SettingsAttributes = map[string]schema.Attribute{
 }
 
 type SettingsModel struct {
-	AppURL                          types.String `tfsdk:"app_url"`
-	CustomDomain                    types.String `tfsdk:"custom_domain"`
-	ApprovedDomain                  []string     `tfsdk:"approved_domains"`
+	AppURL       types.String `tfsdk:"app_url"`
+	CustomDomain types.String `tfsdk:"custom_domain"`
+	// ApprovedDomain                  []string     `tfsdk:"approved_domains"`
 	TokenResponseMethod             types.String `tfsdk:"token_response_method"`
 	CookiePolicy                    types.String `tfsdk:"cookie_policy"`
 	CookieDomain                    types.String `tfsdk:"cookie_domain"`
@@ -59,7 +58,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.AppURL, data, "appUrl")
 	stringattr.Get(m.CustomDomain, data, "customDomain")
-	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
+	// strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
 	if s := m.TokenResponseMethod.ValueString(); s == "cookies" {
 		data["tokenResponseMethod"] = "cookie"
 	} else if s == "response_body" {
@@ -86,7 +85,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.AppURL, data, "appUrl")
 	stringattr.Set(&m.CustomDomain, data, "customDomain")
-	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
+	// strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
 	if data["tokenResponseMethod"] == "cookie" {
 		m.TokenResponseMethod = types.StringValue("cookies")
 	} else if data["tokenResponseMethod"] == "onBody" {
@@ -171,7 +170,7 @@ func getJWTTemplate(field types.String, data map[string]any, key string, typ str
 	}
 }
 
-func (m *SettingsModel) SetReferences(h *helpers.Handler) {
+func (m *SettingsModel) UpdateReferences(h *helpers.Handler) {
 	if m.AccessKeyJWTTemplate.ValueString() != "" {
 		replaceJWTTemplateIDWithReference(&m.AccessKeyJWTTemplate, h)
 	}

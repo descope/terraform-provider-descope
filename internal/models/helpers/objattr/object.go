@@ -14,10 +14,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-type WithType[T any] = objtype.ObjectValueOf[T]
+type Type[T any] = objtype.ObjectValueOf[T]
 
-func WithValue[T any](value T) WithType[T] {
-	return objtype.NewObjectValueOfMust(context.Background(), &value)
+func ValueOf[T any](value *T) Type[T] {
+	return objtype.NewObjectValueOfMust(context.Background(), value)
 }
 
 func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.SingleNestedAttribute {
@@ -43,7 +43,7 @@ func Optional[T any](attributes map[string]schema.Attribute, extras ...any) sche
 	}
 }
 
-func Default[T any](attributes map[string]schema.Attribute, value T, extras ...any) schema.SingleNestedAttribute {
+func Default[T any](attributes map[string]schema.Attribute, value *T, extras ...any) schema.SingleNestedAttribute {
 	validators, modifiers := parseExtras(extras)
 	return schema.SingleNestedAttribute{
 		Optional:      true,
@@ -52,39 +52,65 @@ func Default[T any](attributes map[string]schema.Attribute, value T, extras ...a
 		Attributes:    attributes,
 		Validators:    validators,
 		PlanModifiers: modifiers,
-		Default:       objectdefault.StaticValue(WithValue(value).ObjectValue),
+		Default:       objectdefault.StaticValue(ValueOf(value).ObjectValue),
 	}
 }
 
-func Get[T any, M helpers.Model[T]](o objtype.ObjectValueOf[T], data map[string]any, key string, h *helpers.Handler) {
+func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, h *helpers.Handler) {
 	if o.IsNull() || o.IsUnknown() {
 		return
 	}
 
-	var v M = o.ToPtrMust(h.Ctx)
+	var value M = o.ToPtrMust(h.Ctx)
 	if m, ok := data[key].(map[string]any); ok {
-		maps.Copy(m, v.Values(h))
+		maps.Copy(m, value.Values(h))
 	} else {
-		data[key] = v.Values(h)
+		data[key] = value.Values(h)
 	}
 }
 
-func Set[T any, M helpers.Model[T]](o *objtype.ObjectValueOf[T], data map[string]any, key string, h *helpers.Handler) {
+func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string, h *helpers.Handler) {
 	m, ok := data[key].(map[string]any)
 	if !ok {
 		return
 	}
 
-	var v M = new(T)
-	v.SetValues(h, m)
+	var value M
+	if o.IsNull() || o.IsUnknown() {
+		value = new(T)
+	} else {
+		value = o.ToPtrMust(h.Ctx)
+	}
+	value.SetValues(h, m)
 
-	*o = objtype.NewObjectValueOfMust(h.Ctx, v)
+	*o = ValueOf(value)
 }
 
-func Ensure[T any, M helpers.Model[T]](o *objtype.ObjectValueOf[T], data map[string]any, key string, h *helpers.Handler) {
+func Ensure[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string, h *helpers.Handler) {
 	if o.IsUnknown() {
 		Set[T, M](o, data, key, h)
 	}
+}
+
+func CollectReferences[T any, M helpers.CollectReferencesModel[T]](o Type[T], ctx context.Context) helpers.ReferencesMap {
+	var value M
+	if o.IsNull() || o.IsUnknown() {
+		value = new(T)
+	} else {
+		value = o.ToPtrMust(ctx)
+	}
+	return value.CollectReferences(ctx)
+}
+
+func UpdateReferences[T any, M helpers.UpdateReferencesModel[T]](o *Type[T], h *helpers.Handler) {
+	if o.IsNull() || o.IsUnknown() {
+		return
+	}
+
+	var value M = o.ToPtrMust(h.Ctx)
+	value.UpdateReferences(h)
+
+	*o = ValueOf(value)
 }
 
 func parseExtras(extras []any) (validators []validator.Object, modifiers []planmodifier.Object) {
