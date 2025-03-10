@@ -27,7 +27,7 @@ func (m *StylesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *StylesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	if m.Data.IsUnknown() {
+	if m.Data.IsUnknown() || m.Data.IsNull() {
 		if styleMap, ok := data["data"].(map[string]any); ok {
 			b, err := json.Marshal(styleMap)
 			if err != nil {
