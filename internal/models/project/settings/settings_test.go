@@ -180,10 +180,14 @@ func TestSettings(t *testing.T) {
 			Config: p.Config(`
 				project_settings = {
 					test_users_loginid_regexp = "^acmetestuser-[0-9]+@acmecorp.com$"
+					test_users_verifier_regexp = "^acmetestuser-[0-9]+@acmecorp.com$"
+					test_users_static_otp = "123456"
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.test_users_loginid_regexp": "^acmetestuser-[0-9]+@acmecorp.com$",
+				"project_settings.test_users_loginid_regexp":  "^acmetestuser-[0-9]+@acmecorp.com$",
+				"project_settings.test_users_verifier_regexp": "^acmetestuser-[0-9]+@acmecorp.com$",
+				"project_settings.test_users_static_otp":      "123456",
 			}),
 		},
 		resource.TestStep{

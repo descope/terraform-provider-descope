@@ -16,6 +16,8 @@ var StandardLenValidator = stringvalidator.LengthAtMost(254)
 
 var FlowIDValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[A-Za-z0-9_-]+$`), "must only contain alphanumeric, underscore or hyphen characters")
 
+var OTPValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[0-9]{6}$`), "must be a 6 digit code")
+
 var NonEmptyValidator validator.String = &nonEmptyValidator{}
 
 // Non-Empty
