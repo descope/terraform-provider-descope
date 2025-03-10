@@ -58,6 +58,7 @@ type ProjectModel struct {
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
+	m.Check(h)
 	data := map[string]any{}
 	data["version"] = helpers.ModelVersion
 	stringattr.Get(m.Name, data, "name")
@@ -94,6 +95,16 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objectattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
 	objectattr.Set(&m.Styles, data, "styles", h)
 	mapattr.Set(&m.Flows, data, "flows", h)
+}
+
+func (m *ProjectModel) Check(h *helpers.Handler) {
+	if m.Environment.ValueString() == "production" {
+		if v := m.Settings; v != nil {
+			if v.TestUsersStaticOTP.ValueString() != "" {
+				h.Error("Invalid Production Settings", "The test_users_static_otp attribute cannot be used with production projects")
+			}
+		}
+	}
 }
 
 func (m *ProjectModel) References(ctx context.Context) helpers.ReferencesMap {

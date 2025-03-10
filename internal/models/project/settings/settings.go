@@ -30,6 +30,8 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"enable_inactivity":                   boolattr.Default(false),
 	"inactivity_time":                     durationattr.Default("12 minutes", durationattr.MinimumValue("10 minutes")),
 	"test_users_loginid_regexp":           stringattr.Default(""),
+	"test_users_verifier_regexp":          stringattr.Default(""),
+	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"user_jwt_template":                   stringattr.Optional(),
 	"access_key_jwt_template":             stringattr.Optional(),
 }
@@ -50,6 +52,8 @@ type SettingsModel struct {
 	EnableInactivity                types.Bool   `tfsdk:"enable_inactivity"`
 	InactivityTime                  types.String `tfsdk:"inactivity_time"`
 	TestUsersLoginIDRegExp          types.String `tfsdk:"test_users_loginid_regexp"`
+	TestUsersVerifierRegExp         types.String `tfsdk:"test_users_verifier_regexp"`
+	TestUsersStaticOTP              types.String `tfsdk:"test_users_static_otp"`
 	UserJWTTemplate                 types.String `tfsdk:"user_jwt_template"`
 	AccessKeyJWTTemplate            types.String `tfsdk:"access_key_jwt_template"`
 }
@@ -78,6 +82,9 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.EnableInactivity, data, "enableInactivity")
 	durationattr.Get(m.InactivityTime, data, "inactivityTime")
 	stringattr.Get(m.TestUsersLoginIDRegExp, data, "testUserRegex")
+	stringattr.Get(m.TestUsersVerifierRegExp, data, "testUserFixedAuthVerifierRegex")
+	stringattr.Get(m.TestUsersStaticOTP, data, "testUserFixedAuthToken")
+	data["testUserAllowFixedAuth"] = m.TestUsersStaticOTP.ValueString() != ""
 	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", "user", h)
 	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", "key", h)
 	return data
@@ -105,6 +112,12 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
 	durationattr.Set(&m.InactivityTime, data, "inactivityTime")
 	stringattr.Set(&m.TestUsersLoginIDRegExp, data, "testUserRegex")
+	stringattr.Set(&m.TestUsersVerifierRegExp, data, "testUserFixedAuthVerifierRegex")
+	if data["testUserAllowFixedAuth"] == true {
+		stringattr.Set(&m.TestUsersStaticOTP, data, "testUserFixedAuthToken")
+	} else {
+		m.TestUsersStaticOTP = types.StringValue("")
+	}
 	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")
 	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId")
 }
