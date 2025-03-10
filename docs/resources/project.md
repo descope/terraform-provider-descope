@@ -2037,6 +2037,8 @@ Optional:
 - `session_token_expiration` (String) The expiry time of the session token, used for accessing the application's resources. The value needs to be at least 3 minutes and can't be longer than the refresh token expiration.
 - `step_up_token_expiration` (String) The expiry time for the step up token, after which it will not be valid and the user will automatically go back to the session token.
 - `test_users_loginid_regexp` (String) Define a regular expression so that whenever a user is created with a matching login ID it will automatically be marked as a test user.
+- `test_users_static_otp` (String) A 6 digit static OTP code for use with test users.
+- `test_users_verifier_regexp` (String) The pattern of the verifiers that will be used for testing.
 - `token_response_method` (String) Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` or `cookies`. The default value is `response_body`.
 - `trusted_device_token_expiration` (String) The expiry time for the trusted device token. The minimum value is "3 minutes".
 - `user_jwt_template` (String) Name of the user JWT Template.

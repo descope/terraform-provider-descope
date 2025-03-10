@@ -807,6 +807,8 @@ var docsSettings = map[string]string{
 	                   "value is \"10 minutes\".",
 	"test_users_loginid_regexp": "Define a regular expression so that whenever a user is created with a matching login ID it will " +
 	                             "automatically be marked as a test user.",
+	"test_users_verifier_regexp": "The pattern of the verifiers that will be used for testing.",
+	"test_users_static_otp": "A 6 digit static OTP code for use with test users.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
 }
