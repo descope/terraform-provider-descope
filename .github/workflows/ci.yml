@@ -25,7 +25,7 @@ jobs:
       - name: Setup Repo
         uses: ./.github/actions/ci/setup
       - name: Install Descope CLI
-        uses: descope/descopecli/.github/actions/install@3e75886a45d5efaeb15fc86d51cdd96cea2f64ab # v0.8.12
+        uses: descope/descopecli/.github/actions/install@592ff44d007a616aa5ceb7cbdc471f02e648ea5f # v0.8.13
       - name: Run Acceptance Tests
         shell: bash
         env:
