@@ -30,8 +30,10 @@ func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	listattr.Set(&m.Tenant, data, "tenant", h)
-	listattr.Set(&m.User, data, "user", h)
+	if helpers.IsImport(h.Ctx) {
+		listattr.Set(&m.Tenant, data, "tenant", h)
+		listattr.Set(&m.User, data, "user", h)
+	}
 }
 
 // Tenant Attributes
