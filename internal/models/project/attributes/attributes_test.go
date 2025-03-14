@@ -39,7 +39,7 @@ func TestAttributes(t *testing.T) {
 					user = [
 						{
 							name = "bar"
-							type = "string"
+							type = "number"
 						}
 					]
 				}
