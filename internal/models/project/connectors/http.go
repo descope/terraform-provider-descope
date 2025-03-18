@@ -31,13 +31,13 @@ type HTTPModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	BaseURL                 types.String        `tfsdk:"base_url"`
-	Authentication          *HTTPAuthFieldModel `tfsdk:"authentication"`
-	Headers                 map[string]string   `tfsdk:"headers"`
-	HMACSecret              types.String        `tfsdk:"hmac_secret"`
-	Insecure                types.Bool          `tfsdk:"insecure"`
-	IncludeHeadersInContext types.Bool          `tfsdk:"include_headers_in_context"`
-	UseStaticIPs            types.Bool          `tfsdk:"use_static_ips"`
+	BaseURL                 types.String            `tfsdk:"base_url"`
+	Authentication          *HTTPAuthFieldModel     `tfsdk:"authentication"`
+	Headers                 map[string]types.String `tfsdk:"headers"`
+	HMACSecret              types.String            `tfsdk:"hmac_secret"`
+	Insecure                types.Bool              `tfsdk:"insecure"`
+	IncludeHeadersInContext types.Bool              `tfsdk:"include_headers_in_context"`
+	UseStaticIPs            types.Bool              `tfsdk:"use_static_ips"`
 }
 
 func (m *HTTPModel) Values(h *helpers.Handler) map[string]any {
@@ -55,7 +55,7 @@ func (m *HTTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 		if vs, ok := c["headers"].(map[string]any); ok {
 			for k, v := range vs {
 				if s, ok := v.(string); ok {
-					m.Headers[k] = s
+					m.Headers[k] = types.StringValue(s)
 				}
 			}
 		}

@@ -58,7 +58,7 @@ func (f *Field) StructType() string {
 	case FieldTypeNumber:
 		return `types.Float64`
 	case FieldTypeObject:
-		return `map[string]string`
+		return `map[string]types.String`
 	case FieldTypeAuditFilters:
 		return `[]*AuditFilterFieldModel`
 	case FieldTypeHTTPAuth:
@@ -153,7 +153,7 @@ func (f *Field) SetValueStatement() string {
 		return fmt.Sprintf(`if vs, ok := c[%q].(map[string]any); ok {
 			for k, v := range vs {
 				if s, ok := v.(string); ok {
-					m.%s[k] = s
+					m.%s[k] = types.StringValue(s)
 				}
 			}	
 		}`, f.Name, f.StructName())

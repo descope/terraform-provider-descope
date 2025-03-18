@@ -184,10 +184,12 @@ func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]an
 
 // HTTP Headers
 
-func getHeaders(s map[string]string, data map[string]any, key string) {
+func getHeaders(s map[string]types.String, data map[string]any, key string) {
 	headers := []any{}
 	for k, v := range s {
-		headers = append(headers, map[string]any{"key": k, "value": v})
+		if !v.IsNull() && !v.IsUnknown() {
+			headers = append(headers, map[string]any{"key": k, "value": v.ValueString()})
+		}
 	}
 	data[key] = headers
 }
