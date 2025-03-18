@@ -33,7 +33,7 @@ type AuditWebhookModel struct {
 
 	BaseURL        types.String             `tfsdk:"base_url"`
 	Authentication *HTTPAuthFieldModel      `tfsdk:"authentication"`
-	Headers        map[string]string        `tfsdk:"headers"`
+	Headers        map[string]types.String  `tfsdk:"headers"`
 	HMACSecret     types.String             `tfsdk:"hmac_secret"`
 	Insecure       types.Bool               `tfsdk:"insecure"`
 	AuditFilters   []*AuditFilterFieldModel `tfsdk:"audit_filters"`
@@ -54,7 +54,7 @@ func (m *AuditWebhookModel) SetValues(h *helpers.Handler, data map[string]any) {
 		if vs, ok := c["headers"].(map[string]any); ok {
 			for k, v := range vs {
 				if s, ok := v.(string); ok {
-					m.Headers[k] = s
+					m.Headers[k] = types.StringValue(s)
 				}
 			}
 		}
