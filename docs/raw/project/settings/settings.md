@@ -32,7 +32,7 @@ for different authentication methods.
 
 
 
-token_response_method
+refresh_token_response_method
 ---------------------
 
 - Type: `string` 
@@ -41,6 +41,14 @@ token_response_method
 Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body`
 or `cookies`. The default value is `response_body`.
 
+session_token_response_method
+---------------------
+
+- Type: `string` 
+- Default: `"response_body"`
+
+Configure how sessions tokens are managed by the Descope SDKs. Must be either `response_body`
+or `cookies`. The default value is `response_body`.
 
 
 cookie_policy
