@@ -182,6 +182,10 @@ func (m *SettingsModel) Check(h *helpers.Handler) {
 			h.Invalid("The cookie_domain attribute must be set to the same domain as the custom_domain attribute or one of its top level domains")
 		}
 	}
+
+	if (m.TestUsersStaticOTP.ValueString() == "") != (m.TestUsersVerifierRegExp.ValueString() == "") {
+		h.Invalid("The test_users_static_otp and test_users_verifier_regexp attributes must be set together")
+	}
 }
 
 func getJWTTemplate(field types.String, data map[string]any, key string, typ string, h *helpers.Handler) {

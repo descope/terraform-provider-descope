@@ -31,6 +31,15 @@ authentication
 
 
 
+use_static_ips
+--------------
+
+- Type: `bool` 
+
+Whether the connector should send all requests from specific static IPs.
+
+
+
 
 
 SMTPAuthField

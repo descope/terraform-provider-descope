@@ -1725,6 +1725,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 Read-Only:
 

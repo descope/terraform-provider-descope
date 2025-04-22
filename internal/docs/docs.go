@@ -664,6 +664,7 @@ var docsSMTP = map[string]string{
 	"sender": "The sender details that should be displayed in the email message.",
 	"server": "",
 	"authentication": "",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
 var docsSMTPAuthField = map[string]string{
