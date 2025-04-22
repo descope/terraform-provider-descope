@@ -4,6 +4,7 @@ import (
 	"maps"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -19,6 +20,7 @@ var SMTPAttributes = map[string]schema.Attribute{
 	"sender":         objectattr.Required(SenderFieldAttributes),
 	"server":         objectattr.Required(ServerFieldAttributes),
 	"authentication": objectattr.Required(SMTPAuthFieldAttributes),
+	"use_static_ips": boolattr.Default(false),
 }
 
 // Model
@@ -28,9 +30,10 @@ type SMTPModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	Sender *SenderFieldModel   `tfsdk:"sender"`
-	Server *ServerFieldModel   `tfsdk:"server"`
-	Auth   *SMTPAuthFieldModel `tfsdk:"authentication"`
+	Sender       *SenderFieldModel   `tfsdk:"sender"`
+	Server       *ServerFieldModel   `tfsdk:"server"`
+	Auth         *SMTPAuthFieldModel `tfsdk:"authentication"`
+	UseStaticIPs types.Bool          `tfsdk:"use_static_ips"`
 }
 
 func (m *SMTPModel) Values(h *helpers.Handler) map[string]any {
@@ -45,6 +48,9 @@ func (m *SMTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objectattr.Set(&m.Sender, data, "configuration", h)
 	objectattr.Set(&m.Auth, data, "configuration", h)
 	objectattr.Set(&m.Server, data, "configuration", h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
+	}
 }
 
 // Configuration
@@ -54,6 +60,9 @@ func (m *SMTPModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	maps.Copy(c, m.Sender.Values(h))
 	maps.Copy(c, m.Server.Values(h))
 	maps.Copy(c, m.Auth.Values(h))
+	if m.UseStaticIPs.ValueBool() { // don't send field if false in old MP connectors
+		boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
+	}
 	return c
 }
 

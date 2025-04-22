@@ -2,12 +2,16 @@ package connectors
 
 import (
 	"context"
+	"fmt"
+	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var ConnectorsValidator = objectattr.NewValidator[ConnectorsModel]("must have unique connector names")
@@ -64,4 +68,13 @@ func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, di
     {{- range .Connectors }}
     helpers.MatchModels(ctx, m.{{.StructName}}, state.{{.StructName}})
     {{- end }}
+
+	// Upgrade existing identifiers for SMTP connectors to support static IPs
+	for _, c := range m.SMTP {
+		id := c.ID.ValueString()
+		if v := strings.TrimPrefix(id, "MP"); v != id && c.UseStaticIPs.ValueBool() {
+			c.ID = types.StringValue("CI" + v)
+			tflog.Info(ctx, fmt.Sprintf("Upgrading identifier for SMTP connector from '%s' to '%s'", id, c.ID.ValueString()))
+		}
+	}
 }
