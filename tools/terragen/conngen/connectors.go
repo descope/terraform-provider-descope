@@ -77,6 +77,11 @@ func (c *Connectors) readConnector(path string) {
 		return
 	}
 
+	if connector.IsSkipped() {
+		utils.Debug(1, "- %s (skipped)", connector.ID)
+		return
+	}
+
 	if connector.SupportsStaticIPs() {
 		connector.Fields = append(connector.Fields, UseStaticIPsField)
 	}

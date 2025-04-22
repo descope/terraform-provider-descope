@@ -25,6 +25,10 @@ func (c *Connector) IsExperimental() bool {
 	return c.Extra["experimental"] == true
 }
 
+func (c *Connector) IsSkipped() bool {
+	return c.ID == "smtp-v2"
+}
+
 func (c *Connector) SupportsStaticIPs() bool {
 	return c.Extra["supportStaticIps"] == true
 }
