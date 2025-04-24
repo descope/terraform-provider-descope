@@ -196,17 +196,20 @@ func TestSettings(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.token_response_method": "response_body",
+				"project_settings.session_token_response_method": "response_body",
+				"project_settings.refresh_token_response_method": "response_body",
 			}),
 		},
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					token_response_method = "cookies"
+					session_token_response_method = "cookies"
+					refresh_token_response_method = "cookies"
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.token_response_method": "cookies",
+				"project_settings.session_token_response_method": "cookies",
+				"project_settings.refresh_token_response_method": "cookies",
 			}),
 		},
 		resource.TestStep{
@@ -215,7 +218,8 @@ func TestSettings(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.token_response_method": "response_body",
+				"project_settings.session_token_response_method": "response_body",
+				"project_settings.refresh_token_response_method": "response_body",
 			}),
 		},
 		resource.TestStep{

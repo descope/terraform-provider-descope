@@ -785,7 +785,9 @@ var docsSettings = map[string]string{
 	"custom_domain": "",
 	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
 	                    "for different authentication methods.",
-	"token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +
+	"refresh_token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +
+	                         "or `cookies`. The default value is `response_body`.",
+	"session_token_response_method": "Configure how session tokens are managed by the Descope SDKs. Must be either `response_body` " +
 	                         "or `cookies`. The default value is `response_body`.",
 	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy " +
 	                 "click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",

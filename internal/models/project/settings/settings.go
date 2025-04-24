@@ -18,7 +18,8 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"app_url":                             stringattr.Optional(),
 	"custom_domain":                       stringattr.Optional(),
 	"approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
-	"token_response_method":               stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
+	"refresh_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
+	"session_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
 	"cookie_policy":                       stringattr.Optional(stringvalidator.OneOf("strict", "lax", "none")),
 	"cookie_domain":                       stringattr.Default(""),
 	"refresh_token_rotation":              boolattr.Default(false),
@@ -40,7 +41,8 @@ type SettingsModel struct {
 	AppURL                          types.String `tfsdk:"app_url"`
 	CustomDomain                    types.String `tfsdk:"custom_domain"`
 	ApprovedDomain                  []string     `tfsdk:"approved_domains"`
-	TokenResponseMethod             types.String `tfsdk:"token_response_method"`
+	RefreshTokenResponseMethod      types.String `tfsdk:"refresh_token_response_method"`
+	SessionTokenResponseMethod      types.String `tfsdk:"session_token_response_method"`
 	CookiePolicy                    types.String `tfsdk:"cookie_policy"`
 	CookieDomain                    types.String `tfsdk:"cookie_domain"`
 	RefreshTokenRotation            types.Bool   `tfsdk:"refresh_token_rotation"`
@@ -64,12 +66,19 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.AppURL, data, "appUrl")
 	stringattr.Get(m.CustomDomain, data, "customDomain")
 	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
-	if s := m.TokenResponseMethod.ValueString(); s == "cookies" {
+	if s := m.RefreshTokenResponseMethod.ValueString(); s == "cookies" {
 		data["tokenResponseMethod"] = "cookie"
 	} else if s == "response_body" {
 		data["tokenResponseMethod"] = "onBody"
 	} else if s != "" {
-		panic("unexpected token_response_method value: " + s)
+		panic("unexpected refresh_token_response_method value: " + s)
+	}
+	if s := m.SessionTokenResponseMethod.ValueString(); s == "cookies" {
+		data["sessionTokenResponseMethod"] = "cookie"
+	} else if s == "response_body" {
+		data["sessionTokenResponseMethod"] = "onBody"
+	} else if s != "" {
+		panic("unexpected session_token_response_method value: " + s)
 	}
 	stringattr.Get(m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Get(m.CookieDomain, data, "domain")
@@ -95,11 +104,18 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.CustomDomain, data, "customDomain")
 	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
 	if data["tokenResponseMethod"] == "cookie" {
-		m.TokenResponseMethod = types.StringValue("cookies")
+		m.RefreshTokenResponseMethod = types.StringValue("cookies")
 	} else if data["tokenResponseMethod"] == "onBody" {
-		m.TokenResponseMethod = types.StringValue("response_body")
+		m.RefreshTokenResponseMethod = types.StringValue("response_body")
 	} else {
 		h.Error("Unexpected token response method", "Expected value to be either 'cookie' or 'onBody', found: '%v'", data["tokenResponseMethod"])
+	}
+	if data["sessionTokenResponseMethod"] == "cookie" {
+		m.SessionTokenResponseMethod = types.StringValue("cookies")
+	} else if data["sessionTokenResponseMethod"] == "onBody" {
+		m.SessionTokenResponseMethod = types.StringValue("response_body")
+	} else {
+		h.Error("Unexpected session token response method", "Expected value to be either 'cookie' or 'onBody', found: '%v'", data["tokenResponseMethod"])
 	}
 	stringattr.Set(&m.CookiePolicy, data, "cookiePolicy")
 	stringattr.Set(&m.CookieDomain, data, "domain")
