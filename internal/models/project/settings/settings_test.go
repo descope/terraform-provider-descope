@@ -225,7 +225,7 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					cookie_policy = "foo"
+					refresh_token_cookie_policy = "foo"
 				}
 			`),
 			ExpectError: regexp.MustCompile(`value must be one of`),
@@ -233,28 +233,39 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					cookie_domain = "example2.com"
+					cookie_policy = "strict"
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.cookie_domain": "example2.com",
+				"project_settings.cookie_policy": "strict",
 			}),
 		},
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					enable_inactivity = true
-					inactivity_time = "1 hour"
-					cookie_policy = "lax"
-					cookie_domain = "example.com"
+					refresh_token_cookie_policy = "lax"
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.refresh_token_expiration": "4 weeks",
-				"project_settings.enable_inactivity":        true,
-				"project_settings.inactivity_time":          "1 hour",
-				"project_settings.cookie_policy":            "lax",
-				"project_settings.cookie_domain":            "example.com",
+				"project_settings.refresh_token_cookie_policy": "lax",
+			}),
+		},
+		resource.TestStep{
+			SkipFunc: testacc.IsLocalEnvironment,
+			Config: p.Config(`
+				project_settings = {
+					enable_inactivity = true
+					inactivity_time = "1 hour"
+					refresh_token_cookie_policy = "lax"
+					refresh_token_cookie_domain = "example.com"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.refresh_token_expiration":    "4 weeks",
+				"project_settings.enable_inactivity":           true,
+				"project_settings.inactivity_time":             "1 hour",
+				"project_settings.refresh_token_cookie_policy": "lax",
+				"project_settings.refresh_token_cookie_domain": "example.com",
 			}),
 		},
 	)

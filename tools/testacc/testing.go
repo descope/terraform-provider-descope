@@ -1,6 +1,8 @@
 package testacc
 
 import (
+	"os"
+	"strings"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
@@ -21,4 +23,9 @@ func TestCase(t *testing.T, steps ...resource.TestStep) resource.TestCase {
 		ProtoV6ProviderFactories: protoV6ProviderFactories,
 		Steps:                    steps,
 	}
+}
+
+func IsLocalEnvironment() (bool, error) {
+	env := os.Getenv("DESCOPE_BASE_URL")
+	return strings.Contains(env, "localhost"), nil
 }
