@@ -28,7 +28,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"name":             stringattr.Required(),
 	"environment":      stringattr.Optional(stringvalidator.OneOf("", "production")),
 	"tags":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.LengthBetween(1, 50))),
-	"project_settings": objectattr.Optional(settings.SettingsAttributes),
+	"project_settings": objectattr.Optional(settings.SettingsAttributes, settings.SettingsValidator),
 	"invite_settings":  objectattr.Optional(settings.InviteSettingsAttributes),
 	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
 	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),

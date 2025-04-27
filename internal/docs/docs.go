@@ -781,24 +781,29 @@ var docsInviteSettings = map[string]string{
 }
 
 var docsSettings = map[string]string{
-	"app_url": "",
-	"custom_domain": "",
+	"app_url": "The URL which your application resides on.",
+	"custom_domain": "A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom " +
+	                 "domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
 	                    "for different authentication methods.",
-	"refresh_token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +
-	                         "or `cookies`. The default value is `response_body`.",
-	"session_token_response_method": "Configure how session tokens are managed by the Descope SDKs. Must be either `response_body` " +
-	                         "or `cookies`. The default value is `response_body`.",
-	"cookie_policy": "Use \"strict\", \"lax\" or \"none\". To read more about custom domain and cookie policy " +
-	                 "click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"cookie_domain": "The domain name for custom domain set up. To read more about custom domain and " +
-	                 "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 	                          "refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
 	                            "such as \"4 weeks\", \"14 days\", etc. The minimum value is \"3 minutes\".",
+	"refresh_token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +
+	                                 "or `cookies`. The default value is `response_body`.",
+	"refresh_token_cookie_policy": "Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy " +
+	                               "[here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"refresh_token_cookie_domain": "The domain name for refresh token cookies. To read more about custom domain and " +
+	                               "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"session_token_expiration": "The expiry time of the session token, used for accessing the application's resources. The value " +
 	                            "needs to be at least 3 minutes and can't be longer than the refresh token expiration.",
+	"session_token_response_method": "Configure how sessions tokens are managed by the Descope SDKs. Must be either `response_body` " +
+	                                 "or `cookies`. The default value is `response_body`.",
+	"session_token_cookie_policy": "Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy " +
+	                               "[here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
+	"session_token_cookie_domain": "The domain name for session token cookies. To read more about custom domain and " +
+	                               "cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"step_up_token_expiration": "The expiry time for the step up token, after which it will not be valid and the user will " +
 	                            "automatically go back to the session token.",
 	"trusted_device_token_expiration": "The expiry time for the trusted device token. The minimum value is \"3 minutes\".",
@@ -814,6 +819,9 @@ var docsSettings = map[string]string{
 	"test_users_static_otp": "A 6 digit static OTP code for use with test users.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
+	"token_response_method": "Deprecated.",
+	"cookie_policy": "Deprecated.",
+	"cookie_domain": "Deprecated.",
 }
 
 var docsEmailService = map[string]string{

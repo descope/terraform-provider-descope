@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 )
 
@@ -16,7 +15,7 @@ func NewModifier[T any, M modifiableModel[T]](description string) planmodifier.O
 
 type modifiableModel[T any] interface {
 	helpers.Model[T]
-	Modify(ctx context.Context, state *T, diags *diag.Diagnostics)
+	Modify(h *helpers.Handler, state *T, config *T)
 }
 
 // Implementation
@@ -40,11 +39,13 @@ func (v *objectModifier[T, M]) PlanModifyObject(ctx context.Context, req planmod
 
 	plan := helpers.ModelFromObject[T, M](ctx, req.PlanValue, &resp.Diagnostics)
 	state := helpers.ModelFromObject[T, M](ctx, req.StateValue, &resp.Diagnostics)
+	config := helpers.ModelFromObject[T, M](ctx, req.ConfigValue, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
 
-	plan.Modify(ctx, state, &resp.Diagnostics)
+	handler := helpers.NewHandler(ctx, &resp.Diagnostics, helpers.ReferencesMap{})
+	plan.Modify(handler, state, config)
 	if resp.Diagnostics.HasError() {
 		return
 	}

@@ -2,16 +2,13 @@ package connectors
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var ConnectorsValidator = objectattr.NewValidator[ConnectorsModel]("must have unique connector names")
@@ -280,53 +277,53 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *ConnectorsModel) Modify(ctx context.Context, state *ConnectorsModel, diags *diag.Diagnostics) {
-	helpers.MatchModels(ctx, m.AbuseIPDB, state.AbuseIPDB)
-	helpers.MatchModels(ctx, m.Amplitude, state.Amplitude)
-	helpers.MatchModels(ctx, m.AuditWebhook, state.AuditWebhook)
-	helpers.MatchModels(ctx, m.AWSS3, state.AWSS3)
-	helpers.MatchModels(ctx, m.AWSTranslate, state.AWSTranslate)
-	helpers.MatchModels(ctx, m.Clear, state.Clear)
-	helpers.MatchModels(ctx, m.Datadog, state.Datadog)
-	helpers.MatchModels(ctx, m.DevRevGrow, state.DevRevGrow)
-	helpers.MatchModels(ctx, m.Docebo, state.Docebo)
-	helpers.MatchModels(ctx, m.Fingerprint, state.Fingerprint)
-	helpers.MatchModels(ctx, m.FingerprintDescope, state.FingerprintDescope)
-	helpers.MatchModels(ctx, m.Forter, state.Forter)
-	helpers.MatchModels(ctx, m.GenericSMSGateway, state.GenericSMSGateway)
-	helpers.MatchModels(ctx, m.GoogleCloudTranslation, state.GoogleCloudTranslation)
-	helpers.MatchModels(ctx, m.HIBP, state.HIBP)
-	helpers.MatchModels(ctx, m.HTTP, state.HTTP)
-	helpers.MatchModels(ctx, m.HubSpot, state.HubSpot)
-	helpers.MatchModels(ctx, m.Incode, state.Incode)
-	helpers.MatchModels(ctx, m.Intercom, state.Intercom)
-	helpers.MatchModels(ctx, m.Lokalise, state.Lokalise)
-	helpers.MatchModels(ctx, m.MParticle, state.MParticle)
-	helpers.MatchModels(ctx, m.NewRelic, state.NewRelic)
-	helpers.MatchModels(ctx, m.Recaptcha, state.Recaptcha)
-	helpers.MatchModels(ctx, m.RecaptchaEnterprise, state.RecaptchaEnterprise)
-	helpers.MatchModels(ctx, m.Rekognition, state.Rekognition)
-	helpers.MatchModels(ctx, m.Salesforce, state.Salesforce)
-	helpers.MatchModels(ctx, m.SalesforceMarketingCloud, state.SalesforceMarketingCloud)
-	helpers.MatchModels(ctx, m.Segment, state.Segment)
-	helpers.MatchModels(ctx, m.SendGrid, state.SendGrid)
-	helpers.MatchModels(ctx, m.SES, state.SES)
-	helpers.MatchModels(ctx, m.Slack, state.Slack)
-	helpers.MatchModels(ctx, m.Smartling, state.Smartling)
-	helpers.MatchModels(ctx, m.SMTP, state.SMTP)
-	helpers.MatchModels(ctx, m.SNS, state.SNS)
-	helpers.MatchModels(ctx, m.SumoLogic, state.SumoLogic)
-	helpers.MatchModels(ctx, m.Telesign, state.Telesign)
-	helpers.MatchModels(ctx, m.Traceable, state.Traceable)
-	helpers.MatchModels(ctx, m.TwilioCore, state.TwilioCore)
-	helpers.MatchModels(ctx, m.TwilioVerify, state.TwilioVerify)
+func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel, config *ConnectorsModel) {
+	helpers.MatchModels(h.Ctx, m.AbuseIPDB, state.AbuseIPDB)
+	helpers.MatchModels(h.Ctx, m.Amplitude, state.Amplitude)
+	helpers.MatchModels(h.Ctx, m.AuditWebhook, state.AuditWebhook)
+	helpers.MatchModels(h.Ctx, m.AWSS3, state.AWSS3)
+	helpers.MatchModels(h.Ctx, m.AWSTranslate, state.AWSTranslate)
+	helpers.MatchModels(h.Ctx, m.Clear, state.Clear)
+	helpers.MatchModels(h.Ctx, m.Datadog, state.Datadog)
+	helpers.MatchModels(h.Ctx, m.DevRevGrow, state.DevRevGrow)
+	helpers.MatchModels(h.Ctx, m.Docebo, state.Docebo)
+	helpers.MatchModels(h.Ctx, m.Fingerprint, state.Fingerprint)
+	helpers.MatchModels(h.Ctx, m.FingerprintDescope, state.FingerprintDescope)
+	helpers.MatchModels(h.Ctx, m.Forter, state.Forter)
+	helpers.MatchModels(h.Ctx, m.GenericSMSGateway, state.GenericSMSGateway)
+	helpers.MatchModels(h.Ctx, m.GoogleCloudTranslation, state.GoogleCloudTranslation)
+	helpers.MatchModels(h.Ctx, m.HIBP, state.HIBP)
+	helpers.MatchModels(h.Ctx, m.HTTP, state.HTTP)
+	helpers.MatchModels(h.Ctx, m.HubSpot, state.HubSpot)
+	helpers.MatchModels(h.Ctx, m.Incode, state.Incode)
+	helpers.MatchModels(h.Ctx, m.Intercom, state.Intercom)
+	helpers.MatchModels(h.Ctx, m.Lokalise, state.Lokalise)
+	helpers.MatchModels(h.Ctx, m.MParticle, state.MParticle)
+	helpers.MatchModels(h.Ctx, m.NewRelic, state.NewRelic)
+	helpers.MatchModels(h.Ctx, m.Recaptcha, state.Recaptcha)
+	helpers.MatchModels(h.Ctx, m.RecaptchaEnterprise, state.RecaptchaEnterprise)
+	helpers.MatchModels(h.Ctx, m.Rekognition, state.Rekognition)
+	helpers.MatchModels(h.Ctx, m.Salesforce, state.Salesforce)
+	helpers.MatchModels(h.Ctx, m.SalesforceMarketingCloud, state.SalesforceMarketingCloud)
+	helpers.MatchModels(h.Ctx, m.Segment, state.Segment)
+	helpers.MatchModels(h.Ctx, m.SendGrid, state.SendGrid)
+	helpers.MatchModels(h.Ctx, m.SES, state.SES)
+	helpers.MatchModels(h.Ctx, m.Slack, state.Slack)
+	helpers.MatchModels(h.Ctx, m.Smartling, state.Smartling)
+	helpers.MatchModels(h.Ctx, m.SMTP, state.SMTP)
+	helpers.MatchModels(h.Ctx, m.SNS, state.SNS)
+	helpers.MatchModels(h.Ctx, m.SumoLogic, state.SumoLogic)
+	helpers.MatchModels(h.Ctx, m.Telesign, state.Telesign)
+	helpers.MatchModels(h.Ctx, m.Traceable, state.Traceable)
+	helpers.MatchModels(h.Ctx, m.TwilioCore, state.TwilioCore)
+	helpers.MatchModels(h.Ctx, m.TwilioVerify, state.TwilioVerify)
 
 	// Upgrade existing identifiers for SMTP connectors to support static IPs
 	for _, c := range m.SMTP {
 		id := c.ID.ValueString()
 		if v := strings.TrimPrefix(id, "MP"); v != id && c.UseStaticIPs.ValueBool() {
 			c.ID = types.StringValue("CI" + v)
-			tflog.Info(ctx, fmt.Sprintf("Upgrading identifier for SMTP connector from '%s' to '%s'", id, c.ID.ValueString()))
+			h.Log("Upgrading identifier for SMTP connector from '%s' to '%s'", id, c.ID.ValueString())
 		}
 	}
 }

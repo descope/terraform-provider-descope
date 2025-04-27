@@ -9,7 +9,7 @@ app_url
 
 - Type: `string` 
 
-// description for app_url
+The URL which your application resides on.
 
 
 
@@ -18,7 +18,8 @@ custom_domain
 
 - Type: `string` 
 
-// description for custom_domain
+A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom
+domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 
 
 
@@ -29,45 +30,6 @@ approved_domains
 
 The list of approved domains that are allowed for redirect and verification URLs
 for different authentication methods.
-
-
-
-refresh_token_response_method
----------------------
-
-- Type: `string` 
-- Default: `"response_body"`
-
-Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body`
-or `cookies`. The default value is `response_body`.
-
-session_token_response_method
----------------------
-
-- Type: `string` 
-- Default: `"response_body"`
-
-Configure how sessions tokens are managed by the Descope SDKs. Must be either `response_body`
-or `cookies`. The default value is `response_body`.
-
-
-cookie_policy
--------------
-
-- Type: `string` 
-
-Use "strict", "lax" or "none". To read more about custom domain and cookie policy
-click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
-
-
-
-cookie_domain
--------------
-
-- Type: `string` 
-
-The domain name for custom domain set up. To read more about custom domain and
-cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 
 
 
@@ -91,6 +53,38 @@ such as "4 weeks", "14 days", etc. The minimum value is "3 minutes".
 
 
 
+refresh_token_response_method
+-----------------------------
+
+- Type: `string` 
+- Default: `"response_body"`
+
+Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body`
+or `cookies`. The default value is `response_body`.
+
+
+
+refresh_token_cookie_policy
+---------------------------
+
+- Type: `string` 
+- Default: `"none"`
+
+Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy
+[here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+
+
+
+refresh_token_cookie_domain
+---------------------------
+
+- Type: `string` 
+
+The domain name for refresh token cookies. To read more about custom domain and
+cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+
+
+
 session_token_expiration
 ------------------------
 
@@ -98,6 +92,38 @@ session_token_expiration
 
 The expiry time of the session token, used for accessing the application's resources. The value
 needs to be at least 3 minutes and can't be longer than the refresh token expiration.
+
+
+
+session_token_response_method
+-----------------------------
+
+- Type: `string` 
+- Default: `"response_body"`
+
+Configure how sessions tokens are managed by the Descope SDKs. Must be either `response_body`
+or `cookies`. The default value is `response_body`.
+
+
+
+session_token_cookie_policy
+---------------------------
+
+- Type: `string` 
+- Default: `"none"`
+
+Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy
+[here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+
+
+
+session_token_cookie_domain
+---------------------------
+
+- Type: `string` 
+
+The domain name for session token cookies. To read more about custom domain and
+cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 
 
 
@@ -193,3 +219,30 @@ access_key_jwt_template
 - Type: `string` 
 
 Name of the access key JWT Template.
+
+
+
+token_response_method
+---------------------
+
+- Type: `string` 
+
+Deprecated.
+
+
+
+cookie_policy
+-------------
+
+- Type: `string` 
+
+Deprecated.
+
+
+
+cookie_domain
+-------------
+
+- Type: `string` 
+
+Deprecated.
