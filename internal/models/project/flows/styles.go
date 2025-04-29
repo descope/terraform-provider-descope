@@ -40,6 +40,9 @@ func (m *StylesModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *StylesModel) Validate(h *helpers.Handler) {
+	if m.Data.IsUnknown() {
+		return
+	}
 	data := getStylesData(m.Data, h)
 	if data["styles"] == nil {
 		h.Error("Invalid styles data", "Expected a JSON object with a styles field")
