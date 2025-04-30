@@ -254,18 +254,22 @@ func TestSettings(t *testing.T) {
 			SkipFunc: testacc.IsLocalEnvironment,
 			Config: p.Config(`
 				project_settings = {
+				    app_url = "https://terraform-acceptance.descope.com/app"
+					custom_domain = "auth.terraform-acceptance.descope.com"
 					enable_inactivity = true
 					inactivity_time = "1 hour"
+					refresh_token_response_method = "cookies"
 					refresh_token_cookie_policy = "lax"
-					refresh_token_cookie_domain = "example.com"
+					refresh_token_cookie_domain = "terraform-acceptance.descope.com"
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.refresh_token_expiration":    "4 weeks",
-				"project_settings.enable_inactivity":           true,
-				"project_settings.inactivity_time":             "1 hour",
-				"project_settings.refresh_token_cookie_policy": "lax",
-				"project_settings.refresh_token_cookie_domain": "example.com",
+				"project_settings.refresh_token_expiration":      "4 weeks",
+				"project_settings.enable_inactivity":             true,
+				"project_settings.inactivity_time":               "1 hour",
+				"project_settings.refresh_token_response_method": "cookies",
+				"project_settings.refresh_token_cookie_policy":   "lax",
+				"project_settings.refresh_token_cookie_domain":   "terraform-acceptance.descope.com",
 			}),
 		},
 	)
