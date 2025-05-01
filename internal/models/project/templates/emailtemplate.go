@@ -58,11 +58,11 @@ func (m *EmailTemplateModel) Validate(h *helpers.Handler) {
 		h.Error("Invalid email template", "Cannot use 'System' as the name or id of a template")
 	}
 	if m.UsePlainTextBody.ValueBool() {
-		if m.PlainTextBody.ValueString() == "" {
+		if m.PlainTextBody.ValueString() == "" && !m.PlainTextBody.IsUnknown() {
 			h.Missing("The plain_text_body attribute is required when use_plain_text_body is enabled")
 		}
 	} else {
-		if m.HTMLBody.ValueString() == "" {
+		if m.HTMLBody.ValueString() == "" && !m.HTMLBody.IsUnknown() {
 			h.Missing("The html_body attribute is required unless use_plain_text_body is enabled")
 		}
 	}
