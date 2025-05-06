@@ -163,9 +163,9 @@ var AuditFilterFieldAttributes = map[string]schema.Attribute{
 }
 
 type AuditFilterFieldModel struct {
-	Key      types.String `tfsdk:"key"`
-	Operator types.String `tfsdk:"operator"`
-	Vals     []string     `tfsdk:"values"`
+	Key      types.String   `tfsdk:"key"`
+	Operator types.String   `tfsdk:"operator"`
+	Vals     []types.String `tfsdk:"values"`
 }
 
 func (m *AuditFilterFieldModel) Values(h *helpers.Handler) map[string]any {

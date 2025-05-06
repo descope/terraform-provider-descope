@@ -270,12 +270,12 @@ type OAuthProviderModel struct {
 	ClientID                types.String                       `tfsdk:"client_id"`
 	ClientSecret            types.String                       `tfsdk:"client_secret"`
 	ProviderTokenManagement *OAuthProviderTokenManagementModel `tfsdk:"provider_token_management"`
-	Prompts                 []string                           `tfsdk:"prompts"`
-	Scopes                  []string                           `tfsdk:"scopes"`
+	Prompts                 []types.String                     `tfsdk:"prompts"`
+	Scopes                  []types.String                     `tfsdk:"scopes"`
 	MergeUserAccounts       types.Bool                         `tfsdk:"merge_user_accounts"`
 	Description             types.String                       `tfsdk:"description"`
 	Logo                    types.String                       `tfsdk:"logo"`
-	AllowedGrantTypes       []string                           `tfsdk:"allowed_grant_types"`
+	AllowedGrantTypes       []types.String                     `tfsdk:"allowed_grant_types"`
 	Issuer                  types.String                       `tfsdk:"issuer"`
 	AuthorizationEndpoint   types.String                       `tfsdk:"authorization_endpoint"`
 	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
@@ -340,7 +340,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 		stringattr.Set(&m.ProviderTokenManagement.RedirectURL, data, "redirectUrl")
 	}
 	// Skipped for now: m.Prompts = helpers.AnySliceToStringSlice(data, "prompts")
-	m.Scopes = helpers.AnySliceToStringSlice(data, "scopes")
+	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")

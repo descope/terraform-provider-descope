@@ -48,28 +48,28 @@ var SettingsAttributes = map[string]schema.Attribute{
 }
 
 type SettingsModel struct {
-	AppURL                          types.String `tfsdk:"app_url"`
-	CustomDomain                    types.String `tfsdk:"custom_domain"`
-	ApprovedDomain                  []string     `tfsdk:"approved_domains"`
-	RefreshTokenRotation            types.Bool   `tfsdk:"refresh_token_rotation"`
-	RefreshTokenExpiration          types.String `tfsdk:"refresh_token_expiration"`
-	RefreshTokenResponseMethod      types.String `tfsdk:"refresh_token_response_method"`
-	RefreshTokenCookiePolicy        types.String `tfsdk:"refresh_token_cookie_policy"`
-	RefreshTokenCookieDomain        types.String `tfsdk:"refresh_token_cookie_domain"`
-	SessionTokenExpiration          types.String `tfsdk:"session_token_expiration"`
-	SessionTokenResponseMethod      types.String `tfsdk:"session_token_response_method"`
-	SessionTokenCookiePolicy        types.String `tfsdk:"session_token_cookie_policy"`
-	SessionTokenCookieDomain        types.String `tfsdk:"session_token_cookie_domain"`
-	StepUpTokenExpiration           types.String `tfsdk:"step_up_token_expiration"`
-	TrustedDeviceTokenExpiration    types.String `tfsdk:"trusted_device_token_expiration"`
-	AccessKeySessionTokenExpiration types.String `tfsdk:"access_key_session_token_expiration"`
-	EnableInactivity                types.Bool   `tfsdk:"enable_inactivity"`
-	InactivityTime                  types.String `tfsdk:"inactivity_time"`
-	TestUsersLoginIDRegExp          types.String `tfsdk:"test_users_loginid_regexp"`
-	TestUsersVerifierRegExp         types.String `tfsdk:"test_users_verifier_regexp"`
-	TestUsersStaticOTP              types.String `tfsdk:"test_users_static_otp"`
-	UserJWTTemplate                 types.String `tfsdk:"user_jwt_template"`
-	AccessKeyJWTTemplate            types.String `tfsdk:"access_key_jwt_template"`
+	AppURL                          types.String   `tfsdk:"app_url"`
+	CustomDomain                    types.String   `tfsdk:"custom_domain"`
+	ApprovedDomain                  []types.String `tfsdk:"approved_domains"`
+	RefreshTokenRotation            types.Bool     `tfsdk:"refresh_token_rotation"`
+	RefreshTokenExpiration          types.String   `tfsdk:"refresh_token_expiration"`
+	RefreshTokenResponseMethod      types.String   `tfsdk:"refresh_token_response_method"`
+	RefreshTokenCookiePolicy        types.String   `tfsdk:"refresh_token_cookie_policy"`
+	RefreshTokenCookieDomain        types.String   `tfsdk:"refresh_token_cookie_domain"`
+	SessionTokenExpiration          types.String   `tfsdk:"session_token_expiration"`
+	SessionTokenResponseMethod      types.String   `tfsdk:"session_token_response_method"`
+	SessionTokenCookiePolicy        types.String   `tfsdk:"session_token_cookie_policy"`
+	SessionTokenCookieDomain        types.String   `tfsdk:"session_token_cookie_domain"`
+	StepUpTokenExpiration           types.String   `tfsdk:"step_up_token_expiration"`
+	TrustedDeviceTokenExpiration    types.String   `tfsdk:"trusted_device_token_expiration"`
+	AccessKeySessionTokenExpiration types.String   `tfsdk:"access_key_session_token_expiration"`
+	EnableInactivity                types.Bool     `tfsdk:"enable_inactivity"`
+	InactivityTime                  types.String   `tfsdk:"inactivity_time"`
+	TestUsersLoginIDRegExp          types.String   `tfsdk:"test_users_loginid_regexp"`
+	TestUsersVerifierRegExp         types.String   `tfsdk:"test_users_verifier_regexp"`
+	TestUsersStaticOTP              types.String   `tfsdk:"test_users_static_otp"`
+	UserJWTTemplate                 types.String   `tfsdk:"user_jwt_template"`
+	AccessKeyJWTTemplate            types.String   `tfsdk:"access_key_jwt_template"`
 
 	// Deprecated
 	TokenResponseMethod types.String `tfsdk:"token_response_method"`

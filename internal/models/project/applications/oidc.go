@@ -23,14 +23,14 @@ var OIDCAttributes = map[string]schema.Attribute{
 // Model
 
 type OIDCModel struct {
-	ID                  types.String `tfsdk:"id"`
-	Name                types.String `tfsdk:"name"`
-	Description         types.String `tfsdk:"description"`
-	Logo                types.String `tfsdk:"logo"`
-	Disabled            types.Bool   `tfsdk:"disabled"`
-	LoginPageURL        types.String `tfsdk:"login_page_url"`
-	Claims              []string     `tfsdk:"claims"`
-	ForceAuthentication types.Bool   `tfsdk:"force_authentication"`
+	ID                  types.String   `tfsdk:"id"`
+	Name                types.String   `tfsdk:"name"`
+	Description         types.String   `tfsdk:"description"`
+	Logo                types.String   `tfsdk:"logo"`
+	Disabled            types.Bool     `tfsdk:"disabled"`
+	LoginPageURL        types.String   `tfsdk:"login_page_url"`
+	Claims              []types.String `tfsdk:"claims"`
+	ForceAuthentication types.Bool     `tfsdk:"force_authentication"`
 }
 
 func (m *OIDCModel) Values(h *Handler) map[string]any {

@@ -17,10 +17,10 @@ var RoleAttributes = map[string]schema.Attribute{
 }
 
 type RoleModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
-	Permissions []string     `tfsdk:"permissions"`
+	ID          types.String   `tfsdk:"id"`
+	Name        types.String   `tfsdk:"name"`
+	Description types.String   `tfsdk:"description"`
+	Permissions []types.String `tfsdk:"permissions"`
 }
 
 func (m *RoleModel) Values(h *helpers.Handler) map[string]any {

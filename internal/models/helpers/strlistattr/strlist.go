@@ -28,27 +28,28 @@ func Optional(validators ...validator.List) schema.ListAttribute {
 	}
 }
 
-func Get(s []string, data map[string]any, key string, _ *helpers.Handler) {
-	data[key] = s
+func Get(s []types.String, data map[string]any, key string, _ *helpers.Handler) {
+	data[key] = terraformSliceToStringSlice(s)
 }
 
-func Set(s *[]string, data map[string]any, key string, h *helpers.Handler) {
-	values := helpers.AnySliceToStringSlice(data, key)
+func Set(s *[]types.String, data map[string]any, key string, h *helpers.Handler) {
+	values := anySliceToStringSlice(data, key)
 	if len(*s) > 0 {
-		if !helpers.EqualStringSliceElements(*s, values) {
-			h.Mismatch("Mismatched string array value in '%s' key: received [%s], expected [%s]", key, strings.Join(values, ","), strings.Join(*s, ","))
+		current := terraformSliceToStringSlice(*s)
+		if !equalStringSlicesIgnoringOrder(current, values) {
+			h.Mismatch("Mismatched string array value in '%s' key: received [%s], expected [%s]", key, strings.Join(values, ","), strings.Join(current, ","))
 		}
 		return
 	}
-	*s = values
+	*s = stringSliceToTerraformSlice(values)
 }
 
-func GetCommaSeparated(s []string, data map[string]any, key string) {
-	data[key] = strings.Join(s, ",")
+func GetCommaSeparated(s []types.String, data map[string]any, key string) {
+	data[key] = strings.Join(terraformSliceToStringSlice(s), ",")
 }
 
-func SetCommaSeparated(s *[]string, data map[string]any, key string) {
+func SetCommaSeparated(s *[]types.String, data map[string]any, key string) {
 	if v, _ := data[key].(string); v != "" {
-		*s = strings.Split(v, ",")
+		*s = stringSliceToTerraformSlice(strings.Split(v, ","))
 	}
 }
