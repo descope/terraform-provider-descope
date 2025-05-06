@@ -51,6 +51,12 @@ func HasUnknownValues(values ...any) bool {
 			if slices.ContainsFunc(v, func(s types.String) bool { return s.IsUnknown() }) {
 				return true
 			}
+		case map[string]types.String:
+			for _, s := range v {
+				if s.IsUnknown() {
+					return true
+				}
+			}
 		}
 	}
 	return false

@@ -119,6 +119,8 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, 
 		invalid = v.ValueString() == ""
 	case []string:
 		invalid = len(v) == 0
+	case []types.String:
+		invalid = len(v) == 0
 	default:
 		panic(fmt.Sprintf("unexpected type %T for attribute %s in custom provider %s", field, fieldKey, name))
 	}
@@ -281,7 +283,7 @@ type OAuthProviderModel struct {
 	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
 	UserInfoEndpoint        types.String                       `tfsdk:"user_info_endpoint"`
 	JWKsEndpoint            types.String                       `tfsdk:"jwks_endpoint"`
-	ClaimMapping            map[string]string                  `tfsdk:"claim_mapping"`
+	ClaimMapping            map[string]types.String            `tfsdk:"claim_mapping"`
 }
 
 func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
@@ -318,9 +320,9 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	customAttributes := map[string]string{}
 	for k, v := range m.ClaimMapping {
 		if slices.Contains(systemClaimMapping, k) {
-			claimMapping[k] = v
+			claimMapping[k] = v.ValueString()
 		} else {
-			customAttributes[k] = v
+			customAttributes[k] = v.ValueString()
 		}
 	}
 	claimMapping["customAttributes"] = customAttributes
