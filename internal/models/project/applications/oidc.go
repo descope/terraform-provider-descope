@@ -48,5 +48,6 @@ func (m *OIDCModel) SetValues(h *Handler, data map[string]any) {
 	if settings, ok := data["oidc"].(map[string]any); ok {
 		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
 		strlistattr.Set(&m.Claims, settings, "claims", h)
+		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 	}
 }
