@@ -248,6 +248,10 @@ func (m *HTTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) 
 }
 
 func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.BearerToken) {
+		return // skip validation if there are unknown values
+	}
+
 	count := 0
 	if m.BearerToken.ValueString() != "" {
 		count += 1

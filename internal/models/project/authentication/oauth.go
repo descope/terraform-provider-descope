@@ -129,10 +129,10 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, 
 }
 
 func ensureSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
-	if m == nil {
-		return
+	if m == nil || helpers.HasUnknownValues(m.ClientID, m.ClientSecret) {
+		return // skip validation if there are unknown values
 	}
-	// own account specific validations
+
 	ownAccount := m.ClientID.ValueString() != ""
 	if ownAccount {
 		if m.ClientSecret.ValueString() == "" {

@@ -127,6 +127,9 @@ func (m *TwilioCoreSendersFieldModel) SetValues(h *helpers.Handler, data map[str
 
 func (m *TwilioCoreSendersFieldModel) Validate(h *helpers.Handler) {
 	if v := m.SMS; v != nil {
+		if helpers.HasUnknownValues(v.PhoneNumber, v.MessagingServiceSID) {
+			return // skip validation if there are unknown values
+		}
 		if m.SMS.PhoneNumber.ValueString() == "" && m.SMS.MessagingServiceSID.ValueString() == "" {
 			h.Missing("The Twilio Core connector SMS sender requires either the phone_number or messaging_service_sid attribute to be set")
 		}
@@ -172,6 +175,9 @@ func (m *TwilioAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any
 }
 
 func (m *TwilioAuthFieldModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.AuthToken, m.APIKey, m.APISecret) {
+		return // skip validation if there are unknown values
+	}
 	if m.AuthToken.ValueString() == "" && (m.APIKey.ValueString() == "" && m.APISecret.ValueString() == "") {
 		h.Missing("The Twilio Core connector requires an authentication method to be set")
 	}
