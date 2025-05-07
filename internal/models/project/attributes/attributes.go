@@ -50,7 +50,7 @@ var TenantAttributeAttributes = map[string]schema.Attribute{
 type TenantAttributeModel struct {
 	Name          types.String                       `tfsdk:"name"`
 	Type          types.String                       `tfsdk:"type"`
-	SelectOptions []string                           `tfsdk:"select_options"`
+	SelectOptions []types.String                     `tfsdk:"select_options"`
 	Authorization *TenantAttributeAuthorizationModel `tfsdk:"authorization"`
 }
 
@@ -65,8 +65,8 @@ func (m *TenantAttributeModel) Values(h *helpers.Handler) map[string]any {
 	options := []map[string]any{}
 	for _, o := range m.SelectOptions {
 		options = append(options, map[string]any{
-			"label": o,
-			"value": o,
+			"label": o.ValueString(),
+			"value": o.ValueString(),
 		})
 	}
 	data["options"] = options
@@ -84,7 +84,7 @@ func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any
 		for _, v := range vs {
 			if os, ok := v.(map[string]any); ok {
 				if option, ok := os["label"].(string); ok {
-					m.SelectOptions = append(m.SelectOptions, option)
+					m.SelectOptions = append(m.SelectOptions, types.StringValue(option))
 				}
 			}
 		}
@@ -98,7 +98,7 @@ var TenantAttributeAuthorizationAttributes = map[string]schema.Attribute{
 }
 
 type TenantAttributeAuthorizationModel struct {
-	ViewPermissions []string `tfsdk:"view_permissions"`
+	ViewPermissions []types.String `tfsdk:"view_permissions"`
 }
 
 func (m *TenantAttributeAuthorizationModel) Values(h *helpers.Handler) map[string]any {
@@ -172,8 +172,8 @@ var UserAttributeWidgetAuthorizationAttributes = map[string]schema.Attribute{
 }
 
 type UserAttributeAuthorizationModel struct {
-	ViewPermissions []string `tfsdk:"view_permissions"`
-	EditPermissions []string `tfsdk:"edit_permissions"`
+	ViewPermissions []types.String `tfsdk:"view_permissions"`
+	EditPermissions []types.String `tfsdk:"edit_permissions"`
 }
 
 func (m *UserAttributeAuthorizationModel) Values(h *helpers.Handler) map[string]any {
@@ -185,8 +185,8 @@ func (m *UserAttributeAuthorizationModel) Values(h *helpers.Handler) map[string]
 
 func (m *UserAttributeAuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if helpers.IsImport(h.Ctx) {
-		m.ViewPermissions = []string{}
-		m.EditPermissions = []string{}
+		m.ViewPermissions = []types.String{}
+		m.EditPermissions = []types.String{}
 	}
 	if m.ViewPermissions != nil {
 		strlistattr.Set(&m.ViewPermissions, data, "viewPermissions", h)

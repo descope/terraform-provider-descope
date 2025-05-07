@@ -44,7 +44,7 @@ type ProjectModel struct {
 	ID             types.String                        `tfsdk:"id"`
 	Name           types.String                        `tfsdk:"name"`
 	Environment    types.String                        `tfsdk:"environment"`
-	Tags           []string                            `tfsdk:"tags"`
+	Tags           []types.String                      `tfsdk:"tags"`
 	Settings       *settings.SettingsModel             `tfsdk:"project_settings"`
 	Invite         *settings.InviteSettingsModel       `tfsdk:"invite_settings"`
 	Authentication *authentication.AuthenticationModel `tfsdk:"authentication"`

@@ -163,9 +163,9 @@ var AuditFilterFieldAttributes = map[string]schema.Attribute{
 }
 
 type AuditFilterFieldModel struct {
-	Key      types.String `tfsdk:"key"`
-	Operator types.String `tfsdk:"operator"`
-	Vals     []string     `tfsdk:"values"`
+	Key      types.String   `tfsdk:"key"`
+	Operator types.String   `tfsdk:"operator"`
+	Vals     []types.String `tfsdk:"values"`
 }
 
 func (m *AuditFilterFieldModel) Values(h *helpers.Handler) map[string]any {
@@ -248,6 +248,10 @@ func (m *HTTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) 
 }
 
 func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.BearerToken) {
+		return // skip validation if there are unknown values
+	}
+
 	count := 0
 	if m.BearerToken.ValueString() != "" {
 		count += 1
