@@ -48,6 +48,8 @@ func (m *TextServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 			} else {
 				h.Log("Keeping existing ID '%s' for text template named '%s'", id, name)
 			}
+		} else if template.ID.ValueString() == "" {
+			h.Error("Template not found", "Expected to find text template to match with '%s' template", name)
 		}
 	}
 	// we allow to set templates on import
