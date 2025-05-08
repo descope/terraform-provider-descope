@@ -24,7 +24,7 @@ func requireTemplateID(h *helpers.Handler, data map[string]any, typ string, name
 		}
 	}
 
-	h.Error("Template not found", "Expected to find template in '%s' to match with '%s' template", typ, name)
+	h.Log("Expected to find template in '%s' to match with '%s' template, this could be due to a state file mismatch", typ, name)
 	return "", false
 }
 
