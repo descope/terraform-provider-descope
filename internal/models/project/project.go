@@ -6,6 +6,7 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
@@ -20,7 +21,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var ProjectAttributes = map[string]schema.Attribute{
@@ -28,8 +28,8 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"name":             stringattr.Required(),
 	"environment":      stringattr.Optional(stringvalidator.OneOf("", "production")),
 	"tags":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.LengthBetween(1, 50))),
-	"project_settings": objectattr.Optional(settings.SettingsAttributes, settings.SettingsValidator),
-	"invite_settings":  objectattr.Optional(settings.InviteSettingsAttributes),
+	"project_settings": objattr.Optional[settings.SettingsModel](settings.SettingsAttributes, settings.SettingsValidator),
+	"invite_settings":  objattr.Default(settings.InviteSettingsAttributes, settings.InviteSettingsDefault),
 	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
 	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
 	"attributes":       objectattr.Optional(attributes.AttributesAttributes),
@@ -41,20 +41,20 @@ var ProjectAttributes = map[string]schema.Attribute{
 }
 
 type ProjectModel struct {
-	ID             types.String                        `tfsdk:"id"`
-	Name           types.String                        `tfsdk:"name"`
-	Environment    types.String                        `tfsdk:"environment"`
-	Tags           []types.String                      `tfsdk:"tags"`
-	Settings       *settings.SettingsModel             `tfsdk:"project_settings"`
-	Invite         *settings.InviteSettingsModel       `tfsdk:"invite_settings"`
-	Authentication *authentication.AuthenticationModel `tfsdk:"authentication"`
-	Authorization  *authorization.AuthorizationModel   `tfsdk:"authorization"`
-	Attributes     *attributes.AttributesModel         `tfsdk:"attributes"`
-	Connectors     *connectors.ConnectorsModel         `tfsdk:"connectors"`
-	Applications   *applications.ApplicationModel      `tfsdk:"applications"`
-	JWTTemplates   *jwttemplates.JWTTemplatesModel     `tfsdk:"jwt_templates"`
-	Styles         *flows.StylesModel                  `tfsdk:"styles"`
-	Flows          *flows.FlowsModel                   `tfsdk:"flows"` // this is just a map but use pointer to stay consistent with other models
+	ID             stringattr.Type                            `tfsdk:"id"`
+	Name           stringattr.Type                            `tfsdk:"name"`
+	Environment    stringattr.Type                            `tfsdk:"environment"`
+	Tags           []stringattr.Type                          `tfsdk:"tags"`
+	Settings       objattr.Type[settings.SettingsModel]       `tfsdk:"project_settings"`
+	Invite         objattr.Type[settings.InviteSettingsModel] `tfsdk:"invite_settings"`
+	Authentication *authentication.AuthenticationModel        `tfsdk:"authentication"`
+	Authorization  *authorization.AuthorizationModel          `tfsdk:"authorization"`
+	Attributes     *attributes.AttributesModel                `tfsdk:"attributes"`
+	Connectors     *connectors.ConnectorsModel                `tfsdk:"connectors"`
+	Applications   *applications.ApplicationModel             `tfsdk:"applications"`
+	JWTTemplates   *jwttemplates.JWTTemplatesModel            `tfsdk:"jwt_templates"`
+	Styles         *flows.StylesModel                         `tfsdk:"styles"`
+	Flows          *flows.FlowsModel                          `tfsdk:"flows"` // this is just a map but use pointer to stay consistent with other models
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -63,8 +63,8 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Environment, data, "environment")
 	strlistattr.Get(m.Tags, data, "tags", h)
-	objectattr.Get(m.Settings, data, "settings", h)
-	objectattr.Get(m.Invite, data, "settings", h)
+	objattr.Get(m.Settings, data, "settings", h)
+	objattr.Get(m.Invite, data, "settings", h)
 	objectattr.Get(m.Authentication, data, "authentication", h)
 	objectattr.Get(m.Connectors, data, "connectors", h)
 	objectattr.Get(m.Applications, data, "applications", h)
@@ -84,8 +84,8 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Environment, data, "environment")
 	strlistattr.Set(&m.Tags, data, "tags", h)
-	objectattr.Set(&m.Settings, data, "settings", h)
-	objectattr.Set(&m.Invite, data, "settings", h)
+	objattr.Set(&m.Settings, data, "settings", h)
+	objattr.Set(&m.Invite, data, "settings", h)
 	objectattr.Set(&m.Authentication, data, "authentication", h)
 	objectattr.Set(&m.Connectors, data, "connectors", h)
 	objectattr.Set(&m.Applications, data, "applications", h)
@@ -114,7 +114,5 @@ func (m *ProjectModel) SetReferences(h *helpers.Handler) {
 	if m.Authentication != nil {
 		m.Authentication.SetReferences(h)
 	}
-	if m.Settings != nil {
-		m.Settings.SetReferences(h)
-	}
+	objattr.UpdateReferences(&m.Settings, h)
 }

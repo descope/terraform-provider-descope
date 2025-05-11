@@ -256,7 +256,7 @@ func getJWTTemplate(field types.String, data map[string]any, key string, typ str
 	}
 }
 
-func (m *SettingsModel) SetReferences(h *helpers.Handler) {
+func (m *SettingsModel) UpdateReferences(h *helpers.Handler) {
 	if m.AccessKeyJWTTemplate.ValueString() != "" {
 		replaceJWTTemplateIDWithReference(&m.AccessKeyJWTTemplate, h)
 	}

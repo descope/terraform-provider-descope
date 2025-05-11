@@ -9,6 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type Type = types.String
+
+func Value(value string) Type {
+	return types.StringValue(value)
+}
+
 func Identifier() schema.StringAttribute {
 	return schema.StringAttribute{
 		Computed:      true,

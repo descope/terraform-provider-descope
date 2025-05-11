@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"context"
 	"fmt"
 	"sync/atomic"
 )
@@ -10,6 +11,16 @@ const (
 	RoleReferenceKey        = "ref:role"
 	JWTTemplateReferenceKey = "ref:jwttemplate"
 )
+
+type CollectReferencesModel[T any] interface {
+	Model[T]
+	CollectReferences(context.Context) ReferencesMap
+}
+
+type UpdateReferencesModel[T any] interface {
+	Model[T]
+	UpdateReferences(*Handler)
+}
 
 type ModelReference struct {
 	Type string
