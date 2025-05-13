@@ -786,6 +786,7 @@ var docsSettings = map[string]string{
 	                 "domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
 	                    "for different authentication methods.",
+	"default_no_sso_apps": "Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 	                          "refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +

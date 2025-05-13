@@ -32,6 +32,13 @@ The list of approved domains that are allowed for redirect and verification URLs
 for different authentication methods.
 
 
+default_no_sso_apps
+----------------------
+
+- Type: `bool` 
+
+Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app
+
 
 refresh_token_rotation
 ----------------------

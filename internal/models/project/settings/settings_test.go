@@ -86,6 +86,25 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					default_no_sso_apps = true
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.default_no_sso_apps": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.default_no_sso_apps": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					approved_domains = ["example.com"]
 				}
 			`),

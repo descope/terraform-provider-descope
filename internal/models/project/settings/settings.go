@@ -21,6 +21,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"app_url":                             stringattr.Optional(),
 	"custom_domain":                       stringattr.Optional(),
 	"approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
+	"default_no_sso_apps":                 boolattr.Default(false),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"refresh_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
@@ -51,6 +52,7 @@ type SettingsModel struct {
 	AppURL                          types.String   `tfsdk:"app_url"`
 	CustomDomain                    types.String   `tfsdk:"custom_domain"`
 	ApprovedDomain                  []types.String `tfsdk:"approved_domains"`
+	DefaultNoSSOApps                types.Bool     `tfsdk:"default_no_sso_apps"`
 	RefreshTokenRotation            types.Bool     `tfsdk:"refresh_token_rotation"`
 	RefreshTokenExpiration          types.String   `tfsdk:"refresh_token_expiration"`
 	RefreshTokenResponseMethod      types.String   `tfsdk:"refresh_token_response_method"`
@@ -84,6 +86,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.CustomDomain, data, "customDomain")
 	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
+	boolattr.Get(m.DefaultNoSSOApps, data, "defaultNoSSOApps")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if s := m.RefreshTokenResponseMethod.ValueString(); s == "cookies" {
 		data["tokenResponseMethod"] = "cookie"
@@ -132,6 +135,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.CustomDomain, data, "customDomain")
 	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
+	boolattr.Set(&m.DefaultNoSSOApps, data, "defaultNoSSOApps")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if helpers.IsImport(h.Ctx) || m.TokenResponseMethod.ValueString() == "" { // can be removed once deprecated attribute is cleaned up
 		if s := data["tokenResponseMethod"]; s == "cookie" {

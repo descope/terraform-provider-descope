@@ -2037,6 +2037,7 @@ Optional:
 - `refresh_token_cookie_policy` (String) Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `refresh_token_expiration` (String) The expiry time for the refresh token, after which the user must log in again. Use values such as "4 weeks", "14 days", etc. The minimum value is "3 minutes".
 - `refresh_token_response_method` (String) Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` or `cookies`. The default value is `response_body`.
+- `default_no_sso_apps` (Boolean) Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app.
 - `refresh_token_rotation` (Boolean) Every time the user refreshes their session token via their refresh token, the refresh token itself is also updated to a new one.
 - `session_token_cookie_domain` (String) The domain name for session token cookies. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `session_token_cookie_policy` (String) Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
