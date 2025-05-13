@@ -119,6 +119,8 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, 
 		invalid = v.ValueString() == ""
 	case []string:
 		invalid = len(v) == 0
+	case []types.String:
+		invalid = len(v) == 0
 	default:
 		panic(fmt.Sprintf("unexpected type %T for attribute %s in custom provider %s", field, fieldKey, name))
 	}
@@ -129,10 +131,10 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, 
 }
 
 func ensureSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
-	if m == nil {
-		return
+	if m == nil || helpers.HasUnknownValues(m.ClientID, m.ClientSecret) {
+		return // skip validation if there are unknown values
 	}
-	// own account specific validations
+
 	ownAccount := m.ClientID.ValueString() != ""
 	if ownAccount {
 		if m.ClientSecret.ValueString() == "" {
@@ -270,18 +272,18 @@ type OAuthProviderModel struct {
 	ClientID                types.String                       `tfsdk:"client_id"`
 	ClientSecret            types.String                       `tfsdk:"client_secret"`
 	ProviderTokenManagement *OAuthProviderTokenManagementModel `tfsdk:"provider_token_management"`
-	Prompts                 []string                           `tfsdk:"prompts"`
-	Scopes                  []string                           `tfsdk:"scopes"`
+	Prompts                 []types.String                     `tfsdk:"prompts"`
+	Scopes                  []types.String                     `tfsdk:"scopes"`
 	MergeUserAccounts       types.Bool                         `tfsdk:"merge_user_accounts"`
 	Description             types.String                       `tfsdk:"description"`
 	Logo                    types.String                       `tfsdk:"logo"`
-	AllowedGrantTypes       []string                           `tfsdk:"allowed_grant_types"`
+	AllowedGrantTypes       []types.String                     `tfsdk:"allowed_grant_types"`
 	Issuer                  types.String                       `tfsdk:"issuer"`
 	AuthorizationEndpoint   types.String                       `tfsdk:"authorization_endpoint"`
 	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
 	UserInfoEndpoint        types.String                       `tfsdk:"user_info_endpoint"`
 	JWKsEndpoint            types.String                       `tfsdk:"jwks_endpoint"`
-	ClaimMapping            map[string]string                  `tfsdk:"claim_mapping"`
+	ClaimMapping            map[string]types.String            `tfsdk:"claim_mapping"`
 }
 
 func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
@@ -318,9 +320,9 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	customAttributes := map[string]string{}
 	for k, v := range m.ClaimMapping {
 		if slices.Contains(systemClaimMapping, k) {
-			claimMapping[k] = v
+			claimMapping[k] = v.ValueString()
 		} else {
-			customAttributes[k] = v
+			customAttributes[k] = v.ValueString()
 		}
 	}
 	claimMapping["customAttributes"] = customAttributes
@@ -340,7 +342,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 		stringattr.Set(&m.ProviderTokenManagement.RedirectURL, data, "redirectUrl")
 	}
 	// Skipped for now: m.Prompts = helpers.AnySliceToStringSlice(data, "prompts")
-	m.Scopes = helpers.AnySliceToStringSlice(data, "scopes")
+	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")

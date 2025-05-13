@@ -2,6 +2,7 @@ package authorization
 
 import (
 	"context"
+	"slices"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
@@ -109,6 +110,10 @@ func (m *AuthorizationModel) getAuthorizationIDs(data map[string]any) (roles, pe
 }
 
 func (m *AuthorizationModel) Validate(h *helpers.Handler) {
+	if slices.ContainsFunc(m.Permissions, func(p *PermissionModel) bool { return p.Name.IsUnknown() }) || slices.ContainsFunc(m.Roles, func(r *RoleModel) bool { return r.Name.IsUnknown() }) {
+		return // skip validation if there are unknown values
+	}
+
 	permissions := map[string]int{}
 	for _, v := range m.Permissions {
 		permissions[v.Name.ValueString()] += 1
@@ -117,7 +122,7 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 	for _, v := range m.Roles {
 		roles[v.Name.ValueString()] += 1
 		for _, p := range v.Permissions {
-			if value := permissions[p]; value == 0 {
+			if value := permissions[p.ValueString()]; value == 0 {
 				h.Error("Permission doesn't exist", "The role '%s' references a permission '%s' that doesn't exist", v.Name.ValueString(), p)
 			}
 		}

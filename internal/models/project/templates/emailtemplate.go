@@ -54,15 +54,18 @@ func (m *EmailTemplateModel) SetValues(h *helpers.Handler, data map[string]any) 
 }
 
 func (m *EmailTemplateModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.Name, m.UsePlainTextBody, m.PlainTextBody, m.HTMLBody) {
+		return // skip validation if there are unknown values
+	}
 	if m.Name.ValueString() == helpers.DescopeTemplate || m.ID.ValueString() == helpers.DescopeTemplate {
 		h.Error("Invalid email template", "Cannot use 'System' as the name or id of a template")
 	}
 	if m.UsePlainTextBody.ValueBool() {
-		if m.PlainTextBody.ValueString() == "" && !m.PlainTextBody.IsUnknown() {
+		if m.PlainTextBody.ValueString() == "" {
 			h.Missing("The plain_text_body attribute is required when use_plain_text_body is enabled")
 		}
 	} else {
-		if m.HTMLBody.ValueString() == "" && !m.HTMLBody.IsUnknown() {
+		if m.HTMLBody.ValueString() == "" {
 			h.Missing("The html_body attribute is required unless use_plain_text_body is enabled")
 		}
 	}
