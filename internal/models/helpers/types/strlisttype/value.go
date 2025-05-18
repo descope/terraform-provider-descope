@@ -42,6 +42,10 @@ func (v ListValueOf[T]) ToSliceMust(ctx context.Context) []T {
 	return types.Must(v.ToSlice(ctx))
 }
 
+func (v ListValueOf[T]) IsEmpty() bool {
+	return len(v.ListValue.Elements()) == 0
+}
+
 func NewListValueOfNull[T attr.Value](ctx context.Context) ListValueOf[T] {
 	return ListValueOf[T]{ListValue: basetypes.NewListNull(types.NewAttrTypeOf[T](ctx))}
 }

@@ -43,7 +43,7 @@ type SAMLModel struct {
 	LoginPageURL           types.String               `tfsdk:"login_page_url"`
 	DynamicConfiguration   *DynamicConfigurationModel `tfsdk:"dynamic_configuration"`
 	ManualConfiguration    *ManualConfigurationModel  `tfsdk:"manual_configuration"`
-	ACSAllowedCallbackURLs []types.String             `tfsdk:"acs_allowed_callback_urls"`
+	ACSAllowedCallbackURLs strlistattr.Type           `tfsdk:"acs_allowed_callback_urls"`
 	SubjectNameIDType      types.String               `tfsdk:"subject_name_id_type"`
 	SubjectNameIDFormat    types.String               `tfsdk:"subject_name_id_format"`
 	DefaultRelayState      types.String               `tfsdk:"default_relay_state"`
@@ -88,8 +88,8 @@ func (m *SAMLModel) SetValues(h *Handler, data map[string]any) {
 		stringattr.Set(&m.DefaultRelayState, settings, "defaultRelayState")
 		m.AttributeMapping = []*AttributeMappingModel{}
 		listattr.Set(&m.AttributeMapping, settings, "attributeMapping", h)
-		m.ACSAllowedCallbackURLs = []types.String{}
 		strlistattr.Set(&m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
+		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 	}
 }
 

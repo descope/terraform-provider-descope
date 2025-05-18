@@ -35,10 +35,7 @@ func (v ListNestedObjectValueOf[T]) ListSemanticEquals(ctx context.Context, newV
 
 	newValue, ok := newValuable.(ListNestedObjectValueOf[T])
 	if !ok {
-		diags.AddError(
-			"ListSemanticEquals",
-			fmt.Sprintf("unexpected value type of %T", newValuable),
-		)
+		diags.AddError("ListSemanticEquals", fmt.Sprintf("unexpected value type of %T", newValuable))
 		return false, diags
 	}
 

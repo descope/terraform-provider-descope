@@ -52,7 +52,8 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"project_settings": testacc.AttributeIsNotSet,
+				"project_settings.refresh_token_expiration": "4 weeks",
+				"project_settings.session_token_expiration": "1 hour",
 			}),
 		},
 		resource.TestStep{
@@ -62,6 +63,7 @@ func TestSettings(t *testing.T) {
 			`),
 			Check: p.Check(map[string]any{
 				"project_settings.refresh_token_expiration": "4 weeks",
+				"project_settings.session_token_expiration": "10 minutes",
 			}),
 		},
 		resource.TestStep{
@@ -99,7 +101,7 @@ func TestSettings(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.approved_domains": testacc.AttributeIsNotSet,
+				"project_settings.approved_domains": []string{},
 			}),
 		},
 		resource.TestStep{
@@ -125,11 +127,21 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					approved_domains = ["example.com"]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.approved_domains": []string{"example.com"},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					approved_domains = null
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.approved_domains": testacc.AttributeIsNotSet,
+				"project_settings.approved_domains": []string{},
 			}),
 		},
 		resource.TestStep{

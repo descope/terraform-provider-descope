@@ -7,6 +7,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/strlisttype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
@@ -39,8 +40,19 @@ func Optional(validators ...validator.List) schema.ListAttribute {
 	}
 }
 
+func Default(value []string, validators ...validator.List) schema.ListAttribute {
+	return schema.ListAttribute{
+		Optional:    true,
+		Computed:    true,
+		CustomType:  strlisttype.ListOfStringType,
+		ElementType: types.StringType,
+		Validators:  validators,
+		Default:     listdefault.StaticValue(Value(value).ListValue),
+	}
+}
+
 func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
-	if s.IsNull() || s.IsUnknown() {
+	if s.IsUnknown() {
 		return
 	}
 
@@ -49,18 +61,21 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	// if len(*s) > 0 { TODO
-	// 	current := terraformSliceToStringSlice(*s)
-	// 	if !equalStringSlicesIgnoringOrder(current, values) {
-	// 		h.Mismatch("Mismatched string array value in '%s' key: received [%s], expected [%s]", key, strings.Join(values, ","), strings.Join(current, ","))
-	// 	}
-	// 	return
-	// }
-	*s = stringSliceToStringListValue(h.Ctx, anySliceToStringSlice(data, key))
+	values := getStringSliceValue(data, key)
+
+	if !s.IsEmpty() {
+		current := terraformSliceToStringSlice(s.ToSliceMust(h.Ctx))
+		if !equalStringSlicesIgnoringOrder(current, values) {
+			h.Mismatch("Mismatched string array value in '%s' key: received [%s], expected [%s]", key, strings.Join(values, ","), strings.Join(current, ","))
+		}
+		return
+	}
+
+	*s = stringSliceToStringListValue(h.Ctx, values)
 }
 
 func GetCommaSeparated(s Type, data map[string]any, key string, h *helpers.Handler) {
-	if s.IsNull() || s.IsUnknown() {
+	if s.IsUnknown() {
 		return
 	}
 
@@ -69,6 +84,15 @@ func GetCommaSeparated(s Type, data map[string]any, key string, h *helpers.Handl
 }
 
 func SetCommaSeparated(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	v, _ := data[key].(string)
-	*s = stringSliceToStringListValue(h.Ctx, strings.Split(v, ","))
+	values := getCommaSeparatedStringSliceValue(data, key)
+
+	if !s.IsEmpty() {
+		current := terraformSliceToStringSlice(s.ToSliceMust(h.Ctx))
+		if !equalStringSlicesIgnoringOrder(current, values) {
+			h.Mismatch("Mismatched comma separated string array value in '%s' key: received [%s], expected [%s]", key, strings.Join(values, ","), strings.Join(current, ","))
+		}
+		return
+	}
+
+	*s = stringSliceToStringListValue(h.Ctx, values)
 }

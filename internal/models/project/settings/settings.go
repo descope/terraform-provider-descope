@@ -20,7 +20,7 @@ var SettingsValidator = objectattr.NewValidator[SettingsModel]("must have a vali
 var SettingsAttributes = map[string]schema.Attribute{
 	"app_url":                             stringattr.Optional(),
 	"custom_domain":                       stringattr.Optional(),
-	"approved_domains":                    strlistattr.Optional(strlistattr.CommaSeparatedListValidator),
+	"approved_domains":                    strlistattr.Default(nil, strlistattr.CommaSeparatedListValidator),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"refresh_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
@@ -48,28 +48,28 @@ var SettingsAttributes = map[string]schema.Attribute{
 }
 
 type SettingsModel struct {
-	AppURL                          types.String   `tfsdk:"app_url"`
-	CustomDomain                    types.String   `tfsdk:"custom_domain"`
-	ApprovedDomain                  []types.String `tfsdk:"approved_domains"`
-	RefreshTokenRotation            types.Bool     `tfsdk:"refresh_token_rotation"`
-	RefreshTokenExpiration          types.String   `tfsdk:"refresh_token_expiration"`
-	RefreshTokenResponseMethod      types.String   `tfsdk:"refresh_token_response_method"`
-	RefreshTokenCookiePolicy        types.String   `tfsdk:"refresh_token_cookie_policy"`
-	RefreshTokenCookieDomain        types.String   `tfsdk:"refresh_token_cookie_domain"`
-	SessionTokenExpiration          types.String   `tfsdk:"session_token_expiration"`
-	SessionTokenResponseMethod      types.String   `tfsdk:"session_token_response_method"`
-	SessionTokenCookiePolicy        types.String   `tfsdk:"session_token_cookie_policy"`
-	SessionTokenCookieDomain        types.String   `tfsdk:"session_token_cookie_domain"`
-	StepUpTokenExpiration           types.String   `tfsdk:"step_up_token_expiration"`
-	TrustedDeviceTokenExpiration    types.String   `tfsdk:"trusted_device_token_expiration"`
-	AccessKeySessionTokenExpiration types.String   `tfsdk:"access_key_session_token_expiration"`
-	EnableInactivity                types.Bool     `tfsdk:"enable_inactivity"`
-	InactivityTime                  types.String   `tfsdk:"inactivity_time"`
-	TestUsersLoginIDRegExp          types.String   `tfsdk:"test_users_loginid_regexp"`
-	TestUsersVerifierRegExp         types.String   `tfsdk:"test_users_verifier_regexp"`
-	TestUsersStaticOTP              types.String   `tfsdk:"test_users_static_otp"`
-	UserJWTTemplate                 types.String   `tfsdk:"user_jwt_template"`
-	AccessKeyJWTTemplate            types.String   `tfsdk:"access_key_jwt_template"`
+	AppURL                          types.String     `tfsdk:"app_url"`
+	CustomDomain                    types.String     `tfsdk:"custom_domain"`
+	ApprovedDomain                  strlistattr.Type `tfsdk:"approved_domains"`
+	RefreshTokenRotation            types.Bool       `tfsdk:"refresh_token_rotation"`
+	RefreshTokenExpiration          types.String     `tfsdk:"refresh_token_expiration"`
+	RefreshTokenResponseMethod      types.String     `tfsdk:"refresh_token_response_method"`
+	RefreshTokenCookiePolicy        types.String     `tfsdk:"refresh_token_cookie_policy"`
+	RefreshTokenCookieDomain        types.String     `tfsdk:"refresh_token_cookie_domain"`
+	SessionTokenExpiration          types.String     `tfsdk:"session_token_expiration"`
+	SessionTokenResponseMethod      types.String     `tfsdk:"session_token_response_method"`
+	SessionTokenCookiePolicy        types.String     `tfsdk:"session_token_cookie_policy"`
+	SessionTokenCookieDomain        types.String     `tfsdk:"session_token_cookie_domain"`
+	StepUpTokenExpiration           types.String     `tfsdk:"step_up_token_expiration"`
+	TrustedDeviceTokenExpiration    types.String     `tfsdk:"trusted_device_token_expiration"`
+	AccessKeySessionTokenExpiration types.String     `tfsdk:"access_key_session_token_expiration"`
+	EnableInactivity                types.Bool       `tfsdk:"enable_inactivity"`
+	InactivityTime                  types.String     `tfsdk:"inactivity_time"`
+	TestUsersLoginIDRegExp          types.String     `tfsdk:"test_users_loginid_regexp"`
+	TestUsersVerifierRegExp         types.String     `tfsdk:"test_users_verifier_regexp"`
+	TestUsersStaticOTP              types.String     `tfsdk:"test_users_static_otp"`
+	UserJWTTemplate                 types.String     `tfsdk:"user_jwt_template"`
+	AccessKeyJWTTemplate            types.String     `tfsdk:"access_key_jwt_template"`
 
 	// Deprecated
 	TokenResponseMethod types.String `tfsdk:"token_response_method"`
@@ -82,7 +82,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.AppURL, data, "appUrl")
 	stringattr.Get(m.CustomDomain, data, "customDomain")
-	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains")
+	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains", h)
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if s := m.RefreshTokenResponseMethod.ValueString(); s == "cookies" {
@@ -130,7 +130,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.AppURL, data, "appUrl")
 	stringattr.Set(&m.CustomDomain, data, "customDomain")
-	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains")
+	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains", h)
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if helpers.IsImport(h.Ctx) || m.TokenResponseMethod.ValueString() == "" { // can be removed once deprecated attribute is cleaned up
