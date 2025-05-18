@@ -33,21 +33,25 @@ func (e *ProjectEntity) Save(ctx context.Context, target entityTarget) {
 
 // Returns a representation of the project entity data for sending in an infra API request.
 func (e *ProjectEntity) Values(ctx context.Context) map[string]any {
-	refs := e.Model.References(ctx)
-	handler := helpers.NewHandler(ctx, e.Diagnostics, refs)
+	handler := helpers.NewHandler(ctx, e.Diagnostics)
+	// collect all existing references from the plan
+	e.Model.CollectReferences(handler)
+	// convert the model to a backend request format
 	values := e.Model.Values(handler)
 	return values
 }
 
 // Updates the project entity with the data received in an infra API response.
 func (e *ProjectEntity) SetValues(ctx context.Context, data map[string]any) {
-	refs := e.Model.References(ctx) // references aren't really needed here
-	handler := helpers.NewHandler(ctx, e.Diagnostics, refs)
+	handler := helpers.NewHandler(ctx, e.Diagnostics)
+	// collect all existing references from the plan or state
+	e.Model.CollectReferences(handler)
+	// update the model with the new values from the backend response
 	e.Model.SetValues(handler, data)
-	// now that the values are set, gather the refs
-	// and apply them instead of any server IDs
-	handler.Refs = e.Model.References(ctx)
-	e.Model.SetReferences(handler)
+	// collect the references again after the model has been update
+	e.Model.CollectReferences(handler)
+	// apply the references to replace any server IDs
+	e.Model.UpdateReferences(handler)
 }
 
 // Returns the projectID value from the model.

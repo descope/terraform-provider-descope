@@ -92,14 +92,13 @@ func Ensure[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key stri
 	}
 }
 
-func CollectReferences[T any, M helpers.CollectReferencesModel[T]](o Type[T], ctx context.Context) helpers.ReferencesMap {
-	var value M
+func CollectReferences[T any, M helpers.CollectReferencesModel[T]](o Type[T], h *helpers.Handler) {
 	if o.IsNull() || o.IsUnknown() {
-		value = new(T)
-	} else {
-		value = o.ToPtrMust(ctx)
+		return
 	}
-	return value.CollectReferences(ctx)
+
+	var value M = o.ToPtrMust(h.Ctx)
+	value.CollectReferences(h)
 }
 
 func UpdateReferences[T any, M helpers.UpdateReferencesModel[T]](o *Type[T], h *helpers.Handler) {

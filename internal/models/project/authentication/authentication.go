@@ -56,7 +56,7 @@ func (m *AuthenticationModel) SetValues(h *helpers.Handler, data map[string]any)
 	objectattr.Set(&m.Passkeys, data, "webauthn", h)
 }
 
-func (m *AuthenticationModel) SetReferences(h *helpers.Handler) {
+func (m *AuthenticationModel) UpdateReferences(h *helpers.Handler) {
 	if m.OTP != nil {
 		m.OTP.SetReferences(h)
 	}

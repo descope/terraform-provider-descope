@@ -1,7 +1,6 @@
 package authorization
 
 import (
-	"context"
 	"slices"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -76,12 +75,10 @@ func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) 
 	}
 }
 
-func (m *AuthorizationModel) References(ctx context.Context) helpers.ReferencesMap {
-	refs := helpers.ReferencesMap{}
+func (m *AuthorizationModel) CollectReferences(h *helpers.Handler) {
 	for _, v := range m.Roles {
-		refs.Add(helpers.RoleReferenceKey, "", v.ID.ValueString(), v.Name.ValueString())
+		h.Refs.Add(helpers.RoleReferenceKey, "", v.ID.ValueString(), v.Name.ValueString())
 	}
-	return refs
 }
 
 func (m *AuthorizationModel) getAuthorizationIDs(data map[string]any) (roles, permissions map[string]string) {

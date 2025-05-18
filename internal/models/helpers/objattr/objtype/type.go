@@ -163,7 +163,7 @@ func NullOutObjectPtrFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 
 	val = val.Elem()
 
-	for i := 0; i < typ.NumField(); i++ {
+	for i := range typ.NumField() {
 		val := val.Field(i)
 		if !val.CanInterface() {
 			continue

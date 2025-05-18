@@ -1,7 +1,6 @@
 package helpers
 
 import (
-	"context"
 	"fmt"
 	"sync/atomic"
 )
@@ -14,7 +13,7 @@ const (
 
 type CollectReferencesModel[T any] interface {
 	Model[T]
-	CollectReferences(context.Context) ReferencesMap
+	CollectReferences(*Handler)
 }
 
 type UpdateReferencesModel[T any] interface {

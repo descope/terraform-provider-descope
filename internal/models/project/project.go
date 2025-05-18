@@ -1,13 +1,9 @@
 package project
 
 import (
-	"context"
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/descope/terraform-provider-descope/internal/models/project/applications"
@@ -30,31 +26,31 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"tags":             strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.LengthBetween(1, 50))),
 	"project_settings": objattr.Optional[settings.SettingsModel](settings.SettingsAttributes, settings.SettingsValidator),
 	"invite_settings":  objattr.Default(settings.InviteSettingsAttributes, settings.InviteSettingsDefault),
-	"authentication":   objectattr.Optional(authentication.AuthenticationAttributes),
-	"authorization":    objectattr.Optional(authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
-	"attributes":       objectattr.Optional(attributes.AttributesAttributes),
-	"connectors":       objectattr.Optional(connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
-	"applications":     objectattr.Optional(applications.ApplicationAttributes, applications.ApplicationValidator),
-	"jwt_templates":    objectattr.Optional(jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
-	"styles":           objectattr.Optional(flows.StylesAttributes, flows.StylesValidator),
+	"authentication":   objattr.Optional[authentication.AuthenticationModel](authentication.AuthenticationAttributes),
+	"authorization":    objattr.Optional[authorization.AuthorizationModel](authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
+	"attributes":       objattr.Optional[attributes.AttributesModel](attributes.AttributesAttributes),
+	"connectors":       objattr.Optional[connectors.ConnectorsModel](connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
+	"applications":     objattr.Optional[applications.ApplicationModel](applications.ApplicationAttributes, applications.ApplicationValidator),
+	"jwt_templates":    objattr.Optional[jwttemplates.JWTTemplatesModel](jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
+	"styles":           objattr.Optional[flows.StylesModel](flows.StylesAttributes, flows.StylesValidator),
 	"flows":            mapattr.Optional(flows.FlowAttributes, flows.FlowsValidator),
 }
 
 type ProjectModel struct {
-	ID             stringattr.Type                            `tfsdk:"id"`
-	Name           stringattr.Type                            `tfsdk:"name"`
-	Environment    stringattr.Type                            `tfsdk:"environment"`
-	Tags           []stringattr.Type                          `tfsdk:"tags"`
-	Settings       objattr.Type[settings.SettingsModel]       `tfsdk:"project_settings"`
-	Invite         objattr.Type[settings.InviteSettingsModel] `tfsdk:"invite_settings"`
-	Authentication *authentication.AuthenticationModel        `tfsdk:"authentication"`
-	Authorization  *authorization.AuthorizationModel          `tfsdk:"authorization"`
-	Attributes     *attributes.AttributesModel                `tfsdk:"attributes"`
-	Connectors     *connectors.ConnectorsModel                `tfsdk:"connectors"`
-	Applications   *applications.ApplicationModel             `tfsdk:"applications"`
-	JWTTemplates   *jwttemplates.JWTTemplatesModel            `tfsdk:"jwt_templates"`
-	Styles         *flows.StylesModel                         `tfsdk:"styles"`
-	Flows          *flows.FlowsModel                          `tfsdk:"flows"` // this is just a map but use pointer to stay consistent with other models
+	ID             stringattr.Type                                  `tfsdk:"id"`
+	Name           stringattr.Type                                  `tfsdk:"name"`
+	Environment    stringattr.Type                                  `tfsdk:"environment"`
+	Tags           []stringattr.Type                                `tfsdk:"tags"`
+	Settings       objattr.Type[settings.SettingsModel]             `tfsdk:"project_settings"`
+	Invite         objattr.Type[settings.InviteSettingsModel]       `tfsdk:"invite_settings"`
+	Authentication objattr.Type[authentication.AuthenticationModel] `tfsdk:"authentication"`
+	Authorization  objattr.Type[authorization.AuthorizationModel]   `tfsdk:"authorization"`
+	Attributes     objattr.Type[attributes.AttributesModel]         `tfsdk:"attributes"`
+	Connectors     objattr.Type[connectors.ConnectorsModel]         `tfsdk:"connectors"`
+	Applications   objattr.Type[applications.ApplicationModel]      `tfsdk:"applications"`
+	JWTTemplates   objattr.Type[jwttemplates.JWTTemplatesModel]     `tfsdk:"jwt_templates"`
+	Styles         objattr.Type[flows.StylesModel]                  `tfsdk:"styles"`
+	Flows          *flows.FlowsModel                                `tfsdk:"flows"` // this is just a map but use pointer to stay consistent with other models
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -65,13 +61,13 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	strlistattr.Get(m.Tags, data, "tags", h)
 	objattr.Get(m.Settings, data, "settings", h)
 	objattr.Get(m.Invite, data, "settings", h)
-	objectattr.Get(m.Authentication, data, "authentication", h)
-	objectattr.Get(m.Connectors, data, "connectors", h)
-	objectattr.Get(m.Applications, data, "applications", h)
-	objectattr.Get(m.Authorization, data, "authorization", h)
-	objectattr.Get(m.Attributes, data, "attributes", h)
-	objectattr.Get(m.JWTTemplates, data, "jwtTemplates", h)
-	objectattr.Get(m.Styles, data, "styles", h)
+	objattr.Get(m.Authentication, data, "authentication", h)
+	objattr.Get(m.Connectors, data, "connectors", h)
+	objattr.Get(m.Applications, data, "applications", h)
+	objattr.Get(m.Authorization, data, "authorization", h)
+	objattr.Get(m.Attributes, data, "attributes", h)
+	objattr.Get(m.JWTTemplates, data, "jwtTemplates", h)
+	objattr.Get(m.Styles, data, "styles", h)
 	mapattr.Get(m.Flows, data, "flows", h)
 	return data
 }
@@ -86,33 +82,23 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	strlistattr.Set(&m.Tags, data, "tags", h)
 	objattr.Set(&m.Settings, data, "settings", h)
 	objattr.Set(&m.Invite, data, "settings", h)
-	objectattr.Set(&m.Authentication, data, "authentication", h)
-	objectattr.Set(&m.Connectors, data, "connectors", h)
-	objectattr.Set(&m.Applications, data, "applications", h)
-	objectattr.Set(&m.Authorization, data, "authorization", h)
-	objectattr.Set(&m.Attributes, data, "attributes", h)
-	objectattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
-	objectattr.Set(&m.Styles, data, "styles", h)
+	objattr.Set(&m.Authentication, data, "authentication", h)
+	objattr.Set(&m.Connectors, data, "connectors", h)
+	objattr.Set(&m.Applications, data, "applications", h)
+	objattr.Set(&m.Authorization, data, "authorization", h)
+	objattr.Set(&m.Attributes, data, "attributes", h)
+	objattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
+	objattr.Set(&m.Styles, data, "styles", h)
 	mapattr.Set(&m.Flows, data, "flows", h)
 }
 
-func (m *ProjectModel) References(ctx context.Context) helpers.ReferencesMap {
-	refs := helpers.ReferencesMap{}
-	if m.Connectors != nil {
-		maps.Copy(refs, m.Connectors.References(ctx))
-	}
-	if m.Authorization != nil {
-		maps.Copy(refs, m.Authorization.References(ctx))
-	}
-	if m.JWTTemplates != nil {
-		maps.Copy(refs, m.JWTTemplates.References(ctx))
-	}
-	return refs
+func (m *ProjectModel) CollectReferences(h *helpers.Handler) {
+	objattr.CollectReferences(m.Connectors, h)
+	objattr.CollectReferences(m.Authorization, h)
+	objattr.CollectReferences(m.JWTTemplates, h)
 }
 
-func (m *ProjectModel) SetReferences(h *helpers.Handler) {
-	if m.Authentication != nil {
-		m.Authentication.SetReferences(h)
-	}
+func (m *ProjectModel) UpdateReferences(h *helpers.Handler) {
+	objattr.UpdateReferences(&m.Authentication, h)
 	objattr.UpdateReferences(&m.Settings, h)
 }

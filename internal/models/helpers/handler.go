@@ -15,11 +15,11 @@ type Handler struct {
 	Refs        ReferencesMap
 }
 
-func NewHandler(ctx context.Context, diags *diag.Diagnostics, refs ReferencesMap) *Handler {
+func NewHandler(ctx context.Context, diags *diag.Diagnostics) *Handler {
 	return &Handler{
 		Ctx:         ctx,
 		Diagnostics: diags,
-		Refs:        refs,
+		Refs:        ReferencesMap{},
 	}
 }
 

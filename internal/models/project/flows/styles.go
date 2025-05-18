@@ -41,7 +41,7 @@ func (m *StylesModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *StylesModel) Validate(h *helpers.Handler) {
 	if helpers.HasUnknownValues(m.Data) {
-		return // skip validation if there are unknown values//
+		return // skip validation if there are unknown values
 	}
 	data := getStylesData(m.Data, h)
 	if data["styles"] == nil {

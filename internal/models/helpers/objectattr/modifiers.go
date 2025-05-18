@@ -44,7 +44,7 @@ func (v *objectModifier[T, M]) PlanModifyObject(ctx context.Context, req planmod
 		return
 	}
 
-	handler := helpers.NewHandler(ctx, &resp.Diagnostics, helpers.ReferencesMap{})
+	handler := helpers.NewHandler(ctx, &resp.Diagnostics)
 	plan.Modify(handler, state, config)
 	if resp.Diagnostics.HasError() {
 		return

@@ -1,8 +1,6 @@
 package jwttemplates
 
 import (
-	"context"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
@@ -42,15 +40,13 @@ func (m *JWTTemplatesModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 }
 
-func (m *JWTTemplatesModel) References(ctx context.Context) helpers.ReferencesMap {
-	refs := helpers.ReferencesMap{}
+func (m *JWTTemplatesModel) CollectReferences(h *helpers.Handler) {
 	for _, v := range m.UserTemplates {
-		refs.Add(helpers.JWTTemplateReferenceKey, "user", v.ID.ValueString(), v.Name.ValueString())
+		h.Refs.Add(helpers.JWTTemplateReferenceKey, "user", v.ID.ValueString(), v.Name.ValueString())
 	}
 	for _, v := range m.AccessKeyTemplates {
-		refs.Add(helpers.JWTTemplateReferenceKey, "key", v.ID.ValueString(), v.Name.ValueString())
+		h.Refs.Add(helpers.JWTTemplateReferenceKey, "key", v.ID.ValueString(), v.Name.ValueString())
 	}
-	return refs
 }
 
 func (m *JWTTemplatesModel) Validate(h *helpers.Handler) {
