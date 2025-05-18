@@ -6,7 +6,7 @@ import (
 	"maps"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr/objtype"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
