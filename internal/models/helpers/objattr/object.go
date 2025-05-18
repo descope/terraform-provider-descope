@@ -24,7 +24,7 @@ func Required[T any](attributes map[string]schema.Attribute, extras ...any) sche
 	validators, modifiers := parseExtras(extras)
 	return schema.SingleNestedAttribute{
 		Required:      true,
-		CustomType:    objtype.NewObjectTypeOf[T](context.Background()),
+		CustomType:    objtype.NewObjectTypeOfMust[T](context.Background()),
 		Attributes:    attributes,
 		Validators:    validators,
 		PlanModifiers: modifiers,
@@ -36,7 +36,7 @@ func Optional[T any](attributes map[string]schema.Attribute, extras ...any) sche
 	return schema.SingleNestedAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    objtype.NewObjectTypeOf[T](context.Background()),
+		CustomType:    objtype.NewObjectTypeOfMust[T](context.Background()),
 		Attributes:    attributes,
 		Validators:    validators,
 		PlanModifiers: append([]planmodifier.Object{objectplanmodifier.UseStateForUnknown()}, modifiers...),
@@ -48,7 +48,7 @@ func Default[T any](attributes map[string]schema.Attribute, value *T, extras ...
 	return schema.SingleNestedAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    objtype.NewObjectTypeOf[T](context.Background()),
+		CustomType:    objtype.NewObjectTypeOfMust[T](context.Background()),
 		Attributes:    attributes,
 		Validators:    validators,
 		PlanModifiers: modifiers,

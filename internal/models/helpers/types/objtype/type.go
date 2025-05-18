@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"reflect"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -13,31 +14,18 @@ import (
 
 var (
 	_ basetypes.ObjectTypable = (*objectTypeOf[struct{}])(nil)
-	_ NestedObjectType        = (*objectTypeOf[struct{}])(nil)
+	_ types.NestedObjectType  = (*objectTypeOf[struct{}])(nil)
 )
-
-type NestedObjectType interface {
-	attr.Type
-
-	// NewObjectPtr returns a new, empty value as an object pointer (Go *struct).
-	NewObjectPtr(context.Context) (any, diag.Diagnostics)
-
-	// NullValue returns a Null Value.
-	NullValue(context.Context) (attr.Value, diag.Diagnostics)
-
-	// ValueFromObjectPtr returns a Value given an object pointer (Go *struct).
-	ValueFromObjectPtr(context.Context, any) (attr.Value, diag.Diagnostics)
-}
 
 // objectTypeOf is the attribute type of an ObjectValueOf.
 type objectTypeOf[T any] struct {
 	basetypes.ObjectType
 }
 
-func newObjectTypeOf[T any](ctx context.Context) (objectTypeOf[T], diag.Diagnostics) {
+func NewObjectTypeOf[T any](ctx context.Context) (objectTypeOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	m, d := attributeTypes[T](ctx)
+	m, d := types.AttributeTypes[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
 		return objectTypeOf[T]{}, diags
@@ -46,8 +34,8 @@ func newObjectTypeOf[T any](ctx context.Context) (objectTypeOf[T], diag.Diagnost
 	return objectTypeOf[T]{basetypes.ObjectType{AttrTypes: m}}, diags
 }
 
-func NewObjectTypeOf[T any](ctx context.Context) objectTypeOf[T] {
-	return diagsMust(newObjectTypeOf[T](ctx))
+func NewObjectTypeOfMust[T any](ctx context.Context) objectTypeOf[T] {
+	return types.Must(NewObjectTypeOf[T](ctx))
 }
 
 func (t objectTypeOf[T]) Equal(o attr.Type) bool {
@@ -55,7 +43,6 @@ func (t objectTypeOf[T]) Equal(o attr.Type) bool {
 	if !ok {
 		return false
 	}
-
 	return t.ObjectType.Equal(other.ObjectType)
 }
 
@@ -74,7 +61,7 @@ func (t objectTypeOf[T]) ValueFromObject(ctx context.Context, in basetypes.Objec
 		return NewObjectValueOfUnknown[T](ctx), diags
 	}
 
-	m, d := attributeTypes[T](ctx)
+	m, d := types.AttributeTypes[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewObjectValueOfUnknown[T](ctx), diags
@@ -93,7 +80,7 @@ func (t objectTypeOf[T]) ValueFromObject(ctx context.Context, in basetypes.Objec
 	return value, diags
 }
 
-func (t objectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
+func (t objectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) { // TODO
 	attrValue, err := t.ObjectType.ValueFromTerraform(ctx, in)
 
 	if err != nil {
@@ -118,7 +105,7 @@ func (t objectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
 }
 
 func (t objectTypeOf[T]) NewObjectPtr(ctx context.Context) (any, diag.Diagnostics) {
-	return objectTypeNewObjectPtr[T](ctx)
+	return ObjectTypeNewObjectPtr[T](ctx)
 }
 
 func (t objectTypeOf[T]) NullValue(ctx context.Context) (attr.Value, diag.Diagnostics) {
@@ -139,7 +126,7 @@ func (t objectTypeOf[T]) ValueFromObjectPtr(ctx context.Context, ptr any) (attr.
 	return nil, diags
 }
 
-func objectTypeNewObjectPtr[T any](ctx context.Context) (*T, diag.Diagnostics) {
+func ObjectTypeNewObjectPtr[T any](ctx context.Context) (*T, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	t := new(T)
@@ -163,13 +150,13 @@ func NullOutObjectPtrFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 
 	val = val.Elem()
 
-	for i := range typ.NumField() {
-		val := val.Field(i)
-		if !val.CanInterface() {
+	for field := range types.StructFields(val.Type()) {
+		fieldVal := val.FieldByIndex(field.Index)
+		if !fieldVal.CanInterface() {
 			continue
 		}
 
-		attrValue, err := NullValueOf(ctx, val.Interface())
+		attrValue, err := types.NullValueOf(ctx, fieldVal.Interface())
 
 		if err != nil {
 			diags.Append(diag.NewErrorDiagnostic("attr.Type.ValueFromTerraform", err.Error()))
@@ -180,7 +167,7 @@ func NullOutObjectPtrFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 			continue
 		}
 
-		val.Set(reflect.ValueOf(attrValue))
+		fieldVal.Set(reflect.ValueOf(attrValue))
 	}
 
 	return diags

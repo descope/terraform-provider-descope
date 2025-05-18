@@ -1,4 +1,4 @@
-package objtype
+package types
 
 import (
 	"context"
@@ -11,7 +11,7 @@ import (
 
 // attributeTypes returns a map of attribute types for the specified type T.
 // T must be a struct and reflection is used to find exported fields of T with the `tfsdk` tag.
-func attributeTypes[T any](ctx context.Context) (map[string]attr.Type, diag.Diagnostics) {
+func AttributeTypes[T any](ctx context.Context) (map[string]attr.Type, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	var t T
 	val := reflect.ValueOf(t)
@@ -30,7 +30,7 @@ func attributeTypes[T any](ctx context.Context) (map[string]attr.Type, diag.Diag
 	attributeTypes := make(map[string]attr.Type)
 	for i := range typ.NumField() {
 		field := typ.Field(i)
-		if field.PkgPath != "" {
+		if !field.IsExported() {
 			continue // Skip unexported fields.
 		}
 		tag := field.Tag.Get(`tfsdk`)
@@ -50,23 +50,11 @@ func attributeTypes[T any](ctx context.Context) (map[string]attr.Type, diag.Diag
 	return attributeTypes, nil
 }
 
-func attributeTypesMust[T any](ctx context.Context) map[string]attr.Type {
-	return diagsMust(attributeTypes[T](ctx))
+func AttributeTypesMust[T any](ctx context.Context) map[string]attr.Type {
+	return Must(AttributeTypes[T](ctx))
 }
 
-func diagsMust[T any](x T, diags diag.Diagnostics) T {
-	if errs := diags.Errors(); len(errs) > 0 {
-		panic(fmt.Sprintf("%s: %s", errs[0].Summary(), errs[0].Detail()))
-	}
-	return x
-}
-
-func applyToAllValues[M ~map[K]V1, K comparable, V1, V2 any](m M, f func(V1) V2) map[K]V2 {
-	n := make(map[K]V2, len(m))
-
-	for k, v := range m {
-		n[k] = f(v)
-	}
-
-	return n
+func NewAttrTypeOf[T attr.Value](ctx context.Context) attr.Type {
+	var zero T
+	return zero.Type(ctx)
 }

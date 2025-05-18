@@ -1,8 +1,11 @@
 package strlistattr
 
 import (
+	"context"
 	"slices"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/strlisttype"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -44,4 +47,12 @@ func terraformSliceToStringSlice(strs []types.String) []string {
 		result = append(result, strs[i].ValueString())
 	}
 	return result
+}
+
+func stringSliceToStringListValue(ctx context.Context, values []string) Type {
+	var elements []attr.Value
+	for _, v := range values {
+		elements = append(elements, types.StringValue(v))
+	}
+	return strlisttype.NewListValueOfMust[types.String](ctx, elements)
 }
