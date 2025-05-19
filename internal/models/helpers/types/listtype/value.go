@@ -3,12 +3,14 @@ package listtype
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var (
@@ -68,6 +70,18 @@ func (v ListNestedObjectValueOf[T]) ToSlice(ctx context.Context) ([]*T, diag.Dia
 	return nestedObjectValueObjectSlice[T](ctx, v.ListValue)
 }
 
+// TODO
+func (v ListNestedObjectValueOf[T]) Iterator(ctx context.Context) iter.Seq[*T] {
+	return func(yield func(*T) bool) {
+		for _, element := range v.Elements() {
+			ptr := types.Must(objtype.ObjectValueObjectPtr[T](ctx, element))
+			if !yield(ptr) {
+				return
+			}
+		}
+	}
+}
+
 func nestedObjectValueObjectPtr[T any](ctx context.Context, val types.ValueWithElements) (*T, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -109,10 +123,14 @@ func nestedObjectValueObjectSlice[T any](ctx context.Context, val types.ValueWit
 
 func NewListNestedObjectValueOfNull[T any](ctx context.Context, f ...ListNestedObjectOfOption[T]) ListNestedObjectValueOf[T] {
 	opts := newListNestedObjectOfOptions(f...)
+	var zero *T
+	tflog.Info(ctx, fmt.Sprintf("xxx NewListNestedObjectValueOfNull: %T, %+v", zero, zero))
 	return ListNestedObjectValueOf[T]{ListValue: basetypes.NewListNull(objtype.NewObjectTypeOfMust[T](ctx)), semanticEqualityFunc: opts.SemanticEqualityFunc}
 }
 
 func NewListNestedObjectValueOfUnknown[T any](ctx context.Context) ListNestedObjectValueOf[T] {
+	var zero *T
+	tflog.Info(ctx, fmt.Sprintf("xxx NewListNestedObjectValueOfUnknown: %T, %+v", zero, zero))
 	return ListNestedObjectValueOf[T]{ListValue: basetypes.NewListUnknown(objtype.NewObjectTypeOfMust[T](ctx))}
 }
 
@@ -145,8 +163,11 @@ func newListNestedObjectValueOf[T any](ctx context.Context, elements []*T, f lis
 	typ, d := objtype.NewObjectTypeOf[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
+		tflog.Info(ctx, fmt.Sprintf("xxx NewListNestedObjectValueOf: errors in diags: %+v", diags))
 		return NewListNestedObjectValueOfUnknown[T](ctx), diags
 	}
+
+	tflog.Info(ctx, fmt.Sprintf("xxx NewListNestedObjectValueOf: %T, %+v // %T, %+v", elements, elements, typ, typ))
 
 	values := []attr.Value{}
 	for _, v := range elements {

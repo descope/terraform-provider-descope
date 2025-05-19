@@ -3,7 +3,6 @@ package objtype
 import (
 	"context"
 	"fmt"
-	"reflect"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -129,43 +128,10 @@ func ObjectTypeNewObjectPtr[T any](ctx context.Context) (*T, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	t := new(T)
-	diags.Append(NullOutObjectPtrFields(ctx, t)...)
+	diags.Append(types.NullOutObjectPtrFields(ctx, t)...)
 	if diags.HasError() {
 		return nil, diags
 	}
 
 	return t, diags
-}
-
-func NullOutObjectPtrFields[T any](ctx context.Context, t *T) diag.Diagnostics {
-	var diags diag.Diagnostics
-	val := reflect.ValueOf(t)
-	typ := val.Type().Elem()
-
-	if typ.Kind() != reflect.Struct {
-		return diags
-	}
-
-	val = val.Elem()
-
-	for field := range types.StructFields(val.Type()) {
-		fieldVal := val.FieldByIndex(field.Index)
-		if !fieldVal.CanInterface() {
-			continue
-		}
-
-		attrValue, err := types.NullValueOf(ctx, fieldVal.Interface())
-		if err != nil {
-			diags.Append(diag.NewErrorDiagnostic("attr.Type.ValueFromTerraform", err.Error()))
-			return diags
-		}
-
-		if attrValue == nil {
-			continue
-		}
-
-		fieldVal.Set(reflect.ValueOf(attrValue))
-	}
-
-	return diags
 }
