@@ -8,131 +8,137 @@ import (
 	"unsafe"
 )
 
-// Deprecated: UnsafeDebugValue is not safe to use in production code.
-func UnsafeDebugValue(v any, options ...bool) string {
-	var compact, types bool
-	if len(options) > 0 {
-		compact = options[0]
+// Deprecated: UnsafeFormattedValue is not safe to use in production code.
+func UnsafeFormattedValue[T any](v T, pretty bool) string {
+	f := UnsafeFormatter[T]{Separator: ", ", Padding: "", Endline: ""}
+	if pretty {
+		f = UnsafeFormatter[T]{Separator: ",", Padding: " ", Endline: "\n", Indent: 4, Types: true}
 	}
-	if len(options) > 1 {
-		types = options[1]
-	}
-	if compact {
-		return makeDebugValue(v, types, ", ", "", "")
-	}
-	return makeDebugValue(v, types, ",", " ", "\n")
+	return f.Format(v)
 }
 
-func makeDebugValue(v any, types bool, sep, padding, endline string) string {
-	var sb strings.Builder
-	appendDebugValue(reflect.ValueOf(v), &sb, types, sep, padding, endline, 0)
-	return sb.String()
+// Deprecated: UnsafeFormatter is not safe to use in production code.
+type UnsafeFormatter[T any] struct {
+	Types     bool
+	Separator string
+	Padding   string
+	Endline   string
+	Indent    int
 }
 
-func appendDebugValue(val reflect.Value, sb *strings.Builder, types bool, sep, padding, endline string, indent int) {
+func (f UnsafeFormatter[T]) Format(v T) string {
+	var w strings.Builder
+
+	val := reflect.ValueOf(v)
+	if f.Types {
+		w.WriteString(val.Type().Name())
+	}
+	if !val.CanAddr() {
+		val = reflect.ValueOf(&v)
+	}
+
+	f.append(val, 0, &w)
+	return w.String()
+}
+
+func (f UnsafeFormatter[T]) append(val reflect.Value, nesting int, b *strings.Builder) {
 	typ := val.Type()
 	if val.Kind() == reflect.Ptr {
 		val = val.Elem()
 		typ = typ.Elem()
 	}
 
+	if !val.CanInterface() && val.CanAddr() {
+		val = reflect.NewAt(val.Type(), unsafe.Pointer(val.UnsafeAddr())).Elem()
+	}
+
 	if val.Kind() == reflect.Struct {
-		sb.WriteString("{")
+		f.open("{", val.NumField(), nesting, b)
 		for i := range val.NumField() {
 			field := typ.Field(i)
-			fieldVal := val.Field(i)
-			if !fieldVal.CanInterface() {
-				fieldVal = reflect.NewAt(fieldVal.Type(), unsafe.Pointer(fieldVal.UnsafeAddr())).Elem()
-			}
-
-			if i == 0 {
-				sb.WriteString(endline)
-				sb.WriteString(strings.Repeat(padding, indent+2))
-			}
-			if types {
-				sb.WriteString(fmt.Sprintf("%s: %s = ", field.Name, field.Type))
+			if f.Types {
+				b.WriteString(fmt.Sprintf("%s: %s = ", field.Name, field.Type))
 			} else {
-				sb.WriteString(fmt.Sprintf("%s: ", field.Name))
+				b.WriteString(fmt.Sprintf("%s: ", field.Name))
 			}
-
-			appendDebugValue(fieldVal, sb, types, sep, padding, endline, indent+2)
-
-			if i < val.NumField()-1 {
-				sb.WriteString(sep)
-				sb.WriteString(endline)
-				sb.WriteString(strings.Repeat(padding, indent+2))
-			}
+			f.append(val.Field(i), nesting+f.Indent, b)
+			f.separate(i, val.NumField(), nesting, b)
 		}
-		if val.NumField() > 0 {
-			sb.WriteString(endline)
-			sb.WriteString(strings.Repeat(padding, indent))
-		}
-		sb.WriteString("}")
+		f.close("}", val.NumField(), nesting, b)
 	} else if val.Kind() == reflect.Slice || val.Kind() == reflect.Array {
-		sb.WriteString("[")
+		f.open("[", val.Len(), nesting, b)
 		for i := range val.Len() {
-			if i == 0 {
-				sb.WriteString(endline)
-				sb.WriteString(strings.Repeat(padding, indent+2))
-			}
-			sb.WriteString(fmt.Sprintf("%d: ", i))
-
-			appendDebugValue(val.Index(i), sb, types, sep, padding, endline, indent+2)
-
-			if i < val.Len()-1 {
-				sb.WriteString(sep)
-				sb.WriteString(endline)
-				sb.WriteString(strings.Repeat(padding, indent+2))
-			}
+			b.WriteString(fmt.Sprintf("%d: ", i))
+			f.append(val.Index(i), nesting+f.Indent, b)
+			f.separate(i, val.Len(), nesting, b)
 		}
-		if val.Len() > 0 {
-			sb.WriteString(endline)
-			sb.WriteString(strings.Repeat(padding, indent))
-		}
-		sb.WriteString("]")
+		f.close("]", val.Len(), nesting, b)
 	} else if val.Kind() == reflect.Map {
-		m := map[string]string{}
-		for _, k := range val.MapKeys() {
-			s := strings.Builder{}
-			appendDebugValue(k, &s, types, sep, padding, endline, indent+2)
-			key := s.String()
-
-			s.Reset()
-			appendDebugValue(val.MapIndex(k), &s, types, sep, padding, endline, indent+2)
-			value := s.String()
-
-			m[key] = value
+		keys, values := f.convertMap(val, nesting)
+		f.open("[", len(keys), nesting, b)
+		for i := range keys {
+			b.WriteString(fmt.Sprintf("%s: %s", keys[i], values[i]))
+			f.separate(i, len(keys), nesting, b)
 		}
-
-		keys := []string{}
-		for k := range m {
-			keys = append(keys, k)
-		}
-		slices.Sort(keys)
-
-		sb.WriteString("[")
-		for i, key := range keys {
-			if i == 0 {
-				sb.WriteString(endline)
-				sb.WriteString(strings.Repeat(padding, indent+2))
-			}
-			sb.WriteString(fmt.Sprintf("%s: %s", key, m[key]))
-			if i < len(keys)-1 {
-				sb.WriteString(sep)
-				sb.WriteString(endline)
-				sb.WriteString(strings.Repeat(padding, indent+2))
-			}
-		}
-		if len(keys) > 0 {
-			sb.WriteString(endline)
-			sb.WriteString(strings.Repeat(padding, indent))
-		}
-		sb.WriteString("]")
+		f.close("]", len(keys), nesting, b)
+	} else if !val.CanInterface() {
+		b.WriteString(fmt.Sprintf("<?%v?>", val))
 	} else if val.Kind() == reflect.String {
-		sb.WriteString(fmt.Sprintf("%q", val.Interface()))
-	} else if val.CanInterface() {
-		sb.WriteString(fmt.Sprint(val.Interface()))
+		b.WriteString(fmt.Sprintf("%q", val.Interface()))
 	} else {
-		sb.WriteString(fmt.Sprintf("<?%v?>", val))
+		if f.Types && nesting == 0 {
+			b.WriteString("(")
+		}
+		b.WriteString(fmt.Sprint(val.Interface()))
+		if f.Types && nesting == 0 {
+			b.WriteString(")")
+		}
 	}
+}
+
+func (f UnsafeFormatter[T]) open(s string, n int, nesting int, b *strings.Builder) {
+	b.WriteString(s)
+	if n > 0 {
+		b.WriteString(f.Endline)
+		b.WriteString(strings.Repeat(f.Padding, nesting+f.Indent))
+	}
+}
+
+func (f UnsafeFormatter[T]) separate(i int, n int, nesting int, b *strings.Builder) {
+	if i < n-1 {
+		b.WriteString(f.Separator)
+		b.WriteString(f.Endline)
+		b.WriteString(strings.Repeat(f.Padding, nesting+f.Indent))
+	}
+}
+
+func (f UnsafeFormatter[T]) close(s string, n int, nesting int, b *strings.Builder) {
+	if n > 0 {
+		b.WriteString(f.Endline)
+		b.WriteString(strings.Repeat(f.Padding, nesting))
+	}
+	b.WriteString(s)
+}
+
+func (f UnsafeFormatter[T]) convertMap(val reflect.Value, nesting int) (keys []string, values []string) {
+	m := map[string]string{}
+	for _, k := range val.MapKeys() {
+		key := strings.Builder{}
+		f.append(k, nesting+f.Indent, &key)
+
+		value := strings.Builder{}
+		f.append(val.MapIndex(k), nesting+f.Indent, &value)
+
+		m[key.String()] = value.String()
+	}
+
+	for key := range m {
+		keys = append(keys, key)
+	}
+	slices.Sort(keys)
+	for _, key := range keys {
+		values = append(values, m[key])
+	}
+
+	return keys, values
 }
