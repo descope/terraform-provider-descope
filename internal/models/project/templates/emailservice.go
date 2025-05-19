@@ -13,12 +13,12 @@ var EmailServiceValidator = objectattr.NewValidator[EmailServiceModel]("must hav
 
 var EmailServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
-	"templates": listattr.Optional(EmailTemplateAttributes, EmailTemplateValidator),
+	"templates": listattr.Default([]*EmailTemplateModel{}, EmailTemplateAttributes, EmailTemplateValidator),
 }
 
 type EmailServiceModel struct {
-	Connector types.String          `tfsdk:"connector"`
-	Templates []*EmailTemplateModel `tfsdk:"templates"`
+	Connector types.String                      `tfsdk:"connector"`
+	Templates listattr.Type[EmailTemplateModel] `tfsdk:"templates"`
 }
 
 func (m *EmailServiceModel) Values(h *helpers.Handler) map[string]any {
@@ -30,14 +30,17 @@ func (m *EmailServiceModel) Values(h *helpers.Handler) map[string]any {
 	} else {
 		h.Error("Unknown connector reference", "No connector named '%s' for email service was defined", connector)
 	}
-	listattr.Get(m.Templates, data, "emailTemplates", h)
+	listattr.Get2(m.Templates, data, "emailTemplates", h)
 	return data
 }
 
 func (m *EmailServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "emailServiceProvider")
-	// update known templates with their new values
-	for _, template := range m.Templates {
+	listattr.Set2(&m.Templates, data, "emailTemplates", h)
+
+	// update known templates with their new values // TODO
+	templates, _ := m.Templates.ToSlice(h.Ctx)
+	for _, template := range templates {
 		name := template.Name.ValueString()
 		h.Log("Looking for email template named '%s'", name)
 		if id, ok := requireTemplateID(h, data, "emailTemplates", name); ok {
@@ -52,16 +55,17 @@ func (m *EmailServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 			h.Error("Template not found", "Expected to find email template to match with '%s' template", name)
 		}
 	}
-	// we allow to set templates on import
-	if m.Templates == nil && helpers.IsImport(h.Ctx) {
-		listattr.Set(&m.Templates, data, "emailTemplates", h)
-	}
 }
 
 func (m *EmailServiceModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.Connector, m.Templates) {
+		return
+	}
+
 	hasActive := false
 	names := map[string]int{}
-	for _, v := range m.Templates {
+	templates, _ := m.Templates.ToSlice(h.Ctx)
+	for _, v := range templates {
 		hasActive = hasActive || v.Active.ValueBool()
 		names[v.Name.ValueString()] += 1
 	}
@@ -78,6 +82,6 @@ func (m *EmailServiceModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *EmailServiceModel) SetReferences(h *helpers.Handler) {
+func (m *EmailServiceModel) UpdateReferences(h *helpers.Handler) {
 	replaceConnectorIDWithReference(&m.Connector, h)
 }

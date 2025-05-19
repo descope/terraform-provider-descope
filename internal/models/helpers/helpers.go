@@ -7,6 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+const RootKey string = ""
+
 type contextKey string
 
 const importKey = contextKey("descopeImport")

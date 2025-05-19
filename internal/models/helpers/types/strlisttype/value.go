@@ -9,6 +9,11 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
+var (
+	_ attr.Value             = (*ListValueOf[basetypes.StringValue])(nil)
+	_ basetypes.ListValuable = (*ListValueOf[basetypes.StringValue])(nil)
+)
+
 type ListValueOf[T attr.Value] struct {
 	basetypes.ListValue
 }

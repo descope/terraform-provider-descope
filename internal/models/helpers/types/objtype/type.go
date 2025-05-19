@@ -13,11 +13,11 @@ import (
 )
 
 var (
+	_ attr.Type               = (*objectTypeOf[struct{}])(nil)
 	_ basetypes.ObjectTypable = (*objectTypeOf[struct{}])(nil)
 	_ types.NestedObjectType  = (*objectTypeOf[struct{}])(nil)
 )
 
-// objectTypeOf is the attribute type of an ObjectValueOf.
 type objectTypeOf[T any] struct {
 	basetypes.ObjectType
 }
@@ -137,7 +137,6 @@ func ObjectTypeNewObjectPtr[T any](ctx context.Context) (*T, diag.Diagnostics) {
 	return t, diags
 }
 
-// NullOutObjectPtrFields sets all applicable fields of the specified object pointer to their null values.
 func NullOutObjectPtrFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 	var diags diag.Diagnostics
 	val := reflect.ValueOf(t)

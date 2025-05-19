@@ -13,12 +13,12 @@ var VoiceServiceValidator = objectattr.NewValidator[VoiceServiceModel]("must hav
 
 var VoiceServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
-	"templates": listattr.Optional(VoiceTemplateAttributes, VoiceTemplateValidator),
+	"templates": listattr.Default([]*VoiceTemplateModel{}, VoiceTemplateAttributes, VoiceTemplateValidator),
 }
 
 type VoiceServiceModel struct {
-	Connector types.String          `tfsdk:"connector"`
-	Templates []*VoiceTemplateModel `tfsdk:"templates"`
+	Connector types.String                      `tfsdk:"connector"`
+	Templates listattr.Type[VoiceTemplateModel] `tfsdk:"templates"`
 }
 
 func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
@@ -30,14 +30,17 @@ func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
 	} else {
 		h.Error("Unknown connector reference", "No connector named '%s' for voice service was defined", connector)
 	}
-	listattr.Get(m.Templates, data, "voiceTemplates", h)
+	listattr.Get2(m.Templates, data, "voiceTemplates", h)
 	return data
 }
 
 func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "voiceServiceProvider")
-	// update known templates with their new values
-	for _, template := range m.Templates {
+	listattr.Set2(&m.Templates, data, "voiceTemplates", h)
+
+	// update known templates with their new values // TODO
+	templates, _ := m.Templates.ToSlice(h.Ctx)
+	for _, template := range templates {
 		name := template.Name.ValueString()
 		h.Log("Looking for voice template named '%s'", name)
 		if id, ok := requireTemplateID(h, data, "voiceTemplates", name); ok {
@@ -52,16 +55,17 @@ func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 			h.Error("Template not found", "Expected to find voice template to match with '%s' template", name)
 		}
 	}
-	// we allow to set templates on import
-	if m.Templates == nil && helpers.IsImport(h.Ctx) {
-		listattr.Set(&m.Templates, data, "voiceTemplates", h)
-	}
 }
 
 func (m *VoiceServiceModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.Connector, m.Templates) {
+		return
+	}
+
 	hasActive := false
 	names := map[string]int{}
-	for _, v := range m.Templates {
+	templates, _ := m.Templates.ToSlice(h.Ctx)
+	for _, v := range templates {
 		hasActive = hasActive || v.Active.ValueBool()
 		names[v.Name.ValueString()] += 1
 	}
@@ -78,6 +82,6 @@ func (m *VoiceServiceModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *VoiceServiceModel) SetReferences(h *helpers.Handler) {
+func (m *VoiceServiceModel) UpdateReferences(h *helpers.Handler) {
 	replaceConnectorIDWithReference(&m.Connector, h)
 }

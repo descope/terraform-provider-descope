@@ -6,6 +6,7 @@ import (
 	"maps"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectdefault"
@@ -62,7 +63,9 @@ func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, 
 	}
 
 	var value M = o.ToPtrMust(h.Ctx)
-	if m, ok := data[key].(map[string]any); ok {
+	if key == helpers.RootKey {
+		maps.Copy(data, value.Values(h))
+	} else if m, ok := data[key].(map[string]any); ok {
 		maps.Copy(m, value.Values(h))
 	} else {
 		data[key] = value.Values(h)
@@ -70,8 +73,12 @@ func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, 
 }
 
 func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string, h *helpers.Handler) {
-	m, ok := data[key].(map[string]any)
-	if !ok {
+	var m map[string]any
+	if key == helpers.RootKey {
+		m = data
+	} else if v, ok := data[key].(map[string]any); ok {
+		m = v
+	} else {
 		return
 	}
 
@@ -83,13 +90,9 @@ func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string,
 	}
 	value.SetValues(h, m)
 
-	*o = ValueOf(value)
-}
-
-func Ensure[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if o.IsUnknown() {
-		Set[T, M](o, data, key, h)
-	}
+	// TODO
+	h.Log("Setting object value for key '%s' of type '%T' to %s", key, value, types.UnsafeFormattedValue(value, true))
+	*o = objtype.NewObjectValueOfMust(h.Ctx, value)
 }
 
 func CollectReferences[T any, M helpers.CollectReferencesModel[T]](o Type[T], h *helpers.Handler) {
@@ -109,7 +112,7 @@ func UpdateReferences[T any, M helpers.UpdateReferencesModel[T]](o *Type[T], h *
 	var value M = o.ToPtrMust(h.Ctx)
 	value.UpdateReferences(h)
 
-	*o = ValueOf(value)
+	*o = objtype.NewObjectValueOfMust(h.Ctx, value)
 }
 
 func parseExtras(extras []any) (validators []validator.Object, modifiers []planmodifier.Object) {

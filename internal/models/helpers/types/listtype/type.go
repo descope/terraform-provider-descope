@@ -13,27 +13,38 @@ import (
 )
 
 var (
-	_ basetypes.ListTypable                    = (*listNestedObjectTypeOf[struct{}])(nil)
-	_ types.NestedObjectCollectionType         = (*listNestedObjectTypeOf[struct{}])(nil)
-	_ basetypes.ListValuable                   = (*ListNestedObjectValueOf[struct{}])(nil)
-	_ types.NestedObjectCollectionValue        = (*ListNestedObjectValueOf[struct{}])(nil)
-	_ basetypes.ListValuableWithSemanticEquals = (*ListNestedObjectValueOf[struct{}])(nil)
+	_ attr.Type                        = (*listNestedObjectTypeOf[struct{}])(nil)
+	_ basetypes.ListTypable            = (*listNestedObjectTypeOf[struct{}])(nil)
+	_ types.NestedObjectType           = (*listNestedObjectTypeOf[struct{}])(nil)
+	_ types.NestedObjectCollectionType = (*listNestedObjectTypeOf[struct{}])(nil)
 )
 
 type listSemanticEqualityFunc[T any] func(context.Context, ListNestedObjectValueOf[T], ListNestedObjectValueOf[T]) (bool, diag.Diagnostics)
 
-// listNestedObjectTypeOf is the attribute type of a ListNestedObjectValueOf.
 type listNestedObjectTypeOf[T any] struct {
 	basetypes.ListType
 	semanticEqualityFunc listSemanticEqualityFunc[T]
 }
 
-func NewListNestedObjectTypeOf[T any](ctx context.Context, f ...ListNestedObjectOfOption[T]) listNestedObjectTypeOf[T] {
-	opts := newListNestedObjectOfOptions(f...)
-	return listNestedObjectTypeOf[T]{
-		ListType:             basetypes.ListType{ElemType: objtype.NewObjectTypeOfMust[T](ctx)},
-		semanticEqualityFunc: opts.SemanticEqualityFunc,
+func NewListNestedObjectTypeOf[T any](ctx context.Context, f ...ListNestedObjectOfOption[T]) (listNestedObjectTypeOf[T], diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	elemType, d := objtype.NewObjectTypeOf[T](ctx)
+	diags.Append(d...)
+	if diags.HasError() {
+		return listNestedObjectTypeOf[T]{}, diags
 	}
+
+	opts := newListNestedObjectOfOptions(f...)
+
+	return listNestedObjectTypeOf[T]{
+		ListType:             basetypes.ListType{ElemType: elemType},
+		semanticEqualityFunc: opts.SemanticEqualityFunc,
+	}, diags
+}
+
+func NewListNestedObjectTypeOfMust[T any](ctx context.Context, f ...ListNestedObjectOfOption[T]) listNestedObjectTypeOf[T] {
+	return types.Must(NewListNestedObjectTypeOf(ctx, f...))
 }
 
 func (t listNestedObjectTypeOf[T]) Equal(o attr.Type) bool {
@@ -139,7 +150,7 @@ func (t listNestedObjectTypeOf[T]) ValueFromObjectSlice(ctx context.Context, sli
 	return nil, diags
 }
 
-func nestedObjectTypeNewObjectSlice[T any](_ context.Context, len, cap int) ([]*T, diag.Diagnostics) { //nolint:unparam
+func nestedObjectTypeNewObjectSlice[T any](_ context.Context, len, cap int) ([]*T, diag.Diagnostics) {
 	var diags diag.Diagnostics
 	return make([]*T, len, cap), diags
 }

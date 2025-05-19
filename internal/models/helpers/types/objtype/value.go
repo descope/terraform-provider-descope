@@ -10,11 +10,11 @@ import (
 )
 
 var (
+	_ attr.Value               = (*ObjectValueOf[struct{}])(nil)
 	_ basetypes.ObjectValuable = (*ObjectValueOf[struct{}])(nil)
 	_ types.NestedObjectValue  = (*ObjectValueOf[struct{}])(nil)
 )
 
-// ObjectValueOf represents a Terraform Plugin Framework Object value whose corresponding Go type is the structure T.
 type ObjectValueOf[T any] struct {
 	basetypes.ObjectValue
 }
@@ -24,7 +24,6 @@ func (v ObjectValueOf[T]) Equal(o attr.Value) bool {
 	if !ok {
 		return false
 	}
-
 	return v.ObjectValue.Equal(other.ObjectValue)
 }
 
