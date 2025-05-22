@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func getStringSliceValue(data map[string]any, key string) []string {
+func getStringSlice(data map[string]any, key string) []string {
 	var strs []string
 	if objects, ok := data[key].([]any); ok {
 		for i := range objects {
@@ -22,7 +22,7 @@ func getStringSliceValue(data map[string]any, key string) []string {
 	return strs
 }
 
-func getCommaSeparatedStringSliceValue(data map[string]any, key string) []string {
+func getCommaSeparatedStringSlice(data map[string]any, key string) []string {
 	var strs []string
 	if v, _ := data[key].(string); v != "" {
 		strs = strings.Split(v, ",")
@@ -30,7 +30,7 @@ func getCommaSeparatedStringSliceValue(data map[string]any, key string) []string
 	return strs
 }
 
-func terraformSliceToStringSlice(strs []types.String) []string {
+func convertTerraformSliceToStringSlice(strs []types.String) []string {
 	var result []string
 	for i := range strs {
 		result = append(result, strs[i].ValueString())
@@ -38,7 +38,7 @@ func terraformSliceToStringSlice(strs []types.String) []string {
 	return result
 }
 
-func stringSliceToStringListValue(ctx context.Context, values []string) Type {
+func convertStringSliceToTerraformValue(ctx context.Context, values []string) Type {
 	var elements []attr.Value
 	for _, v := range values {
 		elements = append(elements, types.StringValue(v))
@@ -50,10 +50,9 @@ func equalStringSlicesIgnoringOrder(a, b []string) bool {
 	if len(a) != len(b) {
 		return false
 	}
-	for i := range a {
-		if !slices.Contains(b, a[i]) {
-			return false
-		}
-	}
-	return true
+	as := slices.Clone(a)
+	bs := slices.Clone(b)
+	slices.Sort(as)
+	slices.Sort(bs)
+	return slices.Equal(as, bs)
 }

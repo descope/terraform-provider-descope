@@ -7,6 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
+// TODO remove if not needed
+
 // NestedObjectType extends the Type interface for types that represent nested Objects.
 // The nested objects are either a single object or a collection of objects (List or Set).
 // It isn't generic on the Go struct type as it's referenced within AutoFlEx.

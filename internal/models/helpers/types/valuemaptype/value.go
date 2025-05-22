@@ -10,6 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 var (
@@ -31,6 +32,13 @@ func (v MapValueOf[T]) Equal(o attr.Value) bool {
 
 func (v MapValueOf[T]) Type(ctx context.Context) attr.Type {
 	return NewMapTypeOf[T](ctx)
+}
+
+func (v MapValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
+	if v.IsNull() {
+		return tftypes.NewValue(v.Type(ctx).TerraformType(ctx), nil), nil
+	}
+	return v.MapValue.ToTerraformValue(ctx)
 }
 
 func (v MapValueOf[T]) ToMap(ctx context.Context) (map[string]T, diag.Diagnostics) {

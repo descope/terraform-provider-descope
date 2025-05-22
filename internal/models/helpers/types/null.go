@@ -2,6 +2,7 @@ package types
 
 import (
 	"context"
+	"fmt"
 	"iter"
 	"reflect"
 
@@ -13,8 +14,10 @@ import (
 
 func NullOutObjectPtrFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 	var diags diag.Diagnostics
+
 	val := reflect.ValueOf(t)
 	if val.Type().Elem().Kind() != reflect.Struct {
+		diags.Append(diag.NewErrorDiagnostic("Unexpected object type", fmt.Sprintf("Expected a pointer to a struct, got %T", t))) // TODO
 		return diags
 	}
 
@@ -27,10 +30,9 @@ func NullOutObjectPtrFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 
 		attrValue, err := nullValueOf(ctx, fieldVal.Interface())
 		if err != nil {
-			diags.Append(diag.NewErrorDiagnostic("attr.Type.ValueFromTerraform", err.Error()))
+			diags.Append(diag.NewErrorDiagnostic("Failed to null out field", err.Error()))
 			return diags
 		}
-
 		if attrValue == nil {
 			continue
 		}
@@ -101,18 +103,16 @@ func structFields(typ reflect.Type) iter.Seq[reflect.StructField] {
 	return func(yield func(reflect.StructField) bool) {
 		for i := range typ.NumField() {
 			field := typ.Field(i)
-
 			if field.Anonymous {
-				fieldIndexSequence := []int{i}
+				indexSequence := []int{i}
 				for v := range structFields(field.Type) {
-					v.Index = append(fieldIndexSequence, v.Index...)
+					v.Index = append(indexSequence, v.Index...)
 					if !yield(v) {
 						return
 					}
 				}
 				continue
 			}
-
 			if !yield(field) {
 				return
 			}

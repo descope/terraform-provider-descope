@@ -13,8 +13,9 @@ import (
 )
 
 var (
-	_ attr.Type            = (*mapNestedObjectTypeOf[struct{}])(nil)
-	_ basetypes.MapTypable = (*mapNestedObjectTypeOf[struct{}])(nil)
+	_ attr.Type                = (*mapNestedObjectTypeOf[struct{}])(nil)
+	_ attr.TypeWithElementType = (*mapNestedObjectTypeOf[struct{}])(nil)
+	_ basetypes.MapTypable     = (*mapNestedObjectTypeOf[struct{}])(nil)
 )
 
 type mapSemanticEqualityFunc[T any] func(context.Context, MapNestedObjectValueOf[T], MapNestedObjectValueOf[T]) (bool, diag.Diagnostics)

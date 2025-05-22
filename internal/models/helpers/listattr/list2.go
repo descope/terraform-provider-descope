@@ -45,7 +45,7 @@ func Optional2[T any](attributes map[string]schema.Attribute, validators ...vali
 	}
 }
 
-func Default[T any](values []*T, attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
+func Default[T any](value []*T, attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
@@ -55,31 +55,31 @@ func Default[T any](values []*T, attributes map[string]schema.Attribute, validat
 		Computed:     true,
 		NestedObject: nested,
 		CustomType:   listtype.NewListNestedObjectTypeOfMust[T](context.Background()),
-		Default:      listdefault.StaticValue(ValueOf(context.Background(), values).ListValue),
+		Default:      listdefault.StaticValue(ValueOf(context.Background(), value).ListValue),
 	}
 }
 
-func Get2[T any, M helpers.Model[T]](list Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if list.IsNull() || list.IsUnknown() {
+func Get2[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string, h *helpers.Handler) {
+	if l.IsNull() || l.IsUnknown() {
 		return
 	}
 
-	elems, diags := list.ToSlice(h.Ctx)
+	elems, diags := l.ToSlice(h.Ctx)
 	h.Diagnostics.Append(diags...)
 	if diags.HasError() {
 		return
 	}
 
-	var values []any
+	result := []any{}
 	for _, v := range elems {
 		var m M = v
-		values = append(values, m.Values(h))
+		result = append(result, m.Values(h))
 	}
 
-	data[key] = values
+	data[key] = result
 }
 
-func Set2[T any, M helpers.Model[T]](list *Type[T], data map[string]any, key string, h *helpers.Handler) {
+func Set2[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string, h *helpers.Handler) {
 	elems := []*T{}
 
 	values, _ := data[key].([]any)
@@ -92,9 +92,10 @@ func Set2[T any, M helpers.Model[T]](list *Type[T], data map[string]any, key str
 			elems = append(elems, *model)
 		}
 	}
-	value := listtype.NewListNestedObjectValueOfSliceMust(h.Ctx, elems)
+
+	result := listtype.NewListNestedObjectValueOfSliceMust(h.Ctx, elems)
 
 	// TODO
-	h.Log("Setting list value for key '%s' of type '%T' to %s", key, value, types.UnsafeFormattedValue(value, true))
-	*list = value
+	h.Log("Setting list value for key '%s' of type '%T' to %s", key, result, types.UnsafeFormattedValue(result, true))
+	*l = result
 }

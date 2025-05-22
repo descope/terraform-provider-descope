@@ -7,6 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 var (
@@ -28,6 +29,13 @@ func (v ListValueOf[T]) Equal(o attr.Value) bool {
 
 func (v ListValueOf[T]) Type(ctx context.Context) attr.Type {
 	return newListTypeOf[T](ctx)
+}
+
+func (v ListValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
+	if v.IsNull() {
+		return tftypes.NewValue(v.Type(ctx).TerraformType(ctx), nil), nil
+	}
+	return v.ListValue.ToTerraformValue(ctx)
 }
 
 func (v ListValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {

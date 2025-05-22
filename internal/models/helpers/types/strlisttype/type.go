@@ -12,13 +12,12 @@ import (
 )
 
 var (
-	_ attr.Type             = (*listTypeOf[basetypes.StringValue])(nil)
-	_ basetypes.ListTypable = (*listTypeOf[basetypes.StringValue])(nil)
+	_ attr.Type                = (*listTypeOf[basetypes.StringValue])(nil)
+	_ attr.TypeWithElementType = (*listTypeOf[basetypes.StringValue])(nil)
+	_ basetypes.ListTypable    = (*listTypeOf[basetypes.StringValue])(nil)
 )
 
-var (
-	ListOfStringType = listTypeOf[basetypes.StringValue]{basetypes.ListType{ElemType: basetypes.StringType{}}}
-)
+var StringListType = listTypeOf[basetypes.StringValue]{basetypes.ListType{ElemType: basetypes.StringType{}}}
 
 type listTypeOf[T attr.Value] struct {
 	basetypes.ListType

@@ -15,11 +15,12 @@ import (
 )
 
 var (
-	_ attr.Type            = (*mapTypeOf[basetypes.StringValue])(nil)
-	_ basetypes.MapTypable = (*mapTypeOf[basetypes.StringValue])(nil)
+	_ attr.Type                = (*mapTypeOf[basetypes.StringValue])(nil)
+	_ attr.TypeWithElementType = (*mapTypeOf[basetypes.StringValue])(nil)
+	_ basetypes.MapTypable     = (*mapTypeOf[basetypes.StringValue])(nil)
 )
 
-var Type = mapTypeOf[basetypes.StringValue]{basetypes.MapType{ElemType: basetypes.StringType{}}}
+var StringMapType = mapTypeOf[basetypes.StringValue]{basetypes.MapType{ElemType: basetypes.StringType{}}}
 
 type mapTypeOf[T attr.Value] struct {
 	basetypes.MapType

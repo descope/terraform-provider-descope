@@ -17,8 +17,8 @@ import (
 
 type Type[T any] = objtype.ObjectValueOf[T]
 
-func ValueOf[T any](value *T) Type[T] {
-	return objtype.NewObjectValueOfMust(context.Background(), value)
+func ValueOf[T any](ctx context.Context, value *T) Type[T] {
+	return objtype.NewObjectValueOfMust(ctx, value)
 }
 
 func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.SingleNestedAttribute {
@@ -44,7 +44,7 @@ func Optional[T any](attributes map[string]schema.Attribute, extras ...any) sche
 	}
 }
 
-func Default[T any](attributes map[string]schema.Attribute, value *T, extras ...any) schema.SingleNestedAttribute {
+func Default[T any](value *T, attributes map[string]schema.Attribute, extras ...any) schema.SingleNestedAttribute {
 	validators, modifiers := parseExtras(extras)
 	return schema.SingleNestedAttribute{
 		Optional:      true,
@@ -53,7 +53,7 @@ func Default[T any](attributes map[string]schema.Attribute, value *T, extras ...
 		Attributes:    attributes,
 		Validators:    validators,
 		PlanModifiers: modifiers,
-		Default:       objectdefault.StaticValue(ValueOf(value).ObjectValue),
+		Default:       objectdefault.StaticValue(ValueOf(context.Background(), value).ObjectValue),
 	}
 }
 
@@ -91,8 +91,9 @@ func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string,
 	value.SetValues(h, m)
 
 	// TODO
-	h.Log("Setting object value for key '%s' of type '%T' to %s", key, value, types.UnsafeFormattedValue(value, true))
-	*o = objtype.NewObjectValueOfMust(h.Ctx, value)
+	result := objtype.NewObjectValueOfMust(h.Ctx, value)
+	h.Log("Setting object value for key '%s' of type '%T' to %s", key, result, types.UnsafeFormattedValue(result, true))
+	*o = result
 }
 
 func CollectReferences[T any, M helpers.CollectReferencesModel[T]](o Type[T], h *helpers.Handler) {

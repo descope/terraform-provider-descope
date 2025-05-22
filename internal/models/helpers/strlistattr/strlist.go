@@ -16,14 +16,14 @@ import (
 
 type Type = strlisttype.ListValueOf[types.String]
 
-func Value(values []string) Type {
-	return stringSliceToStringListValue(context.Background(), values)
+func Value(value []string) Type {
+	return convertStringSliceToTerraformValue(context.Background(), value)
 }
 
 func Required(validators ...validator.List) schema.ListAttribute {
 	return schema.ListAttribute{
 		Required:    true,
-		CustomType:  strlisttype.ListOfStringType,
+		CustomType:  strlisttype.StringListType,
 		ElementType: types.StringType,
 		Validators:  validators,
 	}
@@ -33,7 +33,7 @@ func Optional(validators ...validator.List) schema.ListAttribute {
 	return schema.ListAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    strlisttype.ListOfStringType,
+		CustomType:    strlisttype.StringListType,
 		ElementType:   types.StringType,
 		Validators:    validators,
 		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
@@ -44,7 +44,7 @@ func Default(value []string, validators ...validator.List) schema.ListAttribute 
 	return schema.ListAttribute{
 		Optional:    true,
 		Computed:    true,
-		CustomType:  strlisttype.ListOfStringType,
+		CustomType:  strlisttype.StringListType,
 		ElementType: types.StringType,
 		Validators:  validators,
 		Default:     listdefault.StaticValue(Value(value).ListValue),
@@ -57,21 +57,21 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 	}
 
 	values := s.ToSliceMust(h.Ctx)
-	data[key] = terraformSliceToStringSlice(values)
+	data[key] = convertTerraformSliceToStringSlice(values)
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	values := getStringSliceValue(data, key)
+	values := getStringSlice(data, key)
 
 	if !s.IsEmpty() {
-		current := terraformSliceToStringSlice(s.ToSliceMust(h.Ctx))
+		current := convertTerraformSliceToStringSlice(s.ToSliceMust(h.Ctx))
 		if !equalStringSlicesIgnoringOrder(current, values) {
 			h.Mismatch("Mismatched string array value in '%s' key: received [%s], expected [%s]", key, strings.Join(values, ","), strings.Join(current, ","))
 		}
 		return
 	}
 
-	*s = stringSliceToStringListValue(h.Ctx, values)
+	*s = convertStringSliceToTerraformValue(h.Ctx, values)
 }
 
 func GetCommaSeparated(s Type, data map[string]any, key string, h *helpers.Handler) {
@@ -80,19 +80,19 @@ func GetCommaSeparated(s Type, data map[string]any, key string, h *helpers.Handl
 	}
 
 	values := s.ToSliceMust(h.Ctx)
-	data[key] = strings.Join(terraformSliceToStringSlice(values), ",")
+	data[key] = strings.Join(convertTerraformSliceToStringSlice(values), ",")
 }
 
 func SetCommaSeparated(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	values := getCommaSeparatedStringSliceValue(data, key)
+	values := getCommaSeparatedStringSlice(data, key)
 
 	if !s.IsEmpty() {
-		current := terraformSliceToStringSlice(s.ToSliceMust(h.Ctx))
+		current := convertTerraformSliceToStringSlice(s.ToSliceMust(h.Ctx))
 		if !equalStringSlicesIgnoringOrder(current, values) {
 			h.Mismatch("Mismatched comma separated string array value in '%s' key: received [%s], expected [%s]", key, strings.Join(values, ","), strings.Join(current, ","))
 		}
 		return
 	}
 
-	*s = stringSliceToStringListValue(h.Ctx, values)
+	*s = convertStringSliceToTerraformValue(h.Ctx, values)
 }

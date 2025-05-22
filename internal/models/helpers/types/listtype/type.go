@@ -14,6 +14,7 @@ import (
 
 var (
 	_ attr.Type                        = (*listNestedObjectTypeOf[struct{}])(nil)
+	_ attr.TypeWithElementType         = (*listNestedObjectTypeOf[struct{}])(nil)
 	_ basetypes.ListTypable            = (*listNestedObjectTypeOf[struct{}])(nil)
 	_ types.NestedObjectType           = (*listNestedObjectTypeOf[struct{}])(nil)
 	_ types.NestedObjectCollectionType = (*listNestedObjectTypeOf[struct{}])(nil)

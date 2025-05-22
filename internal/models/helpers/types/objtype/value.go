@@ -2,13 +2,12 @@ package objtype
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 var (
@@ -31,6 +30,13 @@ func (v ObjectValueOf[T]) Equal(o attr.Value) bool {
 
 func (v ObjectValueOf[T]) Type(ctx context.Context) attr.Type {
 	return NewObjectTypeOfMust[T](ctx)
+}
+
+func (v ObjectValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
+	if v.IsNull() {
+		return tftypes.NewValue(v.Type(ctx).TerraformType(ctx), nil), nil
+	}
+	return v.ObjectValue.ToTerraformValue(ctx)
 }
 
 func (v ObjectValueOf[T]) ToObjectPtr(ctx context.Context) (any, diag.Diagnostics) {
@@ -62,33 +68,25 @@ func ObjectValueObjectPtr[T any](ctx context.Context, val attr.Value) (*T, diag.
 	return ptr, diags
 }
 
+func ObjectValueObjectPtrMust[T any](ctx context.Context, val attr.Value) *T {
+	return types.Must(ObjectValueObjectPtr[T](ctx, val))
+}
+
 func NewObjectValueOfNull[T any](ctx context.Context) ObjectValueOf[T] {
-	var zero *T
-	tflog.Info(ctx, fmt.Sprintf("NewObjectValueOfNull: %T, %+v", zero, zero))
 	return ObjectValueOf[T]{ObjectValue: basetypes.NewObjectNull(types.AttributeTypesMust[T](ctx))}
 }
 
 func NewObjectValueOfUnknown[T any](ctx context.Context) ObjectValueOf[T] {
-	var zero *T
-	tflog.Info(ctx, fmt.Sprintf("NewObjectValueOfUnknown: %T, %+v", zero, zero))
 	return ObjectValueOf[T]{ObjectValue: basetypes.NewObjectUnknown(types.AttributeTypesMust[T](ctx))}
 }
 
 func NewObjectValueOf[T any](ctx context.Context, t *T) (ObjectValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	tflog.Info(ctx, fmt.Sprintf("NewObjectValueOf: %T, %+v", t, t))
-
 	m, d := types.AttributeTypes[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewObjectValueOfUnknown[T](ctx), diags
-	}
-
-	tflog.Info(ctx, fmt.Sprintf("NewObjectValueOf: %T: diags: %d", t, len(diags)))
-	tflog.Info(ctx, fmt.Sprintf("NewObjectValueOf: %T: attrTypes: %d", t, len(m)))
-	for k, v := range m {
-		tflog.Info(ctx, fmt.Sprintf("NewObjectValueOf: %T: attrTypes[%s]: %s", t, k, v.String()))
 	}
 
 	v, d := basetypes.NewObjectValueFrom(ctx, m, t)

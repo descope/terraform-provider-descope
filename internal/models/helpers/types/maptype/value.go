@@ -3,13 +3,14 @@ package maptype
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 var (
@@ -51,16 +52,58 @@ func (v MapNestedObjectValueOf[T]) Type(ctx context.Context) attr.Type {
 	return NewMapNestedObjectTypeOfMust[T](ctx)
 }
 
+func (v MapNestedObjectValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
+	if v.IsNull() {
+		return tftypes.NewValue(v.Type(ctx).TerraformType(ctx), nil), nil
+	}
+	return v.MapValue.ToTerraformValue(ctx)
+}
+
 func (v MapNestedObjectValueOf[T]) ToObjectMap(ctx context.Context) (any, diag.Diagnostics) {
 	return v.ToMap(ctx)
 }
 
 func (v MapNestedObjectValueOf[T]) ToMap(ctx context.Context) (map[string]*T, diag.Diagnostics) {
-	return nestedObjectValueObjectMap[T](ctx, v)
+	return nestedObjectValueObjectMap(ctx, v)
 }
 
 func (v MapNestedObjectValueOf[T]) ToMapMust(ctx context.Context) map[string]*T {
-	return types.Must(nestedObjectValueObjectMap[T](ctx, v))
+	return types.Must(nestedObjectValueObjectMap(ctx, v))
+}
+
+func (v MapNestedObjectValueOf[T]) IsEmpty() bool {
+	return len(v.MapValue.Elements()) == 0
+}
+
+func (v MapNestedObjectValueOf[T]) ImmutableIterator(ctx context.Context) iter.Seq2[string, *T] {
+	return func(yield func(string, *T) bool) {
+		for k, v := range v.Elements() {
+			ptr, diags := objtype.ObjectValueObjectPtr[T](ctx, v)
+			if diags.HasError() {
+				continue
+			}
+			if !yield(k, ptr) {
+				break
+			}
+		}
+	}
+}
+
+func (v *MapNestedObjectValueOf[T]) MutableIterator(ctx context.Context) iter.Seq2[string, *T] {
+	return func(yield func(string, *T) bool) {
+		m, _ := v.ToMap(ctx)
+		if m == nil {
+			return
+		}
+
+		for k, v := range m {
+			if !yield(k, v) {
+				break
+			}
+		}
+
+		*v, _ = newMapNestedObjectValueOf(ctx, m, v.semanticEqualityFunc)
+	}
 }
 
 func nestedObjectValueObjectMap[T any](ctx context.Context, val MapNestedObjectValueOf[T]) (map[string]*T, diag.Diagnostics) {
@@ -82,14 +125,10 @@ func nestedObjectValueObjectMap[T any](ctx context.Context, val MapNestedObjectV
 
 func NewMapNestedObjectValueOfNull[T any](ctx context.Context, f ...MapNestedObjectOfOption[T]) MapNestedObjectValueOf[T] {
 	opts := newMapNestedObjectOfOptions(f...)
-	var zero *T
-	tflog.Info(ctx, fmt.Sprintf("xxx NewMapNestedObjectValueOfNull: %T, %+v", zero, zero))
 	return MapNestedObjectValueOf[T]{MapValue: basetypes.NewMapNull(objtype.NewObjectTypeOfMust[T](ctx)), semanticEqualityFunc: opts.SemanticEqualityFunc}
 }
 
 func NewMapNestedObjectValueOfUnknown[T any](ctx context.Context) MapNestedObjectValueOf[T] {
-	var zero *T
-	tflog.Info(ctx, fmt.Sprintf("xxx NewMapNestedObjectValueOfUnknown: %T, %+v", zero, zero))
 	return MapNestedObjectValueOf[T]{MapValue: basetypes.NewMapUnknown(objtype.NewObjectTypeOfMust[T](ctx))}
 }
 
@@ -108,11 +147,8 @@ func newMapNestedObjectValueOf[T any](ctx context.Context, elements map[string]*
 	typ, d := objtype.NewObjectTypeOf[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
-		tflog.Info(ctx, fmt.Sprintf("xxx NewMapNestedObjectValueOf: errors in diags: %+v", diags))
 		return NewMapNestedObjectValueOfUnknown[T](ctx), diags
 	}
-
-	tflog.Info(ctx, fmt.Sprintf("xxx NewMapNestedObjectValueOf: %T, %+v // %T, %+v", elements, elements, typ, typ))
 
 	values := map[string]attr.Value{}
 	for k, v := range elements {
