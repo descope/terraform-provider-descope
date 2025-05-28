@@ -63,6 +63,9 @@ func Optional(validators ...validator.String) schema.StringAttribute {
 }
 
 func Default(value string, validators ...validator.String) schema.StringAttribute {
+	if value == "" { // TODO
+		return Optional(validators...)
+	}
 	return schema.StringAttribute{
 		Optional:   true,
 		Computed:   true,
@@ -94,6 +97,8 @@ func Get(s types.String, data map[string]any, key string) {
 func Set(s *types.String, data map[string]any, key string) {
 	if v, ok := data[key].(string); ok {
 		*s = types.StringValue(v)
+	} else if s.IsUnknown() { // TODO
+		*s = types.StringNull()
 	}
 }
 

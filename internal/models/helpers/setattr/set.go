@@ -1,4 +1,4 @@
-package listattr
+package setattr
 
 import (
 	"context"
@@ -6,62 +6,62 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/listtype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/settype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-type Type[T any] = listtype.ListNestedObjectValueOf[T]
+type Type[T any] = settype.SetNestedObjectValueOf[T]
 
 func ValueOf[T any](ctx context.Context, values []*T) Type[T] {
-	return listtype.NewListNestedObjectValueOfSliceMust(ctx, values)
+	return settype.NewSetNestedObjectValueOfSliceMust(ctx, values)
 }
 
-func Required2[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
+func Required[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
 	}
-	return schema.ListNestedAttribute{
+	return schema.SetNestedAttribute{
 		Required:     true,
 		NestedObject: nested,
-		CustomType:   listtype.NewListNestedObjectTypeOfMust[T](context.Background()),
+		CustomType:   settype.NewSetNestedObjectTypeOfMust[T](context.Background()),
 	}
 }
 
-func Optional2[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
+func Optional[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
 	}
-	return schema.ListNestedAttribute{
+	return schema.SetNestedAttribute{
 		Optional:      true,
 		Computed:      true,
 		NestedObject:  nested,
-		CustomType:    listtype.NewListNestedObjectTypeOfMust[T](context.Background()),
-		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
+		CustomType:    settype.NewSetNestedObjectTypeOfMust[T](context.Background()),
+		PlanModifiers: []planmodifier.Set{setplanmodifier.UseStateForUnknown()},
 	}
 }
 
-func Default[T any](value []*T, attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
+func Default[T any](value []*T, attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
 	}
-	return schema.ListNestedAttribute{
+	return schema.SetNestedAttribute{
 		Optional:     true,
 		Computed:     true,
 		NestedObject: nested,
-		CustomType:   listtype.NewListNestedObjectTypeOfMust[T](context.Background()),
-		Default:      listdefault.StaticValue(ValueOf(context.Background(), value).ListValue),
+		CustomType:   settype.NewSetNestedObjectTypeOfMust[T](context.Background()),
+		Default:      setdefault.StaticValue(ValueOf(context.Background(), value).SetValue),
 	}
 }
 
-func Get2[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string, h *helpers.Handler) {
+func Get[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string, h *helpers.Handler) {
 	if l.IsNull() || l.IsUnknown() {
 		return
 	}
@@ -81,7 +81,7 @@ func Get2[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string,
 	data[key] = result
 }
 
-func Set2[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string, h *helpers.Handler) {
+func Set[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string, h *helpers.Handler) {
 	elems := []*T{}
 
 	values, _ := data[key].([]any)
@@ -95,10 +95,10 @@ func Set2[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string
 		}
 	}
 
-	result := listtype.NewListNestedObjectValueOfSliceMust(h.Ctx, elems)
+	result := settype.NewSetNestedObjectValueOfSliceMust(h.Ctx, elems)
 
 	// TODO
-	h.Log("Setting list value for key '%s' of type '%T' to %s", key, result, types.UnsafeFormattedValue(result, true))
+	h.Log("Setting set value for key '%s' of type '%T' to %s", key, result, types.UnsafeFormattedValue(result, true))
 	*l = result
 }
 

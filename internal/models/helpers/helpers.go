@@ -2,9 +2,9 @@ package helpers
 
 import (
 	"context"
-	"slices"
+	"fmt"
 
-	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 )
 
 const RootKey string = ""
@@ -49,16 +49,26 @@ func HasUnknownValues(values ...any) bool {
 			if v.IsUnknown() {
 				return true
 			}
-		case []types.String:
-			if slices.ContainsFunc(v, func(s types.String) bool { return s.IsUnknown() }) {
-				return true
-			}
-		case map[string]types.String:
-			for _, s := range v {
-				if s.IsUnknown() {
+		case interface{ Elements() map[string]attr.Value }:
+			for _, elem := range v.Elements() {
+				if elem.IsUnknown() {
 					return true
 				}
 			}
+		case interface{ Elements() []attr.Value }:
+			for _, elem := range v.Elements() {
+				if elem.IsUnknown() {
+					return true
+				}
+			}
+		case interface{ Attributes() map[string]attr.Value }:
+			for _, elem := range v.Attributes() {
+				if elem.IsUnknown() {
+					return true
+				}
+			}
+		default:
+			panic(fmt.Sprintf("unexpected type in HasUnknownValues: %T", v))
 		}
 	}
 	return false

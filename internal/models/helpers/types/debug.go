@@ -10,9 +10,9 @@ import (
 
 // Deprecated: UnsafeFormattedValue is not safe to use in production code.
 func UnsafeFormattedValue[T any](v T, pretty bool) string {
-	f := UnsafeFormatter[T]{Separator: ", ", Padding: "", Endline: ""}
+	f := UnsafeFormatter[T]{Private: true, Separator: ", "}
 	if pretty {
-		f = UnsafeFormatter[T]{Separator: ",", Padding: " ", Endline: "\n", Indent: 4, Types: true}
+		f = UnsafeFormatter[T]{Private: true, Separator: ",", Padding: " ", Endline: "\n", Indent: 4}
 	}
 	return f.Format(v)
 }
@@ -20,6 +20,7 @@ func UnsafeFormattedValue[T any](v T, pretty bool) string {
 // Deprecated: UnsafeFormatter is not safe to use in production code.
 type UnsafeFormatter[T any] struct {
 	Types     bool
+	Private   bool
 	Separator string
 	Padding   string
 	Endline   string
@@ -48,23 +49,30 @@ func (f UnsafeFormatter[T]) append(val reflect.Value, nesting int, b *strings.Bu
 		typ = typ.Elem()
 	}
 
-	if !val.CanInterface() && val.CanAddr() {
+	if f.Private && !val.CanInterface() && val.CanAddr() {
 		val = reflect.NewAt(val.Type(), unsafe.Pointer(val.UnsafeAddr())).Elem()
 	}
 
 	if val.Kind() == reflect.Struct {
-		f.open("{", val.NumField(), nesting, b)
+		fields := []int{}
 		for i := range val.NumField() {
-			field := typ.Field(i)
+			if f.Private || val.Field(i).CanInterface() {
+				fields = append(fields, i)
+			}
+		}
+
+		f.open("{", len(fields), nesting, b)
+		for _, idx := range fields {
+			field := typ.Field(idx)
 			if f.Types {
 				b.WriteString(fmt.Sprintf("%s: %s = ", field.Name, field.Type))
 			} else {
 				b.WriteString(fmt.Sprintf("%s: ", field.Name))
 			}
-			f.append(val.Field(i), nesting+f.Indent, b)
-			f.separate(i, val.NumField(), nesting, b)
+			f.append(val.Field(idx), nesting+f.Indent, b)
+			f.separate(idx, len(fields), nesting, b)
 		}
-		f.close("}", val.NumField(), nesting, b)
+		f.close("}", len(fields), nesting, b)
 	} else if val.Kind() == reflect.Slice || val.Kind() == reflect.Array {
 		f.open("[", val.Len(), nesting, b)
 		for i := range val.Len() {
@@ -82,7 +90,7 @@ func (f UnsafeFormatter[T]) append(val reflect.Value, nesting int, b *strings.Bu
 		}
 		f.close("]", len(keys), nesting, b)
 	} else if !val.CanInterface() {
-		b.WriteString(fmt.Sprintf("<?%v?>", val))
+		b.WriteString(fmt.Sprintf("<!%v!>", val))
 	} else if val.Kind() == reflect.String {
 		b.WriteString(fmt.Sprintf("%q", val.Interface()))
 	} else {

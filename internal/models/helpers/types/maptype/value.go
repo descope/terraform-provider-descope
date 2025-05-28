@@ -93,7 +93,7 @@ func (v *MapNestedObjectValueOf[T]) MutableIterator(ctx context.Context) iter.Se
 	return func(yield func(string, *T) bool) {
 		m, _ := v.ToMap(ctx)
 		if m == nil {
-			return
+			m = map[string]*T{}
 		}
 
 		for k, v := range m {

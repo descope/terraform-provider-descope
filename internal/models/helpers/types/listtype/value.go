@@ -3,6 +3,7 @@ package listtype
 import (
 	"context"
 	"fmt"
+	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
@@ -74,6 +75,41 @@ func (v ListNestedObjectValueOf[T]) ToPtr(ctx context.Context) (*T, diag.Diagnos
 
 func (v ListNestedObjectValueOf[T]) ToSlice(ctx context.Context) ([]*T, diag.Diagnostics) {
 	return nestedObjectValueObjectSlice[T](ctx, v.ListValue)
+}
+
+func (v ListNestedObjectValueOf[T]) IsEmpty() bool {
+	return len(v.ListValue.Elements()) == 0
+}
+
+func (v ListNestedObjectValueOf[T]) ImmutableIterator(ctx context.Context) iter.Seq[*T] {
+	return func(yield func(*T) bool) {
+		for _, v := range v.Elements() {
+			ptr, diags := objtype.ObjectValueObjectPtr[T](ctx, v)
+			if diags.HasError() {
+				continue
+			}
+			if !yield(ptr) {
+				break
+			}
+		}
+	}
+}
+
+func (v *ListNestedObjectValueOf[T]) MutableIterator(ctx context.Context) iter.Seq[*T] {
+	return func(yield func(*T) bool) {
+		s, _ := v.ToSlice(ctx)
+		if s == nil {
+			s = []*T{}
+		}
+
+		for _, v := range s {
+			if !yield(v) {
+				break
+			}
+		}
+
+		*v, _ = newListNestedObjectValueOf(ctx, s, v.semanticEqualityFunc)
+	}
 }
 
 func nestedObjectValueObjectPtr[T any](ctx context.Context, val types.ValueWithElements) (*T, diag.Diagnostics) { // TODO

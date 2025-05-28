@@ -11,7 +11,7 @@ import (
 var PermissionAttributes = map[string]schema.Attribute{
 	"id":          stringattr.Identifier(),
 	"name":        stringattr.Required(stringvalidator.LengthAtMost(100)),
-	"description": stringattr.Default("", stringattr.StandardLenValidator),
+	"description": stringattr.Optional(stringattr.StandardLenValidator),
 }
 
 type PermissionModel struct {

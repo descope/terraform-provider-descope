@@ -44,7 +44,7 @@ func (r *Resource) Check(checks map[string]any, extras ...resource.TestCheckFunc
 		} else if value, ok := v.([]string); ok {
 			f = append(f, resource.TestCheckResourceAttr(path, k+".#", strconv.Itoa(len(value))))
 			for i := range value {
-				f = append(f, resource.TestCheckResourceAttr(path, fmt.Sprintf("%s.%d", k, i), value[i]))
+				f = append(f, resource.TestCheckTypeSetElemAttr(path, fmt.Sprintf("%s.*", k), value[i]))
 			}
 		} else if value, ok := v.(func(string) error); ok {
 			f = append(f, resource.TestCheckResourceAttrWith(path, k, value))

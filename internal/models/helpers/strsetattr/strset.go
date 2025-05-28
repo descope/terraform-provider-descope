@@ -1,4 +1,4 @@
-package strlistattr
+package strsetattr
 
 import (
 	"context"
@@ -7,51 +7,51 @@ import (
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/strlisttype"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/valuesettype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type Type = strlisttype.ListValueOf[types.String]
+type Type = valuesettype.SetValueOf[types.String]
 
 func Value(value []string) Type {
 	return convertStringSliceToTerraformValue(context.Background(), value)
 }
 
-func Required(validators ...validator.List) schema.ListAttribute {
-	return schema.ListAttribute{
+func Required(validators ...validator.Set) schema.SetAttribute {
+	return schema.SetAttribute{
 		Required:    true,
-		CustomType:  strlisttype.StringListType,
+		CustomType:  valuesettype.StringSetType,
 		ElementType: types.StringType,
 		Validators:  validators,
 	}
 }
 
-func Optional(validators ...validator.List) schema.ListAttribute {
-	return schema.ListAttribute{
+func Optional(validators ...validator.Set) schema.SetAttribute {
+	return schema.SetAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    strlisttype.StringListType,
+		CustomType:    valuesettype.StringSetType,
 		ElementType:   types.StringType,
 		Validators:    validators,
-		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.Set{setplanmodifier.UseStateForUnknown()},
 	}
 }
 
-func Default(value []string, validators ...validator.List) schema.ListAttribute {
-	return schema.ListAttribute{
+func Default(value []string, validators ...validator.Set) schema.SetAttribute {
+	return schema.SetAttribute{
 		Optional:    true,
 		Computed:    true,
-		CustomType:  strlisttype.StringListType,
+		CustomType:  valuesettype.StringSetType,
 		ElementType: types.StringType,
 		Validators:  validators,
-		Default:     listdefault.StaticValue(Value(value).ListValue),
+		Default:     setdefault.StaticValue(Value(value).SetValue),
 	}
 }
 
@@ -108,5 +108,5 @@ func convertStringSliceToTerraformValue(ctx context.Context, values []string) Ty
 	for _, v := range values {
 		elements = append(elements, types.StringValue(v))
 	}
-	return strlisttype.NewListValueOfMust[types.String](ctx, elements)
+	return valuesettype.NewSetValueOfMust[types.String](ctx, elements)
 }
