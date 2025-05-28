@@ -12,7 +12,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var SettingsValidator = objectattr.NewValidator[SettingsModel]("must have a valid configuration")
@@ -40,41 +39,31 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"user_jwt_template":                   stringattr.Optional(),
 	"access_key_jwt_template":             stringattr.Optional(),
-
-	// Deprecated
-	"token_response_method": stringattr.Renamed("token_response_method", "refresh_token_response_method"),
-	"cookie_policy":         stringattr.Renamed("cookie_policy", "refresh_token_cookie_policy"),
-	"cookie_domain":         stringattr.Renamed("cookie_domain", "refresh_token_cookie_domain"),
 }
 
 type SettingsModel struct {
-	AppURL                          types.String     `tfsdk:"app_url"`
-	CustomDomain                    types.String     `tfsdk:"custom_domain"`
+	AppURL                          stringattr.Type  `tfsdk:"app_url"`
+	CustomDomain                    stringattr.Type  `tfsdk:"custom_domain"`
 	ApprovedDomain                  strlistattr.Type `tfsdk:"approved_domains"`
-	RefreshTokenRotation            types.Bool       `tfsdk:"refresh_token_rotation"`
-	RefreshTokenExpiration          types.String     `tfsdk:"refresh_token_expiration"`
-	RefreshTokenResponseMethod      types.String     `tfsdk:"refresh_token_response_method"`
-	RefreshTokenCookiePolicy        types.String     `tfsdk:"refresh_token_cookie_policy"`
-	RefreshTokenCookieDomain        types.String     `tfsdk:"refresh_token_cookie_domain"`
-	SessionTokenExpiration          types.String     `tfsdk:"session_token_expiration"`
-	SessionTokenResponseMethod      types.String     `tfsdk:"session_token_response_method"`
-	SessionTokenCookiePolicy        types.String     `tfsdk:"session_token_cookie_policy"`
-	SessionTokenCookieDomain        types.String     `tfsdk:"session_token_cookie_domain"`
-	StepUpTokenExpiration           types.String     `tfsdk:"step_up_token_expiration"`
-	TrustedDeviceTokenExpiration    types.String     `tfsdk:"trusted_device_token_expiration"`
-	AccessKeySessionTokenExpiration types.String     `tfsdk:"access_key_session_token_expiration"`
-	EnableInactivity                types.Bool       `tfsdk:"enable_inactivity"`
-	InactivityTime                  types.String     `tfsdk:"inactivity_time"`
-	TestUsersLoginIDRegExp          types.String     `tfsdk:"test_users_loginid_regexp"`
-	TestUsersVerifierRegExp         types.String     `tfsdk:"test_users_verifier_regexp"`
-	TestUsersStaticOTP              types.String     `tfsdk:"test_users_static_otp"`
-	UserJWTTemplate                 types.String     `tfsdk:"user_jwt_template"`
-	AccessKeyJWTTemplate            types.String     `tfsdk:"access_key_jwt_template"`
-
-	// Deprecated
-	TokenResponseMethod types.String `tfsdk:"token_response_method"`
-	CookiePolicy        types.String `tfsdk:"cookie_policy"`
-	CookieDomain        types.String `tfsdk:"cookie_domain"`
+	RefreshTokenRotation            boolattr.Type    `tfsdk:"refresh_token_rotation"`
+	RefreshTokenExpiration          stringattr.Type  `tfsdk:"refresh_token_expiration"`
+	RefreshTokenResponseMethod      stringattr.Type  `tfsdk:"refresh_token_response_method"`
+	RefreshTokenCookiePolicy        stringattr.Type  `tfsdk:"refresh_token_cookie_policy"`
+	RefreshTokenCookieDomain        stringattr.Type  `tfsdk:"refresh_token_cookie_domain"`
+	SessionTokenExpiration          stringattr.Type  `tfsdk:"session_token_expiration"`
+	SessionTokenResponseMethod      stringattr.Type  `tfsdk:"session_token_response_method"`
+	SessionTokenCookiePolicy        stringattr.Type  `tfsdk:"session_token_cookie_policy"`
+	SessionTokenCookieDomain        stringattr.Type  `tfsdk:"session_token_cookie_domain"`
+	StepUpTokenExpiration           stringattr.Type  `tfsdk:"step_up_token_expiration"`
+	TrustedDeviceTokenExpiration    stringattr.Type  `tfsdk:"trusted_device_token_expiration"`
+	AccessKeySessionTokenExpiration stringattr.Type  `tfsdk:"access_key_session_token_expiration"`
+	EnableInactivity                boolattr.Type    `tfsdk:"enable_inactivity"`
+	InactivityTime                  stringattr.Type  `tfsdk:"inactivity_time"`
+	TestUsersLoginIDRegExp          stringattr.Type  `tfsdk:"test_users_loginid_regexp"`
+	TestUsersVerifierRegExp         stringattr.Type  `tfsdk:"test_users_verifier_regexp"`
+	TestUsersStaticOTP              stringattr.Type  `tfsdk:"test_users_static_otp"`
+	UserJWTTemplate                 stringattr.Type  `tfsdk:"user_jwt_template"`
+	AccessKeyJWTTemplate            stringattr.Type  `tfsdk:"access_key_jwt_template"`
 }
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -115,15 +104,6 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data["testUserAllowFixedAuth"] = m.TestUsersStaticOTP.ValueString() != ""
 	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", "user", h)
 	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", "key", h)
-
-	// Deprecated
-	if s := m.TokenResponseMethod.ValueString(); s == "cookies" {
-		data["tokenResponseMethod"] = "cookie"
-	} else if s == "response_body" {
-		data["tokenResponseMethod"] = "onBody"
-	}
-	stringattr.Get(m.CookiePolicy, data, "cookiePolicy")
-	stringattr.Get(m.CookieDomain, data, "domain")
 	return data
 }
 
@@ -133,26 +113,20 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains", h)
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
-	if helpers.IsImport(h.Ctx) || m.TokenResponseMethod.ValueString() == "" { // can be removed once deprecated attribute is cleaned up
-		if s := data["tokenResponseMethod"]; s == "cookie" {
-			m.RefreshTokenResponseMethod = types.StringValue("cookies")
-		} else if s == "onBody" || s == nil {
-			m.RefreshTokenResponseMethod = types.StringValue("response_body")
-		} else {
-			h.Error("Unexpected refresh token response method", "Expected value to be either 'cookie' or 'onBody', found: '%v'", s)
-		}
+	if s := data["tokenResponseMethod"]; s == "cookie" {
+		m.RefreshTokenResponseMethod = stringattr.Value("cookies")
+	} else if s == "onBody" || s == nil {
+		m.RefreshTokenResponseMethod = stringattr.Value("response_body")
+	} else {
+		h.Error("Unexpected refresh token response method", "Expected value to be either 'cookie' or 'onBody', found: '%v'", s)
 	}
-	if helpers.IsImport(h.Ctx) || m.CookiePolicy.ValueString() == "" { // can be removed once deprecated attribute is cleaned up
-		stringattr.Set(&m.RefreshTokenCookiePolicy, data, "cookiePolicy")
-	}
-	if helpers.IsImport(h.Ctx) || m.CookieDomain.ValueString() == "" { // can be removed once deprecated attribute is cleaned up
-		stringattr.Set(&m.RefreshTokenCookieDomain, data, "domain")
-	}
+	stringattr.Set(&m.RefreshTokenCookiePolicy, data, "cookiePolicy")
+	stringattr.Set(&m.RefreshTokenCookieDomain, data, "domain")
 	durationattr.Set(&m.SessionTokenExpiration, data, "sessionTokenExpiration")
 	if s := data["sessionTokenResponseMethod"]; s == "cookie" {
-		m.SessionTokenResponseMethod = types.StringValue("cookies")
+		m.SessionTokenResponseMethod = stringattr.Value("cookies")
 	} else if s == "onBody" || s == nil {
-		m.SessionTokenResponseMethod = types.StringValue("response_body")
+		m.SessionTokenResponseMethod = stringattr.Value("response_body")
 	} else {
 		h.Error("Unexpected session token response method", "Expected value to be either 'cookie' or 'onBody', found: '%v'", s)
 	}
@@ -168,15 +142,10 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if data["testUserAllowFixedAuth"] == true {
 		stringattr.Set(&m.TestUsersStaticOTP, data, "testUserFixedAuthToken")
 	} else {
-		m.TestUsersStaticOTP = types.StringValue("")
+		m.TestUsersStaticOTP = stringattr.Value("")
 	}
 	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")
 	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId")
-
-	// Deprecated
-	stringattr.EnsureKnown(&m.TokenResponseMethod)
-	stringattr.EnsureKnown(&m.CookiePolicy)
-	stringattr.EnsureKnown(&m.CookieDomain)
 }
 
 func (m *SettingsModel) Check(h *helpers.Handler) {
@@ -229,18 +198,10 @@ func (m *SettingsModel) Check(h *helpers.Handler) {
 }
 
 func (m *SettingsModel) Validate(h *helpers.Handler) {
-	if m.TokenResponseMethod.ValueString() != "" && m.RefreshTokenResponseMethod.ValueString() != "" {
-		h.Error("Conflicting Attribute Value", "Remove the deprecated token_response_method attribute from your configuration and make sure the correct value is set in refresh_token_response_method instead")
-	}
-	if m.CookieDomain.ValueString() != "" && m.RefreshTokenCookieDomain.ValueString() != "" {
-		h.Error("Conflicting Attribute Value", "Remove the deprecated cookie_domain attribute from your configuration and make sure the correct value is set in refresh_token_cookie_domain instead")
-	}
-	if m.CookiePolicy.ValueString() != "" && m.RefreshTokenCookiePolicy.ValueString() != "" {
-		h.Error("Conflicting Attribute Value", "Remove the deprecated cookie_policy attribute from your configuration and make sure the correct value is set in refresh_token_cookie_policy instead")
-	}
+	// TODO move Check here eventually
 }
 
-func getJWTTemplate(field types.String, data map[string]any, key string, typ string, h *helpers.Handler) {
+func getJWTTemplate(field stringattr.Type, data map[string]any, key string, typ string, h *helpers.Handler) {
 	if v := field; !v.IsNull() && !v.IsUnknown() {
 		jwtTemplateName := v.ValueString()
 		if jwtTemplateName == "" {
@@ -265,11 +226,11 @@ func (m *SettingsModel) UpdateReferences(h *helpers.Handler) {
 	}
 }
 
-func replaceJWTTemplateIDWithReference(s *types.String, h *helpers.Handler) {
+func replaceJWTTemplateIDWithReference(s *stringattr.Type, h *helpers.Handler) {
 	if id := s.ValueString(); id != "" {
 		ref := h.Refs.Name(id)
 		if ref != "" {
-			*s = types.StringValue(ref)
+			*s = stringattr.Value(ref)
 		}
 	}
 }

@@ -245,11 +245,11 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					cookie_policy = "strict"
+					refresh_token_cookie_policy = "strict"
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.cookie_policy": "strict",
+				"project_settings.refresh_token_cookie_policy": "strict",
 			}),
 		},
 		resource.TestStep{
