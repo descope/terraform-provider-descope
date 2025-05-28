@@ -30,48 +30,6 @@ func (m *AuthorizationModel) Values(h *helpers.Handler) map[string]any {
 func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setattr.Set(&m.Roles, data, "roles", h)
 	setattr.Set(&m.Permissions, data, "permissions", h)
-
-	// updated known roles and permissions with their new values
-	// for _, role := range m.Roles {
-	// 	name := role.Name.ValueString()
-	// 	id, found := roles[name]
-	// 	if found {
-	// 		value := types.StringValue(id)
-	// 		if !role.ID.Equal(value) {
-	// 			h.Log("Setting new ID '%s' for role named '%s'", id, name)
-	// 			role.ID = value
-	// 		} else {
-	// 			h.Log("Keeping existing ID '%s' for role named '%s'", id, name)
-	// 		}
-	// 	} else {
-	// 		h.Error("Role not found", "Expected to find role to match with '%s'", name)
-	// 	}
-	// }
-
-	// for _, permission := range m.Permissions {
-	// 	name := permission.Name.ValueString()
-	// 	id, found := permissions[name]
-	// 	if found {
-	// 		value := types.StringValue(id)
-	// 		if !permission.ID.Equal(value) {
-	// 			h.Log("Setting new ID '%s' for permission named '%s'", id, name)
-	// 			permission.ID = value
-	// 		} else {
-	// 			h.Log("Keeping existing ID '%s' for permission named '%s'", id, name)
-	// 		}
-	// 	} else {
-	// 		h.Error("Permission not found", "Expected to find permission to match with '%s'", name)
-	// 	}
-	// }
-
-	// we allow setting the roles and permissions on import
-	// if m.Permissions == nil && helpers.IsImport(h.Ctx) {
-	// 	listattr.Set(&m.Permissions, data, "permissions", h)
-	// }
-
-	// if m.Roles == nil && helpers.IsImport(h.Ctx) {
-	// 	listattr.Set(&m.Roles, data, "roles", h)
-	// }
 }
 
 func (m *AuthorizationModel) CollectReferences(h *helpers.Handler) {
@@ -79,31 +37,6 @@ func (m *AuthorizationModel) CollectReferences(h *helpers.Handler) {
 		h.Refs.Add(helpers.RoleReferenceKey, "", v.ID.ValueString(), v.Name.ValueString())
 	}
 }
-
-// func (m *AuthorizationModel) getAuthorizationIDs(data map[string]any) (roles, permissions map[string]string) {
-// 	roles = map[string]string{}
-// 	permissions = map[string]string{}
-
-// 	ps, _ := data["permissions"].([]any)
-// 	for _, v := range ps {
-// 		if p, ok := v.(map[string]any); ok {
-// 			id, _ := p["id"].(string)
-// 			name, _ := p["name"].(string)
-// 			permissions[name] = id
-// 		}
-// 	}
-
-// 	rs, _ := data["roles"].([]any)
-// 	for _, v := range rs {
-// 		if r, ok := v.(map[string]any); ok {
-// 			id, _ := r["id"].(string)
-// 			name, _ := r["name"].(string)
-// 			roles[name] = id
-// 		}
-// 	}
-
-// 	return
-// }
 
 func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 	if helpers.HasUnknownValues(m.Permissions, m.Roles) {

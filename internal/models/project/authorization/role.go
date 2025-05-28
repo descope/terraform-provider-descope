@@ -6,7 +6,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strsetattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var RoleAttributes = map[string]schema.Attribute{
@@ -17,9 +16,9 @@ var RoleAttributes = map[string]schema.Attribute{
 }
 
 type RoleModel struct {
-	ID          types.String    `tfsdk:"id"`
-	Name        types.String    `tfsdk:"name"`
-	Description types.String    `tfsdk:"description"`
+	ID          stringattr.Type `tfsdk:"id"`
+	Name        stringattr.Type `tfsdk:"name"`
+	Description stringattr.Type `tfsdk:"description"`
 	Permissions strsetattr.Type `tfsdk:"permissions"`
 }
 

@@ -5,7 +5,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var PermissionAttributes = map[string]schema.Attribute{
@@ -15,9 +14,9 @@ var PermissionAttributes = map[string]schema.Attribute{
 }
 
 type PermissionModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
+	ID          stringattr.Type `tfsdk:"id"`
+	Name        stringattr.Type `tfsdk:"name"`
+	Description stringattr.Type `tfsdk:"description"`
 }
 
 func (m *PermissionModel) Values(h *helpers.Handler) map[string]any {

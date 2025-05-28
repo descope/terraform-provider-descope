@@ -63,9 +63,6 @@ func Optional(validators ...validator.String) schema.StringAttribute {
 }
 
 func Default(value string, validators ...validator.String) schema.StringAttribute {
-	if value == "" { // TODO
-		return Optional(validators...)
-	}
 	return schema.StringAttribute{
 		Optional:   true,
 		Computed:   true,
