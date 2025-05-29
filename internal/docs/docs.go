@@ -19,7 +19,7 @@ var docsProject = map[string]string{
 	"flows": "Custom authentication flows to use in this project.",
 }
 
-var docsApplication = map[string]string{
+var docsApplications = map[string]string{
 	"oidc_applications": "Applications using OpenID Connect (OIDC) for authentication.",
 	"saml_applications": "Applications using SAML for authentication.",
 }

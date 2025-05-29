@@ -13,7 +13,7 @@ var TextServiceValidator = objectattr.NewValidator[TextServiceModel]("must have 
 
 var TextServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
-	"templates": listattr.Default([]*TextServiceModel{}, TextTemplateAttributes, TextTemplateValidator),
+	"templates": listattr.Default[TextServiceModel](TextTemplateAttributes, TextTemplateValidator),
 }
 
 type TextServiceModel struct {

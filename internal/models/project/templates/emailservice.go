@@ -13,7 +13,7 @@ var EmailServiceValidator = objectattr.NewValidator[EmailServiceModel]("must hav
 
 var EmailServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
-	"templates": listattr.Default([]*EmailTemplateModel{}, EmailTemplateAttributes, EmailTemplateValidator),
+	"templates": listattr.Default[EmailTemplateModel](EmailTemplateAttributes, EmailTemplateValidator),
 }
 
 type EmailServiceModel struct {

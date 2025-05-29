@@ -50,3 +50,9 @@ func (h *Handler) Missing(format string, a ...any) {
 		h.Diagnostics.AddError("Missing Attribute Value", fmt.Sprintf(format, a...))
 	}
 }
+
+func (h *Handler) Conflict(format string, a ...any) {
+	if !h.Diagnostics.HasError() {
+		h.Diagnostics.AddError("Conflicting Attribute Values", fmt.Sprintf(format, a...))
+	}
+}

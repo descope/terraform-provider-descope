@@ -13,7 +13,7 @@ var VoiceServiceValidator = objectattr.NewValidator[VoiceServiceModel]("must hav
 
 var VoiceServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
-	"templates": listattr.Default([]*VoiceTemplateModel{}, VoiceTemplateAttributes, VoiceTemplateValidator),
+	"templates": listattr.Default[VoiceTemplateModel](VoiceTemplateAttributes, VoiceTemplateValidator),
 }
 
 type VoiceServiceModel struct {

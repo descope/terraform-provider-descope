@@ -1,14 +1,12 @@
 package applications
 
 import (
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strsetattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -22,52 +20,53 @@ var SAMLAttributes = map[string]schema.Attribute{
 	"disabled":    boolattr.Default(false),
 
 	"login_page_url":            stringattr.Default(""),
-	"dynamic_configuration":     objectattr.Optional(DynamicConfigurationAttributes),
-	"manual_configuration":      objectattr.Optional(ManualConfigurationAttributes),
-	"acs_allowed_callback_urls": strlistattr.Optional(),
+	"dynamic_configuration":     objattr.Default[DynamicConfigurationModel](nil, DynamicConfigurationAttributes), // TODO change to defaults here and below?
+	"manual_configuration":      objattr.Default[ManualConfigurationModel](nil, ManualConfigurationAttributes),
+	"acs_allowed_callback_urls": strsetattr.Default(),
 	"subject_name_id_type":      stringattr.Default("", stringvalidator.OneOf("", "email", "phone")),
 	"subject_name_id_format":    stringattr.Default("", stringvalidator.OneOf("", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient")),
 	"default_relay_state":       stringattr.Default(""),
-	"attribute_mapping":         listattr.Optional(AttributeMappingAttributes),
+	"attribute_mapping":         listattr.Default[AttributeMappingModel](AttributeMappingAttributes),
 	"force_authentication":      boolattr.Default(false),
 }
 
 // Model
 
 type SAMLModel struct {
-	ID                     types.String               `tfsdk:"id"`
-	Name                   types.String               `tfsdk:"name"`
-	Description            types.String               `tfsdk:"description"`
-	Logo                   types.String               `tfsdk:"logo"`
-	Disabled               types.Bool                 `tfsdk:"disabled"`
-	LoginPageURL           types.String               `tfsdk:"login_page_url"`
-	DynamicConfiguration   *DynamicConfigurationModel `tfsdk:"dynamic_configuration"`
-	ManualConfiguration    *ManualConfigurationModel  `tfsdk:"manual_configuration"`
-	ACSAllowedCallbackURLs strlistattr.Type           `tfsdk:"acs_allowed_callback_urls"`
-	SubjectNameIDType      types.String               `tfsdk:"subject_name_id_type"`
-	SubjectNameIDFormat    types.String               `tfsdk:"subject_name_id_format"`
-	DefaultRelayState      types.String               `tfsdk:"default_relay_state"`
-	AttributeMapping       []*AttributeMappingModel   `tfsdk:"attribute_mapping"`
-	ForceAuthentication    types.Bool                 `tfsdk:"force_authentication"`
+	ID                     types.String                            `tfsdk:"id"`
+	Name                   types.String                            `tfsdk:"name"`
+	Description            types.String                            `tfsdk:"description"`
+	Logo                   types.String                            `tfsdk:"logo"`
+	Disabled               types.Bool                              `tfsdk:"disabled"`
+	LoginPageURL           types.String                            `tfsdk:"login_page_url"`
+	DynamicConfiguration   objattr.Type[DynamicConfigurationModel] `tfsdk:"dynamic_configuration"`
+	ManualConfiguration    objattr.Type[ManualConfigurationModel]  `tfsdk:"manual_configuration"`
+	ACSAllowedCallbackURLs strsetattr.Type                         `tfsdk:"acs_allowed_callback_urls"`
+	SubjectNameIDType      types.String                            `tfsdk:"subject_name_id_type"`
+	SubjectNameIDFormat    types.String                            `tfsdk:"subject_name_id_format"`
+	DefaultRelayState      types.String                            `tfsdk:"default_relay_state"`
+	AttributeMapping       listattr.Type[AttributeMappingModel]    `tfsdk:"attribute_mapping"`
+	ForceAuthentication    types.Bool                              `tfsdk:"force_authentication"`
 }
 
 func (m *SAMLModel) Values(h *Handler) map[string]any {
-	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	settings := map[string]any{}
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
-	if m.DynamicConfiguration != nil {
+	if m.DynamicConfiguration.IsSet() {
 		settings["useMetadataInfo"] = true
-		maps.Copy(settings, m.DynamicConfiguration.Values(h))
-	} else if m.ManualConfiguration != nil {
+		objattr.Get(m.DynamicConfiguration, settings, helpers.RootKey, h)
+	} else if m.ManualConfiguration.IsSet() {
 		settings["useMetadataInfo"] = false
-		maps.Copy(settings, m.ManualConfiguration.Values(h))
+		objattr.Get(m.ManualConfiguration, settings, helpers.RootKey, h)
 	}
 	stringattr.Get(m.SubjectNameIDType, settings, "subjectNameIdType")
 	stringattr.Get(m.SubjectNameIDFormat, settings, "subjectNameIdFormat")
 	stringattr.Get(m.DefaultRelayState, settings, "defaultRelayState")
-	listattr.Get(m.AttributeMapping, settings, "attributeMapping", h)
-	strlistattr.Get(m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
+	listattr.Get2(m.AttributeMapping, settings, "attributeMapping", h)
+	strsetattr.Get(m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
 	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
+
+	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["saml"] = settings
 	return data
 }
@@ -77,18 +76,15 @@ func (m *SAMLModel) SetValues(h *Handler, data map[string]any) {
 	if settings, ok := data["saml"].(map[string]any); ok {
 		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
 		if useMetadataInfo, ok := settings["useMetadataInfo"].(bool); ok && useMetadataInfo {
-			m.DynamicConfiguration = helpers.ZVL(m.DynamicConfiguration)
-			m.DynamicConfiguration.SetValues(h, settings)
+			objattr.Set(&m.DynamicConfiguration, settings, helpers.RootKey, h)
 		} else {
-			m.ManualConfiguration = helpers.ZVL(m.ManualConfiguration)
-			m.ManualConfiguration.SetValues(h, settings)
+			objattr.Set(&m.ManualConfiguration, settings, helpers.RootKey, h)
 		}
 		stringattr.Set(&m.SubjectNameIDType, settings, "subjectNameIdType")
 		stringattr.Set(&m.SubjectNameIDFormat, settings, "subjectNameIdFormat")
 		stringattr.Set(&m.DefaultRelayState, settings, "defaultRelayState")
-		m.AttributeMapping = []*AttributeMappingModel{}
-		listattr.Set(&m.AttributeMapping, settings, "attributeMapping", h)
-		strlistattr.Set(&m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
+		listattr.Set2(&m.AttributeMapping, settings, "attributeMapping", h)
+		strsetattr.Set(&m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 	}
 }

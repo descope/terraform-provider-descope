@@ -44,14 +44,14 @@ func Optional(validators ...validator.List) schema.ListAttribute {
 	}
 }
 
-func Default(value []string, validators ...validator.List) schema.ListAttribute {
+func Default(validators ...validator.List) schema.ListAttribute {
 	return schema.ListAttribute{
 		Optional:    true,
 		Computed:    true,
 		CustomType:  strlisttype.StringListType,
 		ElementType: types.StringType,
 		Validators:  validators,
-		Default:     listdefault.StaticValue(Value(value).ListValue),
+		Default:     listdefault.StaticValue(Value([]string{}).ListValue),
 	}
 }
 

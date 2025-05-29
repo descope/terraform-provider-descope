@@ -19,7 +19,7 @@ var SettingsValidator = objectattr.NewValidator[SettingsModel]("must have a vali
 var SettingsAttributes = map[string]schema.Attribute{
 	"app_url":                             stringattr.Optional(),
 	"custom_domain":                       stringattr.Optional(),
-	"approved_domains":                    strlistattr.Default(nil, strlistattr.CommaSeparatedListValidator),
+	"approved_domains":                    strlistattr.Default(strlistattr.CommaSeparatedListValidator),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"refresh_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),

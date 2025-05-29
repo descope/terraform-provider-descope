@@ -20,7 +20,7 @@ import (
 
 func InjectModels() {
 	inject(project.ProjectAttributes, docsProject)
-	inject(applications.ApplicationAttributes, docsApplication)
+	inject(applications.ApplicationsAttributes, docsApplications)
 	inject(applications.OIDCAttributes, docsOIDC)
 	inject(applications.SAMLAttributes, docsSAML)
 	inject(applications.AttributeMappingAttributes, docsAttributeMapping)

@@ -44,14 +44,14 @@ func Optional(validators ...validator.Set) schema.SetAttribute {
 	}
 }
 
-func Default(value []string, validators ...validator.Set) schema.SetAttribute {
+func Default(validators ...validator.Set) schema.SetAttribute {
 	return schema.SetAttribute{
 		Optional:    true,
 		Computed:    true,
 		CustomType:  valuesettype.StringSetType,
 		ElementType: types.StringType,
 		Validators:  validators,
-		Default:     setdefault.StaticValue(Value(value).SetValue),
+		Default:     setdefault.StaticValue(Value([]string{}).SetValue),
 	}
 }
 

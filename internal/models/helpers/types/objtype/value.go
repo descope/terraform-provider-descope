@@ -51,6 +51,10 @@ func (v ObjectValueOf[T]) ToPtrMust(ctx context.Context) *T {
 	return types.Must(ObjectValueObjectPtr[T](ctx, v))
 }
 
+func (v ObjectValueOf[T]) IsSet() bool {
+	return !v.IsNull() && !v.IsUnknown()
+}
+
 func ObjectValueObjectPtr[T any](ctx context.Context, val attr.Value) (*T, diag.Diagnostics) {
 	var diags diag.Diagnostics
 

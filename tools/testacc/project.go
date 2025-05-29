@@ -46,13 +46,3 @@ func (p *ProjectResource) Config(s ...string) string {
 func (p *ProjectResource) Check(checks map[string]any) resource.TestCheckFunc {
 	return p.Resource.Check(checks)
 }
-
-// Configs
-
-func (p *ProjectResource) Settings(s ...string) string {
-	return fmt.Sprintf(`
-		project_settings = {
-			%s
-		}
-		`, strings.Join(s, "\n"))
-}

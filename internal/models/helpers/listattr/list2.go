@@ -5,7 +5,6 @@ import (
 	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/listtype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -17,7 +16,15 @@ import (
 
 type Type[T any] = listtype.ListNestedObjectValueOf[T]
 
-func ValueOf[T any](ctx context.Context, values []*T) Type[T] {
+func Value[T any](values []*T) Type[T] {
+	return valueOf(context.Background(), values)
+}
+
+func Empty[T any]() Type[T] {
+	return valueOf(context.Background(), []*T{})
+}
+
+func valueOf[T any](ctx context.Context, values []*T) Type[T] {
 	return listtype.NewListNestedObjectValueOfSliceMust(ctx, values)
 }
 
@@ -47,7 +54,7 @@ func Optional2[T any](attributes map[string]schema.Attribute, validators ...vali
 	}
 }
 
-func Default[T any](value []*T, attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
+func Default[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
@@ -57,7 +64,7 @@ func Default[T any](value []*T, attributes map[string]schema.Attribute, validato
 		Computed:     true,
 		NestedObject: nested,
 		CustomType:   listtype.NewListNestedObjectTypeOfMust[T](context.Background()),
-		Default:      listdefault.StaticValue(ValueOf(context.Background(), value).ListValue),
+		Default:      listdefault.StaticValue(Empty[T]().ListValue),
 	}
 }
 
@@ -95,11 +102,7 @@ func Set2[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string
 		}
 	}
 
-	result := listtype.NewListNestedObjectValueOfSliceMust(h.Ctx, elems)
-
-	// TODO
-	h.Log("Setting list value for key '%s' of type '%T' to %s", key, result, types.UnsafeFormattedValue(result, true))
-	*l = result
+	*l = valueOf(h.Ctx, elems)
 }
 
 func Iterator[T any, M helpers.Model[T]](l Type[T], h *helpers.Handler) iter.Seq[*T] {
@@ -119,5 +122,43 @@ func Iterator[T any, M helpers.Model[T]](l Type[T], h *helpers.Handler) iter.Seq
 				break
 			}
 		}
+	}
+}
+
+func MutatingIterator[T any, M helpers.Model[T]](l *Type[T], h *helpers.Handler) iter.Seq[*T] {
+	return func(yield func(*T) bool) {
+		elements := l.Elements()
+
+		for i, v := range elements {
+			if v.IsNull() || v.IsUnknown() {
+				continue
+			}
+
+			ptr, diags := objtype.ObjectValueObjectPtr[T](h.Ctx, v)
+			h.Diagnostics.Append(diags...)
+			if diags.HasError() {
+				continue
+			}
+
+			cont := yield(ptr)
+
+			obj, diags := objtype.NewObjectValueOf(h.Ctx, ptr)
+			h.Diagnostics.Append(diags...)
+			if !diags.HasError() {
+				elements[i] = obj
+			}
+
+			if !cont {
+				break
+			}
+		}
+
+		listValue, diags := listtype.ValueOf[T](h.Ctx, elements)
+		h.Diagnostics.Append(diags...)
+		if diags.HasError() {
+			return
+		}
+
+		*l = listValue
 	}
 }
