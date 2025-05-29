@@ -50,7 +50,7 @@ func TestApplications(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"applications.oidc_applications.#": 1,
 				"applications.oidc_applications.0": map[string]any{
-					"id":                   testacc.AttributeIsSet,
+					"id":                   testacc.AttributeHasPrefix("SA"),
 					"name":                 "foo",
 					"description":          "bar",
 					"logo":                 "https://example.com/logo.png",
@@ -119,7 +119,7 @@ func TestApplications(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"applications.saml_applications.#": 1,
 				"applications.saml_applications.0": map[string]any{
-					"id":             testacc.AttributeIsSet,
+					"id":             testacc.AttributeHasPrefix("SA"),
 					"name":           "foo",
 					"description":    "bar",
 					"logo":           "https://example.com/logo.png",
@@ -180,7 +180,7 @@ func TestApplications(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"applications.saml_applications.#": 1,
 				"applications.saml_applications.0": map[string]any{
-					"id":                      testacc.AttributeIsSet,
+					"id":                      testacc.AttributeHasPrefix("SA"),
 					"name":                    "meh",
 					"description":             "bar",
 					"logo":                    "https://example.com/logo.png",
@@ -228,7 +228,7 @@ func TestApplications(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"applications.saml_applications.#": 1,
 				"applications.saml_applications.0": map[string]any{
-					"id":                        testacc.AttributeIsSet,
+					"id":                        testacc.AttributeHasPrefix("SA"),
 					"name":                      "meh",
 					"description":               "bar",
 					"logo":                      "https://example.com/logo.png",

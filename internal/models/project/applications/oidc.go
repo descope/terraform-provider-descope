@@ -5,7 +5,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var OIDCAttributes = map[string]schema.Attribute{
@@ -23,14 +22,14 @@ var OIDCAttributes = map[string]schema.Attribute{
 // Model
 
 type OIDCModel struct {
-	ID                  types.String     `tfsdk:"id"`
-	Name                types.String     `tfsdk:"name"`
-	Description         types.String     `tfsdk:"description"`
-	Logo                types.String     `tfsdk:"logo"`
-	Disabled            types.Bool       `tfsdk:"disabled"`
-	LoginPageURL        types.String     `tfsdk:"login_page_url"`
+	ID                  stringattr.Type  `tfsdk:"id"`
+	Name                stringattr.Type  `tfsdk:"name"`
+	Description         stringattr.Type  `tfsdk:"description"`
+	Logo                stringattr.Type  `tfsdk:"logo"`
+	Disabled            boolattr.Type    `tfsdk:"disabled"`
+	LoginPageURL        stringattr.Type  `tfsdk:"login_page_url"`
 	Claims              strlistattr.Type `tfsdk:"claims"`
-	ForceAuthentication types.Bool       `tfsdk:"force_authentication"`
+	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
 }
 
 func (m *OIDCModel) Values(h *Handler) map[string]any {

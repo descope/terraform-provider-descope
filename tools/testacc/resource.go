@@ -18,6 +18,10 @@ func (r *Resource) Path() string {
 	return fmt.Sprintf(`%s.%s`, r.Type, r.Name)
 }
 
+func (r *Resource) Variables(s ...string) string {
+	return strings.Join(s, "\n")
+}
+
 func (r *Resource) Config(s ...string) string {
 	return fmt.Sprintf(`
 		resource %q %q {

@@ -3,8 +3,11 @@ package applications
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+var ApplicationsValidator = objattr.NewValidator[ApplicationsModel]("must have a valid SAML configuration")
 
 var ApplicationsAttributes = map[string]schema.Attribute{
 	"oidc_applications": listattr.Default[OIDCModel](OIDCAttributes),
@@ -22,7 +25,7 @@ var ApplicationsDefault = &ApplicationsModel{
 }
 
 func (m *ApplicationsModel) Values(h *helpers.Handler) map[string]any {
-	m.Check(h) // TODO move this to validate eventually
+	m.Check(h)
 	data := map[string]any{}
 	listattr.Get2(m.OIDCApplications, data, "oidc", h)
 	listattr.Get2(m.SAMLApplications, data, "saml", h)
@@ -54,4 +57,8 @@ func (m *ApplicationsModel) Check(h *helpers.Handler) {
 			h.Warn("Both dynamic_configuration and manual_configuration supplied - dynamic configuration will take precedence", "dynamic_configuration and manual_configuration are mutually exclusive. If both given - dynamic takes precedence")
 		}
 	}
+}
+
+func (m *ApplicationsModel) Validate(h *helpers.Handler) {
+	// TODO move Check here eventually
 }
