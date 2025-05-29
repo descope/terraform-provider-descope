@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"iter"
+	"slices"
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -61,7 +62,12 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 	}
 
 	values := s.ToSliceMust(h.Ctx)
-	data[key] = helpers.ConvertTerraformSliceToStringSlice(values)
+	strings := helpers.ConvertTerraformSliceToStringSlice(values)
+
+	// prevent sporadic order changes in resource updates
+	slices.Sort(strings)
+
+	data[key] = strings
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {

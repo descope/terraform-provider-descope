@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 )
 
-var CommaSeparatedListValidator = listvalidator.ValueStringsAre(stringvalidator.All(
+var CommaSeparatedValidator = listvalidator.ValueStringsAre(stringvalidator.All(
 	stringattr.NonEmptyValidator,
 	stringvalidator.RegexMatches(regexp.MustCompile(`^[^,]*$`), "must not contain commas"),
 ))

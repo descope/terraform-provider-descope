@@ -99,9 +99,9 @@ func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string,
 	*o = valueOf(h.Ctx, value)
 }
 
-func Ensure[T any, M helpers.Model[T]](o *Type[T], h *helpers.Handler) { // TODO remove?
+func Ensure[T any, M helpers.Model[T]](o *Type[T]) { // TODO remove?
 	if o.IsUnknown() {
-		*o = valueOf[T](h.Ctx, nil)
+		*o = Value[T](nil)
 	}
 }
 

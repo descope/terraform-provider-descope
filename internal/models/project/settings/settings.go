@@ -7,19 +7,19 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strsetattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var SettingsValidator = objectattr.NewValidator[SettingsModel]("must have a valid configuration")
+var SettingsValidator = objattr.NewValidator[SettingsModel]("must have a valid configuration")
 
 var SettingsAttributes = map[string]schema.Attribute{
-	"app_url":                             stringattr.Optional(),
-	"custom_domain":                       stringattr.Optional(),
-	"approved_domains":                    strlistattr.Default(strlistattr.CommaSeparatedListValidator),
+	"app_url":                             stringattr.Default(""),
+	"custom_domain":                       stringattr.Default(""),
+	"approved_domains":                    strsetattr.Default(strsetattr.CommaSeparatedValidator),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"refresh_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
@@ -37,33 +37,33 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"test_users_loginid_regexp":           stringattr.Default(""),
 	"test_users_verifier_regexp":          stringattr.Default(""),
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
-	"user_jwt_template":                   stringattr.Optional(),
-	"access_key_jwt_template":             stringattr.Optional(),
+	"user_jwt_template":                   stringattr.Default(""),
+	"access_key_jwt_template":             stringattr.Default(""),
 }
 
 type SettingsModel struct {
-	AppURL                          stringattr.Type  `tfsdk:"app_url"`
-	CustomDomain                    stringattr.Type  `tfsdk:"custom_domain"`
-	ApprovedDomain                  strlistattr.Type `tfsdk:"approved_domains"`
-	RefreshTokenRotation            boolattr.Type    `tfsdk:"refresh_token_rotation"`
-	RefreshTokenExpiration          stringattr.Type  `tfsdk:"refresh_token_expiration"`
-	RefreshTokenResponseMethod      stringattr.Type  `tfsdk:"refresh_token_response_method"`
-	RefreshTokenCookiePolicy        stringattr.Type  `tfsdk:"refresh_token_cookie_policy"`
-	RefreshTokenCookieDomain        stringattr.Type  `tfsdk:"refresh_token_cookie_domain"`
-	SessionTokenExpiration          stringattr.Type  `tfsdk:"session_token_expiration"`
-	SessionTokenResponseMethod      stringattr.Type  `tfsdk:"session_token_response_method"`
-	SessionTokenCookiePolicy        stringattr.Type  `tfsdk:"session_token_cookie_policy"`
-	SessionTokenCookieDomain        stringattr.Type  `tfsdk:"session_token_cookie_domain"`
-	StepUpTokenExpiration           stringattr.Type  `tfsdk:"step_up_token_expiration"`
-	TrustedDeviceTokenExpiration    stringattr.Type  `tfsdk:"trusted_device_token_expiration"`
-	AccessKeySessionTokenExpiration stringattr.Type  `tfsdk:"access_key_session_token_expiration"`
-	EnableInactivity                boolattr.Type    `tfsdk:"enable_inactivity"`
-	InactivityTime                  stringattr.Type  `tfsdk:"inactivity_time"`
-	TestUsersLoginIDRegExp          stringattr.Type  `tfsdk:"test_users_loginid_regexp"`
-	TestUsersVerifierRegExp         stringattr.Type  `tfsdk:"test_users_verifier_regexp"`
-	TestUsersStaticOTP              stringattr.Type  `tfsdk:"test_users_static_otp"`
-	UserJWTTemplate                 stringattr.Type  `tfsdk:"user_jwt_template"`
-	AccessKeyJWTTemplate            stringattr.Type  `tfsdk:"access_key_jwt_template"`
+	AppURL                          stringattr.Type `tfsdk:"app_url"`
+	CustomDomain                    stringattr.Type `tfsdk:"custom_domain"`
+	ApprovedDomain                  strsetattr.Type `tfsdk:"approved_domains"`
+	RefreshTokenRotation            boolattr.Type   `tfsdk:"refresh_token_rotation"`
+	RefreshTokenExpiration          stringattr.Type `tfsdk:"refresh_token_expiration"`
+	RefreshTokenResponseMethod      stringattr.Type `tfsdk:"refresh_token_response_method"`
+	RefreshTokenCookiePolicy        stringattr.Type `tfsdk:"refresh_token_cookie_policy"`
+	RefreshTokenCookieDomain        stringattr.Type `tfsdk:"refresh_token_cookie_domain"`
+	SessionTokenExpiration          stringattr.Type `tfsdk:"session_token_expiration"`
+	SessionTokenResponseMethod      stringattr.Type `tfsdk:"session_token_response_method"`
+	SessionTokenCookiePolicy        stringattr.Type `tfsdk:"session_token_cookie_policy"`
+	SessionTokenCookieDomain        stringattr.Type `tfsdk:"session_token_cookie_domain"`
+	StepUpTokenExpiration           stringattr.Type `tfsdk:"step_up_token_expiration"`
+	TrustedDeviceTokenExpiration    stringattr.Type `tfsdk:"trusted_device_token_expiration"`
+	AccessKeySessionTokenExpiration stringattr.Type `tfsdk:"access_key_session_token_expiration"`
+	EnableInactivity                boolattr.Type   `tfsdk:"enable_inactivity"`
+	InactivityTime                  stringattr.Type `tfsdk:"inactivity_time"`
+	TestUsersLoginIDRegExp          stringattr.Type `tfsdk:"test_users_loginid_regexp"`
+	TestUsersVerifierRegExp         stringattr.Type `tfsdk:"test_users_verifier_regexp"`
+	TestUsersStaticOTP              stringattr.Type `tfsdk:"test_users_static_otp"`
+	UserJWTTemplate                 stringattr.Type `tfsdk:"user_jwt_template"`
+	AccessKeyJWTTemplate            stringattr.Type `tfsdk:"access_key_jwt_template"`
 }
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -71,7 +71,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.AppURL, data, "appUrl")
 	stringattr.Get(m.CustomDomain, data, "customDomain")
-	strlistattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains", h)
+	strsetattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains", h)
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if s := m.RefreshTokenResponseMethod.ValueString(); s == "cookies" {
@@ -110,7 +110,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.AppURL, data, "appUrl")
 	stringattr.Set(&m.CustomDomain, data, "customDomain")
-	strlistattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains", h)
+	strsetattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains", h)
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if s := data["tokenResponseMethod"]; s == "cookie" {
@@ -144,8 +144,8 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	} else {
 		m.TestUsersStaticOTP = stringattr.Value("")
 	}
-	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")
-	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId")
+	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")     // replaced by template name by UpdateReferences later
+	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId") // replaced by template name by UpdateReferences later
 }
 
 func (m *SettingsModel) Check(h *helpers.Handler) {
@@ -207,7 +207,7 @@ func getJWTTemplate(field stringattr.Type, data map[string]any, key string, typ 
 		if jwtTemplateName == "" {
 			data[key] = ""
 		} else if ref := h.Refs.Get(helpers.JWTTemplateReferenceKey, jwtTemplateName); ref == nil {
-			h.Error("Unknown JWT template reference", "No JWT template named '%s' for project settings was defined", jwtTemplateName)
+			h.Error("Unknown JWT template reference", "No %s JWT template named '%s' was defined in the project", typ, jwtTemplateName)
 		} else if ref.Type != typ {
 			h.Error("Invalid JWT template reference", "The JWT template named '%s' is not a %s template", jwtTemplateName, typ)
 		} else {

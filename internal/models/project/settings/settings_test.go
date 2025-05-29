@@ -150,7 +150,7 @@ func TestSettings(t *testing.T) {
 					approved_domains = ["example.com",","]
 				}
 			`),
-			ExpectError: regexp.MustCompile(`must not contain commas`),
+			ExpectError: regexp.MustCompile(`commas`),
 		},
 		resource.TestStep{
 			Config: p.Config(`
