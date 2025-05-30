@@ -37,8 +37,7 @@ func (m *SegmentModel) Values(h *helpers.Handler) map[string]any {
 func (m *SegmentModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.WriteKey, c, "writeKey")
-		stringattr.Set(&m.Host, c, "host")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -49,6 +48,11 @@ func (m *SegmentModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.WriteKey, c, "writeKey")
 	stringattr.Get(m.Host, c, "host")
 	return c
+}
+
+func (m *SegmentModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.WriteKey, c, "writeKey")
+	stringattr.Set(&m.Host, c, "host")
 }
 
 // Matching

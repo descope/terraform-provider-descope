@@ -40,9 +40,7 @@ func (m *HubSpotModel) Values(h *helpers.Handler) map[string]any {
 func (m *HubSpotModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.AccessToken, c, "accessToken")
-		stringattr.Set(&m.BaseURL, c, "baseUrl")
-		boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -54,6 +52,12 @@ func (m *HubSpotModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
 	return c
+}
+
+func (m *HubSpotModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AccessToken, c, "accessToken")
+	stringattr.Set(&m.BaseURL, c, "baseUrl")
+	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
 }
 
 // Matching

@@ -3,13 +3,13 @@ package connectors
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var FingerprintValidator = objectattr.NewValidator[FingerprintModel]("must have a valid configuration")
+var FingerprintValidator = objattr.NewValidator[FingerprintModel]("must have a valid configuration")
 
 var FingerprintAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -47,11 +47,7 @@ func (m *FingerprintModel) Values(h *helpers.Handler) map[string]any {
 func (m *FingerprintModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.PublicAPIKey, c, "publicApiKey")
-		stringattr.Set(&m.SecretAPIKey, c, "secretApiKey")
-		boolattr.Set(&m.UseCloudflareIntegration, c, "useCloudflareIntegration")
-		stringattr.Set(&m.CloudflareScriptURL, c, "cloudflareScriptUrl")
-		stringattr.Set(&m.CloudflareEndpointURL, c, "cloudflareEndpointUrl")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -74,6 +70,14 @@ func (m *FingerprintModel) ConfigurationValues(h *helpers.Handler) map[string]an
 	stringattr.Get(m.CloudflareScriptURL, c, "cloudflareScriptUrl")
 	stringattr.Get(m.CloudflareEndpointURL, c, "cloudflareEndpointUrl")
 	return c
+}
+
+func (m *FingerprintModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.PublicAPIKey, c, "publicApiKey")
+	stringattr.Set(&m.SecretAPIKey, c, "secretApiKey")
+	boolattr.Set(&m.UseCloudflareIntegration, c, "useCloudflareIntegration")
+	stringattr.Set(&m.CloudflareScriptURL, c, "cloudflareScriptUrl")
+	stringattr.Set(&m.CloudflareEndpointURL, c, "cloudflareEndpointUrl")
 }
 
 // Matching

@@ -37,8 +37,7 @@ func (m *GoogleCloudTranslationModel) Values(h *helpers.Handler) map[string]any 
 func (m *GoogleCloudTranslationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.ProjectID, c, "projectId")
-		stringattr.Set(&m.ServiceAccountJSON, c, "serviceAccountJSON")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -49,6 +48,11 @@ func (m *GoogleCloudTranslationModel) ConfigurationValues(h *helpers.Handler) ma
 	stringattr.Get(m.ProjectID, c, "projectId")
 	stringattr.Get(m.ServiceAccountJSON, c, "serviceAccountJSON")
 	return c
+}
+
+func (m *GoogleCloudTranslationModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.ProjectID, c, "projectId")
+	stringattr.Set(&m.ServiceAccountJSON, c, "serviceAccountJSON")
 }
 
 // Matching

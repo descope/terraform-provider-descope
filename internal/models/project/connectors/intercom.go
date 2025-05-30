@@ -37,8 +37,7 @@ func (m *IntercomModel) Values(h *helpers.Handler) map[string]any {
 func (m *IntercomModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.Token, c, "token")
-		stringattr.Set(&m.Region, c, "region")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -49,6 +48,11 @@ func (m *IntercomModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Token, c, "token")
 	stringattr.Get(m.Region, c, "region")
 	return c
+}
+
+func (m *IntercomModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.Token, c, "token")
+	stringattr.Set(&m.Region, c, "region")
 }
 
 // Matching

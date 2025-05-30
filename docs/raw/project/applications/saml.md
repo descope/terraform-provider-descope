@@ -79,7 +79,7 @@ The `ManualConfiguration` object. Read the description below.
 acs_allowed_callback_urls
 -------------------------
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 A list of allowed ACS callback URLS. This configuration is used when the default ACS URL value is unreachable. Supports wildcards.
 

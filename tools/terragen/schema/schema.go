@@ -143,7 +143,12 @@ func (s *Schema) addFile(root string, dirs []string, filename string) {
 				log.Fatalf("unexpected value for field %s in %s in %s: wanted *ast.CallExpr, found %T", fieldName, varName, path, pair.Value)
 			}
 
-			f, ok := value.Fun.(*ast.SelectorExpr)
+			lead := value.Fun
+			if i, ok := lead.(*ast.IndexExpr); ok {
+				lead = i.X
+			}
+
+			f, ok := lead.(*ast.SelectorExpr)
 			if !ok {
 				log.Fatalf("unexpected function in value for field %s in %s in %s: wanted *ast.SelectorExpr, found %T", fieldName, varName, path, value.Fun)
 			}
@@ -174,29 +179,33 @@ func (s *Schema) addFile(root string, dirs []string, filename string) {
 				field.Required = true
 				variant = trimmed
 			}
-			variant = strings.TrimSuffix(variant, "Optional")
 
-			if field.Type == FieldTypeObject || field.Type == FieldTypeMap || field.Type == FieldTypeList {
-				if variant != "" {
-					field.Element = strings.ToLower(variant)
-					variant = ""
-				} else if field.Element == "" {
+			if field.Type == FieldTypeObject || field.Type == FieldTypeMap || field.Type == FieldTypeList || field.Type == FieldTypeSet {
+				if field.Element == "" {
 					if len(value.Args) < 1 {
 						log.Fatalf("unexpected empty arguments in %s field %s in %s in %s", field.Type, fieldName, varName, path)
 					}
-					switch a := value.Args[0].(type) {
-					case *ast.Ident:
-						field.Element = fmt.Sprintf("%s.%s", pkg, a.Name)
-					case *ast.SelectorExpr:
-						ident, _ := a.X.(*ast.Ident)
-						field.Element = fmt.Sprintf("%s.%s", ident.Name, a.Sel.Name)
-					default:
-						log.Fatalf("unexpected element type in %s field %s in %s in %s: %T", field.Type, fieldName, varName, path, a)
+					for _, arg := range value.Args {
+						switch a := arg.(type) {
+						case *ast.Ident:
+							field.Element = fmt.Sprintf("%s.%s", pkg, a.Name)
+						case *ast.SelectorExpr:
+							ident, _ := a.X.(*ast.Ident)
+							field.Element = fmt.Sprintf("%s.%s", ident.Name, a.Sel.Name)
+						default:
+							log.Fatalf("unexpected element type in %s field %s in %s in %s: %T", field.Type, fieldName, varName, path, a)
+						}
+						if strings.HasSuffix(field.Element, "Attributes") {
+							field.Element = strings.TrimSuffix(field.Element, "Attributes")
+							if len(dirs) > 0 && !strings.Contains(field.Element, ".") {
+								field.Element = dirs[len(dirs)-1] + "." + field.Element
+							}
+							break
+						}
 					}
-					field.Element = strings.TrimSuffix(field.Element, "Attributes")
-					if len(dirs) > 0 && !strings.Contains(field.Element, ".") {
-						field.Element = dirs[len(dirs)-1] + "." + field.Element
-					}
+				}
+				if field.Element == "" {
+					log.Fatalf("failed to find element type in %s field %s in %s in %s", field.Type, fieldName, varName, path)
 				}
 			}
 
@@ -313,11 +322,20 @@ func shouldIgnoreFile(path string) bool {
 func fieldTypeFromSelector(selector *ast.SelectorExpr) (FieldType, string, bool) {
 	if pkg, ok := selector.X.(*ast.Ident); ok {
 		typ := FieldType(strings.TrimSuffix(pkg.Name, "attr"))
-		if typ == FieldTypeBool || typ == FieldTypeDuration || typ == FieldTypeFloat || typ == FieldTypeInt || typ == FieldTypeList || typ == FieldTypeObject || typ == FieldTypeMap || typ == FieldTypeString {
+		if typ == FieldTypeBool || typ == FieldTypeDuration || typ == FieldTypeFloat || typ == FieldTypeInt || typ == FieldTypeList || typ == FieldTypeSet || typ == FieldTypeMap || typ == FieldTypeString {
 			return typ, "", true
 		}
 		if typ == "strlist" {
 			return FieldTypeList, "string", true
+		}
+		if typ == "strset" {
+			return FieldTypeSet, "string", true
+		}
+		if typ == "strmap" {
+			return FieldTypeMap, "string", true
+		}
+		if typ == "obj" {
+			return FieldTypeObject, "", true
 		}
 	}
 	return "", "", false

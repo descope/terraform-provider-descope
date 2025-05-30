@@ -43,11 +43,7 @@ func (m *DoceboModel) Values(h *helpers.Handler) map[string]any {
 func (m *DoceboModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.BaseURL, c, "baseUrl")
-		stringattr.Set(&m.ClientID, c, "clientId")
-		stringattr.Set(&m.ClientSecret, c, "clientSecret")
-		stringattr.Set(&m.Username, c, "username")
-		stringattr.Set(&m.Password, c, "password")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -61,6 +57,14 @@ func (m *DoceboModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Username, c, "username")
 	stringattr.Get(m.Password, c, "password")
 	return c
+}
+
+func (m *DoceboModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.BaseURL, c, "baseUrl")
+	stringattr.Set(&m.ClientID, c, "clientId")
+	stringattr.Set(&m.ClientSecret, c, "clientSecret")
+	stringattr.Set(&m.Username, c, "username")
+	stringattr.Set(&m.Password, c, "password")
 }
 
 // Matching

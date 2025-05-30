@@ -2,18 +2,25 @@ package connectors
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/floatattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
+
+var RecaptchaValidator = objattr.NewValidator[RecaptchaModel]("must have a valid configuration")
 
 var RecaptchaAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"site_key":   stringattr.Required(),
-	"secret_key": stringattr.SecretRequired(),
+	"site_key":            stringattr.Required(),
+	"secret_key":          stringattr.SecretRequired(),
+	"override_assessment": boolattr.Default(false),
+	"assessment_score":    floatattr.Default(0.5),
 }
 
 // Model
@@ -23,8 +30,10 @@ type RecaptchaModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	SiteKey   types.String `tfsdk:"site_key"`
-	SecretKey types.String `tfsdk:"secret_key"`
+	SiteKey            types.String  `tfsdk:"site_key"`
+	SecretKey          types.String  `tfsdk:"secret_key"`
+	OverrideAssessment types.Bool    `tfsdk:"override_assessment"`
+	AssessmentScore    types.Float64 `tfsdk:"assessment_score"`
 }
 
 func (m *RecaptchaModel) Values(h *helpers.Handler) map[string]any {
@@ -37,8 +46,13 @@ func (m *RecaptchaModel) Values(h *helpers.Handler) map[string]any {
 func (m *RecaptchaModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.SiteKey, c, "siteKey")
-		stringattr.Set(&m.SecretKey, c, "secretKey")
+		m.SetConfigurationValues(c, h)
+	}
+}
+
+func (m *RecaptchaModel) Validate(h *helpers.Handler) {
+	if !m.AssessmentScore.IsNull() && !m.OverrideAssessment.ValueBool() {
+		h.Error("Invalid connector configuration", "The assessment_score field cannot be used unless override_assessment is set to true")
 	}
 }
 
@@ -48,7 +62,16 @@ func (m *RecaptchaModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 	c := map[string]any{}
 	stringattr.Get(m.SiteKey, c, "siteKey")
 	stringattr.Get(m.SecretKey, c, "secretKey")
+	boolattr.Get(m.OverrideAssessment, c, "overrideAssessment")
+	floatattr.Get(m.AssessmentScore, c, "assessmentScore")
 	return c
+}
+
+func (m *RecaptchaModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.SiteKey, c, "siteKey")
+	stringattr.Set(&m.SecretKey, c, "secretKey")
+	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
+	floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
 }
 
 // Matching

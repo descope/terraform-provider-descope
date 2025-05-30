@@ -11,19 +11,19 @@ import (
     {{- if .HasField "auditFilters" }}
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
     {{- end }}
-    {{- if .HasField "object" }}
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
-    {{- end }}
     {{- if or .HasValidator (.HasField "httpAuth") }}
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
     {{- end }}
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+    {{- if .HasField "object" }}
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strmapattr"
+    {{- end }}
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 {{ if .HasValidator }}
-var {{.StructName}}Validator = objectattr.NewValidator[{{.StructName}}Model]("must have a valid configuration")
+var {{.StructName}}Validator = objattr.NewValidator[{{.StructName}}Model]("must have a valid configuration")
 {{ end }}
 
 var {{.StructName}}Attributes = map[string]schema.Attribute{
@@ -57,11 +57,7 @@ func (m *{{.StructName}}Model) Values(h *helpers.Handler) map[string]any {
 
 func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
-	{{ .GetConfigurationIterationStartStatement }} 
-		{{- range .Fields}}
-		{{.SetValueStatement}}
-		{{- end }}
-	{{.GetConfigurationIterationEndStatement}}
+	{{.SetConfigurationStatement}} 
 }
 
 {{ if .HasValidator }}
@@ -88,6 +84,12 @@ func (m *{{.StructName}}Model) ConfigurationValues(h *helpers.Handler) map[strin
     {{.GetValueStatement}}
     {{- end }}
 	return c
+}
+
+func (m *{{.StructName}}Model) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+    {{- range .Fields }}
+    {{.SetValueStatement}}
+    {{- end }}
 }
 
 // Matching

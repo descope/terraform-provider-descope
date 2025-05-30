@@ -1,10 +1,8 @@
 package connectors
 
 import (
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -16,8 +14,8 @@ var TwilioCoreAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 
 	"account_sid":    stringattr.Required(),
-	"senders":        objectattr.Required(TwilioCoreSendersFieldAttributes, TwilioCoreSendersFieldValidator),
-	"authentication": objectattr.Required(TwilioAuthFieldAttributes, TwilioAuthFieldValidator),
+	"senders":        objattr.Required[TwilioCoreSendersFieldModel](TwilioCoreSendersFieldAttributes),
+	"authentication": objattr.Required[TwilioAuthFieldModel](TwilioAuthFieldAttributes, TwilioAuthFieldValidator),
 }
 
 // Model
@@ -27,9 +25,9 @@ type TwilioCoreModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	AccountSID types.String                 `tfsdk:"account_sid"`
-	Senders    *TwilioCoreSendersFieldModel `tfsdk:"senders"`
-	Auth       *TwilioAuthFieldModel        `tfsdk:"authentication"`
+	AccountSID types.String                              `tfsdk:"account_sid"`
+	Senders    objattr.Type[TwilioCoreSendersFieldModel] `tfsdk:"senders"`
+	Auth       objattr.Type[TwilioAuthFieldModel]        `tfsdk:"authentication"`
 }
 
 func (m *TwilioCoreModel) Values(h *helpers.Handler) map[string]any {
@@ -43,9 +41,9 @@ func (m *TwilioCoreModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		stringattr.Set(&m.AccountSID, c, "accountSid")
+		objattr.Set(&m.Senders, c, helpers.RootKey, h)
+		objattr.Set(&m.Auth, c, helpers.RootKey, h)
 	}
-	objectattr.Set(&m.Senders, data, "configuration", h)
-	objectattr.Set(&m.Auth, data, "configuration", h)
 }
 
 // Configuration
@@ -53,8 +51,8 @@ func (m *TwilioCoreModel) SetValues(h *helpers.Handler, data map[string]any) {
 func (m *TwilioCoreModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.AccountSID, c, "accountSid")
-	maps.Copy(c, m.Senders.Values(h))
-	maps.Copy(c, m.Auth.Values(h))
+	objattr.Get(m.Senders, c, helpers.RootKey, h)
+	objattr.Get(m.Auth, c, helpers.RootKey, h)
 	return c
 }
 
@@ -74,74 +72,94 @@ func (m *TwilioCoreModel) SetID(id types.String) {
 
 // Senders
 
-var TwilioCoreSendersFieldValidator = objectattr.NewValidator[TwilioCoreSendersFieldModel]("must have valid senders configured")
-
 var TwilioCoreSendersFieldAttributes = map[string]schema.Attribute{
-	"sms":   objectattr.Required(TwilioCoreSendersSMSFieldAttributes),
-	"voice": objectattr.Optional(TwilioCoreSendersVoiceFieldAttributes),
+	"sms":   objattr.Required[TwilioCoreSendersSMSFieldModel](TwilioCoreSendersSMSFieldAttributes, TwilioCoreSendersSMSFieldValidator),
+	"voice": objattr.Optional[TwilioCoreSendersVoiceFieldModel](TwilioCoreSendersVoiceFieldAttributes),
 }
+
+type TwilioCoreSendersFieldModel struct {
+	SMS   objattr.Type[TwilioCoreSendersSMSFieldModel]   `tfsdk:"sms"`
+	Voice objattr.Type[TwilioCoreSendersVoiceFieldModel] `tfsdk:"voice"`
+}
+
+func (m *TwilioCoreSendersFieldModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	objattr.Get(m.SMS, data, helpers.RootKey, h)
+	objattr.Get(m.Voice, data, helpers.RootKey, h)
+	return data
+}
+
+func (m *TwilioCoreSendersFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	objattr.Set(&m.SMS, data, helpers.RootKey, h)
+	objattr.Set(&m.Voice, data, helpers.RootKey, h)
+}
+
+// TwilioCoreSendersSMSField
+
+var TwilioCoreSendersSMSFieldValidator = objattr.NewValidator[TwilioCoreSendersSMSFieldModel]("must have valid senders configured")
 
 var TwilioCoreSendersSMSFieldAttributes = map[string]schema.Attribute{
 	"phone_number":          stringattr.Default(""),
 	"messaging_service_sid": stringattr.Default(""),
 }
 
-var TwilioCoreSendersVoiceFieldAttributes = map[string]schema.Attribute{
-	"phone_number": stringattr.Required(),
+type TwilioCoreSendersSMSFieldModel struct {
+	PhoneNumber         types.String `tfsdk:"phone_number"`
+	MessagingServiceSID types.String `tfsdk:"messaging_service_sid"`
 }
 
-type TwilioCoreSendersFieldModel struct {
-	SMS *struct {
-		PhoneNumber         types.String `tfsdk:"phone_number"`
-		MessagingServiceSID types.String `tfsdk:"messaging_service_sid"`
-	} `tfsdk:"sms"`
-	Voice *struct {
-		PhoneNumber types.String `tfsdk:"phone_number"`
-	} `tfsdk:"voice"`
-}
-
-func (m *TwilioCoreSendersFieldModel) Values(h *helpers.Handler) map[string]any {
+func (m *TwilioCoreSendersSMSFieldModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	if v := m.SMS; v != nil {
-		stringattr.Get(v.PhoneNumber, data, "fromPhone")
-		stringattr.Get(v.MessagingServiceSID, data, "messagingServiceSid")
-		if v.PhoneNumber.ValueString() != "" {
-			data["selectedProp"] = "fromPhone"
-		} else {
-			data["selectedProp"] = "messagingServiceSid"
-		}
-	}
-	if v := m.Voice; v != nil {
-		stringattr.Get(v.PhoneNumber, data, "fromPhoneVoice")
+	stringattr.Get(m.PhoneNumber, data, "fromPhone")
+	stringattr.Get(m.MessagingServiceSID, data, "messagingServiceSid")
+	if m.PhoneNumber.ValueString() != "" {
+		data["selectedProp"] = "fromPhone"
+	} else {
+		data["selectedProp"] = "messagingServiceSid"
 	}
 	return data
 }
 
-func (m *TwilioCoreSendersFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	m.SMS = helpers.ZVL(m.SMS)
-	stringattr.Set(&m.SMS.PhoneNumber, data, "fromPhone")
-	stringattr.Set(&m.SMS.MessagingServiceSID, data, "messagingServiceSid")
-	m.Voice = helpers.ZVL(m.Voice)
-	stringattr.Set(&m.Voice.PhoneNumber, data, "fromPhoneVoice")
+func (m *TwilioCoreSendersSMSFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.PhoneNumber, data, "fromPhone")
+	stringattr.Set(&m.MessagingServiceSID, data, "messagingServiceSid")
 }
 
-func (m *TwilioCoreSendersFieldModel) Validate(h *helpers.Handler) {
-	if v := m.SMS; v != nil {
-		if helpers.HasUnknownValues(v.PhoneNumber, v.MessagingServiceSID) {
-			return // skip validation if there are unknown values
-		}
-		if m.SMS.PhoneNumber.ValueString() == "" && m.SMS.MessagingServiceSID.ValueString() == "" {
-			h.Missing("The Twilio Core connector SMS sender requires either the phone_number or messaging_service_sid attribute to be set")
-		}
-		if m.SMS.PhoneNumber.ValueString() != "" && m.SMS.MessagingServiceSID.ValueString() != "" {
-			h.Invalid("The Twilio Core connector SMS sender must only have one of its attributes set")
-		}
+func (m *TwilioCoreSendersSMSFieldModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.PhoneNumber, m.MessagingServiceSID) {
+		return // skip validation if there are unknown values
 	}
+	if m.PhoneNumber.ValueString() == "" && m.MessagingServiceSID.ValueString() == "" {
+		h.Missing("The Twilio Core connector SMS sender requires either the phone_number or messaging_service_sid attribute to be set")
+	}
+	if m.PhoneNumber.ValueString() != "" && m.MessagingServiceSID.ValueString() != "" {
+		h.Invalid("The Twilio Core connector SMS sender must only have one of its attributes set")
+	}
+}
+
+// TwilioCoreSendersVoiceField
+
+var TwilioCoreSendersVoiceFieldAttributes = map[string]schema.Attribute{
+	"phone_number": stringattr.Required(),
+}
+
+type TwilioCoreSendersVoiceFieldModel struct {
+	PhoneNumber types.String `tfsdk:"phone_number"`
+}
+
+func (m *TwilioCoreSendersVoiceFieldModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	stringattr.Get(m.PhoneNumber, data, "fromPhoneVoice")
+	return data
+}
+
+func (m *TwilioCoreSendersVoiceFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.PhoneNumber, data, "fromPhoneVoice")
 }
 
 // Auth
 
-var TwilioAuthFieldValidator = objectattr.NewValidator[TwilioAuthFieldModel]("must have valid senders configured")
+var TwilioAuthFieldValidator = objattr.NewValidator[TwilioAuthFieldModel]("must have valid senders configured")
 
 var TwilioAuthFieldAttributes = map[string]schema.Attribute{
 	"auth_token": stringattr.SecretOptional(),

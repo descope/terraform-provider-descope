@@ -3,13 +3,13 @@ package connectors
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var ForterValidator = objectattr.NewValidator[ForterModel]("must have a valid configuration")
+var ForterValidator = objattr.NewValidator[ForterModel]("must have a valid configuration")
 
 var ForterAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -18,6 +18,7 @@ var ForterAttributes = map[string]schema.Attribute{
 
 	"site_id":             stringattr.Required(),
 	"secret_key":          stringattr.SecretRequired(),
+	"api_version":         stringattr.Default(""),
 	"overrides":           boolattr.Default(false),
 	"override_ip_address": stringattr.Default(""),
 	"override_user_email": stringattr.Default(""),
@@ -32,6 +33,7 @@ type ForterModel struct {
 
 	SiteID            types.String `tfsdk:"site_id"`
 	SecretKey         types.String `tfsdk:"secret_key"`
+	ApiVersion        types.String `tfsdk:"api_version"`
 	Overrides         types.Bool   `tfsdk:"overrides"`
 	OverrideIPAddress types.String `tfsdk:"override_ip_address"`
 	OverrideUserEmail types.String `tfsdk:"override_user_email"`
@@ -47,11 +49,7 @@ func (m *ForterModel) Values(h *helpers.Handler) map[string]any {
 func (m *ForterModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.SiteID, c, "siteId")
-		stringattr.Set(&m.SecretKey, c, "secretKey")
-		boolattr.Set(&m.Overrides, c, "overrides")
-		stringattr.Set(&m.OverrideIPAddress, c, "overrideIpAddress")
-		stringattr.Set(&m.OverrideUserEmail, c, "overrideUserEmail")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -70,10 +68,20 @@ func (m *ForterModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.SiteID, c, "siteId")
 	stringattr.Get(m.SecretKey, c, "secretKey")
+	stringattr.Get(m.ApiVersion, c, "apiVersion")
 	boolattr.Get(m.Overrides, c, "overrides")
 	stringattr.Get(m.OverrideIPAddress, c, "overrideIpAddress")
 	stringattr.Get(m.OverrideUserEmail, c, "overrideUserEmail")
 	return c
+}
+
+func (m *ForterModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.SiteID, c, "siteId")
+	stringattr.Set(&m.SecretKey, c, "secretKey")
+	stringattr.Set(&m.ApiVersion, c, "apiVersion")
+	boolattr.Set(&m.Overrides, c, "overrides")
+	stringattr.Set(&m.OverrideIPAddress, c, "overrideIpAddress")
+	stringattr.Set(&m.OverrideUserEmail, c, "overrideUserEmail")
 }
 
 // Matching

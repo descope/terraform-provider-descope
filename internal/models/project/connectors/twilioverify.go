@@ -1,10 +1,8 @@
 package connectors
 
 import (
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -18,7 +16,7 @@ var TwilioVerifyAttributes = map[string]schema.Attribute{
 	"account_sid":    stringattr.Required(),
 	"service_sid":    stringattr.Required(),
 	"sender":         stringattr.Default(""),
-	"authentication": objectattr.Required(TwilioAuthFieldAttributes, TwilioAuthFieldValidator),
+	"authentication": objattr.Required[TwilioAuthFieldModel](TwilioAuthFieldAttributes, TwilioAuthFieldValidator),
 }
 
 // Model
@@ -28,10 +26,10 @@ type TwilioVerifyModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	AccountSID types.String          `tfsdk:"account_sid"`
-	ServiceSID types.String          `tfsdk:"service_sid"`
-	Sender     types.String          `tfsdk:"sender"`
-	Auth       *TwilioAuthFieldModel `tfsdk:"authentication"`
+	AccountSID types.String                       `tfsdk:"account_sid"`
+	ServiceSID types.String                       `tfsdk:"service_sid"`
+	Sender     types.String                       `tfsdk:"sender"`
+	Auth       objattr.Type[TwilioAuthFieldModel] `tfsdk:"authentication"`
 }
 
 func (m *TwilioVerifyModel) Values(h *helpers.Handler) map[string]any {
@@ -47,8 +45,8 @@ func (m *TwilioVerifyModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Set(&m.AccountSID, c, "accountSid")
 		stringattr.Set(&m.ServiceSID, c, "verifyServiceSid")
 		stringattr.Set(&m.Sender, c, "from")
+		objattr.Set(&m.Auth, c, helpers.RootKey, h)
 	}
-	objectattr.Set(&m.Auth, data, "configuration", h)
 }
 
 // Configuration
@@ -58,7 +56,7 @@ func (m *TwilioVerifyModel) ConfigurationValues(h *helpers.Handler) map[string]a
 	stringattr.Get(m.AccountSID, c, "accountSid")
 	stringattr.Get(m.ServiceSID, c, "verifyServiceSid")
 	stringattr.Get(m.Sender, c, "from")
-	maps.Copy(c, m.Auth.Values(h))
+	objattr.Get(m.Auth, c, helpers.RootKey, h)
 	return c
 }
 

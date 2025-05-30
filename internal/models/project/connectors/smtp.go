@@ -1,11 +1,9 @@
 package connectors
 
 import (
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -17,9 +15,9 @@ var SMTPAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"sender":         objectattr.Required(SenderFieldAttributes),
-	"server":         objectattr.Required(ServerFieldAttributes),
-	"authentication": objectattr.Required(SMTPAuthFieldAttributes),
+	"sender":         objattr.Required[SenderFieldModel](SenderFieldAttributes),
+	"server":         objattr.Required[ServerFieldModel](ServerFieldAttributes),
+	"authentication": objattr.Required[SMTPAuthFieldModel](SMTPAuthFieldAttributes),
 	"use_static_ips": boolattr.Default(false),
 }
 
@@ -30,10 +28,10 @@ type SMTPModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	Sender       *SenderFieldModel   `tfsdk:"sender"`
-	Server       *ServerFieldModel   `tfsdk:"server"`
-	Auth         *SMTPAuthFieldModel `tfsdk:"authentication"`
-	UseStaticIPs types.Bool          `tfsdk:"use_static_ips"`
+	Sender       objattr.Type[SenderFieldModel]   `tfsdk:"sender"`
+	Server       objattr.Type[ServerFieldModel]   `tfsdk:"server"`
+	Auth         objattr.Type[SMTPAuthFieldModel] `tfsdk:"authentication"`
+	UseStaticIPs types.Bool                       `tfsdk:"use_static_ips"`
 }
 
 func (m *SMTPModel) Values(h *helpers.Handler) map[string]any {
@@ -45,10 +43,10 @@ func (m *SMTPModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *SMTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
-	objectattr.Set(&m.Sender, data, "configuration", h)
-	objectattr.Set(&m.Auth, data, "configuration", h)
-	objectattr.Set(&m.Server, data, "configuration", h)
 	if c, ok := data["configuration"].(map[string]any); ok {
+		objattr.Set(&m.Sender, c, helpers.RootKey, h)
+		objattr.Set(&m.Auth, c, helpers.RootKey, h)
+		objattr.Set(&m.Server, c, helpers.RootKey, h)
 		boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
 	}
 }
@@ -57,9 +55,9 @@ func (m *SMTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *SMTPModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
-	maps.Copy(c, m.Sender.Values(h))
-	maps.Copy(c, m.Server.Values(h))
-	maps.Copy(c, m.Auth.Values(h))
+	objattr.Get(m.Sender, c, helpers.RootKey, h)
+	objattr.Get(m.Server, c, helpers.RootKey, h)
+	objattr.Get(m.Auth, c, helpers.RootKey, h)
 	if m.UseStaticIPs.ValueBool() { // don't send field if false in old MP connectors
 		boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
 	}

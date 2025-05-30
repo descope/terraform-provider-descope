@@ -5,14 +5,14 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var ConnectorsValidator = objectattr.NewValidator[ConnectorsModel]("must have unique connector names")
+var ConnectorsValidator = objattr.NewValidator[ConnectorsModel]("must have unique connector names")
 
-var ConnectorsModifier = objectattr.NewModifier[ConnectorsModel]("maintains connector identifiers between plan changes")
+var ConnectorsModifier = objattr.NewModifier[ConnectorsModel]("maintains connector identifiers between plan changes")
 
 var ConnectorsAttributes = map[string]schema.Attribute{
 	"abuseipdb":                  listattr.Optional2[AbuseIPDBModel](AbuseIPDBAttributes),
@@ -37,7 +37,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"lokalise":                   listattr.Optional2[LokaliseModel](LokaliseAttributes),
 	"mparticle":                  listattr.Optional2[MParticleModel](MParticleAttributes),
 	"newrelic":                   listattr.Optional2[NewRelicModel](NewRelicAttributes, NewRelicValidator),
-	"recaptcha":                  listattr.Optional2[RecaptchaModel](RecaptchaAttributes),
+	"recaptcha":                  listattr.Optional2[RecaptchaModel](RecaptchaAttributes, RecaptchaValidator),
 	"recaptcha_enterprise":       listattr.Optional2[RecaptchaEnterpriseModel](RecaptchaEnterpriseAttributes, RecaptchaEnterpriseValidator),
 	"rekognition":                listattr.Optional2[RekognitionModel](RekognitionAttributes),
 	"salesforce":                 listattr.Optional2[SalesforceModel](SalesforceAttributes),

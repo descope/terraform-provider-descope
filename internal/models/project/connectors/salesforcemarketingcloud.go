@@ -43,11 +43,7 @@ func (m *SalesforceMarketingCloudModel) Values(h *helpers.Handler) map[string]an
 func (m *SalesforceMarketingCloudModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.Subdomain, c, "subdomain")
-		stringattr.Set(&m.ClientID, c, "clientId")
-		stringattr.Set(&m.ClientSecret, c, "clientSecret")
-		stringattr.Set(&m.Scope, c, "scope")
-		stringattr.Set(&m.AccountID, c, "accountId")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -61,6 +57,14 @@ func (m *SalesforceMarketingCloudModel) ConfigurationValues(h *helpers.Handler) 
 	stringattr.Get(m.Scope, c, "scope")
 	stringattr.Get(m.AccountID, c, "accountId")
 	return c
+}
+
+func (m *SalesforceMarketingCloudModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.Subdomain, c, "subdomain")
+	stringattr.Set(&m.ClientID, c, "clientId")
+	stringattr.Set(&m.ClientSecret, c, "clientSecret")
+	stringattr.Set(&m.Scope, c, "scope")
+	stringattr.Set(&m.AccountID, c, "accountId")
 }
 
 // Matching

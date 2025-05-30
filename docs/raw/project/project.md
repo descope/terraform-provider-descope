@@ -26,7 +26,7 @@ left unset for development or staging projects.
 tags
 ----
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
 
@@ -89,7 +89,7 @@ Enrich your flows by interacting with third party services.
 applications
 ------------
 
-- Type: `object` of `applications.Application` 
+- Type: `object` of `applications.Applications` 
 
 Applications that are registered with the project.
 

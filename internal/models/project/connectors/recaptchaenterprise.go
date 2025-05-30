@@ -4,13 +4,13 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/floatattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var RecaptchaEnterpriseValidator = objectattr.NewValidator[RecaptchaEnterpriseModel]("must have a valid configuration")
+var RecaptchaEnterpriseValidator = objattr.NewValidator[RecaptchaEnterpriseModel]("must have a valid configuration")
 
 var RecaptchaEnterpriseAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -50,12 +50,7 @@ func (m *RecaptchaEnterpriseModel) Values(h *helpers.Handler) map[string]any {
 func (m *RecaptchaEnterpriseModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.ProjectID, c, "projectId")
-		stringattr.Set(&m.SiteKey, c, "siteKey")
-		stringattr.Set(&m.APIKey, c, "apiKey")
-		boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
-		floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
-		boolattr.Set(&m.Enterprise, c, "enterprise")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -76,6 +71,15 @@ func (m *RecaptchaEnterpriseModel) ConfigurationValues(h *helpers.Handler) map[s
 	floatattr.Get(m.AssessmentScore, c, "assessmentScore")
 	boolattr.Get(m.Enterprise, c, "enterprise")
 	return c
+}
+
+func (m *RecaptchaEnterpriseModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.ProjectID, c, "projectId")
+	stringattr.Set(&m.SiteKey, c, "siteKey")
+	stringattr.Set(&m.APIKey, c, "apiKey")
+	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
+	floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
+	boolattr.Set(&m.Enterprise, c, "enterprise")
 }
 
 // Matching

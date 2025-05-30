@@ -35,7 +35,7 @@ func (m *SlackModel) Values(h *helpers.Handler) map[string]any {
 func (m *SlackModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.Token, c, "token")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -45,6 +45,10 @@ func (m *SlackModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.Token, c, "token")
 	return c
+}
+
+func (m *SlackModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.Token, c, "token")
 }
 
 // Matching

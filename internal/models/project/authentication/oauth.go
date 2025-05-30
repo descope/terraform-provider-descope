@@ -323,7 +323,7 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.JWKsEndpoint, data, "jwksUrl")
 	claimMapping := map[string]any{}
 	customAttributes := map[string]string{}
-	for k, v := range strmapattr.ImmutableIterator(m.ClaimMapping, h) {
+	for k, v := range strmapattr.Iterator(m.ClaimMapping, h) {
 		if slices.Contains(systemClaimMapping, k) {
 			claimMapping[k] = v
 		} else {

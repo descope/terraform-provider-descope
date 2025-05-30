@@ -4,13 +4,13 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var DatadogValidator = objectattr.NewValidator[DatadogModel]("must have a valid configuration")
+var DatadogValidator = objattr.NewValidator[DatadogModel]("must have a valid configuration")
 
 var DatadogAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -20,7 +20,7 @@ var DatadogAttributes = map[string]schema.Attribute{
 	"api_key":                  stringattr.SecretRequired(),
 	"site":                     stringattr.Default(""),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            listattr.Optional(AuditFilterFieldAttributes),
+	"audit_filters":            listattr.Optional2[AuditFilterFieldModel](AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -31,11 +31,11 @@ type DatadogModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	APIKey                 types.String             `tfsdk:"api_key"`
-	Site                   types.String             `tfsdk:"site"`
-	AuditEnabled           types.Bool               `tfsdk:"audit_enabled"`
-	AuditFilters           []*AuditFilterFieldModel `tfsdk:"audit_filters"`
-	TroubleshootLogEnabled types.Bool               `tfsdk:"troubleshoot_log_enabled"`
+	APIKey                 types.String                         `tfsdk:"api_key"`
+	Site                   types.String                         `tfsdk:"site"`
+	AuditEnabled           types.Bool                           `tfsdk:"audit_enabled"`
+	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	TroubleshootLogEnabled types.Bool                           `tfsdk:"troubleshoot_log_enabled"`
 }
 
 func (m *DatadogModel) Values(h *helpers.Handler) map[string]any {
@@ -48,16 +48,12 @@ func (m *DatadogModel) Values(h *helpers.Handler) map[string]any {
 func (m *DatadogModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.APIKey, c, "apiKey")
-		stringattr.Set(&m.Site, c, "site")
-		boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
-		listattr.Set(&m.AuditFilters, c, "auditFilters", h)
-		boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
 func (m *DatadogModel) Validate(h *helpers.Handler) {
-	if len(m.AuditFilters) != 0 && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Error("Invalid connector configuration", "The audit_filters field cannot be used when audit_enabled is set to false")
 	}
 }
@@ -69,9 +65,17 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.Site, c, "site")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	listattr.Get2(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
+}
+
+func (m *DatadogModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Set(&m.Site, c, "site")
+	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
+	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
+	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 }
 
 // Matching

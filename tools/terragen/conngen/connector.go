@@ -109,16 +109,11 @@ func (c *Connector) HasValidator() bool {
 	return found
 }
 
-func (c *Connector) GetConfigurationIterationStartStatement() string {
+func (c *Connector) SetConfigurationStatement() string { // TODO in template
 	if len(c.Fields) > 0 {
-		return `if c, ok := data["configuration"].(map[string]any); ok {`
-	}
-	return ""
-}
-
-func (c *Connector) GetConfigurationIterationEndStatement() string {
-	if len(c.Fields) > 0 {
-		return `}`
+		return `if c, ok := data["configuration"].(map[string]any); ok {
+			m.SetConfigurationValues(c, h)
+		}`
 	}
 	return ""
 }

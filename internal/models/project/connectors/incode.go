@@ -39,9 +39,7 @@ func (m *IncodeModel) Values(h *helpers.Handler) map[string]any {
 func (m *IncodeModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.APIKey, c, "apiKey")
-		stringattr.Set(&m.ApiUrl, c, "apiUrl")
-		stringattr.Set(&m.FlowID, c, "flowId")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -53,6 +51,12 @@ func (m *IncodeModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.ApiUrl, c, "apiUrl")
 	stringattr.Get(m.FlowID, c, "flowId")
 	return c
+}
+
+func (m *IncodeModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Set(&m.ApiUrl, c, "apiUrl")
+	stringattr.Set(&m.FlowID, c, "flowId")
 }
 
 // Matching

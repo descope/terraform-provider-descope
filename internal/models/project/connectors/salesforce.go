@@ -41,10 +41,7 @@ func (m *SalesforceModel) Values(h *helpers.Handler) map[string]any {
 func (m *SalesforceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.BaseURL, c, "baseUrl")
-		stringattr.Set(&m.ClientID, c, "clientId")
-		stringattr.Set(&m.ClientSecret, c, "clientSecret")
-		stringattr.Set(&m.Version, c, "version")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -57,6 +54,13 @@ func (m *SalesforceModel) ConfigurationValues(h *helpers.Handler) map[string]any
 	stringattr.Get(m.ClientSecret, c, "clientSecret")
 	stringattr.Get(m.Version, c, "version")
 	return c
+}
+
+func (m *SalesforceModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.BaseURL, c, "baseUrl")
+	stringattr.Set(&m.ClientID, c, "clientId")
+	stringattr.Set(&m.ClientSecret, c, "clientSecret")
+	stringattr.Set(&m.Version, c, "version")
 }
 
 // Matching

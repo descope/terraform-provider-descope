@@ -1,10 +1,8 @@
 package connectors
 
 import (
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -19,7 +17,7 @@ var SESAttributes = map[string]schema.Attribute{
 	"secret":        stringattr.SecretRequired(),
 	"region":        stringattr.Required(),
 	"endpoint":      stringattr.Default(""),
-	"sender":        objectattr.Required(SenderFieldAttributes),
+	"sender":        objattr.Required[SenderFieldModel](SenderFieldAttributes),
 }
 
 // Model
@@ -29,11 +27,11 @@ type SESModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	AccessKeyId types.String      `tfsdk:"access_key_id"`
-	Secret      types.String      `tfsdk:"secret"`
-	Region      types.String      `tfsdk:"region"`
-	Endpoint    types.String      `tfsdk:"endpoint"`
-	Sender      *SenderFieldModel `tfsdk:"sender"`
+	AccessKeyId types.String                   `tfsdk:"access_key_id"`
+	Secret      types.String                   `tfsdk:"secret"`
+	Region      types.String                   `tfsdk:"region"`
+	Endpoint    types.String                   `tfsdk:"endpoint"`
+	Sender      objattr.Type[SenderFieldModel] `tfsdk:"sender"`
 }
 
 func (m *SESModel) Values(h *helpers.Handler) map[string]any {
@@ -50,8 +48,8 @@ func (m *SESModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Set(&m.Secret, c, "secretAccessKey")
 		stringattr.Set(&m.Region, c, "awsSNSRegion")
 		stringattr.Set(&m.Endpoint, c, "awsEndpoint")
+		objattr.Set(&m.Sender, c, helpers.RootKey, h)
 	}
-	objectattr.Set(&m.Sender, data, "configuration", h)
 }
 
 // Configuration
@@ -62,7 +60,7 @@ func (m *SESModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Secret, c, "secretAccessKey")
 	stringattr.Get(m.Region, c, "region")
 	stringattr.Get(m.Endpoint, c, "endpoint")
-	maps.Copy(c, m.Sender.Values(h))
+	objattr.Get(m.Sender, c, helpers.RootKey, h)
 	return c
 }
 

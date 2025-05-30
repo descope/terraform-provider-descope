@@ -43,6 +43,9 @@ func inject(model map[string]schema.Attribute, docs map[string]string) {
 		case schema.ListAttribute:
 			attr.MarkdownDescription = desc
 			model[field] = attr
+		case schema.SetAttribute:
+			attr.MarkdownDescription = desc
+			model[field] = attr
 		case schema.MapNestedAttribute:
 			attr.MarkdownDescription = desc
 			model[field] = attr
@@ -50,6 +53,9 @@ func inject(model map[string]schema.Attribute, docs map[string]string) {
 			attr.MarkdownDescription = desc
 			model[field] = attr
 		case schema.ListNestedAttribute:
+			attr.MarkdownDescription = desc
+			model[field] = attr
+		case schema.SetNestedAttribute:
 			attr.MarkdownDescription = desc
 			model[field] = attr
 		default:

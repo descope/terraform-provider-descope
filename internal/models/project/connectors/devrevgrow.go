@@ -35,7 +35,7 @@ func (m *DevRevGrowModel) Values(h *helpers.Handler) map[string]any {
 func (m *DevRevGrowModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.APIKey, c, "apiKey")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -45,6 +45,10 @@ func (m *DevRevGrowModel) ConfigurationValues(h *helpers.Handler) map[string]any
 	c := map[string]any{}
 	stringattr.Get(m.APIKey, c, "apiKey")
 	return c
+}
+
+func (m *DevRevGrowModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.APIKey, c, "apiKey")
 }
 
 // Matching

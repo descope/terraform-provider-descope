@@ -39,9 +39,7 @@ func (m *SmartlingModel) Values(h *helpers.Handler) map[string]any {
 func (m *SmartlingModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.UserIdentifier, c, "userIdentifier")
-		stringattr.Set(&m.UserSecret, c, "userSecret")
-		stringattr.Set(&m.AccountUID, c, "accountUid")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -53,6 +51,12 @@ func (m *SmartlingModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 	stringattr.Get(m.UserSecret, c, "userSecret")
 	stringattr.Get(m.AccountUID, c, "accountUid")
 	return c
+}
+
+func (m *SmartlingModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.UserIdentifier, c, "userIdentifier")
+	stringattr.Set(&m.UserSecret, c, "userSecret")
+	stringattr.Set(&m.AccountUID, c, "accountUid")
 }
 
 // Matching

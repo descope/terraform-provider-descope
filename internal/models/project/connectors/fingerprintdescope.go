@@ -35,7 +35,7 @@ func (m *FingerprintDescopeModel) Values(h *helpers.Handler) map[string]any {
 func (m *FingerprintDescopeModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.CustomDomain, c, "customDomain")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -45,6 +45,10 @@ func (m *FingerprintDescopeModel) ConfigurationValues(h *helpers.Handler) map[st
 	c := map[string]any{}
 	stringattr.Get(m.CustomDomain, c, "customDomain")
 	return c
+}
+
+func (m *FingerprintDescopeModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.CustomDomain, c, "customDomain")
 }
 
 // Matching

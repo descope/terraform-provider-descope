@@ -4,13 +4,13 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var NewRelicValidator = objectattr.NewValidator[NewRelicModel]("must have a valid configuration")
+var NewRelicValidator = objattr.NewValidator[NewRelicModel]("must have a valid configuration")
 
 var NewRelicAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -20,7 +20,7 @@ var NewRelicAttributes = map[string]schema.Attribute{
 	"api_key":                  stringattr.SecretRequired(),
 	"data_center":              stringattr.Default(""),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            listattr.Optional(AuditFilterFieldAttributes),
+	"audit_filters":            listattr.Optional2[AuditFilterFieldModel](AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 	"override_logs_prefix":     boolattr.Default(false),
 	"logs_prefix":              stringattr.Default("descope."),
@@ -33,13 +33,13 @@ type NewRelicModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	APIKey                 types.String             `tfsdk:"api_key"`
-	DataCenter             types.String             `tfsdk:"data_center"`
-	AuditEnabled           types.Bool               `tfsdk:"audit_enabled"`
-	AuditFilters           []*AuditFilterFieldModel `tfsdk:"audit_filters"`
-	TroubleshootLogEnabled types.Bool               `tfsdk:"troubleshoot_log_enabled"`
-	OverrideLogsPrefix     types.Bool               `tfsdk:"override_logs_prefix"`
-	LogsPrefix             types.String             `tfsdk:"logs_prefix"`
+	APIKey                 types.String                         `tfsdk:"api_key"`
+	DataCenter             types.String                         `tfsdk:"data_center"`
+	AuditEnabled           types.Bool                           `tfsdk:"audit_enabled"`
+	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	TroubleshootLogEnabled types.Bool                           `tfsdk:"troubleshoot_log_enabled"`
+	OverrideLogsPrefix     types.Bool                           `tfsdk:"override_logs_prefix"`
+	LogsPrefix             types.String                         `tfsdk:"logs_prefix"`
 }
 
 func (m *NewRelicModel) Values(h *helpers.Handler) map[string]any {
@@ -52,18 +52,12 @@ func (m *NewRelicModel) Values(h *helpers.Handler) map[string]any {
 func (m *NewRelicModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.APIKey, c, "apiKey")
-		stringattr.Set(&m.DataCenter, c, "dataCenter")
-		boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
-		listattr.Set(&m.AuditFilters, c, "auditFilters", h)
-		boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
-		boolattr.Set(&m.OverrideLogsPrefix, c, "overrideLogsPrefix")
-		stringattr.Set(&m.LogsPrefix, c, "logsPrefix")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
 func (m *NewRelicModel) Validate(h *helpers.Handler) {
-	if len(m.AuditFilters) != 0 && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Error("Invalid connector configuration", "The audit_filters field cannot be used when audit_enabled is set to false")
 	}
 	if !m.LogsPrefix.IsNull() && !m.OverrideLogsPrefix.ValueBool() {
@@ -78,11 +72,21 @@ func (m *NewRelicModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.DataCenter, c, "dataCenter")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	listattr.Get2(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.OverrideLogsPrefix, c, "overrideLogsPrefix")
 	stringattr.Get(m.LogsPrefix, c, "logsPrefix")
 	return c
+}
+
+func (m *NewRelicModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Set(&m.DataCenter, c, "dataCenter")
+	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
+	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
+	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	boolattr.Set(&m.OverrideLogsPrefix, c, "overrideLogsPrefix")
+	stringattr.Set(&m.LogsPrefix, c, "logsPrefix")
 }
 
 // Matching

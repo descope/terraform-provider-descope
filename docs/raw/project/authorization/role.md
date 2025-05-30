@@ -25,6 +25,6 @@ A description for the role.
 permissions
 -----------
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 A list of permissions by name to be included in the role.

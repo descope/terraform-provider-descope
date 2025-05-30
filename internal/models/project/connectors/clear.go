@@ -37,8 +37,7 @@ func (m *ClearModel) Values(h *helpers.Handler) map[string]any {
 func (m *ClearModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.ProjectID, c, "projectId")
-		stringattr.Set(&m.APIKey, c, "apiKey")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -49,6 +48,11 @@ func (m *ClearModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.ProjectID, c, "projectId")
 	stringattr.Get(m.APIKey, c, "apiKey")
 	return c
+}
+
+func (m *ClearModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.ProjectID, c, "projectId")
+	stringattr.Set(&m.APIKey, c, "apiKey")
 }
 
 // Matching

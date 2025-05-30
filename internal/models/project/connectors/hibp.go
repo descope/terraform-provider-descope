@@ -40,6 +40,9 @@ func (m *HIBPModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	return c
 }
 
+func (m *HIBPModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+}
+
 // Matching
 
 func (m *HIBPModel) GetName() types.String {

@@ -39,9 +39,7 @@ func (m *AmplitudeModel) Values(h *helpers.Handler) map[string]any {
 func (m *AmplitudeModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.APIKey, c, "apiKey")
-		stringattr.Set(&m.ServerURL, c, "serverUrl")
-		stringattr.Set(&m.ServerZone, c, "serverZone")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -53,6 +51,12 @@ func (m *AmplitudeModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 	stringattr.Get(m.ServerURL, c, "serverUrl")
 	stringattr.Get(m.ServerZone, c, "serverZone")
 	return c
+}
+
+func (m *AmplitudeModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Set(&m.ServerURL, c, "serverUrl")
+	stringattr.Set(&m.ServerZone, c, "serverZone")
 }
 
 // Matching

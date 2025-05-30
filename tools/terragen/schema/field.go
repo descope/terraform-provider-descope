@@ -10,6 +10,7 @@ const (
 	FieldTypeList     FieldType = "list"
 	FieldTypeObject   FieldType = "object"
 	FieldTypeMap      FieldType = "map"
+	FieldTypeSet      FieldType = "set"
 	FieldTypeString   FieldType = "string"
 	FieldTypeSecret   FieldType = "secret"
 )

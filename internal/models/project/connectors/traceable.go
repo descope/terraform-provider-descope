@@ -38,8 +38,7 @@ func (m *TraceableModel) Values(h *helpers.Handler) map[string]any {
 func (m *TraceableModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.SecretKey, c, "secretKey")
-		boolattr.Set(&m.EURegion, c, "euRegion")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -50,6 +49,11 @@ func (m *TraceableModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 	stringattr.Get(m.SecretKey, c, "secretKey")
 	boolattr.Get(m.EURegion, c, "euRegion")
 	return c
+}
+
+func (m *TraceableModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.SecretKey, c, "secretKey")
+	boolattr.Set(&m.EURegion, c, "euRegion")
 }
 
 // Matching

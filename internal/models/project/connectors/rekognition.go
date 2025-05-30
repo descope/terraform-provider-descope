@@ -39,9 +39,7 @@ func (m *RekognitionModel) Values(h *helpers.Handler) map[string]any {
 func (m *RekognitionModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
-		stringattr.Set(&m.SecretAccessKey, c, "secretAccessKey")
-		stringattr.Set(&m.CollectionID, c, "collectionId")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -53,6 +51,12 @@ func (m *RekognitionModel) ConfigurationValues(h *helpers.Handler) map[string]an
 	stringattr.Get(m.SecretAccessKey, c, "secretAccessKey")
 	stringattr.Get(m.CollectionID, c, "collectionId")
 	return c
+}
+
+func (m *RekognitionModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
+	stringattr.Set(&m.SecretAccessKey, c, "secretAccessKey")
+	stringattr.Set(&m.CollectionID, c, "collectionId")
 }
 
 // Matching
