@@ -2,7 +2,6 @@ package maptype
 
 import (
 	"context"
-	"fmt"
 	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
@@ -14,14 +13,12 @@ import (
 )
 
 var (
-	_ attr.Value                              = (*MapNestedObjectValueOf[struct{}])(nil)
-	_ basetypes.MapValuable                   = (*MapNestedObjectValueOf[struct{}])(nil)
-	_ basetypes.MapValuableWithSemanticEquals = (*MapNestedObjectValueOf[struct{}])(nil)
+	_ attr.Value            = (*MapNestedObjectValueOf[struct{}])(nil)
+	_ basetypes.MapValuable = (*MapNestedObjectValueOf[struct{}])(nil)
 )
 
 type MapNestedObjectValueOf[T any] struct {
 	basetypes.MapValue
-	semanticEqualityFunc mapSemanticEqualityFunc[T]
 }
 
 func (v MapNestedObjectValueOf[T]) Equal(o attr.Value) bool {
@@ -30,22 +27,6 @@ func (v MapNestedObjectValueOf[T]) Equal(o attr.Value) bool {
 		return false
 	}
 	return v.MapValue.Equal(other.MapValue)
-}
-
-func (v MapNestedObjectValueOf[T]) MapSemanticEquals(ctx context.Context, newValuable basetypes.MapValuable) (bool, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	if v.semanticEqualityFunc == nil {
-		return false, diags
-	}
-
-	newValue, ok := newValuable.(MapNestedObjectValueOf[T])
-	if !ok {
-		diags.AddError("MapSemanticEquals", fmt.Sprintf("unexpected value type of %T", newValuable))
-		return false, diags
-	}
-
-	return v.semanticEqualityFunc(ctx, v, newValue)
 }
 
 func (v MapNestedObjectValueOf[T]) Type(ctx context.Context) attr.Type {
@@ -102,7 +83,7 @@ func (v *MapNestedObjectValueOf[T]) MutableIterator(ctx context.Context) iter.Se
 			}
 		}
 
-		*v, _ = newMapNestedObjectValueOf(ctx, m, v.semanticEqualityFunc)
+		*v, _ = newMapNestedObjectValueOf(ctx, m)
 	}
 }
 
@@ -123,25 +104,31 @@ func nestedObjectValueObjectMap[T any](ctx context.Context, val MapNestedObjectV
 	return result, diags
 }
 
-func NewMapNestedObjectValueOfNull[T any](ctx context.Context, f ...MapNestedObjectOfOption[T]) MapNestedObjectValueOf[T] {
-	opts := newMapNestedObjectOfOptions(f...)
-	return MapNestedObjectValueOf[T]{MapValue: basetypes.NewMapNull(objtype.NewObjectTypeOfMust[T](ctx)), semanticEqualityFunc: opts.SemanticEqualityFunc}
+func NewMapNestedObjectValueOfNull[T any](ctx context.Context) MapNestedObjectValueOf[T] {
+	return MapNestedObjectValueOf[T]{MapValue: basetypes.NewMapNull(objtype.NewObjectTypeOfMust[T](ctx))}
 }
 
 func NewMapNestedObjectValueOfUnknown[T any](ctx context.Context) MapNestedObjectValueOf[T] {
 	return MapNestedObjectValueOf[T]{MapValue: basetypes.NewMapUnknown(objtype.NewObjectTypeOfMust[T](ctx))}
 }
 
-func NewMapNestedObjectValueOfMap[T any](ctx context.Context, ts map[string]*T, f mapSemanticEqualityFunc[T]) (MapNestedObjectValueOf[T], diag.Diagnostics) {
-	return newMapNestedObjectValueOf(ctx, ts, f)
+func NewMapNestedObjectValueOfMap[T any](ctx context.Context, ts map[string]*T) (MapNestedObjectValueOf[T], diag.Diagnostics) {
+	return newMapNestedObjectValueOf(ctx, ts)
 }
 
-func NewMapNestedObjectValueOfMapMust[T any](ctx context.Context, ts map[string]*T, f ...MapNestedObjectOfOption[T]) MapNestedObjectValueOf[T] {
-	opts := newMapNestedObjectOfOptions(f...)
-	return types.Must(NewMapNestedObjectValueOfMap(ctx, ts, opts.SemanticEqualityFunc))
+func NewMapNestedObjectValueOfMapMust[T any](ctx context.Context, ts map[string]*T) MapNestedObjectValueOf[T] {
+	return types.Must(NewMapNestedObjectValueOfMap(ctx, ts))
 }
 
-func newMapNestedObjectValueOf[T any](ctx context.Context, elements map[string]*T, f mapSemanticEqualityFunc[T]) (MapNestedObjectValueOf[T], diag.Diagnostics) {
+func newMapNestedObjectValueOf[T any](ctx context.Context, elements map[string]*T) (MapNestedObjectValueOf[T], diag.Diagnostics) {
+	values := map[string]attr.Value{}
+	for k, v := range elements {
+		values[k] = objtype.NewObjectValueOfMust(ctx, v)
+	}
+	return ValueOf[T](ctx, values)
+}
+
+func ValueOf[T any](ctx context.Context, elements map[string]attr.Value) (MapNestedObjectValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	typ, d := objtype.NewObjectTypeOf[T](ctx)
@@ -150,16 +137,12 @@ func newMapNestedObjectValueOf[T any](ctx context.Context, elements map[string]*
 		return NewMapNestedObjectValueOfUnknown[T](ctx), diags
 	}
 
-	values := map[string]attr.Value{}
-	for k, v := range elements {
-		values[k] = objtype.NewObjectValueOfMust(ctx, v)
-	}
-
-	v, d := basetypes.NewMapValue(typ, values)
+	v, d := basetypes.NewMapValue(typ, elements)
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewMapNestedObjectValueOfUnknown[T](ctx), diags
 	}
 
-	return MapNestedObjectValueOf[T]{MapValue: v, semanticEqualityFunc: f}, diags
+	return MapNestedObjectValueOf[T]{MapValue: v}, diags
+
 }

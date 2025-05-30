@@ -18,14 +18,11 @@ var (
 	_ basetypes.MapTypable     = (*mapNestedObjectTypeOf[struct{}])(nil)
 )
 
-type mapSemanticEqualityFunc[T any] func(context.Context, MapNestedObjectValueOf[T], MapNestedObjectValueOf[T]) (bool, diag.Diagnostics)
-
 type mapNestedObjectTypeOf[T any] struct {
 	basetypes.MapType
-	semanticEqualityFunc mapSemanticEqualityFunc[T]
 }
 
-func NewMapNestedObjectTypeOf[T any](ctx context.Context, f ...MapNestedObjectOfOption[T]) (mapNestedObjectTypeOf[T], diag.Diagnostics) {
+func NewMapNestedObjectTypeOf[T any](ctx context.Context) (mapNestedObjectTypeOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	elemType, d := objtype.NewObjectTypeOf[T](ctx)
@@ -34,16 +31,11 @@ func NewMapNestedObjectTypeOf[T any](ctx context.Context, f ...MapNestedObjectOf
 		return mapNestedObjectTypeOf[T]{}, diags
 	}
 
-	opts := newMapNestedObjectOfOptions(f...)
-
-	return mapNestedObjectTypeOf[T]{
-		MapType:              basetypes.MapType{ElemType: elemType},
-		semanticEqualityFunc: opts.SemanticEqualityFunc,
-	}, diags
+	return mapNestedObjectTypeOf[T]{MapType: basetypes.MapType{ElemType: elemType}}, diags
 }
 
-func NewMapNestedObjectTypeOfMust[T any](ctx context.Context, f ...MapNestedObjectOfOption[T]) mapNestedObjectTypeOf[T] {
-	return types.Must(NewMapNestedObjectTypeOf(ctx, f...))
+func NewMapNestedObjectTypeOfMust[T any](ctx context.Context) mapNestedObjectTypeOf[T] {
+	return types.Must(NewMapNestedObjectTypeOf[T](ctx))
 }
 
 func (t mapNestedObjectTypeOf[T]) Equal(o attr.Type) bool {
@@ -81,10 +73,7 @@ func (t mapNestedObjectTypeOf[T]) ValueFromMap(ctx context.Context, in basetypes
 		return NewMapNestedObjectValueOfUnknown[T](ctx), diags
 	}
 
-	return MapNestedObjectValueOf[T]{
-		MapValue:             v,
-		semanticEqualityFunc: t.semanticEqualityFunc,
-	}, diags
+	return MapNestedObjectValueOf[T]{MapValue: v}, diags
 }
 
 func (t mapNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
@@ -107,7 +96,7 @@ func (t mapNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tft
 }
 
 func (t mapNestedObjectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
-	return MapNestedObjectValueOf[T]{semanticEqualityFunc: t.semanticEqualityFunc}
+	return MapNestedObjectValueOf[T]{}
 }
 
 func (t mapNestedObjectTypeOf[T]) NewObjectPtr(ctx context.Context) (any, diag.Diagnostics) {
@@ -120,14 +109,14 @@ func (t mapNestedObjectTypeOf[T]) NewObjectMap(ctx context.Context, len int) (an
 
 func (t mapNestedObjectTypeOf[T]) NullValue(ctx context.Context) (attr.Value, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	return NewMapNestedObjectValueOfNull(ctx, WithSemanticEqualityFunc(t.semanticEqualityFunc)), diags
+	return NewMapNestedObjectValueOfNull[T](ctx), diags
 }
 
 func (t mapNestedObjectTypeOf[T]) ValueFromObjectMap(ctx context.Context, m any) (attr.Value, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	if v, ok := m.(map[string]*T); ok {
-		v, d := NewMapNestedObjectValueOfMap(ctx, v, t.semanticEqualityFunc)
+		v, d := NewMapNestedObjectValueOfMap(ctx, v)
 		diags.Append(d...)
 		return v, d
 	}

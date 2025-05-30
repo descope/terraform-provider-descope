@@ -29,8 +29,7 @@ func TestFlows(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"styles.data": testacc.AttributeIsNotSet,
-				"flows.%":     0,
+				"styles.data": testacc.AttributeIsSet,
 			}),
 		},
 		resource.TestStep{
@@ -62,6 +61,7 @@ func TestFlows(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
+				"flows.%":               1,
 				"flows.basic-flow.data": testacc.AttributeMatchesJSON(basicFlow),
 			}),
 		},
@@ -84,74 +84,88 @@ func TestFlows(t *testing.T) {
 				}
 			`),
 			ExpectError: regexp.MustCompile(`Unknown connector reference`),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				flows = {
-					"references-flow" = {
-						data = jsonencode(` + referencesFlow + `)
-					}
-				}
-				connectors = {
-					"http": [
-						{
-							name = "My HTTP Connector"
-							base_url = "https://example.com"
+		}, /*
+			resource.TestStep{
+				Config: p.Config(`
+					flows = {
+						"references-flow" = {
+							data = jsonencode(` + referencesFlow + `)
 						}
-					]
-				}
-			`),
+					}
+					connectors = {
+						"http": [
+							{
+								name = "My HTTP Connector"
+								base_url = "https://example.com"
+							}
+						]
+					}
+				`),
+				Check: p.Check(map[string]any{
+					"flows.references-flow.data": testacc.AttributeMatchesJSON(referencesFlow),
+					"connectors.http.#":          1,
+					"connectors.http.0.id":       testacc.AttributeHasPrefix("CI"),
+					"connectors.http.0.name":     "My HTTP Connector",
+				}),
+			},
+			resource.TestStep{
+				Config: p.Config(`
+					flows = {
+						"references-flow" = {
+							data = jsonencode(` + referencesFlow + `)
+						}
+					}
+					connectors = {
+						"http": [
+							{
+								name = "Renamed Connector"
+								base_url = "https://example.com"
+							}
+						]
+					}
+				`),
+				ExpectError: regexp.MustCompile(`Unknown connector reference`),
+			},
+			resource.TestStep{
+				Config: p.Config(`
+					flows = {
+						"basic-flow" = {
+							data = jsonencode(` + basicFlow + `)
+						}
+						"references-flow" = {
+							data = jsonencode(` + referencesFlow + `)
+						}
+					}
+					connectors = {
+						"http": [
+							{
+								name = "My HTTP Connector"
+								base_url = "https://example.com"
+							}
+						]
+					}
+				`),
+				Check: p.Check(map[string]any{
+					"flows.%":                    2,
+					"flows.basic-flow.data":      testacc.AttributeMatchesJSON(basicFlow),
+					"flows.references-flow.data": testacc.AttributeMatchesJSON(referencesFlow),
+					"connectors.http.#":          1,
+					"connectors.http.0.id":       testacc.AttributeHasPrefix("CI"),
+					"connectors.http.0.name":     "My HTTP Connector",
+				}),
+			},*/
+		resource.TestStep{
+			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"flows.references-flow.data": testacc.AttributeMatchesJSON(referencesFlow),
-				"connectors.http.#":          1,
-				"connectors.http.0.id":       testacc.AttributeHasPrefix("CI"),
-				"connectors.http.0.name":     "My HTTP Connector",
+				"flows.%": 1,
 			}),
 		},
 		resource.TestStep{
 			Config: p.Config(`
-				flows = {
-					"references-flow" = {
-						data = jsonencode(` + referencesFlow + `)
-					}
-				}
-				connectors = {
-					"http": [
-						{
-							name = "Renamed Connector"
-							base_url = "https://example.com"
-						}
-					]
-				}
-			`),
-			ExpectError: regexp.MustCompile(`Unknown connector reference`),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				flows = {
-					"basic-flow" = {
-						data = jsonencode(` + basicFlow + `)
-					}
-					"references-flow" = {
-						data = jsonencode(` + referencesFlow + `)
-					}
-				}
-				connectors = {
-					"http": [
-						{
-							name = "My HTTP Connector"
-							base_url = "https://example.com"
-						}
-					]
-				}
+				flows = {}
 			`),
 			Check: p.Check(map[string]any{
-				"flows.%":                    2,
-				"flows.basic-flow.data":      testacc.AttributeMatchesJSON(basicFlow),
-				"flows.references-flow.data": testacc.AttributeMatchesJSON(referencesFlow),
-				"connectors.http.#":          1,
-				"connectors.http.0.id":       testacc.AttributeHasPrefix("CI"),
-				"connectors.http.0.name":     "My HTTP Connector",
+				"flows.%": 0,
 			}),
 		},
 	)

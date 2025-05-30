@@ -2,9 +2,10 @@ package mapattr
 
 import (
 	"context"
+	"fmt"
+	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/maptype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -16,26 +17,37 @@ import (
 
 type Type[T any] = maptype.MapNestedObjectValueOf[T]
 
-func ValueOf[T any](ctx context.Context, value map[string]*T) Type[T] {
+func Value[T any](value map[string]*T) Type[T] {
+	return valueOf(context.Background(), value)
+}
+
+func Empty[T any]() Type[T] {
+	return valueOf(context.Background(), map[string]*T{})
+}
+
+func valueOf[T any](ctx context.Context, value map[string]*T) Type[T] {
 	return maptype.NewMapNestedObjectValueOfMapMust(ctx, value)
 }
 
-func Required2[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.MapNestedAttribute {
+func Required2[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+	mapValidators, objectValidators := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
-		Validators: validators,
+		Validators: objectValidators,
 	}
 	return schema.MapNestedAttribute{
 		Required:     true,
 		NestedObject: nested,
 		CustomType:   maptype.NewMapNestedObjectTypeOfMust[T](context.Background()),
+		Validators:   mapValidators,
 	}
 }
 
-func Optional2[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.MapNestedAttribute {
+func Optional2[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+	mapValidators, objectValidators := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
-		Validators: validators,
+		Validators: objectValidators,
 	}
 	return schema.MapNestedAttribute{
 		Optional:      true,
@@ -43,20 +55,23 @@ func Optional2[T any](attributes map[string]schema.Attribute, validators ...vali
 		NestedObject:  nested,
 		CustomType:    maptype.NewMapNestedObjectTypeOfMust[T](context.Background()),
 		PlanModifiers: []planmodifier.Map{mapplanmodifier.UseStateForUnknown()},
+		Validators:    mapValidators,
 	}
 }
 
-func Default[T any](values map[string]*T, attributes map[string]schema.Attribute, validators ...validator.Object) schema.MapNestedAttribute {
+func Default[T any](values map[string]*T, attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+	mapValidators, objectValidators := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
-		Validators: validators,
+		Validators: objectValidators,
 	}
 	return schema.MapNestedAttribute{
 		Optional:     true,
 		Computed:     true,
 		NestedObject: nested,
 		CustomType:   maptype.NewMapNestedObjectTypeOfMust[T](context.Background()),
-		Default:      mapdefault.StaticValue(ValueOf(context.Background(), values).MapValue),
+		Default:      mapdefault.StaticValue(Value(values).MapValue),
+		Validators:   mapValidators,
 	}
 }
 
@@ -73,8 +88,8 @@ func Get2[T any, M helpers.Model[T]](m Type[T], data map[string]any, key string,
 
 	result := map[string]any{}
 	for k, v := range elems {
-		var m M = v
-		result[k] = m.Values(h)
+		var element M = v
+		result[k] = element.Values(h)
 	}
 
 	data[key] = result
@@ -92,19 +107,92 @@ func Set2[T any, M helpers.Model[T]](m *Type[T], data map[string]any, key string
 	for k, v := range values {
 		if modelData, ok := v.(map[string]any); ok {
 			var element M
-			if c := current[k]; c.IsNull() || c.IsUnknown() {
+			if c, ok := current[k]; ok && !c.IsNull() && !c.IsUnknown() {
+				element, _ = objtype.ObjectValueObjectPtr[T](h.Ctx, c)
+			}
+			if element == nil {
 				element = new(T)
-			} else {
-				element = objtype.ObjectValueObjectPtrMust[T](h.Ctx, c)
 			}
 			element.SetValues(h, modelData)
 			elems[k] = element
 		}
 	}
 
-	result := maptype.NewMapNestedObjectValueOfMapMust(h.Ctx, elems)
+	*m = valueOf(h.Ctx, elems)
+}
 
-	// TODO
-	h.Log("Setting map value for key '%s' of type '%T' to %s", key, result, types.UnsafeFormattedValue(result, true))
-	*m = result
+func Iterator[T any, M helpers.Model[T]](m Type[T], h *helpers.Handler) iter.Seq2[string, *T] {
+	return func(yield func(string, *T) bool) {
+		for k, v := range m.Elements() {
+			if v.IsNull() || v.IsUnknown() {
+				continue
+			}
+
+			ptr, diags := objtype.ObjectValueObjectPtr[T](h.Ctx, v)
+			h.Diagnostics.Append(diags...)
+			if diags.HasError() {
+				continue
+			}
+
+			if !yield(k, ptr) {
+				break
+			}
+		}
+	}
+}
+
+func MutatingIterator[T any, M helpers.Model[T]](m *Type[T], h *helpers.Handler) iter.Seq2[string, *T] {
+	return func(yield func(string, *T) bool) {
+		elements := m.Elements()
+
+		for k, v := range elements {
+			if v.IsNull() || v.IsUnknown() {
+				continue
+			}
+
+			ptr, diags := objtype.ObjectValueObjectPtr[T](h.Ctx, v)
+			h.Diagnostics.Append(diags...)
+			if diags.HasError() {
+				continue
+			}
+
+			cont := yield(k, ptr)
+
+			obj, diags := objtype.NewObjectValueOf(h.Ctx, ptr)
+			h.Diagnostics.Append(diags...)
+			if !diags.HasError() {
+				elements[k] = obj
+			}
+
+			if !cont {
+				break
+			}
+		}
+
+		mapValue, diags := maptype.ValueOf[T](h.Ctx, elements)
+		h.Diagnostics.Append(diags...)
+		if diags.HasError() {
+			return
+		}
+
+		*m = mapValue
+	}
+}
+
+func parseExtras(extras []any) (mapValidators []validator.Map, objectValidators []validator.Object) {
+	for _, e := range extras {
+		matched := false
+		if v, ok := e.(validator.Map); ok {
+			matched = true
+			mapValidators = append(mapValidators, v)
+		}
+		if v, ok := e.(validator.Object); ok {
+			matched = true
+			objectValidators = append(objectValidators, v)
+		}
+		if !matched {
+			panic(fmt.Sprintf("unexpected extra value of type %T in attribute", e))
+		}
+	}
+	return
 }
