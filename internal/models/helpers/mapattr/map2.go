@@ -121,7 +121,7 @@ func Set2[T any, M helpers.Model[T]](m *Type[T], data map[string]any, key string
 	*m = valueOf(h.Ctx, elems)
 }
 
-func Iterator[T any, M helpers.Model[T]](m Type[T], h *helpers.Handler) iter.Seq2[string, *T] {
+func Iterator[T any](m Type[T], h *helpers.Handler) iter.Seq2[string, *T] {
 	return func(yield func(string, *T) bool) {
 		for k, v := range m.Elements() {
 			if v.IsNull() || v.IsUnknown() {
@@ -141,7 +141,7 @@ func Iterator[T any, M helpers.Model[T]](m Type[T], h *helpers.Handler) iter.Seq
 	}
 }
 
-func MutatingIterator[T any, M helpers.Model[T]](m *Type[T], h *helpers.Handler) iter.Seq2[string, *T] {
+func MutatingIterator[T any](m *Type[T], h *helpers.Handler) iter.Seq2[string, *T] {
 	return func(yield func(string, *T) bool) {
 		elements := m.Elements()
 

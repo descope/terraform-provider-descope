@@ -81,7 +81,18 @@ func Ensure(s *Type, h *helpers.Handler) {
 	}
 }
 
-func ImmutableIterator(s Type, h *helpers.Handler) iter.Seq2[string, string] {
-	m, _ := s.ToMap(h.Ctx)
-	return maps.All(convertTerraformStringMapToStringMap(m))
+func Iterator(s Type, h *helpers.Handler) iter.Seq2[string, string] {
+	return func(yield func(string, string) bool) {
+		for k, v := range s.Elements() {
+			if v.IsNull() || v.IsUnknown() {
+				continue
+			}
+
+			if str, ok := v.(types.String); !ok {
+				if !yield(k, str.ValueString()) {
+					break
+				}
+			}
+		}
+	}
 }

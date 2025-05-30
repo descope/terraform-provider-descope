@@ -4,9 +4,9 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strmapattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -17,11 +17,11 @@ var AuditWebhookAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 
 	"base_url":       stringattr.Required(),
-	"authentication": objectattr.Optional(HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":        mapattr.StringOptional(),
+	"authentication": objattr.Optional[HTTPAuthFieldModel](HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
+	"headers":        strmapattr.Optional(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
-	"audit_filters":  listattr.Optional(AuditFilterFieldAttributes),
+	"audit_filters":  listattr.Optional2[AuditFilterFieldModel](AuditFilterFieldAttributes),
 }
 
 // Model
@@ -31,12 +31,12 @@ type AuditWebhookModel struct {
 	Name        types.String `tfsdk:"name"`
 	Description types.String `tfsdk:"description"`
 
-	BaseURL        types.String             `tfsdk:"base_url"`
-	Authentication *HTTPAuthFieldModel      `tfsdk:"authentication"`
-	Headers        map[string]types.String  `tfsdk:"headers"`
-	HMACSecret     types.String             `tfsdk:"hmac_secret"`
-	Insecure       types.Bool               `tfsdk:"insecure"`
-	AuditFilters   []*AuditFilterFieldModel `tfsdk:"audit_filters"`
+	BaseURL        types.String                         `tfsdk:"base_url"`
+	Authentication objattr.Type[HTTPAuthFieldModel]     `tfsdk:"authentication"`
+	Headers        strmapattr.Type                      `tfsdk:"headers"`
+	HMACSecret     types.String                         `tfsdk:"hmac_secret"`
+	Insecure       types.Bool                           `tfsdk:"insecure"`
+	AuditFilters   listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
 }
 
 func (m *AuditWebhookModel) Values(h *helpers.Handler) map[string]any {
@@ -49,18 +49,7 @@ func (m *AuditWebhookModel) Values(h *helpers.Handler) map[string]any {
 func (m *AuditWebhookModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.BaseURL, c, "baseUrl")
-		objectattr.Set(&m.Authentication, c, "authentication", h)
-		if vs, ok := c["headers"].(map[string]any); ok {
-			for k, v := range vs {
-				if s, ok := v.(string); ok {
-					m.Headers[k] = types.StringValue(s)
-				}
-			}
-		}
-		stringattr.Set(&m.HMACSecret, c, "hmacSecret")
-		boolattr.Set(&m.Insecure, c, "insecure")
-		listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -69,12 +58,21 @@ func (m *AuditWebhookModel) SetValues(h *helpers.Handler, data map[string]any) {
 func (m *AuditWebhookModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.BaseURL, c, "baseUrl")
-	objectattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers")
+	objattr.Get(m.Authentication, c, "authentication", h)
+	getHeaders(m.Headers, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
-	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	listattr.Get2(m.AuditFilters, c, "auditFilters", h)
 	return c
+}
+
+func (m *AuditWebhookModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.BaseURL, c, "baseUrl")
+	objattr.Set(&m.Authentication, c, "authentication", h)
+	setHeaders(&m.Headers, c, "headers", h)
+	stringattr.Set(&m.HMACSecret, c, "hmacSecret")
+	boolattr.Set(&m.Insecure, c, "insecure")
+	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
 }
 
 // Matching
