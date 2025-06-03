@@ -5,7 +5,6 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/entities"
 	"github.com/descope/terraform-provider-descope/internal/infra"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -88,10 +87,6 @@ func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest
 
 func (r *projectResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	tflog.Info(ctx, "Reading project resource")
-	if value, _ := req.Private.GetKey(ctx, importKey); value != nil {
-		ctx = helpers.SetImport(ctx)
-		resp.Private.SetKey(ctx, importKey, nil)
-	}
 
 	entity := entities.NewProjectEntity(ctx, req.State, &resp.Diagnostics)
 	if entity.Diagnostics.HasError() {

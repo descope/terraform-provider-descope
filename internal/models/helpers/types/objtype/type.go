@@ -124,10 +124,9 @@ func (t objectTypeOf[T]) ValueFromObjectPtr(ctx context.Context, ptr any) (attr.
 }
 
 func ObjectTypeNewObjectPtr[T any](ctx context.Context) (*T, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
 	t := new(T)
-	diags.Append(types.NullOutObjectPtrFields(ctx, t)...)
+
+	diags := nullObjectFields(ctx, t)
 	if diags.HasError() {
 		return nil, diags
 	}

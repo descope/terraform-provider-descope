@@ -38,10 +38,6 @@ func (v ObjectValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, 
 	return v.ObjectValue.ToTerraformValue(ctx)
 }
 
-func (v ObjectValueOf[T]) ToObjectPtr(ctx context.Context) (any, diag.Diagnostics) {
-	return v.ToPtr(ctx)
-}
-
 func (v ObjectValueOf[T]) ToPtr(ctx context.Context) (*T, diag.Diagnostics) {
 	return ObjectValueObjectPtr[T](ctx, v)
 }
@@ -69,10 +65,6 @@ func ObjectValueObjectPtr[T any](ctx context.Context, val attr.Value) (*T, diag.
 	}
 
 	return ptr, diags
-}
-
-func ObjectValueObjectPtrMust[T any](ctx context.Context, val attr.Value) *T {
-	return types.Must(ObjectValueObjectPtr[T](ctx, val))
 }
 
 func NewObjectValueOfNull[T any](ctx context.Context) ObjectValueOf[T] {

@@ -274,7 +274,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel, config *ConnectorsModel) {
+func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.Match(h, &m.AbuseIPDB, state.AbuseIPDB)
 	listattr.Match(h, &m.Amplitude, state.Amplitude)
 	listattr.Match(h, &m.AuditWebhook, state.AuditWebhook)

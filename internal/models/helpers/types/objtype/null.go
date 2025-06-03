@@ -1,4 +1,4 @@
-package types
+package objtype
 
 import (
 	"context"
@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-func NullOutObjectPtrFields[T any](ctx context.Context, t *T) diag.Diagnostics {
+func nullObjectFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	val := reflect.ValueOf(t)
