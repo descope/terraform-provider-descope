@@ -71,7 +71,7 @@ func (m *AWSS3Model) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Region, c, "region")
 	stringattr.Get(m.Bucket, c, "bucket")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	listattr.Get2(m.AuditFilters, c, "auditFilters", h)
+	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }
@@ -82,7 +82,7 @@ func (m *AWSS3Model) SetConfigurationValues(c map[string]any, h *helpers.Handler
 	stringattr.Set(&m.Region, c, "region")
 	stringattr.Set(&m.Bucket, c, "bucket")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
-	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
+	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 }
 

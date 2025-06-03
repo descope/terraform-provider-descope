@@ -62,7 +62,7 @@ func (m *AuditWebhookModel) ConfigurationValues(h *helpers.Handler) map[string]a
 	getHeaders(m.Headers, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
-	listattr.Get2(m.AuditFilters, c, "auditFilters", h)
+	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	return c
 }
 
@@ -72,7 +72,7 @@ func (m *AuditWebhookModel) SetConfigurationValues(c map[string]any, h *helpers.
 	setHeaders(&m.Headers, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
-	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
+	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 }
 
 // Matching

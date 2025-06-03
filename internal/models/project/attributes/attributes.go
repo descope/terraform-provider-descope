@@ -28,17 +28,17 @@ type AttributesModel struct {
 
 func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	listattr.Get2(m.Tenant, data, "tenant", h)
-	listattr.Get2(m.User, data, "user", h)
+	listattr.Get(m.Tenant, data, "tenant", h)
+	listattr.Get(m.User, data, "user", h)
 	return data
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if m.Tenant.IsUnknown() {
-		listattr.Set2(&m.Tenant, data, "tenant", h)
+		listattr.Set(&m.Tenant, data, "tenant", h)
 	}
 	if m.User.IsUnknown() {
-		listattr.Set2(&m.User, data, "user", h)
+		listattr.Set(&m.User, data, "user", h)
 	}
 }
 

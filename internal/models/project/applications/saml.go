@@ -61,7 +61,7 @@ func (m *SAMLModel) Values(h *Handler) map[string]any {
 	stringattr.Get(m.SubjectNameIDType, settings, "subjectNameIdType")
 	stringattr.Get(m.SubjectNameIDFormat, settings, "subjectNameIdFormat")
 	stringattr.Get(m.DefaultRelayState, settings, "defaultRelayState")
-	listattr.Get2(m.AttributeMapping, settings, "attributeMapping", h)
+	listattr.Get(m.AttributeMapping, settings, "attributeMapping", h)
 	strsetattr.Get(m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
 	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
 
@@ -82,7 +82,7 @@ func (m *SAMLModel) SetValues(h *Handler, data map[string]any) {
 		stringattr.Set(&m.SubjectNameIDType, settings, "subjectNameIdType")
 		stringattr.Set(&m.SubjectNameIDFormat, settings, "subjectNameIdFormat")
 		stringattr.Set(&m.DefaultRelayState, settings, "defaultRelayState")
-		listattr.Set2(&m.AttributeMapping, settings, "attributeMapping", h)
+		listattr.Set(&m.AttributeMapping, settings, "attributeMapping", h)
 		strsetattr.Set(&m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 	}

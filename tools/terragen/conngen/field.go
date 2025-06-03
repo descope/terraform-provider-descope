@@ -133,7 +133,7 @@ func (f *Field) GetValueStatement() string {
 	case FieldTypeObject:
 		return fmt.Sprintf(`getHeaders(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeAuditFilters:
-		return fmt.Sprintf(`listattr.Get2(%s, c, %q, h)`, accessor, f.Name)
+		return fmt.Sprintf(`listattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`objattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	default:
@@ -155,7 +155,7 @@ func (f *Field) SetValueStatement() string {
 	case FieldTypeObject:
 		return fmt.Sprintf(`setHeaders(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeAuditFilters:
-		return fmt.Sprintf(`listattr.Set2(%s, c, %q, h)`, accessor, f.Name)
+		return fmt.Sprintf(`listattr.Set(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`objattr.Set(%s, c, %q, h)`, accessor, f.Name)
 	default:

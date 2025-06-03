@@ -68,7 +68,6 @@ func Default(value string, validators ...validator.String) schema.StringAttribut
 		Computed:   true,
 		Validators: validators,
 		Default:    stringdefault.StaticString(value),
-		// PlanModifiers: []planmodifier.String{DefaultModifier(value)}, // TODO
 	}
 }
 

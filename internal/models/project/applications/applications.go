@@ -27,21 +27,21 @@ var ApplicationsDefault = &ApplicationsModel{
 func (m *ApplicationsModel) Values(h *helpers.Handler) map[string]any {
 	m.Check(h)
 	data := map[string]any{}
-	listattr.Get2(m.OIDCApplications, data, "oidc", h)
-	listattr.Get2(m.SAMLApplications, data, "saml", h)
+	listattr.Get(m.OIDCApplications, data, "oidc", h)
+	listattr.Get(m.SAMLApplications, data, "saml", h)
 	return data
 }
 
 func (m *ApplicationsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if m.OIDCApplications.IsUnknown() {
-		listattr.Set2(&m.OIDCApplications, data, "oidc", h)
+		listattr.Set(&m.OIDCApplications, data, "oidc", h)
 	} else {
 		for app := range listattr.MutatingIterator(&m.OIDCApplications, h) {
 			RequireID(h, data, "oidc", app.Name, &app.ID)
 		}
 	}
 	if m.SAMLApplications.IsUnknown() {
-		listattr.Set2(&m.SAMLApplications, data, "saml", h)
+		listattr.Set(&m.SAMLApplications, data, "saml", h)
 	} else {
 		for app := range listattr.MutatingIterator(&m.SAMLApplications, h) {
 			RequireID(h, data, "saml", app.Name, &app.ID)

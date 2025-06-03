@@ -30,7 +30,7 @@ func (m *TextServiceModel) Values(h *helpers.Handler) map[string]any {
 	} else {
 		h.Error("Unknown connector reference", "No connector named '%s' for text service was defined", connector)
 	}
-	listattr.Get2(m.Templates, data, "textTemplates", h)
+	listattr.Get(m.Templates, data, "textTemplates", h)
 	return data
 }
 
@@ -38,7 +38,7 @@ func (m *TextServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "textServiceProvider")
 
 	if m.Templates.IsEmpty() {
-		listattr.Set2(&m.Templates, data, "textTemplates", h)
+		listattr.Set(&m.Templates, data, "textTemplates", h)
 	} else {
 		for template := range listattr.MutatingIterator(&m.Templates, h) {
 			name := template.Name.ValueString()

@@ -30,7 +30,7 @@ func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
 	} else {
 		h.Error("Unknown connector reference", "No connector named '%s' for voice service was defined", connector)
 	}
-	listattr.Get2(m.Templates, data, "voiceTemplates", h)
+	listattr.Get(m.Templates, data, "voiceTemplates", h)
 	return data
 }
 
@@ -38,7 +38,7 @@ func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "voiceServiceProvider")
 
 	if m.Templates.IsEmpty() {
-		listattr.Set2(&m.Templates, data, "voiceTemplates", h)
+		listattr.Set(&m.Templates, data, "voiceTemplates", h)
 	} else {
 		for template := range listattr.MutatingIterator(&m.Templates, h) {
 			name := template.Name.ValueString()

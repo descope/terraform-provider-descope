@@ -29,7 +29,7 @@ type ConnectorsModel struct {
 func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
     {{- range .Connectors }}
-	listattr.Get2(m.{{.StructName}}, data, "{{.DataName}}", h)
+	listattr.Get(m.{{.StructName}}, data, "{{.DataName}}", h)
     {{- end }}
 	return data
 }

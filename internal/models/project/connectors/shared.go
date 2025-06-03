@@ -45,7 +45,7 @@ func setConnectorValues(id, name, description *types.String, data map[string]any
 // Connector Identifiers
 
 func setConnectorsValues[T any, M helpers.MatchableModel[T]](h *helpers.Handler, data map[string]any, key string, connectors *listattr.Type[T]) {
-	listattr.Set2[T, M](connectors, data, key, h)
+	listattr.Set[T, M](connectors, data, key, h)
 
 	// if connectors.IsEmpty() { // TODO should be safe to always set the values
 	// 	listattr.Set2[T, M](connectors, data, key, h)

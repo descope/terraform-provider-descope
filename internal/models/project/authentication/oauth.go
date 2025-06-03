@@ -23,7 +23,7 @@ var OAuthValidator = objattr.NewValidator[OAuthModel]("must have a valid OAuth c
 var OAuthAttributes = map[string]schema.Attribute{
 	"disabled": boolattr.Default(false),
 	"system":   objattr.Optional[OAuthSystemProvidersModel](OAuthSystemProviderAttributes),
-	"custom":   mapattr.Optional2[OAuthProviderModel](OAuthProviderAttributes),
+	"custom":   mapattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
 }
 
 type OAuthModel struct {
@@ -93,7 +93,7 @@ func (m *OAuthModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 
 	objattr.Set(&m.System, system, helpers.RootKey, h)
-	mapattr.Set2(&m.Custom, custom, helpers.RootKey, h)
+	mapattr.Set(&m.Custom, custom, helpers.RootKey, h)
 }
 
 var systemProviderNames = []string{"apple", "discord", "facebook", "github", "gitlab", "google", "linkedin", "microsoft", "slack"}

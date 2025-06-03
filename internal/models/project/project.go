@@ -33,7 +33,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"applications":     objattr.Default(applications.ApplicationsDefault, applications.ApplicationsAttributes, applications.ApplicationsValidator),
 	"jwt_templates":    objattr.Default(jwttemplates.JWTTemplatesDefault, jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
 	"styles":           objattr.Optional[flows.StylesModel](flows.StylesAttributes, flows.StylesValidator),
-	"flows":            mapattr.Optional2[flows.FlowModel](flows.FlowAttributes, flows.FlowsValidator),
+	"flows":            mapattr.Optional[flows.FlowModel](flows.FlowAttributes, flows.FlowsValidator),
 }
 
 type ProjectModel struct {

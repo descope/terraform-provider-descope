@@ -65,7 +65,7 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.Site, c, "site")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	listattr.Get2(m.AuditFilters, c, "auditFilters", h)
+	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }
@@ -74,7 +74,7 @@ func (m *DatadogModel) SetConfigurationValues(c map[string]any, h *helpers.Handl
 	stringattr.Nil(&m.APIKey)
 	stringattr.Set(&m.Site, c, "site")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
-	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
+	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 }
 

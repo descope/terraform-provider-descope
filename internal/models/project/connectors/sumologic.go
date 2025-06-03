@@ -62,7 +62,7 @@ func (m *SumoLogicModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 	c := map[string]any{}
 	stringattr.Get(m.HTTPSourceURL, c, "httpSourceUrl")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	listattr.Get2(m.AuditFilters, c, "auditFilters", h)
+	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	return c
 }
@@ -70,7 +70,7 @@ func (m *SumoLogicModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 func (m *SumoLogicModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Nil(&m.HTTPSourceURL)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
-	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
+	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 }
 

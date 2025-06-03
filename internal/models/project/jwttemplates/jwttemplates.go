@@ -27,19 +27,19 @@ type JWTTemplatesModel struct {
 
 func (m *JWTTemplatesModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	listattr.Get2(m.UserTemplates, data, "userTemplates", h)
-	listattr.Get2(m.AccessKeyTemplates, data, "keyTemplates", h)
+	listattr.Get(m.UserTemplates, data, "userTemplates", h)
+	listattr.Get(m.AccessKeyTemplates, data, "keyTemplates", h)
 	return data
 }
 
 func (m *JWTTemplatesModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if m.UserTemplates.IsUnknown() {
-		listattr.Set2(&m.UserTemplates, data, "userTemplates", h)
+		listattr.Set(&m.UserTemplates, data, "userTemplates", h)
 	} else {
 		m.setTemplateValues(h, data, "userTemplates", &m.UserTemplates)
 	}
 	if m.AccessKeyTemplates.IsUnknown() {
-		listattr.Set2(&m.AccessKeyTemplates, data, "keyTemplates", h)
+		listattr.Set(&m.AccessKeyTemplates, data, "keyTemplates", h)
 	} else {
 		m.setTemplateValues(h, data, "keyTemplates", &m.AccessKeyTemplates)
 	}

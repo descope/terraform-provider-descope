@@ -29,7 +29,7 @@ func valueOf[T any](ctx context.Context, value map[string]*T) Type[T] {
 	return maptype.NewMapNestedObjectValueOfMapMust(ctx, value)
 }
 
-func Required2[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
 	mapValidators, objectValidators := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
@@ -43,7 +43,7 @@ func Required2[T any](attributes map[string]schema.Attribute, extras ...any) sch
 	}
 }
 
-func Optional2[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+func Optional[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
 	mapValidators, objectValidators := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
@@ -75,7 +75,7 @@ func Default[T any](values map[string]*T, attributes map[string]schema.Attribute
 	}
 }
 
-func Get2[T any, M helpers.Model[T]](m Type[T], data map[string]any, key string, h *helpers.Handler) {
+func Get[T any, M helpers.Model[T]](m Type[T], data map[string]any, key string, h *helpers.Handler) {
 	if m.IsNull() || m.IsUnknown() {
 		return
 	}
@@ -95,7 +95,7 @@ func Get2[T any, M helpers.Model[T]](m Type[T], data map[string]any, key string,
 	data[key] = result
 }
 
-func Set2[T any, M helpers.Model[T]](m *Type[T], data map[string]any, key string, h *helpers.Handler) {
+func Set[T any, M helpers.Model[T]](m *Type[T], data map[string]any, key string, h *helpers.Handler) {
 	values := data
 	if key != helpers.RootKey {
 		values, _ = data[key].(map[string]any)
