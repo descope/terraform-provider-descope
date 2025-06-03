@@ -17,11 +17,11 @@ var AuditWebhookAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 
 	"base_url":       stringattr.Required(),
-	"authentication": objattr.Optional[HTTPAuthFieldModel](HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":        strmapattr.Optional(),
+	"authentication": objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
+	"headers":        strmapattr.Default(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
-	"audit_filters":  listattr.Optional2[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"audit_filters":  listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
 }
 
 // Model
@@ -70,7 +70,7 @@ func (m *AuditWebhookModel) SetConfigurationValues(c map[string]any, h *helpers.
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
 	setHeaders(&m.Headers, c, "headers", h)
-	stringattr.Set(&m.HMACSecret, c, "hmacSecret")
+	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
 }

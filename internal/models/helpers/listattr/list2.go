@@ -89,17 +89,23 @@ func Get2[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string,
 }
 
 func Set2[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string, h *helpers.Handler) {
-	elems := []*T{}
-
 	values, _ := data[key].([]any)
-	for _, v := range values {
-		if modelData, ok := v.(map[string]any); ok {
-			var m M
-			model := &m
-			*model = new(T)
-			(*model).SetValues(h, modelData)
-			elems = append(elems, *model)
+
+	elems := []*T{}
+	current := l.Elements()
+
+	for i, v := range values {
+		var element M
+		if len(current) > i && !current[i].IsNull() && !current[i].IsUnknown() {
+			element, _ = objtype.ObjectValueObjectPtr[T](h.Ctx, current[i])
 		}
+		if element == nil {
+			element = new(T)
+		}
+		if modelData, ok := v.(map[string]any); ok {
+			element.SetValues(h, modelData)
+		}
+		elems = append(elems, element)
 	}
 
 	*l = valueOf(h.Ctx, elems)

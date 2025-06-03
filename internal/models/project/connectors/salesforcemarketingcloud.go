@@ -62,7 +62,7 @@ func (m *SalesforceMarketingCloudModel) ConfigurationValues(h *helpers.Handler) 
 func (m *SalesforceMarketingCloudModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.Subdomain, c, "subdomain")
 	stringattr.Set(&m.ClientID, c, "clientId")
-	stringattr.Set(&m.ClientSecret, c, "clientSecret")
+	stringattr.Nil(&m.ClientSecret)
 	stringattr.Set(&m.Scope, c, "scope")
 	stringattr.Set(&m.AccountID, c, "accountId")
 }

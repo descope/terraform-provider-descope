@@ -64,11 +64,11 @@ func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any
 func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
     {{- range .Fields }}{{ if .Dependency }}
 	{{- if .Dependency.DefaultValue }}
-	if {{.IsNotNull}} && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
+	if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
 		h.Error("Invalid connector configuration", "The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} is set to false")
 	}
 	{{- else }}
-	if {{.IsNotNull}} && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
+	if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
 		h.Error("Invalid connector configuration", "The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to true")
 	}
 	{{- end }}

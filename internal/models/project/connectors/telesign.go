@@ -52,7 +52,7 @@ func (m *TelesignModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 
 func (m *TelesignModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.CustomerID, c, "customerID")
-	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Nil(&m.APIKey)
 }
 
 // Matching

@@ -48,7 +48,7 @@ func (m *SlackModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *SlackModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.Token, c, "token")
+	stringattr.Nil(&m.Token)
 }
 
 // Matching

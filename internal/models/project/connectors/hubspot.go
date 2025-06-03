@@ -55,7 +55,7 @@ func (m *HubSpotModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *HubSpotModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.AccessToken, c, "accessToken")
+	stringattr.Nil(&m.AccessToken)
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
 }

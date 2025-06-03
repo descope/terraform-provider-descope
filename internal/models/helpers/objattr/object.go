@@ -85,6 +85,7 @@ func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string,
 	} else if v, ok := data[key].(map[string]any); ok {
 		m = v
 	} else {
+		*o = valueOf[T](h.Ctx, nil)
 		return
 	}
 
@@ -99,7 +100,7 @@ func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string,
 	*o = valueOf(h.Ctx, value)
 }
 
-func Ensure[T any, M helpers.Model[T]](o *Type[T]) { // TODO remove?
+func Nil[T any, M helpers.Model[T]](o *Type[T]) {
 	if o.IsUnknown() {
 		*o = Value[T](nil)
 	}

@@ -17,8 +17,8 @@ var GenericSMSGatewayAttributes = map[string]schema.Attribute{
 
 	"post_url":       stringattr.Required(),
 	"sender":         stringattr.Default(""),
-	"authentication": objattr.Optional[HTTPAuthFieldModel](HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":        strmapattr.Optional(),
+	"authentication": objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
+	"headers":        strmapattr.Default(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
 	"use_static_ips": boolattr.Default(false),
@@ -73,7 +73,7 @@ func (m *GenericSMSGatewayModel) SetConfigurationValues(c map[string]any, h *hel
 	stringattr.Set(&m.Sender, c, "sender")
 	objattr.Set(&m.Authentication, c, "authentication", h)
 	setHeaders(&m.Headers, c, "headers", h)
-	stringattr.Set(&m.HMACSecret, c, "hmacSecret")
+	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
 }

@@ -52,7 +52,7 @@ func (m *ClearModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 
 func (m *ClearModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ProjectID, c, "projectId")
-	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Nil(&m.APIKey)
 }
 
 // Matching

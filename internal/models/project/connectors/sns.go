@@ -49,14 +49,7 @@ func (m *SNSModel) Values(h *helpers.Handler) map[string]any {
 func (m *SNSModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.AccessKeyId, c, "accessKeyId")
-		stringattr.Set(&m.Secret, c, "secretAccessKey")
-		stringattr.Set(&m.Region, c, "awsSNSRegion")
-		stringattr.Set(&m.Endpoint, c, "awsEndpoint")
-		stringattr.Set(&m.OrganizationNumber, c, "originationNumber")
-		stringattr.Set(&m.SenderID, c, "senderId")
-		stringattr.Set(&m.EntityID, c, "entityId")
-		stringattr.Set(&m.TemplateID, c, "templateId")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -73,6 +66,17 @@ func (m *SNSModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.EntityID, c, "entityId")
 	stringattr.Get(m.TemplateID, c, "templateId")
 	return c
+}
+
+func (m *SNSModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AccessKeyId, c, "accessKeyId")
+	stringattr.Nil(&m.Secret)
+	stringattr.Set(&m.Region, c, "awsSNSRegion")
+	stringattr.Set(&m.Endpoint, c, "awsEndpoint")
+	stringattr.Set(&m.OrganizationNumber, c, "originationNumber")
+	stringattr.Set(&m.SenderID, c, "senderId")
+	stringattr.Set(&m.EntityID, c, "entityId")
+	stringattr.Set(&m.TemplateID, c, "templateId")
 }
 
 // Matching

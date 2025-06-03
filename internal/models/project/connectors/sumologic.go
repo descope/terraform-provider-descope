@@ -19,7 +19,7 @@ var SumoLogicAttributes = map[string]schema.Attribute{
 
 	"http_source_url":          stringattr.SecretRequired(),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            listattr.Optional2[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -68,7 +68,7 @@ func (m *SumoLogicModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 }
 
 func (m *SumoLogicModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.HTTPSourceURL, c, "httpSourceUrl")
+	stringattr.Nil(&m.HTTPSourceURL)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")

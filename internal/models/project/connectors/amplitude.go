@@ -54,7 +54,7 @@ func (m *AmplitudeModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 }
 
 func (m *AmplitudeModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Nil(&m.APIKey)
 	stringattr.Set(&m.ServerURL, c, "serverUrl")
 	stringattr.Set(&m.ServerZone, c, "serverZone")
 }

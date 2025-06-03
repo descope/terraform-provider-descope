@@ -77,7 +77,7 @@ func (m *ForterModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 
 func (m *ForterModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.SiteID, c, "siteId")
-	stringattr.Set(&m.SecretKey, c, "secretKey")
+	stringattr.Nil(&m.SecretKey)
 	stringattr.Set(&m.ApiVersion, c, "apiVersion")
 	boolattr.Set(&m.Overrides, c, "overrides")
 	stringattr.Set(&m.OverrideIPAddress, c, "overrideIpAddress")

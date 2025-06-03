@@ -76,7 +76,7 @@ func (m *RecaptchaEnterpriseModel) ConfigurationValues(h *helpers.Handler) map[s
 func (m *RecaptchaEnterpriseModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ProjectID, c, "projectId")
 	stringattr.Set(&m.SiteKey, c, "siteKey")
-	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Nil(&m.APIKey)
 	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
 	boolattr.Set(&m.Enterprise, c, "enterprise")

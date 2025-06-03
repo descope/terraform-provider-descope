@@ -42,10 +42,7 @@ func (m *TwilioVerifyModel) Values(h *helpers.Handler) map[string]any {
 func (m *TwilioVerifyModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.AccountSID, c, "accountSid")
-		stringattr.Set(&m.ServiceSID, c, "verifyServiceSid")
-		stringattr.Set(&m.Sender, c, "from")
-		objattr.Set(&m.Auth, c, helpers.RootKey, h)
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -58,6 +55,13 @@ func (m *TwilioVerifyModel) ConfigurationValues(h *helpers.Handler) map[string]a
 	stringattr.Get(m.Sender, c, "from")
 	objattr.Get(m.Auth, c, helpers.RootKey, h)
 	return c
+}
+
+func (m *TwilioVerifyModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AccountSID, c, "accountSid")
+	stringattr.Set(&m.ServiceSID, c, "verifyServiceSid")
+	stringattr.Set(&m.Sender, c, "from")
+	objattr.Set(&m.Auth, c, helpers.RootKey, h)
 }
 
 // Matching

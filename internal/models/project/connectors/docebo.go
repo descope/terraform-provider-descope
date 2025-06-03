@@ -62,9 +62,9 @@ func (m *DoceboModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 func (m *DoceboModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	stringattr.Set(&m.ClientID, c, "clientId")
-	stringattr.Set(&m.ClientSecret, c, "clientSecret")
+	stringattr.Nil(&m.ClientSecret)
 	stringattr.Set(&m.Username, c, "username")
-	stringattr.Set(&m.Password, c, "password")
+	stringattr.Nil(&m.Password)
 }
 
 // Matching

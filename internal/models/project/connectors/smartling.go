@@ -55,7 +55,7 @@ func (m *SmartlingModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 
 func (m *SmartlingModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.UserIdentifier, c, "userIdentifier")
-	stringattr.Set(&m.UserSecret, c, "userSecret")
+	stringattr.Nil(&m.UserSecret)
 	stringattr.Set(&m.AccountUID, c, "accountUid")
 }
 

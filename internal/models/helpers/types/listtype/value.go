@@ -205,3 +205,21 @@ func newListNestedObjectValueOf[T any](ctx context.Context, elements []*T, f lis
 
 	return ListNestedObjectValueOf[T]{ListValue: v, semanticEqualityFunc: f}, diags
 }
+
+func ValueOf[T any](ctx context.Context, elements []attr.Value) (ListNestedObjectValueOf[T], diag.Diagnostics) {
+	var diags diag.Diagnostics
+
+	typ, d := objtype.NewObjectTypeOf[T](ctx)
+	diags.Append(d...)
+	if diags.HasError() {
+		return NewListNestedObjectValueOfUnknown[T](ctx), diags
+	}
+
+	value, d := basetypes.NewListValue(typ, elements)
+	diags.Append(d...)
+	if diags.HasError() {
+		return NewListNestedObjectValueOfUnknown[T](ctx), diags
+	}
+
+	return ListNestedObjectValueOf[T]{ListValue: value}, diags
+}

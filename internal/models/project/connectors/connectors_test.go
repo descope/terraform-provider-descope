@@ -14,7 +14,7 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.%": 0,
+				"connectors.%": 39,
 			}),
 		},
 		resource.TestStep{
@@ -950,7 +950,7 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.%": 0,
+				"connectors.%": 39,
 			}),
 		},
 	)

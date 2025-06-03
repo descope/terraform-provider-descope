@@ -60,7 +60,7 @@ func (m *LokaliseModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *LokaliseModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.APIToken, c, "apiToken")
+	stringattr.Nil(&m.APIToken)
 	stringattr.Set(&m.ProjectID, c, "projectId")
 	stringattr.Set(&m.TeamID, c, "teamId")
 	stringattr.Set(&m.CardID, c, "cardId")

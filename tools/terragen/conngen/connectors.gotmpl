@@ -16,7 +16,7 @@ var ConnectorsModifier = objattr.NewModifier[ConnectorsModel]("maintains connect
 
 var ConnectorsAttributes = map[string]schema.Attribute{
     {{- range .Connectors }}
-	"{{.AttributeName}}":     listattr.Optional2[{{.StructName}}Model]({{.StructName}}Attributes{{ if .HasValidator }}, {{.StructName}}Validator{{ end }}),
+	"{{.AttributeName}}":     listattr.Default[{{.StructName}}Model]({{.StructName}}Attributes{{ if .HasValidator }}, {{.StructName}}Validator{{ end }}),
     {{- end }}
 }
 

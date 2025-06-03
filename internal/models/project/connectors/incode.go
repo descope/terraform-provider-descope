@@ -54,7 +54,7 @@ func (m *IncodeModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *IncodeModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Nil(&m.APIKey)
 	stringattr.Set(&m.ApiUrl, c, "apiUrl")
 	stringattr.Set(&m.FlowID, c, "flowId")
 }

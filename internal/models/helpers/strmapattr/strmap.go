@@ -18,7 +18,15 @@ import (
 type Type = valuemaptype.MapValueOf[types.String]
 
 func Value(value map[string]string) Type {
-	return convertStringMapToTerraformValue(context.Background(), value)
+	return valueOf(context.Background(), value)
+}
+
+func Empty() Type {
+	return valueOf(context.Background(), map[string]string{})
+}
+
+func valueOf(ctx context.Context, value map[string]string) Type {
+	return convertStringMapToTerraformValue(ctx, value)
 }
 
 func Required(validators ...validator.Map) schema.MapAttribute {
@@ -41,14 +49,14 @@ func Optional(validators ...validator.Map) schema.MapAttribute {
 	}
 }
 
-func Default(value map[string]string, validators ...validator.Map) schema.MapAttribute {
+func Default(validators ...validator.Map) schema.MapAttribute {
 	return schema.MapAttribute{
 		Optional:    true,
 		Computed:    true,
 		CustomType:  valuemaptype.StringMapType,
 		ElementType: types.StringType,
 		Validators:  validators,
-		Default:     mapdefault.StaticValue(Value(value).MapValue),
+		Default:     mapdefault.StaticValue(Empty().MapValue),
 	}
 }
 
@@ -75,7 +83,7 @@ func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
 	*s = convertStringMapToTerraformValue(h.Ctx, m)
 }
 
-func Ensure(s *Type, h *helpers.Handler) {
+func Nil(s *Type, h *helpers.Handler) {
 	if s.IsUnknown() {
 		*s = convertStringMapToTerraformValue(h.Ctx, map[string]string{})
 	}
@@ -88,7 +96,7 @@ func Iterator(s Type, h *helpers.Handler) iter.Seq2[string, string] {
 				continue
 			}
 
-			if str, ok := v.(types.String); !ok {
+			if str, ok := v.(types.String); ok {
 				if !yield(k, str.ValueString()) {
 					break
 				}

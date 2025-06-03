@@ -40,9 +40,7 @@ func (m *TwilioCoreModel) Values(h *helpers.Handler) map[string]any {
 func (m *TwilioCoreModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.AccountSID, c, "accountSid")
-		objattr.Set(&m.Senders, c, helpers.RootKey, h)
-		objattr.Set(&m.Auth, c, helpers.RootKey, h)
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -54,6 +52,12 @@ func (m *TwilioCoreModel) ConfigurationValues(h *helpers.Handler) map[string]any
 	objattr.Get(m.Senders, c, helpers.RootKey, h)
 	objattr.Get(m.Auth, c, helpers.RootKey, h)
 	return c
+}
+
+func (m *TwilioCoreModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AccountSID, c, "accountSid")
+	objattr.Set(&m.Senders, c, helpers.RootKey, h)
+	objattr.Set(&m.Auth, c, helpers.RootKey, h)
 }
 
 // Matching
@@ -187,9 +191,9 @@ func (m *TwilioAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TwilioAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	stringattr.Set(&m.AuthToken, data, "authToken")
-	stringattr.Set(&m.APIKey, data, "apiKey")
-	stringattr.Set(&m.APISecret, data, "apiSecret")
+	stringattr.Nil(&m.AuthToken)
+	stringattr.Nil(&m.APIKey)
+	stringattr.Nil(&m.APISecret)
 }
 
 func (m *TwilioAuthFieldModel) Validate(h *helpers.Handler) {

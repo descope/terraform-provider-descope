@@ -105,17 +105,17 @@ func Set2[T any, M helpers.Model[T]](m *Type[T], data map[string]any, key string
 	current := m.Elements()
 
 	for k, v := range values {
-		if modelData, ok := v.(map[string]any); ok {
-			var element M
-			if c, ok := current[k]; ok && !c.IsNull() && !c.IsUnknown() {
-				element, _ = objtype.ObjectValueObjectPtr[T](h.Ctx, c)
-			}
-			if element == nil {
-				element = new(T)
-			}
-			element.SetValues(h, modelData)
-			elems[k] = element
+		var element M
+		if c, ok := current[k]; ok && !c.IsNull() && !c.IsUnknown() {
+			element, _ = objtype.ObjectValueObjectPtr[T](h.Ctx, c)
 		}
+		if element == nil {
+			element = new(T)
+		}
+		if modelData, ok := v.(map[string]any); ok {
+			element.SetValues(h, modelData)
+		}
+		elems[k] = element
 	}
 
 	*m = valueOf(h.Ctx, elems)

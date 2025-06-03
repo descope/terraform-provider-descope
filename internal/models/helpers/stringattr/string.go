@@ -68,6 +68,7 @@ func Default(value string, validators ...validator.String) schema.StringAttribut
 		Computed:   true,
 		Validators: validators,
 		Default:    stringdefault.StaticString(value),
+		// PlanModifiers: []planmodifier.String{DefaultModifier(value)}, // TODO
 	}
 }
 
@@ -85,26 +86,22 @@ func Renamed(oldname, newname string, validators ...validator.String) schema.Str
 	return Deprecated("The "+oldname+" attribute has been renamed, set the "+newname+" attribute instead.", validators...)
 }
 
-func Get(s types.String, data map[string]any, key string) {
+func Get(s Type, data map[string]any, key string) {
 	if !s.IsNull() && !s.IsUnknown() {
 		data[key] = s.ValueString()
 	}
 }
 
-func Set(s *types.String, data map[string]any, key string) {
+func Set(s *Type, data map[string]any, key string) {
 	if v, ok := data[key].(string); ok {
-		*s = types.StringValue(v)
-	} else if s.IsUnknown() { // TODO
-		*s = types.StringNull()
+		*s = Value(v)
+	} else {
+		Nil(s)
 	}
 }
 
-func EnsureKnown(s *types.String, defaultValue ...string) {
+func Nil(s *types.String) {
 	if s.IsUnknown() {
-		if len(defaultValue) > 0 {
-			*s = types.StringValue(defaultValue[0])
-		} else {
-			*s = types.StringValue("")
-		}
+		*s = Value("")
 	}
 }

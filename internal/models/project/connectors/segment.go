@@ -51,7 +51,7 @@ func (m *SegmentModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *SegmentModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.WriteKey, c, "writeKey")
+	stringattr.Nil(&m.WriteKey)
 	stringattr.Set(&m.Host, c, "host")
 }
 

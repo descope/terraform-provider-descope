@@ -59,7 +59,7 @@ func (m *SalesforceModel) ConfigurationValues(h *helpers.Handler) map[string]any
 func (m *SalesforceModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	stringattr.Set(&m.ClientID, c, "clientId")
-	stringattr.Set(&m.ClientSecret, c, "clientSecret")
+	stringattr.Nil(&m.ClientSecret)
 	stringattr.Set(&m.Version, c, "version")
 }
 

@@ -44,10 +44,7 @@ func (m *SMTPModel) Values(h *helpers.Handler) map[string]any {
 func (m *SMTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		objattr.Set(&m.Sender, c, helpers.RootKey, h)
-		objattr.Set(&m.Auth, c, helpers.RootKey, h)
-		objattr.Set(&m.Server, c, helpers.RootKey, h)
-		boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -58,10 +55,17 @@ func (m *SMTPModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	objattr.Get(m.Sender, c, helpers.RootKey, h)
 	objattr.Get(m.Server, c, helpers.RootKey, h)
 	objattr.Get(m.Auth, c, helpers.RootKey, h)
-	if m.UseStaticIPs.ValueBool() { // don't send field if false in old MP connectors
+	if m.UseStaticIPs.ValueBool() { // don't send field if false in old MP connectors otherwise we'll get an unrecognized key error
 		boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
 	}
 	return c
+}
+
+func (m *SMTPModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	objattr.Set(&m.Sender, c, helpers.RootKey, h)
+	objattr.Set(&m.Auth, c, helpers.RootKey, h)
+	objattr.Set(&m.Server, c, helpers.RootKey, h)
+	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
 }
 
 // Matching
@@ -102,6 +106,6 @@ func (m *SMTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *SMTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Username, data, "username")
-	stringattr.Set(&m.Password, data, "password")
+	stringattr.Nil(&m.Password)
 	stringattr.Set(&m.Method, data, "authMethod")
 }

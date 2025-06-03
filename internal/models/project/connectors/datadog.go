@@ -20,7 +20,7 @@ var DatadogAttributes = map[string]schema.Attribute{
 	"api_key":                  stringattr.SecretRequired(),
 	"site":                     stringattr.Default(""),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            listattr.Optional2[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -71,7 +71,7 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *DatadogModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.APIKey, c, "apiKey")
+	stringattr.Nil(&m.APIKey)
 	stringattr.Set(&m.Site, c, "site")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set2(&m.AuditFilters, c, "auditFilters", h)

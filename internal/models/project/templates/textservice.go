@@ -13,7 +13,7 @@ var TextServiceValidator = objectattr.NewValidator[TextServiceModel]("must have 
 
 var TextServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
-	"templates": listattr.Default[TextServiceModel](TextTemplateAttributes, TextTemplateValidator),
+	"templates": listattr.Default[TextTemplateModel](TextTemplateAttributes, TextTemplateValidator),
 }
 
 type TextServiceModel struct {
@@ -36,23 +36,24 @@ func (m *TextServiceModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *TextServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "textServiceProvider")
-	listattr.Set2(&m.Templates, data, "textTemplates", h)
 
-	// update known templates with their new values // TODO
-	templates, _ := m.Templates.ToSlice(h.Ctx)
-	for _, template := range templates {
-		name := template.Name.ValueString()
-		h.Log("Looking for text template named '%s'", name)
-		if id, ok := requireTemplateID(h, data, "textTemplates", name); ok {
-			value := types.StringValue(id)
-			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '%s' for text template named '%s'", id, name)
-				template.ID = value
-			} else {
-				h.Log("Keeping existing ID '%s' for text template named '%s'", id, name)
+	if m.Templates.IsEmpty() {
+		listattr.Set2(&m.Templates, data, "textTemplates", h)
+	} else {
+		for template := range listattr.MutatingIterator(&m.Templates, h) {
+			name := template.Name.ValueString()
+			h.Log("Looking for text template named '%s'", name)
+			if id, ok := requireTemplateID(h, data, "textTemplates", name); ok {
+				value := types.StringValue(id)
+				if !template.ID.Equal(value) {
+					h.Log("Setting new ID '%s' for text template named '%s'", id, name)
+					template.ID = value
+				} else {
+					h.Log("Keeping existing ID '%s' for text template named '%s'", id, name)
+				}
+			} else if template.ID.ValueString() == "" {
+				h.Error("Template not found", "Expected to find text template to match with '%s' template", name)
 			}
-		} else if template.ID.ValueString() == "" {
-			h.Error("Template not found", "Expected to find text template to match with '%s' template", name)
 		}
 	}
 }

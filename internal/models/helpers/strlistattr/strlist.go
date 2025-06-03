@@ -2,14 +2,12 @@ package strlistattr
 
 import (
 	"context"
-	"fmt"
 	"iter"
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/strlisttype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
@@ -21,7 +19,15 @@ import (
 type Type = strlisttype.ListValueOf[types.String]
 
 func Value(value []string) Type {
-	return convertStringSliceToTerraformValue(context.Background(), value)
+	return valueOf(context.Background(), value)
+}
+
+func Empty() Type {
+	return valueOf(context.Background(), []string{})
+}
+
+func valueOf(ctx context.Context, value []string) Type {
+	return convertStringSliceToTerraformValue(ctx, value)
 }
 
 func Required(validators ...validator.List) schema.ListAttribute {
@@ -51,7 +57,7 @@ func Default(validators ...validator.List) schema.ListAttribute {
 		CustomType:  strlisttype.StringListType,
 		ElementType: types.StringType,
 		Validators:  validators,
-		Default:     listdefault.StaticValue(Value([]string{}).ListValue),
+		Default:     listdefault.StaticValue(Empty().ListValue),
 	}
 }
 
@@ -90,14 +96,10 @@ func Iterator(l Type, h *helpers.Handler) iter.Seq[string] {
 				continue
 			}
 
-			s, ok := v.(types.String)
-			if !ok {
-				h.Diagnostics.Append(diag.NewErrorDiagnostic("Unexpected Value Type", fmt.Sprintf("Expected string type, found %T", v)))
-				continue
-			}
-
-			if !yield(s.ValueString()) {
-				break
+			if str, ok := v.(types.String); ok {
+				if !yield(str.ValueString()) {
+					break
+				}
 			}
 		}
 	}

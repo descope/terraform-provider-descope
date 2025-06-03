@@ -37,8 +37,9 @@ func (m *SendGridModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *SendGridModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
-	objattr.Set(&m.Sender, data, "configuration", h)
-	objattr.Set(&m.Auth, data, "configuration", h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		m.SetConfigurationValues(c, h)
+	}
 }
 
 // Configuration
@@ -48,6 +49,11 @@ func (m *SendGridModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	objattr.Get(m.Sender, c, helpers.RootKey, h)
 	objattr.Get(m.Auth, c, helpers.RootKey, h)
 	return c
+}
+
+func (m *SendGridModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	objattr.Set(&m.Sender, c, helpers.RootKey, h)
+	objattr.Set(&m.Auth, c, helpers.RootKey, h)
 }
 
 // Matching

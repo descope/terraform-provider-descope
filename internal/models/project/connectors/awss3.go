@@ -22,7 +22,7 @@ var AWSS3Attributes = map[string]schema.Attribute{
 	"region":                   stringattr.Required(),
 	"bucket":                   stringattr.Required(),
 	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            listattr.Optional2[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 }
 
@@ -77,8 +77,8 @@ func (m *AWSS3Model) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *AWSS3Model) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
-	stringattr.Set(&m.SecretAccessKey, c, "secretAccessKey")
+	stringattr.Nil(&m.AccessKeyID)
+	stringattr.Nil(&m.SecretAccessKey)
 	stringattr.Set(&m.Region, c, "region")
 	stringattr.Set(&m.Bucket, c, "bucket")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")

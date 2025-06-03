@@ -44,11 +44,7 @@ func (m *SESModel) Values(h *helpers.Handler) map[string]any {
 func (m *SESModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.AccessKeyId, c, "accessKeyId")
-		stringattr.Set(&m.Secret, c, "secretAccessKey")
-		stringattr.Set(&m.Region, c, "awsSNSRegion")
-		stringattr.Set(&m.Endpoint, c, "awsEndpoint")
-		objattr.Set(&m.Sender, c, helpers.RootKey, h)
+		m.SetConfigurationValues(c, h)
 	}
 }
 
@@ -62,6 +58,14 @@ func (m *SESModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Endpoint, c, "endpoint")
 	objattr.Get(m.Sender, c, helpers.RootKey, h)
 	return c
+}
+
+func (m *SESModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AccessKeyId, c, "accessKeyId")
+	stringattr.Set(&m.Secret, c, "secretAccessKey")
+	stringattr.Set(&m.Region, c, "awsSNSRegion")
+	stringattr.Set(&m.Endpoint, c, "awsEndpoint")
+	objattr.Set(&m.Sender, c, helpers.RootKey, h)
 }
 
 // Matching

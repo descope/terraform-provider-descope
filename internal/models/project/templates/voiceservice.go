@@ -36,23 +36,24 @@ func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "voiceServiceProvider")
-	listattr.Set2(&m.Templates, data, "voiceTemplates", h)
 
-	// update known templates with their new values // TODO
-	templates, _ := m.Templates.ToSlice(h.Ctx)
-	for _, template := range templates {
-		name := template.Name.ValueString()
-		h.Log("Looking for voice template named '%s'", name)
-		if id, ok := requireTemplateID(h, data, "voiceTemplates", name); ok {
-			value := types.StringValue(id)
-			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '%s' for voice template named '%s'", id, name)
-				template.ID = value
-			} else {
-				h.Log("Keeping existing ID '%s' for voice template named '%s'", id, name)
+	if m.Templates.IsEmpty() {
+		listattr.Set2(&m.Templates, data, "voiceTemplates", h)
+	} else {
+		for template := range listattr.MutatingIterator(&m.Templates, h) {
+			name := template.Name.ValueString()
+			h.Log("Looking for voice template named '%s'", name)
+			if id, ok := requireTemplateID(h, data, "voiceTemplates", name); ok {
+				value := types.StringValue(id)
+				if !template.ID.Equal(value) {
+					h.Log("Setting new ID '%s' for voice template named '%s'", id, name)
+					template.ID = value
+				} else {
+					h.Log("Keeping existing ID '%s' for voice template named '%s'", id, name)
+				}
+			} else if template.ID.ValueString() == "" {
+				h.Error("Template not found", "Expected to find voice template to match with '%s' template", name)
 			}
-		} else if template.ID.ValueString() == "" {
-			h.Error("Template not found", "Expected to find voice template to match with '%s' template", name)
 		}
 	}
 }

@@ -354,7 +354,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")
 	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
-	strmapattr.Ensure(&m.ClaimMapping, h) // empty defaults are added by the backend
+	strmapattr.Nil(&m.ClaimMapping, h) // empty defaults are added by the backend
 }
 
 // Provider Token Management

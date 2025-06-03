@@ -52,7 +52,7 @@ func (m *GoogleCloudTranslationModel) ConfigurationValues(h *helpers.Handler) ma
 
 func (m *GoogleCloudTranslationModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ProjectID, c, "projectId")
-	stringattr.Set(&m.ServiceAccountJSON, c, "serviceAccountJSON")
+	stringattr.Nil(&m.ServiceAccountJSON)
 }
 
 // Matching

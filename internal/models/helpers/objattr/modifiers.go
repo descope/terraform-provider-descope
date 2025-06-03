@@ -37,9 +37,13 @@ func (v *objectModifier[T, M]) PlanModifyObject(ctx context.Context, req planmod
 		return
 	}
 
+	var config M // TODO move into objattr package or remove as we don't seem to use this
+	if !req.ConfigValue.IsNull() {
+		config = helpers.ModelFromObject[T, M](ctx, req.ConfigValue, &resp.Diagnostics)
+	}
+
 	plan := helpers.ModelFromObject[T, M](ctx, req.PlanValue, &resp.Diagnostics)
 	state := helpers.ModelFromObject[T, M](ctx, req.StateValue, &resp.Diagnostics)
-	config := helpers.ModelFromObject[T, M](ctx, req.ConfigValue, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}

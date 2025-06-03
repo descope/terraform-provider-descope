@@ -17,8 +17,16 @@ import (
 
 type Type[T any] = settype.SetNestedObjectValueOf[T]
 
-func ValueOf[T any](ctx context.Context, values []*T) Type[T] {
-	return settype.NewSetNestedObjectValueOfSliceMust(ctx, values)
+func Value[T any](values []*T) Type[T] {
+	return valueOf(context.Background(), values)
+}
+
+func Empty[T any]() Type[T] {
+	return valueOf(context.Background(), []*T{})
+}
+
+func valueOf[T any](ctx context.Context, values []*T) Type[T] {
+	return types.Must(settype.Value(ctx, values))
 }
 
 func Required[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
@@ -47,7 +55,7 @@ func Optional[T any](attributes map[string]schema.Attribute, validators ...valid
 	}
 }
 
-func Default[T any](value []*T, attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
+func Default[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
@@ -57,16 +65,16 @@ func Default[T any](value []*T, attributes map[string]schema.Attribute, validato
 		Computed:     true,
 		NestedObject: nested,
 		CustomType:   settype.NewSetNestedObjectTypeOfMust[T](context.Background()),
-		Default:      setdefault.StaticValue(ValueOf(context.Background(), value).SetValue),
+		Default:      setdefault.StaticValue(Empty[T]().SetValue),
 	}
 }
 
-func Get[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if l.IsNull() || l.IsUnknown() {
+func Get[T any, M helpers.Model[T]](s Type[T], data map[string]any, key string, h *helpers.Handler) {
+	if s.IsNull() || s.IsUnknown() {
 		return
 	}
 
-	elems, diags := l.ToSlice(h.Ctx)
+	elems, diags := s.Values(h.Ctx)
 	h.Diagnostics.Append(diags...)
 	if diags.HasError() {
 		return
@@ -81,7 +89,7 @@ func Get[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string, 
 	data[key] = result
 }
 
-func Set[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string, h *helpers.Handler) {
+func Set[T any, M helpers.Model[T]](s *Type[T], data map[string]any, key string, h *helpers.Handler) {
 	elems := []*T{}
 
 	values, _ := data[key].([]any)
@@ -95,16 +103,18 @@ func Set[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string,
 		}
 	}
 
-	result := settype.NewSetNestedObjectValueOfSliceMust(h.Ctx, elems)
+	result, diags := settype.Value(h.Ctx, elems)
+	h.Diagnostics.Append(diags...)
+	if diags.HasError() {
+		return
+	}
 
-	// TODO
-	h.Log("Setting set value for key '%s' of type '%T' to %s", key, result, types.UnsafeFormattedValue(result, true))
-	*l = result
+	*s = result
 }
 
-func Iterator[T any, M helpers.Model[T]](l Type[T], h *helpers.Handler) iter.Seq[*T] {
+func Iterator[T any](s Type[T], h *helpers.Handler) iter.Seq[*T] {
 	return func(yield func(*T) bool) {
-		for _, v := range l.Elements() {
+		for _, v := range s.Elements() {
 			if v.IsNull() || v.IsUnknown() {
 				continue
 			}
@@ -119,5 +129,43 @@ func Iterator[T any, M helpers.Model[T]](l Type[T], h *helpers.Handler) iter.Seq
 				break
 			}
 		}
+	}
+}
+
+func MutatingIterator[T any](s *Type[T], h *helpers.Handler) iter.Seq[*T] {
+	return func(yield func(*T) bool) {
+		elements := s.Elements()
+
+		for i, v := range elements {
+			if v.IsNull() || v.IsUnknown() {
+				continue
+			}
+
+			ptr, diags := objtype.ObjectValueObjectPtr[T](h.Ctx, v)
+			h.Diagnostics.Append(diags...)
+			if diags.HasError() {
+				continue
+			}
+
+			cont := yield(ptr)
+
+			obj, diags := objtype.NewObjectValueOf(h.Ctx, ptr)
+			h.Diagnostics.Append(diags...)
+			if !diags.HasError() {
+				elements[i] = obj
+			}
+
+			if !cont {
+				break
+			}
+		}
+
+		setValue, diags := settype.ValueOf[T](h.Ctx, elements)
+		h.Diagnostics.Append(diags...)
+		if diags.HasError() {
+			return
+		}
+
+		*s = setValue
 	}
 }

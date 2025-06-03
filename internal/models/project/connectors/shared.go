@@ -45,24 +45,26 @@ func setConnectorValues(id, name, description *types.String, data map[string]any
 // Connector Identifiers
 
 func setConnectorsValues[T any, M helpers.MatchableModel[T]](h *helpers.Handler, data map[string]any, key string, connectors *listattr.Type[T]) {
-	for v := range listattr.MutatingIterator(connectors, h) {
-		var connector M = v
-		name := connector.GetName().ValueString()
-		h.Log("Looking for %s connector named '%s'", key, name)
-		if connectorID, ok := findConnectorID(data, key, name, h); ok {
-			value := types.StringValue(connectorID)
-			if !connector.GetID().Equal(value) {
-				h.Log("Setting new ID '%s' for %s connector named '%s'", connectorID, key, name)
-				connector.SetID(value)
-			} else {
-				h.Log("Keeping existing ID '%s' for %s connector named '%s'", connectorID, key, name)
-			}
-		}
-	}
+	listattr.Set2[T, M](connectors, data, key, h)
 
-	if connectors.IsEmpty() {
-		listattr.Set2[T, M](connectors, data, key, h)
-	}
+	// if connectors.IsEmpty() { // TODO should be safe to always set the values
+	// 	listattr.Set2[T, M](connectors, data, key, h)
+	// } else {
+	// 	for v := range listattr.MutatingIterator(connectors, h) {
+	// 		var connector M = v
+	// 		name := connector.GetName().ValueString()
+	// 		h.Log("Looking for %s connector named '%s'", key, name)
+	// 		if connectorID, ok := findConnectorID(data, key, name, h); ok {
+	// 			value := types.StringValue(connectorID)
+	// 			if !connector.GetID().Equal(value) {
+	// 				h.Log("Setting new ID '%s' for %s connector named '%s'", connectorID, key, name)
+	// 				connector.SetID(value)
+	// 			} else {
+	// 				h.Log("Keeping existing ID '%s' for %s connector named '%s'", connectorID, key, name)
+	// 			}
+	// 		}
+	// 	}
+	// }
 }
 
 func findConnectorID(data map[string]any, key string, name string, h *helpers.Handler) (string, bool) {
@@ -196,7 +198,7 @@ func getHeaders(s strmapattr.Type, data map[string]any, key string, h *helpers.H
 	data[key] = headers
 }
 
-func setHeaders(s *strmapattr.Type, data map[string]any, key string, h *helpers.Handler) {
+func setHeaders(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) {
 	headers := map[string]string{}
 	if v, ok := data[key].([]any); ok {
 		for i := range v {
@@ -216,8 +218,14 @@ var HTTPAuthFieldValidator = objattr.NewValidator[HTTPAuthFieldModel]("must spec
 
 var HTTPAuthFieldAttributes = map[string]schema.Attribute{
 	"bearer_token": stringattr.SecretOptional(),
-	"basic":        objattr.Optional[HTTPAuthBasicFieldModel](HTTPAuthBasicFieldAttributes),
-	"api_key":      objattr.Optional[HTTPAuthBasicFieldModel](HTTPAuthAPIKeyFieldAttributes),
+	"basic":        objattr.Default[HTTPAuthBasicFieldModel](nil, HTTPAuthBasicFieldAttributes),
+	"api_key":      objattr.Default[HTTPAuthAPIKeyFieldModel](nil, HTTPAuthAPIKeyFieldAttributes),
+}
+
+var HTTPAuthFieldDefault = &HTTPAuthFieldModel{
+	BearerToken: stringattr.Value(""),
+	Basic:       objattr.Value[HTTPAuthBasicFieldModel](nil),
+	ApiKey:      objattr.Value[HTTPAuthAPIKeyFieldModel](nil),
 }
 
 type HTTPAuthFieldModel struct {
@@ -245,7 +253,17 @@ func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *HTTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all auth values are specified in the configuration
+	stringattr.Nil(&m.BearerToken)
+	if data["method"] == "basic" {
+		objattr.Set(&m.Basic, data, "basic", h)
+	} else {
+		objattr.Nil(&m.Basic)
+	}
+	if data["method"] == "apiKey" {
+		objattr.Set(&m.ApiKey, data, "apiKey", h)
+	} else {
+		objattr.Nil(&m.ApiKey)
+	}
 }
 
 func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
@@ -264,10 +282,8 @@ func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
 		count += 1
 	}
 
-	if count == 0 {
-		h.Error("Invalid HTTP authentication type", "An HTTP authentication method is required")
-	} else if count > 1 {
-		h.Error("Invalid HTTP authentication type", "Only one HTTP authentication method is allowed")
+	if count > 1 {
+		h.Invalid("Cannot specify more than one connector authentication method")
 	}
 }
 
@@ -284,14 +300,15 @@ type HTTPAuthBasicFieldModel struct {
 }
 
 func (m *HTTPAuthBasicFieldModel) Values(h *helpers.Handler) map[string]any {
-	return map[string]any{
-		"username": m.Username.ValueString(),
-		"password": m.Password.ValueString(),
-	}
+	data := map[string]any{}
+	stringattr.Get(m.Username, data, "username")
+	stringattr.Get(m.Password, data, "password")
+	return data
 }
 
 func (m *HTTPAuthBasicFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all auth values are specified in the configuration
+	stringattr.Set(&m.Username, data, "username")
+	stringattr.Nil(&m.Password)
 }
 
 // HTTP Auth APIKey Field
@@ -307,12 +324,13 @@ type HTTPAuthAPIKeyFieldModel struct {
 }
 
 func (m *HTTPAuthAPIKeyFieldModel) Values(h *helpers.Handler) map[string]any {
-	return map[string]any{
-		"key":   m.Key.ValueString(),
-		"token": m.Token.ValueString(),
-	}
+	data := map[string]any{}
+	stringattr.Get(m.Key, data, "key")
+	stringattr.Get(m.Token, data, "token")
+	return data
 }
 
 func (m *HTTPAuthAPIKeyFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all auth values are specified in the configuration
+	stringattr.Set(&m.Key, data, "key")
+	stringattr.Nil(&m.Token)
 }

@@ -108,14 +108,14 @@ func (f *Field) AttributeType() string {
 		}
 		return `floatattr.Default(0)`
 	case FieldTypeObject:
-		return `strmapattr.Optional()`
+		return `strmapattr.Default()`
 	case FieldTypeAuditFilters:
-		return `listattr.Optional2[AuditFilterFieldModel](AuditFilterFieldAttributes)`
+		return `listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes)`
 	case FieldTypeHTTPAuth:
 		if f.Required {
 			return `objattr.Required[HTTPAuthFieldModel](HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
 		}
-		return `objattr.Optional[HTTPAuthFieldModel](HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
+		return `objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
@@ -144,8 +144,10 @@ func (f *Field) GetValueStatement() string {
 func (f *Field) SetValueStatement() string {
 	accessor := fmt.Sprintf(`&m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString:
 		return fmt.Sprintf(`stringattr.Set(%s, c, %q)`, accessor, f.Name)
+	case FieldTypeSecret:
+		return fmt.Sprintf(`stringattr.Nil(%s)`, accessor)
 	case FieldTypeBool:
 		return fmt.Sprintf(`boolattr.Set(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeNumber:
@@ -182,20 +184,6 @@ func (f *Field) ValidateNonZero() string {
 		return fmt.Sprintf(`!%s.IsEmpty()`, accessor)
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`%s.IsSet()`, accessor)
-	default:
-		panic("unexpected field type: " + f.Type)
-	}
-}
-
-func (f *Field) IsNotNull() string { // TODO
-	accessor := fmt.Sprintf(`m.%s`, f.StructName())
-	switch f.Type {
-	case FieldTypeString, FieldTypeSecret, FieldTypeBool, FieldTypeNumber:
-		return fmt.Sprintf(`!%s.IsNull()`, accessor)
-	case FieldTypeObject, FieldTypeAuditFilters:
-		return fmt.Sprintf(`!%s.IsNull()`, accessor)
-	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`!%s.IsNull()`, accessor)
 	default:
 		panic("unexpected field type: " + f.Type)
 	}

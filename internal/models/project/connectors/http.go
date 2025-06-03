@@ -16,8 +16,8 @@ var HTTPAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 
 	"base_url":                   stringattr.Required(),
-	"authentication":             objattr.Optional[HTTPAuthFieldModel](HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":                    strmapattr.Optional(),
+	"authentication":             objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
+	"headers":                    strmapattr.Default(),
 	"hmac_secret":                stringattr.SecretOptional(),
 	"insecure":                   boolattr.Default(false),
 	"include_headers_in_context": boolattr.Default(false),
@@ -72,7 +72,7 @@ func (m *HTTPModel) SetConfigurationValues(c map[string]any, h *helpers.Handler)
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
 	setHeaders(&m.Headers, c, "headers", h)
-	stringattr.Set(&m.HMACSecret, c, "hmacSecret")
+	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.IncludeHeadersInContext, c, "includeHeadersInContext")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
