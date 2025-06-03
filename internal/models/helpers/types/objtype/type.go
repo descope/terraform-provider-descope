@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -33,7 +34,7 @@ func NewObjectTypeOf[T any](ctx context.Context) (objectTypeOf[T], diag.Diagnost
 }
 
 func NewObjectTypeOfMust[T any](ctx context.Context) objectTypeOf[T] {
-	return types.Must(NewObjectTypeOf[T](ctx))
+	return helpers.Must(NewObjectTypeOf[T](ctx))
 }
 
 func (t objectTypeOf[T]) Equal(o attr.Type) bool {
@@ -53,22 +54,22 @@ func (t objectTypeOf[T]) ValueFromObject(ctx context.Context, in basetypes.Objec
 	var diags diag.Diagnostics
 
 	if in.IsNull() {
-		return NewObjectValueOfNull[T](ctx), diags
+		return NullValue[T](ctx), diags
 	}
 	if in.IsUnknown() {
-		return NewObjectValueOfUnknown[T](ctx), diags
+		return UnknownValue[T](ctx), diags
 	}
 
 	m, d := types.AttributeTypes[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewObjectValueOfUnknown[T](ctx), diags
+		return UnknownValue[T](ctx), diags
 	}
 
 	v, d := basetypes.NewObjectValue(m, in.Attributes())
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewObjectValueOfUnknown[T](ctx), diags
+		return UnknownValue[T](ctx), diags
 	}
 
 	value := ObjectValueOf[T]{
@@ -107,14 +108,14 @@ func (t objectTypeOf[T]) NewObjectPtr(ctx context.Context) (any, diag.Diagnostic
 
 func (t objectTypeOf[T]) NullValue(ctx context.Context) (attr.Value, diag.Diagnostics) {
 	var diags diag.Diagnostics
-	return NewObjectValueOfNull[T](ctx), diags
+	return NullValue[T](ctx), diags
 }
 
 func (t objectTypeOf[T]) ValueFromObjectPtr(ctx context.Context, ptr any) (attr.Value, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	if v, ok := ptr.(*T); ok {
-		v, d := NewObjectValueOf(ctx, v)
+		v, d := Value(ctx, v)
 		diags.Append(d...)
 		return v, diags
 	}

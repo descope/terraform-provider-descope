@@ -4,7 +4,7 @@ import (
 	"context"
 	"iter"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -49,7 +49,7 @@ func (v MapNestedObjectValueOf[T]) ToMap(ctx context.Context) (map[string]*T, di
 }
 
 func (v MapNestedObjectValueOf[T]) ToMapMust(ctx context.Context) map[string]*T {
-	return types.Must(nestedObjectValueObjectMap(ctx, v))
+	return helpers.Must(nestedObjectValueObjectMap(ctx, v))
 }
 
 func (v MapNestedObjectValueOf[T]) IsEmpty() bool {
@@ -117,13 +117,13 @@ func NewMapNestedObjectValueOfMap[T any](ctx context.Context, ts map[string]*T) 
 }
 
 func NewMapNestedObjectValueOfMapMust[T any](ctx context.Context, ts map[string]*T) MapNestedObjectValueOf[T] {
-	return types.Must(NewMapNestedObjectValueOfMap(ctx, ts))
+	return helpers.Must(NewMapNestedObjectValueOfMap(ctx, ts))
 }
 
 func newMapNestedObjectValueOf[T any](ctx context.Context, elements map[string]*T) (MapNestedObjectValueOf[T], diag.Diagnostics) {
 	values := map[string]attr.Value{}
 	for k, v := range elements {
-		values[k] = objtype.NewObjectValueOfMust(ctx, v)
+		values[k] = helpers.Must(objtype.Value(ctx, v))
 	}
 	return ValueOf[T](ctx, values)
 }

@@ -158,7 +158,7 @@ func MutatingIterator[T any](m *Type[T], h *helpers.Handler) iter.Seq2[string, *
 
 			cont := yield(k, ptr)
 
-			obj, diags := objtype.NewObjectValueOf(h.Ctx, ptr)
+			obj, diags := objtype.Value(h.Ctx, ptr)
 			h.Diagnostics.Append(diags...)
 			if !diags.HasError() {
 				elements[k] = obj

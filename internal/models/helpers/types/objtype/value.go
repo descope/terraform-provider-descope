@@ -3,6 +3,7 @@ package objtype
 import (
 	"context"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -43,7 +44,7 @@ func (v ObjectValueOf[T]) ToPtr(ctx context.Context) (*T, diag.Diagnostics) {
 }
 
 func (v ObjectValueOf[T]) ToPtrMust(ctx context.Context) *T {
-	return types.Must(ObjectValueObjectPtr[T](ctx, v))
+	return helpers.Must(ObjectValueObjectPtr[T](ctx, v))
 }
 
 func (v ObjectValueOf[T]) IsSet() bool {
@@ -67,32 +68,32 @@ func ObjectValueObjectPtr[T any](ctx context.Context, val attr.Value) (*T, diag.
 	return ptr, diags
 }
 
-func NewObjectValueOfNull[T any](ctx context.Context) ObjectValueOf[T] {
-	return ObjectValueOf[T]{ObjectValue: basetypes.NewObjectNull(types.AttributeTypesMust[T](ctx))}
+func NullValue[T any](ctx context.Context) ObjectValueOf[T] {
+	attrs := helpers.Must(types.AttributeTypes[T](ctx))
+	value := basetypes.NewObjectNull(attrs)
+	return ObjectValueOf[T]{ObjectValue: value}
 }
 
-func NewObjectValueOfUnknown[T any](ctx context.Context) ObjectValueOf[T] {
-	return ObjectValueOf[T]{ObjectValue: basetypes.NewObjectUnknown(types.AttributeTypesMust[T](ctx))}
+func UnknownValue[T any](ctx context.Context) ObjectValueOf[T] {
+	attrs := helpers.Must(types.AttributeTypes[T](ctx))
+	value := basetypes.NewObjectUnknown(attrs)
+	return ObjectValueOf[T]{ObjectValue: value}
 }
 
-func NewObjectValueOf[T any](ctx context.Context, t *T) (ObjectValueOf[T], diag.Diagnostics) {
+func Value[T any](ctx context.Context, t *T) (ObjectValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	m, d := types.AttributeTypes[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewObjectValueOfUnknown[T](ctx), diags
+		return UnknownValue[T](ctx), diags
 	}
 
 	v, d := basetypes.NewObjectValueFrom(ctx, m, t)
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewObjectValueOfUnknown[T](ctx), diags
+		return UnknownValue[T](ctx), diags
 	}
 
 	return ObjectValueOf[T]{ObjectValue: v}, diags
-}
-
-func NewObjectValueOfMust[T any](ctx context.Context, t *T) ObjectValueOf[T] {
-	return types.Must(NewObjectValueOf(ctx, t))
 }

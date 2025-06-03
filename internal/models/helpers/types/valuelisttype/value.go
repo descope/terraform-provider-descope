@@ -3,6 +3,7 @@ package valuelisttype
 import (
 	"context"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -52,7 +53,7 @@ func (v ListValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {
 }
 
 func (v ListValueOf[T]) ToSliceMust(ctx context.Context) []T {
-	return types.Must(v.ToSlice(ctx))
+	return helpers.Must(v.ToSlice(ctx))
 }
 
 func (v ListValueOf[T]) IsEmpty() bool {
@@ -80,5 +81,5 @@ func NewListValueOf[T attr.Value](ctx context.Context, elements []attr.Value) (L
 }
 
 func NewListValueOfMust[T attr.Value](ctx context.Context, elements []attr.Value) ListValueOf[T] {
-	return types.Must(NewListValueOf[T](ctx, elements))
+	return helpers.Must(NewListValueOf[T](ctx, elements))
 }

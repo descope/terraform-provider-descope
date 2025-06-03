@@ -6,6 +6,7 @@ package valuemaptype
 import (
 	"context"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -55,7 +56,7 @@ func (v MapValueOf[T]) ToMap(ctx context.Context) (map[string]T, diag.Diagnostic
 }
 
 func (v MapValueOf[T]) ToMapMust(ctx context.Context) map[string]T {
-	return types.Must(v.ToMap(ctx))
+	return helpers.Must(v.ToMap(ctx))
 }
 
 func (v MapValueOf[T]) IsEmpty() bool {
@@ -83,5 +84,5 @@ func NewMapValueOf[T attr.Value](ctx context.Context, elements map[string]attr.V
 }
 
 func NewMapValueOfMust[T attr.Value](ctx context.Context, elements map[string]attr.Value) MapValueOf[T] {
-	return types.Must(NewMapValueOf[T](ctx, elements))
+	return helpers.Must(NewMapValueOf[T](ctx, elements))
 }

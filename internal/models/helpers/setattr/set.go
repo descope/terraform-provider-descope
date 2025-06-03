@@ -5,7 +5,6 @@ import (
 	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/settype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -26,7 +25,7 @@ func Empty[T any]() Type[T] {
 }
 
 func valueOf[T any](ctx context.Context, values []*T) Type[T] {
-	return types.Must(settype.Value(ctx, values))
+	return helpers.Must(settype.Value(ctx, values))
 }
 
 func Required[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
@@ -142,7 +141,7 @@ func MutatingIterator[T any](s *Type[T], h *helpers.Handler) iter.Seq[*T] {
 
 			cont := yield(ptr)
 
-			obj, diags := objtype.NewObjectValueOf(h.Ctx, ptr)
+			obj, diags := objtype.Value(h.Ctx, ptr)
 			h.Diagnostics.Append(diags...)
 			if !diags.HasError() {
 				elements[i] = obj

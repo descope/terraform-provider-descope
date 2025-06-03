@@ -50,10 +50,6 @@ func AttributeTypes[T any](ctx context.Context) (map[string]attr.Type, diag.Diag
 	return attributeTypes, nil
 }
 
-func AttributeTypesMust[T any](ctx context.Context) map[string]attr.Type {
-	return Must(AttributeTypes[T](ctx))
-}
-
 func NewAttrTypeOf[T attr.Value](ctx context.Context) attr.Type {
 	var zero T
 	return zero.Type(ctx)

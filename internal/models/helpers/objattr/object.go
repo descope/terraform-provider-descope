@@ -22,9 +22,9 @@ func Value[T any](value *T) Type[T] {
 
 func valueOf[T any](ctx context.Context, value *T) Type[T] {
 	if value == nil {
-		return objtype.NewObjectValueOfNull[T](context.Background())
+		return objtype.NullValue[T](context.Background())
 	}
-	return objtype.NewObjectValueOfMust(ctx, value)
+	return helpers.Must(objtype.Value(ctx, value))
 }
 
 func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.SingleNestedAttribute {

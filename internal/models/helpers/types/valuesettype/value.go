@@ -3,6 +3,7 @@ package valuesettype
 import (
 	"context"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -52,7 +53,7 @@ func (v SetValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {
 }
 
 func (v SetValueOf[T]) ToSliceMust(ctx context.Context) []T {
-	return types.Must(v.ToSlice(ctx))
+	return helpers.Must(v.ToSlice(ctx))
 }
 
 func (v SetValueOf[T]) IsEmpty() bool {
@@ -80,5 +81,5 @@ func NewSetValueOf[T attr.Value](ctx context.Context, elements []attr.Value) (Se
 }
 
 func NewSetValueOfMust[T attr.Value](ctx context.Context, elements []attr.Value) SetValueOf[T] {
-	return types.Must(NewSetValueOf[T](ctx, elements))
+	return helpers.Must(NewSetValueOf[T](ctx, elements))
 }

@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -37,7 +37,7 @@ func NewSetNestedObjectTypeOf[T any](ctx context.Context) (setNestedObjectTypeOf
 }
 
 func NewSetNestedObjectTypeOfMust[T any](ctx context.Context) setNestedObjectTypeOf[T] {
-	return types.Must(NewSetNestedObjectTypeOf[T](ctx))
+	return helpers.Must(NewSetNestedObjectTypeOf[T](ctx))
 }
 
 func (t setNestedObjectTypeOf[T]) Equal(o attr.Type) bool {

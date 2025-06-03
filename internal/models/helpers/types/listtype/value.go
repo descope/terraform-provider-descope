@@ -3,6 +3,7 @@ package listtype
 import (
 	"context"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -73,7 +74,7 @@ func UnknownValue[T any](ctx context.Context) ListNestedObjectValueOf[T] {
 func Value[T any](ctx context.Context, values []*T) (ListNestedObjectValueOf[T], diag.Diagnostics) {
 	elements := []attr.Value{}
 	for _, v := range values {
-		elements = append(elements, objtype.NewObjectValueOfMust(ctx, v))
+		elements = append(elements, helpers.Must(objtype.Value(ctx, v)))
 	}
 	return ValueOf[T](ctx, elements)
 }

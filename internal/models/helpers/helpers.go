@@ -1,10 +1,20 @@
 package helpers
 
 import (
+	"fmt"
+
 	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
 const RootKey string = ""
+
+func Must[T any](x T, diags diag.Diagnostics) T {
+	if errs := diags.Errors(); len(errs) > 0 {
+		panic(fmt.Sprintf("%s: %s", errs[0].Summary(), errs[0].Detail()))
+	}
+	return x
+}
 
 func HasUnknownValues(values ...any) bool {
 	for _, v := range values {
