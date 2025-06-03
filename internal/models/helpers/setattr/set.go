@@ -25,7 +25,7 @@ func Empty[T any]() Type[T] {
 }
 
 func valueOf[T any](ctx context.Context, values []*T) Type[T] {
-	return helpers.Must(settype.Value(ctx, values))
+	return helpers.Must(settype.NewValue(ctx, values))
 }
 
 func Required[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
@@ -36,7 +36,7 @@ func Required[T any](attributes map[string]schema.Attribute, validators ...valid
 	return schema.SetNestedAttribute{
 		Required:     true,
 		NestedObject: nested,
-		CustomType:   settype.NewSetNestedObjectTypeOfMust[T](context.Background()),
+		CustomType:   settype.NewType[T](context.Background()),
 	}
 }
 
@@ -49,7 +49,7 @@ func Optional[T any](attributes map[string]schema.Attribute, validators ...valid
 		Optional:      true,
 		Computed:      true,
 		NestedObject:  nested,
-		CustomType:    settype.NewSetNestedObjectTypeOfMust[T](context.Background()),
+		CustomType:    settype.NewType[T](context.Background()),
 		PlanModifiers: []planmodifier.Set{setplanmodifier.UseStateForUnknown()},
 	}
 }
@@ -63,7 +63,7 @@ func Default[T any](attributes map[string]schema.Attribute, validators ...valida
 		Optional:     true,
 		Computed:     true,
 		NestedObject: nested,
-		CustomType:   settype.NewSetNestedObjectTypeOfMust[T](context.Background()),
+		CustomType:   settype.NewType[T](context.Background()),
 		Default:      setdefault.StaticValue(Empty[T]().SetValue),
 	}
 }
@@ -73,7 +73,7 @@ func Get[T any, M helpers.Model[T]](s Type[T], data map[string]any, key string, 
 		return
 	}
 
-	elems, diags := s.Values(h.Ctx)
+	elems, diags := s.ToSlice(h.Ctx)
 	h.Diagnostics.Append(diags...)
 	if diags.HasError() {
 		return
@@ -152,7 +152,7 @@ func MutatingIterator[T any](s *Type[T], h *helpers.Handler) iter.Seq[*T] {
 			}
 		}
 
-		setValue, diags := settype.ValueOf[T](h.Ctx, elements)
+		setValue, diags := settype.NewValueWith[T](h.Ctx, elements)
 		h.Diagnostics.Append(diags...)
 		if diags.HasError() {
 			return

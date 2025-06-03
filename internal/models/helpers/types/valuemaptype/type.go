@@ -26,10 +26,6 @@ type mapTypeOf[T attr.Value] struct {
 	basetypes.MapType
 }
 
-func NewMapTypeOf[T attr.Value](ctx context.Context) mapTypeOf[T] {
-	return mapTypeOf[T]{basetypes.MapType{ElemType: types.NewAttrTypeOf[T](ctx)}}
-}
-
 func (t mapTypeOf[T]) Equal(o attr.Type) bool {
 	other, ok := o.(mapTypeOf[T])
 	if !ok {
@@ -40,23 +36,28 @@ func (t mapTypeOf[T]) Equal(o attr.Type) bool {
 
 func (t mapTypeOf[T]) String() string {
 	var zero T
-	return fmt.Sprintf("MapTypeOf[%T]", zero)
+	return fmt.Sprintf("mapTypeOf[%T]", zero)
+}
+
+func (t mapTypeOf[T]) ValueType(ctx context.Context) attr.Value {
+	return MapValueOf[T]{}
 }
 
 func (t mapTypeOf[T]) ValueFromMap(ctx context.Context, in basetypes.MapValue) (basetypes.MapValuable, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	if in.IsNull() {
-		return NewMapValueOfNull[T](ctx), diags
+		return NewMapValue[T](ctx), diags
 	}
 	if in.IsUnknown() {
-		return NewMapValueOfUnknown[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
-	v, d := basetypes.NewMapValue(types.NewAttrTypeOf[T](ctx), in.Elements())
+	typ := types.NewAttrTypeOf[T](ctx)
+	v, d := basetypes.NewMapValue(typ, in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewMapValueOfUnknown[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	return MapValueOf[T]{MapValue: v}, diags
@@ -79,8 +80,4 @@ func (t mapTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) 
 	}
 
 	return mapValuable, nil
-}
-
-func (t mapTypeOf[T]) ValueType(ctx context.Context) attr.Value {
-	return MapValueOf[T]{}
 }

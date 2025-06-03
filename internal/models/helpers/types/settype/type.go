@@ -22,24 +22,6 @@ type setNestedObjectTypeOf[T any] struct {
 	basetypes.SetType
 }
 
-func NewSetNestedObjectTypeOf[T any](ctx context.Context) (setNestedObjectTypeOf[T], diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	elemType, d := objtype.NewObjectTypeOf[T](ctx)
-	diags.Append(d...)
-	if diags.HasError() {
-		return setNestedObjectTypeOf[T]{}, diags
-	}
-
-	return setNestedObjectTypeOf[T]{
-		SetType: basetypes.SetType{ElemType: elemType},
-	}, diags
-}
-
-func NewSetNestedObjectTypeOfMust[T any](ctx context.Context) setNestedObjectTypeOf[T] {
-	return helpers.Must(NewSetNestedObjectTypeOf[T](ctx))
-}
-
 func (t setNestedObjectTypeOf[T]) Equal(o attr.Type) bool {
 	other, ok := o.(setNestedObjectTypeOf[T])
 	if !ok {
@@ -50,7 +32,7 @@ func (t setNestedObjectTypeOf[T]) Equal(o attr.Type) bool {
 
 func (t setNestedObjectTypeOf[T]) String() string {
 	var zero T
-	return fmt.Sprintf("SetNestedObjectTypeOf[%T]", zero)
+	return fmt.Sprintf("setNestedObjectTypeOf[%T]", zero)
 }
 
 func (t setNestedObjectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
@@ -61,22 +43,22 @@ func (t setNestedObjectTypeOf[T]) ValueFromSet(ctx context.Context, in basetypes
 	var diags diag.Diagnostics
 
 	if in.IsNull() {
-		return NullValue[T](ctx), diags
+		return NewNullValue[T](ctx), diags
 	}
 	if in.IsUnknown() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	typ, d := objtype.NewObjectTypeOf[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	v, d := basetypes.NewSetValue(typ, in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	return SetNestedObjectValueOf[T]{SetValue: v}, diags
@@ -99,4 +81,9 @@ func (t setNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tft
 	}
 
 	return setValuable, nil
+}
+
+func NewType[T any](ctx context.Context) setNestedObjectTypeOf[T] {
+	typ := helpers.Must(objtype.NewObjectTypeOf[T](ctx))
+	return setNestedObjectTypeOf[T]{SetType: basetypes.SetType{ElemType: typ}}
 }

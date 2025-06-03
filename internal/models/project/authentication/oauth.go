@@ -52,7 +52,7 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 		maps.Copy(providers, v.Values(h))
 	}
 
-	for name, provider := range m.Custom.ImmutableIterator(h.Ctx) {
+	for name, provider := range mapattr.Iterator(m.Custom, h) {
 		claimMapping, _ := provider.ClaimMapping.ToMap(h.Ctx)
 		if _, ok := claimMapping["loginId"]; !ok && len(claimMapping) > 0 {
 			h.Error("Invalid Claim Mapping", "Claim mapping set for custom provider %s but 'loginId' was not mapped", name)
@@ -115,7 +115,7 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 		validateSystemProvider(h, v.Slack, "slack")
 	}
 
-	for name := range m.Custom.ImmutableIterator(h.Ctx) {
+	for name := range mapattr.Iterator(m.Custom, h) {
 		if slices.Contains(systemProviderNames, name) {
 			h.Error("Reserved OAuth Provider Name", "The %s name is reserved for system providers and cannot be used for a custom provider", name)
 			continue

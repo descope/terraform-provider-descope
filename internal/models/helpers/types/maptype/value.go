@@ -2,7 +2,6 @@ package maptype
 
 import (
 	"context"
-	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
@@ -30,7 +29,7 @@ func (v MapNestedObjectValueOf[T]) Equal(o attr.Value) bool {
 }
 
 func (v MapNestedObjectValueOf[T]) Type(ctx context.Context) attr.Type {
-	return NewMapNestedObjectTypeOfMust[T](ctx)
+	return NewType[T](ctx)
 }
 
 func (v MapNestedObjectValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
@@ -40,60 +39,16 @@ func (v MapNestedObjectValueOf[T]) ToTerraformValue(ctx context.Context) (tftype
 	return v.MapValue.ToTerraformValue(ctx)
 }
 
-func (v MapNestedObjectValueOf[T]) ToObjectMap(ctx context.Context) (any, diag.Diagnostics) {
-	return v.ToMap(ctx)
+func (v MapNestedObjectValueOf[T]) IsEmpty() bool {
+	return len(v.Elements()) == 0
 }
 
 func (v MapNestedObjectValueOf[T]) ToMap(ctx context.Context) (map[string]*T, diag.Diagnostics) {
-	return nestedObjectValueObjectMap(ctx, v)
-}
-
-func (v MapNestedObjectValueOf[T]) ToMapMust(ctx context.Context) map[string]*T {
-	return helpers.Must(nestedObjectValueObjectMap(ctx, v))
-}
-
-func (v MapNestedObjectValueOf[T]) IsEmpty() bool {
-	return len(v.MapValue.Elements()) == 0
-}
-
-func (v MapNestedObjectValueOf[T]) ImmutableIterator(ctx context.Context) iter.Seq2[string, *T] {
-	return func(yield func(string, *T) bool) {
-		for k, v := range v.Elements() {
-			ptr, diags := objtype.ObjectValueObjectPtr[T](ctx, v)
-			if diags.HasError() {
-				continue
-			}
-			if !yield(k, ptr) {
-				break
-			}
-		}
-	}
-}
-
-func (v *MapNestedObjectValueOf[T]) MutableIterator(ctx context.Context) iter.Seq2[string, *T] {
-	return func(yield func(string, *T) bool) {
-		m, _ := v.ToMap(ctx)
-		if m == nil {
-			m = map[string]*T{}
-		}
-
-		for k, v := range m {
-			if !yield(k, v) {
-				break
-			}
-		}
-
-		*v, _ = newMapNestedObjectValueOf(ctx, m)
-	}
-}
-
-func nestedObjectValueObjectMap[T any](ctx context.Context, val MapNestedObjectValueOf[T]) (map[string]*T, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	elements := val.Elements()
-	result := make(map[string]*T, len(elements))
-	for k, v := range elements {
-		ptr, d := objtype.ObjectValueObjectPtr[T](ctx, v)
+	result := map[string]*T{}
+	for k, element := range v.Elements() {
+		ptr, d := objtype.ObjectValueObjectPtr[T](ctx, element)
 		diags.Append(d...)
 		if diags.HasError() {
 			return nil, diags
@@ -104,45 +59,40 @@ func nestedObjectValueObjectMap[T any](ctx context.Context, val MapNestedObjectV
 	return result, diags
 }
 
-func NewMapNestedObjectValueOfNull[T any](ctx context.Context) MapNestedObjectValueOf[T] {
-	return MapNestedObjectValueOf[T]{MapValue: basetypes.NewMapNull(objtype.NewObjectTypeOfMust[T](ctx))}
+func NewNullValue[T any](ctx context.Context) MapNestedObjectValueOf[T] {
+	typ := objtype.NewObjectTypeOfMust[T](ctx)
+	value := basetypes.NewMapNull(typ)
+	return MapNestedObjectValueOf[T]{MapValue: value}
 }
 
-func NewMapNestedObjectValueOfUnknown[T any](ctx context.Context) MapNestedObjectValueOf[T] {
-	return MapNestedObjectValueOf[T]{MapValue: basetypes.NewMapUnknown(objtype.NewObjectTypeOfMust[T](ctx))}
+func NewUnknownValue[T any](ctx context.Context) MapNestedObjectValueOf[T] {
+	typ := objtype.NewObjectTypeOfMust[T](ctx)
+	value := basetypes.NewMapUnknown(typ)
+	return MapNestedObjectValueOf[T]{MapValue: value}
 }
 
-func NewMapNestedObjectValueOfMap[T any](ctx context.Context, ts map[string]*T) (MapNestedObjectValueOf[T], diag.Diagnostics) {
-	return newMapNestedObjectValueOf(ctx, ts)
-}
-
-func NewMapNestedObjectValueOfMapMust[T any](ctx context.Context, ts map[string]*T) MapNestedObjectValueOf[T] {
-	return helpers.Must(NewMapNestedObjectValueOfMap(ctx, ts))
-}
-
-func newMapNestedObjectValueOf[T any](ctx context.Context, elements map[string]*T) (MapNestedObjectValueOf[T], diag.Diagnostics) {
+func NewValue[T any](ctx context.Context, elements map[string]*T) (MapNestedObjectValueOf[T], diag.Diagnostics) {
 	values := map[string]attr.Value{}
 	for k, v := range elements {
 		values[k] = helpers.Must(objtype.Value(ctx, v))
 	}
-	return ValueOf[T](ctx, values)
+	return NewValueWith[T](ctx, values)
 }
 
-func ValueOf[T any](ctx context.Context, elements map[string]attr.Value) (MapNestedObjectValueOf[T], diag.Diagnostics) {
+func NewValueWith[T any](ctx context.Context, elements map[string]attr.Value) (MapNestedObjectValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	typ, d := objtype.NewObjectTypeOf[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewMapNestedObjectValueOfUnknown[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	v, d := basetypes.NewMapValue(typ, elements)
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewMapNestedObjectValueOfUnknown[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	return MapNestedObjectValueOf[T]{MapValue: v}, diags
-
 }

@@ -26,7 +26,7 @@ func Empty[T any]() Type[T] {
 }
 
 func valueOf[T any](ctx context.Context, value map[string]*T) Type[T] {
-	return maptype.NewMapNestedObjectValueOfMapMust(ctx, value)
+	return helpers.Must(maptype.NewValue(ctx, value))
 }
 
 func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
@@ -38,7 +38,7 @@ func Required[T any](attributes map[string]schema.Attribute, extras ...any) sche
 	return schema.MapNestedAttribute{
 		Required:     true,
 		NestedObject: nested,
-		CustomType:   maptype.NewMapNestedObjectTypeOfMust[T](context.Background()),
+		CustomType:   maptype.NewType[T](context.Background()),
 		Validators:   mapValidators,
 	}
 }
@@ -53,7 +53,7 @@ func Optional[T any](attributes map[string]schema.Attribute, extras ...any) sche
 		Optional:      true,
 		Computed:      true,
 		NestedObject:  nested,
-		CustomType:    maptype.NewMapNestedObjectTypeOfMust[T](context.Background()),
+		CustomType:    maptype.NewType[T](context.Background()),
 		PlanModifiers: []planmodifier.Map{mapplanmodifier.UseStateForUnknown()},
 		Validators:    mapValidators,
 	}
@@ -69,7 +69,7 @@ func Default[T any](values map[string]*T, attributes map[string]schema.Attribute
 		Optional:     true,
 		Computed:     true,
 		NestedObject: nested,
-		CustomType:   maptype.NewMapNestedObjectTypeOfMust[T](context.Background()),
+		CustomType:   maptype.NewType[T](context.Background()),
 		Default:      mapdefault.StaticValue(Value(values).MapValue),
 		Validators:   mapValidators,
 	}
@@ -169,7 +169,7 @@ func MutatingIterator[T any](m *Type[T], h *helpers.Handler) iter.Seq2[string, *
 			}
 		}
 
-		mapValue, diags := maptype.ValueOf[T](h.Ctx, elements)
+		mapValue, diags := maptype.NewValueWith[T](h.Ctx, elements)
 		h.Diagnostics.Append(diags...)
 		if diags.HasError() {
 			return

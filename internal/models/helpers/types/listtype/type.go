@@ -22,24 +22,6 @@ type listNestedObjectTypeOf[T any] struct {
 	basetypes.ListType
 }
 
-func NewListNestedObjectTypeOf[T any](ctx context.Context) (listNestedObjectTypeOf[T], diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	elemType, d := objtype.NewObjectTypeOf[T](ctx)
-	diags.Append(d...)
-	if diags.HasError() {
-		return listNestedObjectTypeOf[T]{}, diags
-	}
-
-	return listNestedObjectTypeOf[T]{
-		ListType: basetypes.ListType{ElemType: elemType},
-	}, diags
-}
-
-func NewListNestedObjectTypeOfMust[T any](ctx context.Context) listNestedObjectTypeOf[T] {
-	return helpers.Must(NewListNestedObjectTypeOf[T](ctx))
-}
-
 func (t listNestedObjectTypeOf[T]) Equal(o attr.Type) bool {
 	other, ok := o.(listNestedObjectTypeOf[T])
 	if !ok {
@@ -50,29 +32,29 @@ func (t listNestedObjectTypeOf[T]) Equal(o attr.Type) bool {
 
 func (t listNestedObjectTypeOf[T]) String() string {
 	var zero T
-	return fmt.Sprintf("ListNestedObjectTypeOf[%T]", zero)
+	return fmt.Sprintf("listNestedObjectTypeOf[%T]", zero)
 }
 
 func (t listNestedObjectTypeOf[T]) ValueFromList(ctx context.Context, in basetypes.ListValue) (basetypes.ListValuable, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	if in.IsNull() {
-		return NullValue[T](ctx), diags
+		return NewNullValue[T](ctx), diags
 	}
 	if in.IsUnknown() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	typ, d := objtype.NewObjectTypeOf[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	v, d := basetypes.NewListValue(typ, in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	return ListNestedObjectValueOf[T]{ListValue: v}, diags
@@ -95,4 +77,9 @@ func (t listNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tf
 	}
 
 	return listValuable, nil
+}
+
+func NewType[T any](ctx context.Context) listNestedObjectTypeOf[T] {
+	typ := helpers.Must(objtype.NewObjectTypeOf[T](ctx))
+	return listNestedObjectTypeOf[T]{ListType: basetypes.ListType{ElemType: typ}}
 }

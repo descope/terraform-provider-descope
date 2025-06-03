@@ -3,7 +3,6 @@ package valuesettype
 import (
 	"context"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -29,7 +28,7 @@ func (v SetValueOf[T]) Equal(o attr.Value) bool {
 }
 
 func (v SetValueOf[T]) Type(ctx context.Context) attr.Type {
-	return newSetTypeOf[T](ctx)
+	return setTypeOf[T]{basetypes.SetType{ElemType: types.NewAttrTypeOf[T](ctx)}}
 }
 
 func (v SetValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
@@ -37,6 +36,10 @@ func (v SetValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, err
 		return tftypes.NewValue(v.Type(ctx).TerraformType(ctx), nil), nil
 	}
 	return v.SetValue.ToTerraformValue(ctx)
+}
+
+func (v SetValueOf[T]) IsEmpty() bool {
+	return len(v.Elements()) == 0
 }
 
 func (v SetValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {
@@ -52,34 +55,22 @@ func (v SetValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {
 	return values, diags
 }
 
-func (v SetValueOf[T]) ToSliceMust(ctx context.Context) []T {
-	return helpers.Must(v.ToSlice(ctx))
-}
-
-func (v SetValueOf[T]) IsEmpty() bool {
-	return len(v.SetValue.Elements()) == 0
-}
-
-func NewSetValueOfNull[T attr.Value](ctx context.Context) SetValueOf[T] {
+func NewNullValue[T attr.Value](ctx context.Context) SetValueOf[T] {
 	return SetValueOf[T]{SetValue: basetypes.NewSetNull(types.NewAttrTypeOf[T](ctx))}
 }
 
-func NewSetValueOfUnknown[T attr.Value](ctx context.Context) SetValueOf[T] {
+func NewUnknownValue[T attr.Value](ctx context.Context) SetValueOf[T] {
 	return SetValueOf[T]{SetValue: basetypes.NewSetUnknown(types.NewAttrTypeOf[T](ctx))}
 }
 
-func NewSetValueOf[T attr.Value](ctx context.Context, elements []attr.Value) (SetValueOf[T], diag.Diagnostics) {
+func NewValue[T attr.Value](ctx context.Context, elements []attr.Value) (SetValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	v, d := basetypes.NewSetValue(types.NewAttrTypeOf[T](ctx), elements)
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewSetValueOfUnknown[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	return SetValueOf[T]{SetValue: v}, diags
-}
-
-func NewSetValueOfMust[T attr.Value](ctx context.Context, elements []attr.Value) SetValueOf[T] {
-	return helpers.Must(NewSetValueOf[T](ctx, elements))
 }

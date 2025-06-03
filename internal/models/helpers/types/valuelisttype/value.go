@@ -3,7 +3,6 @@ package valuelisttype
 import (
 	"context"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -29,7 +28,7 @@ func (v ListValueOf[T]) Equal(o attr.Value) bool {
 }
 
 func (v ListValueOf[T]) Type(ctx context.Context) attr.Type {
-	return newListTypeOf[T](ctx)
+	return listTypeOf[T]{basetypes.ListType{ElemType: types.NewAttrTypeOf[T](ctx)}}
 }
 
 func (v ListValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
@@ -37,6 +36,10 @@ func (v ListValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, er
 		return tftypes.NewValue(v.Type(ctx).TerraformType(ctx), nil), nil
 	}
 	return v.ListValue.ToTerraformValue(ctx)
+}
+
+func (v ListValueOf[T]) IsEmpty() bool {
+	return len(v.Elements()) == 0
 }
 
 func (v ListValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {
@@ -52,34 +55,22 @@ func (v ListValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {
 	return values, diags
 }
 
-func (v ListValueOf[T]) ToSliceMust(ctx context.Context) []T {
-	return helpers.Must(v.ToSlice(ctx))
-}
-
-func (v ListValueOf[T]) IsEmpty() bool {
-	return len(v.ListValue.Elements()) == 0
-}
-
-func NewListValueOfNull[T attr.Value](ctx context.Context) ListValueOf[T] {
+func NewNullValue[T attr.Value](ctx context.Context) ListValueOf[T] {
 	return ListValueOf[T]{ListValue: basetypes.NewListNull(types.NewAttrTypeOf[T](ctx))}
 }
 
-func NewListValueOfUnknown[T attr.Value](ctx context.Context) ListValueOf[T] {
+func NewUnknownValue[T attr.Value](ctx context.Context) ListValueOf[T] {
 	return ListValueOf[T]{ListValue: basetypes.NewListUnknown(types.NewAttrTypeOf[T](ctx))}
 }
 
-func NewListValueOf[T attr.Value](ctx context.Context, elements []attr.Value) (ListValueOf[T], diag.Diagnostics) {
+func NewValue[T attr.Value](ctx context.Context, elements []attr.Value) (ListValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	v, d := basetypes.NewListValue(types.NewAttrTypeOf[T](ctx), elements)
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewListValueOfUnknown[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	return ListValueOf[T]{ListValue: v}, diags
-}
-
-func NewListValueOfMust[T attr.Value](ctx context.Context, elements []attr.Value) ListValueOf[T] {
-	return helpers.Must(NewListValueOf[T](ctx, elements))
 }

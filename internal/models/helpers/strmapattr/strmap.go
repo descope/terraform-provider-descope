@@ -65,15 +65,16 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 		return
 	}
 
-	m := s.ToMapMust(h.Ctx)
-	data[key] = convertTerraformStringMapToStringMap(m)
+	values := helpers.Must(s.ToMap(h.Ctx))
+	data[key] = convertTerraformStringMapToStringMap(values)
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
 	m := getStringMap(data, key)
 
 	if !s.IsEmpty() {
-		current := convertTerraformStringMapToStringMap(s.ToMapMust(h.Ctx))
+		values := helpers.Must(s.ToMap(h.Ctx))
+		current := convertTerraformStringMapToStringMap(values)
 		if !maps.Equal(current, m) {
 			h.Mismatch("Mismatched string map value in '%s' key", key)
 		}

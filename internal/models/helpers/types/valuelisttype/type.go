@@ -23,10 +23,6 @@ type listTypeOf[T attr.Value] struct {
 	basetypes.ListType
 }
 
-func newListTypeOf[T attr.Value](ctx context.Context) listTypeOf[T] {
-	return listTypeOf[T]{basetypes.ListType{ElemType: types.NewAttrTypeOf[T](ctx)}}
-}
-
 func (t listTypeOf[T]) Equal(o attr.Type) bool {
 	other, ok := o.(listTypeOf[T])
 	if !ok {
@@ -37,29 +33,34 @@ func (t listTypeOf[T]) Equal(o attr.Type) bool {
 
 func (t listTypeOf[T]) String() string {
 	var zero T
-	return fmt.Sprintf("ListTypeOf[%T]", zero)
+	return fmt.Sprintf("listTypeOf[%T]", zero)
+}
+
+func (t listTypeOf[T]) ValueType(ctx context.Context) attr.Value {
+	return ListValueOf[T]{}
 }
 
 func (t listTypeOf[T]) ValueFromList(ctx context.Context, in basetypes.ListValue) (basetypes.ListValuable, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	if in.IsNull() {
-		return NewListValueOfNull[T](ctx), diags
+		return NewNullValue[T](ctx), diags
 	}
 	if in.IsUnknown() {
-		return NewListValueOfUnknown[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
-	v, d := basetypes.NewListValue(types.NewAttrTypeOf[T](ctx), in.Elements())
+	typ := types.NewAttrTypeOf[T](ctx)
+	v, d := basetypes.NewListValue(typ, in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {
-		return NewListValueOfUnknown[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	return ListValueOf[T]{ListValue: v}, diags
 }
 
-func (t listTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) { // TODO
+func (t listTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
 	attrValue, err := t.ListType.ValueFromTerraform(ctx, in)
 	if err != nil {
 		return nil, err
@@ -76,8 +77,4 @@ func (t listTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value)
 	}
 
 	return listValuable, nil
-}
-
-func (t listTypeOf[T]) ValueType(ctx context.Context) attr.Value {
-	return ListValueOf[T]{}
 }

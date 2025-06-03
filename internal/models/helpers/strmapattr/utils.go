@@ -3,6 +3,7 @@ package strmapattr
 import (
 	"context"
 
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/valuemaptype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -25,7 +26,7 @@ func convertStringMapToTerraformValue(ctx context.Context, m map[string]string) 
 	for k, v := range m {
 		elements[k] = types.StringValue(v)
 	}
-	return valuemaptype.NewMapValueOfMust[types.String](ctx, elements)
+	return helpers.Must(valuemaptype.NewValue[types.String](ctx, elements))
 }
 
 func convertTerraformStringMapToStringMap(m map[string]types.String) map[string]string {

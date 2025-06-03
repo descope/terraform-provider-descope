@@ -29,7 +29,7 @@ func (v ListNestedObjectValueOf[T]) Equal(o attr.Value) bool {
 }
 
 func (v ListNestedObjectValueOf[T]) Type(ctx context.Context) attr.Type {
-	return NewListNestedObjectTypeOfMust[T](ctx)
+	return NewType[T](ctx)
 }
 
 func (v ListNestedObjectValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
@@ -39,59 +39,59 @@ func (v ListNestedObjectValueOf[T]) ToTerraformValue(ctx context.Context) (tftyp
 	return v.ListValue.ToTerraformValue(ctx)
 }
 
-func (v ListNestedObjectValueOf[T]) Values(ctx context.Context) ([]*T, diag.Diagnostics) {
+func (v ListNestedObjectValueOf[T]) IsEmpty() bool {
+	return len(v.Elements()) == 0
+}
+
+func (v ListNestedObjectValueOf[T]) ToSlice(ctx context.Context) ([]*T, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	slice := []*T{}
-	for _, v := range v.Elements() {
-		ptr, d := objtype.ObjectValueObjectPtr[T](ctx, v)
+	result := []*T{}
+	for _, element := range v.Elements() {
+		ptr, d := objtype.ObjectValueObjectPtr[T](ctx, element)
 		diags.Append(d...)
 		if diags.HasError() {
 			return nil, diags
 		}
-		slice = append(slice, ptr)
+		result = append(result, ptr)
 	}
 
-	return slice, diags
+	return result, diags
 }
 
-func (v ListNestedObjectValueOf[T]) IsEmpty() bool {
-	return len(v.ListValue.Elements()) == 0
-}
-
-func NullValue[T any](ctx context.Context) ListNestedObjectValueOf[T] {
+func NewNullValue[T any](ctx context.Context) ListNestedObjectValueOf[T] {
 	typ := objtype.NewObjectTypeOfMust[T](ctx)
 	value := basetypes.NewListNull(typ)
 	return ListNestedObjectValueOf[T]{ListValue: value}
 }
 
-func UnknownValue[T any](ctx context.Context) ListNestedObjectValueOf[T] {
+func NewUnknownValue[T any](ctx context.Context) ListNestedObjectValueOf[T] {
 	typ := objtype.NewObjectTypeOfMust[T](ctx)
 	value := basetypes.NewListUnknown(typ)
 	return ListNestedObjectValueOf[T]{ListValue: value}
 }
 
-func Value[T any](ctx context.Context, values []*T) (ListNestedObjectValueOf[T], diag.Diagnostics) {
+func NewValue[T any](ctx context.Context, values []*T) (ListNestedObjectValueOf[T], diag.Diagnostics) {
 	elements := []attr.Value{}
 	for _, v := range values {
 		elements = append(elements, helpers.Must(objtype.Value(ctx, v)))
 	}
-	return ValueOf[T](ctx, elements)
+	return NewValueWith[T](ctx, elements)
 }
 
-func ValueOf[T any](ctx context.Context, elements []attr.Value) (ListNestedObjectValueOf[T], diag.Diagnostics) {
+func NewValueWith[T any](ctx context.Context, elements []attr.Value) (ListNestedObjectValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	typ, d := objtype.NewObjectTypeOf[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	value, d := basetypes.NewListValue(typ, elements)
 	diags.Append(d...)
 	if diags.HasError() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
 	return ListNestedObjectValueOf[T]{ListValue: value}, diags
