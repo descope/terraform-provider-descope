@@ -111,7 +111,7 @@ func Iterator[T any](s Type[T], h *helpers.Handler) iter.Seq[*T] {
 				continue
 			}
 
-			ptr, diags := objtype.ObjectValueObjectPtr[T](h.Ctx, v)
+			ptr, diags := objtype.NewObjectWith[T](h.Ctx, v)
 			h.Diagnostics.Append(diags...)
 			if diags.HasError() {
 				continue
@@ -133,7 +133,7 @@ func MutatingIterator[T any](s *Type[T], h *helpers.Handler) iter.Seq[*T] {
 				continue
 			}
 
-			ptr, diags := objtype.ObjectValueObjectPtr[T](h.Ctx, v)
+			ptr, diags := objtype.NewObjectWith[T](h.Ctx, v)
 			h.Diagnostics.Append(diags...)
 			if diags.HasError() {
 				continue
@@ -141,7 +141,7 @@ func MutatingIterator[T any](s *Type[T], h *helpers.Handler) iter.Seq[*T] {
 
 			cont := yield(ptr)
 
-			obj, diags := objtype.Value(h.Ctx, ptr)
+			obj, diags := objtype.NewValue(h.Ctx, ptr)
 			h.Diagnostics.Append(diags...)
 			if !diags.HasError() {
 				elements[i] = obj

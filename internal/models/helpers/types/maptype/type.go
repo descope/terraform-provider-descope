@@ -49,7 +49,7 @@ func (t mapNestedObjectTypeOf[T]) ValueFromMap(ctx context.Context, in basetypes
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ, d := objtype.NewObjectTypeOf[T](ctx)
+	typ, d := objtype.NewTypeMaybe[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
@@ -84,6 +84,6 @@ func (t mapNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tft
 }
 
 func NewType[T any](ctx context.Context) mapNestedObjectTypeOf[T] {
-	typ := helpers.Must(objtype.NewObjectTypeOf[T](ctx))
+	typ := helpers.Must(objtype.NewTypeMaybe[T](ctx))
 	return mapNestedObjectTypeOf[T]{MapType: basetypes.MapType{ElemType: typ}}
 }

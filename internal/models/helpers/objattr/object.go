@@ -22,16 +22,16 @@ func Value[T any](value *T) Type[T] {
 
 func valueOf[T any](ctx context.Context, value *T) Type[T] {
 	if value == nil {
-		return objtype.NullValue[T](context.Background())
+		return objtype.NewNullValue[T](context.Background())
 	}
-	return helpers.Must(objtype.Value(ctx, value))
+	return helpers.Must(objtype.NewValue(ctx, value))
 }
 
 func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.SingleNestedAttribute {
 	validators, modifiers := parseExtras(extras)
 	return schema.SingleNestedAttribute{
 		Required:      true,
-		CustomType:    objtype.NewObjectTypeOfMust[T](context.Background()),
+		CustomType:    objtype.NewType[T](context.Background()),
 		Attributes:    attributes,
 		Validators:    validators,
 		PlanModifiers: modifiers,
@@ -43,7 +43,7 @@ func Optional[T any](attributes map[string]schema.Attribute, extras ...any) sche
 	return schema.SingleNestedAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    objtype.NewObjectTypeOfMust[T](context.Background()),
+		CustomType:    objtype.NewType[T](context.Background()),
 		Attributes:    attributes,
 		Validators:    validators,
 		PlanModifiers: append([]planmodifier.Object{objectplanmodifier.UseStateForUnknown()}, modifiers...),
@@ -55,7 +55,7 @@ func Default[T any](value *T, attributes map[string]schema.Attribute, extras ...
 	return schema.SingleNestedAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    objtype.NewObjectTypeOfMust[T](context.Background()),
+		CustomType:    objtype.NewType[T](context.Background()),
 		Attributes:    attributes,
 		Validators:    validators,
 		PlanModifiers: modifiers,
@@ -68,7 +68,7 @@ func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, 
 		return
 	}
 
-	var value M = o.ToPtrMust(h.Ctx)
+	var value M = helpers.Must(o.ToObject(h.Ctx))
 	if key == helpers.RootKey {
 		maps.Copy(data, value.Values(h))
 	} else if m, ok := data[key].(map[string]any); ok {
@@ -93,7 +93,7 @@ func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string,
 	if o.IsNull() || o.IsUnknown() {
 		value = new(T)
 	} else {
-		value = o.ToPtrMust(h.Ctx)
+		value = helpers.Must(o.ToObject(h.Ctx))
 	}
 	value.SetValues(h, m)
 
@@ -111,7 +111,7 @@ func CollectReferences[T any, M helpers.CollectReferencesModel[T]](o Type[T], h 
 		return
 	}
 
-	var value M = o.ToPtrMust(h.Ctx)
+	var value M = helpers.Must(o.ToObject(h.Ctx))
 	value.CollectReferences(h)
 }
 
@@ -120,7 +120,7 @@ func UpdateReferences[T any, M helpers.UpdateReferencesModel[T]](o *Type[T], h *
 		return
 	}
 
-	var value M = o.ToPtrMust(h.Ctx)
+	var value M = helpers.Must(o.ToObject(h.Ctx))
 	value.UpdateReferences(h)
 
 	*o = valueOf(h.Ctx, value)

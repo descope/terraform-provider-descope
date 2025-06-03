@@ -48,7 +48,7 @@ func (v MapNestedObjectValueOf[T]) ToMap(ctx context.Context) (map[string]*T, di
 
 	result := map[string]*T{}
 	for k, element := range v.Elements() {
-		ptr, d := objtype.ObjectValueObjectPtr[T](ctx, element)
+		ptr, d := objtype.NewObjectWith[T](ctx, element)
 		diags.Append(d...)
 		if diags.HasError() {
 			return nil, diags
@@ -60,13 +60,13 @@ func (v MapNestedObjectValueOf[T]) ToMap(ctx context.Context) (map[string]*T, di
 }
 
 func NewNullValue[T any](ctx context.Context) MapNestedObjectValueOf[T] {
-	typ := objtype.NewObjectTypeOfMust[T](ctx)
+	typ := objtype.NewType[T](ctx)
 	value := basetypes.NewMapNull(typ)
 	return MapNestedObjectValueOf[T]{MapValue: value}
 }
 
 func NewUnknownValue[T any](ctx context.Context) MapNestedObjectValueOf[T] {
-	typ := objtype.NewObjectTypeOfMust[T](ctx)
+	typ := objtype.NewType[T](ctx)
 	value := basetypes.NewMapUnknown(typ)
 	return MapNestedObjectValueOf[T]{MapValue: value}
 }
@@ -74,25 +74,16 @@ func NewUnknownValue[T any](ctx context.Context) MapNestedObjectValueOf[T] {
 func NewValue[T any](ctx context.Context, elements map[string]*T) (MapNestedObjectValueOf[T], diag.Diagnostics) {
 	values := map[string]attr.Value{}
 	for k, v := range elements {
-		values[k] = helpers.Must(objtype.Value(ctx, v))
+		values[k] = helpers.Must(objtype.NewValue(ctx, v))
 	}
 	return NewValueWith[T](ctx, values)
 }
 
 func NewValueWith[T any](ctx context.Context, elements map[string]attr.Value) (MapNestedObjectValueOf[T], diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	typ, d := objtype.NewObjectTypeOf[T](ctx)
-	diags.Append(d...)
+	typ := objtype.NewType[T](ctx)
+	value, diags := basetypes.NewMapValue(typ, elements)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
 	}
-
-	v, d := basetypes.NewMapValue(typ, elements)
-	diags.Append(d...)
-	if diags.HasError() {
-		return NewUnknownValue[T](ctx), diags
-	}
-
-	return MapNestedObjectValueOf[T]{MapValue: v}, diags
+	return MapNestedObjectValueOf[T]{MapValue: value}, diags
 }

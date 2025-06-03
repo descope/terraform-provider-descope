@@ -97,7 +97,7 @@ func Set[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string,
 	for i, v := range values {
 		var element M
 		if len(current) > i && !current[i].IsNull() && !current[i].IsUnknown() {
-			element, _ = objtype.ObjectValueObjectPtr[T](h.Ctx, current[i])
+			element, _ = objtype.NewObjectWith[T](h.Ctx, current[i])
 		}
 		if element == nil {
 			element = new(T)
@@ -118,7 +118,7 @@ func Iterator[T any](l Type[T], h *helpers.Handler) iter.Seq[*T] {
 				continue
 			}
 
-			ptr, diags := objtype.ObjectValueObjectPtr[T](h.Ctx, v)
+			ptr, diags := objtype.NewObjectWith[T](h.Ctx, v)
 			h.Diagnostics.Append(diags...)
 			if diags.HasError() {
 				continue
@@ -140,7 +140,7 @@ func MutatingIterator[T any](l *Type[T], h *helpers.Handler) iter.Seq[*T] {
 				continue
 			}
 
-			ptr, diags := objtype.ObjectValueObjectPtr[T](h.Ctx, v)
+			ptr, diags := objtype.NewObjectWith[T](h.Ctx, v)
 			h.Diagnostics.Append(diags...)
 			if diags.HasError() {
 				continue
@@ -148,7 +148,7 @@ func MutatingIterator[T any](l *Type[T], h *helpers.Handler) iter.Seq[*T] {
 
 			cont := yield(ptr)
 
-			obj, diags := objtype.Value(h.Ctx, ptr)
+			obj, diags := objtype.NewValue(h.Ctx, ptr)
 			h.Diagnostics.Append(diags...)
 			if !diags.HasError() {
 				elements[i] = obj

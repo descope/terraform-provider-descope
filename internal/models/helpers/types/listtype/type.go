@@ -35,6 +35,10 @@ func (t listNestedObjectTypeOf[T]) String() string {
 	return fmt.Sprintf("listNestedObjectTypeOf[%T]", zero)
 }
 
+func (t listNestedObjectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
+	return ListNestedObjectValueOf[T]{}
+}
+
 func (t listNestedObjectTypeOf[T]) ValueFromList(ctx context.Context, in basetypes.ListValue) (basetypes.ListValuable, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
@@ -45,7 +49,7 @@ func (t listNestedObjectTypeOf[T]) ValueFromList(ctx context.Context, in basetyp
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ, d := objtype.NewObjectTypeOf[T](ctx)
+	typ, d := objtype.NewTypeMaybe[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
@@ -80,6 +84,6 @@ func (t listNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tf
 }
 
 func NewType[T any](ctx context.Context) listNestedObjectTypeOf[T] {
-	typ := helpers.Must(objtype.NewObjectTypeOf[T](ctx))
+	typ := helpers.Must(objtype.NewTypeMaybe[T](ctx))
 	return listNestedObjectTypeOf[T]{ListType: basetypes.ListType{ElemType: typ}}
 }

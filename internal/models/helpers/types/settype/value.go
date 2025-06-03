@@ -48,7 +48,7 @@ func (v SetNestedObjectValueOf[T]) ToSlice(ctx context.Context) ([]*T, diag.Diag
 
 	result := []*T{}
 	for _, element := range v.Elements() {
-		ptr, d := objtype.ObjectValueObjectPtr[T](ctx, element)
+		ptr, d := objtype.NewObjectWith[T](ctx, element)
 		diags.Append(d...)
 		if diags.HasError() {
 			return nil, diags
@@ -60,13 +60,13 @@ func (v SetNestedObjectValueOf[T]) ToSlice(ctx context.Context) ([]*T, diag.Diag
 }
 
 func NewNullValue[T any](ctx context.Context) SetNestedObjectValueOf[T] {
-	typ := objtype.NewObjectTypeOfMust[T](ctx)
+	typ := objtype.NewType[T](ctx)
 	value := basetypes.NewSetNull(typ)
 	return SetNestedObjectValueOf[T]{SetValue: value}
 }
 
 func NewUnknownValue[T any](ctx context.Context) SetNestedObjectValueOf[T] {
-	typ := objtype.NewObjectTypeOfMust[T](ctx)
+	typ := objtype.NewType[T](ctx)
 	value := basetypes.NewSetUnknown(typ)
 	return SetNestedObjectValueOf[T]{SetValue: value}
 }
@@ -74,25 +74,16 @@ func NewUnknownValue[T any](ctx context.Context) SetNestedObjectValueOf[T] {
 func NewValue[T any](ctx context.Context, values []*T) (SetNestedObjectValueOf[T], diag.Diagnostics) {
 	elements := []attr.Value{}
 	for _, v := range values {
-		elements = append(elements, helpers.Must(objtype.Value(ctx, v)))
+		elements = append(elements, helpers.Must(objtype.NewValue(ctx, v)))
 	}
 	return NewValueWith[T](ctx, elements)
 }
 
 func NewValueWith[T any](ctx context.Context, elements []attr.Value) (SetNestedObjectValueOf[T], diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	typ, d := objtype.NewObjectTypeOf[T](ctx)
-	diags.Append(d...)
+	typ := objtype.NewType[T](ctx)
+	value, diags := basetypes.NewSetValue(typ, elements)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
 	}
-
-	value, d := basetypes.NewSetValue(typ, elements)
-	diags.Append(d...)
-	if diags.HasError() {
-		return NewUnknownValue[T](ctx), diags
-	}
-
 	return SetNestedObjectValueOf[T]{SetValue: value}, diags
 }

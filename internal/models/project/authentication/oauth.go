@@ -38,7 +38,7 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 
 	providers := map[string]any{}
 
-	if v, _ := m.System.ToPtr(h.Ctx); v != nil {
+	if v, _ := m.System.ToObject(h.Ctx); v != nil {
 		ensureSystemProvider(h, v.Apple, "apple")
 		ensureSystemProvider(h, v.Discord, "discord")
 		ensureSystemProvider(h, v.Facebook, "facebook")
@@ -103,7 +103,7 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 		return
 	}
 
-	if v, _ := m.System.ToPtr(h.Ctx); v != nil {
+	if v, _ := m.System.ToObject(h.Ctx); v != nil {
 		validateSystemProvider(h, v.Apple, "apple")
 		validateSystemProvider(h, v.Discord, "discord")
 		validateSystemProvider(h, v.Facebook, "facebook")
@@ -141,7 +141,7 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, 
 }
 
 func ensureSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProviderModel], name string) {
-	m, _ := provider.ToPtr(h.Ctx)
+	m, _ := provider.ToObject(h.Ctx)
 	if m == nil || helpers.HasUnknownValues(m.ClientID, m.ClientSecret) {
 		return // skip validation if there are unknown values
 	}
@@ -162,7 +162,7 @@ func ensureSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProvide
 }
 
 func validateSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProviderModel], name string) {
-	m, _ := provider.ToPtr(h.Ctx)
+	m, _ := provider.ToObject(h.Ctx)
 	if m == nil {
 		return
 	}
@@ -238,7 +238,7 @@ func (m *OAuthSystemProvidersModel) SetValues(h *helpers.Handler, data map[strin
 }
 
 func getProviderValue(h *helpers.Handler, providers map[string]any, obj objattr.Type[OAuthProviderModel], name string) {
-	provider, _ := obj.ToPtr(h.Ctx)
+	provider, _ := obj.ToObject(h.Ctx)
 	if provider == nil {
 		return
 	}

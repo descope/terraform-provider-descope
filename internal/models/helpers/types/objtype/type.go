@@ -21,22 +21,6 @@ type objectTypeOf[T any] struct {
 	basetypes.ObjectType
 }
 
-func NewObjectTypeOf[T any](ctx context.Context) (objectTypeOf[T], diag.Diagnostics) {
-	var diags diag.Diagnostics
-
-	m, d := types.AttributeTypes[T](ctx)
-	diags.Append(d...)
-	if diags.HasError() {
-		return objectTypeOf[T]{}, diags
-	}
-
-	return objectTypeOf[T]{basetypes.ObjectType{AttrTypes: m}}, diags
-}
-
-func NewObjectTypeOfMust[T any](ctx context.Context) objectTypeOf[T] {
-	return helpers.Must(NewObjectTypeOf[T](ctx))
-}
-
 func (t objectTypeOf[T]) Equal(o attr.Type) bool {
 	other, ok := o.(objectTypeOf[T])
 	if !ok {
@@ -47,36 +31,36 @@ func (t objectTypeOf[T]) Equal(o attr.Type) bool {
 
 func (t objectTypeOf[T]) String() string {
 	var zero T
-	return fmt.Sprintf("ObjectTypeOf[%T]", zero)
+	return fmt.Sprintf("objectTypeOf[%T]", zero)
+}
+
+func (t objectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
+	return ObjectValueOf[T]{}
 }
 
 func (t objectTypeOf[T]) ValueFromObject(ctx context.Context, in basetypes.ObjectValue) (basetypes.ObjectValuable, diag.Diagnostics) {
 	var diags diag.Diagnostics
 
 	if in.IsNull() {
-		return NullValue[T](ctx), diags
+		return NewNullValue[T](ctx), diags
 	}
 	if in.IsUnknown() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
-	m, d := types.AttributeTypes[T](ctx)
+	typ, d := types.AttributeTypes[T](ctx)
 	diags.Append(d...)
 	if diags.HasError() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
-	v, d := basetypes.NewObjectValue(m, in.Attributes())
+	v, d := basetypes.NewObjectValue(typ, in.Attributes())
 	diags.Append(d...)
 	if diags.HasError() {
-		return UnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), diags
 	}
 
-	value := ObjectValueOf[T]{
-		ObjectValue: v,
-	}
-
-	return value, diags
+	return ObjectValueOf[T]{ObjectValue: v}, diags
 }
 
 func (t objectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) { // TODO
@@ -98,39 +82,18 @@ func (t objectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Valu
 	return objectValuable, nil
 }
 
-func (t objectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
-	return ObjectValueOf[T]{}
+func NewType[T any](ctx context.Context) objectTypeOf[T] {
+	return helpers.Must(NewTypeMaybe[T](ctx))
 }
 
-func (t objectTypeOf[T]) NewObjectPtr(ctx context.Context) (any, diag.Diagnostics) {
-	return ObjectTypeNewObjectPtr[T](ctx)
-}
-
-func (t objectTypeOf[T]) NullValue(ctx context.Context) (attr.Value, diag.Diagnostics) {
-	var diags diag.Diagnostics
-	return NullValue[T](ctx), diags
-}
-
-func (t objectTypeOf[T]) ValueFromObjectPtr(ctx context.Context, ptr any) (attr.Value, diag.Diagnostics) {
+func NewTypeMaybe[T any](ctx context.Context) (objectTypeOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	if v, ok := ptr.(*T); ok {
-		v, d := Value(ctx, v)
-		diags.Append(d...)
-		return v, diags
-	}
-
-	diags.Append(diag.NewErrorDiagnostic("Invalid pointer value", fmt.Sprintf("incorrect type: want %T, got %T", (*T)(nil), ptr)))
-	return nil, diags
-}
-
-func ObjectTypeNewObjectPtr[T any](ctx context.Context) (*T, diag.Diagnostics) {
-	t := new(T)
-
-	diags := nullObjectFields(ctx, t)
+	typ, d := types.AttributeTypes[T](ctx)
+	diags.Append(d...)
 	if diags.HasError() {
-		return nil, diags
+		return objectTypeOf[T]{}, diags
 	}
 
-	return t, diags
+	return objectTypeOf[T]{basetypes.ObjectType{AttrTypes: typ}}, diags
 }
