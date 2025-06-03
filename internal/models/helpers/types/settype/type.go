@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -40,28 +39,19 @@ func (t setNestedObjectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
 }
 
 func (t setNestedObjectTypeOf[T]) ValueFromSet(ctx context.Context, in basetypes.SetValue) (basetypes.SetValuable, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
 	if in.IsNull() {
-		return NewNullValue[T](ctx), diags
+		return NewNullValue[T](ctx), nil
 	}
 	if in.IsUnknown() {
-		return NewUnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), nil
 	}
 
-	typ, d := objtype.NewTypeMaybe[T](ctx)
-	diags.Append(d...)
+	setValue, diags := basetypes.NewSetValue(objtype.NewType[T](ctx), in.Elements())
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	v, d := basetypes.NewSetValue(typ, in.Elements())
-	diags.Append(d...)
-	if diags.HasError() {
-		return NewUnknownValue[T](ctx), diags
-	}
-
-	return SetNestedObjectValueOf[T]{SetValue: v}, diags
+	return SetNestedObjectValueOf[T]{SetValue: setValue}, diags
 }
 
 func (t setNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
@@ -84,6 +74,5 @@ func (t setNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tft
 }
 
 func NewType[T any](ctx context.Context) setNestedObjectTypeOf[T] {
-	typ := helpers.Must(objtype.NewTypeMaybe[T](ctx))
-	return setNestedObjectTypeOf[T]{SetType: basetypes.SetType{ElemType: typ}}
+	return setNestedObjectTypeOf[T]{SetType: basetypes.SetType{ElemType: objtype.NewType[T](ctx)}}
 }

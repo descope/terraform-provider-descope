@@ -50,7 +50,7 @@ func (t setTypeOf[T]) ValueFromSet(ctx context.Context, in basetypes.SetValue) (
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ := types.NewAttrTypeOf[T](ctx)
+	typ := types.AttrTypeOf[T](ctx)
 	v, d := basetypes.NewSetValue(typ, in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {

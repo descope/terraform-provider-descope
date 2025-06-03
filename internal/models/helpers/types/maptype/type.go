@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -40,28 +39,19 @@ func (t mapNestedObjectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
 }
 
 func (t mapNestedObjectTypeOf[T]) ValueFromMap(ctx context.Context, in basetypes.MapValue) (basetypes.MapValuable, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
 	if in.IsNull() {
-		return NewNullValue[T](ctx), diags
+		return NewNullValue[T](ctx), nil
 	}
 	if in.IsUnknown() {
-		return NewUnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), nil
 	}
 
-	typ, d := objtype.NewTypeMaybe[T](ctx)
-	diags.Append(d...)
+	setValue, diags := basetypes.NewMapValue(objtype.NewType[T](ctx), in.Elements())
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	v, d := basetypes.NewMapValue(typ, in.Elements())
-	diags.Append(d...)
-	if diags.HasError() {
-		return NewUnknownValue[T](ctx), diags
-	}
-
-	return MapNestedObjectValueOf[T]{MapValue: v}, diags
+	return MapNestedObjectValueOf[T]{MapValue: setValue}, diags
 }
 
 func (t mapNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
@@ -84,6 +74,5 @@ func (t mapNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tft
 }
 
 func NewType[T any](ctx context.Context) mapNestedObjectTypeOf[T] {
-	typ := helpers.Must(objtype.NewTypeMaybe[T](ctx))
-	return mapNestedObjectTypeOf[T]{MapType: basetypes.MapType{ElemType: typ}}
+	return mapNestedObjectTypeOf[T]{MapType: basetypes.MapType{ElemType: objtype.NewType[T](ctx)}}
 }

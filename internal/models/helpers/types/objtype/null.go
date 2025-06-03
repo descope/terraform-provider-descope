@@ -16,7 +16,7 @@ func nullObjectFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 	var diags diag.Diagnostics
 
 	val := reflect.ValueOf(t)
-	if val.Type().Elem().Kind() != reflect.Struct {
+	if val.Type().Kind() != reflect.Ptr || val.Type().Elem().Kind() != reflect.Struct {
 		diags.Append(diag.NewErrorDiagnostic("Unexpected object type", fmt.Sprintf("Expected a pointer to a struct, got %T", t))) // TODO
 		return diags
 	}

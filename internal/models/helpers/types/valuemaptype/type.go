@@ -53,7 +53,7 @@ func (t mapTypeOf[T]) ValueFromMap(ctx context.Context, in basetypes.MapValue) (
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ := types.NewAttrTypeOf[T](ctx)
+	typ := types.AttrTypeOf[T](ctx)
 	v, d := basetypes.NewMapValue(typ, in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {

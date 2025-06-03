@@ -50,7 +50,7 @@ func (t listTypeOf[T]) ValueFromList(ctx context.Context, in basetypes.ListValue
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ := types.NewAttrTypeOf[T](ctx)
+	typ := types.AttrTypeOf[T](ctx)
 	v, d := basetypes.NewListValue(typ, in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {

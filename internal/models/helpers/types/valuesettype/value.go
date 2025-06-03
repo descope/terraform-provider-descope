@@ -28,7 +28,7 @@ func (v SetValueOf[T]) Equal(o attr.Value) bool {
 }
 
 func (v SetValueOf[T]) Type(ctx context.Context) attr.Type {
-	return setTypeOf[T]{basetypes.SetType{ElemType: types.NewAttrTypeOf[T](ctx)}}
+	return setTypeOf[T]{basetypes.SetType{ElemType: types.AttrTypeOf[T](ctx)}}
 }
 
 func (v SetValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
@@ -56,17 +56,17 @@ func (v SetValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {
 }
 
 func NewNullValue[T attr.Value](ctx context.Context) SetValueOf[T] {
-	return SetValueOf[T]{SetValue: basetypes.NewSetNull(types.NewAttrTypeOf[T](ctx))}
+	return SetValueOf[T]{SetValue: basetypes.NewSetNull(types.AttrTypeOf[T](ctx))}
 }
 
 func NewUnknownValue[T attr.Value](ctx context.Context) SetValueOf[T] {
-	return SetValueOf[T]{SetValue: basetypes.NewSetUnknown(types.NewAttrTypeOf[T](ctx))}
+	return SetValueOf[T]{SetValue: basetypes.NewSetUnknown(types.AttrTypeOf[T](ctx))}
 }
 
 func NewValue[T attr.Value](ctx context.Context, elements []attr.Value) (SetValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	v, d := basetypes.NewSetValue(types.NewAttrTypeOf[T](ctx), elements)
+	v, d := basetypes.NewSetValue(types.AttrTypeOf[T](ctx), elements)
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags

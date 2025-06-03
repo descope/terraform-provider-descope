@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -40,28 +39,19 @@ func (t listNestedObjectTypeOf[T]) ValueType(ctx context.Context) attr.Value {
 }
 
 func (t listNestedObjectTypeOf[T]) ValueFromList(ctx context.Context, in basetypes.ListValue) (basetypes.ListValuable, diag.Diagnostics) {
-	var diags diag.Diagnostics
-
 	if in.IsNull() {
-		return NewNullValue[T](ctx), diags
+		return NewNullValue[T](ctx), nil
 	}
 	if in.IsUnknown() {
-		return NewUnknownValue[T](ctx), diags
+		return NewUnknownValue[T](ctx), nil
 	}
 
-	typ, d := objtype.NewTypeMaybe[T](ctx)
-	diags.Append(d...)
+	listValue, diags := basetypes.NewListValue(objtype.NewType[T](ctx), in.Elements())
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	v, d := basetypes.NewListValue(typ, in.Elements())
-	diags.Append(d...)
-	if diags.HasError() {
-		return NewUnknownValue[T](ctx), diags
-	}
-
-	return ListNestedObjectValueOf[T]{ListValue: v}, diags
+	return ListNestedObjectValueOf[T]{ListValue: listValue}, diags
 }
 
 func (t listNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) (attr.Value, error) {
@@ -84,6 +74,5 @@ func (t listNestedObjectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tf
 }
 
 func NewType[T any](ctx context.Context) listNestedObjectTypeOf[T] {
-	typ := helpers.Must(objtype.NewTypeMaybe[T](ctx))
-	return listNestedObjectTypeOf[T]{ListType: basetypes.ListType{ElemType: typ}}
+	return listNestedObjectTypeOf[T]{ListType: basetypes.ListType{ElemType: objtype.NewType[T](ctx)}}
 }
