@@ -1,4 +1,4 @@
-package strlisttype
+package valuelisttype
 
 import (
 	"context"

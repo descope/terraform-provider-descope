@@ -4,13 +4,13 @@ import (
 	"encoding/json"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var StylesValidator = objectattr.NewValidator[StylesModel]("must be valid JSON data and have all requirements satisfied")
+var StylesValidator = objattr.NewValidator[StylesModel]("must be valid JSON data and have all requirements satisfied")
 
 var StylesAttributes = map[string]schema.Attribute{
 	"data": stringattr.Required(),

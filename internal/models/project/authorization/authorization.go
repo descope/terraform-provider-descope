@@ -2,13 +2,13 @@ package authorization
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/setattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strsetattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var AuthorizationValidator = objectattr.NewValidator[AuthorizationModel]("must have unique role and permission names")
+var AuthorizationValidator = objattr.NewValidator[AuthorizationModel]("must have unique role and permission names")
 
 var AuthorizationAttributes = map[string]schema.Attribute{
 	"roles":       setattr.Optional[RoleModel](RoleAttributes),

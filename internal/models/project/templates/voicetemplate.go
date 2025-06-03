@@ -3,13 +3,13 @@ package templates
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var VoiceTemplateValidator = objectattr.NewValidator[VoiceTemplateModel]("must have a valid name")
+var VoiceTemplateValidator = objattr.NewValidator[VoiceTemplateModel]("must have a valid name")
 
 var VoiceTemplateAttributes = map[string]schema.Attribute{
 	"active": boolattr.Default(false),

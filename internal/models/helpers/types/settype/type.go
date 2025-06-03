@@ -31,7 +31,9 @@ func NewSetNestedObjectTypeOf[T any](ctx context.Context) (setNestedObjectTypeOf
 		return setNestedObjectTypeOf[T]{}, diags
 	}
 
-	return setNestedObjectTypeOf[T]{SetType: basetypes.SetType{ElemType: elemType}}, diags
+	return setNestedObjectTypeOf[T]{
+		SetType: basetypes.SetType{ElemType: elemType},
+	}, diags
 }
 
 func NewSetNestedObjectTypeOfMust[T any](ctx context.Context) setNestedObjectTypeOf[T] {

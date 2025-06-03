@@ -90,26 +90,19 @@ func Get[T any, M helpers.Model[T]](s Type[T], data map[string]any, key string, 
 }
 
 func Set[T any, M helpers.Model[T]](s *Type[T], data map[string]any, key string, h *helpers.Handler) {
+	values, _ := data[key].([]any)
+
 	elems := []*T{}
 
-	values, _ := data[key].([]any)
 	for _, v := range values {
+		var element M = new(T)
 		if modelData, ok := v.(map[string]any); ok {
-			var m M
-			model := &m
-			*model = new(T)
-			(*model).SetValues(h, modelData)
-			elems = append(elems, *model)
+			element.SetValues(h, modelData)
 		}
+		elems = append(elems, element)
 	}
 
-	result, diags := settype.Value(h.Ctx, elems)
-	h.Diagnostics.Append(diags...)
-	if diags.HasError() {
-		return
-	}
-
-	*s = result
+	*s = valueOf(h.Ctx, elems)
 }
 
 func Iterator[T any](s Type[T], h *helpers.Handler) iter.Seq[*T] {

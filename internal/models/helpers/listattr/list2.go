@@ -5,6 +5,7 @@ import (
 	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/listtype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -25,7 +26,7 @@ func Empty[T any]() Type[T] {
 }
 
 func valueOf[T any](ctx context.Context, values []*T) Type[T] {
-	return listtype.NewListNestedObjectValueOfSliceMust(ctx, values)
+	return types.Must(listtype.Value(ctx, values))
 }
 
 func Required2[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
@@ -73,7 +74,7 @@ func Get2[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string,
 		return
 	}
 
-	elems, diags := l.ToSlice(h.Ctx)
+	elems, diags := l.Values(h.Ctx)
 	h.Diagnostics.Append(diags...)
 	if diags.HasError() {
 		return

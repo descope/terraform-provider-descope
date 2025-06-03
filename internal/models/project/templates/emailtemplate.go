@@ -3,13 +3,13 @@ package templates
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var EmailTemplateValidator = objectattr.NewValidator[EmailTemplateModel]("must have a valid name and contain at least one body attribute set")
+var EmailTemplateValidator = objattr.NewValidator[EmailTemplateModel]("must have a valid name and contain at least one body attribute set")
 
 var EmailTemplateAttributes = map[string]schema.Attribute{
 	"active":              boolattr.Default(false),

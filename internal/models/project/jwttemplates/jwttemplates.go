@@ -3,12 +3,12 @@ package jwttemplates
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var JWTTemplatesValidator = objectattr.NewValidator[JWTTemplatesModel]("must have unique template names")
+var JWTTemplatesValidator = objattr.NewValidator[JWTTemplatesModel]("must have unique template names")
 
 var JWTTemplatesAttributes = map[string]schema.Attribute{
 	"user_templates":       listattr.Default[JWTTemplateModel](JWTTemplateAttributes),

@@ -14,7 +14,6 @@ import (
 var (
 	_ attr.Type               = (*objectTypeOf[struct{}])(nil)
 	_ basetypes.ObjectTypable = (*objectTypeOf[struct{}])(nil)
-	_ types.NestedObjectType  = (*objectTypeOf[struct{}])(nil)
 )
 
 type objectTypeOf[T any] struct {

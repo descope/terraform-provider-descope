@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/strlisttype"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/valuelisttype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
@@ -16,7 +16,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-type Type = strlisttype.ListValueOf[types.String]
+type Type = valuelisttype.ListValueOf[types.String]
 
 func Value(value []string) Type {
 	return valueOf(context.Background(), value)
@@ -33,7 +33,7 @@ func valueOf(ctx context.Context, value []string) Type {
 func Required(validators ...validator.List) schema.ListAttribute {
 	return schema.ListAttribute{
 		Required:    true,
-		CustomType:  strlisttype.StringListType,
+		CustomType:  valuelisttype.StringListType,
 		ElementType: types.StringType,
 		Validators:  validators,
 	}
@@ -43,7 +43,7 @@ func Optional(validators ...validator.List) schema.ListAttribute {
 	return schema.ListAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    strlisttype.StringListType,
+		CustomType:    valuelisttype.StringListType,
 		ElementType:   types.StringType,
 		Validators:    validators,
 		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
@@ -54,7 +54,7 @@ func Default(validators ...validator.List) schema.ListAttribute {
 	return schema.ListAttribute{
 		Optional:    true,
 		Computed:    true,
-		CustomType:  strlisttype.StringListType,
+		CustomType:  valuelisttype.StringListType,
 		ElementType: types.StringType,
 		Validators:  validators,
 		Default:     listdefault.StaticValue(Empty().ListValue),
@@ -110,5 +110,5 @@ func convertStringSliceToTerraformValue(ctx context.Context, values []string) Ty
 	for _, v := range values {
 		elements = append(elements, types.StringValue(v))
 	}
-	return strlisttype.NewListValueOfMust[types.String](ctx, elements)
+	return valuelisttype.NewListValueOfMust[types.String](ctx, elements)
 }

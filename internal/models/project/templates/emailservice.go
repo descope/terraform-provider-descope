@@ -3,13 +3,13 @@ package templates
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var EmailServiceValidator = objectattr.NewValidator[EmailServiceModel]("must have unique template names and a valid configuration")
+var EmailServiceValidator = objattr.NewValidator[EmailServiceModel]("must have unique template names and a valid configuration")
 
 var EmailServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
@@ -65,8 +65,7 @@ func (m *EmailServiceModel) Validate(h *helpers.Handler) {
 
 	hasActive := false
 	names := map[string]int{}
-	templates, _ := m.Templates.ToSlice(h.Ctx)
-	for _, v := range templates {
+	for v := range listattr.Iterator(m.Templates, h) {
 		hasActive = hasActive || v.Active.ValueBool()
 		names[v.Name.ValueString()] += 1
 	}

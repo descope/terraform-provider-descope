@@ -2,7 +2,6 @@ package helpers
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 )
@@ -67,8 +66,6 @@ func HasUnknownValues(values ...any) bool {
 					return true
 				}
 			}
-		default:
-			panic(fmt.Sprintf("unexpected type in HasUnknownValues: %T", v))
 		}
 	}
 	return false

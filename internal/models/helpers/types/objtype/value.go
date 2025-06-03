@@ -13,7 +13,6 @@ import (
 var (
 	_ attr.Value               = (*ObjectValueOf[struct{}])(nil)
 	_ basetypes.ObjectValuable = (*ObjectValueOf[struct{}])(nil)
-	_ types.NestedObjectValue  = (*ObjectValueOf[struct{}])(nil)
 )
 
 type ObjectValueOf[T any] struct {
