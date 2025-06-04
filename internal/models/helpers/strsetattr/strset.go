@@ -67,7 +67,7 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 		return
 	}
 
-	values := helpers.Must(s.ToSlice(h.Ctx))
+	values := helpers.Require(s.ToSlice(h.Ctx))
 	strings := helpers.ConvertTerraformSliceToStringSlice(values)
 
 	// sort string slice to prevent sporadic order changes in resource updates
@@ -86,7 +86,7 @@ func GetCommaSeparated(s Type, data map[string]any, key string, h *helpers.Handl
 		return
 	}
 
-	values := helpers.Must(s.ToSlice(h.Ctx))
+	values := helpers.Require(s.ToSlice(h.Ctx))
 	value := strings.Join(helpers.ConvertTerraformSliceToStringSlice(values), ",")
 
 	data[key] = value
@@ -118,5 +118,5 @@ func convertStringSliceToTerraformValue(ctx context.Context, values []string) Ty
 	for _, v := range values {
 		elements = append(elements, types.StringValue(v))
 	}
-	return helpers.Must(valuesettype.NewValue[types.String](ctx, elements))
+	return helpers.Require(valuesettype.NewValue[types.String](ctx, elements))
 }

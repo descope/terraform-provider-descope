@@ -24,7 +24,7 @@ func valueOf[T any](ctx context.Context, value *T) Type[T] {
 	if value == nil {
 		return objtype.NewNullValue[T](context.Background())
 	}
-	return helpers.Must(objtype.NewValue(ctx, value))
+	return helpers.Require(objtype.NewValue(ctx, value))
 }
 
 func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.SingleNestedAttribute {
@@ -68,7 +68,7 @@ func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, 
 		return
 	}
 
-	var value M = helpers.Must(o.ToObject(h.Ctx))
+	var value M = helpers.Require(o.ToObject(h.Ctx))
 	if key == helpers.RootKey {
 		maps.Copy(data, value.Values(h))
 	} else if m, ok := data[key].(map[string]any); ok {
@@ -93,7 +93,7 @@ func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string,
 	if o.IsNull() || o.IsUnknown() {
 		value = new(T)
 	} else {
-		value = helpers.Must(o.ToObject(h.Ctx))
+		value = helpers.Require(o.ToObject(h.Ctx))
 	}
 	value.SetValues(h, m)
 
@@ -111,7 +111,7 @@ func CollectReferences[T any, M helpers.CollectReferencesModel[T]](o Type[T], h 
 		return
 	}
 
-	var value M = helpers.Must(o.ToObject(h.Ctx))
+	var value M = helpers.Require(o.ToObject(h.Ctx))
 	value.CollectReferences(h)
 }
 
@@ -120,7 +120,7 @@ func UpdateReferences[T any, M helpers.UpdateReferencesModel[T]](o *Type[T], h *
 		return
 	}
 
-	var value M = helpers.Must(o.ToObject(h.Ctx))
+	var value M = helpers.Require(o.ToObject(h.Ctx))
 	value.UpdateReferences(h)
 
 	*o = valueOf(h.Ctx, value)

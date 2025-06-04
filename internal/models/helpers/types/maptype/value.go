@@ -74,7 +74,7 @@ func NewUnknownValue[T any](ctx context.Context) MapNestedObjectValueOf[T] {
 func NewValue[T any](ctx context.Context, elements map[string]*T) (MapNestedObjectValueOf[T], diag.Diagnostics) {
 	values := map[string]attr.Value{}
 	for k, v := range elements {
-		values[k] = helpers.Must(objtype.NewValue(ctx, v))
+		values[k] = helpers.Require(objtype.NewValue(ctx, v))
 	}
 	return NewValueWith[T](ctx, values)
 }

@@ -7,22 +7,36 @@ import (
 	"reflect"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
-func nullObjectFields[T any](ctx context.Context, t *T) diag.Diagnostics {
-	var diags diag.Diagnostics
+func attrTypesOf[T any](ctx context.Context) map[string]attr.Type {
+	object, val, typ := pointerTypeOf[T]()
 
-	val := reflect.ValueOf(t)
-	if val.Type().Kind() != reflect.Ptr || val.Type().Elem().Kind() != reflect.Struct {
-		diags.Append(diag.NewErrorDiagnostic("Unexpected object type", fmt.Sprintf("Expected a pointer to a struct, got %T", t))) // TODO
-		return diags
+	result := map[string]attr.Type{}
+	for field := range exportedStructFields(typ) {
+		tag := field.Tag.Get(`tfsdk`)
+		if tag == "-" {
+			continue
+		}
+		if tag == "" {
+			panic(fmt.Sprintf(`%T is missing a tfsdk tag on %s`, object, field.Name))
+		}
+
+		fieldVal := val.FieldByIndex(field.Index)
+		if v, ok := fieldVal.Interface().(attr.Value); ok {
+			result[tag] = v.Type(ctx)
+		}
 	}
 
-	val = val.Elem()
-	for field := range structFields(val.Type()) {
+	return result
+}
+
+func nullObjectOf[T any](ctx context.Context) *T {
+	object, val, typ := pointerTypeOf[T]()
+
+	for field := range structFields(typ) {
 		fieldVal := val.FieldByIndex(field.Index)
 		if !fieldVal.CanInterface() {
 			continue
@@ -30,8 +44,7 @@ func nullObjectFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 
 		attrValue, err := nullValueOf(ctx, fieldVal.Interface())
 		if err != nil {
-			diags.Append(diag.NewErrorDiagnostic("Failed to null out field", err.Error()))
-			return diags
+			panic(fmt.Sprintf("failed to create null value for field %s of type %T: %s", fieldVal.Type().Name(), object, err.Error()))
 		}
 		if attrValue == nil {
 			continue
@@ -40,7 +53,7 @@ func nullObjectFields[T any](ctx context.Context, t *T) diag.Diagnostics {
 		fieldVal.Set(reflect.ValueOf(attrValue))
 	}
 
-	return diags
+	return object
 }
 
 func nullValueOf(ctx context.Context, v any) (attr.Value, error) {
@@ -97,6 +110,35 @@ func nullValueOf(ctx context.Context, v any) (attr.Value, error) {
 	}
 
 	return attrType.ValueFromTerraform(ctx, tftypes.NewValue(tfType, nil))
+}
+
+func pointerTypeOf[T any]() (*T, reflect.Value, reflect.Type) {
+	object := new(T)
+
+	val := reflect.ValueOf(object)
+	typ := val.Type()
+
+	if typ.Kind() != reflect.Ptr || typ.Elem().Kind() != reflect.Struct {
+		panic(fmt.Sprintf("%T cannot be used to create pointer type", object))
+	}
+
+	val = val.Elem()
+	typ = val.Type()
+
+	return object, val, typ
+}
+
+func exportedStructFields(typ reflect.Type) iter.Seq[reflect.StructField] {
+	return func(yield func(reflect.StructField) bool) {
+		for field := range structFields(typ) {
+			if !field.IsExported() && !field.Anonymous {
+				continue
+			}
+			if !yield(field) {
+				return
+			}
+		}
+	}
 }
 
 func structFields(typ reflect.Type) iter.Seq[reflect.StructField] {

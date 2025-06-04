@@ -26,7 +26,7 @@ func convertStringMapToTerraformValue(ctx context.Context, m map[string]string) 
 	for k, v := range m {
 		elements[k] = types.StringValue(v)
 	}
-	return helpers.Must(valuemaptype.NewValue[types.String](ctx, elements))
+	return helpers.Require(valuemaptype.NewValue[types.String](ctx, elements))
 }
 
 func convertTerraformStringMapToStringMap(m map[string]types.String) map[string]string {

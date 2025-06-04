@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -48,17 +47,17 @@ func (v ObjectValueOf[T]) ToObject(ctx context.Context) (*T, diag.Diagnostics) {
 }
 
 func NewNullValue[T any](ctx context.Context) ObjectValueOf[T] {
-	value := basetypes.NewObjectNull(types.AttrTypesOf[T](ctx))
+	value := basetypes.NewObjectNull(attrTypesOf[T](ctx))
 	return ObjectValueOf[T]{ObjectValue: value}
 }
 
 func NewUnknownValue[T any](ctx context.Context) ObjectValueOf[T] {
-	value := basetypes.NewObjectUnknown(types.AttrTypesOf[T](ctx))
+	value := basetypes.NewObjectUnknown(attrTypesOf[T](ctx))
 	return ObjectValueOf[T]{ObjectValue: value}
 }
 
 func NewValue[T any](ctx context.Context, object *T) (ObjectValueOf[T], diag.Diagnostics) {
-	value, diags := basetypes.NewObjectValueFrom(ctx, types.AttrTypesOf[T](ctx), object)
+	value, diags := basetypes.NewObjectValueFrom(ctx, attrTypesOf[T](ctx), object)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
 	}
@@ -66,26 +65,8 @@ func NewValue[T any](ctx context.Context, object *T) (ObjectValueOf[T], diag.Dia
 	return ObjectValueOf[T]{ObjectValue: value}, diags
 }
 
-func NewObject[T any](ctx context.Context) (*T, diag.Diagnostics) {
-	t := new(T)
-
-	diags := nullObjectFields(ctx, t)
-	if diags.HasError() {
-		return nil, diags
-	}
-
-	return t, diags
-}
-
 func NewObjectWith[T any](ctx context.Context, value attr.Value) (*T, diag.Diagnostics) {
 	var diags diag.Diagnostics
-
-	object, d := NewObject[T](ctx)
-	diags.Append(d...)
-	if diags.HasError() {
-		return nil, diags
-	}
-
 	v, ok := value.(ObjectValueOf[T])
 	if !ok {
 		var zero ObjectValueOf[T]
@@ -93,7 +74,9 @@ func NewObjectWith[T any](ctx context.Context, value attr.Value) (*T, diag.Diagn
 		return nil, diags
 	}
 
-	diags.Append(v.As(ctx, object, basetypes.ObjectAsOptions{})...)
+	object := nullObjectOf[T](ctx)
+	d := v.As(ctx, object, basetypes.ObjectAsOptions{})
+	diags.Append(d...)
 	if diags.HasError() {
 		return nil, diags
 	}

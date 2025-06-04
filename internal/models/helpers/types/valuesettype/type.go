@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -50,7 +50,7 @@ func (t setTypeOf[T]) ValueFromSet(ctx context.Context, in basetypes.SetValue) (
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ := types.AttrTypeOf[T](ctx)
+	typ := helpers.AttrTypeOf[T](ctx)
 	v, d := basetypes.NewSetValue(typ, in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {

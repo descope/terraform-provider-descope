@@ -1,6 +1,7 @@
 package helpers
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
@@ -8,13 +9,6 @@ import (
 )
 
 const RootKey string = ""
-
-func Must[T any](x T, diags diag.Diagnostics) T {
-	if errs := diags.Errors(); len(errs) > 0 {
-		panic(fmt.Sprintf("%s: %s", errs[0].Summary(), errs[0].Detail()))
-	}
-	return x
-}
 
 func HasUnknownValues(values ...any) bool {
 	for _, v := range values {
@@ -44,4 +38,16 @@ func HasUnknownValues(values ...any) bool {
 		}
 	}
 	return false
+}
+
+func Require[T any](v T, diags diag.Diagnostics) T {
+	if errs := diags.Errors(); len(errs) > 0 {
+		panic(fmt.Sprintf("%s: %s", errs[0].Summary(), errs[0].Detail()))
+	}
+	return v
+}
+
+func AttrTypeOf[T attr.Value](ctx context.Context) attr.Type {
+	var zero T
+	return zero.Type(ctx)
 }

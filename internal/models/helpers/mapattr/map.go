@@ -26,7 +26,7 @@ func Empty[T any]() Type[T] {
 }
 
 func valueOf[T any](ctx context.Context, value map[string]*T) Type[T] {
-	return helpers.Must(maptype.NewValue(ctx, value))
+	return helpers.Require(maptype.NewValue(ctx, value))
 }
 
 func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {

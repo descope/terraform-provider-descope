@@ -74,7 +74,7 @@ func NewUnknownValue[T any](ctx context.Context) SetNestedObjectValueOf[T] {
 func NewValue[T any](ctx context.Context, values []*T) (SetNestedObjectValueOf[T], diag.Diagnostics) {
 	elements := []attr.Value{}
 	for _, v := range values {
-		elements = append(elements, helpers.Must(objtype.NewValue(ctx, v)))
+		elements = append(elements, helpers.Require(objtype.NewValue(ctx, v)))
 	}
 	return NewValueWith[T](ctx, elements)
 }

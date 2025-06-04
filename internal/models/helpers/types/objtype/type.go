@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -45,7 +44,7 @@ func (t objectTypeOf[T]) ValueFromObject(ctx context.Context, in basetypes.Objec
 		return NewUnknownValue[T](ctx), nil
 	}
 
-	objectValue, diags := basetypes.NewObjectValue(types.AttrTypesOf[T](ctx), in.Attributes())
+	objectValue, diags := basetypes.NewObjectValue(attrTypesOf[T](ctx), in.Attributes())
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
 	}
@@ -73,5 +72,5 @@ func (t objectTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Valu
 }
 
 func NewType[T any](ctx context.Context) objectTypeOf[T] {
-	return objectTypeOf[T]{basetypes.ObjectType{AttrTypes: types.AttrTypesOf[T](ctx)}}
+	return objectTypeOf[T]{basetypes.ObjectType{AttrTypes: attrTypesOf[T](ctx)}}
 }
