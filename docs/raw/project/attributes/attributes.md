@@ -50,7 +50,7 @@ The type of the attribute. Choose one of "string", "number", "boolean", "singles
 select_options
 --------------
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 When the attribute type is "multiselect". A list of options to chose from.
 
@@ -75,7 +75,7 @@ TenantAttributeAuthorization
 view_permissions
 ----------------
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 // description for view_permissions
 
@@ -109,7 +109,7 @@ The type of the attribute. Choose one of "string", "number", "boolean", "singles
 select_options
 --------------
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 When the attribute type is "multiselect". A list of options to chose from.
 
@@ -134,7 +134,7 @@ UserAttributeWidgetAuthorization
 view_permissions
 ----------------
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 A list of permissions by name to set viewing permissions to the attribute in widgets. e.g "SSO Admin".
 
@@ -143,6 +143,6 @@ A list of permissions by name to set viewing permissions to the attribute in wid
 edit_permissions
 ----------------
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 A list of permissions by name to set editing permissions to the attribute in widgets. e.g "SSO Admin".

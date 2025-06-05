@@ -52,17 +52,17 @@ func (f *Field) defaultStructName() string {
 func (f *Field) StructType() string {
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
-		return `types.String`
+		return `stringattr.Type`
 	case FieldTypeBool:
-		return `types.Bool`
+		return `boolattr.Type`
 	case FieldTypeNumber:
-		return `types.Float64`
+		return `floatattr.Type`
 	case FieldTypeObject:
-		return `map[string]types.String`
+		return `strmapattr.Type`
 	case FieldTypeAuditFilters:
-		return `[]*AuditFilterFieldModel`
+		return `listattr.Type[AuditFilterFieldModel]`
 	case FieldTypeHTTPAuth:
-		return `*HTTPAuthFieldModel`
+		return `objattr.Type[HTTPAuthFieldModel]`
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
@@ -108,14 +108,14 @@ func (f *Field) AttributeType() string {
 		}
 		return `floatattr.Default(0)`
 	case FieldTypeObject:
-		return `mapattr.StringOptional()`
+		return `strmapattr.Default()`
 	case FieldTypeAuditFilters:
-		return `listattr.Optional(AuditFilterFieldAttributes)`
+		return `listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes)`
 	case FieldTypeHTTPAuth:
 		if f.Required {
-			return `objectattr.Required(HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
+			return `objattr.Required[HTTPAuthFieldModel](HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
 		}
-		return `objectattr.Optional(HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
+		return `objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
@@ -131,36 +131,33 @@ func (f *Field) GetValueStatement() string {
 	case FieldTypeNumber:
 		return fmt.Sprintf(`floatattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeObject:
-		return fmt.Sprintf(`getHeaders(%s, c, %q)`, accessor, f.Name)
+		return fmt.Sprintf(`getHeaders(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`listattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`objectattr.Get(%s, c, %q, h)`, accessor, f.Name)
+		return fmt.Sprintf(`objattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
 }
 
 func (f *Field) SetValueStatement() string {
+	accessor := fmt.Sprintf(`&m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
-		return fmt.Sprintf(`stringattr.Set(&m.%s, c, %q)`, f.StructName(), f.Name)
+	case FieldTypeString:
+		return fmt.Sprintf(`stringattr.Set(%s, c, %q)`, accessor, f.Name)
+	case FieldTypeSecret:
+		return fmt.Sprintf(`stringattr.Nil(%s)`, accessor)
 	case FieldTypeBool:
-		return fmt.Sprintf(`boolattr.Set(&m.%s, c, %q)`, f.StructName(), f.Name)
+		return fmt.Sprintf(`boolattr.Set(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeNumber:
-		return fmt.Sprintf(`floatattr.Set(&m.%s, c, %q)`, f.StructName(), f.Name)
+		return fmt.Sprintf(`floatattr.Set(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeObject:
-		return fmt.Sprintf(`if vs, ok := c[%q].(map[string]any); ok {
-			for k, v := range vs {
-				if s, ok := v.(string); ok {
-					m.%s[k] = types.StringValue(s)
-				}
-			}	
-		}`, f.Name, f.StructName())
+		return fmt.Sprintf(`setHeaders(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeAuditFilters:
-		return fmt.Sprintf(`listattr.Set(&m.%s, c, %q, h)`, f.StructName(), f.Name)
+		return fmt.Sprintf(`listattr.Set(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`objectattr.Set(&m.%s, c, %q, h)`, f.StructName(), f.Name)
+		return fmt.Sprintf(`objattr.Set(%s, c, %q, h)`, accessor, f.Name)
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
@@ -182,25 +179,11 @@ func (f *Field) ValidateNonZero() string {
 		initial, _ := f.Initial.(float64)
 		return fmt.Sprintf(`%s.ValueFloat64() != %g`, accessor, initial)
 	case FieldTypeObject:
-		return fmt.Sprintf(`len(%s) != 0`, accessor)
+		return fmt.Sprintf(`!%s.IsEmpty()`, accessor)
 	case FieldTypeAuditFilters:
-		return fmt.Sprintf(`len(%s) != 0`, accessor)
+		return fmt.Sprintf(`!%s.IsEmpty()`, accessor)
 	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`%s != nil`, accessor)
-	default:
-		panic("unexpected field type: " + f.Type)
-	}
-}
-
-func (f *Field) IsNotNull() string {
-	accessor := fmt.Sprintf(`m.%s`, f.StructName())
-	switch f.Type {
-	case FieldTypeString, FieldTypeSecret, FieldTypeBool, FieldTypeNumber:
-		return fmt.Sprintf(`!%s.IsNull()`, accessor)
-	case FieldTypeObject, FieldTypeAuditFilters:
-		return fmt.Sprintf(`len(%s) != 0`, accessor)
-	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`%s != nil`, accessor)
+		return fmt.Sprintf(`%s.IsSet()`, accessor)
 	default:
 		panic("unexpected field type: " + f.Type)
 	}

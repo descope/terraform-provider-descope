@@ -9,6 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type Type = types.String
+
+func Value(value string) Type {
+	return types.StringValue(value)
+}
+
 func Identifier() schema.StringAttribute {
 	return schema.StringAttribute{
 		Computed:      true,
@@ -79,24 +85,22 @@ func Renamed(oldname, newname string, validators ...validator.String) schema.Str
 	return Deprecated("The "+oldname+" attribute has been renamed, set the "+newname+" attribute instead.", validators...)
 }
 
-func Get(s types.String, data map[string]any, key string) {
+func Get(s Type, data map[string]any, key string) {
 	if !s.IsNull() && !s.IsUnknown() {
 		data[key] = s.ValueString()
 	}
 }
 
-func Set(s *types.String, data map[string]any, key string) {
+func Set(s *Type, data map[string]any, key string) {
 	if v, ok := data[key].(string); ok {
-		*s = types.StringValue(v)
+		*s = Value(v)
+	} else {
+		Nil(s)
 	}
 }
 
-func EnsureKnown(s *types.String, defaultValue ...string) {
+func Nil(s *types.String) {
 	if s.IsUnknown() {
-		if len(defaultValue) > 0 {
-			*s = types.StringValue(defaultValue[0])
-		} else {
-			*s = types.StringValue("")
-		}
+		*s = Value("")
 	}
 }

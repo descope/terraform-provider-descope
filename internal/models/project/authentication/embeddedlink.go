@@ -5,7 +5,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var EmbeddedLinkAttributes = map[string]schema.Attribute{
@@ -14,8 +13,8 @@ var EmbeddedLinkAttributes = map[string]schema.Attribute{
 }
 
 type EmbeddedLinkModel struct {
-	Disabled       types.Bool   `tfsdk:"disabled"`
-	ExpirationTime types.String `tfsdk:"expiration_time"`
+	Disabled       boolattr.Type     `tfsdk:"disabled"`
+	ExpirationTime durationattr.Type `tfsdk:"expiration_time"`
 }
 
 func (m *EmbeddedLinkModel) Values(h *helpers.Handler) map[string]any {

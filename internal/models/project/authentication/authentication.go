@@ -2,71 +2,63 @@ package authentication
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
 var AuthenticationAttributes = map[string]schema.Attribute{
-	"otp":            objectattr.Optional(OTPAttributes),
-	"magic_link":     objectattr.Optional(MagicLinkAttributes),
-	"enchanted_link": objectattr.Optional(EnchantedLinkAttributes),
-	"embedded_link":  objectattr.Optional(EmbeddedLinkAttributes),
-	"password":       objectattr.Optional(PasswordAttributes),
-	"oauth":          objectattr.Optional(OAuthAttributes, OAuthValidator),
-	"sso":            objectattr.Optional(SSOAttributes),
-	"totp":           objectattr.Optional(TOTPAttributes),
-	"passkeys":       objectattr.Optional(PasskeysAttributes),
+	"otp":            objattr.Optional[OTPModel](OTPAttributes),
+	"magic_link":     objattr.Optional[MagicLinkModel](MagicLinkAttributes),
+	"enchanted_link": objattr.Optional[EnchantedLinkModel](EnchantedLinkAttributes),
+	"embedded_link":  objattr.Optional[EmbeddedLinkModel](EmbeddedLinkAttributes),
+	"password":       objattr.Optional[PasswordModel](PasswordAttributes),
+	"oauth":          objattr.Optional[OAuthModel](OAuthAttributes, OAuthValidator),
+	"sso":            objattr.Optional[SSOModel](SSOAttributes),
+	"totp":           objattr.Optional[TOTPModel](TOTPAttributes),
+	"passkeys":       objattr.Optional[PasskeysModel](PasskeysAttributes),
 }
 
 type AuthenticationModel struct {
-	OTP           *OTPModel           `tfsdk:"otp"`
-	MagicLink     *MagicLinkModel     `tfsdk:"magic_link"`
-	EnchantedLink *EnchantedLinkModel `tfsdk:"enchanted_link"`
-	EmbeddedLink  *EmbeddedLinkModel  `tfsdk:"embedded_link"`
-	Password      *PasswordModel      `tfsdk:"password"`
-	OAuth         *OAuthModel         `tfsdk:"oauth"`
-	SSO           *SSOModel           `tfsdk:"sso"`
-	TOTP          *TOTPModel          `tfsdk:"totp"`
-	Passkeys      *PasskeysModel      `tfsdk:"passkeys"`
+	OTP           objattr.Type[OTPModel]           `tfsdk:"otp"`
+	MagicLink     objattr.Type[MagicLinkModel]     `tfsdk:"magic_link"`
+	EnchantedLink objattr.Type[EnchantedLinkModel] `tfsdk:"enchanted_link"`
+	EmbeddedLink  objattr.Type[EmbeddedLinkModel]  `tfsdk:"embedded_link"`
+	Password      objattr.Type[PasswordModel]      `tfsdk:"password"`
+	OAuth         objattr.Type[OAuthModel]         `tfsdk:"oauth"`
+	SSO           objattr.Type[SSOModel]           `tfsdk:"sso"`
+	TOTP          objattr.Type[TOTPModel]          `tfsdk:"totp"`
+	Passkeys      objattr.Type[PasskeysModel]      `tfsdk:"passkeys"`
 }
 
 func (m *AuthenticationModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	objectattr.Get(m.OTP, data, "otp", h)
-	objectattr.Get(m.MagicLink, data, "magiclink", h)
-	objectattr.Get(m.EnchantedLink, data, "enchantedlink", h)
-	objectattr.Get(m.EmbeddedLink, data, "embeddedlink", h)
-	objectattr.Get(m.Password, data, "password", h)
-	objectattr.Get(m.OAuth, data, "oauth", h)
-	objectattr.Get(m.SSO, data, "sso", h)
-	objectattr.Get(m.TOTP, data, "totp", h)
-	objectattr.Get(m.Passkeys, data, "webauthn", h)
+	objattr.Get(m.OTP, data, "otp", h)
+	objattr.Get(m.MagicLink, data, "magiclink", h)
+	objattr.Get(m.EnchantedLink, data, "enchantedlink", h)
+	objattr.Get(m.EmbeddedLink, data, "embeddedlink", h)
+	objattr.Get(m.Password, data, "password", h)
+	objattr.Get(m.OAuth, data, "oauth", h)
+	objattr.Get(m.SSO, data, "sso", h)
+	objattr.Get(m.TOTP, data, "totp", h)
+	objattr.Get(m.Passkeys, data, "webauthn", h)
 	return data
 }
 
 func (m *AuthenticationModel) SetValues(h *helpers.Handler, data map[string]any) {
-	objectattr.Set(&m.OTP, data, "otp", h)
-	objectattr.Set(&m.MagicLink, data, "magiclink", h)
-	objectattr.Set(&m.EnchantedLink, data, "enchantedlink", h)
-	objectattr.Set(&m.EmbeddedLink, data, "embeddedlink", h)
-	objectattr.Set(&m.Password, data, "password", h)
-	objectattr.Set(&m.OAuth, data, "oauth", h)
-	objectattr.Set(&m.SSO, data, "sso", h)
-	objectattr.Set(&m.TOTP, data, "totp", h)
-	objectattr.Set(&m.Passkeys, data, "webauthn", h)
+	objattr.Set(&m.OTP, data, "otp", h)
+	objattr.Set(&m.MagicLink, data, "magiclink", h)
+	objattr.Set(&m.EnchantedLink, data, "enchantedlink", h)
+	objattr.Set(&m.EmbeddedLink, data, "embeddedlink", h)
+	objattr.Set(&m.Password, data, "password", h)
+	objattr.Set(&m.OAuth, data, "oauth", h)
+	objattr.Set(&m.SSO, data, "sso", h)
+	objattr.Set(&m.TOTP, data, "totp", h)
+	objattr.Set(&m.Passkeys, data, "webauthn", h)
 }
 
-func (m *AuthenticationModel) SetReferences(h *helpers.Handler) {
-	if m.OTP != nil {
-		m.OTP.SetReferences(h)
-	}
-	if m.MagicLink != nil {
-		m.MagicLink.SetReferences(h)
-	}
-	if m.EnchantedLink != nil {
-		m.EnchantedLink.SetReferences(h)
-	}
-	if m.Password != nil {
-		m.Password.SetReferences(h)
-	}
+func (m *AuthenticationModel) UpdateReferences(h *helpers.Handler) {
+	objattr.UpdateReferences(&m.OTP, h)
+	objattr.UpdateReferences(&m.MagicLink, h)
+	objattr.UpdateReferences(&m.EnchantedLink, h)
+	objattr.UpdateReferences(&m.Password, h)
 }

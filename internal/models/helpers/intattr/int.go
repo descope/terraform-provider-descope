@@ -9,6 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type Type = types.Int64
+
+func Value(value int64) Type {
+	return types.Int64Value(value)
+}
+
 func Required(validators ...validator.Int64) schema.Int64Attribute {
 	return schema.Int64Attribute{
 		Required:   true,

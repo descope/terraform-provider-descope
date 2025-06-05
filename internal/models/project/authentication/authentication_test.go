@@ -14,7 +14,7 @@ func TestAuthentication(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"authentication.%": 0,
+				"authentication.%": 9,
 			}),
 		},
 		resource.TestStep{

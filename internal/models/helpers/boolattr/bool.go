@@ -9,6 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type Type = types.Bool
+
+func Value(value bool) Type {
+	return types.BoolValue(value)
+}
+
 func Required(validators ...validator.Bool) schema.BoolAttribute {
 	return schema.BoolAttribute{
 		Required:   true,

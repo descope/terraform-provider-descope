@@ -1,45 +1,17 @@
-run:
-  timeout: 3m
-
-linters-settings:
-  gofmt:
-    simplify: false
-  revive:
-    rules:
-      - name: blank-imports
-      - name: context-as-argument
-      - name: defer
-        arguments: [["loop", "return"]]
-      - name: context-keys-type # Might cause slowness in lint
-      - name: dot-imports
-      - name: duplicated-imports
-      - name: error-naming
-      - name: error-return
-      - name: error-strings
-      - name: errorf # Might cause slowness in lint
-      - name: if-return
-      - name: indent-error-flow
-      - name: range
-      - name: receiver-naming
-      - name: time-naming # Might cause slowness in lint
-      - name: unconditional-recursion
-      - name: unreachable-code
-      # - name: unused-parameter # Temporarily disabled
-      - name: var-declaration # Might cause slowness in lint
-      - name: waitgroup-by-value
+version: "2"
 
 linters:
-  disable-all: true
+  default: none
   enable:
+    - contextcheck
     - copyloopvar
     - durationcheck
     - errcheck
+    - exhaustive
+    - exptostd
     - forcetypeassert
     - godox
-    - gofmt
-    - goimports
-    - gosimple
-    # - govet # Temporarily disabled
+    - govet
     - ineffassign
     - makezero
     - misspell
@@ -47,24 +19,69 @@ linters:
     - predeclared
     - revive
     - staticcheck
-    - tenv
     - unconvert
     - unparam
+    - usestdlibvars
     - unused
+    - wastedassign
+    - whitespace
+  settings:
+    staticcheck:
+      checks:
+        - "all"
+        - "-ST1000" # "At least one file in a package should have a package comment"
+        - "-ST1003" # "Uppercase abbreviations in symbol names"
+        - "-ST1020" # "Comment on exported function"
+        - "-ST1021" # "Comment on exported type"
+        - "-ST1022" # "Comment on exported constant"
+        - "-QF1012" # "Use fmt.Fprintf instead of WriteString"
+        - "-QF1008" # "Could remove embedded field from selector"
+    revive:
+      rules:
+        - name: blank-imports
+        - name: context-as-argument
+        - name: defer
+          arguments:
+            - - loop
+              - return
+        - name: context-keys-type
+        - name: dot-imports
+        - name: duplicated-imports
+        - name: error-naming
+        - name: error-return
+        - name: error-strings
+        - name: errorf
+        - name: if-return
+        - name: indent-error-flow
+        - name: range
+        - name: receiver-naming
+        - name: time-naming
+        - name: unconditional-recursion
+        - name: unreachable-code
+        - name: unused-parameter
+        - name: var-declaration
+        - name: waitgroup-by-value
+  exclusions:
+    generated: lax
+    rules:
+      - linters:
+          - revive
+        text: "parameter '(h|ctx)' seems to be unused.*"
 
 issues:
-  # Independently from option `exclude` we use default exclude patterns,
-  # it can be disabled by this option. To list all
-  # excluded by default patterns execute `golangci-lint run --help`.
-  # Default value for this option is true.
-  exclude-use-default: false
-
-  # Maximum issues count per one linter.
-  # Set to 0 to disable.
-  # Default: 50
   max-issues-per-linter: 0
-
-  # Maximum count of issues with the same text.
-  # Set to 0 to disable.
-  # Default: 3
   max-same-issues: 0
+
+formatters:
+  enable:
+    - gofmt
+    - goimports
+  settings:
+    gofmt:
+      simplify: false
+  exclusions:
+    generated: lax
+    paths:
+      - third_party$
+      - builtin$
+      - examples$

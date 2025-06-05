@@ -1,17 +1,65 @@
 package mapattr
 
 import (
+	"context"
 	"fmt"
+	"iter"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/maptype"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func Optional(attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+type Type[T any] = maptype.MapValueOf[T]
+
+func Value[T any](value map[string]*T) Type[T] {
+	return valueOf(context.Background(), value)
+}
+
+func Empty[T any]() Type[T] {
+	return valueOf(context.Background(), map[string]*T{})
+}
+
+func valueOf[T any](ctx context.Context, value map[string]*T) Type[T] {
+	return helpers.Require(maptype.NewValue(ctx, value))
+}
+
+func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+	mapValidators, objectValidators := parseExtras(extras)
+	nested := schema.NestedAttributeObject{
+		Attributes: attributes,
+		Validators: objectValidators,
+	}
+	return schema.MapNestedAttribute{
+		Required:     true,
+		NestedObject: nested,
+		CustomType:   maptype.NewType[T](context.Background()),
+		Validators:   mapValidators,
+	}
+}
+
+func Optional[T any](attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
+	mapValidators, objectValidators := parseExtras(extras)
+	nested := schema.NestedAttributeObject{
+		Attributes: attributes,
+		Validators: objectValidators,
+	}
+	return schema.MapNestedAttribute{
+		Optional:      true,
+		Computed:      true,
+		NestedObject:  nested,
+		CustomType:    maptype.NewType[T](context.Background()),
+		PlanModifiers: []planmodifier.Map{mapplanmodifier.UseStateForUnknown()},
+		Validators:    mapValidators,
+	}
+}
+
+func Default[T any](values map[string]*T, attributes map[string]schema.Attribute, extras ...any) schema.MapNestedAttribute {
 	mapValidators, objectValidators := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
@@ -21,40 +69,113 @@ func Optional(attributes map[string]schema.Attribute, extras ...any) schema.MapN
 		Optional:     true,
 		Computed:     true,
 		NestedObject: nested,
-		Default:      mapdefault.StaticValue(types.MapNull(nested.Type())),
+		CustomType:   maptype.NewType[T](context.Background()),
+		Default:      mapdefault.StaticValue(Value(values).MapValue),
 		Validators:   mapValidators,
 	}
 }
 
-func StringOptional(validators ...validator.Map) schema.MapAttribute {
-	return optionalTypeMap(types.StringType, validators)
+func Get[T any, M helpers.Model[T]](m Type[T], data map[string]any, key string, h *helpers.Handler) {
+	if m.IsNull() || m.IsUnknown() {
+		return
+	}
+
+	elems, diags := m.ToMap(h.Ctx)
+	h.Diagnostics.Append(diags...)
+	if diags.HasError() {
+		return
+	}
+
+	result := map[string]any{}
+	for k, v := range elems {
+		var element M = v
+		result[k] = element.Values(h)
+	}
+
+	data[key] = result
 }
 
-func optionalTypeMap(elementType attr.Type, validators []validator.Map) schema.MapAttribute {
-	return schema.MapAttribute{
-		Optional:    true,
-		Computed:    true,
-		ElementType: elementType,
-		Default:     mapdefault.StaticValue(types.MapNull(elementType)),
-		Validators:  validators,
+func Set[T any, M helpers.Model[T]](m *Type[T], data map[string]any, key string, h *helpers.Handler) {
+	values := data
+	if key != helpers.RootKey {
+		values, _ = data[key].(map[string]any)
+	}
+
+	elems := map[string]*T{}
+	current := m.Elements()
+
+	for k, v := range values {
+		var element M
+		if c, ok := current[k]; ok && !c.IsNull() && !c.IsUnknown() {
+			element, _ = objtype.NewObjectWith[T](h.Ctx, c)
+		}
+		if element == nil {
+			element = new(T)
+		}
+		if modelData, ok := v.(map[string]any); ok {
+			element.SetValues(h, modelData)
+		}
+		elems[k] = element
+	}
+
+	*m = valueOf(h.Ctx, elems)
+}
+
+func Iterator[T any](m Type[T], h *helpers.Handler) iter.Seq2[string, *T] {
+	return func(yield func(string, *T) bool) {
+		for k, v := range m.Elements() {
+			if v.IsNull() || v.IsUnknown() {
+				continue
+			}
+
+			ptr, diags := objtype.NewObjectWith[T](h.Ctx, v)
+			h.Diagnostics.Append(diags...)
+			if diags.HasError() {
+				continue
+			}
+
+			if !yield(k, ptr) {
+				break
+			}
+		}
 	}
 }
 
-func Get[T any, M helpers.Model[T]](m M, data map[string]any, key string, h *helpers.Handler) {
-	if m != nil {
-		data[key] = m.Values(h)
-	}
-}
+func MutatingIterator[T any](m *Type[T], h *helpers.Handler) iter.Seq2[string, *T] {
+	return func(yield func(string, *T) bool) {
+		elements := m.Elements()
 
-func Set[S any, T ~map[string]S, M helpers.Model[T]](m *M, data map[string]any, key string, h *helpers.Handler) { // using *M to stay consistent with other Set functions
-	if v, ok := data[key].(map[string]any); ok {
-		if *m == nil && helpers.IsImport(h.Ctx) {
-			var o T = map[string]S{}
-			*m = &o
+		for k, v := range elements {
+			if v.IsNull() || v.IsUnknown() {
+				continue
+			}
+
+			ptr, diags := objtype.NewObjectWith[T](h.Ctx, v)
+			h.Diagnostics.Append(diags...)
+			if diags.HasError() {
+				continue
+			}
+
+			cont := yield(k, ptr)
+
+			obj, diags := objtype.NewValue(h.Ctx, ptr)
+			h.Diagnostics.Append(diags...)
+			if !diags.HasError() {
+				elements[k] = obj
+			}
+
+			if !cont {
+				break
+			}
 		}
-		if *m != nil {
-			(*m).SetValues(h, v)
+
+		mapValue, diags := maptype.NewValueWith[T](h.Ctx, elements)
+		h.Diagnostics.Append(diags...)
+		if diags.HasError() {
+			return
 		}
+
+		*m = mapValue
 	}
 }
 
@@ -70,7 +191,7 @@ func parseExtras(extras []any) (mapValidators []validator.Map, objectValidators 
 			objectValidators = append(objectValidators, v)
 		}
 		if !matched {
-			panic(fmt.Sprintf("unexpected extra value of type %T in map attribute", e))
+			panic(fmt.Sprintf("unexpected extra value of type %T in attribute", e))
 		}
 	}
 	return

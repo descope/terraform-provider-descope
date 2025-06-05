@@ -50,7 +50,7 @@ var templateUtils = map[string]any{
 			if len(v) == 0 && preserveParagraphs && i != 0 {
 				v = "\\n\\n"
 			} else if len(v) > 0 && i != len(parts)-1 {
-				v = v + " "
+				v += " "
 			}
 			r = append(r, v)
 		}

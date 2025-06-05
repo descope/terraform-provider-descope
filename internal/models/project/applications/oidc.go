@@ -5,7 +5,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var OIDCAttributes = map[string]schema.Attribute{
@@ -16,29 +15,30 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"disabled":    boolattr.Default(false),
 
 	"login_page_url":       stringattr.Default(""),
-	"claims":               strlistattr.Optional(),
+	"claims":               strlistattr.Default(),
 	"force_authentication": boolattr.Default(false),
 }
 
 // Model
 
 type OIDCModel struct {
-	ID                  types.String   `tfsdk:"id"`
-	Name                types.String   `tfsdk:"name"`
-	Description         types.String   `tfsdk:"description"`
-	Logo                types.String   `tfsdk:"logo"`
-	Disabled            types.Bool     `tfsdk:"disabled"`
-	LoginPageURL        types.String   `tfsdk:"login_page_url"`
-	Claims              []types.String `tfsdk:"claims"`
-	ForceAuthentication types.Bool     `tfsdk:"force_authentication"`
+	ID                  stringattr.Type  `tfsdk:"id"`
+	Name                stringattr.Type  `tfsdk:"name"`
+	Description         stringattr.Type  `tfsdk:"description"`
+	Logo                stringattr.Type  `tfsdk:"logo"`
+	Disabled            boolattr.Type    `tfsdk:"disabled"`
+	LoginPageURL        stringattr.Type  `tfsdk:"login_page_url"`
+	Claims              strlistattr.Type `tfsdk:"claims"`
+	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
 }
 
 func (m *OIDCModel) Values(h *Handler) map[string]any {
-	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	settings := map[string]any{}
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
 	strlistattr.Get(m.Claims, settings, "claims", h)
 	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
+
+	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["oidc"] = settings
 	return data
 }

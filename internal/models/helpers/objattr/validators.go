@@ -1,4 +1,4 @@
-package objectattr
+package objattr
 
 import (
 	"context"
@@ -42,6 +42,6 @@ func (v *objectValidator[T, M]) ValidateObject(ctx context.Context, req validato
 		return
 	}
 
-	handler := helpers.NewHandler(ctx, &resp.Diagnostics, helpers.ReferencesMap{})
+	handler := helpers.NewHandler(ctx, &resp.Diagnostics)
 	model.Validate(handler)
 }

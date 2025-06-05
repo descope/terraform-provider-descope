@@ -2,6 +2,7 @@ package infra
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 )
 
@@ -38,7 +39,7 @@ func copyMapShallow(dest, src map[string]any, depth int) {
 		value := v
 		if srcmap, ok := v.(map[string]any); ok {
 			if isShallow && depth >= shallowDepth {
-				value = "Map{...}"
+				value = fmt.Sprintf("Map{len: %d}", len(srcmap))
 			} else {
 				destmap := map[string]any{}
 				copyMapShallow(destmap, srcmap, depth+1)
@@ -52,7 +53,7 @@ func copyMapShallow(dest, src map[string]any, depth int) {
 			}
 		} else if srclist, ok := v.([]any); ok {
 			if isShallow && depth >= shallowDepth {
-				value = "List[...]"
+				value = fmt.Sprintf("List[len: %d]", len(srclist))
 			} else {
 				var destlist []any
 				copySliceShallow(&destlist, &srclist, depth+1)
@@ -68,7 +69,7 @@ func copySliceShallow(dest, src *[]any, depth int) {
 		value := v
 		if srcmap, ok := v.(map[string]any); ok {
 			if isShallow && depth >= shallowDepth {
-				value = "Map{...}"
+				value = fmt.Sprintf("Map{len: %d}", len(srcmap))
 			} else {
 				destmap := map[string]any{}
 				copyMapShallow(destmap, srcmap, depth+1)
@@ -82,7 +83,7 @@ func copySliceShallow(dest, src *[]any, depth int) {
 			}
 		} else if srclist, ok := v.([]any); ok {
 			if isShallow && depth >= shallowDepth {
-				value = "List[...]"
+				value = fmt.Sprintf("List[len: %d]", len(srclist))
 			} else {
 				var destlist []any
 				copySliceShallow(&destlist, &srclist, depth+1)

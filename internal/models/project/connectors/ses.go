@@ -1,13 +1,10 @@
 package connectors
 
 import (
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var SESAttributes = map[string]schema.Attribute{
@@ -19,21 +16,21 @@ var SESAttributes = map[string]schema.Attribute{
 	"secret":        stringattr.SecretRequired(),
 	"region":        stringattr.Required(),
 	"endpoint":      stringattr.Default(""),
-	"sender":        objectattr.Required(SenderFieldAttributes),
+	"sender":        objattr.Required[SenderFieldModel](SenderFieldAttributes),
 }
 
 // Model
 
 type SESModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
+	ID          stringattr.Type `tfsdk:"id"`
+	Name        stringattr.Type `tfsdk:"name"`
+	Description stringattr.Type `tfsdk:"description"`
 
-	AccessKeyId types.String      `tfsdk:"access_key_id"`
-	Secret      types.String      `tfsdk:"secret"`
-	Region      types.String      `tfsdk:"region"`
-	Endpoint    types.String      `tfsdk:"endpoint"`
-	Sender      *SenderFieldModel `tfsdk:"sender"`
+	AccessKeyId stringattr.Type                `tfsdk:"access_key_id"`
+	Secret      stringattr.Type                `tfsdk:"secret"`
+	Region      stringattr.Type                `tfsdk:"region"`
+	Endpoint    stringattr.Type                `tfsdk:"endpoint"`
+	Sender      objattr.Type[SenderFieldModel] `tfsdk:"sender"`
 }
 
 func (m *SESModel) Values(h *helpers.Handler) map[string]any {
@@ -46,12 +43,8 @@ func (m *SESModel) Values(h *helpers.Handler) map[string]any {
 func (m *SESModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
-		stringattr.Set(&m.AccessKeyId, c, "accessKeyId")
-		stringattr.Set(&m.Secret, c, "secretAccessKey")
-		stringattr.Set(&m.Region, c, "awsSNSRegion")
-		stringattr.Set(&m.Endpoint, c, "awsEndpoint")
+		m.SetConfigurationValues(c, h)
 	}
-	objectattr.Set(&m.Sender, data, "configuration", h)
 }
 
 // Configuration
@@ -62,20 +55,28 @@ func (m *SESModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Secret, c, "secretAccessKey")
 	stringattr.Get(m.Region, c, "region")
 	stringattr.Get(m.Endpoint, c, "endpoint")
-	maps.Copy(c, m.Sender.Values(h))
+	objattr.Get(m.Sender, c, helpers.RootKey, h)
 	return c
+}
+
+func (m *SESModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AccessKeyId, c, "accessKeyId")
+	stringattr.Set(&m.Secret, c, "secretAccessKey")
+	stringattr.Set(&m.Region, c, "awsSNSRegion")
+	stringattr.Set(&m.Endpoint, c, "awsEndpoint")
+	objattr.Set(&m.Sender, c, helpers.RootKey, h)
 }
 
 // Matching
 
-func (m *SESModel) GetName() types.String {
+func (m *SESModel) GetName() stringattr.Type {
 	return m.Name
 }
 
-func (m *SESModel) GetID() types.String {
+func (m *SESModel) GetID() stringattr.Type {
 	return m.ID
 }
 
-func (m *SESModel) SetID(id types.String) {
+func (m *SESModel) SetID(id stringattr.Type) {
 	m.ID = id
 }

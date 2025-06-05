@@ -29,8 +29,7 @@ func TestFlows(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"styles.data": testacc.AttributeIsNotSet,
-				"flows.%":     0,
+				"styles.data": testacc.AttributeIsSet,
 			}),
 		},
 		resource.TestStep{
@@ -62,6 +61,7 @@ func TestFlows(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
+				"flows.%":               1,
 				"flows.basic-flow.data": testacc.AttributeMatchesJSON(basicFlow),
 			}),
 		},
@@ -152,6 +152,20 @@ func TestFlows(t *testing.T) {
 				"connectors.http.#":          1,
 				"connectors.http.0.id":       testacc.AttributeHasPrefix("CI"),
 				"connectors.http.0.name":     "My HTTP Connector",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(),
+			Check: p.Check(map[string]any{
+				"flows.%": 2,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				flows = {}
+			`),
+			Check: p.Check(map[string]any{
+				"flows.%": 0,
 			}),
 		},
 	)

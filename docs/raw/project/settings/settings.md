@@ -26,18 +26,20 @@ domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-produ
 approved_domains
 ----------------
 
-- Type: `list` of `string` 
+- Type: `set` of `string` 
 
 The list of approved domains that are allowed for redirect and verification URLs
 for different authentication methods.
 
 
+
 default_no_sso_apps
-----------------------
+-------------------
 
 - Type: `bool` 
 
 Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app
+
 
 
 refresh_token_rotation
@@ -226,30 +228,3 @@ access_key_jwt_template
 - Type: `string` 
 
 Name of the access key JWT Template.
-
-
-
-token_response_method
----------------------
-
-- Type: `string` 
-
-Deprecated.
-
-
-
-cookie_policy
--------------
-
-- Type: `string` 
-
-Deprecated.
-
-
-
-cookie_domain
--------------
-
-- Type: `string` 
-
-Deprecated.

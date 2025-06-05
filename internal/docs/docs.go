@@ -19,7 +19,7 @@ var docsProject = map[string]string{
 	"flows": "Custom authentication flows to use in this project.",
 }
 
-var docsApplication = map[string]string{
+var docsApplications = map[string]string{
 	"oidc_applications": "Applications using OpenID Connect (OIDC) for authentication.",
 	"saml_applications": "Applications using SAML for authentication.",
 }
@@ -820,9 +820,6 @@ var docsSettings = map[string]string{
 	"test_users_static_otp": "A 6 digit static OTP code for use with test users.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
-	"token_response_method": "Deprecated.",
-	"cookie_policy": "Deprecated.",
-	"cookie_domain": "Deprecated.",
 }
 
 var docsEmailService = map[string]string{

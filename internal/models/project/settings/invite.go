@@ -5,7 +5,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var InviteSettingsAttributes = map[string]schema.Attribute{
@@ -17,11 +16,19 @@ var InviteSettingsAttributes = map[string]schema.Attribute{
 }
 
 type InviteSettingsModel struct {
-	RequireInvitation types.Bool   `tfsdk:"require_invitation"`
-	InviteURL         types.String `tfsdk:"invite_url"`
-	AddMagicLinkToken types.Bool   `tfsdk:"add_magiclink_token"`
-	SendEmail         types.Bool   `tfsdk:"send_email"`
-	SendText          types.Bool   `tfsdk:"send_text"`
+	RequireInvitation boolattr.Type   `tfsdk:"require_invitation"`
+	InviteURL         stringattr.Type `tfsdk:"invite_url"`
+	AddMagicLinkToken boolattr.Type   `tfsdk:"add_magiclink_token"`
+	SendEmail         boolattr.Type   `tfsdk:"send_email"`
+	SendText          boolattr.Type   `tfsdk:"send_text"`
+}
+
+var InviteSettingsDefault = &InviteSettingsModel{
+	RequireInvitation: boolattr.Value(false),
+	InviteURL:         stringattr.Value(""),
+	AddMagicLinkToken: boolattr.Value(false),
+	SendEmail:         boolattr.Value(true),
+	SendText:          boolattr.Value(false),
 }
 
 func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {

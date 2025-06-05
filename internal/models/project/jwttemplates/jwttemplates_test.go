@@ -65,7 +65,7 @@ func TestJWTTemplates(t *testing.T) {
 					]
 				}
 			`),
-			ExpectError: regexp.MustCompile(`names must be unique`),
+			ExpectError: regexp.MustCompile(`Conflicting Attribute Values`),
 		},
 		resource.TestStep{
 			Config: p.Config(`
@@ -167,6 +167,34 @@ func TestJWTTemplates(t *testing.T) {
 			`),
 			Check: p.Check(map[string]any{
 				"project_settings.user_jwt_template": "foo",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				jwt_templates = {
+					user_templates = [
+						{
+							"name": "foo",
+							"description": "a",
+							"template": "{}",
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"jwt_templates.user_templates.#":       1,
+				"jwt_templates.access_key_templates.#": 0,
+			}),
+		},
+		resource.TestStep{ // XXX fix settings optional
+			Config: p.Config(`
+				project_settings = {
+					user_jwt_template = ""
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"jwt_templates.user_templates.#":       0,
+				"jwt_templates.access_key_templates.#": 0,
 			}),
 		},
 	)

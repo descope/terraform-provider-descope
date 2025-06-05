@@ -14,6 +14,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type Type = types.String
+
+func Value(value string) Type {
+	return types.StringValue(value)
+}
+
 var units = []string{"seconds", "minutes", "hours", "days", "weeks"}
 
 func Required(validators ...validator.String) schema.StringAttribute {

@@ -3,13 +3,12 @@ package templates
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var EmailTemplateValidator = objectattr.NewValidator[EmailTemplateModel]("must have a valid name and contain at least one body attribute set")
+var EmailTemplateValidator = objattr.NewValidator[EmailTemplateModel]("must have a valid name and contain at least one body attribute set")
 
 var EmailTemplateAttributes = map[string]schema.Attribute{
 	"active":              boolattr.Default(false),
@@ -22,13 +21,13 @@ var EmailTemplateAttributes = map[string]schema.Attribute{
 }
 
 type EmailTemplateModel struct {
-	Active           types.Bool   `tfsdk:"active"`
-	ID               types.String `tfsdk:"id"`
-	Name             types.String `tfsdk:"name"`
-	Subject          types.String `tfsdk:"subject"`
-	HTMLBody         types.String `tfsdk:"html_body"`
-	PlainTextBody    types.String `tfsdk:"plain_text_body"`
-	UsePlainTextBody types.Bool   `tfsdk:"use_plain_text_body"`
+	Active           boolattr.Type   `tfsdk:"active"`
+	ID               stringattr.Type `tfsdk:"id"`
+	Name             stringattr.Type `tfsdk:"name"`
+	Subject          stringattr.Type `tfsdk:"subject"`
+	HTMLBody         stringattr.Type `tfsdk:"html_body"`
+	PlainTextBody    stringattr.Type `tfsdk:"plain_text_body"`
+	UsePlainTextBody boolattr.Type   `tfsdk:"use_plain_text_body"`
 }
 
 func (m *EmailTemplateModel) Values(h *helpers.Handler) map[string]any {

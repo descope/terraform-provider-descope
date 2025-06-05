@@ -4,7 +4,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var TOTPAttributes = map[string]schema.Attribute{
@@ -12,7 +11,7 @@ var TOTPAttributes = map[string]schema.Attribute{
 }
 
 type TOTPModel struct {
-	Disabled types.Bool `tfsdk:"disabled"`
+	Disabled boolattr.Type `tfsdk:"disabled"`
 }
 
 func (m *TOTPModel) Values(h *helpers.Handler) map[string]any {

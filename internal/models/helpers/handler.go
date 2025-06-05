@@ -15,11 +15,11 @@ type Handler struct {
 	Refs        ReferencesMap
 }
 
-func NewHandler(ctx context.Context, diags *diag.Diagnostics, refs ReferencesMap) *Handler {
+func NewHandler(ctx context.Context, diags *diag.Diagnostics) *Handler {
 	return &Handler{
 		Ctx:         ctx,
 		Diagnostics: diags,
-		Refs:        refs,
+		Refs:        ReferencesMap{},
 	}
 }
 
@@ -48,5 +48,11 @@ func (h *Handler) Invalid(format string, a ...any) {
 func (h *Handler) Missing(format string, a ...any) {
 	if !h.Diagnostics.HasError() {
 		h.Diagnostics.AddError("Missing Attribute Value", fmt.Sprintf(format, a...))
+	}
+}
+
+func (h *Handler) Conflict(format string, a ...any) {
+	if !h.Diagnostics.HasError() {
+		h.Diagnostics.AddError("Conflicting Attribute Values", fmt.Sprintf(format, a...))
 	}
 }

@@ -4,20 +4,19 @@ import (
 	"encoding/json"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var StylesValidator = objectattr.NewValidator[StylesModel]("must be valid JSON data and have all requirements satisfied")
+var StylesValidator = objattr.NewValidator[StylesModel]("must be valid JSON data and have all requirements satisfied")
 
 var StylesAttributes = map[string]schema.Attribute{
 	"data": stringattr.Required(),
 }
 
 type StylesModel struct {
-	Data types.String `tfsdk:"data"`
+	Data stringattr.Type `tfsdk:"data"`
 }
 
 func (m *StylesModel) Values(h *helpers.Handler) map[string]any {
@@ -34,14 +33,14 @@ func (m *StylesModel) SetValues(h *helpers.Handler, data map[string]any) {
 				h.Error("Invalid style data", "Failed to parse JSON: %s", err.Error())
 				return
 			}
-			m.Data = types.StringValue(string(b))
+			m.Data = stringattr.Value(string(b))
 		}
 	}
 }
 
 func (m *StylesModel) Validate(h *helpers.Handler) {
 	if helpers.HasUnknownValues(m.Data) {
-		return // skip validation if there are unknown values//
+		return // skip validation if there are unknown values
 	}
 	data := getStylesData(m.Data, h)
 	if data["styles"] == nil {
@@ -51,7 +50,7 @@ func (m *StylesModel) Validate(h *helpers.Handler) {
 
 // Computed Mapping
 
-func getStylesData(data types.String, h *helpers.Handler) map[string]any {
+func getStylesData(data stringattr.Type, h *helpers.Handler) map[string]any {
 	m := map[string]any{}
 	if err := json.Unmarshal([]byte(data.ValueString()), &m); err != nil {
 		h.Error("Invalid styles data", "Failed to parse JSON: %s", err.Error())
