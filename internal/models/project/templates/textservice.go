@@ -3,22 +3,21 @@ package templates
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var TextServiceValidator = objectattr.NewValidator[TextServiceModel]("must have unique template names and a valid configuration")
+var TextServiceValidator = objattr.NewValidator[TextServiceModel]("must have unique template names and a valid configuration")
 
 var TextServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
-	"templates": listattr.Optional(TextTemplateAttributes, TextTemplateValidator),
+	"templates": listattr.Default[TextTemplateModel](TextTemplateAttributes, TextTemplateValidator),
 }
 
 type TextServiceModel struct {
-	Connector types.String         `tfsdk:"connector"`
-	Templates []*TextTemplateModel `tfsdk:"templates"`
+	Connector stringattr.Type                  `tfsdk:"connector"`
+	Templates listattr.Type[TextTemplateModel] `tfsdk:"templates"`
 }
 
 func (m *TextServiceModel) Values(h *helpers.Handler) map[string]any {
@@ -36,32 +35,36 @@ func (m *TextServiceModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *TextServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "textServiceProvider")
-	// update known templates with their new values
-	for _, template := range m.Templates {
-		name := template.Name.ValueString()
-		h.Log("Looking for text template named '%s'", name)
-		if id, ok := requireTemplateID(h, data, "textTemplates", name); ok {
-			value := types.StringValue(id)
-			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '%s' for text template named '%s'", id, name)
-				template.ID = value
-			} else {
-				h.Log("Keeping existing ID '%s' for text template named '%s'", id, name)
-			}
-		} else if template.ID.ValueString() == "" {
-			h.Error("Template not found", "Expected to find text template to match with '%s' template", name)
-		}
-	}
-	// we allow to set templates on import
-	if m.Templates == nil && helpers.IsImport(h.Ctx) {
+
+	if m.Templates.IsEmpty() {
 		listattr.Set(&m.Templates, data, "textTemplates", h)
+	} else {
+		for template := range listattr.MutatingIterator(&m.Templates, h) {
+			name := template.Name.ValueString()
+			h.Log("Looking for text template named '%s'", name)
+			if id, ok := requireTemplateID(h, data, "textTemplates", name); ok {
+				value := stringattr.Value(id)
+				if !template.ID.Equal(value) {
+					h.Log("Setting new ID '%s' for text template named '%s'", id, name)
+					template.ID = value
+				} else {
+					h.Log("Keeping existing ID '%s' for text template named '%s'", id, name)
+				}
+			} else if template.ID.ValueString() == "" {
+				h.Error("Template not found", "Expected to find text template to match with '%s' template", name)
+			}
+		}
 	}
 }
 
 func (m *TextServiceModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.Connector, m.Templates) {
+		return
+	}
+
 	hasActive := false
 	names := map[string]int{}
-	for _, v := range m.Templates {
+	for v := range listattr.Iterator(m.Templates, h) {
 		hasActive = hasActive || v.Active.ValueBool()
 		names[v.Name.ValueString()] += 1
 	}
@@ -78,6 +81,6 @@ func (m *TextServiceModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *TextServiceModel) SetReferences(h *helpers.Handler) {
+func (m *TextServiceModel) UpdateReferences(h *helpers.Handler) {
 	replaceConnectorIDWithReference(&m.Connector, h)
 }

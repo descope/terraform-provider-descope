@@ -68,9 +68,16 @@ lint: ensure-linter ensure-gitleaks ## check for linter and gitleaks failures
 	gitleaks detect --redact -v -c .github/actions/ci/leaks/gitleaks.toml
 
 ensure-linter: ensure-go
+	TOOL_VERSION=$$(cat .github/actions/ci/lint/action.yml | grep 'version: ' | sed 's/.*version: \(v.*\)$$/\1/'); \
 	if ! command -v golangci-lint &> /dev/null; then \
 	    echo Installing the $$'\e[33m'golangci-lint$$'\e[0m' tool... ;\
-	    go install github.com/golangci/golangci-lint/cmd/golangci-lint@v1.60.3 ;\
+	    go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$$TOOL_VERSION ;\
+	else \
+	    CURRENT_VERSION=$$(golangci-lint --version | sed 's/.*version \(v.*\) built with.*/\1/' ) ;\
+	    if [ "$$CURRENT_VERSION" != "$$TOOL_VERSION" ]; then \
+	        echo Updating the $$'\e[33m'golangci-lint$$'\e[0m' tool to version $$'\e[33m'$$TOOL_VERSION$$'\e[0m'... ;\
+	        go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@$$TOOL_VERSION ;\
+	    fi ;\
 	fi
 
 ensure-gitleaks: ensure-brew

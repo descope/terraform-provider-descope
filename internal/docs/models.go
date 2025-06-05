@@ -20,7 +20,7 @@ import (
 
 func InjectModels() {
 	inject(project.ProjectAttributes, docsProject)
-	inject(applications.ApplicationAttributes, docsApplication)
+	inject(applications.ApplicationsAttributes, docsApplications)
 	inject(applications.OIDCAttributes, docsOIDC)
 	inject(applications.SAMLAttributes, docsSAML)
 	inject(applications.AttributeMappingAttributes, docsAttributeMapping)
@@ -136,6 +136,9 @@ func inject(model map[string]schema.Attribute, docs map[string]string) {
 		case schema.ListAttribute:
 			attr.MarkdownDescription = desc
 			model[field] = attr
+		case schema.SetAttribute:
+			attr.MarkdownDescription = desc
+			model[field] = attr
 		case schema.MapNestedAttribute:
 			attr.MarkdownDescription = desc
 			model[field] = attr
@@ -143,6 +146,9 @@ func inject(model map[string]schema.Attribute, docs map[string]string) {
 			attr.MarkdownDescription = desc
 			model[field] = attr
 		case schema.ListNestedAttribute:
+			attr.MarkdownDescription = desc
+			model[field] = attr
+		case schema.SetNestedAttribute:
 			attr.MarkdownDescription = desc
 			model[field] = attr
 		default:

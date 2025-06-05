@@ -5,7 +5,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var PasskeysAttributes = map[string]schema.Attribute{
@@ -14,8 +13,8 @@ var PasskeysAttributes = map[string]schema.Attribute{
 }
 
 type PasskeysModel struct {
-	Disabled       types.Bool   `tfsdk:"disabled"`
-	TopLevelDomain types.String `tfsdk:"top_level_domain"`
+	Disabled       boolattr.Type   `tfsdk:"disabled"`
+	TopLevelDomain stringattr.Type `tfsdk:"top_level_domain"`
 }
 
 func (m *PasskeysModel) Values(h *helpers.Handler) map[string]any {

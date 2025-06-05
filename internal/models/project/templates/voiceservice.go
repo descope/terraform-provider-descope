@@ -3,22 +3,21 @@ package templates
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var VoiceServiceValidator = objectattr.NewValidator[VoiceServiceModel]("must have unique template names and a valid configuration")
+var VoiceServiceValidator = objattr.NewValidator[VoiceServiceModel]("must have unique template names and a valid configuration")
 
 var VoiceServiceAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
-	"templates": listattr.Optional(VoiceTemplateAttributes, VoiceTemplateValidator),
+	"templates": listattr.Default[VoiceTemplateModel](VoiceTemplateAttributes, VoiceTemplateValidator),
 }
 
 type VoiceServiceModel struct {
-	Connector types.String          `tfsdk:"connector"`
-	Templates []*VoiceTemplateModel `tfsdk:"templates"`
+	Connector stringattr.Type                   `tfsdk:"connector"`
+	Templates listattr.Type[VoiceTemplateModel] `tfsdk:"templates"`
 }
 
 func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
@@ -36,32 +35,36 @@ func (m *VoiceServiceModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *VoiceServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "voiceServiceProvider")
-	// update known templates with their new values
-	for _, template := range m.Templates {
-		name := template.Name.ValueString()
-		h.Log("Looking for voice template named '%s'", name)
-		if id, ok := requireTemplateID(h, data, "voiceTemplates", name); ok {
-			value := types.StringValue(id)
-			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '%s' for voice template named '%s'", id, name)
-				template.ID = value
-			} else {
-				h.Log("Keeping existing ID '%s' for voice template named '%s'", id, name)
-			}
-		} else if template.ID.ValueString() == "" {
-			h.Error("Template not found", "Expected to find voice template to match with '%s' template", name)
-		}
-	}
-	// we allow to set templates on import
-	if m.Templates == nil && helpers.IsImport(h.Ctx) {
+
+	if m.Templates.IsEmpty() {
 		listattr.Set(&m.Templates, data, "voiceTemplates", h)
+	} else {
+		for template := range listattr.MutatingIterator(&m.Templates, h) {
+			name := template.Name.ValueString()
+			h.Log("Looking for voice template named '%s'", name)
+			if id, ok := requireTemplateID(h, data, "voiceTemplates", name); ok {
+				value := stringattr.Value(id)
+				if !template.ID.Equal(value) {
+					h.Log("Setting new ID '%s' for voice template named '%s'", id, name)
+					template.ID = value
+				} else {
+					h.Log("Keeping existing ID '%s' for voice template named '%s'", id, name)
+				}
+			} else if template.ID.ValueString() == "" {
+				h.Error("Template not found", "Expected to find voice template to match with '%s' template", name)
+			}
+		}
 	}
 }
 
 func (m *VoiceServiceModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.Connector, m.Templates) {
+		return
+	}
+
 	hasActive := false
 	names := map[string]int{}
-	for _, v := range m.Templates {
+	for v := range listattr.Iterator(m.Templates, h) {
 		hasActive = hasActive || v.Active.ValueBool()
 		names[v.Name.ValueString()] += 1
 	}
@@ -78,6 +81,6 @@ func (m *VoiceServiceModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *VoiceServiceModel) SetReferences(h *helpers.Handler) {
+func (m *VoiceServiceModel) UpdateReferences(h *helpers.Handler) {
 	replaceConnectorIDWithReference(&m.Connector, h)
 }

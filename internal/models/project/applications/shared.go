@@ -4,22 +4,21 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 type Handler = helpers.Handler
 
-func sharedApplicationData(_ *Handler, id, name, description, logo types.String, disabled types.Bool) map[string]any {
+func sharedApplicationData(_ *Handler, id, name, description, logo stringattr.Type, disabled boolattr.Type) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(id, data, "id")
 	stringattr.Get(name, data, "name")
 	stringattr.Get(description, data, "description")
 	stringattr.Get(logo, data, "logo")
-	data["enabled"] = !disabled.ValueBool()
+	boolattr.GetNot(disabled, data, "enabled")
 	return data
 }
 
-func setSharedApplicationData(_ *Handler, data map[string]any, id, name, description, logo *types.String, disabled *types.Bool) {
+func setSharedApplicationData(_ *Handler, data map[string]any, id, name, description, logo *stringattr.Type, disabled *boolattr.Type) {
 	stringattr.Set(id, data, "id")
 	stringattr.Set(name, data, "name")
 	stringattr.Set(description, data, "description")
@@ -29,12 +28,12 @@ func setSharedApplicationData(_ *Handler, data map[string]any, id, name, descrip
 
 // Match identifiers
 
-func RequireID(h *Handler, data map[string]any, key string, name types.String, id *types.String) {
+func RequireID(h *Handler, data map[string]any, key string, name stringattr.Type, id *stringattr.Type) {
 	n := name.ValueString()
 	h.Log("Looking for %s application named '%s'", key, n)
 	if appID, ok := requireID(h, data, key, n); ok {
-		value := types.StringValue(appID)
-		if !(*id).Equal(value) {
+		value := stringattr.Value(appID)
+		if !id.Equal(value) {
 			h.Log("Setting new ID '%s' for %s application named '%s'", appID, key, n)
 			*id = value
 		} else {

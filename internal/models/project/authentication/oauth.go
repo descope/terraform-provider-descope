@@ -8,27 +8,27 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strmapattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var OAuthValidator = objectattr.NewValidator[OAuthModel]("must have a valid OAuth configuration")
+var OAuthValidator = objattr.NewValidator[OAuthModel]("must have a valid OAuth configuration")
 
 var OAuthAttributes = map[string]schema.Attribute{
 	"disabled": boolattr.Default(false),
-	"system":   objectattr.Optional(OAuthSystemProviderAttributes),
-	"custom":   mapattr.Optional(OAuthProviderAttributes),
+	"system":   objattr.Optional[OAuthSystemProvidersModel](OAuthSystemProviderAttributes),
+	"custom":   mapattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
 }
 
 type OAuthModel struct {
-	Disabled types.Bool                     `tfsdk:"disabled"`
-	System   *OAuthSystemProvidersModel     `tfsdk:"system"`
-	Custom   map[string]*OAuthProviderModel `tfsdk:"custom"`
+	Disabled boolattr.Type                           `tfsdk:"disabled"`
+	System   objattr.Type[OAuthSystemProvidersModel] `tfsdk:"system"`
+	Custom   mapattr.Type[OAuthProviderModel]        `tfsdk:"custom"`
 }
 
 func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
@@ -37,7 +37,7 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 
 	providers := map[string]any{}
 
-	if v := m.System; v != nil {
+	if v, _ := m.System.ToObject(h.Ctx); v != nil {
 		ensureSystemProvider(h, v.Apple, "apple")
 		ensureSystemProvider(h, v.Discord, "discord")
 		ensureSystemProvider(h, v.Facebook, "facebook")
@@ -51,8 +51,9 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 		maps.Copy(providers, v.Values(h))
 	}
 
-	for name, provider := range m.Custom {
-		if _, ok := provider.ClaimMapping["loginId"]; !ok && len(provider.ClaimMapping) > 0 {
+	for name, provider := range mapattr.Iterator(m.Custom, h) {
+		claimMapping, _ := provider.ClaimMapping.ToMap(h.Ctx)
+		if _, ok := claimMapping["loginId"]; !ok && len(claimMapping) > 0 {
 			h.Error("Invalid Claim Mapping", "Claim mapping set for custom provider %s but 'loginId' was not mapped", name)
 		}
 
@@ -77,22 +78,31 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *OAuthModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
-	if providers, ok := data["providerSettings"].(map[string]any); ok {
-		if v := m.System; v != nil {
-			v.SetValues(h, providers)
-		}
-		for k, v := range m.Custom {
-			if data, ok := providers[k].(map[string]any); ok {
-				v.SetValues(h, data)
-			}
+
+	system := map[string]any{}
+	custom := map[string]any{}
+
+	providers, _ := data["providerSettings"].(map[string]any)
+	for name, provider := range providers {
+		if slices.Contains(systemProviderNames, name) {
+			system[name] = provider
+		} else {
+			custom[name] = provider
 		}
 	}
+
+	objattr.Set(&m.System, system, helpers.RootKey, h)
+	mapattr.Set(&m.Custom, custom, helpers.RootKey, h)
 }
 
 var systemProviderNames = []string{"apple", "discord", "facebook", "github", "gitlab", "google", "linkedin", "microsoft", "slack"}
 
 func (m *OAuthModel) Validate(h *helpers.Handler) {
-	if v := m.System; v != nil {
+	if helpers.HasUnknownValues(m.System, m.Custom) {
+		return
+	}
+
+	if v, _ := m.System.ToObject(h.Ctx); v != nil {
 		validateSystemProvider(h, v.Apple, "apple")
 		validateSystemProvider(h, v.Discord, "discord")
 		validateSystemProvider(h, v.Facebook, "facebook")
@@ -103,7 +113,8 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 		validateSystemProvider(h, v.Microsoft, "microsoft")
 		validateSystemProvider(h, v.Slack, "slack")
 	}
-	for name := range m.Custom {
+
+	for name := range mapattr.Iterator(m.Custom, h) {
 		if slices.Contains(systemProviderNames, name) {
 			h.Error("Reserved OAuth Provider Name", "The %s name is reserved for system providers and cannot be used for a custom provider", name)
 			continue
@@ -112,15 +123,13 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 }
 
 func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, name string) {
-	invalid := false
+	var invalid bool
 
 	switch v := field.(type) {
-	case types.String:
+	case stringattr.Type:
 		invalid = v.ValueString() == ""
-	case []string:
-		invalid = len(v) == 0
-	case []types.String:
-		invalid = len(v) == 0
+	case strlistattr.Type:
+		invalid = v.IsEmpty()
 	default:
 		panic(fmt.Sprintf("unexpected type %T for attribute %s in custom provider %s", field, fieldKey, name))
 	}
@@ -130,7 +139,8 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, 
 	}
 }
 
-func ensureSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
+func ensureSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProviderModel], name string) {
+	m, _ := provider.ToObject(h.Ctx)
 	if m == nil || helpers.HasUnknownValues(m.ClientID, m.ClientSecret) {
 		return // skip validation if there are unknown values
 	}
@@ -141,19 +151,21 @@ func ensureSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string
 			h.Missing("The client_id attribute was set for the %s system provider but the client_secret attribute was not", name)
 		}
 	} else {
-		if len(m.Scopes) > 0 {
+		if !m.Scopes.IsEmpty() {
 			h.Invalid("Set a client_id and client_secret for the %s system provider in order to set the scopes attribute", name)
 		}
-		if m.ProviderTokenManagement != nil {
+		if !m.ProviderTokenManagement.IsNull() && !m.ProviderTokenManagement.IsUnknown() {
 			h.Invalid("Set a client_id and client_secret for the %s system provider in order to set the provider_token_management attribute", name)
 		}
 	}
 }
 
-func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name string) {
+func validateSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProviderModel], name string) {
+	m, _ := provider.ToObject(h.Ctx)
 	if m == nil {
 		return
 	}
+
 	ensureNoCustomProviderFields(h, m.Description, "description", name)
 	ensureNoCustomProviderFields(h, m.Logo, "logo", name)
 	ensureNoCustomProviderFields(h, m.Issuer, "issuer", name)
@@ -161,12 +173,12 @@ func validateSystemProvider(h *helpers.Handler, m *OAuthProviderModel, name stri
 	ensureNoCustomProviderFields(h, m.TokenEndpoint, "token_endpoint", name)
 	ensureNoCustomProviderFields(h, m.UserInfoEndpoint, "user_info_endpoint", name)
 	ensureNoCustomProviderFields(h, m.JWKsEndpoint, "jwks_endpoint", name)
-	if len(m.ClaimMapping) > 0 {
+	if !m.ClaimMapping.IsEmpty() {
 		h.Error("Reserved Attribute", "The %s OAuth provider is a system provider and its claim_mapping attribute is reserved", name)
 	}
 }
 
-func ensureNoCustomProviderFields(h *helpers.Handler, field types.String, fieldKey, name string) {
+func ensureNoCustomProviderFields(h *helpers.Handler, field stringattr.Type, fieldKey, name string) {
 	if !field.IsUnknown() && !field.IsNull() {
 		h.Error("Reserved Attribute", "The %s OAuth provider is a system provider and its %s attribute is reserved", name, fieldKey)
 	}
@@ -175,72 +187,65 @@ func ensureNoCustomProviderFields(h *helpers.Handler, field types.String, fieldK
 // System OAuth Providers
 
 var OAuthSystemProviderAttributes = map[string]schema.Attribute{
-	"apple":     objectattr.Optional(OAuthProviderAttributes),
-	"discord":   objectattr.Optional(OAuthProviderAttributes),
-	"facebook":  objectattr.Optional(OAuthProviderAttributes),
-	"github":    objectattr.Optional(OAuthProviderAttributes),
-	"gitlab":    objectattr.Optional(OAuthProviderAttributes),
-	"google":    objectattr.Optional(OAuthProviderAttributes),
-	"linkedin":  objectattr.Optional(OAuthProviderAttributes),
-	"microsoft": objectattr.Optional(OAuthProviderAttributes),
-	"slack":     objectattr.Optional(OAuthProviderAttributes),
+	"apple":     objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"discord":   objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"facebook":  objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"github":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"gitlab":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"google":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"linkedin":  objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"microsoft": objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"slack":     objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
 }
 
 type OAuthSystemProvidersModel struct {
-	Apple     *OAuthProviderModel `tfsdk:"apple"`
-	Discord   *OAuthProviderModel `tfsdk:"discord"`
-	Facebook  *OAuthProviderModel `tfsdk:"facebook"`
-	Github    *OAuthProviderModel `tfsdk:"github"`
-	Gitlab    *OAuthProviderModel `tfsdk:"gitlab"`
-	Google    *OAuthProviderModel `tfsdk:"google"`
-	Linkedin  *OAuthProviderModel `tfsdk:"linkedin"`
-	Microsoft *OAuthProviderModel `tfsdk:"microsoft"`
-	Slack     *OAuthProviderModel `tfsdk:"slack"`
+	Apple     objattr.Type[OAuthProviderModel] `tfsdk:"apple"`
+	Discord   objattr.Type[OAuthProviderModel] `tfsdk:"discord"`
+	Facebook  objattr.Type[OAuthProviderModel] `tfsdk:"facebook"`
+	Github    objattr.Type[OAuthProviderModel] `tfsdk:"github"`
+	Gitlab    objattr.Type[OAuthProviderModel] `tfsdk:"gitlab"`
+	Google    objattr.Type[OAuthProviderModel] `tfsdk:"google"`
+	Linkedin  objattr.Type[OAuthProviderModel] `tfsdk:"linkedin"`
+	Microsoft objattr.Type[OAuthProviderModel] `tfsdk:"microsoft"`
+	Slack     objattr.Type[OAuthProviderModel] `tfsdk:"slack"`
 }
 
 func (m *OAuthSystemProvidersModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	getSystemProvider(h, data, m.Apple, "apple")
-	getSystemProvider(h, data, m.Discord, "discord")
-	getSystemProvider(h, data, m.Facebook, "facebook")
-	getSystemProvider(h, data, m.Github, "github")
-	getSystemProvider(h, data, m.Gitlab, "gitlab")
-	getSystemProvider(h, data, m.Google, "google")
-	getSystemProvider(h, data, m.Linkedin, "linkedin")
-	getSystemProvider(h, data, m.Microsoft, "microsoft")
-	getSystemProvider(h, data, m.Slack, "slack")
+	getProviderValue(h, data, m.Apple, "apple")
+	getProviderValue(h, data, m.Discord, "discord")
+	getProviderValue(h, data, m.Facebook, "facebook")
+	getProviderValue(h, data, m.Github, "github")
+	getProviderValue(h, data, m.Gitlab, "gitlab")
+	getProviderValue(h, data, m.Google, "google")
+	getProviderValue(h, data, m.Linkedin, "linkedin")
+	getProviderValue(h, data, m.Microsoft, "microsoft")
+	getProviderValue(h, data, m.Slack, "slack")
 	return data
 }
 
-func getSystemProvider(h *helpers.Handler, providers map[string]any, provider *OAuthProviderModel, name string) {
+func (m *OAuthSystemProvidersModel) SetValues(h *helpers.Handler, data map[string]any) {
+	objattr.Set(&m.Apple, data, "apple", h)
+	objattr.Set(&m.Discord, data, "discord", h)
+	objattr.Set(&m.Facebook, data, "facebook", h)
+	objattr.Set(&m.Github, data, "github", h)
+	objattr.Set(&m.Gitlab, data, "gitlab", h)
+	objattr.Set(&m.Google, data, "google", h)
+	objattr.Set(&m.Linkedin, data, "linkedin", h)
+	objattr.Set(&m.Microsoft, data, "microsoft", h)
+	objattr.Set(&m.Slack, data, "slack", h)
+}
+
+func getProviderValue(h *helpers.Handler, providers map[string]any, obj objattr.Type[OAuthProviderModel], name string) {
+	provider, _ := obj.ToObject(h.Ctx)
 	if provider == nil {
 		return
 	}
+
 	data := provider.Values(h)
 	data["useSelfAccount"] = provider.ClientID.ValueString() != ""
 	data["custom"] = false
 	providers[name] = data
-}
-
-func (m *OAuthSystemProvidersModel) SetValues(h *helpers.Handler, data map[string]any) {
-	setSystemProvider(h, data, m.Apple, "apple")
-	setSystemProvider(h, data, m.Discord, "discord")
-	setSystemProvider(h, data, m.Facebook, "facebook")
-	setSystemProvider(h, data, m.Github, "github")
-	setSystemProvider(h, data, m.Gitlab, "gitlab")
-	setSystemProvider(h, data, m.Google, "google")
-	setSystemProvider(h, data, m.Linkedin, "linkedin")
-	setSystemProvider(h, data, m.Microsoft, "microsoft")
-	setSystemProvider(h, data, m.Slack, "slack")
-}
-
-func setSystemProvider(h *helpers.Handler, providers map[string]any, provider *OAuthProviderModel, name string) {
-	if provider == nil {
-		return
-	}
-	if data, ok := providers[name].(map[string]any); ok {
-		provider.SetValues(h, data)
-	}
 }
 
 // OAuth Provider
@@ -251,7 +256,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"disabled":                  boolattr.Default(false),
 	"client_id":                 stringattr.Optional(),
 	"client_secret":             stringattr.SecretOptional(),
-	"provider_token_management": objectattr.Optional(OAuthProviderTokenManagementAttribute),
+	"provider_token_management": objattr.Default[OAuthProviderTokenManagementModel](nil, OAuthProviderTokenManagementAttribute),
 	"prompts":                   strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("none", "login", "consent", "select_account"))),
 	"allowed_grant_types":       strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("authorization_code", "implicit"))),
 	"scopes":                    strlistattr.Optional(),
@@ -264,26 +269,26 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"token_endpoint":         stringattr.Optional(),
 	"user_info_endpoint":     stringattr.Optional(),
 	"jwks_endpoint":          stringattr.Optional(),
-	"claim_mapping":          mapattr.StringOptional(),
+	"claim_mapping":          strmapattr.Optional(),
 }
 
 type OAuthProviderModel struct {
-	Disabled                types.Bool                         `tfsdk:"disabled"`
-	ClientID                types.String                       `tfsdk:"client_id"`
-	ClientSecret            types.String                       `tfsdk:"client_secret"`
-	ProviderTokenManagement *OAuthProviderTokenManagementModel `tfsdk:"provider_token_management"`
-	Prompts                 []types.String                     `tfsdk:"prompts"`
-	Scopes                  []types.String                     `tfsdk:"scopes"`
-	MergeUserAccounts       types.Bool                         `tfsdk:"merge_user_accounts"`
-	Description             types.String                       `tfsdk:"description"`
-	Logo                    types.String                       `tfsdk:"logo"`
-	AllowedGrantTypes       []types.String                     `tfsdk:"allowed_grant_types"`
-	Issuer                  types.String                       `tfsdk:"issuer"`
-	AuthorizationEndpoint   types.String                       `tfsdk:"authorization_endpoint"`
-	TokenEndpoint           types.String                       `tfsdk:"token_endpoint"`
-	UserInfoEndpoint        types.String                       `tfsdk:"user_info_endpoint"`
-	JWKsEndpoint            types.String                       `tfsdk:"jwks_endpoint"`
-	ClaimMapping            map[string]types.String            `tfsdk:"claim_mapping"`
+	Disabled                boolattr.Type                                   `tfsdk:"disabled"`
+	ClientID                stringattr.Type                                 `tfsdk:"client_id"`
+	ClientSecret            stringattr.Type                                 `tfsdk:"client_secret"`
+	ProviderTokenManagement objattr.Type[OAuthProviderTokenManagementModel] `tfsdk:"provider_token_management"`
+	Prompts                 strlistattr.Type                                `tfsdk:"prompts"`
+	Scopes                  strlistattr.Type                                `tfsdk:"scopes"`
+	MergeUserAccounts       boolattr.Type                                   `tfsdk:"merge_user_accounts"`
+	Description             stringattr.Type                                 `tfsdk:"description"`
+	Logo                    stringattr.Type                                 `tfsdk:"logo"`
+	AllowedGrantTypes       strlistattr.Type                                `tfsdk:"allowed_grant_types"`
+	Issuer                  stringattr.Type                                 `tfsdk:"issuer"`
+	AuthorizationEndpoint   stringattr.Type                                 `tfsdk:"authorization_endpoint"`
+	TokenEndpoint           stringattr.Type                                 `tfsdk:"token_endpoint"`
+	UserInfoEndpoint        stringattr.Type                                 `tfsdk:"user_info_endpoint"`
+	JWKsEndpoint            stringattr.Type                                 `tfsdk:"jwks_endpoint"`
+	ClaimMapping            strmapattr.Type                                 `tfsdk:"claim_mapping"`
 }
 
 func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
@@ -292,23 +297,22 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	}
 	stringattr.Get(m.ClientID, data, "clientId")
 	stringattr.Get(m.ClientSecret, data, "clientSecret")
-	if ptk := m.ProviderTokenManagement; ptk != nil {
+	if m.ProviderTokenManagement.IsSet() { // XXX the fields are optional
 		data["manageProviderTokens"] = true
-		stringattr.Get(ptk.CallbackDomain, data, "callbackDomain")
-		stringattr.Get(ptk.RedirectURL, data, "redirectUrl")
+		objattr.Get(m.ProviderTokenManagement, data, helpers.RootKey, h)
 	} else {
 		data["manageProviderTokens"] = false
 	}
-	if len(m.Prompts) > 0 {
+	if !m.Prompts.IsEmpty() {
 		strlistattr.Get(m.Prompts, data, "prompts", h)
 	}
-	if len(m.Scopes) > 0 {
+	if !m.Scopes.IsEmpty() {
 		strlistattr.Get(m.Scopes, data, "scopes", h)
 	}
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
-	if len(m.AllowedGrantTypes) > 0 {
+	if !m.AllowedGrantTypes.IsEmpty() {
 		strlistattr.Get(m.AllowedGrantTypes, data, "allowedGrantTypes", h)
 	}
 	stringattr.Get(m.Issuer, data, "issuer")
@@ -318,11 +322,11 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.JWKsEndpoint, data, "jwksUrl")
 	claimMapping := map[string]any{}
 	customAttributes := map[string]string{}
-	for k, v := range m.ClaimMapping {
+	for k, v := range strmapattr.Iterator(m.ClaimMapping, h) {
 		if slices.Contains(systemClaimMapping, k) {
-			claimMapping[k] = v.ValueString()
+			claimMapping[k] = v
 		} else {
-			customAttributes[k] = v.ValueString()
+			customAttributes[k] = v
 		}
 	}
 	claimMapping["customAttributes"] = customAttributes
@@ -332,27 +336,24 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if b, ok := data["enabled"].(bool); ok {
-		m.Disabled = types.BoolValue(!b)
+		m.Disabled = boolattr.Value(!b)
 	}
 	stringattr.Set(&m.ClientID, data, "clientId")
-	// m.ClientSecret - Not setting the secret as it is returned obfuscated
 	if data["manageProviderTokens"] == true {
-		m.ProviderTokenManagement = &OAuthProviderTokenManagementModel{}
-		stringattr.Set(&m.ProviderTokenManagement.CallbackDomain, data, "callbackDomain")
-		stringattr.Set(&m.ProviderTokenManagement.RedirectURL, data, "redirectUrl")
+		objattr.Set(&m.ProviderTokenManagement, data, helpers.RootKey, h)
 	}
-	// Skipped for now: m.Prompts = helpers.AnySliceToStringSlice(data, "prompts")
+	strlistattr.Set(&m.Prompts, data, "prompts", h) // XXX was skipped
 	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")
-	// Skipped for now: m.AllowedGrantTypes = helpers.AnySliceToStringSlice(data, "allowedGrantTypes")
+	strlistattr.Set(&m.AllowedGrantTypes, data, "allowedGrantTypes", h) // XXX was skipped
 	stringattr.Set(&m.Issuer, data, "issuer")
 	stringattr.Set(&m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")
 	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
-	// m.ClaimMapping - Not setting the claims, as empty defaults are added by the BE
+	strmapattr.Nil(&m.ClaimMapping, h) // empty defaults are added by the backend
 }
 
 // Provider Token Management
@@ -363,8 +364,8 @@ var OAuthProviderTokenManagementAttribute = map[string]schema.Attribute{
 }
 
 type OAuthProviderTokenManagementModel struct {
-	CallbackDomain types.String `tfsdk:"callback_domain"`
-	RedirectURL    types.String `tfsdk:"redirect_url"`
+	CallbackDomain stringattr.Type `tfsdk:"callback_domain"`
+	RedirectURL    stringattr.Type `tfsdk:"redirect_url"`
 }
 
 func (m *OAuthProviderTokenManagementModel) Values(h *helpers.Handler) map[string]any {

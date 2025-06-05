@@ -3,52 +3,62 @@ package applications
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var ApplicationValidator = objectattr.NewValidator[ApplicationModel]("must have a valid SAML configuration")
+var ApplicationsValidator = objattr.NewValidator[ApplicationsModel]("must have a valid SAML configuration")
 
-var ApplicationAttributes = map[string]schema.Attribute{
-	"oidc_applications": listattr.Optional(OIDCAttributes),
-	"saml_applications": listattr.Optional(SAMLAttributes),
+var ApplicationsAttributes = map[string]schema.Attribute{
+	"oidc_applications": listattr.Default[OIDCModel](OIDCAttributes),
+	"saml_applications": listattr.Default[SAMLModel](SAMLAttributes),
 }
 
-type ApplicationModel struct {
-	OIDCApplications []*OIDCModel `tfsdk:"oidc_applications"`
-	SAMLApplications []*SAMLModel `tfsdk:"saml_applications"`
+type ApplicationsModel struct {
+	OIDCApplications listattr.Type[OIDCModel] `tfsdk:"oidc_applications"`
+	SAMLApplications listattr.Type[SAMLModel] `tfsdk:"saml_applications"`
 }
 
-func (m *ApplicationModel) Values(h *helpers.Handler) map[string]any {
+var ApplicationsDefault = &ApplicationsModel{
+	OIDCApplications: listattr.Empty[OIDCModel](),
+	SAMLApplications: listattr.Empty[SAMLModel](),
+}
+
+func (m *ApplicationsModel) Values(h *helpers.Handler) map[string]any {
+	m.Check(h)
 	data := map[string]any{}
 	listattr.Get(m.OIDCApplications, data, "oidc", h)
 	listattr.Get(m.SAMLApplications, data, "saml", h)
 	return data
 }
 
-func (m *ApplicationModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// update known apps with their new values
-	for _, app := range m.OIDCApplications {
-		RequireID(h, data, "oidc", app.Name, &app.ID)
-	}
-	for _, app := range m.SAMLApplications {
-		RequireID(h, data, "saml", app.Name, &app.ID)
-	}
-	// we allow setting the apps on import
-	if m.OIDCApplications == nil && helpers.IsImport(h.Ctx) {
+func (m *ApplicationsModel) SetValues(h *helpers.Handler, data map[string]any) {
+	if m.OIDCApplications.IsUnknown() {
 		listattr.Set(&m.OIDCApplications, data, "oidc", h)
+	} else {
+		for app := range listattr.MutatingIterator(&m.OIDCApplications, h) {
+			RequireID(h, data, "oidc", app.Name, &app.ID)
+		}
 	}
-	if m.SAMLApplications == nil && helpers.IsImport(h.Ctx) {
+	if m.SAMLApplications.IsUnknown() {
 		listattr.Set(&m.SAMLApplications, data, "saml", h)
+	} else {
+		for app := range listattr.MutatingIterator(&m.SAMLApplications, h) {
+			RequireID(h, data, "saml", app.Name, &app.ID)
+		}
 	}
 }
 
-func (m *ApplicationModel) Validate(h *helpers.Handler) {
-	for _, app := range m.SAMLApplications {
-		if app.DynamicConfiguration == nil && app.ManualConfiguration == nil {
-			h.Error("Either dynamic_configuration or manual_configuration must be set", "no configuration found for application")
-		} else if app.DynamicConfiguration != nil && app.ManualConfiguration != nil {
+func (m *ApplicationsModel) Check(h *helpers.Handler) {
+	for app := range listattr.Iterator(m.SAMLApplications, h) {
+		if !app.DynamicConfiguration.IsSet() && !app.ManualConfiguration.IsSet() {
+			h.Missing("Either the dynamic_configuration or manual_configuration attribute must be set in the '%s' saml application", app.Name.ValueString())
+		} else if app.DynamicConfiguration.IsSet() && app.ManualConfiguration.IsSet() {
 			h.Warn("Both dynamic_configuration and manual_configuration supplied - dynamic configuration will take precedence", "dynamic_configuration and manual_configuration are mutually exclusive. If both given - dynamic takes precedence")
 		}
 	}
+}
+
+func (m *ApplicationsModel) Validate(h *helpers.Handler) {
+	// XXX move Check here eventually
 }

@@ -1,25 +1,28 @@
 package jwttemplates
 
 import (
-	"context"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-var JWTTemplatesValidator = objectattr.NewValidator[JWTTemplatesModel]("must have unique template names")
+var JWTTemplatesValidator = objattr.NewValidator[JWTTemplatesModel]("must have unique template names")
 
 var JWTTemplatesAttributes = map[string]schema.Attribute{
-	"user_templates":       listattr.Optional(JWTTemplateAttributes),
-	"access_key_templates": listattr.Optional(JWTTemplateAttributes),
+	"user_templates":       listattr.Default[JWTTemplateModel](JWTTemplateAttributes),
+	"access_key_templates": listattr.Default[JWTTemplateModel](JWTTemplateAttributes),
+}
+
+var JWTTemplatesDefault = &JWTTemplatesModel{
+	UserTemplates:      listattr.Empty[JWTTemplateModel](),
+	AccessKeyTemplates: listattr.Empty[JWTTemplateModel](),
 }
 
 type JWTTemplatesModel struct {
-	UserTemplates      []*JWTTemplateModel `tfsdk:"user_templates"`
-	AccessKeyTemplates []*JWTTemplateModel `tfsdk:"access_key_templates"`
+	UserTemplates      listattr.Type[JWTTemplateModel] `tfsdk:"user_templates"`
+	AccessKeyTemplates listattr.Type[JWTTemplateModel] `tfsdk:"access_key_templates"`
 }
 
 func (m *JWTTemplatesModel) Values(h *helpers.Handler) map[string]any {
@@ -30,51 +33,49 @@ func (m *JWTTemplatesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *JWTTemplatesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// update templates with their new values
-	m.setTemplateValues(h, data, "userTemplates", m.UserTemplates)
-	m.setTemplateValues(h, data, "keyTemplates", m.AccessKeyTemplates)
-	// we allow setting the templates on import
-	if m.UserTemplates == nil && helpers.IsImport(h.Ctx) {
+	if m.UserTemplates.IsUnknown() {
 		listattr.Set(&m.UserTemplates, data, "userTemplates", h)
+	} else {
+		m.setTemplateValues(h, data, "userTemplates", &m.UserTemplates)
 	}
-	if m.AccessKeyTemplates == nil && helpers.IsImport(h.Ctx) {
+	if m.AccessKeyTemplates.IsUnknown() {
 		listattr.Set(&m.AccessKeyTemplates, data, "keyTemplates", h)
+	} else {
+		m.setTemplateValues(h, data, "keyTemplates", &m.AccessKeyTemplates)
 	}
 }
 
-func (m *JWTTemplatesModel) References(ctx context.Context) helpers.ReferencesMap {
-	refs := helpers.ReferencesMap{}
-	for _, v := range m.UserTemplates {
-		refs.Add(helpers.JWTTemplateReferenceKey, "user", v.ID.ValueString(), v.Name.ValueString())
+func (m *JWTTemplatesModel) CollectReferences(h *helpers.Handler) {
+	for v := range listattr.Iterator(m.UserTemplates, h) {
+		h.Refs.Add(helpers.JWTTemplateReferenceKey, "user", v.ID.ValueString(), v.Name.ValueString())
 	}
-	for _, v := range m.AccessKeyTemplates {
-		refs.Add(helpers.JWTTemplateReferenceKey, "key", v.ID.ValueString(), v.Name.ValueString())
+	for v := range listattr.Iterator(m.AccessKeyTemplates, h) {
+		h.Refs.Add(helpers.JWTTemplateReferenceKey, "key", v.ID.ValueString(), v.Name.ValueString())
 	}
-	return refs
 }
 
 func (m *JWTTemplatesModel) Validate(h *helpers.Handler) {
 	names := map[string]int{}
-	for _, v := range m.UserTemplates {
+	for v := range listattr.Iterator(m.UserTemplates, h) {
 		names[v.Name.ValueString()] += 1
 	}
-	for _, v := range m.AccessKeyTemplates {
+	for v := range listattr.Iterator(m.AccessKeyTemplates, h) {
 		names[v.Name.ValueString()] += 1
 	}
 	for k, v := range names {
 		if v > 1 {
-			h.Error("JWT template names must be unique", "The JWT template name '%s' is used %d times", k, v)
+			h.Conflict("The JWT template name '%s' is used %d times", k, v)
 		}
 	}
 }
 
-func (m *JWTTemplatesModel) setTemplateValues(h *helpers.Handler, data map[string]any, key string, list []*JWTTemplateModel) {
+func (m *JWTTemplatesModel) setTemplateValues(h *helpers.Handler, data map[string]any, key string, list *listattr.Type[JWTTemplateModel]) {
 	templates := m.getTemplateIDs(data, key)
-	for _, template := range list {
+	for template := range listattr.MutatingIterator(list, h) {
 		name := template.Name.ValueString()
 		id, found := templates[name]
 		if found {
-			value := types.StringValue(id)
+			value := stringattr.Value(id)
 			if !template.ID.Equal(value) {
 				h.Log("Setting new ID '%s' for %s JWT template named '%s'", id, key, name)
 				template.ID = value

@@ -13,14 +13,6 @@ func TestAuthorization(t *testing.T) {
 	testacc.Run(t,
 		resource.TestStep{
 			Config: p.Config(`
-			`),
-			Check: p.Check(map[string]any{
-				"authorization.roles.#":       0,
-				"authorization.permissions.#": 0,
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
 				authorization = {
 					roles = [
 						{
@@ -42,7 +34,7 @@ func TestAuthorization(t *testing.T) {
 					]
 				}
 			`),
-			ExpectError: regexp.MustCompile(`Permission doesn't exist`),
+			ExpectError: regexp.MustCompile(`Missing Permission`),
 		},
 		resource.TestStep{
 			Config: p.Config(`
@@ -79,9 +71,7 @@ func TestAuthorization(t *testing.T) {
 				"authorization.roles.#":                   2,
 				"authorization.roles.0.name":              "App Developer",
 				"authorization.roles.0.description":       "Builds apps and uploads new beta builds",
-				"authorization.roles.0.permissions.#":     3,
-				"authorization.roles.0.permissions.0":     "build-apps",
-				"authorization.roles.0.permissions.1":     "upload-builds",
+				"authorization.roles.0.permissions":       []string{"build-apps", "install-builds", "upload-builds"},
 				"authorization.permissions.#":             3,
 				"authorization.permissions.0.name":        "build-apps",
 				"authorization.permissions.0.description": "Allowed to build and sign applications",

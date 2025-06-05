@@ -8,7 +8,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var JWTTemplateAttributes = map[string]schema.Attribute{
@@ -23,14 +22,14 @@ var JWTTemplateAttributes = map[string]schema.Attribute{
 }
 
 type JWTTemplateModel struct {
-	ID                types.String `tfsdk:"id"`
-	Name              types.String `tfsdk:"name"`
-	Description       types.String `tfsdk:"description"`
-	AuthSchema        types.String `tfsdk:"auth_schema"`
-	EmptyClaimPolicy  types.String `tfsdk:"empty_claim_policy"`
-	ConformanceIssuer types.Bool   `tfsdk:"conformance_issuer"`
-	EnforceIssuer     types.Bool   `tfsdk:"enforce_issuer"`
-	Template          types.String `tfsdk:"template"`
+	ID                stringattr.Type `tfsdk:"id"`
+	Name              stringattr.Type `tfsdk:"name"`
+	Description       stringattr.Type `tfsdk:"description"`
+	AuthSchema        stringattr.Type `tfsdk:"auth_schema"`
+	EmptyClaimPolicy  stringattr.Type `tfsdk:"empty_claim_policy"`
+	ConformanceIssuer boolattr.Type   `tfsdk:"conformance_issuer"`
+	EnforceIssuer     boolattr.Type   `tfsdk:"enforce_issuer"`
+	Template          stringattr.Type `tfsdk:"template"`
 }
 
 func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
@@ -45,7 +44,7 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 	// convert template JSON string to map
 	template := map[string]any{}
 	if err := json.Unmarshal([]byte(m.Template.ValueString()), &template); err != nil {
-		h.Error("Unexpected template structure", "Could not deserialize template attribute, json expected")
+		h.Invalid("Expected a valid JSON string for the template attribute")
 	}
 	data["template"] = template
 
@@ -67,14 +66,17 @@ func (m *JWTTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.AuthSchema, data, "authSchema")
+	stringattr.Set(&m.EmptyClaimPolicy, data, "emptyClaimPolicy")
 	boolattr.Set(&m.ConformanceIssuer, data, "conformanceIssuer")
+	boolattr.Set(&m.EnforceIssuer, data, "enforceIssuer")
+
 	if m.Template.ValueString() == "" {
 		template := "{}"
 		if t, ok := data["template"].(map[string]any); ok {
-			if b, err := json.Marshal(t); err == nil {
+			if b, err := json.Marshal(t); err == nil { // XXX json.MarshalIndent(t, "", "  ") ?
 				template = string(b)
 			}
 		}
-		m.Template = types.StringValue(template)
+		m.Template = stringattr.Value(template)
 	}
 }

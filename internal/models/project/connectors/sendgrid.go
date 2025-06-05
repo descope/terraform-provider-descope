@@ -1,13 +1,10 @@
 package connectors
 
 import (
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var SendGridAttributes = map[string]schema.Attribute{
@@ -15,19 +12,19 @@ var SendGridAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"sender":         objectattr.Required(SenderFieldAttributes),
-	"authentication": objectattr.Required(SendGridAuthFieldAttributes),
+	"sender":         objattr.Required[SenderFieldModel](SenderFieldAttributes),
+	"authentication": objattr.Required[SendGridAuthFieldModel](SendGridAuthFieldAttributes),
 }
 
 // Model
 
 type SendGridModel struct {
-	ID          types.String `tfsdk:"id"`
-	Name        types.String `tfsdk:"name"`
-	Description types.String `tfsdk:"description"`
+	ID          stringattr.Type `tfsdk:"id"`
+	Name        stringattr.Type `tfsdk:"name"`
+	Description stringattr.Type `tfsdk:"description"`
 
-	Sender *SenderFieldModel       `tfsdk:"sender"`
-	Auth   *SendGridAuthFieldModel `tfsdk:"authentication"`
+	Sender objattr.Type[SenderFieldModel]       `tfsdk:"sender"`
+	Auth   objattr.Type[SendGridAuthFieldModel] `tfsdk:"authentication"`
 }
 
 func (m *SendGridModel) Values(h *helpers.Handler) map[string]any {
@@ -39,30 +36,36 @@ func (m *SendGridModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *SendGridModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
-	objectattr.Set(&m.Sender, data, "configuration", h)
-	objectattr.Set(&m.Auth, data, "configuration", h)
+	if c, ok := data["configuration"].(map[string]any); ok {
+		m.SetConfigurationValues(c, h)
+	}
 }
 
 // Configuration
 
 func (m *SendGridModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
-	maps.Copy(c, m.Sender.Values(h))
-	maps.Copy(c, m.Auth.Values(h))
+	objattr.Get(m.Sender, c, helpers.RootKey, h)
+	objattr.Get(m.Auth, c, helpers.RootKey, h)
 	return c
+}
+
+func (m *SendGridModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	objattr.Set(&m.Sender, c, helpers.RootKey, h)
+	objattr.Set(&m.Auth, c, helpers.RootKey, h)
 }
 
 // Matching
 
-func (m *SendGridModel) GetName() types.String {
+func (m *SendGridModel) GetName() stringattr.Type {
 	return m.Name
 }
 
-func (m *SendGridModel) GetID() types.String {
+func (m *SendGridModel) GetID() stringattr.Type {
 	return m.ID
 }
 
-func (m *SendGridModel) SetID(id types.String) {
+func (m *SendGridModel) SetID(id stringattr.Type) {
 	m.ID = id
 }
 
@@ -73,7 +76,7 @@ var SendGridAuthFieldAttributes = map[string]schema.Attribute{
 }
 
 type SendGridAuthFieldModel struct {
-	ApiKey types.String `tfsdk:"api_key"`
+	ApiKey stringattr.Type `tfsdk:"api_key"`
 }
 
 func (m *SendGridAuthFieldModel) Values(h *helpers.Handler) map[string]any {

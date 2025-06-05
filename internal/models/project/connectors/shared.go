@@ -4,18 +4,18 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/strmapattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 // Common values
 
-func connectorValues(id, name, description types.String, h *helpers.Handler) map[string]any {
+func connectorValues(id, name, description stringattr.Type, h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 
 	stringattr.Get(name, data, "name")
@@ -35,7 +35,7 @@ func connectorValues(id, name, description types.String, h *helpers.Handler) map
 	return data
 }
 
-func setConnectorValues(id, name, description *types.String, data map[string]any, _ *helpers.Handler) {
+func setConnectorValues(id, name, description *stringattr.Type, data map[string]any, _ *helpers.Handler) {
 	stringattr.Set(id, data, "id")
 	stringattr.Set(name, data, "name")
 	stringattr.Set(description, data, "description")
@@ -43,63 +43,22 @@ func setConnectorValues(id, name, description *types.String, data map[string]any
 
 // Connector Identifiers
 
-func SetConnectorIDs[T any, M helpers.MatchableModel[T]](h *helpers.Handler, data map[string]any, key string, connectors *[]M) {
-	for _, connector := range *connectors {
-		n := connector.GetName().ValueString()
-		h.Log("Looking for %s connector named '%s'", key, n)
-		if connectorID, ok := findConnectorID(h, data, key, n); ok {
-			value := types.StringValue(connectorID)
-			if !connector.GetID().Equal(value) {
-				h.Log("Setting new ID '%s' for %s connector named '%s'", connectorID, key, n)
-				connector.SetID(value)
-			} else {
-				h.Log("Keeping existing ID '%s' for %s connector named '%s'", connectorID, key, n)
-			}
-		}
-	}
-	// we allow setting the connectors in import
-	if len(*connectors) == 0 && helpers.IsImport(h.Ctx) {
-		listattr.Set(connectors, data, key, h)
-	}
-}
-
-func findConnectorID(h *helpers.Handler, data map[string]any, key string, name string) (string, bool) {
-	list, ok := data[key].([]any)
-	if !ok {
-		return "", false
-	}
-
-	for _, v := range list {
-		if connector, ok := v.(map[string]any); ok {
-			if n, ok := connector["name"].(string); ok && name == n {
-				if id, ok := connector["id"].(string); ok {
-					return id, true
-				}
-			}
-			if common, ok := connector["common"].(map[string]any); ok {
-				if n, ok := common["displayName"].(string); ok && name == n {
-					if id, ok := common["id"].(string); ok {
-						return id, true
-					}
-				}
-			}
-		}
-	}
-
-	h.Error("Connector not found", "Expected to find connector of type '%s' to match with '%s' connector", key, name)
-	return "", false
+func setConnectorsValues[T any, M helpers.MatchableModel[T]](h *helpers.Handler, data map[string]any, key string, connectors *listattr.Type[T]) {
+	listattr.Set[T, M](connectors, data, key, h)
 }
 
 // Connector Utils
 
-func addConnectorReferences[T any, M helpers.MatchableModel[T]](refs helpers.ReferencesMap, key string, connectors []M) {
-	for _, connector := range connectors {
-		refs.Add(helpers.ConnectorReferenceKey, key, connector.GetID().ValueString(), connector.GetName().ValueString())
+func addConnectorReferences[T any, M helpers.MatchableModel[T]](h *helpers.Handler, key string, connectors listattr.Type[T]) {
+	for v := range listattr.Iterator(connectors, h) {
+		var connector M = v
+		h.Refs.Add(helpers.ConnectorReferenceKey, key, connector.GetID().ValueString(), connector.GetName().ValueString())
 	}
 }
 
-func addConnectorNames[T any, M helpers.MatchableModel[T]](names map[string]int, connectors []M) {
-	for _, connector := range connectors {
+func addConnectorNames[T any, M helpers.MatchableModel[T]](h *helpers.Handler, names map[string]int, connectors listattr.Type[T]) {
+	for v := range listattr.Iterator(connectors, h) {
+		var connector M = v
 		if v := connector.GetName().ValueString(); v != "" {
 			names[v] += 1
 		}
@@ -114,8 +73,8 @@ var SenderFieldAttributes = map[string]schema.Attribute{
 }
 
 type SenderFieldModel struct {
-	Email types.String `tfsdk:"email"`
-	Name  types.String `tfsdk:"name"`
+	Email stringattr.Type `tfsdk:"email"`
+	Name  stringattr.Type `tfsdk:"name"`
 }
 
 func (m *SenderFieldModel) Values(h *helpers.Handler) map[string]any {
@@ -138,8 +97,8 @@ var ServerFieldAttributes = map[string]schema.Attribute{
 }
 
 type ServerFieldModel struct {
-	Host types.String `tfsdk:"host"`
-	Port types.Int64  `tfsdk:"port"`
+	Host stringattr.Type `tfsdk:"host"`
+	Port intattr.Type    `tfsdk:"port"`
 }
 
 func (m *ServerFieldModel) Values(h *helpers.Handler) map[string]any {
@@ -163,9 +122,9 @@ var AuditFilterFieldAttributes = map[string]schema.Attribute{
 }
 
 type AuditFilterFieldModel struct {
-	Key      types.String   `tfsdk:"key"`
-	Operator types.String   `tfsdk:"operator"`
-	Vals     []types.String `tfsdk:"values"`
+	Key      stringattr.Type  `tfsdk:"key"`
+	Operator stringattr.Type  `tfsdk:"operator"`
+	Vals     strlistattr.Type `tfsdk:"values"`
 }
 
 func (m *AuditFilterFieldModel) Values(h *helpers.Handler) map[string]any {
@@ -184,45 +143,48 @@ func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]an
 
 // HTTP Headers
 
-func getHeaders(s map[string]types.String, data map[string]any, key string) {
+func getHeaders(s strmapattr.Type, data map[string]any, key string, h *helpers.Handler) {
 	headers := []any{}
-	for k, v := range s {
-		if !v.IsNull() && !v.IsUnknown() {
-			headers = append(headers, map[string]any{"key": k, "value": v.ValueString()})
-		}
+	for k, v := range strmapattr.Iterator(s, h) {
+		headers = append(headers, map[string]any{"key": k, "value": v})
 	}
 	data[key] = headers
 }
 
-func setHeaders(s *map[string]string, data map[string]any, key string) {
+func setHeaders(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) {
+	headers := map[string]string{}
 	if v, ok := data[key].([]any); ok {
-		*s = map[string]string{}
 		for i := range v {
 			if m, ok := v[i].(map[string]any); ok {
 				key, _ := m["key"].(string)
 				value, _ := m["value"].(string)
-				(*s)[key] = value
+				headers[key] = value
 			}
 		}
 	}
+	*s = strmapattr.Value(headers)
 }
-
-var _ = setHeaders // ignore for now
 
 // HTTP Auth Field
 
-var HTTPAuthFieldValidator = objectattr.NewValidator[HTTPAuthFieldModel]("must specify exactly one authentication method")
+var HTTPAuthFieldValidator = objattr.NewValidator[HTTPAuthFieldModel]("must specify exactly one authentication method")
 
 var HTTPAuthFieldAttributes = map[string]schema.Attribute{
 	"bearer_token": stringattr.SecretOptional(),
-	"basic":        objectattr.Optional(HTTPAuthBasicFieldAttributes),
-	"api_key":      objectattr.Optional(HTTPAuthAPIKeyFieldAttributes),
+	"basic":        objattr.Default[HTTPAuthBasicFieldModel](nil, HTTPAuthBasicFieldAttributes),
+	"api_key":      objattr.Default[HTTPAuthAPIKeyFieldModel](nil, HTTPAuthAPIKeyFieldAttributes),
+}
+
+var HTTPAuthFieldDefault = &HTTPAuthFieldModel{
+	BearerToken: stringattr.Value(""),
+	Basic:       objattr.Value[HTTPAuthBasicFieldModel](nil),
+	ApiKey:      objattr.Value[HTTPAuthAPIKeyFieldModel](nil),
 }
 
 type HTTPAuthFieldModel struct {
-	BearerToken types.String              `tfsdk:"bearer_token"`
-	Basic       *HTTPAuthBasicFieldModel  `tfsdk:"basic"`
-	ApiKey      *HTTPAuthAPIKeyFieldModel `tfsdk:"api_key"`
+	BearerToken stringattr.Type                        `tfsdk:"bearer_token"`
+	Basic       objattr.Type[HTTPAuthBasicFieldModel]  `tfsdk:"basic"`
+	ApiKey      objattr.Type[HTTPAuthAPIKeyFieldModel] `tfsdk:"api_key"`
 }
 
 func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
@@ -232,19 +194,29 @@ func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 		data["method"] = "bearerToken"
 		data["bearerToken"] = v
 	}
-	if v := m.Basic; v != nil {
+	if m.Basic.IsSet() {
 		data["method"] = "basic"
-		data["basic"] = v.Values(h)
+		objattr.Get(m.Basic, data, "basic", h)
 	}
-	if v := m.ApiKey; v != nil {
+	if m.ApiKey.IsSet() {
 		data["method"] = "apiKey"
-		data["apiKey"] = v.Values(h)
+		objattr.Get(m.ApiKey, data, "apiKey", h)
 	}
 	return data
 }
 
 func (m *HTTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all auth values are specified in the configuration
+	stringattr.Nil(&m.BearerToken)
+	if data["method"] == "basic" {
+		objattr.Set(&m.Basic, data, "basic", h)
+	} else {
+		objattr.Nil(&m.Basic)
+	}
+	if data["method"] == "apiKey" {
+		objattr.Set(&m.ApiKey, data, "apiKey", h)
+	} else {
+		objattr.Nil(&m.ApiKey)
+	}
 }
 
 func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
@@ -256,17 +228,15 @@ func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
 	if m.BearerToken.ValueString() != "" {
 		count += 1
 	}
-	if m.Basic != nil {
+	if m.Basic.IsSet() {
 		count += 1
 	}
-	if m.ApiKey != nil {
+	if m.ApiKey.IsSet() {
 		count += 1
 	}
 
-	if count == 0 {
-		h.Error("Invalid HTTP authentication type", "An HTTP authentication method is required")
-	} else if count > 1 {
-		h.Error("Invalid HTTP authentication type", "Only one HTTP authentication method is allowed")
+	if count > 1 {
+		h.Invalid("Cannot specify more than one connector authentication method")
 	}
 }
 
@@ -278,19 +248,20 @@ var HTTPAuthBasicFieldAttributes = map[string]schema.Attribute{
 }
 
 type HTTPAuthBasicFieldModel struct {
-	Username types.String `tfsdk:"username"`
-	Password types.String `tfsdk:"password"`
+	Username stringattr.Type `tfsdk:"username"`
+	Password stringattr.Type `tfsdk:"password"`
 }
 
 func (m *HTTPAuthBasicFieldModel) Values(h *helpers.Handler) map[string]any {
-	return map[string]any{
-		"username": m.Username.ValueString(),
-		"password": m.Password.ValueString(),
-	}
+	data := map[string]any{}
+	stringattr.Get(m.Username, data, "username")
+	stringattr.Get(m.Password, data, "password")
+	return data
 }
 
 func (m *HTTPAuthBasicFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all auth values are specified in the configuration
+	stringattr.Set(&m.Username, data, "username")
+	stringattr.Nil(&m.Password)
 }
 
 // HTTP Auth APIKey Field
@@ -301,17 +272,18 @@ var HTTPAuthAPIKeyFieldAttributes = map[string]schema.Attribute{
 }
 
 type HTTPAuthAPIKeyFieldModel struct {
-	Key   types.String `tfsdk:"key"`
-	Token types.String `tfsdk:"token"`
+	Key   stringattr.Type `tfsdk:"key"`
+	Token stringattr.Type `tfsdk:"token"`
 }
 
 func (m *HTTPAuthAPIKeyFieldModel) Values(h *helpers.Handler) map[string]any {
-	return map[string]any{
-		"key":   m.Key.ValueString(),
-		"token": m.Token.ValueString(),
-	}
+	data := map[string]any{}
+	stringattr.Get(m.Key, data, "key")
+	stringattr.Get(m.Token, data, "token")
+	return data
 }
 
 func (m *HTTPAuthAPIKeyFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// all auth values are specified in the configuration
+	stringattr.Set(&m.Key, data, "key")
+	stringattr.Nil(&m.Token)
 }

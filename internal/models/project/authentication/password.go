@@ -1,16 +1,13 @@
 package authentication
 
 import (
-	"maps"
-
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objectattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var PasswordAttributes = map[string]schema.Attribute{
@@ -26,23 +23,23 @@ var PasswordAttributes = map[string]schema.Attribute{
 	"reuse":            boolattr.Optional(),
 	"reuse_amount":     intattr.Optional(int64validator.Between(1, 50)),
 	"uppercase":        boolattr.Optional(),
-	"email_service":    objectattr.Optional(templates.EmailServiceAttributes, templates.EmailServiceValidator),
+	"email_service":    objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
 
 type PasswordModel struct {
-	Disabled        types.Bool                   `tfsdk:"disabled"`
-	Expiration      types.Bool                   `tfsdk:"expiration"`
-	ExpirationWeeks types.Int64                  `tfsdk:"expiration_weeks"`
-	Lock            types.Bool                   `tfsdk:"lock"`
-	LockAttempts    types.Int64                  `tfsdk:"lock_attempts"`
-	Lowercase       types.Bool                   `tfsdk:"lowercase"`
-	MinLength       types.Int64                  `tfsdk:"min_length"`
-	NonAlphanumeric types.Bool                   `tfsdk:"non_alphanumeric"`
-	Number          types.Bool                   `tfsdk:"number"`
-	Reuse           types.Bool                   `tfsdk:"reuse"`
-	ReuseAmount     types.Int64                  `tfsdk:"reuse_amount"`
-	Uppercase       types.Bool                   `tfsdk:"uppercase"`
-	EmailService    *templates.EmailServiceModel `tfsdk:"email_service"`
+	Disabled        boolattr.Type                             `tfsdk:"disabled"`
+	Expiration      boolattr.Type                             `tfsdk:"expiration"`
+	ExpirationWeeks intattr.Type                              `tfsdk:"expiration_weeks"`
+	Lock            boolattr.Type                             `tfsdk:"lock"`
+	LockAttempts    intattr.Type                              `tfsdk:"lock_attempts"`
+	Lowercase       boolattr.Type                             `tfsdk:"lowercase"`
+	MinLength       intattr.Type                              `tfsdk:"min_length"`
+	NonAlphanumeric boolattr.Type                             `tfsdk:"non_alphanumeric"`
+	Number          boolattr.Type                             `tfsdk:"number"`
+	Reuse           boolattr.Type                             `tfsdk:"reuse"`
+	ReuseAmount     intattr.Type                              `tfsdk:"reuse_amount"`
+	Uppercase       boolattr.Type                             `tfsdk:"uppercase"`
+	EmailService    objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
 }
 
 func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
@@ -59,9 +56,7 @@ func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.Reuse, data, "reuse")
 	intattr.Get(m.ReuseAmount, data, "reuseAmount")
 	boolattr.Get(m.Uppercase, data, "uppercase")
-	if v := m.EmailService; v != nil {
-		maps.Copy(data, v.Values(h))
-	}
+	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	return data
 }
 
@@ -78,13 +73,9 @@ func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.Reuse, data, "reuse")
 	intattr.Set(&m.ReuseAmount, data, "reuseAmount")
 	boolattr.Set(&m.Uppercase, data, "uppercase")
-	if m.EmailService = helpers.InitIfImport(h.Ctx, m.EmailService); m.EmailService != nil {
-		m.EmailService.SetValues(h, data)
-	}
+	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
 }
 
-func (m *PasswordModel) SetReferences(h *helpers.Handler) {
-	if m.EmailService != nil {
-		m.EmailService.SetReferences(h)
-	}
+func (m *PasswordModel) UpdateReferences(h *helpers.Handler) {
+	objattr.UpdateReferences(&m.EmailService, h)
 }

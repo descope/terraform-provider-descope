@@ -6,7 +6,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var FlowAttributes = map[string]schema.Attribute{
@@ -14,7 +13,7 @@ var FlowAttributes = map[string]schema.Attribute{
 }
 
 type FlowModel struct {
-	Data types.String `tfsdk:"data"`
+	Data stringattr.Type `tfsdk:"data"`
 }
 
 func (m *FlowModel) Values(h *helpers.Handler) map[string]any {
@@ -28,7 +27,7 @@ func (m *FlowModel) SetValues(h *helpers.Handler, data map[string]any) {
 		h.Error("Invalid flow data", "Failed to parse JSON: %s", err.Error())
 		return
 	}
-	m.Data = types.StringValue(string(b))
+	m.Data = stringattr.Value(string(b))
 }
 
 func (m *FlowModel) Check(h *helpers.Handler) {
@@ -55,7 +54,7 @@ func (m *FlowModel) Check(h *helpers.Handler) {
 	}
 }
 
-func getFlowData(data types.String, h *helpers.Handler) map[string]any {
+func getFlowData(data stringattr.Type, h *helpers.Handler) map[string]any {
 	m := map[string]any{}
 	if err := json.Unmarshal([]byte(data.ValueString()), &m); err != nil {
 		h.Error("Invalid flow data", "Failed to parse JSON: %s", err.Error())

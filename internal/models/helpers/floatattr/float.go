@@ -9,6 +9,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+type Type = types.Float64
+
+func Value(value float64) Type {
+	return types.Float64Value(value)
+}
+
 func Required(validators ...validator.Float64) schema.Float64Attribute {
 	return schema.Float64Attribute{
 		Required:   true,
