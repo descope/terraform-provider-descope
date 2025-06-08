@@ -67,7 +67,13 @@ func Default[T any](value *T, attributes map[string]schema.Attribute, extras ...
 }
 
 func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if o.IsNull() || o.IsUnknown() {
+	if o.IsUnknown() {
+		return
+	}
+	if o.IsNull() {
+		if key != helpers.RootKey {
+			data[key] = nil
+		}
 		return
 	}
 

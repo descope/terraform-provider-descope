@@ -48,7 +48,7 @@ func (e *ProjectEntity) SetValues(ctx context.Context, data map[string]any) {
 	e.Model.CollectReferences(handler)
 	// update the model with the new values from the backend response
 	e.Model.SetValues(handler, data)
-	// collect the references again after the model has been update
+	// collect the references again after the model has been updated
 	e.Model.CollectReferences(handler)
 	// apply the references to replace any server IDs
 	e.Model.UpdateReferences(handler)
