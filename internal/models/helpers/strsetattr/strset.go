@@ -28,13 +28,13 @@ func Empty() Type {
 }
 
 func valueOf(ctx context.Context, value []string) Type {
-	return convertStringSliceToTerraformValue(ctx, value)
+	return convertStringSliceToValue(ctx, value)
 }
 
 func Required(validators ...validator.Set) schema.SetAttribute {
 	return schema.SetAttribute{
 		Required:    true,
-		CustomType:  valuesettype.StringSetType,
+		CustomType:  valuesettype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
 		Validators:  validators,
 	}
@@ -44,7 +44,7 @@ func Optional(validators ...validator.Set) schema.SetAttribute {
 	return schema.SetAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    valuesettype.StringSetType,
+		CustomType:    valuesettype.NewType[types.String](context.Background()),
 		ElementType:   types.StringType,
 		Validators:    validators,
 		PlanModifiers: []planmodifier.Set{setplanmodifier.UseStateForUnknown()},
@@ -55,7 +55,7 @@ func Default(validators ...validator.Set) schema.SetAttribute {
 	return schema.SetAttribute{
 		Optional:    true,
 		Computed:    true,
-		CustomType:  valuesettype.StringSetType,
+		CustomType:  valuesettype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
 		Validators:  validators,
 		Default:     setdefault.StaticValue(Empty().SetValue),
@@ -78,7 +78,7 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
 	values := helpers.GetStringSlice(data, key)
-	*s = convertStringSliceToTerraformValue(h.Ctx, values)
+	*s = convertStringSliceToValue(h.Ctx, values)
 }
 
 func GetCommaSeparated(s Type, data map[string]any, key string, h *helpers.Handler) {
@@ -93,8 +93,11 @@ func GetCommaSeparated(s Type, data map[string]any, key string, h *helpers.Handl
 }
 
 func SetCommaSeparated(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	values := helpers.GetCommaSeparatedStringSlice(data, key)
-	*s = convertStringSliceToTerraformValue(h.Ctx, values)
+	values := []string{}
+	if v, _ := data[key].(string); v != "" {
+		values = strings.Split(v, ",")
+	}
+	*s = convertStringSliceToValue(h.Ctx, values)
 }
 
 func Iterator(l Type, h *helpers.Handler) iter.Seq[string] {
@@ -113,7 +116,7 @@ func Iterator(l Type, h *helpers.Handler) iter.Seq[string] {
 	}
 }
 
-func convertStringSliceToTerraformValue(ctx context.Context, values []string) Type {
+func convertStringSliceToValue(ctx context.Context, values []string) Type {
 	var elements []attr.Value
 	for _, v := range values {
 		elements = append(elements, types.StringValue(v))

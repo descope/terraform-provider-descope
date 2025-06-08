@@ -3,7 +3,6 @@ package listtype
 import (
 	"context"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -74,7 +73,11 @@ func NewUnknownValue[T any](ctx context.Context) ListValueOf[T] {
 func NewValue[T any](ctx context.Context, values []*T) (ListValueOf[T], diag.Diagnostics) {
 	elements := []attr.Value{}
 	for _, v := range values {
-		elements = append(elements, helpers.Require(objtype.NewValue(ctx, v)))
+		elem, diags := objtype.NewValue(ctx, v)
+		if diags.HasError() {
+			return NewUnknownValue[T](ctx), diags
+		}
+		elements = append(elements, elem)
 	}
 	return NewValueWith[T](ctx, elements)
 }

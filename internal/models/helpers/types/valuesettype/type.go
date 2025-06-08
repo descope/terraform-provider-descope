@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -16,8 +15,6 @@ var (
 	_ attr.TypeWithElementType = (*setTypeOf[basetypes.StringValue])(nil)
 	_ basetypes.SetTypable     = (*setTypeOf[basetypes.StringValue])(nil)
 )
-
-var StringSetType = setTypeOf[basetypes.StringValue]{basetypes.SetType{ElemType: basetypes.StringType{}}}
 
 type setTypeOf[T attr.Value] struct {
 	basetypes.SetType
@@ -50,8 +47,7 @@ func (t setTypeOf[T]) ValueFromSet(ctx context.Context, in basetypes.SetValue) (
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ := helpers.AttrTypeOf[T](ctx)
-	v, d := basetypes.NewSetValue(typ, in.Elements())
+	v, d := basetypes.NewSetValue(elementTypeOf[T](ctx), in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
@@ -77,4 +73,13 @@ func (t setTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) 
 	}
 
 	return setValuable, nil
+}
+
+func NewType[T attr.Value](ctx context.Context) setTypeOf[T] {
+	return setTypeOf[T]{basetypes.SetType{ElemType: elementTypeOf[T](ctx)}}
+}
+
+func elementTypeOf[T attr.Value](ctx context.Context) attr.Type {
+	var zero T
+	return zero.Type(ctx)
 }

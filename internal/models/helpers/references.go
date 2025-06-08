@@ -11,16 +11,6 @@ const (
 	JWTTemplateReferenceKey = "ref:jwttemplate"
 )
 
-type CollectReferencesModel[T any] interface {
-	Model[T]
-	CollectReferences(*Handler)
-}
-
-type UpdateReferencesModel[T any] interface {
-	Model[T]
-	UpdateReferences(*Handler)
-}
-
 type ModelReference struct {
 	Type string
 	ID   string

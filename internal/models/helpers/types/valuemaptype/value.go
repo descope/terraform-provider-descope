@@ -3,7 +3,6 @@ package valuemaptype
 import (
 	"context"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -28,7 +27,7 @@ func (v MapValueOf[T]) Equal(o attr.Value) bool {
 }
 
 func (v MapValueOf[T]) Type(ctx context.Context) attr.Type {
-	return mapTypeOf[T]{basetypes.MapType{ElemType: helpers.AttrTypeOf[T](ctx)}}
+	return mapTypeOf[T]{basetypes.MapType{ElemType: elementTypeOf[T](ctx)}}
 }
 
 func (v MapValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
@@ -56,17 +55,17 @@ func (v MapValueOf[T]) ToMap(ctx context.Context) (map[string]T, diag.Diagnostic
 }
 
 func NewMapValue[T attr.Value](ctx context.Context) MapValueOf[T] {
-	return MapValueOf[T]{MapValue: basetypes.NewMapNull(helpers.AttrTypeOf[T](ctx))}
+	return MapValueOf[T]{MapValue: basetypes.NewMapNull(elementTypeOf[T](ctx))}
 }
 
 func NewUnknownValue[T attr.Value](ctx context.Context) MapValueOf[T] {
-	return MapValueOf[T]{MapValue: basetypes.NewMapUnknown(helpers.AttrTypeOf[T](ctx))}
+	return MapValueOf[T]{MapValue: basetypes.NewMapUnknown(elementTypeOf[T](ctx))}
 }
 
 func NewValue[T attr.Value](ctx context.Context, elements map[string]attr.Value) (MapValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	v, d := basetypes.NewMapValue(helpers.AttrTypeOf[T](ctx), elements)
+	v, d := basetypes.NewMapValue(elementTypeOf[T](ctx), elements)
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags

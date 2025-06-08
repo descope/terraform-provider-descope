@@ -7,10 +7,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-func NullDefault() defaults.String {
-	return &nullDefault{}
-}
-
 type nullDefault struct {
 }
 

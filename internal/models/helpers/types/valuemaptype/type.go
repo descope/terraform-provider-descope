@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -16,8 +15,6 @@ var (
 	_ attr.TypeWithElementType = (*mapTypeOf[basetypes.StringValue])(nil)
 	_ basetypes.MapTypable     = (*mapTypeOf[basetypes.StringValue])(nil)
 )
-
-var StringMapType = mapTypeOf[basetypes.StringValue]{basetypes.MapType{ElemType: basetypes.StringType{}}}
 
 type mapTypeOf[T attr.Value] struct {
 	basetypes.MapType
@@ -50,8 +47,7 @@ func (t mapTypeOf[T]) ValueFromMap(ctx context.Context, in basetypes.MapValue) (
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ := helpers.AttrTypeOf[T](ctx)
-	v, d := basetypes.NewMapValue(typ, in.Elements())
+	v, d := basetypes.NewMapValue(elementTypeOf[T](ctx), in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
@@ -77,4 +73,13 @@ func (t mapTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value) 
 	}
 
 	return mapValuable, nil
+}
+
+func NewType[T attr.Value](ctx context.Context) mapTypeOf[T] {
+	return mapTypeOf[T]{basetypes.MapType{ElemType: elementTypeOf[T](ctx)}}
+}
+
+func elementTypeOf[T attr.Value](ctx context.Context) attr.Type {
+	var zero T
+	return zero.Type(ctx)
 }

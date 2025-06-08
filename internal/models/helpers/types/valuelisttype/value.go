@@ -3,7 +3,6 @@ package valuelisttype
 import (
 	"context"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -28,7 +27,7 @@ func (v ListValueOf[T]) Equal(o attr.Value) bool {
 }
 
 func (v ListValueOf[T]) Type(ctx context.Context) attr.Type {
-	return listTypeOf[T]{basetypes.ListType{ElemType: helpers.AttrTypeOf[T](ctx)}}
+	return listTypeOf[T]{basetypes.ListType{ElemType: elementTypeOf[T](ctx)}}
 }
 
 func (v ListValueOf[T]) ToTerraformValue(ctx context.Context) (tftypes.Value, error) {
@@ -56,17 +55,17 @@ func (v ListValueOf[T]) ToSlice(ctx context.Context) ([]T, diag.Diagnostics) {
 }
 
 func NewNullValue[T attr.Value](ctx context.Context) ListValueOf[T] {
-	return ListValueOf[T]{ListValue: basetypes.NewListNull(helpers.AttrTypeOf[T](ctx))}
+	return ListValueOf[T]{ListValue: basetypes.NewListNull(elementTypeOf[T](ctx))}
 }
 
 func NewUnknownValue[T attr.Value](ctx context.Context) ListValueOf[T] {
-	return ListValueOf[T]{ListValue: basetypes.NewListUnknown(helpers.AttrTypeOf[T](ctx))}
+	return ListValueOf[T]{ListValue: basetypes.NewListUnknown(elementTypeOf[T](ctx))}
 }
 
 func NewValue[T attr.Value](ctx context.Context, elements []attr.Value) (ListValueOf[T], diag.Diagnostics) {
 	var diags diag.Diagnostics
 
-	v, d := basetypes.NewListValue(helpers.AttrTypeOf[T](ctx), elements)
+	v, d := basetypes.NewListValue(elementTypeOf[T](ctx), elements)
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
