@@ -165,5 +165,5 @@ func (r *projectResource) Delete(ctx context.Context, req resource.DeleteRequest
 func (r *projectResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
 	diags := resp.Private.SetKey(ctx, importKey, []byte(`{}`))
 	resp.Diagnostics.Append(diags...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...)
+	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...) // XXX switch back to passthrough
 }
