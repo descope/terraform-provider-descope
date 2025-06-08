@@ -31,7 +31,7 @@ func (t mapTypeOf[T]) Equal(o attr.Type) bool {
 
 func (t mapTypeOf[T]) String() string {
 	var zero T
-	return fmt.Sprintf("mapNestedObjectTypeOf[%T]", zero)
+	return fmt.Sprintf("mapTypeOf[%T]", zero)
 }
 
 func (t mapTypeOf[T]) ValueType(ctx context.Context) attr.Value {

@@ -7,11 +7,14 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
 type Type[T any] = objtype.ObjectValueOf[T]
@@ -64,7 +67,13 @@ func Default[T any](value *T, attributes map[string]schema.Attribute, extras ...
 }
 
 func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if o.IsNull() || o.IsUnknown() {
+	if o.IsUnknown() {
+		return
+	}
+	if o.IsNull() {
+		if key != helpers.RootKey {
+			data[key] = nil
+		}
 		return
 	}
 
@@ -142,4 +151,11 @@ func parseExtras(extras []any) (validators []validator.Object, modifiers []planm
 		}
 	}
 	return
+}
+
+func modelFromObject[T any, M helpers.Model[T]](ctx context.Context, object types.Object, diagnostics *diag.Diagnostics) M {
+	result := new(T)
+	diags := object.As(ctx, result, basetypes.ObjectAsOptions{})
+	diagnostics.Append(diags...)
+	return result
 }

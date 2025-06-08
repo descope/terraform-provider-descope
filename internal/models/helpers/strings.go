@@ -1,8 +1,6 @@
 package helpers
 
 import (
-	"strings"
-
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -18,18 +16,30 @@ func GetStringSlice(data map[string]any, key string) []string {
 	return strs
 }
 
-func GetCommaSeparatedStringSlice(data map[string]any, key string) []string {
-	var strs []string
-	if v, _ := data[key].(string); v != "" {
-		strs = strings.Split(v, ",")
+func GetStringMap(data map[string]any, key string) map[string]string {
+	result := map[string]string{}
+	if m, ok := data[key].(map[string]any); ok {
+		for k, v := range m {
+			if s, ok := v.(string); ok {
+				result[k] = s
+			}
+		}
 	}
-	return strs
+	return result
 }
 
 func ConvertTerraformSliceToStringSlice(strs []types.String) []string {
 	var result []string
 	for i := range strs {
 		result = append(result, strs[i].ValueString())
+	}
+	return result
+}
+
+func ConvertTerraformStringMapToStringMap(m map[string]types.String) map[string]string {
+	result := map[string]string{}
+	for k, v := range m {
+		result[k] = v.ValueString()
 	}
 	return result
 }

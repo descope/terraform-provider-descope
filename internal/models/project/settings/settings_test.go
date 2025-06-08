@@ -282,7 +282,6 @@ func TestSettings(t *testing.T) {
 			}),
 		},
 		resource.TestStep{
-			SkipFunc: testacc.IsLocalEnvironment,
 			Config: p.Config(`
 				project_settings = {
 					enable_inactivity = true
@@ -293,6 +292,60 @@ func TestSettings(t *testing.T) {
 				"project_settings.refresh_token_expiration": "4 weeks",
 				"project_settings.enable_inactivity":        true,
 				"project_settings.inactivity_time":          "1 hour",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_migration = {}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Inappropriate value`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_migration = {
+						vendor = "okta"
+						client_id = "foo"
+						domain = "example.com"
+						issuer = "bar"
+						loginid_matched_attributes = [ "username", "email" ]
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`should not be set`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_migration = {
+						vendor = "okta"
+						client_id = "foo"
+						issuer = "bar"
+						loginid_matched_attributes = [ "username", "email" ]
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.session_migration": map[string]any{
+					"vendor":                     "okta",
+					"client_id":                  "foo",
+					"domain":                     "",
+					"audience":                   "",
+					"issuer":                     "bar",
+					"loginid_matched_attributes": []string{"username", "email"},
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_migration = null
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.session_migration.%": 0,
 			}),
 		},
 	)

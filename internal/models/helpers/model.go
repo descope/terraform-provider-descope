@@ -1,13 +1,6 @@
 package helpers
 
-import (
-	"context"
-
-	"github.com/hashicorp/terraform-plugin-framework/attr"
-	"github.com/hashicorp/terraform-plugin-framework/diag"
-	"github.com/hashicorp/terraform-plugin-framework/types"
-	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
-)
+import "github.com/hashicorp/terraform-plugin-framework/types"
 
 const (
 	DescopeConnector = "Descope"
@@ -21,17 +14,22 @@ type Model[T any] interface {
 	*T
 }
 
-// Creates a Terraform object from a model object.
-func ModelFromObject[T any, M Model[T]](ctx context.Context, object types.Object, diagnostics *diag.Diagnostics) M {
-	result := new(T)
-	diags := object.As(ctx, result, basetypes.ObjectAsOptions{})
-	diagnostics.Append(diags...)
-	return result
+// A model that can be matched by name and ID, primarily for making more friendly diffs in lists.
+type MatchableModel[T any] interface {
+	Model[T]
+	GetName() types.String
+	GetID() types.String
+	SetID(id types.String)
 }
 
-// Creates a model object from a Terraform object.
-func ObjectFromModel[T any, M Model[T]](ctx context.Context, value *T, types map[string]attr.Type, diagnostics *diag.Diagnostics) types.Object {
-	result, diags := basetypes.NewObjectValueFrom(ctx, types, value)
-	diagnostics.Append(diags...)
-	return result
+// A model that can return a list of references to other model objects.
+type CollectReferencesModel[T any] interface {
+	Model[T]
+	CollectReferences(*Handler)
+}
+
+// A model that has references that need to be updated after the model is created or updated.
+type UpdateReferencesModel[T any] interface {
+	Model[T]
+	UpdateReferences(*Handler)
 }

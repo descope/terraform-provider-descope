@@ -40,32 +40,34 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"user_jwt_template":                   stringattr.Default(""),
 	"access_key_jwt_template":             stringattr.Default(""),
+	"session_migration":                   objattr.Default[SessionMigrationModel](nil, SessionMigrationAttributes, SessionMigrationValidator),
 }
 
 type SettingsModel struct {
-	AppURL                          stringattr.Type `tfsdk:"app_url"`
-	CustomDomain                    stringattr.Type `tfsdk:"custom_domain"`
-	ApprovedDomain                  strsetattr.Type `tfsdk:"approved_domains"`
-	DefaultNoSSOApps                boolattr.Type   `tfsdk:"default_no_sso_apps"`
-	RefreshTokenRotation            boolattr.Type   `tfsdk:"refresh_token_rotation"`
-	RefreshTokenExpiration          stringattr.Type `tfsdk:"refresh_token_expiration"`
-	RefreshTokenResponseMethod      stringattr.Type `tfsdk:"refresh_token_response_method"`
-	RefreshTokenCookiePolicy        stringattr.Type `tfsdk:"refresh_token_cookie_policy"`
-	RefreshTokenCookieDomain        stringattr.Type `tfsdk:"refresh_token_cookie_domain"`
-	SessionTokenExpiration          stringattr.Type `tfsdk:"session_token_expiration"`
-	SessionTokenResponseMethod      stringattr.Type `tfsdk:"session_token_response_method"`
-	SessionTokenCookiePolicy        stringattr.Type `tfsdk:"session_token_cookie_policy"`
-	SessionTokenCookieDomain        stringattr.Type `tfsdk:"session_token_cookie_domain"`
-	StepUpTokenExpiration           stringattr.Type `tfsdk:"step_up_token_expiration"`
-	TrustedDeviceTokenExpiration    stringattr.Type `tfsdk:"trusted_device_token_expiration"`
-	AccessKeySessionTokenExpiration stringattr.Type `tfsdk:"access_key_session_token_expiration"`
-	EnableInactivity                boolattr.Type   `tfsdk:"enable_inactivity"`
-	InactivityTime                  stringattr.Type `tfsdk:"inactivity_time"`
-	TestUsersLoginIDRegExp          stringattr.Type `tfsdk:"test_users_loginid_regexp"`
-	TestUsersVerifierRegExp         stringattr.Type `tfsdk:"test_users_verifier_regexp"`
-	TestUsersStaticOTP              stringattr.Type `tfsdk:"test_users_static_otp"`
-	UserJWTTemplate                 stringattr.Type `tfsdk:"user_jwt_template"`
-	AccessKeyJWTTemplate            stringattr.Type `tfsdk:"access_key_jwt_template"`
+	AppURL                          stringattr.Type                     `tfsdk:"app_url"`
+	CustomDomain                    stringattr.Type                     `tfsdk:"custom_domain"`
+	ApprovedDomain                  strsetattr.Type                     `tfsdk:"approved_domains"`
+	DefaultNoSSOApps                boolattr.Type                       `tfsdk:"default_no_sso_apps"`
+	RefreshTokenRotation            boolattr.Type                       `tfsdk:"refresh_token_rotation"`
+	RefreshTokenExpiration          stringattr.Type                     `tfsdk:"refresh_token_expiration"`
+	RefreshTokenResponseMethod      stringattr.Type                     `tfsdk:"refresh_token_response_method"`
+	RefreshTokenCookiePolicy        stringattr.Type                     `tfsdk:"refresh_token_cookie_policy"`
+	RefreshTokenCookieDomain        stringattr.Type                     `tfsdk:"refresh_token_cookie_domain"`
+	SessionTokenExpiration          stringattr.Type                     `tfsdk:"session_token_expiration"`
+	SessionTokenResponseMethod      stringattr.Type                     `tfsdk:"session_token_response_method"`
+	SessionTokenCookiePolicy        stringattr.Type                     `tfsdk:"session_token_cookie_policy"`
+	SessionTokenCookieDomain        stringattr.Type                     `tfsdk:"session_token_cookie_domain"`
+	StepUpTokenExpiration           stringattr.Type                     `tfsdk:"step_up_token_expiration"`
+	TrustedDeviceTokenExpiration    stringattr.Type                     `tfsdk:"trusted_device_token_expiration"`
+	AccessKeySessionTokenExpiration stringattr.Type                     `tfsdk:"access_key_session_token_expiration"`
+	EnableInactivity                boolattr.Type                       `tfsdk:"enable_inactivity"`
+	InactivityTime                  stringattr.Type                     `tfsdk:"inactivity_time"`
+	TestUsersLoginIDRegExp          stringattr.Type                     `tfsdk:"test_users_loginid_regexp"`
+	TestUsersVerifierRegExp         stringattr.Type                     `tfsdk:"test_users_verifier_regexp"`
+	TestUsersStaticOTP              stringattr.Type                     `tfsdk:"test_users_static_otp"`
+	UserJWTTemplate                 stringattr.Type                     `tfsdk:"user_jwt_template"`
+	AccessKeyJWTTemplate            stringattr.Type                     `tfsdk:"access_key_jwt_template"`
+	SessionMigration                objattr.Type[SessionMigrationModel] `tfsdk:"session_migration"`
 }
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -107,6 +109,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data["testUserAllowFixedAuth"] = m.TestUsersStaticOTP.ValueString() != ""
 	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", "user", h)
 	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", "key", h)
+	objattr.Get(m.SessionMigration, data, "externalAuthConfig", h)
 	return data
 }
 
@@ -150,6 +153,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")     // replaced by template name by UpdateReferences later
 	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId") // replaced by template name by UpdateReferences later
+	objattr.Set(&m.SessionMigration, data, "externalAuthConfig", h)
 }
 
 func (m *SettingsModel) Check(h *helpers.Handler) {

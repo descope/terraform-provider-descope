@@ -3,10 +3,10 @@ package strmapattr
 import (
 	"context"
 	"iter"
-	"maps"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/valuemaptype"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
@@ -26,13 +26,13 @@ func Empty() Type {
 }
 
 func valueOf(ctx context.Context, value map[string]string) Type {
-	return convertStringMapToTerraformValue(ctx, value)
+	return convertStringMapToValue(ctx, value)
 }
 
 func Required(validators ...validator.Map) schema.MapAttribute {
 	return schema.MapAttribute{
 		Required:    true,
-		CustomType:  valuemaptype.StringMapType,
+		CustomType:  valuemaptype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
 		Validators:  validators,
 	}
@@ -42,7 +42,7 @@ func Optional(validators ...validator.Map) schema.MapAttribute {
 	return schema.MapAttribute{
 		Optional:      true,
 		Computed:      true,
-		CustomType:    valuemaptype.StringMapType,
+		CustomType:    valuemaptype.NewType[types.String](context.Background()),
 		ElementType:   types.StringType,
 		Validators:    validators,
 		PlanModifiers: []planmodifier.Map{mapplanmodifier.UseStateForUnknown()},
@@ -53,7 +53,7 @@ func Default(validators ...validator.Map) schema.MapAttribute {
 	return schema.MapAttribute{
 		Optional:    true,
 		Computed:    true,
-		CustomType:  valuemaptype.StringMapType,
+		CustomType:  valuemaptype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
 		Validators:  validators,
 		Default:     mapdefault.StaticValue(Empty().MapValue),
@@ -66,27 +66,17 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 	}
 
 	values := helpers.Require(s.ToMap(h.Ctx))
-	data[key] = convertTerraformStringMapToStringMap(values)
+	data[key] = helpers.ConvertTerraformStringMapToStringMap(values)
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	m := getStringMap(data, key)
-
-	if !s.IsEmpty() {
-		values := helpers.Require(s.ToMap(h.Ctx))
-		current := convertTerraformStringMapToStringMap(values)
-		if !maps.Equal(current, m) {
-			h.Mismatch("Mismatched string map value in '%s' key", key)
-		}
-		return
-	}
-
-	*s = convertStringMapToTerraformValue(h.Ctx, m)
+	m := helpers.GetStringMap(data, key)
+	*s = convertStringMapToValue(h.Ctx, m)
 }
 
 func Nil(s *Type, h *helpers.Handler) {
 	if s.IsUnknown() {
-		*s = convertStringMapToTerraformValue(h.Ctx, map[string]string{})
+		*s = convertStringMapToValue(h.Ctx, map[string]string{})
 	}
 }
 
@@ -104,4 +94,12 @@ func Iterator(s Type, h *helpers.Handler) iter.Seq2[string, string] {
 			}
 		}
 	}
+}
+
+func convertStringMapToValue(ctx context.Context, m map[string]string) Type {
+	elements := map[string]attr.Value{}
+	for k, v := range m {
+		elements[k] = types.StringValue(v)
+	}
+	return helpers.Require(valuemaptype.NewValue[types.String](ctx, elements))
 }

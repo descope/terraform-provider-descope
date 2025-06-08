@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
@@ -16,8 +15,6 @@ var (
 	_ attr.TypeWithElementType = (*listTypeOf[basetypes.StringValue])(nil)
 	_ basetypes.ListTypable    = (*listTypeOf[basetypes.StringValue])(nil)
 )
-
-var StringListType = listTypeOf[basetypes.StringValue]{basetypes.ListType{ElemType: basetypes.StringType{}}}
 
 type listTypeOf[T attr.Value] struct {
 	basetypes.ListType
@@ -50,8 +47,7 @@ func (t listTypeOf[T]) ValueFromList(ctx context.Context, in basetypes.ListValue
 		return NewUnknownValue[T](ctx), diags
 	}
 
-	typ := helpers.AttrTypeOf[T](ctx)
-	v, d := basetypes.NewListValue(typ, in.Elements())
+	v, d := basetypes.NewListValue(elementTypeOf[T](ctx), in.Elements())
 	diags.Append(d...)
 	if diags.HasError() {
 		return NewUnknownValue[T](ctx), diags
@@ -77,4 +73,13 @@ func (t listTypeOf[T]) ValueFromTerraform(ctx context.Context, in tftypes.Value)
 	}
 
 	return listValuable, nil
+}
+
+func NewType[T attr.Value](ctx context.Context) listTypeOf[T] {
+	return listTypeOf[T]{basetypes.ListType{ElemType: elementTypeOf[T](ctx)}}
+}
+
+func elementTypeOf[T attr.Value](ctx context.Context) attr.Type {
+	var zero T
+	return zero.Type(ctx)
 }

@@ -31,7 +31,7 @@ func (t setTypeOf[T]) Equal(o attr.Type) bool {
 
 func (t setTypeOf[T]) String() string {
 	var zero T
-	return fmt.Sprintf("setNestedObjectTypeOf[%T]", zero)
+	return fmt.Sprintf("setTypeOf[%T]", zero)
 }
 
 func (t setTypeOf[T]) ValueType(ctx context.Context) attr.Value {

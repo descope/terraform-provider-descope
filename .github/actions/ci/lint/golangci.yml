@@ -34,6 +34,7 @@ linters:
         - "-ST1020" # "Comment on exported function"
         - "-ST1021" # "Comment on exported type"
         - "-ST1022" # "Comment on exported constant"
+        - "-QF1003" # "Could use tagged switch"
         - "-QF1012" # "Use fmt.Fprintf instead of WriteString"
         - "-QF1008" # "Could remove embedded field from selector"
     revive:

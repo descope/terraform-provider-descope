@@ -31,7 +31,7 @@ func (t listTypeOf[T]) Equal(o attr.Type) bool {
 
 func (t listTypeOf[T]) String() string {
 	var zero T
-	return fmt.Sprintf("listNestedObjectTypeOf[%T]", zero)
+	return fmt.Sprintf("listTypeOf[%T]", zero)
 }
 
 func (t listTypeOf[T]) ValueType(ctx context.Context) attr.Value {

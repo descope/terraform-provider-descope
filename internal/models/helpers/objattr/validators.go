@@ -37,7 +37,7 @@ func (v *objectValidator[T, M]) ValidateObject(ctx context.Context, req validato
 		return
 	}
 
-	model := helpers.ModelFromObject[T, M](ctx, req.ConfigValue, &resp.Diagnostics)
+	model := modelFromObject[T, M](ctx, req.ConfigValue, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}

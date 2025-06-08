@@ -49,7 +49,7 @@ func SecretOptional(validators ...validator.String) schema.StringAttribute {
 		Computed:   true,
 		Sensitive:  true,
 		Validators: validators,
-		Default:    NullDefault(),
+		Default:    &nullDefault{},
 	}
 }
 
@@ -77,7 +77,7 @@ func Deprecated(message string, validators ...validator.String) schema.StringAtt
 		Computed:           true,
 		DeprecationMessage: message + " This attribute will be removed in a future version of the provider.",
 		Validators:         validators,
-		Default:            NullDefault(),
+		Default:            &nullDefault{},
 	}
 }
 

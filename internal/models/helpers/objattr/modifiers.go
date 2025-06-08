@@ -37,8 +37,8 @@ func (v *objectModifier[T, M]) PlanModifyObject(ctx context.Context, req planmod
 		return
 	}
 
-	plan := helpers.ModelFromObject[T, M](ctx, req.PlanValue, &resp.Diagnostics)
-	state := helpers.ModelFromObject[T, M](ctx, req.StateValue, &resp.Diagnostics)
+	plan := modelFromObject[T, M](ctx, req.PlanValue, &resp.Diagnostics)
+	state := modelFromObject[T, M](ctx, req.StateValue, &resp.Diagnostics)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -49,5 +49,5 @@ func (v *objectModifier[T, M]) PlanModifyObject(ctx context.Context, req planmod
 		return
 	}
 
-	resp.PlanValue = helpers.ObjectFromModel[T, M](ctx, plan, req.PlanValue.AttributeTypes(ctx), &resp.Diagnostics)
+	resp.PlanValue = valueOf(ctx, plan).ObjectValue
 }

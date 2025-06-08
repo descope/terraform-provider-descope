@@ -15,6 +15,8 @@ type Handler struct {
 	Refs        ReferencesMap
 }
 
+// NewHandler creates a new Handler instance that wraps a context, an empty references map, and a
+// reference to the diagnostics collection of a response of an entity object.
 func NewHandler(ctx context.Context, diags *diag.Diagnostics) *Handler {
 	return &Handler{
 		Ctx:         ctx,
@@ -29,10 +31,6 @@ func (h *Handler) Log(format string, a ...any) {
 
 func (h *Handler) Warn(summary string, format string, a ...any) {
 	h.Diagnostics.AddWarning(summary, fmt.Sprintf(format, a...))
-}
-
-func (h *Handler) Mismatch(format string, a ...any) {
-	h.Diagnostics.AddWarning("Attribute Value Mismatch", fmt.Sprintf(format, a...))
 }
 
 func (h *Handler) Error(summary string, format string, a ...any) {
