@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"maps"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/objtype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectdefault"

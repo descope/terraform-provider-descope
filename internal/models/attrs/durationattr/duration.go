@@ -20,8 +20,6 @@ func Value(value string) Type {
 	return types.StringValue(value)
 }
 
-var units = []string{"seconds", "minutes", "hours", "days", "weeks"}
-
 func Required(validators ...validator.String) schema.StringAttribute {
 	return schema.StringAttribute{
 		Required:   true,
@@ -72,6 +70,8 @@ func Set(s *types.String, data map[string]any, key string) {
 }
 
 // Utils
+
+var units = []string{"seconds", "minutes", "hours", "days", "weeks"}
 
 func composeString(num int64, unit string) string {
 	return fmt.Sprintf("%d %s", num, unit)

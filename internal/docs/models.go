@@ -103,6 +103,7 @@ func InjectModels() {
 	inject(jwttemplates.JWTTemplateAttributes, docsJWTTemplate)
 	inject(jwttemplates.JWTTemplatesAttributes, docsJWTTemplates)
 	inject(settings.InviteSettingsAttributes, docsInviteSettings)
+	inject(settings.SessionMigrationAttributes, docsSessionMigration)
 	inject(settings.SettingsAttributes, docsSettings)
 	inject(templates.EmailServiceAttributes, docsEmailService)
 	inject(templates.EmailTemplateAttributes, docsEmailTemplate)

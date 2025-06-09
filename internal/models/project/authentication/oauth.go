@@ -5,14 +5,13 @@ import (
 	"maps"
 	"slices"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/mapattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strmapattr"
-	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -257,8 +256,8 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"client_id":                 stringattr.Optional(),
 	"client_secret":             stringattr.SecretOptional(),
 	"provider_token_management": objattr.Default[OAuthProviderTokenManagementModel](nil, OAuthProviderTokenManagementAttribute),
-	"prompts":                   strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("none", "login", "consent", "select_account"))),
-	"allowed_grant_types":       strlistattr.Optional(listvalidator.ValueStringsAre(stringvalidator.OneOf("authorization_code", "implicit"))),
+	"prompts":                   strlistattr.Optional(stringvalidator.OneOf("none", "login", "consent", "select_account")),
+	"allowed_grant_types":       strlistattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
 	"scopes":                    strlistattr.Optional(),
 	"merge_user_accounts":       boolattr.Default(true),
 	// editable for custom only

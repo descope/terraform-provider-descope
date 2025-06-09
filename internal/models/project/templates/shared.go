@@ -3,8 +3,8 @@ package templates
 import (
 	"strings"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 )
 
 func requireTemplateID(h *helpers.Handler, data map[string]any, typ string, name string) (string, bool) {

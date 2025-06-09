@@ -38,7 +38,8 @@ default_no_sso_apps
 
 - Type: `bool` 
 
-Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app
+Define whether a user created with no federated apps, will have access to all apps,
+or will not have access to any app.
 
 
 
@@ -228,3 +229,12 @@ access_key_jwt_template
 - Type: `string` 
 
 Name of the access key JWT Template.
+
+
+
+session_migration
+-----------------
+
+- Type: `object` of `settings.SessionMigration` 
+
+Configure seamless migration of existing user sessions from another vendor to Descope.

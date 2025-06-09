@@ -1,9 +1,10 @@
-package helpers
+package attrs
 
 import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
+// Returns a slice of Go strings from a specific key in a map.
 func GetStringSlice(data map[string]any, key string) []string {
 	var strs []string
 	if objects, ok := data[key].([]any); ok {
@@ -16,6 +17,7 @@ func GetStringSlice(data map[string]any, key string) []string {
 	return strs
 }
 
+// Returns a map of Go strings from a specific key in a map.
 func GetStringMap(data map[string]any, key string) map[string]string {
 	result := map[string]string{}
 	if m, ok := data[key].(map[string]any); ok {
@@ -28,6 +30,7 @@ func GetStringMap(data map[string]any, key string) map[string]string {
 	return result
 }
 
+// Converts a slice of Terraform strings to a slice of Go strings.
 func ConvertTerraformSliceToStringSlice(strs []types.String) []string {
 	var result []string
 	for i := range strs {
@@ -36,6 +39,7 @@ func ConvertTerraformSliceToStringSlice(strs []types.String) []string {
 	return result
 }
 
+// Converts a map of Terraform strings to a map of Go strings.
 func ConvertTerraformStringMapToStringMap(m map[string]types.String) map[string]string {
 	result := map[string]string{}
 	for k, v := range m {

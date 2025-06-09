@@ -2,12 +2,15 @@ package strsetattr
 
 import (
 	"context"
+	"fmt"
 	"iter"
 	"slices"
 	"strings"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/valuesettype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/valuesettype"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -31,33 +34,33 @@ func valueOf(ctx context.Context, value []string) Type {
 	return convertStringSliceToValue(ctx, value)
 }
 
-func Required(validators ...validator.Set) schema.SetAttribute {
+func Required(extras ...any) schema.SetAttribute {
 	return schema.SetAttribute{
 		Required:    true,
 		CustomType:  valuesettype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
-		Validators:  validators,
+		Validators:  parseExtras(extras),
 	}
 }
 
-func Optional(validators ...validator.Set) schema.SetAttribute {
+func Optional(extras ...any) schema.SetAttribute {
 	return schema.SetAttribute{
 		Optional:      true,
 		Computed:      true,
 		CustomType:    valuesettype.NewType[types.String](context.Background()),
 		ElementType:   types.StringType,
-		Validators:    validators,
+		Validators:    parseExtras(extras),
 		PlanModifiers: []planmodifier.Set{setplanmodifier.UseStateForUnknown()},
 	}
 }
 
-func Default(validators ...validator.Set) schema.SetAttribute {
+func Default(extras ...any) schema.SetAttribute {
 	return schema.SetAttribute{
 		Optional:    true,
 		Computed:    true,
 		CustomType:  valuesettype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
-		Validators:  validators,
+		Validators:  parseExtras(extras),
 		Default:     setdefault.StaticValue(Empty().SetValue),
 	}
 }
@@ -68,7 +71,7 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 	}
 
 	values := helpers.Require(s.ToSlice(h.Ctx))
-	strings := helpers.ConvertTerraformSliceToStringSlice(values)
+	strings := attrs.ConvertTerraformSliceToStringSlice(values)
 
 	// sort string slice to prevent sporadic order changes in resource updates
 	slices.Sort(strings)
@@ -77,7 +80,7 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	values := helpers.GetStringSlice(data, key)
+	values := attrs.GetStringSlice(data, key)
 	*s = convertStringSliceToValue(h.Ctx, values)
 }
 
@@ -87,7 +90,7 @@ func GetCommaSeparated(s Type, data map[string]any, key string, h *helpers.Handl
 	}
 
 	values := helpers.Require(s.ToSlice(h.Ctx))
-	value := strings.Join(helpers.ConvertTerraformSliceToStringSlice(values), ",")
+	value := strings.Join(attrs.ConvertTerraformSliceToStringSlice(values), ",")
 
 	data[key] = value
 }
@@ -114,6 +117,25 @@ func Iterator(l Type, h *helpers.Handler) iter.Seq[string] {
 			}
 		}
 	}
+}
+
+func parseExtras(extras []any) []validator.Set {
+	var validators []validator.Set
+	for _, e := range extras {
+		matched := false
+		if v, ok := e.(validator.Set); ok {
+			matched = true
+			validators = append(validators, v)
+		}
+		if v, ok := e.(validator.String); ok {
+			matched = true
+			validators = append(validators, setvalidator.ValueStringsAre(v))
+		}
+		if !matched {
+			panic(fmt.Sprintf("unexpected extra value of type %T in attribute", e))
+		}
+	}
+	return validators
 }
 
 func convertStringSliceToValue(ctx context.Context, values []string) Type {

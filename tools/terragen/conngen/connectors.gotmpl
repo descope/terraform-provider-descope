@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -60,7 +60,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel, config *ConnectorsModel) {
+func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
     {{- range .Connectors }}
     listattr.Match(h, &m.{{.StructName}}, state.{{.StructName}})
     {{- end }}

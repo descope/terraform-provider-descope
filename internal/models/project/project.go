@@ -1,11 +1,11 @@
 package project
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/mapattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/project/applications"
 	"github.com/descope/terraform-provider-descope/internal/models/project/attributes"
 	"github.com/descope/terraform-provider-descope/internal/models/project/authentication"
@@ -14,7 +14,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/project/flows"
 	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
 	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
-	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -23,7 +22,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"id":               stringattr.Identifier(),
 	"name":             stringattr.Required(),
 	"environment":      stringattr.Optional(stringvalidator.OneOf("", "production")),
-	"tags":             strsetattr.Optional(setvalidator.ValueStringsAre(stringvalidator.LengthBetween(1, 50))),
+	"tags":             strsetattr.Optional(stringvalidator.LengthBetween(1, 50)),
 	"project_settings": objattr.Optional[settings.SettingsModel](settings.SettingsAttributes, settings.SettingsValidator),
 	"invite_settings":  objattr.Default(settings.InviteSettingsDefault, settings.InviteSettingsAttributes),
 	"authentication":   objattr.Optional[authentication.AuthenticationModel](authentication.AuthenticationAttributes),
@@ -69,7 +68,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.JWTTemplates, data, "jwtTemplates", h)
 	objattr.Get(m.Styles, data, "styles", h)
 	if !m.Flows.IsNull() && !m.Flows.IsUnknown() {
-		data["flows"] = flows.Values(m.Flows, h)
+		data["flows"] = flows.Get(m.Flows, h)
 	}
 	return data
 }
@@ -92,7 +91,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
 	objattr.Set(&m.Styles, data, "styles", h)
 	if m.Flows.IsEmpty() {
-		flows.SetValues(&m.Flows, data, "flows", h)
+		flows.Set(&m.Flows, data, "flows", h)
 	}
 }
 

@@ -1,20 +1,20 @@
-package listattr
+package setattr
 
 import (
 	"context"
 	"iter"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/objtype"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/settype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/listtype"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
-type Type[T any] = listtype.ListValueOf[T]
+type Type[T any] = settype.SetValueOf[T]
 
 func Value[T any](values []*T) Type[T] {
 	return valueOf(context.Background(), values)
@@ -25,55 +25,55 @@ func Empty[T any]() Type[T] {
 }
 
 func valueOf[T any](ctx context.Context, values []*T) Type[T] {
-	return helpers.Require(listtype.NewValue(ctx, values))
+	return helpers.Require(settype.NewValue(ctx, values))
 }
 
-func Required[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
+func Required[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
 	}
-	return schema.ListNestedAttribute{
+	return schema.SetNestedAttribute{
 		Required:     true,
 		NestedObject: nested,
-		CustomType:   listtype.NewType[T](context.Background()),
+		CustomType:   settype.NewType[T](context.Background()),
 	}
 }
 
-func Optional[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
+func Optional[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
 	}
-	return schema.ListNestedAttribute{
+	return schema.SetNestedAttribute{
 		Optional:      true,
 		Computed:      true,
 		NestedObject:  nested,
-		CustomType:    listtype.NewType[T](context.Background()),
-		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
+		CustomType:    settype.NewType[T](context.Background()),
+		PlanModifiers: []planmodifier.Set{setplanmodifier.UseStateForUnknown()},
 	}
 }
 
-func Default[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.ListNestedAttribute {
+func Default[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
 		Validators: validators,
 	}
-	return schema.ListNestedAttribute{
+	return schema.SetNestedAttribute{
 		Optional:     true,
 		Computed:     true,
 		NestedObject: nested,
-		CustomType:   listtype.NewType[T](context.Background()),
-		Default:      listdefault.StaticValue(Empty[T]().ListValue),
+		CustomType:   settype.NewType[T](context.Background()),
+		Default:      setdefault.StaticValue(Empty[T]().SetValue),
 	}
 }
 
-func Get[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if l.IsNull() || l.IsUnknown() {
+func Get[T any, M helpers.Model[T]](s Type[T], data map[string]any, key string, h *helpers.Handler) {
+	if s.IsNull() || s.IsUnknown() {
 		return
 	}
 
-	elems, diags := l.ToSlice(h.Ctx)
+	elems, diags := s.ToSlice(h.Ctx)
 	h.Diagnostics.Append(diags...)
 	if diags.HasError() {
 		return
@@ -88,32 +88,25 @@ func Get[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string, 
 	data[key] = result
 }
 
-func Set[T any, M helpers.Model[T]](l *Type[T], data map[string]any, key string, h *helpers.Handler) {
+func Set[T any, M helpers.Model[T]](s *Type[T], data map[string]any, key string, h *helpers.Handler) {
 	values, _ := data[key].([]any)
 
 	elems := []*T{}
-	current := l.Elements()
 
-	for i, v := range values {
-		var element M
-		if len(current) > i && !current[i].IsNull() && !current[i].IsUnknown() {
-			element, _ = objtype.NewObjectWith[T](h.Ctx, current[i])
-		}
-		if element == nil {
-			element = new(T)
-		}
+	for _, v := range values {
+		var element M = new(T)
 		if modelData, ok := v.(map[string]any); ok {
 			element.SetValues(h, modelData)
 		}
 		elems = append(elems, element)
 	}
 
-	*l = valueOf(h.Ctx, elems)
+	*s = valueOf(h.Ctx, elems)
 }
 
-func Iterator[T any](l Type[T], h *helpers.Handler) iter.Seq[*T] {
+func Iterator[T any](s Type[T], h *helpers.Handler) iter.Seq[*T] {
 	return func(yield func(*T) bool) {
-		for _, v := range l.Elements() {
+		for _, v := range s.Elements() {
 			if v.IsNull() || v.IsUnknown() {
 				continue
 			}
@@ -131,9 +124,9 @@ func Iterator[T any](l Type[T], h *helpers.Handler) iter.Seq[*T] {
 	}
 }
 
-func MutatingIterator[T any](l *Type[T], h *helpers.Handler) iter.Seq[*T] {
+func MutatingIterator[T any](s *Type[T], h *helpers.Handler) iter.Seq[*T] {
 	return func(yield func(*T) bool) {
-		elements := l.Elements()
+		elements := s.Elements()
 
 		for i, v := range elements {
 			if v.IsNull() || v.IsUnknown() {
@@ -159,12 +152,12 @@ func MutatingIterator[T any](l *Type[T], h *helpers.Handler) iter.Seq[*T] {
 			}
 		}
 
-		listValue, diags := listtype.NewValueWith[T](h.Ctx, elements)
+		setValue, diags := settype.NewValueWith[T](h.Ctx, elements)
 		h.Diagnostics.Append(diags...)
 		if diags.HasError() {
 			return
 		}
 
-		*l = listValue
+		*s = setValue
 	}
 }
