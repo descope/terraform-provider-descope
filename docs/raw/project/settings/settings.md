@@ -237,4 +237,4 @@ session_migration
 
 - Type: `object` of `settings.SessionMigration` 
 
-// description for session_migration
+Configure seamless migration of existing user sessions from another vendor to Descope.

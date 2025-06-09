@@ -781,12 +781,13 @@ var docsInviteSettings = map[string]string{
 }
 
 var docsSessionMigration = map[string]string{
-	"vendor": "",
+	"vendor": "The name of the vendor the sessions are migrated from, in all lowercase.",
 	"client_id": "",
 	"domain": "",
 	"audience": "",
 	"issuer": "",
-	"loginid_matched_attributes": "",
+	"loginid_matched_attributes": "A set of attributes from the vendor's user that should be used to match with " +
+	                              "the Descope user's login ID.",
 }
 
 var docsSettings = map[string]string{
@@ -830,7 +831,7 @@ var docsSettings = map[string]string{
 	"test_users_static_otp": "A 6 digit static OTP code for use with test users.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
-	"session_migration": "",
+	"session_migration": "Configure seamless migration of existing user sessions from another vendor to Descope.",
 }
 
 var docsEmailService = map[string]string{

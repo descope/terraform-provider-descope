@@ -9,7 +9,7 @@ vendor
 
 - Type: `string` (required)
 
-// description for vendor
+The name of the vendor the sessions are migrated from, in all lowercase.
 
 
 
@@ -54,4 +54,5 @@ loginid_matched_attributes
 
 - Type: `set` of `string` (required)
 
-// description for loginid_matched_attributes
+A set of attributes from the vendor's user that should be used to match with
+the Descope user's login ID.
