@@ -26,7 +26,7 @@ type IncodeModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 
 	APIKey stringattr.Type `tfsdk:"api_key"`
-	ApiUrl stringattr.Type `tfsdk:"api_url"`
+	APIURL stringattr.Type `tfsdk:"api_url"`
 	FlowID stringattr.Type `tfsdk:"flow_id"`
 }
 
@@ -49,14 +49,14 @@ func (m *IncodeModel) SetValues(h *helpers.Handler, data map[string]any) {
 func (m *IncodeModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.APIKey, c, "apiKey")
-	stringattr.Get(m.ApiUrl, c, "apiUrl")
+	stringattr.Get(m.APIURL, c, "apiUrl")
 	stringattr.Get(m.FlowID, c, "flowId")
 	return c
 }
 
 func (m *IncodeModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Nil(&m.APIKey)
-	stringattr.Set(&m.ApiUrl, c, "apiUrl")
+	stringattr.Set(&m.APIURL, c, "apiUrl")
 	stringattr.Set(&m.FlowID, c, "flowId")
 }
 

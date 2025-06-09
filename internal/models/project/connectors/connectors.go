@@ -23,14 +23,20 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"aws_s3":                     listattr.Default[AWSS3Model](AWSS3Attributes, AWSS3Validator),
 	"aws_translate":              listattr.Default[AWSTranslateModel](AWSTranslateAttributes),
 	"clear":                      listattr.Default[ClearModel](ClearAttributes),
+	"cybersixgill":               listattr.Default[CybersixgillModel](CybersixgillAttributes),
 	"datadog":                    listattr.Default[DatadogModel](DatadogAttributes, DatadogValidator),
 	"devrev_grow":                listattr.Default[DevRevGrowModel](DevRevGrowAttributes),
 	"docebo":                     listattr.Default[DoceboModel](DoceboAttributes),
+	"eight_by_eight_viber":       listattr.Default[EightByEightViberModel](EightByEightViberAttributes),
+	"eight_by_eight_whatsapp":    listattr.Default[EightByEightWhatsappModel](EightByEightWhatsappAttributes),
+	"elephant":                   listattr.Default[ElephantModel](ElephantAttributes),
 	"fingerprint":                listattr.Default[FingerprintModel](FingerprintAttributes, FingerprintValidator),
 	"fingerprint_descope":        listattr.Default[FingerprintDescopeModel](FingerprintDescopeAttributes),
 	"forter":                     listattr.Default[ForterModel](ForterAttributes, ForterValidator),
+	"generic_email_gateway":      listattr.Default[GenericEmailGatewayModel](GenericEmailGatewayAttributes),
 	"generic_sms_gateway":        listattr.Default[GenericSMSGatewayModel](GenericSMSGatewayAttributes),
 	"google_cloud_translation":   listattr.Default[GoogleCloudTranslationModel](GoogleCloudTranslationAttributes),
+	"google_maps_places":         listattr.Default[GoogleMapsPlacesModel](GoogleMapsPlacesAttributes),
 	"hibp":                       listattr.Default[HIBPModel](HIBPAttributes),
 	"http":                       listattr.Default[HTTPModel](HTTPAttributes),
 	"hubspot":                    listattr.Default[HubSpotModel](HubSpotAttributes),
@@ -39,11 +45,13 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"lokalise":                   listattr.Default[LokaliseModel](LokaliseAttributes),
 	"mparticle":                  listattr.Default[MParticleModel](MParticleAttributes),
 	"newrelic":                   listattr.Default[NewRelicModel](NewRelicAttributes, NewRelicValidator),
+	"radar":                      listattr.Default[RadarModel](RadarAttributes),
 	"recaptcha":                  listattr.Default[RecaptchaModel](RecaptchaAttributes, RecaptchaValidator),
 	"recaptcha_enterprise":       listattr.Default[RecaptchaEnterpriseModel](RecaptchaEnterpriseAttributes, RecaptchaEnterpriseValidator),
 	"rekognition":                listattr.Default[RekognitionModel](RekognitionAttributes),
 	"salesforce":                 listattr.Default[SalesforceModel](SalesforceAttributes),
 	"salesforce_marketing_cloud": listattr.Default[SalesforceMarketingCloudModel](SalesforceMarketingCloudAttributes),
+	"sardine":                    listattr.Default[SardineModel](SardineAttributes),
 	"segment":                    listattr.Default[SegmentModel](SegmentAttributes),
 	"sendgrid":                   listattr.Default[SendGridModel](SendGridAttributes),
 	"ses":                        listattr.Default[SESModel](SESAttributes),
@@ -54,6 +62,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"sumologic":                  listattr.Default[SumoLogicModel](SumoLogicAttributes, SumoLogicValidator),
 	"telesign":                   listattr.Default[TelesignModel](TelesignAttributes),
 	"traceable":                  listattr.Default[TraceableModel](TraceableAttributes),
+	"turnstile":                  listattr.Default[TurnstileModel](TurnstileAttributes),
 	"twilio_core":                listattr.Default[TwilioCoreModel](TwilioCoreAttributes),
 	"twilio_verify":              listattr.Default[TwilioVerifyModel](TwilioVerifyAttributes),
 }
@@ -65,14 +74,20 @@ type ConnectorsModel struct {
 	AWSS3                    listattr.Type[AWSS3Model]                    `tfsdk:"aws_s3"`
 	AWSTranslate             listattr.Type[AWSTranslateModel]             `tfsdk:"aws_translate"`
 	Clear                    listattr.Type[ClearModel]                    `tfsdk:"clear"`
+	Cybersixgill             listattr.Type[CybersixgillModel]             `tfsdk:"cybersixgill"`
 	Datadog                  listattr.Type[DatadogModel]                  `tfsdk:"datadog"`
 	DevRevGrow               listattr.Type[DevRevGrowModel]               `tfsdk:"devrev_grow"`
 	Docebo                   listattr.Type[DoceboModel]                   `tfsdk:"docebo"`
+	EightByEightViber        listattr.Type[EightByEightViberModel]        `tfsdk:"eight_by_eight_viber"`
+	EightByEightWhatsapp     listattr.Type[EightByEightWhatsappModel]     `tfsdk:"eight_by_eight_whatsapp"`
+	Elephant                 listattr.Type[ElephantModel]                 `tfsdk:"elephant"`
 	Fingerprint              listattr.Type[FingerprintModel]              `tfsdk:"fingerprint"`
 	FingerprintDescope       listattr.Type[FingerprintDescopeModel]       `tfsdk:"fingerprint_descope"`
 	Forter                   listattr.Type[ForterModel]                   `tfsdk:"forter"`
+	GenericEmailGateway      listattr.Type[GenericEmailGatewayModel]      `tfsdk:"generic_email_gateway"`
 	GenericSMSGateway        listattr.Type[GenericSMSGatewayModel]        `tfsdk:"generic_sms_gateway"`
 	GoogleCloudTranslation   listattr.Type[GoogleCloudTranslationModel]   `tfsdk:"google_cloud_translation"`
+	GoogleMapsPlaces         listattr.Type[GoogleMapsPlacesModel]         `tfsdk:"google_maps_places"`
 	HIBP                     listattr.Type[HIBPModel]                     `tfsdk:"hibp"`
 	HTTP                     listattr.Type[HTTPModel]                     `tfsdk:"http"`
 	HubSpot                  listattr.Type[HubSpotModel]                  `tfsdk:"hubspot"`
@@ -81,11 +96,13 @@ type ConnectorsModel struct {
 	Lokalise                 listattr.Type[LokaliseModel]                 `tfsdk:"lokalise"`
 	MParticle                listattr.Type[MParticleModel]                `tfsdk:"mparticle"`
 	NewRelic                 listattr.Type[NewRelicModel]                 `tfsdk:"newrelic"`
+	Radar                    listattr.Type[RadarModel]                    `tfsdk:"radar"`
 	Recaptcha                listattr.Type[RecaptchaModel]                `tfsdk:"recaptcha"`
 	RecaptchaEnterprise      listattr.Type[RecaptchaEnterpriseModel]      `tfsdk:"recaptcha_enterprise"`
 	Rekognition              listattr.Type[RekognitionModel]              `tfsdk:"rekognition"`
 	Salesforce               listattr.Type[SalesforceModel]               `tfsdk:"salesforce"`
 	SalesforceMarketingCloud listattr.Type[SalesforceMarketingCloudModel] `tfsdk:"salesforce_marketing_cloud"`
+	Sardine                  listattr.Type[SardineModel]                  `tfsdk:"sardine"`
 	Segment                  listattr.Type[SegmentModel]                  `tfsdk:"segment"`
 	SendGrid                 listattr.Type[SendGridModel]                 `tfsdk:"sendgrid"`
 	SES                      listattr.Type[SESModel]                      `tfsdk:"ses"`
@@ -96,6 +113,7 @@ type ConnectorsModel struct {
 	SumoLogic                listattr.Type[SumoLogicModel]                `tfsdk:"sumologic"`
 	Telesign                 listattr.Type[TelesignModel]                 `tfsdk:"telesign"`
 	Traceable                listattr.Type[TraceableModel]                `tfsdk:"traceable"`
+	Turnstile                listattr.Type[TurnstileModel]                `tfsdk:"turnstile"`
 	TwilioCore               listattr.Type[TwilioCoreModel]               `tfsdk:"twilio_core"`
 	TwilioVerify             listattr.Type[TwilioVerifyModel]             `tfsdk:"twilio_verify"`
 }
@@ -108,14 +126,20 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.AWSS3, data, "aws-s3", h)
 	listattr.Get(m.AWSTranslate, data, "aws-translate", h)
 	listattr.Get(m.Clear, data, "clear", h)
+	listattr.Get(m.Cybersixgill, data, "cybersixgill", h)
 	listattr.Get(m.Datadog, data, "datadog", h)
 	listattr.Get(m.DevRevGrow, data, "devrev-grow", h)
 	listattr.Get(m.Docebo, data, "docebo", h)
+	listattr.Get(m.EightByEightViber, data, "eight-by-eight-viber", h)
+	listattr.Get(m.EightByEightWhatsapp, data, "eight-by-eight-whatsapp", h)
+	listattr.Get(m.Elephant, data, "elephant", h)
 	listattr.Get(m.Fingerprint, data, "fingerprint", h)
 	listattr.Get(m.FingerprintDescope, data, "fingerprint-descope", h)
 	listattr.Get(m.Forter, data, "forter", h)
+	listattr.Get(m.GenericEmailGateway, data, "generic-email-gateway", h)
 	listattr.Get(m.GenericSMSGateway, data, "generic-sms-gateway", h)
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
+	listattr.Get(m.GoogleMapsPlaces, data, "google-maps-places", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
@@ -124,11 +148,13 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Lokalise, data, "lokalise", h)
 	listattr.Get(m.MParticle, data, "mparticle", h)
 	listattr.Get(m.NewRelic, data, "newrelic", h)
+	listattr.Get(m.Radar, data, "radar", h)
 	listattr.Get(m.Recaptcha, data, "recaptcha", h)
 	listattr.Get(m.RecaptchaEnterprise, data, "recaptcha-enterprise", h)
 	listattr.Get(m.Rekognition, data, "rekognition", h)
 	listattr.Get(m.Salesforce, data, "salesforce", h)
 	listattr.Get(m.SalesforceMarketingCloud, data, "salesforce-marketing-cloud", h)
+	listattr.Get(m.Sardine, data, "sardine", h)
 	listattr.Get(m.Segment, data, "segment", h)
 	listattr.Get(m.SendGrid, data, "sendgrid", h)
 	listattr.Get(m.SES, data, "ses", h)
@@ -139,6 +165,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
 	listattr.Get(m.Traceable, data, "traceable", h)
+	listattr.Get(m.Turnstile, data, "turnstile", h)
 	listattr.Get(m.TwilioCore, data, "twilio-core", h)
 	listattr.Get(m.TwilioVerify, data, "twilio-verify", h)
 	return data
@@ -151,14 +178,20 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorsValues(h, data, "aws-s3", &m.AWSS3)
 	setConnectorsValues(h, data, "aws-translate", &m.AWSTranslate)
 	setConnectorsValues(h, data, "clear", &m.Clear)
+	setConnectorsValues(h, data, "cybersixgill", &m.Cybersixgill)
 	setConnectorsValues(h, data, "datadog", &m.Datadog)
 	setConnectorsValues(h, data, "devrev-grow", &m.DevRevGrow)
 	setConnectorsValues(h, data, "docebo", &m.Docebo)
+	setConnectorsValues(h, data, "eight-by-eight-viber", &m.EightByEightViber)
+	setConnectorsValues(h, data, "eight-by-eight-whatsapp", &m.EightByEightWhatsapp)
+	setConnectorsValues(h, data, "elephant", &m.Elephant)
 	setConnectorsValues(h, data, "fingerprint", &m.Fingerprint)
 	setConnectorsValues(h, data, "fingerprint-descope", &m.FingerprintDescope)
 	setConnectorsValues(h, data, "forter", &m.Forter)
+	setConnectorsValues(h, data, "generic-email-gateway", &m.GenericEmailGateway)
 	setConnectorsValues(h, data, "generic-sms-gateway", &m.GenericSMSGateway)
 	setConnectorsValues(h, data, "google-cloud-translation", &m.GoogleCloudTranslation)
+	setConnectorsValues(h, data, "google-maps-places", &m.GoogleMapsPlaces)
 	setConnectorsValues(h, data, "hibp", &m.HIBP)
 	setConnectorsValues(h, data, "http", &m.HTTP)
 	setConnectorsValues(h, data, "hubspot", &m.HubSpot)
@@ -167,11 +200,13 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorsValues(h, data, "lokalise", &m.Lokalise)
 	setConnectorsValues(h, data, "mparticle", &m.MParticle)
 	setConnectorsValues(h, data, "newrelic", &m.NewRelic)
+	setConnectorsValues(h, data, "radar", &m.Radar)
 	setConnectorsValues(h, data, "recaptcha", &m.Recaptcha)
 	setConnectorsValues(h, data, "recaptcha-enterprise", &m.RecaptchaEnterprise)
 	setConnectorsValues(h, data, "rekognition", &m.Rekognition)
 	setConnectorsValues(h, data, "salesforce", &m.Salesforce)
 	setConnectorsValues(h, data, "salesforce-marketing-cloud", &m.SalesforceMarketingCloud)
+	setConnectorsValues(h, data, "sardine", &m.Sardine)
 	setConnectorsValues(h, data, "segment", &m.Segment)
 	setConnectorsValues(h, data, "sendgrid", &m.SendGrid)
 	setConnectorsValues(h, data, "ses", &m.SES)
@@ -182,6 +217,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorsValues(h, data, "sumologic", &m.SumoLogic)
 	setConnectorsValues(h, data, "telesign", &m.Telesign)
 	setConnectorsValues(h, data, "traceable", &m.Traceable)
+	setConnectorsValues(h, data, "turnstile", &m.Turnstile)
 	setConnectorsValues(h, data, "twilio-core", &m.TwilioCore)
 	setConnectorsValues(h, data, "twilio-verify", &m.TwilioVerify)
 }
@@ -193,14 +229,20 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "aws-s3", m.AWSS3)
 	addConnectorReferences(h, "aws-translate", m.AWSTranslate)
 	addConnectorReferences(h, "clear", m.Clear)
+	addConnectorReferences(h, "cybersixgill", m.Cybersixgill)
 	addConnectorReferences(h, "datadog", m.Datadog)
 	addConnectorReferences(h, "devrev-grow", m.DevRevGrow)
 	addConnectorReferences(h, "docebo", m.Docebo)
+	addConnectorReferences(h, "eight-by-eight-viber", m.EightByEightViber)
+	addConnectorReferences(h, "eight-by-eight-whatsapp", m.EightByEightWhatsapp)
+	addConnectorReferences(h, "elephant", m.Elephant)
 	addConnectorReferences(h, "fingerprint", m.Fingerprint)
 	addConnectorReferences(h, "fingerprint-descope", m.FingerprintDescope)
 	addConnectorReferences(h, "forter", m.Forter)
+	addConnectorReferences(h, "generic-email-gateway", m.GenericEmailGateway)
 	addConnectorReferences(h, "generic-sms-gateway", m.GenericSMSGateway)
 	addConnectorReferences(h, "google-cloud-translation", m.GoogleCloudTranslation)
+	addConnectorReferences(h, "google-maps-places", m.GoogleMapsPlaces)
 	addConnectorReferences(h, "hibp", m.HIBP)
 	addConnectorReferences(h, "http", m.HTTP)
 	addConnectorReferences(h, "hubspot", m.HubSpot)
@@ -209,11 +251,13 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "lokalise", m.Lokalise)
 	addConnectorReferences(h, "mparticle", m.MParticle)
 	addConnectorReferences(h, "newrelic", m.NewRelic)
+	addConnectorReferences(h, "radar", m.Radar)
 	addConnectorReferences(h, "recaptcha", m.Recaptcha)
 	addConnectorReferences(h, "recaptcha-enterprise", m.RecaptchaEnterprise)
 	addConnectorReferences(h, "rekognition", m.Rekognition)
 	addConnectorReferences(h, "salesforce", m.Salesforce)
 	addConnectorReferences(h, "salesforce-marketing-cloud", m.SalesforceMarketingCloud)
+	addConnectorReferences(h, "sardine", m.Sardine)
 	addConnectorReferences(h, "segment", m.Segment)
 	addConnectorReferences(h, "sendgrid", m.SendGrid)
 	addConnectorReferences(h, "ses", m.SES)
@@ -224,6 +268,7 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "sumologic", m.SumoLogic)
 	addConnectorReferences(h, "telesign", m.Telesign)
 	addConnectorReferences(h, "traceable", m.Traceable)
+	addConnectorReferences(h, "turnstile", m.Turnstile)
 	addConnectorReferences(h, "twilio-core", m.TwilioCore)
 	addConnectorReferences(h, "twilio-verify", m.TwilioVerify)
 }
@@ -236,14 +281,20 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.AWSS3)
 	addConnectorNames(h, names, m.AWSTranslate)
 	addConnectorNames(h, names, m.Clear)
+	addConnectorNames(h, names, m.Cybersixgill)
 	addConnectorNames(h, names, m.Datadog)
 	addConnectorNames(h, names, m.DevRevGrow)
 	addConnectorNames(h, names, m.Docebo)
+	addConnectorNames(h, names, m.EightByEightViber)
+	addConnectorNames(h, names, m.EightByEightWhatsapp)
+	addConnectorNames(h, names, m.Elephant)
 	addConnectorNames(h, names, m.Fingerprint)
 	addConnectorNames(h, names, m.FingerprintDescope)
 	addConnectorNames(h, names, m.Forter)
+	addConnectorNames(h, names, m.GenericEmailGateway)
 	addConnectorNames(h, names, m.GenericSMSGateway)
 	addConnectorNames(h, names, m.GoogleCloudTranslation)
+	addConnectorNames(h, names, m.GoogleMapsPlaces)
 	addConnectorNames(h, names, m.HIBP)
 	addConnectorNames(h, names, m.HTTP)
 	addConnectorNames(h, names, m.HubSpot)
@@ -252,11 +303,13 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.Lokalise)
 	addConnectorNames(h, names, m.MParticle)
 	addConnectorNames(h, names, m.NewRelic)
+	addConnectorNames(h, names, m.Radar)
 	addConnectorNames(h, names, m.Recaptcha)
 	addConnectorNames(h, names, m.RecaptchaEnterprise)
 	addConnectorNames(h, names, m.Rekognition)
 	addConnectorNames(h, names, m.Salesforce)
 	addConnectorNames(h, names, m.SalesforceMarketingCloud)
+	addConnectorNames(h, names, m.Sardine)
 	addConnectorNames(h, names, m.Segment)
 	addConnectorNames(h, names, m.SendGrid)
 	addConnectorNames(h, names, m.SES)
@@ -267,6 +320,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.SumoLogic)
 	addConnectorNames(h, names, m.Telesign)
 	addConnectorNames(h, names, m.Traceable)
+	addConnectorNames(h, names, m.Turnstile)
 	addConnectorNames(h, names, m.TwilioCore)
 	addConnectorNames(h, names, m.TwilioVerify)
 	for k, v := range names {
@@ -283,14 +337,20 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.Match(h, &m.AWSS3, state.AWSS3)
 	listattr.Match(h, &m.AWSTranslate, state.AWSTranslate)
 	listattr.Match(h, &m.Clear, state.Clear)
+	listattr.Match(h, &m.Cybersixgill, state.Cybersixgill)
 	listattr.Match(h, &m.Datadog, state.Datadog)
 	listattr.Match(h, &m.DevRevGrow, state.DevRevGrow)
 	listattr.Match(h, &m.Docebo, state.Docebo)
+	listattr.Match(h, &m.EightByEightViber, state.EightByEightViber)
+	listattr.Match(h, &m.EightByEightWhatsapp, state.EightByEightWhatsapp)
+	listattr.Match(h, &m.Elephant, state.Elephant)
 	listattr.Match(h, &m.Fingerprint, state.Fingerprint)
 	listattr.Match(h, &m.FingerprintDescope, state.FingerprintDescope)
 	listattr.Match(h, &m.Forter, state.Forter)
+	listattr.Match(h, &m.GenericEmailGateway, state.GenericEmailGateway)
 	listattr.Match(h, &m.GenericSMSGateway, state.GenericSMSGateway)
 	listattr.Match(h, &m.GoogleCloudTranslation, state.GoogleCloudTranslation)
+	listattr.Match(h, &m.GoogleMapsPlaces, state.GoogleMapsPlaces)
 	listattr.Match(h, &m.HIBP, state.HIBP)
 	listattr.Match(h, &m.HTTP, state.HTTP)
 	listattr.Match(h, &m.HubSpot, state.HubSpot)
@@ -299,11 +359,13 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.Match(h, &m.Lokalise, state.Lokalise)
 	listattr.Match(h, &m.MParticle, state.MParticle)
 	listattr.Match(h, &m.NewRelic, state.NewRelic)
+	listattr.Match(h, &m.Radar, state.Radar)
 	listattr.Match(h, &m.Recaptcha, state.Recaptcha)
 	listattr.Match(h, &m.RecaptchaEnterprise, state.RecaptchaEnterprise)
 	listattr.Match(h, &m.Rekognition, state.Rekognition)
 	listattr.Match(h, &m.Salesforce, state.Salesforce)
 	listattr.Match(h, &m.SalesforceMarketingCloud, state.SalesforceMarketingCloud)
+	listattr.Match(h, &m.Sardine, state.Sardine)
 	listattr.Match(h, &m.Segment, state.Segment)
 	listattr.Match(h, &m.SendGrid, state.SendGrid)
 	listattr.Match(h, &m.SES, state.SES)
@@ -314,6 +376,7 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.Match(h, &m.SumoLogic, state.SumoLogic)
 	listattr.Match(h, &m.Telesign, state.Telesign)
 	listattr.Match(h, &m.Traceable, state.Traceable)
+	listattr.Match(h, &m.Turnstile, state.Turnstile)
 	listattr.Match(h, &m.TwilioCore, state.TwilioCore)
 	listattr.Match(h, &m.TwilioVerify, state.TwilioVerify)
 

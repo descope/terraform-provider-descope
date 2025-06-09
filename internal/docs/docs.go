@@ -316,18 +316,25 @@ var docsConnectors = map[string]string{
 	"aws_translate": "",
 	"clear": "An identity verification platform that allow customers to digitally verify their " +
 	         "identity from anywhere.",
+	"cybersixgill": "Utilize threat intelligence to block malicious login attempts or check leaks " +
+	                "with the Cybersixgill connector.",
 	"datadog": "Datadog, an observability service for cloud-scale applications, providing " +
 	           "monitoring of servers, databases, tools, and services, through a SaaS-based data " +
 	           "analytics platform.",
 	"devrev_grow": "",
 	"docebo": "Docebo is a cloud-based Learning Management System (LMS) designed to increase " +
 	          "performance and learning engagement.",
+	"eight_by_eight_viber": "",
+	"eight_by_eight_whatsapp": "",
+	"elephant": "Use this connector to obtain an identity trust score.",
 	"fingerprint": "Use the Fingerprint (formerly FingerprintJS) connector to add device " +
 	               "intelligence and prevent fraud.",
 	"fingerprint_descope": "",
 	"forter": "Use the Forter connector for account fraud prevention.",
+	"generic_email_gateway": "",
 	"generic_sms_gateway": "",
 	"google_cloud_translation": "",
+	"google_maps_places": "",
 	"hibp": "API to check if password appeared previously exposed in data breaches.",
 	"http": "A general purpose HTTP client",
 	"hubspot": "HubSpot is a CRM platform with software, integrations, and resources needed to " +
@@ -340,6 +347,7 @@ var docsConnectors = map[string]string{
 	"mparticle": "Track and send user event data (e.g. page views, purchases, etc.) across " +
 	             "connected tools using the mParticle connector.",
 	"newrelic": "Use this connector to send audit events and troubleshooting logs to New Relic.",
+	"radar": "Get address autocompletions from Radar Autocomplete API.",
 	"recaptcha": "reCAPTCHA is a free google service that protects your site from spam and abuse. " +
 	             "It uses advanced risk analysis techniques to tell humans and bots apart.",
 	"recaptcha_enterprise": "",
@@ -350,6 +358,7 @@ var docsConnectors = map[string]string{
 	              "platform that helps businesses streamline their sales, service, and marketing " +
 	              "operations.",
 	"salesforce_marketing_cloud": "",
+	"sardine": "Evaluate customer risk using Sardine",
 	"segment": "Segment, an analytics product that allows you to collects events from web and " +
 	           "mobile apps, unify those and use those to better understand your customers " +
 	           "needs.",
@@ -364,8 +373,16 @@ var docsConnectors = map[string]string{
 	             "analytics",
 	"telesign": "Telesign Phone number intelligence API provides risk score for phone numbers.",
 	"traceable": "API security for a cloud-first, API-driven world.",
+	"turnstile": "Prevent bot attacks on your login pages with the Turnstile connector.",
 	"twilio_core": "",
 	"twilio_verify": "",
+}
+
+var docsCybersixgill = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"client_id": "API Client ID issued when you create the credentials in Cybersixgill.",
+	"client_secret": "Client secret issued when you create the credentials in Cybersixgill.",
 }
 
 var docsDatadog = map[string]string{
@@ -395,6 +412,31 @@ var docsDocebo = map[string]string{
 	"password": "The Docebo user's password.",
 }
 
+var docsEightByEightViber = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"sub_account_id": "",
+	"api_key": "",
+	"country": "",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+}
+
+var docsEightByEightWhatsapp = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"sub_account_id": "",
+	"api_key": "",
+	"template_id": "",
+	"country": "",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+}
+
+var docsElephant = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"access_key": "The Elephant access key.",
+}
+
 var docsFingerprint = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -417,12 +459,29 @@ var docsForter = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"site_id": "The Forter site ID.",
 	"secret_key": "The Forter secret key.",
+	"api_version": "The Forter API version.",
 	"overrides": "Override the user's IP address or email so that Forter can provide a specific " +
 	             "decision or recommendation. Contact the Forter team for further details. Note: " +
 	             "Overriding the user IP address or email is intended for testing purpose and " +
 	             "should not be utilized in production environments.",
 	"override_ip_address": "Override the user IP address.",
 	"override_user_email": "Override the user email.",
+}
+
+var docsGenericEmailGateway = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"post_url": "The URL of the post email request",
+	"sender": "The sender address",
+	"authentication": "Authentication Information",
+	"headers": "The headers to send with the request",
+	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
+	               "used to sign the base64 encoded payload, and the resulting signature will be " +
+	               "sent in the `x-descope-webhook-s256` header. The receiving service should use " +
+	               "this secret to verify the integrity and authenticity of the payload by checking " +
+	               "the provided signature",
+	"insecure": "Will ignore certificate errors raised by the client",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
 var docsGenericSMSGateway = map[string]string{
@@ -446,6 +505,15 @@ var docsGoogleCloudTranslation = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"project_id": "The Google Cloud project ID where the Google Cloud Translation is managed.",
 	"service_account_json": "Service Account JSON associated with the current project.",
+}
+
+var docsGoogleMapsPlaces = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"public_api_key": "The Google Maps Places public API key.",
+	"address_types": "The address types to return.",
+	"language": "The language in which to return results.",
+	"region": "The region code, specified as a CLDR two-character region code.",
 }
 
 var docsHIBP = map[string]string{
@@ -533,6 +601,16 @@ var docsNewRelic = map[string]string{
 	"logs_prefix": "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
 }
 
+var docsRadar = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"public_api_key": "The Radar publishable API key.",
+	"address_types": "The address types to return.",
+	"language": "The language in which to return results.",
+	"region": "The region code, specified as a two-letter ISO 3166 code.",
+	"limit": "The maximum number of results to return.",
+}
+
 var docsRecaptcha = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -540,6 +618,11 @@ var docsRecaptcha = map[string]string{
 	            "application.",
 	"secret_key": "The secret key authorizes communication between Descope backend and the " +
 	              "reCAPTCHA server to verify the user's response.",
+	"override_assessment": "Override the default assessment model. Note: Overriding assessment is intended " +
+	                       "for automated testing and should not be utilized in production environments.",
+	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
+	                    "the request. The score ranges between 0 and 1, where 1 is a human interaction " +
+	                    "and 0 is a bot.",
 }
 
 var docsRecaptchaEnterprise = map[string]string{
@@ -554,6 +637,7 @@ var docsRecaptchaEnterprise = map[string]string{
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 	                    "the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 	                    "and 0 is a bot.",
+	"enterprise": "",
 }
 
 var docsRekognition = map[string]string{
@@ -582,6 +666,15 @@ var docsSalesforceMarketingCloud = map[string]string{
 	"client_secret": "Client secret issued when you create the API integration in Installed Packages.",
 	"scope": "Space-separated list of data-access permissions for your connector.",
 	"account_id": "Account identifier, or MID, of the target business unit.",
+}
+
+var docsSardine = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"client_id": "The Sardine Client ID.",
+	"client_secret": "The Sardine Client Secret.",
+	"base_url": "The base URL for the Sardine API, e.g.: https://api.sandbox.sardine.ai, " +
+	            "https://api.sardine.ai, https://api.eu.sardine.ai.",
 }
 
 var docsSegment = map[string]string{
@@ -710,6 +803,15 @@ var docsTraceable = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"secret_key": "The Traceable secret key.",
 	"eu_region": "EU(Europe) Region deployment of Traceable platform.",
+}
+
+var docsTurnstile = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"site_key": "The site key is used to invoke Turnstile service on your site or mobile " +
+	            "application.",
+	"secret_key": "The secret key authorizes communication between Descope backend and the " +
+	              "Turnstile server to verify the user's response.",
 }
 
 var docsTwilioCore = map[string]string{

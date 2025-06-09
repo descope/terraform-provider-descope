@@ -30,6 +30,11 @@
       "file": "clear",
       "struct": "Clear"
     },
+    "cybersixgill": {
+      "attribute": "cybersixgill",
+      "file": "cybersixgill",
+      "struct": "Cybersixgill"
+    },
     "datadog": {
       "attribute": "datadog",
       "file": "datadog",
@@ -44,6 +49,21 @@
       "attribute": "docebo",
       "file": "docebo",
       "struct": "Docebo"
+    },
+    "eight-by-eight-viber": {
+      "attribute": "eight_by_eight_viber",
+      "file": "eightbyeightviber",
+      "struct": "EightByEightViber"
+    },
+    "eight-by-eight-whatsapp": {
+      "attribute": "eight_by_eight_whatsapp",
+      "file": "eightbyeightwhatsapp",
+      "struct": "EightByEightWhatsapp"
+    },
+    "elephant": {
+      "attribute": "elephant",
+      "file": "elephant",
+      "struct": "Elephant"
     },
     "fingerprint": {
       "attribute": "fingerprint",
@@ -60,6 +80,11 @@
       "file": "forter",
       "struct": "Forter"
     },
+    "generic-email-gateway": {
+      "attribute": "generic_email_gateway",
+      "file": "genericemailgateway",
+      "struct": "GenericEmailGateway"
+    },
     "generic-sms-gateway": {
       "attribute": "generic_sms_gateway",
       "file": "genericsmsgateway",
@@ -69,6 +94,11 @@
       "attribute": "google_cloud_translation",
       "file": "googlecloudtranslation",
       "struct": "GoogleCloudTranslation"
+    },
+    "google-maps-places": {
+      "attribute": "google_maps_places",
+      "file": "googlemapsplaces",
+      "struct": "GoogleMapsPlaces"
     },
     "hibp": {
       "attribute": "hibp",
@@ -110,6 +140,11 @@
       "file": "newrelic",
       "struct": "NewRelic"
     },
+    "radar": {
+      "attribute": "radar",
+      "file": "radar",
+      "struct": "Radar"
+    },
     "recaptcha": {
       "attribute": "recaptcha",
       "file": "recaptcha",
@@ -134,6 +169,11 @@
       "attribute": "salesforce_marketing_cloud",
       "file": "salesforcemarketingcloud",
       "struct": "SalesforceMarketingCloud"
+    },
+    "sardine": {
+      "attribute": "sardine",
+      "file": "sardine",
+      "struct": "Sardine"
     },
     "segment": {
       "attribute": "segment",
@@ -181,6 +221,11 @@
       "file": "traceable",
       "struct": "Traceable"
     },
+    "turnstile": {
+      "attribute": "turnstile",
+      "file": "turnstile",
+      "struct": "Turnstile"
+    },
     "twilio-core": {
       "attribute": "twilio_core",
       "struct": "TwilioCore"
@@ -191,6 +236,10 @@
     }
   },
   "field": {
+    "accessKey": {
+      "attribute": "access_key",
+      "struct": "AccessKey"
+    },
     "accessKeyId": {
       "attribute": "access_key_id",
       "struct": "AccessKeyID"
@@ -207,6 +256,10 @@
       "attribute": "account_uid",
       "struct": "AccountUID"
     },
+    "addressTypes": {
+      "attribute": "address_types",
+      "struct": "AddressTypes"
+    },
     "apiKey": {
       "attribute": "api_key",
       "struct": "APIKey"
@@ -221,7 +274,11 @@
     },
     "apiUrl": {
       "attribute": "api_url",
-      "struct": "ApiUrl"
+      "struct": "APIURL"
+    },
+    "apiVersion": {
+      "attribute": "api_version",
+      "struct": "APIVersion"
     },
     "assessmentScore": {
       "attribute": "assessment_score",
@@ -271,6 +328,10 @@
       "attribute": "collection_id",
       "struct": "CollectionID"
     },
+    "country": {
+      "attribute": "country",
+      "struct": "Country"
+    },
     "customDomain": {
       "attribute": "custom_domain",
       "struct": "CustomDomain"
@@ -286,6 +347,10 @@
     "defaultEnvironment": {
       "attribute": "default_environment",
       "struct": "DefaultEnvironment"
+    },
+    "enterprise": {
+      "attribute": "enterprise",
+      "struct": "Enterprise"
     },
     "euRegion": {
       "attribute": "eu_region",
@@ -318,6 +383,14 @@
     "insecure": {
       "attribute": "insecure",
       "struct": "Insecure"
+    },
+    "language": {
+      "attribute": "language",
+      "struct": "Language"
+    },
+    "limit": {
+      "attribute": "limit",
+      "struct": "Limit"
     },
     "logsPrefix": {
       "attribute": "logs_prefix",
@@ -411,6 +484,10 @@
       "attribute": "site_key",
       "struct": "SiteKey"
     },
+    "subAccountId": {
+      "attribute": "sub_account_id",
+      "struct": "SubAccountID"
+    },
     "subdomain": {
       "attribute": "subdomain",
       "struct": "Subdomain"
@@ -418,6 +495,10 @@
     "teamId": {
       "attribute": "team_id",
       "struct": "TeamID"
+    },
+    "templateId": {
+      "attribute": "template_id",
+      "struct": "TemplateID"
     },
     "token": {
       "attribute": "token",

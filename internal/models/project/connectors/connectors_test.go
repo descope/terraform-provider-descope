@@ -16,7 +16,7 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.%": 39,
+				"connectors.%": 48,
 			}),
 		},
 		resource.TestStep{
@@ -180,6 +180,28 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"cybersixgill": [
+						{
+							name = "Test cybersixgill Connector"
+							description = "A description for the cybersixgill connector"
+    						client_id = "sgetgyvq"
+    						client_secret = "tjpxl7uy4wbb"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.cybersixgill.#":               1,
+				"connectors.cybersixgill.0.id":            testacc.AttributeHasPrefix("CI"),
+				"connectors.cybersixgill.0.name":          "Test cybersixgill Connector",
+				"connectors.cybersixgill.0.description":   "A description for the cybersixgill connector",
+				"connectors.cybersixgill.0.client_id":     "sgetgyvq",
+				"connectors.cybersixgill.0.client_secret": "tjpxl7uy4wbb",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"datadog": [
 						{
 							name = "Test datadog Connector"
@@ -251,6 +273,80 @@ func TestConnectors(t *testing.T) {
 				"connectors.docebo.0.client_secret": "tjpxl7uy4wbb",
 				"connectors.docebo.0.username":      "c33yu7ld",
 				"connectors.docebo.0.password":      "l2eergg2",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"eight_by_eight_viber": [
+						{
+							name = "Test eight-by-eight-viber Connector"
+							description = "A description for the eight-by-eight-viber connector"
+    						sub_account_id = "ncs2xh6vffuf"
+    						api_key = "mhvece"
+    						country = "v73e4t6"
+    						use_static_ips = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.eight_by_eight_viber.#":                1,
+				"connectors.eight_by_eight_viber.0.id":             testacc.AttributeHasPrefix("CI"),
+				"connectors.eight_by_eight_viber.0.name":           "Test eight-by-eight-viber Connector",
+				"connectors.eight_by_eight_viber.0.description":    "A description for the eight-by-eight-viber connector",
+				"connectors.eight_by_eight_viber.0.sub_account_id": "ncs2xh6vffuf",
+				"connectors.eight_by_eight_viber.0.api_key":        "mhvece",
+				"connectors.eight_by_eight_viber.0.country":        "v73e4t6",
+				"connectors.eight_by_eight_viber.0.use_static_ips": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"eight_by_eight_whatsapp": [
+						{
+							name = "Test eight-by-eight-whatsapp Connector"
+							description = "A description for the eight-by-eight-whatsapp connector"
+    						sub_account_id = "ncs2xh6vffuf"
+    						api_key = "mhvece"
+    						template_id = "si4ja3s6et"
+    						country = "v73e4t6"
+    						use_static_ips = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.eight_by_eight_whatsapp.#":                1,
+				"connectors.eight_by_eight_whatsapp.0.id":             testacc.AttributeHasPrefix("CI"),
+				"connectors.eight_by_eight_whatsapp.0.name":           "Test eight-by-eight-whatsapp Connector",
+				"connectors.eight_by_eight_whatsapp.0.description":    "A description for the eight-by-eight-whatsapp connector",
+				"connectors.eight_by_eight_whatsapp.0.sub_account_id": "ncs2xh6vffuf",
+				"connectors.eight_by_eight_whatsapp.0.api_key":        "mhvece",
+				"connectors.eight_by_eight_whatsapp.0.template_id":    "si4ja3s6et",
+				"connectors.eight_by_eight_whatsapp.0.country":        "v73e4t6",
+				"connectors.eight_by_eight_whatsapp.0.use_static_ips": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"elephant": [
+						{
+							name = "Test elephant Connector"
+							description = "A description for the elephant connector"
+    						access_key = "ytsxrz73h"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.elephant.#":             1,
+				"connectors.elephant.0.id":          testacc.AttributeHasPrefix("CI"),
+				"connectors.elephant.0.name":        "Test elephant Connector",
+				"connectors.elephant.0.description": "A description for the elephant connector",
+				"connectors.elephant.0.access_key":  "ytsxrz73h",
 			}),
 		},
 		resource.TestStep{
@@ -334,6 +430,42 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"generic_email_gateway": [
+						{
+							name = "Test generic-email-gateway Connector"
+							description = "A description for the generic-email-gateway connector"
+    						post_url = "efnv6ac"
+    						sender = "bi3hxe"
+    						authentication = {
+    							bearer_token = "xhmqmkcfhe4mk6"
+    						}
+    						headers = {
+    							"key" = "g6htpmp"
+    						}
+    						hmac_secret = "ooxzct5yxz"
+    						insecure = true
+    						use_static_ips = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.generic_email_gateway.#":                             1,
+				"connectors.generic_email_gateway.0.id":                          testacc.AttributeHasPrefix("CI"),
+				"connectors.generic_email_gateway.0.name":                        "Test generic-email-gateway Connector",
+				"connectors.generic_email_gateway.0.description":                 "A description for the generic-email-gateway connector",
+				"connectors.generic_email_gateway.0.post_url":                    "efnv6ac",
+				"connectors.generic_email_gateway.0.sender":                      "bi3hxe",
+				"connectors.generic_email_gateway.0.authentication.bearer_token": "xhmqmkcfhe4mk6",
+				"connectors.generic_email_gateway.0.headers.key":                 "g6htpmp",
+				"connectors.generic_email_gateway.0.hmac_secret":                 "ooxzct5yxz",
+				"connectors.generic_email_gateway.0.insecure":                    true,
+				"connectors.generic_email_gateway.0.use_static_ips":              true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"generic_sms_gateway": [
 						{
 							name = "Test generic-sms-gateway Connector"
@@ -387,6 +519,32 @@ func TestConnectors(t *testing.T) {
 				"connectors.google_cloud_translation.0.description":          "A description for the google-cloud-translation connector",
 				"connectors.google_cloud_translation.0.project_id":           "yhw7b6yel",
 				"connectors.google_cloud_translation.0.service_account_json": "4wrifr235ikphcluwt",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"google_maps_places": [
+						{
+							name = "Test google-maps-places Connector"
+							description = "A description for the google-maps-places connector"
+    						public_api_key = "htt624yz4z6i"
+    						address_types = "ww5orzyeof5s"
+    						language = "utxtas5e"
+    						region = "y2l5fg"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.google_maps_places.#":                1,
+				"connectors.google_maps_places.0.id":             testacc.AttributeHasPrefix("CI"),
+				"connectors.google_maps_places.0.name":           "Test google-maps-places Connector",
+				"connectors.google_maps_places.0.description":    "A description for the google-maps-places connector",
+				"connectors.google_maps_places.0.public_api_key": "htt624yz4z6i",
+				"connectors.google_maps_places.0.address_types":  "ww5orzyeof5s",
+				"connectors.google_maps_places.0.language":       "utxtas5e",
+				"connectors.google_maps_places.0.region":         "y2l5fg",
 			}),
 		},
 		resource.TestStep{
@@ -604,6 +762,34 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"radar": [
+						{
+							name = "Test radar Connector"
+							description = "A description for the radar connector"
+    						public_api_key = "htt624yz4z6i"
+    						address_types = "ww5orzyeof5s"
+    						language = "utxtas5e"
+    						region = "y2l5fg"
+    						limit = 5
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.radar.#":                1,
+				"connectors.radar.0.id":             testacc.AttributeHasPrefix("CI"),
+				"connectors.radar.0.name":           "Test radar Connector",
+				"connectors.radar.0.description":    "A description for the radar connector",
+				"connectors.radar.0.public_api_key": "htt624yz4z6i",
+				"connectors.radar.0.address_types":  "ww5orzyeof5s",
+				"connectors.radar.0.language":       "utxtas5e",
+				"connectors.radar.0.region":         "y2l5fg",
+				"connectors.radar.0.limit":          5,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"recaptcha": [
 						{
 							name = "Test recaptcha Connector"
@@ -733,6 +919,30 @@ func TestConnectors(t *testing.T) {
 				"connectors.salesforce_marketing_cloud.0.client_secret": "tjpxl7uy4wbb",
 				"connectors.salesforce_marketing_cloud.0.scope":         "l4lbz",
 				"connectors.salesforce_marketing_cloud.0.account_id":    "4bpveggea",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"sardine": [
+						{
+							name = "Test sardine Connector"
+							description = "A description for the sardine connector"
+    						client_id = "sgetgyvq"
+    						client_secret = "tjpxl7uy4wbb"
+    						base_url = "bceszn6"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.sardine.#":               1,
+				"connectors.sardine.0.id":            testacc.AttributeHasPrefix("CI"),
+				"connectors.sardine.0.name":          "Test sardine Connector",
+				"connectors.sardine.0.description":   "A description for the sardine connector",
+				"connectors.sardine.0.client_id":     "sgetgyvq",
+				"connectors.sardine.0.client_secret": "tjpxl7uy4wbb",
+				"connectors.sardine.0.base_url":      "bceszn6",
 			}),
 		},
 		resource.TestStep{
@@ -926,6 +1136,28 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"turnstile": [
+						{
+							name = "Test turnstile Connector"
+							description = "A description for the turnstile connector"
+    						site_key = "ikzbbly"
+    						secret_key = "wi4bhwt7a"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.turnstile.#":             1,
+				"connectors.turnstile.0.id":          testacc.AttributeHasPrefix("CI"),
+				"connectors.turnstile.0.name":        "Test turnstile Connector",
+				"connectors.turnstile.0.description": "A description for the turnstile connector",
+				"connectors.turnstile.0.site_key":    "ikzbbly",
+				"connectors.turnstile.0.secret_key":  "wi4bhwt7a",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"twilio_core": [
 						{
 							name = "Test twilio-core Connector"
@@ -952,7 +1184,7 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.%": 39,
+				"connectors.%": 48,
 			}),
 		},
 	)

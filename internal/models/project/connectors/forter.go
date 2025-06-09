@@ -34,7 +34,7 @@ type ForterModel struct {
 
 	SiteID            stringattr.Type `tfsdk:"site_id"`
 	SecretKey         stringattr.Type `tfsdk:"secret_key"`
-	ApiVersion        stringattr.Type `tfsdk:"api_version"`
+	APIVersion        stringattr.Type `tfsdk:"api_version"`
 	Overrides         boolattr.Type   `tfsdk:"overrides"`
 	OverrideIPAddress stringattr.Type `tfsdk:"override_ip_address"`
 	OverrideUserEmail stringattr.Type `tfsdk:"override_user_email"`
@@ -69,7 +69,7 @@ func (m *ForterModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.SiteID, c, "siteId")
 	stringattr.Get(m.SecretKey, c, "secretKey")
-	stringattr.Get(m.ApiVersion, c, "apiVersion")
+	stringattr.Get(m.APIVersion, c, "apiVersion")
 	boolattr.Get(m.Overrides, c, "overrides")
 	stringattr.Get(m.OverrideIPAddress, c, "overrideIpAddress")
 	stringattr.Get(m.OverrideUserEmail, c, "overrideUserEmail")
@@ -79,7 +79,7 @@ func (m *ForterModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 func (m *ForterModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.SiteID, c, "siteId")
 	stringattr.Nil(&m.SecretKey)
-	stringattr.Set(&m.ApiVersion, c, "apiVersion")
+	stringattr.Set(&m.APIVersion, c, "apiVersion")
 	boolattr.Set(&m.Overrides, c, "overrides")
 	stringattr.Set(&m.OverrideIPAddress, c, "overrideIpAddress")
 	stringattr.Set(&m.OverrideUserEmail, c, "overrideUserEmail")

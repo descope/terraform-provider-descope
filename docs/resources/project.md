@@ -32,7 +32,7 @@ description: |-
 - `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
-- `tags` (List of String) Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
+- `tags` (Set of String) Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
 
 ### Read-Only
 
@@ -73,7 +73,7 @@ Required:
 
 Optional:
 
-- `acs_allowed_callback_urls` (List of String) A list of allowed ACS callback URLS. This configuration is used when the default ACS URL value is unreachable. Supports wildcards.
+- `acs_allowed_callback_urls` (Set of String) A list of allowed ACS callback URLS. This configuration is used when the default ACS URL value is unreachable. Supports wildcards.
 - `attribute_mapping` (Attributes List) The `AttributeMapping` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--attribute_mapping))
 - `default_relay_state` (String) The default relay state. When using IdP-initiated authentication, this value may be used as a URL to a resource in the Service Provider.
 - `description` (String) A description for the SAML application.
@@ -135,14 +135,14 @@ Required:
 Optional:
 
 - `authorization` (Attributes) (see [below for nested schema](#nestedatt--attributes--tenant--authorization))
-- `select_options` (List of String) When the attribute type is "multiselect". A list of options to chose from.
+- `select_options` (Set of String) When the attribute type is "multiselect". A list of options to chose from.
 
 <a id="nestedatt--attributes--tenant--authorization"></a>
 ### Nested Schema for `attributes.tenant.authorization`
 
 Optional:
 
-- `view_permissions` (List of String)
+- `view_permissions` (Set of String)
 
 
 
@@ -156,7 +156,7 @@ Required:
 
 Optional:
 
-- `select_options` (List of String) When the attribute type is "multiselect". A list of options to chose from.
+- `select_options` (Set of String) When the attribute type is "multiselect". A list of options to chose from.
 - `widget_authorization` (Attributes) The `UserAttributeWidgetAuthorization` object. Read the description below. (see [below for nested schema](#nestedatt--attributes--user--widget_authorization))
 
 <a id="nestedatt--attributes--user--widget_authorization"></a>
@@ -164,8 +164,8 @@ Optional:
 
 Optional:
 
-- `edit_permissions` (List of String) A list of permissions by name to set editing permissions to the attribute in widgets. e.g "SSO Admin".
-- `view_permissions` (List of String) A list of permissions by name to set viewing permissions to the attribute in widgets. e.g "SSO Admin".
+- `edit_permissions` (Set of String) A list of permissions by name to set editing permissions to the attribute in widgets. e.g "SSO Admin".
+- `view_permissions` (Set of String) A list of permissions by name to set viewing permissions to the attribute in widgets. e.g "SSO Admin".
 
 
 
@@ -843,8 +843,8 @@ Optional:
 
 Optional:
 
-- `permissions` (Attributes List) A list of `Permission` objects. (see [below for nested schema](#nestedatt--authorization--permissions))
-- `roles` (Attributes List) A list of `Role` objects. (see [below for nested schema](#nestedatt--authorization--roles))
+- `permissions` (Attributes Set) A list of `Permission` objects. (see [below for nested schema](#nestedatt--authorization--permissions))
+- `roles` (Attributes Set) A list of `Role` objects. (see [below for nested schema](#nestedatt--authorization--roles))
 
 <a id="nestedatt--authorization--permissions"></a>
 ### Nested Schema for `authorization.permissions`
@@ -872,7 +872,7 @@ Required:
 Optional:
 
 - `description` (String) A description for the role.
-- `permissions` (List of String) A list of permissions by name to be included in the role.
+- `permissions` (Set of String) A list of permissions by name to be included in the role.
 
 Read-Only:
 
@@ -891,14 +891,20 @@ Optional:
 - `aws_s3` (Attributes List) (see [below for nested schema](#nestedatt--connectors--aws_s3))
 - `aws_translate` (Attributes List) (see [below for nested schema](#nestedatt--connectors--aws_translate))
 - `clear` (Attributes List) An identity verification platform that allow customers to digitally verify their identity from anywhere. (see [below for nested schema](#nestedatt--connectors--clear))
+- `cybersixgill` (Attributes List) Utilize threat intelligence to block malicious login attempts or check leaks with the Cybersixgill connector. (see [below for nested schema](#nestedatt--connectors--cybersixgill))
 - `datadog` (Attributes List) Datadog, an observability service for cloud-scale applications, providing monitoring of servers, databases, tools, and services, through a SaaS-based data analytics platform. (see [below for nested schema](#nestedatt--connectors--datadog))
 - `devrev_grow` (Attributes List) (see [below for nested schema](#nestedatt--connectors--devrev_grow))
 - `docebo` (Attributes List) Docebo is a cloud-based Learning Management System (LMS) designed to increase performance and learning engagement. (see [below for nested schema](#nestedatt--connectors--docebo))
+- `eight_by_eight_viber` (Attributes List) (see [below for nested schema](#nestedatt--connectors--eight_by_eight_viber))
+- `eight_by_eight_whatsapp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--eight_by_eight_whatsapp))
+- `elephant` (Attributes List) Use this connector to obtain an identity trust score. (see [below for nested schema](#nestedatt--connectors--elephant))
 - `fingerprint` (Attributes List) Use the Fingerprint (formerly FingerprintJS) connector to add device intelligence and prevent fraud. (see [below for nested schema](#nestedatt--connectors--fingerprint))
 - `fingerprint_descope` (Attributes List) (see [below for nested schema](#nestedatt--connectors--fingerprint_descope))
 - `forter` (Attributes List) Use the Forter connector for account fraud prevention. (see [below for nested schema](#nestedatt--connectors--forter))
+- `generic_email_gateway` (Attributes List) (see [below for nested schema](#nestedatt--connectors--generic_email_gateway))
 - `generic_sms_gateway` (Attributes List) (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway))
 - `google_cloud_translation` (Attributes List) (see [below for nested schema](#nestedatt--connectors--google_cloud_translation))
+- `google_maps_places` (Attributes List) (see [below for nested schema](#nestedatt--connectors--google_maps_places))
 - `hibp` (Attributes List) API to check if password appeared previously exposed in data breaches. (see [below for nested schema](#nestedatt--connectors--hibp))
 - `http` (Attributes List) A general purpose HTTP client (see [below for nested schema](#nestedatt--connectors--http))
 - `hubspot` (Attributes List) HubSpot is a CRM platform with software, integrations, and resources needed to connect marketing, sales, content management, and customer service. (see [below for nested schema](#nestedatt--connectors--hubspot))
@@ -907,11 +913,13 @@ Optional:
 - `lokalise` (Attributes List) Localize the language of your login and user journey screens with the Lokalise connector. (see [below for nested schema](#nestedatt--connectors--lokalise))
 - `mparticle` (Attributes List) Track and send user event data (e.g. page views, purchases, etc.) across connected tools using the mParticle connector. (see [below for nested schema](#nestedatt--connectors--mparticle))
 - `newrelic` (Attributes List) Use this connector to send audit events and troubleshooting logs to New Relic. (see [below for nested schema](#nestedatt--connectors--newrelic))
+- `radar` (Attributes List) Get address autocompletions from Radar Autocomplete API. (see [below for nested schema](#nestedatt--connectors--radar))
 - `recaptcha` (Attributes List) reCAPTCHA is a free google service that protects your site from spam and abuse. It uses advanced risk analysis techniques to tell humans and bots apart. (see [below for nested schema](#nestedatt--connectors--recaptcha))
 - `recaptcha_enterprise` (Attributes List) (see [below for nested schema](#nestedatt--connectors--recaptcha_enterprise))
 - `rekognition` (Attributes List) AWS Rekognition, cloud-based AI service that offers computer vision capabilities for analyzing and processing images. Useful for registration and verification processes, and can be used to detect fraud and prevent identity theft. (see [below for nested schema](#nestedatt--connectors--rekognition))
 - `salesforce` (Attributes List) Salesforce is a leading cloud-based Customer Relationship Management (CRM) platform that helps businesses streamline their sales, service, and marketing operations. (see [below for nested schema](#nestedatt--connectors--salesforce))
 - `salesforce_marketing_cloud` (Attributes List) (see [below for nested schema](#nestedatt--connectors--salesforce_marketing_cloud))
+- `sardine` (Attributes List) Evaluate customer risk using Sardine (see [below for nested schema](#nestedatt--connectors--sardine))
 - `segment` (Attributes List) Segment, an analytics product that allows you to collects events from web and mobile apps, unify those and use those to better understand your customers needs. (see [below for nested schema](#nestedatt--connectors--segment))
 - `sendgrid` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sendgrid))
 - `ses` (Attributes List) (see [below for nested schema](#nestedatt--connectors--ses))
@@ -922,6 +930,7 @@ Optional:
 - `sumologic` (Attributes List) Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log analytics (see [below for nested schema](#nestedatt--connectors--sumologic))
 - `telesign` (Attributes List) Telesign Phone number intelligence API provides risk score for phone numbers. (see [below for nested schema](#nestedatt--connectors--telesign))
 - `traceable` (Attributes List) API security for a cloud-first, API-driven world. (see [below for nested schema](#nestedatt--connectors--traceable))
+- `turnstile` (Attributes List) Prevent bot attacks on your login pages with the Turnstile connector. (see [below for nested schema](#nestedatt--connectors--turnstile))
 - `twilio_core` (Attributes List) (see [below for nested schema](#nestedatt--connectors--twilio_core))
 - `twilio_verify` (Attributes List) (see [below for nested schema](#nestedatt--connectors--twilio_verify))
 
@@ -1092,6 +1101,24 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--cybersixgill"></a>
+### Nested Schema for `connectors.cybersixgill`
+
+Required:
+
+- `client_id` (String) API Client ID issued when you create the credentials in Cybersixgill.
+- `client_secret` (String, Sensitive) Client secret issued when you create the credentials in Cybersixgill.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
+
+
 <a id="nestedatt--connectors--datadog"></a>
 ### Nested Schema for `connectors.datadog`
 
@@ -1161,6 +1188,64 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--eight_by_eight_viber"></a>
+### Nested Schema for `connectors.eight_by_eight_viber`
+
+Required:
+
+- `api_key` (String)
+- `name` (String) A custom name for your connector.
+- `sub_account_id` (String)
+
+Optional:
+
+- `country` (String)
+- `description` (String) A description of what your connector is used for.
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--eight_by_eight_whatsapp"></a>
+### Nested Schema for `connectors.eight_by_eight_whatsapp`
+
+Required:
+
+- `api_key` (String)
+- `name` (String) A custom name for your connector.
+- `sub_account_id` (String)
+- `template_id` (String)
+
+Optional:
+
+- `country` (String)
+- `description` (String) A description of what your connector is used for.
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--elephant"></a>
+### Nested Schema for `connectors.elephant`
+
+Required:
+
+- `access_key` (String, Sensitive) The Elephant access key.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
+
+
 <a id="nestedatt--connectors--fingerprint"></a>
 ### Nested Schema for `connectors.fingerprint`
 
@@ -1210,6 +1295,7 @@ Required:
 
 Optional:
 
+- `api_version` (String) The Forter API version.
 - `description` (String) A description of what your connector is used for.
 - `override_ip_address` (String) Override the user IP address.
 - `override_user_email` (String) Override the user email.
@@ -1218,6 +1304,57 @@ Optional:
 Read-Only:
 
 - `id` (String)
+
+
+<a id="nestedatt--connectors--generic_email_gateway"></a>
+### Nested Schema for `connectors.generic_email_gateway`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `post_url` (String) The URL of the post email request
+
+Optional:
+
+- `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication))
+- `description` (String) A description of what your connector is used for.
+- `headers` (Map of String) The headers to send with the request
+- `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
+- `insecure` (Boolean) Will ignore certificate errors raised by the client
+- `sender` (String) The sender address
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--generic_email_gateway--authentication"></a>
+### Nested Schema for `connectors.generic_email_gateway.authentication`
+
+Optional:
+
+- `api_key` (Attributes) (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--api_key))
+- `basic` (Attributes) (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--basic))
+- `bearer_token` (String, Sensitive)
+
+<a id="nestedatt--connectors--generic_email_gateway--authentication--api_key"></a>
+### Nested Schema for `connectors.generic_email_gateway.authentication.api_key`
+
+Required:
+
+- `key` (String)
+- `token` (String, Sensitive)
+
+
+<a id="nestedatt--connectors--generic_email_gateway--authentication--basic"></a>
+### Nested Schema for `connectors.generic_email_gateway.authentication.basic`
+
+Required:
+
+- `password` (String, Sensitive)
+- `username` (String)
+
+
 
 
 <a id="nestedatt--connectors--generic_sms_gateway"></a>
@@ -1283,6 +1420,26 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--google_maps_places"></a>
+### Nested Schema for `connectors.google_maps_places`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `public_api_key` (String) The Google Maps Places public API key.
+
+Optional:
+
+- `address_types` (String) The address types to return.
+- `description` (String) A description of what your connector is used for.
+- `language` (String) The language in which to return results.
+- `region` (String) The region code, specified as a CLDR two-character region code.
 
 Read-Only:
 
@@ -1487,6 +1644,27 @@ Required:
 
 
 
+<a id="nestedatt--connectors--radar"></a>
+### Nested Schema for `connectors.radar`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `public_api_key` (String) The Radar publishable API key.
+
+Optional:
+
+- `address_types` (String) The address types to return.
+- `description` (String) A description of what your connector is used for.
+- `language` (String) The language in which to return results.
+- `limit` (Number) The maximum number of results to return.
+- `region` (String) The region code, specified as a two-letter ISO 3166 code.
+
+Read-Only:
+
+- `id` (String)
+
+
 <a id="nestedatt--connectors--recaptcha"></a>
 ### Nested Schema for `connectors.recaptcha`
 
@@ -1498,7 +1676,9 @@ Required:
 
 Optional:
 
+- `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
 - `description` (String) A description of what your connector is used for.
+- `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
 Read-Only:
 
@@ -1581,6 +1761,25 @@ Optional:
 - `account_id` (String) Account identifier, or MID, of the target business unit.
 - `description` (String) A description of what your connector is used for.
 - `scope` (String) Space-separated list of data-access permissions for your connector.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--sardine"></a>
+### Nested Schema for `connectors.sardine`
+
+Required:
+
+- `base_url` (String) The base URL for the Sardine API, e.g.: https://api.sandbox.sardine.ai, https://api.sardine.ai, https://api.eu.sardine.ai.
+- `client_id` (String) The Sardine Client ID.
+- `client_secret` (String, Sensitive) The Sardine Client Secret.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 
@@ -1859,6 +2058,24 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--turnstile"></a>
+### Nested Schema for `connectors.turnstile`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `secret_key` (String, Sensitive) The secret key authorizes communication between Descope backend and the Turnstile server to verify the user's response.
+- `site_key` (String) The site key is used to invoke Turnstile service on your site or mobile application.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
+
+
 <a id="nestedatt--connectors--twilio_core"></a>
 ### Nested Schema for `connectors.twilio_core`
 
@@ -2027,18 +2244,17 @@ Optional:
 - `access_key_jwt_template` (String) Name of the access key JWT Template.
 - `access_key_session_token_expiration` (String) The expiry time for access key session tokens. Use values such as "10 minutes", "4 hours", etc. The value needs to be at least 3 minutes and can't be longer than 4 weeks.
 - `app_url` (String) The URL which your application resides on.
-- `approved_domains` (List of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
-- `cookie_domain` (String, Deprecated) Deprecated.
-- `cookie_policy` (String, Deprecated) Deprecated.
+- `approved_domains` (Set of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `custom_domain` (String) A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
+- `default_no_sso_apps` (Boolean) Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app.
 - `enable_inactivity` (Boolean) Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
 - `inactivity_time` (String) The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum value is "10 minutes".
 - `refresh_token_cookie_domain` (String) The domain name for refresh token cookies. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `refresh_token_cookie_policy` (String) Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `refresh_token_expiration` (String) The expiry time for the refresh token, after which the user must log in again. Use values such as "4 weeks", "14 days", etc. The minimum value is "3 minutes".
 - `refresh_token_response_method` (String) Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` or `cookies`. The default value is `response_body`.
-- `default_no_sso_apps` (Boolean) Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app.
 - `refresh_token_rotation` (Boolean) Every time the user refreshes their session token via their refresh token, the refresh token itself is also updated to a new one.
+- `session_migration` (Attributes) Configure seamless migration of existing user sessions from another vendor to Descope. (see [below for nested schema](#nestedatt--project_settings--session_migration))
 - `session_token_cookie_domain` (String) The domain name for session token cookies. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `session_token_cookie_policy` (String) Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `session_token_expiration` (String) The expiry time of the session token, used for accessing the application's resources. The value needs to be at least 3 minutes and can't be longer than the refresh token expiration.
@@ -2047,9 +2263,24 @@ Optional:
 - `test_users_loginid_regexp` (String) Define a regular expression so that whenever a user is created with a matching login ID it will automatically be marked as a test user.
 - `test_users_static_otp` (String) A 6 digit static OTP code for use with test users.
 - `test_users_verifier_regexp` (String) The pattern of the verifiers that will be used for testing.
-- `token_response_method` (String, Deprecated) Deprecated.
 - `trusted_device_token_expiration` (String) The expiry time for the trusted device token. The minimum value is "3 minutes".
 - `user_jwt_template` (String) Name of the user JWT Template.
+
+<a id="nestedatt--project_settings--session_migration"></a>
+### Nested Schema for `project_settings.session_migration`
+
+Required:
+
+- `client_id` (String)
+- `loginid_matched_attributes` (Set of String) A set of attributes from the vendor's user that should be used to match with the Descope user's login ID.
+- `vendor` (String) The name of the vendor the sessions are migrated from, in all lowercase.
+
+Optional:
+
+- `audience` (String)
+- `domain` (String)
+- `issuer` (String)
+
 
 
 <a id="nestedatt--styles"></a>
