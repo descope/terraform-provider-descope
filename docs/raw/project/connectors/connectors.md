@@ -62,6 +62,16 @@ identity from anywhere.
 
 
 
+cybersixgill
+------------
+
+- Type: `list` of `connectors.Cybersixgill` 
+
+Utilize threat intelligence to block malicious login attempts or check leaks
+with the Cybersixgill connector.
+
+
+
 datadog
 -------
 
@@ -89,6 +99,33 @@ docebo
 
 Docebo is a cloud-based Learning Management System (LMS) designed to increase
 performance and learning engagement.
+
+
+
+eight_by_eight_viber
+--------------------
+
+- Type: `list` of `connectors.EightByEightViber` 
+
+// description for eight_by_eight_viber
+
+
+
+eight_by_eight_whatsapp
+-----------------------
+
+- Type: `list` of `connectors.EightByEightWhatsapp` 
+
+// description for eight_by_eight_whatsapp
+
+
+
+elephant
+--------
+
+- Type: `list` of `connectors.Elephant` 
+
+Use this connector to obtain an identity trust score.
 
 
 
@@ -120,6 +157,15 @@ Use the Forter connector for account fraud prevention.
 
 
 
+generic_email_gateway
+---------------------
+
+- Type: `list` of `connectors.GenericEmailGateway` 
+
+// description for generic_email_gateway
+
+
+
 generic_sms_gateway
 -------------------
 
@@ -135,6 +181,15 @@ google_cloud_translation
 - Type: `list` of `connectors.GoogleCloudTranslation` 
 
 // description for google_cloud_translation
+
+
+
+google_maps_places
+------------------
+
+- Type: `list` of `connectors.GoogleMapsPlaces` 
+
+// description for google_maps_places
 
 
 
@@ -214,6 +269,15 @@ Use this connector to send audit events and troubleshooting logs to New Relic.
 
 
 
+radar
+-----
+
+- Type: `list` of `connectors.Radar` 
+
+Get address autocompletions from Radar Autocomplete API.
+
+
+
 recaptcha
 ---------
 
@@ -261,6 +325,15 @@ salesforce_marketing_cloud
 - Type: `list` of `connectors.SalesforceMarketingCloud` 
 
 // description for salesforce_marketing_cloud
+
+
+
+sardine
+-------
+
+- Type: `list` of `connectors.Sardine` 
+
+Evaluate customer risk using Sardine
 
 
 
@@ -355,6 +428,15 @@ traceable
 - Type: `list` of `connectors.Traceable` 
 
 API security for a cloud-first, API-driven world.
+
+
+
+turnstile
+---------
+
+- Type: `list` of `connectors.Turnstile` 
+
+Prevent bot attacks on your login pages with the Turnstile connector.
 
 
 
