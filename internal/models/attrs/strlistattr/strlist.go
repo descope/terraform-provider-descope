@@ -2,10 +2,13 @@ package strlistattr
 
 import (
 	"context"
+	"fmt"
 	"iter"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/valuelisttype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/valuelisttype"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
@@ -29,33 +32,33 @@ func valueOf(ctx context.Context, value []string) Type {
 	return convertStringSliceToValue(ctx, value)
 }
 
-func Required(validators ...validator.List) schema.ListAttribute {
+func Required(extras ...any) schema.ListAttribute {
 	return schema.ListAttribute{
 		Required:    true,
 		CustomType:  valuelisttype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
-		Validators:  validators,
+		Validators:  parseExtras(extras),
 	}
 }
 
-func Optional(validators ...validator.List) schema.ListAttribute {
+func Optional(extras ...any) schema.ListAttribute {
 	return schema.ListAttribute{
 		Optional:      true,
 		Computed:      true,
 		CustomType:    valuelisttype.NewType[types.String](context.Background()),
 		ElementType:   types.StringType,
-		Validators:    validators,
+		Validators:    parseExtras(extras),
 		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
 	}
 }
 
-func Default(validators ...validator.List) schema.ListAttribute {
+func Default(extras ...any) schema.ListAttribute {
 	return schema.ListAttribute{
 		Optional:    true,
 		Computed:    true,
 		CustomType:  valuelisttype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
-		Validators:  validators,
+		Validators:  parseExtras(extras),
 		Default:     listdefault.StaticValue(Empty().ListValue),
 	}
 }
@@ -66,11 +69,11 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 	}
 
 	values := helpers.Require(s.ToSlice(h.Ctx))
-	data[key] = helpers.ConvertTerraformSliceToStringSlice(values)
+	data[key] = attrs.ConvertTerraformSliceToStringSlice(values)
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	values := helpers.GetStringSlice(data, key)
+	values := attrs.GetStringSlice(data, key)
 	*s = convertStringSliceToValue(h.Ctx, values)
 }
 
@@ -88,6 +91,25 @@ func Iterator(l Type, h *helpers.Handler) iter.Seq[string] {
 			}
 		}
 	}
+}
+
+func parseExtras(extras []any) []validator.List {
+	var validators []validator.List
+	for _, e := range extras {
+		matched := false
+		if v, ok := e.(validator.List); ok {
+			matched = true
+			validators = append(validators, v)
+		}
+		if v, ok := e.(validator.String); ok {
+			matched = true
+			validators = append(validators, listvalidator.ValueStringsAre(v))
+		}
+		if !matched {
+			panic(fmt.Sprintf("unexpected extra value of type %T in attribute", e))
+		}
+	}
+	return validators
 }
 
 func convertStringSliceToValue(ctx context.Context, values []string) Type {

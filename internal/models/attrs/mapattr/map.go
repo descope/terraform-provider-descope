@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"iter"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/maptype"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/objtype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/maptype"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/objtype"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapdefault"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"

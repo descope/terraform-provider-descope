@@ -1,13 +1,13 @@
 package connectors
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/intattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/intattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strlistattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strmapattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"

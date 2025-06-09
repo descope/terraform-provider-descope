@@ -1,15 +1,15 @@
 package flows
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/mapattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/mapattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 )
 
 var FlowsValidator = mapvalidator.KeysAre(stringattr.FlowIDValidator)
 
-func Values(m mapattr.Type[FlowModel], h *helpers.Handler) map[string]any {
+func Get(m mapattr.Type[FlowModel], h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	for flowID, flow := range mapattr.Iterator(m, h) {
 		values := flow.Values(h)
@@ -22,7 +22,7 @@ func Values(m mapattr.Type[FlowModel], h *helpers.Handler) map[string]any {
 	return data
 }
 
-func SetValues(m *mapattr.Type[FlowModel], data map[string]any, key string, h *helpers.Handler) {
+func Set(m *mapattr.Type[FlowModel], data map[string]any, key string, h *helpers.Handler) {
 	values := data
 	if key != helpers.RootKey {
 		values, _ = data[key].(map[string]any)

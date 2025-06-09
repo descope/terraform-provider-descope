@@ -1,10 +1,10 @@
 package authorization
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/setattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/setattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strsetattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -16,7 +16,7 @@ var AuthorizationAttributes = map[string]schema.Attribute{
 }
 
 type AuthorizationModel struct {
-	Roles       setattr.Type[RoleModel]       `tfsdk:"roles"`
+	Roles       setattr.Type[RoleModel]       `tfsdk:"roles"` // XXX change to list with sort modifier?
 	Permissions setattr.Type[PermissionModel] `tfsdk:"permissions"`
 }
 

@@ -4,12 +4,12 @@ import (
 	"net/url"
 	"strings"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/durationattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strsetattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )

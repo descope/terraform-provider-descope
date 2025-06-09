@@ -1,9 +1,9 @@
 package applications
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/listattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 

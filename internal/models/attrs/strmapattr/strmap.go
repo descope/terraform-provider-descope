@@ -2,10 +2,13 @@ package strmapattr
 
 import (
 	"context"
+	"fmt"
 	"iter"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/valuemaptype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/types/valuemaptype"
+	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapdefault"
@@ -29,33 +32,33 @@ func valueOf(ctx context.Context, value map[string]string) Type {
 	return convertStringMapToValue(ctx, value)
 }
 
-func Required(validators ...validator.Map) schema.MapAttribute {
+func Required(extras ...any) schema.MapAttribute {
 	return schema.MapAttribute{
 		Required:    true,
 		CustomType:  valuemaptype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
-		Validators:  validators,
+		Validators:  parseExtras(extras),
 	}
 }
 
-func Optional(validators ...validator.Map) schema.MapAttribute {
+func Optional(extras ...any) schema.MapAttribute {
 	return schema.MapAttribute{
 		Optional:      true,
 		Computed:      true,
 		CustomType:    valuemaptype.NewType[types.String](context.Background()),
 		ElementType:   types.StringType,
-		Validators:    validators,
+		Validators:    parseExtras(extras),
 		PlanModifiers: []planmodifier.Map{mapplanmodifier.UseStateForUnknown()},
 	}
 }
 
-func Default(validators ...validator.Map) schema.MapAttribute {
+func Default(extras ...any) schema.MapAttribute {
 	return schema.MapAttribute{
 		Optional:    true,
 		Computed:    true,
 		CustomType:  valuemaptype.NewType[types.String](context.Background()),
 		ElementType: types.StringType,
-		Validators:  validators,
+		Validators:  parseExtras(extras),
 		Default:     mapdefault.StaticValue(Empty().MapValue),
 	}
 }
@@ -66,11 +69,11 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 	}
 
 	values := helpers.Require(s.ToMap(h.Ctx))
-	data[key] = helpers.ConvertTerraformStringMapToStringMap(values)
+	data[key] = attrs.ConvertTerraformStringMapToStringMap(values)
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
-	m := helpers.GetStringMap(data, key)
+	m := attrs.GetStringMap(data, key)
 	*s = convertStringMapToValue(h.Ctx, m)
 }
 
@@ -94,6 +97,25 @@ func Iterator(s Type, h *helpers.Handler) iter.Seq2[string, string] {
 			}
 		}
 	}
+}
+
+func parseExtras(extras []any) []validator.Map {
+	var validators []validator.Map
+	for _, e := range extras {
+		matched := false
+		if v, ok := e.(validator.Map); ok {
+			matched = true
+			validators = append(validators, v)
+		}
+		if v, ok := e.(validator.String); ok {
+			matched = true
+			validators = append(validators, mapvalidator.ValueStringsAre(v))
+		}
+		if !matched {
+			panic(fmt.Sprintf("unexpected extra value of type %T in attribute", e))
+		}
+	}
+	return validators
 }
 
 func convertStringMapToValue(ctx context.Context, m map[string]string) Type {

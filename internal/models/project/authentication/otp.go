@@ -1,11 +1,11 @@
 package authentication
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/durationattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/durationattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )

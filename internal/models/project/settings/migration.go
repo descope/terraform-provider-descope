@@ -1,10 +1,10 @@
 package settings
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers/strsetattr"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -17,7 +17,7 @@ var SessionMigrationAttributes = map[string]schema.Attribute{
 	"domain":                     stringattr.Default("", stringattr.StandardLenValidator),
 	"audience":                   stringattr.Default("", stringattr.StandardLenValidator),
 	"issuer":                     stringattr.Default("", stringattr.StandardLenValidator),
-	"loginid_matched_attributes": strsetattr.Required(setvalidator.SizeAtLeast(1), setvalidator.ValueStringsAre(stringattr.StandardLenValidator)),
+	"loginid_matched_attributes": strsetattr.Required(setvalidator.SizeAtLeast(1), stringattr.StandardLenValidator),
 }
 
 type SessionMigrationModel struct {

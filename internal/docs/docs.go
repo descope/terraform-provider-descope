@@ -780,13 +780,23 @@ var docsInviteSettings = map[string]string{
 	"send_text": "",
 }
 
+var docsSessionMigration = map[string]string{
+	"vendor": "",
+	"client_id": "",
+	"domain": "",
+	"audience": "",
+	"issuer": "",
+	"loginid_matched_attributes": "",
+}
+
 var docsSettings = map[string]string{
 	"app_url": "The URL which your application resides on.",
 	"custom_domain": "A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom " +
 	                 "domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
 	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
 	                    "for different authentication methods.",
-	"default_no_sso_apps": "Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app.",
+	"default_no_sso_apps": "Define whether a user created with no federated apps, will have access to all apps, " +
+	                       "or will not have access to any app.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 	                          "refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
@@ -820,6 +830,7 @@ var docsSettings = map[string]string{
 	"test_users_static_otp": "A 6 digit static OTP code for use with test users.",
 	"user_jwt_template": "Name of the user JWT Template.",
 	"access_key_jwt_template": "Name of the access key JWT Template.",
+	"session_migration": "",
 }
 
 var docsEmailService = map[string]string{
