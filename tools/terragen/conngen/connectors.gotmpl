@@ -60,7 +60,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel, config *ConnectorsModel) {
+func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
     {{- range .Connectors }}
     listattr.Match(h, &m.{{.StructName}}, state.{{.StructName}})
     {{- end }}
