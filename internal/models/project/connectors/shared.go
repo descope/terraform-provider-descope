@@ -143,7 +143,7 @@ func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]an
 
 // HTTP Headers
 
-func getHeaders(s strmapattr.Type, data map[string]any, key string, h *helpers.Handler) {
+func getHeaders(s strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
 	headers := []any{}
 	for k, v := range strmapattr.Iterator(s, h) {
 		headers = append(headers, map[string]any{"key": k, "value": v})
@@ -151,7 +151,7 @@ func getHeaders(s strmapattr.Type, data map[string]any, key string, h *helpers.H
 	data[key] = headers
 }
 
-func setHeaders(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) {
+func setHeaders(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) { // nolint:unparam
 	headers := map[string]string{}
 	if v, ok := data[key].([]any); ok {
 		for i := range v {
