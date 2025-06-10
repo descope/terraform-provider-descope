@@ -291,9 +291,10 @@ var docsAWSS3 = map[string]string{
 	"external_id": "The external ID to use when assuming the role.",
 	"region": "The AWS S3 region, e.g. `us-east-1`.",
 	"bucket": "The AWS S3 bucket. This bucket should already exist for the connector to work.",
-	"audit_enabled": "",
-	"audit_filters": "",
-	"troubleshoot_log_enabled": "",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
 var docsAWSTranslate = map[string]string{
@@ -314,79 +315,81 @@ var docsClear = map[string]string{
 }
 
 var docsConnectors = map[string]string{
-	"abuseipdb": "AbuseIPDB provides an API to identify if an IP address has been associated with " +
-	             "malicious activities online.",
-	"amplitude": "Amplitude, an analytics product that allows you to collects events from web and " +
-	             "mobile apps, unify those and use those to better understand your customers " +
-	             "needs.",
-	"audit_webhook": "Webhook endpoint for receiving audit events and security logs.",
-	"aws_s3": "Amazon S3 storage service for file uploads and document management.",
-	"aws_translate": "Amazon Translate service for automatic language translation of content.",
-	"clear": "An identity verification platform that allow customers to digitally verify their " +
-	         "identity from anywhere.",
+	"abuseipdb": "Utilize IP threat intelligence to block malicious login attempts with the " +
+	             "AbuseIPDB connector.",
+	"amplitude": "Track user activity and traits at any point in your user journey with the " +
+	             "Amplitude connector.",
+	"audit_webhook": "Send audit events to a custom webhook.",
+	"aws_s3": "Stream authentication audit logs with the Amazon S3 connector.",
+	"aws_translate": "Localize the language of your login and user journey screens with the Amazon Translate connector.",
+	"clear": "Add sophisticated identity verification processes to your user journey with the " +
+	         "CLEAR Verified connector.",
 	"cybersixgill": "Utilize threat intelligence to block malicious login attempts or check leaks " +
 	                "with the Cybersixgill connector.",
-	"datadog": "Datadog, an observability service for cloud-scale applications, providing " +
-	           "monitoring of servers, databases, tools, and services, through a SaaS-based data " +
-	           "analytics platform.",
-	"devrev_grow": "DevRev Grow platform for customer support and product development integration.",
-	"docebo": "Docebo is a cloud-based Learning Management System (LMS) designed to increase " +
-	          "performance and learning engagement.",
-	"eight_by_eight_viber": "8x8 Viber integration for messaging through the Viber platform.",
-	"eight_by_eight_whatsapp": "8x8 WhatsApp integration for messaging through the WhatsApp Business platform.",
+	"datadog": "Stream authentication audit logs with the Datadog connector.",
+	"devrev_grow": "DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto " +
+	               "an AI-native platform to follow the journey of a visitor to a lead, to a contact, and " +
+	               "then to a user - to create a champion, not a churned user.",
+	"docebo": "Get user information from Docebo in your Descope user journeys with the Docebo " +
+	          "connector.",
+	"eight_by_eight_viber": "Send Viber messages to the user.",
+	"eight_by_eight_whatsapp": "Send WhatsApp messages to the user.",
 	"elephant": "Use this connector to obtain an identity trust score.",
-	"external_token_http": "",
-	"fingerprint": "Use the Fingerprint (formerly FingerprintJS) connector to add device " +
-	               "intelligence and prevent fraud.",
-	"fingerprint_descope": "Descope's built-in device fingerprinting for fraud detection.",
-	"firebase_admin": "",
-	"forter": "Use the Forter connector for account fraud prevention.",
-	"generic_email_gateway": "Generic email gateway for custom email service integrations.",
-	"generic_sms_gateway": "Generic SMS gateway for custom SMS service integrations.",
-	"google_cloud_translation": "Google Cloud Translation API for automatic language translation.",
-	"google_maps_places": "Google Maps Places API for address validation and autocomplete.",
-	"hibp": "API to check if password appeared previously exposed in data breaches.",
+	"external_token_http": "A generic HTTP token connector.",
+	"fingerprint": "Prevent fraud by adding device intelligence with the Fingerprint connector.",
+	"fingerprint_descope": "Descope Fingerprint capabilities for fraud detection and risk assessment.",
+	"firebase_admin": "Firebase connector enables you to utilize Firebase's APIs to generate a Firebase user " +
+	                  "token for a given Descope user.",
+	"forter": "Leverage ML-based risk scores for fraud prevention with the Forter connector.",
+	"generic_email_gateway": "Send emails using a generic Email gateway.",
+	"generic_sms_gateway": "Send messages using a generic SMS gateway.",
+	"google_cloud_translation": "Localize the language of your login and user journey screens with " +
+	                            "the Google Cloud Translation connector.",
+	"google_maps_places": "Get address autocompletions from Place Autocomplete Data API.",
+	"hibp": "Check if passwords have been previously exposed in data breaches with the Have I " +
+	        "Been Pwned connector.",
 	"http": "A general purpose HTTP client",
-	"hubspot": "HubSpot is a CRM platform with software, integrations, and resources needed to " +
-	           "connect marketing, sales, content management, and customer service.",
+	"hubspot": "Orchestrate customer identity information from your Descope user journey with " +
+	           "the HubSpot connector.",
 	"incode": "Use the Incode connection to run identity verification processes like document " +
 	          "checks or facial recognition.",
-	"intercom": "Intercom is a Conversational Relationship Platform (CRP).",
+	"intercom": "Orchestrate customer identity information from your Descope user journey with " +
+	            "the Intercom connector.",
 	"lokalise": "Localize the language of your login and user journey screens with the Lokalise " +
 	            "connector.",
 	"mparticle": "Track and send user event data (e.g. page views, purchases, etc.) across " +
 	             "connected tools using the mParticle connector.",
-	"newrelic": "Use this connector to send audit events and troubleshooting logs to New Relic.",
+	"newrelic": "Stream authentication audit logs with the New Relic connector.",
 	"radar": "Get address autocompletions from Radar Autocomplete API.",
-	"recaptcha": "reCAPTCHA is a free google service that protects your site from spam and abuse. " +
-	             "It uses advanced risk analysis techniques to tell humans and bots apart.",
-	"recaptcha_enterprise": "Google reCAPTCHA Enterprise for advanced bot protection and risk assessment.",
-	"rekognition": "AWS Rekognition, cloud-based AI service that offers computer vision capabilities " +
-	               "for analyzing and processing images. Useful for registration and verification " +
-	               "processes, and can be used to detect fraud and prevent identity theft.",
-	"salesforce": "Salesforce is a leading cloud-based Customer Relationship Management (CRM) " +
-	              "platform that helps businesses streamline their sales, service, and marketing " +
-	              "operations.",
-	"salesforce_marketing_cloud": "Salesforce Marketing Cloud for email marketing and customer engagement.",
+	"recaptcha": "Prevent bot attacks on your login pages with the reCAPTCHA v3 connector.",
+	"recaptcha_enterprise": "Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPTCHA Enterprise connector.",
+	"rekognition": "Add image recognition capabilities for identity verification and fraud " +
+	               "prevention with the Amazon Rekognition connector.",
+	"salesforce": "Run SQL queries to retrieve user roles, profiles, account status, and more with " +
+	              "the Salesforce connector.",
+	"salesforce_marketing_cloud": "Send transactional messages with the Salesforce Marketing Cloud connector.",
 	"sardine": "Evaluate customer risk using Sardine",
-	"segment": "Segment, an analytics product that allows you to collects events from web and " +
-	           "mobile apps, unify those and use those to better understand your customers " +
-	           "needs.",
-	"sendgrid": "SendGrid email delivery service for sending transactional emails.",
+	"segment": "Orchestrate customer identity traits and signals from your Descope user journey " +
+	           "with the Segment connector.",
+	"sendgrid": "SendGrid is a cloud-based SMTP provider that allows you to send emails without having " +
+	            "to maintain email servers.",
 	"ses": "Amazon Simple Email Service (SES) for sending emails through AWS infrastructure.",
 	"slack": "Send updates to your team on Slack.",
 	"smartling": "Localize the language of your login and user journey screens with the Smartling " +
 	             "connector.",
 	"smtp": "Simple Mail Transfer Protocol (SMTP) server for sending emails.",
 	"sns": "Amazon Simple Notification Service (SNS) for sending SMS messages through AWS.",
-	"sumologic": "Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log " +
-	             "analytics",
-	"supabase": "Supabase",
-	"telesign": "Telesign Phone number intelligence API provides risk score for phone numbers.",
-	"traceable": "API security for a cloud-first, API-driven world.",
+	"sumologic": "Stream logs and audit events with the Sumo Logic connector.",
+	"supabase": "Generate external tokens for user authentication in Supabase projects.",
+	"telesign": "Verify phone numbers and leverage granular risk scores for adaptive MFA with the " +
+	            "Telesign Intelligence connector.",
+	"traceable": "Identify and respond to fraudulent login activity with the Traceable Digital " +
+	             "Fraud Prevention connector.",
 	"turnstile": "Prevent bot attacks on your login pages with the Turnstile connector.",
-	"twilio_core": "Twilio Core messaging service for sending SMS and voice messages.",
-	"twilio_verify": "Twilio Verify service for phone number verification and two-factor authentication.",
+	"twilio_core": "Twilio is a cloud-based communication provider of communication tools for making and receiving " +
+	               "phone calls, sending and receiving text messages, and performing other communication functions.",
+	"twilio_verify": "Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms, " +
+	                 "voice and e-mail. Choose this connector only if you are a Twilio Verify customer.",
 }
 
 var docsCybersixgill = map[string]string{
@@ -402,9 +405,10 @@ var docsDatadog = map[string]string{
 	"api_key": "The unique Datadog organization key.",
 	"site": "The Datadog site to send logs to. Default is `datadoghq.com`. European, free " +
 	        "tier and other customers should set their site accordingly.",
-	"audit_enabled": "",
-	"audit_filters": "",
-	"troubleshoot_log_enabled": "",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
 var docsDevRevGrow = map[string]string{
@@ -426,19 +430,19 @@ var docsDocebo = map[string]string{
 var docsEightByEightViber = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"sub_account_id": "",
-	"api_key": "",
-	"country": "",
+	"sub_account_id": "The 8x8 sub-account ID is required for the Messaging API.",
+	"api_key": "The 8x8 API key for authentication.",
+	"country": "The country code or region where your Viber messaging service is configured.",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
 var docsEightByEightWhatsapp = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"sub_account_id": "",
-	"api_key": "",
-	"template_id": "",
-	"country": "",
+	"sub_account_id": "The 8x8 sub-account ID is required for the Messaging API.",
+	"api_key": "The 8x8 API key for authentication.",
+	"template_id": "The ID of a WhatsApp message template.",
+	"country": "The country code or region where your Viber messaging service is configured.",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
@@ -628,9 +632,10 @@ var docsNewRelic = map[string]string{
 	"api_key": "Ingest License Key of the account you want to report data to.",
 	"data_center": "The New Relic data center the account belongs to. Possible values are: `US`, " +
 	               "`EU`, `FedRAMP`. Default is `US`.",
-	"audit_enabled": "",
-	"audit_filters": "",
-	"troubleshoot_log_enabled": "",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"override_logs_prefix": "Enable this option to use a custom prefix for log fields.",
 	"logs_prefix": "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
 }
@@ -671,7 +676,8 @@ var docsRecaptchaEnterprise = map[string]string{
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 	                    "the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 	                    "and 0 is a bot.",
-	"enterprise": "",
+	"enterprise": "Enable reCAPTCHA Enterprise features for advanced bot protection, enhanced " +
+	              "analytics, and enterprise-grade security.",
 }
 
 var docsRekognition = map[string]string{
@@ -820,9 +826,10 @@ var docsSumoLogic = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
 	"http_source_url": "The URL associated with an HTTP Hosted collector",
-	"audit_enabled": "",
-	"audit_filters": "",
-	"troubleshoot_log_enabled": "",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
 var docsSupabase = map[string]string{

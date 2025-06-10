@@ -9,8 +9,8 @@ abuseipdb
 
 - Type: `list` of `connectors.AbuseIPDB` 
 
-AbuseIPDB provides an API to identify if an IP address has been associated with
-malicious activities online.
+Utilize IP threat intelligence to block malicious login attempts with the
+AbuseIPDB connector.
 
 
 
@@ -19,9 +19,8 @@ amplitude
 
 - Type: `list` of `connectors.Amplitude` 
 
-Amplitude, an analytics product that allows you to collects events from web and
-mobile apps, unify those and use those to better understand your customers
-needs.
+Track user activity and traits at any point in your user journey with the
+Amplitude connector.
 
 
 
@@ -30,7 +29,7 @@ audit_webhook
 
 - Type: `list` of `connectors.AuditWebhook` 
 
-Webhook endpoint for receiving audit events and security logs.
+Send audit events to a custom webhook.
 
 
 
@@ -39,7 +38,7 @@ aws_s3
 
 - Type: `list` of `connectors.AWSS3` 
 
-Amazon S3 storage service for file uploads and document management.
+Stream authentication audit logs with the Amazon S3 connector.
 
 
 
@@ -48,7 +47,7 @@ aws_translate
 
 - Type: `list` of `connectors.AWSTranslate` 
 
-Amazon Translate service for automatic language translation of content.
+Localize the language of your login and user journey screens with the Amazon Translate connector.
 
 
 
@@ -57,8 +56,8 @@ clear
 
 - Type: `list` of `connectors.Clear` 
 
-An identity verification platform that allow customers to digitally verify their
-identity from anywhere.
+Add sophisticated identity verification processes to your user journey with the
+CLEAR Verified connector.
 
 
 
@@ -77,9 +76,7 @@ datadog
 
 - Type: `list` of `connectors.Datadog` 
 
-Datadog, an observability service for cloud-scale applications, providing
-monitoring of servers, databases, tools, and services, through a SaaS-based data
-analytics platform.
+Stream authentication audit logs with the Datadog connector.
 
 
 
@@ -88,7 +85,9 @@ devrev_grow
 
 - Type: `list` of `connectors.DevRevGrow` 
 
-DevRev Grow platform for customer support and product development integration.
+DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto
+an AI-native platform to follow the journey of a visitor to a lead, to a contact, and
+then to a user - to create a champion, not a churned user.
 
 
 
@@ -97,8 +96,8 @@ docebo
 
 - Type: `list` of `connectors.Docebo` 
 
-Docebo is a cloud-based Learning Management System (LMS) designed to increase
-performance and learning engagement.
+Get user information from Docebo in your Descope user journeys with the Docebo
+connector.
 
 
 
@@ -107,7 +106,7 @@ eight_by_eight_viber
 
 - Type: `list` of `connectors.EightByEightViber` 
 
-8x8 Viber integration for messaging through the Viber platform.
+Send Viber messages to the user.
 
 
 
@@ -116,7 +115,7 @@ eight_by_eight_whatsapp
 
 - Type: `list` of `connectors.EightByEightWhatsapp` 
 
-8x8 WhatsApp integration for messaging through the WhatsApp Business platform.
+Send WhatsApp messages to the user.
 
 
 
@@ -134,7 +133,7 @@ external_token_http
 
 - Type: `list` of `connectors.ExternalTokenHTTP` 
 
-// description for external_token_http
+A generic HTTP token connector.
 
 
 
@@ -143,8 +142,7 @@ fingerprint
 
 - Type: `list` of `connectors.Fingerprint` 
 
-Use the Fingerprint (formerly FingerprintJS) connector to add device
-intelligence and prevent fraud.
+Prevent fraud by adding device intelligence with the Fingerprint connector.
 
 
 
@@ -153,7 +151,7 @@ fingerprint_descope
 
 - Type: `list` of `connectors.FingerprintDescope` 
 
-Descope's built-in device fingerprinting for fraud detection.
+Descope Fingerprint capabilities for fraud detection and risk assessment.
 
 
 
@@ -162,7 +160,8 @@ firebase_admin
 
 - Type: `list` of `connectors.FirebaseAdmin` 
 
-// description for firebase_admin
+Firebase connector enables you to utilize Firebase's APIs to generate a Firebase user
+token for a given Descope user.
 
 
 
@@ -171,7 +170,7 @@ forter
 
 - Type: `list` of `connectors.Forter` 
 
-Use the Forter connector for account fraud prevention.
+Leverage ML-based risk scores for fraud prevention with the Forter connector.
 
 
 
@@ -180,7 +179,7 @@ generic_email_gateway
 
 - Type: `list` of `connectors.GenericEmailGateway` 
 
-Generic email gateway for custom email service integrations.
+Send emails using a generic Email gateway.
 
 
 
@@ -189,7 +188,7 @@ generic_sms_gateway
 
 - Type: `list` of `connectors.GenericSMSGateway` 
 
-Generic SMS gateway for custom SMS service integrations.
+Send messages using a generic SMS gateway.
 
 
 
@@ -198,7 +197,8 @@ google_cloud_translation
 
 - Type: `list` of `connectors.GoogleCloudTranslation` 
 
-Google Cloud Translation API for automatic language translation.
+Localize the language of your login and user journey screens with
+the Google Cloud Translation connector.
 
 
 
@@ -207,7 +207,7 @@ google_maps_places
 
 - Type: `list` of `connectors.GoogleMapsPlaces` 
 
-Google Maps Places API for address validation and autocomplete.
+Get address autocompletions from Place Autocomplete Data API.
 
 
 
@@ -216,7 +216,8 @@ hibp
 
 - Type: `list` of `connectors.HIBP` 
 
-API to check if password appeared previously exposed in data breaches.
+Check if passwords have been previously exposed in data breaches with the Have I
+Been Pwned connector.
 
 
 
@@ -234,8 +235,8 @@ hubspot
 
 - Type: `list` of `connectors.HubSpot` 
 
-HubSpot is a CRM platform with software, integrations, and resources needed to
-connect marketing, sales, content management, and customer service.
+Orchestrate customer identity information from your Descope user journey with
+the HubSpot connector.
 
 
 
@@ -254,7 +255,8 @@ intercom
 
 - Type: `list` of `connectors.Intercom` 
 
-Intercom is a Conversational Relationship Platform (CRP).
+Orchestrate customer identity information from your Descope user journey with
+the Intercom connector.
 
 
 
@@ -283,7 +285,7 @@ newrelic
 
 - Type: `list` of `connectors.NewRelic` 
 
-Use this connector to send audit events and troubleshooting logs to New Relic.
+Stream authentication audit logs with the New Relic connector.
 
 
 
@@ -301,8 +303,7 @@ recaptcha
 
 - Type: `list` of `connectors.Recaptcha` 
 
-reCAPTCHA is a free google service that protects your site from spam and abuse.
-It uses advanced risk analysis techniques to tell humans and bots apart.
+Prevent bot attacks on your login pages with the reCAPTCHA v3 connector.
 
 
 
@@ -311,7 +312,7 @@ recaptcha_enterprise
 
 - Type: `list` of `connectors.RecaptchaEnterprise` 
 
-Google reCAPTCHA Enterprise for advanced bot protection and risk assessment.
+Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPTCHA Enterprise connector.
 
 
 
@@ -320,9 +321,8 @@ rekognition
 
 - Type: `list` of `connectors.Rekognition` 
 
-AWS Rekognition, cloud-based AI service that offers computer vision capabilities
-for analyzing and processing images. Useful for registration and verification
-processes, and can be used to detect fraud and prevent identity theft.
+Add image recognition capabilities for identity verification and fraud
+prevention with the Amazon Rekognition connector.
 
 
 
@@ -331,9 +331,8 @@ salesforce
 
 - Type: `list` of `connectors.Salesforce` 
 
-Salesforce is a leading cloud-based Customer Relationship Management (CRM)
-platform that helps businesses streamline their sales, service, and marketing
-operations.
+Run SQL queries to retrieve user roles, profiles, account status, and more with
+the Salesforce connector.
 
 
 
@@ -342,7 +341,7 @@ salesforce_marketing_cloud
 
 - Type: `list` of `connectors.SalesforceMarketingCloud` 
 
-Salesforce Marketing Cloud for email marketing and customer engagement.
+Send transactional messages with the Salesforce Marketing Cloud connector.
 
 
 
@@ -360,9 +359,8 @@ segment
 
 - Type: `list` of `connectors.Segment` 
 
-Segment, an analytics product that allows you to collects events from web and
-mobile apps, unify those and use those to better understand your customers
-needs.
+Orchestrate customer identity traits and signals from your Descope user journey
+with the Segment connector.
 
 
 
@@ -371,7 +369,8 @@ sendgrid
 
 - Type: `list` of `connectors.SendGrid` 
 
-SendGrid email delivery service for sending transactional emails.
+SendGrid is a cloud-based SMTP provider that allows you to send emails without having
+to maintain email servers.
 
 
 
@@ -426,8 +425,7 @@ sumologic
 
 - Type: `list` of `connectors.SumoLogic` 
 
-Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log
-analytics
+Stream logs and audit events with the Sumo Logic connector.
 
 
 
@@ -436,7 +434,7 @@ supabase
 
 - Type: `list` of `connectors.Supabase` 
 
-Supabase
+Generate external tokens for user authentication in Supabase projects.
 
 
 
@@ -445,7 +443,8 @@ telesign
 
 - Type: `list` of `connectors.Telesign` 
 
-Telesign Phone number intelligence API provides risk score for phone numbers.
+Verify phone numbers and leverage granular risk scores for adaptive MFA with the
+Telesign Intelligence connector.
 
 
 
@@ -454,7 +453,8 @@ traceable
 
 - Type: `list` of `connectors.Traceable` 
 
-API security for a cloud-first, API-driven world.
+Identify and respond to fraudulent login activity with the Traceable Digital
+Fraud Prevention connector.
 
 
 
@@ -472,7 +472,8 @@ twilio_core
 
 - Type: `list` of `connectors.TwilioCore` 
 
-Twilio Core messaging service for sending SMS and voice messages.
+Twilio is a cloud-based communication provider of communication tools for making and receiving
+phone calls, sending and receiving text messages, and performing other communication functions.
 
 
 
@@ -481,4 +482,5 @@ twilio_verify
 
 - Type: `list` of `connectors.TwilioVerify` 
 
-Twilio Verify service for phone number verification and two-factor authentication.
+Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms,
+voice and e-mail. Choose this connector only if you are a Twilio Verify customer.

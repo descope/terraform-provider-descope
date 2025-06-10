@@ -28,7 +28,7 @@ description: |-
 - `connectors` (Attributes) Enrich your flows by interacting with third party services. (see [below for nested schema](#nestedatt--connectors))
 - `environment` (String) This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.
 - `flows` (Attributes Map) Custom authentication flows to use in this project. (see [below for nested schema](#nestedatt--flows))
-- `invite_settings` (Attributes) (see [below for nested schema](#nestedatt--invite_settings))
+- `invite_settings` (Attributes) User invitation settings and behavior. (see [below for nested schema](#nestedatt--invite_settings))
 - `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
@@ -134,7 +134,7 @@ Required:
 
 Optional:
 
-- `authorization` (Attributes) (see [below for nested schema](#nestedatt--attributes--tenant--authorization))
+- `authorization` (Attributes) Determines the required permissions for this tenant. (see [below for nested schema](#nestedatt--attributes--tenant--authorization))
 - `select_options` (Set of String) When the attribute type is "multiselect". A list of options to chose from.
 
 <a id="nestedatt--attributes--tenant--authorization"></a>
@@ -142,7 +142,7 @@ Optional:
 
 Optional:
 
-- `view_permissions` (Set of String)
+- `view_permissions` (Set of String) Determines the required permissions for this tenant.
 
 
 
@@ -156,16 +156,16 @@ Required:
 
 Optional:
 
-- `select_options` (Set of String) When the attribute type is "multiselect". A list of options to chose from.
-- `widget_authorization` (Attributes) The `UserAttributeWidgetAuthorization` object. Read the description below. (see [below for nested schema](#nestedatt--attributes--user--widget_authorization))
+- `select_options` (Set of String) When the attribute type is "multiselect". A list of options to choose from.
+- `widget_authorization` (Attributes) Determines the permissions users are required to have to access this attribute in the user management widget. (see [below for nested schema](#nestedatt--attributes--user--widget_authorization))
 
 <a id="nestedatt--attributes--user--widget_authorization"></a>
 ### Nested Schema for `attributes.user.widget_authorization`
 
 Optional:
 
-- `edit_permissions` (Set of String) A list of permissions by name to set editing permissions to the attribute in widgets. e.g "SSO Admin".
-- `view_permissions` (Set of String) A list of permissions by name to set viewing permissions to the attribute in widgets. e.g "SSO Admin".
+- `edit_permissions` (Set of String) The permissions users are required to have to edit this attribute in the user management widget.
+- `view_permissions` (Set of String) The permissions users are required to have to view this attribute in the user management widget.
 
 
 
@@ -191,7 +191,7 @@ Optional:
 Optional:
 
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `expiration_time` (String) The amount of time that the embedded link will be valid for.
+- `expiration_time` (String) How long the embedded link remains valid before it expires.
 
 
 <a id="nestedatt--authentication--enchanted_link"></a>
@@ -201,7 +201,7 @@ Optional:
 
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending emails as part of the enchanted link authentication. (see [below for nested schema](#nestedatt--authentication--enchanted_link--email_service))
-- `expiration_time` (String)
+- `expiration_time` (String) How long the enchanted link remains valid before it expires.
 - `redirect_url` (String) The URL to redirect users to after they log in using the enchanted link.
 
 <a id="nestedatt--authentication--enchanted_link--email_service"></a>
@@ -209,26 +209,26 @@ Optional:
 
 Required:
 
-- `connector` (String)
+- `connector` (String) The name of the email connector to use for sending emails.
 
 Optional:
 
-- `templates` (Attributes List) (see [below for nested schema](#nestedatt--authentication--enchanted_link--email_service--templates))
+- `templates` (Attributes List) A list of email templates for different authentication flows. (see [below for nested schema](#nestedatt--authentication--enchanted_link--email_service--templates))
 
 <a id="nestedatt--authentication--enchanted_link--email_service--templates"></a>
 ### Nested Schema for `authentication.enchanted_link.email_service.templates`
 
 Required:
 
-- `name` (String)
-- `subject` (String)
+- `name` (String) Unique name for this email template.
+- `subject` (String) Subject line of the email message.
 
 Optional:
 
-- `active` (Boolean)
-- `html_body` (String)
-- `plain_text_body` (String)
-- `use_plain_text_body` (Boolean)
+- `active` (Boolean) Whether this email template is currently active and in use.
+- `html_body` (String) HTML content of the email message body, required if `use_plain_text_body` isn't set.
+- `plain_text_body` (String) Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
+- `use_plain_text_body` (Boolean) Whether to use the plain text body instead of HTML for the email.
 
 Read-Only:
 
@@ -244,7 +244,7 @@ Optional:
 
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending emails as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--email_service))
-- `expiration_time` (String)
+- `expiration_time` (String) How long the magic link remains valid before it expires.
 - `redirect_url` (String) The URL to redirect users to after they log in using the magic link.
 - `text_service` (Attributes) Settings related to sending SMS messages as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--text_service))
 
@@ -253,26 +253,26 @@ Optional:
 
 Required:
 
-- `connector` (String)
+- `connector` (String) The name of the email connector to use for sending emails.
 
 Optional:
 
-- `templates` (Attributes List) (see [below for nested schema](#nestedatt--authentication--magic_link--email_service--templates))
+- `templates` (Attributes List) A list of email templates for different authentication flows. (see [below for nested schema](#nestedatt--authentication--magic_link--email_service--templates))
 
 <a id="nestedatt--authentication--magic_link--email_service--templates"></a>
 ### Nested Schema for `authentication.magic_link.email_service.templates`
 
 Required:
 
-- `name` (String)
-- `subject` (String)
+- `name` (String) Unique name for this email template.
+- `subject` (String) Subject line of the email message.
 
 Optional:
 
-- `active` (Boolean)
-- `html_body` (String)
-- `plain_text_body` (String)
-- `use_plain_text_body` (Boolean)
+- `active` (Boolean) Whether this email template is currently active and in use.
+- `html_body` (String) HTML content of the email message body, required if `use_plain_text_body` isn't set.
+- `plain_text_body` (String) Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
+- `use_plain_text_body` (Boolean) Whether to use the plain text body instead of HTML for the email.
 
 Read-Only:
 
@@ -285,23 +285,23 @@ Read-Only:
 
 Required:
 
-- `connector` (String)
+- `connector` (String) The name of the SMS/text connector to use for sending text messages.
 
 Optional:
 
-- `templates` (Attributes List) (see [below for nested schema](#nestedatt--authentication--magic_link--text_service--templates))
+- `templates` (Attributes List) A list of text message templates for different authentication flows. (see [below for nested schema](#nestedatt--authentication--magic_link--text_service--templates))
 
 <a id="nestedatt--authentication--magic_link--text_service--templates"></a>
 ### Nested Schema for `authentication.magic_link.text_service.templates`
 
 Required:
 
-- `body` (String)
-- `name` (String)
+- `body` (String) The content of the text message.
+- `name` (String) Unique name for this text template.
 
 Optional:
 
-- `active` (Boolean)
+- `active` (Boolean) Whether this text template is currently active and in use.
 
 Read-Only:
 
@@ -326,12 +326,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -373,12 +373,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -405,12 +405,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -437,12 +437,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -469,12 +469,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -501,12 +501,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -533,12 +533,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -565,12 +565,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -597,12 +597,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -629,12 +629,12 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
-- `claim_mapping` (Map of String)
+- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String)
+- `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -673,26 +673,26 @@ Optional:
 
 Required:
 
-- `connector` (String)
+- `connector` (String) The name of the email connector to use for sending emails.
 
 Optional:
 
-- `templates` (Attributes List) (see [below for nested schema](#nestedatt--authentication--otp--email_service--templates))
+- `templates` (Attributes List) A list of email templates for different authentication flows. (see [below for nested schema](#nestedatt--authentication--otp--email_service--templates))
 
 <a id="nestedatt--authentication--otp--email_service--templates"></a>
 ### Nested Schema for `authentication.otp.email_service.templates`
 
 Required:
 
-- `name` (String)
-- `subject` (String)
+- `name` (String) Unique name for this email template.
+- `subject` (String) Subject line of the email message.
 
 Optional:
 
-- `active` (Boolean)
-- `html_body` (String)
-- `plain_text_body` (String)
-- `use_plain_text_body` (Boolean)
+- `active` (Boolean) Whether this email template is currently active and in use.
+- `html_body` (String) HTML content of the email message body, required if `use_plain_text_body` isn't set.
+- `plain_text_body` (String) Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
+- `use_plain_text_body` (Boolean) Whether to use the plain text body instead of HTML for the email.
 
 Read-Only:
 
@@ -705,23 +705,23 @@ Read-Only:
 
 Required:
 
-- `connector` (String)
+- `connector` (String) The name of the SMS/text connector to use for sending text messages.
 
 Optional:
 
-- `templates` (Attributes List) (see [below for nested schema](#nestedatt--authentication--otp--text_service--templates))
+- `templates` (Attributes List) A list of text message templates for different authentication flows. (see [below for nested schema](#nestedatt--authentication--otp--text_service--templates))
 
 <a id="nestedatt--authentication--otp--text_service--templates"></a>
 ### Nested Schema for `authentication.otp.text_service.templates`
 
 Required:
 
-- `body` (String)
-- `name` (String)
+- `body` (String) The content of the text message.
+- `name` (String) Unique name for this text template.
 
 Optional:
 
-- `active` (Boolean)
+- `active` (Boolean) Whether this text template is currently active and in use.
 
 Read-Only:
 
@@ -734,23 +734,23 @@ Read-Only:
 
 Required:
 
-- `connector` (String)
+- `connector` (String) The name of the voice connector to use for making voice calls.
 
 Optional:
 
-- `templates` (Attributes List) (see [below for nested schema](#nestedatt--authentication--otp--voice_service--templates))
+- `templates` (Attributes List) A list of voice message templates for different purposes. (see [below for nested schema](#nestedatt--authentication--otp--voice_service--templates))
 
 <a id="nestedatt--authentication--otp--voice_service--templates"></a>
 ### Nested Schema for `authentication.otp.voice_service.templates`
 
 Required:
 
-- `body` (String)
-- `name` (String)
+- `body` (String) The content of the voice message that will be spoken.
+- `name` (String) Unique name for this voice template.
 
 Optional:
 
-- `active` (Boolean)
+- `active` (Boolean) Whether this voice template is currently active and in use.
 
 Read-Only:
 
@@ -784,7 +784,7 @@ Optional:
 - `non_alphanumeric` (Boolean) Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).
 - `number` (Boolean) Whether passwords must contain at least one number.
 - `reuse` (Boolean) Whether to forbid password reuse when users change their password.
-- `reuse_amount` (Number)
+- `reuse_amount` (Number) The number of previous passwords whose hashes are kept to prevent users from reusing old passwords.
 - `uppercase` (Boolean) Whether passwords must contain at least one uppercase letter.
 
 <a id="nestedatt--authentication--password--email_service"></a>
@@ -792,26 +792,26 @@ Optional:
 
 Required:
 
-- `connector` (String)
+- `connector` (String) The name of the email connector to use for sending emails.
 
 Optional:
 
-- `templates` (Attributes List) (see [below for nested schema](#nestedatt--authentication--password--email_service--templates))
+- `templates` (Attributes List) A list of email templates for different authentication flows. (see [below for nested schema](#nestedatt--authentication--password--email_service--templates))
 
 <a id="nestedatt--authentication--password--email_service--templates"></a>
 ### Nested Schema for `authentication.password.email_service.templates`
 
 Required:
 
-- `name` (String)
-- `subject` (String)
+- `name` (String) Unique name for this email template.
+- `subject` (String) Subject line of the email message.
 
 Optional:
 
-- `active` (Boolean)
-- `html_body` (String)
-- `plain_text_body` (String)
-- `use_plain_text_body` (Boolean)
+- `active` (Boolean) Whether this email template is currently active and in use.
+- `html_body` (String) HTML content of the email message body, required if `use_plain_text_body` isn't set.
+- `plain_text_body` (String) Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
+- `use_plain_text_body` (Boolean) Whether to use the plain text body instead of HTML for the email.
 
 Read-Only:
 
@@ -885,54 +885,57 @@ Read-Only:
 
 Optional:
 
-- `abuseipdb` (Attributes List) AbuseIPDB provides an API to identify if an IP address has been associated with malicious activities online. (see [below for nested schema](#nestedatt--connectors--abuseipdb))
-- `amplitude` (Attributes List) Amplitude, an analytics product that allows you to collects events from web and mobile apps, unify those and use those to better understand your customers needs. (see [below for nested schema](#nestedatt--connectors--amplitude))
-- `audit_webhook` (Attributes List) (see [below for nested schema](#nestedatt--connectors--audit_webhook))
-- `aws_s3` (Attributes List) (see [below for nested schema](#nestedatt--connectors--aws_s3))
-- `aws_translate` (Attributes List) (see [below for nested schema](#nestedatt--connectors--aws_translate))
-- `clear` (Attributes List) An identity verification platform that allow customers to digitally verify their identity from anywhere. (see [below for nested schema](#nestedatt--connectors--clear))
+- `abuseipdb` (Attributes List) Utilize IP threat intelligence to block malicious login attempts with the AbuseIPDB connector. (see [below for nested schema](#nestedatt--connectors--abuseipdb))
+- `amplitude` (Attributes List) Track user activity and traits at any point in your user journey with the Amplitude connector. (see [below for nested schema](#nestedatt--connectors--amplitude))
+- `audit_webhook` (Attributes List) Send audit events to a custom webhook. (see [below for nested schema](#nestedatt--connectors--audit_webhook))
+- `aws_s3` (Attributes List) Stream authentication audit logs with the Amazon S3 connector. (see [below for nested schema](#nestedatt--connectors--aws_s3))
+- `aws_translate` (Attributes List) Localize the language of your login and user journey screens with the Amazon Translate connector. (see [below for nested schema](#nestedatt--connectors--aws_translate))
+- `clear` (Attributes List) Add sophisticated identity verification processes to your user journey with the CLEAR Verified connector. (see [below for nested schema](#nestedatt--connectors--clear))
 - `cybersixgill` (Attributes List) Utilize threat intelligence to block malicious login attempts or check leaks with the Cybersixgill connector. (see [below for nested schema](#nestedatt--connectors--cybersixgill))
-- `datadog` (Attributes List) Datadog, an observability service for cloud-scale applications, providing monitoring of servers, databases, tools, and services, through a SaaS-based data analytics platform. (see [below for nested schema](#nestedatt--connectors--datadog))
-- `devrev_grow` (Attributes List) (see [below for nested schema](#nestedatt--connectors--devrev_grow))
-- `docebo` (Attributes List) Docebo is a cloud-based Learning Management System (LMS) designed to increase performance and learning engagement. (see [below for nested schema](#nestedatt--connectors--docebo))
-- `eight_by_eight_viber` (Attributes List) (see [below for nested schema](#nestedatt--connectors--eight_by_eight_viber))
-- `eight_by_eight_whatsapp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--eight_by_eight_whatsapp))
+- `datadog` (Attributes List) Stream authentication audit logs with the Datadog connector. (see [below for nested schema](#nestedatt--connectors--datadog))
+- `devrev_grow` (Attributes List) DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto an AI-native platform to follow the journey of a visitor to a lead, to a contact, and then to a user - to create a champion, not a churned user. (see [below for nested schema](#nestedatt--connectors--devrev_grow))
+- `docebo` (Attributes List) Get user information from Docebo in your Descope user journeys with the Docebo connector. (see [below for nested schema](#nestedatt--connectors--docebo))
+- `eight_by_eight_viber` (Attributes List) Send Viber messages to the user. (see [below for nested schema](#nestedatt--connectors--eight_by_eight_viber))
+- `eight_by_eight_whatsapp` (Attributes List) Send WhatsApp messages to the user. (see [below for nested schema](#nestedatt--connectors--eight_by_eight_whatsapp))
 - `elephant` (Attributes List) Use this connector to obtain an identity trust score. (see [below for nested schema](#nestedatt--connectors--elephant))
-- `fingerprint` (Attributes List) Use the Fingerprint (formerly FingerprintJS) connector to add device intelligence and prevent fraud. (see [below for nested schema](#nestedatt--connectors--fingerprint))
-- `fingerprint_descope` (Attributes List) (see [below for nested schema](#nestedatt--connectors--fingerprint_descope))
-- `forter` (Attributes List) Use the Forter connector for account fraud prevention. (see [below for nested schema](#nestedatt--connectors--forter))
-- `generic_email_gateway` (Attributes List) (see [below for nested schema](#nestedatt--connectors--generic_email_gateway))
-- `generic_sms_gateway` (Attributes List) (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway))
-- `google_cloud_translation` (Attributes List) (see [below for nested schema](#nestedatt--connectors--google_cloud_translation))
-- `google_maps_places` (Attributes List) (see [below for nested schema](#nestedatt--connectors--google_maps_places))
-- `hibp` (Attributes List) API to check if password appeared previously exposed in data breaches. (see [below for nested schema](#nestedatt--connectors--hibp))
+- `external_token_http` (Attributes List) A generic HTTP token connector. (see [below for nested schema](#nestedatt--connectors--external_token_http))
+- `fingerprint` (Attributes List) Prevent fraud by adding device intelligence with the Fingerprint connector. (see [below for nested schema](#nestedatt--connectors--fingerprint))
+- `fingerprint_descope` (Attributes List) Descope Fingerprint capabilities for fraud detection and risk assessment. (see [below for nested schema](#nestedatt--connectors--fingerprint_descope))
+- `firebase_admin` (Attributes List) Firebase connector enables you to utilize Firebase's APIs to generate a Firebase user token for a given Descope user. (see [below for nested schema](#nestedatt--connectors--firebase_admin))
+- `forter` (Attributes List) Leverage ML-based risk scores for fraud prevention with the Forter connector. (see [below for nested schema](#nestedatt--connectors--forter))
+- `generic_email_gateway` (Attributes List) Send emails using a generic Email gateway. (see [below for nested schema](#nestedatt--connectors--generic_email_gateway))
+- `generic_sms_gateway` (Attributes List) Send messages using a generic SMS gateway. (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway))
+- `google_cloud_translation` (Attributes List) Localize the language of your login and user journey screens with the Google Cloud Translation connector. (see [below for nested schema](#nestedatt--connectors--google_cloud_translation))
+- `google_maps_places` (Attributes List) Get address autocompletions from Place Autocomplete Data API. (see [below for nested schema](#nestedatt--connectors--google_maps_places))
+- `hibp` (Attributes List) Check if passwords have been previously exposed in data breaches with the Have I Been Pwned connector. (see [below for nested schema](#nestedatt--connectors--hibp))
 - `http` (Attributes List) A general purpose HTTP client (see [below for nested schema](#nestedatt--connectors--http))
-- `hubspot` (Attributes List) HubSpot is a CRM platform with software, integrations, and resources needed to connect marketing, sales, content management, and customer service. (see [below for nested schema](#nestedatt--connectors--hubspot))
+- `hubspot` (Attributes List) Orchestrate customer identity information from your Descope user journey with the HubSpot connector. (see [below for nested schema](#nestedatt--connectors--hubspot))
 - `incode` (Attributes List) Use the Incode connection to run identity verification processes like document checks or facial recognition. (see [below for nested schema](#nestedatt--connectors--incode))
-- `intercom` (Attributes List) Intercom is a Conversational Relationship Platform (CRP). (see [below for nested schema](#nestedatt--connectors--intercom))
+- `intercom` (Attributes List) Orchestrate customer identity information from your Descope user journey with the Intercom connector. (see [below for nested schema](#nestedatt--connectors--intercom))
 - `lokalise` (Attributes List) Localize the language of your login and user journey screens with the Lokalise connector. (see [below for nested schema](#nestedatt--connectors--lokalise))
 - `mparticle` (Attributes List) Track and send user event data (e.g. page views, purchases, etc.) across connected tools using the mParticle connector. (see [below for nested schema](#nestedatt--connectors--mparticle))
-- `newrelic` (Attributes List) Use this connector to send audit events and troubleshooting logs to New Relic. (see [below for nested schema](#nestedatt--connectors--newrelic))
+- `newrelic` (Attributes List) Stream authentication audit logs with the New Relic connector. (see [below for nested schema](#nestedatt--connectors--newrelic))
 - `radar` (Attributes List) Get address autocompletions from Radar Autocomplete API. (see [below for nested schema](#nestedatt--connectors--radar))
-- `recaptcha` (Attributes List) reCAPTCHA is a free google service that protects your site from spam and abuse. It uses advanced risk analysis techniques to tell humans and bots apart. (see [below for nested schema](#nestedatt--connectors--recaptcha))
-- `recaptcha_enterprise` (Attributes List) (see [below for nested schema](#nestedatt--connectors--recaptcha_enterprise))
-- `rekognition` (Attributes List) AWS Rekognition, cloud-based AI service that offers computer vision capabilities for analyzing and processing images. Useful for registration and verification processes, and can be used to detect fraud and prevent identity theft. (see [below for nested schema](#nestedatt--connectors--rekognition))
-- `salesforce` (Attributes List) Salesforce is a leading cloud-based Customer Relationship Management (CRM) platform that helps businesses streamline their sales, service, and marketing operations. (see [below for nested schema](#nestedatt--connectors--salesforce))
-- `salesforce_marketing_cloud` (Attributes List) (see [below for nested schema](#nestedatt--connectors--salesforce_marketing_cloud))
+- `recaptcha` (Attributes List) Prevent bot attacks on your login pages with the reCAPTCHA v3 connector. (see [below for nested schema](#nestedatt--connectors--recaptcha))
+- `recaptcha_enterprise` (Attributes List) Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPTCHA Enterprise connector. (see [below for nested schema](#nestedatt--connectors--recaptcha_enterprise))
+- `rekognition` (Attributes List) Add image recognition capabilities for identity verification and fraud prevention with the Amazon Rekognition connector. (see [below for nested schema](#nestedatt--connectors--rekognition))
+- `salesforce` (Attributes List) Run SQL queries to retrieve user roles, profiles, account status, and more with the Salesforce connector. (see [below for nested schema](#nestedatt--connectors--salesforce))
+- `salesforce_marketing_cloud` (Attributes List) Send transactional messages with the Salesforce Marketing Cloud connector. (see [below for nested schema](#nestedatt--connectors--salesforce_marketing_cloud))
 - `sardine` (Attributes List) Evaluate customer risk using Sardine (see [below for nested schema](#nestedatt--connectors--sardine))
-- `segment` (Attributes List) Segment, an analytics product that allows you to collects events from web and mobile apps, unify those and use those to better understand your customers needs. (see [below for nested schema](#nestedatt--connectors--segment))
-- `sendgrid` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sendgrid))
-- `ses` (Attributes List) (see [below for nested schema](#nestedatt--connectors--ses))
+- `segment` (Attributes List) Orchestrate customer identity traits and signals from your Descope user journey with the Segment connector. (see [below for nested schema](#nestedatt--connectors--segment))
+- `sendgrid` (Attributes List) SendGrid is a cloud-based SMTP provider that allows you to send emails without having to maintain email servers. (see [below for nested schema](#nestedatt--connectors--sendgrid))
+- `ses` (Attributes List) Amazon Simple Email Service (SES) for sending emails through AWS infrastructure. (see [below for nested schema](#nestedatt--connectors--ses))
 - `slack` (Attributes List) Send updates to your team on Slack. (see [below for nested schema](#nestedatt--connectors--slack))
 - `smartling` (Attributes List) Localize the language of your login and user journey screens with the Smartling connector. (see [below for nested schema](#nestedatt--connectors--smartling))
-- `smtp` (Attributes List) (see [below for nested schema](#nestedatt--connectors--smtp))
-- `sns` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sns))
-- `sumologic` (Attributes List) Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log analytics (see [below for nested schema](#nestedatt--connectors--sumologic))
-- `telesign` (Attributes List) Telesign Phone number intelligence API provides risk score for phone numbers. (see [below for nested schema](#nestedatt--connectors--telesign))
-- `traceable` (Attributes List) API security for a cloud-first, API-driven world. (see [below for nested schema](#nestedatt--connectors--traceable))
+- `smtp` (Attributes List) Simple Mail Transfer Protocol (SMTP) server for sending emails. (see [below for nested schema](#nestedatt--connectors--smtp))
+- `sns` (Attributes List) Amazon Simple Notification Service (SNS) for sending SMS messages through AWS. (see [below for nested schema](#nestedatt--connectors--sns))
+- `sumologic` (Attributes List) Stream logs and audit events with the Sumo Logic connector. (see [below for nested schema](#nestedatt--connectors--sumologic))
+- `supabase` (Attributes List) Generate external tokens for user authentication in Supabase projects. (see [below for nested schema](#nestedatt--connectors--supabase))
+- `telesign` (Attributes List) Verify phone numbers and leverage granular risk scores for adaptive MFA with the Telesign Intelligence connector. (see [below for nested schema](#nestedatt--connectors--telesign))
+- `traceable` (Attributes List) Identify and respond to fraudulent login activity with the Traceable Digital Fraud Prevention connector. (see [below for nested schema](#nestedatt--connectors--traceable))
 - `turnstile` (Attributes List) Prevent bot attacks on your login pages with the Turnstile connector. (see [below for nested schema](#nestedatt--connectors--turnstile))
-- `twilio_core` (Attributes List) (see [below for nested schema](#nestedatt--connectors--twilio_core))
-- `twilio_verify` (Attributes List) (see [below for nested schema](#nestedatt--connectors--twilio_verify))
+- `twilio_core` (Attributes List) Twilio is a cloud-based communication provider of communication tools for making and receiving phone calls, sending and receiving text messages, and performing other communication functions. (see [below for nested schema](#nestedatt--connectors--twilio_core))
+- `twilio_verify` (Attributes List) Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms, voice and e-mail. Choose this connector only if you are a Twilio Verify customer. (see [below for nested schema](#nestedatt--connectors--twilio_verify))
 
 <a id="nestedatt--connectors--abuseipdb"></a>
 ### Nested Schema for `connectors.abuseipdb`
@@ -996,9 +999,9 @@ Read-Only:
 
 Required:
 
-- `key` (String)
-- `operator` (String)
-- `values` (List of String)
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
 
 
 <a id="nestedatt--connectors--audit_webhook--authentication"></a>
@@ -1006,17 +1009,17 @@ Required:
 
 Optional:
 
-- `api_key` (Attributes) (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--api_key))
-- `basic` (Attributes) (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--basic))
-- `bearer_token` (String, Sensitive)
+- `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--api_key))
+- `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--basic))
+- `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
 
 <a id="nestedatt--connectors--audit_webhook--authentication--api_key"></a>
 ### Nested Schema for `connectors.audit_webhook.authentication.api_key`
 
 Required:
 
-- `key` (String)
-- `token` (String, Sensitive)
+- `key` (String) The API key.
+- `token` (String, Sensitive) The API secret.
 
 
 <a id="nestedatt--connectors--audit_webhook--authentication--basic"></a>
@@ -1024,8 +1027,8 @@ Required:
 
 Required:
 
-- `password` (String, Sensitive)
-- `username` (String)
+- `password` (String, Sensitive) Password for basic HTTP authentication.
+- `username` (String) Username for basic HTTP authentication.
 
 
 
@@ -1035,18 +1038,21 @@ Required:
 
 Required:
 
-- `access_key_id` (String, Sensitive) The unique AWS access key ID.
+- `auth_type` (String) The authentication type to use.
 - `bucket` (String) The AWS S3 bucket. This bucket should already exist for the connector to work.
 - `name` (String) A custom name for your connector.
 - `region` (String) The AWS S3 region, e.g. `us-east-1`.
-- `secret_access_key` (String, Sensitive) The secret AWS access key.
 
 Optional:
 
-- `audit_enabled` (Boolean)
-- `audit_filters` (Attributes List) (see [below for nested schema](#nestedatt--connectors--aws_s3--audit_filters))
+- `access_key_id` (String, Sensitive) The unique AWS access key ID.
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--aws_s3--audit_filters))
 - `description` (String) A description of what your connector is used for.
-- `troubleshoot_log_enabled` (Boolean)
+- `external_id` (String) The external ID to use when assuming the role.
+- `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
+- `secret_access_key` (String, Sensitive) The secret AWS access key.
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
 Read-Only:
 
@@ -1057,9 +1063,9 @@ Read-Only:
 
 Required:
 
-- `key` (String)
-- `operator` (String)
-- `values` (List of String)
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
 
 
 
@@ -1129,11 +1135,11 @@ Required:
 
 Optional:
 
-- `audit_enabled` (Boolean)
-- `audit_filters` (Attributes List) (see [below for nested schema](#nestedatt--connectors--datadog--audit_filters))
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--datadog--audit_filters))
 - `description` (String) A description of what your connector is used for.
 - `site` (String) The Datadog site to send logs to. Default is `datadoghq.com`. European, free tier and other customers should set their site accordingly.
-- `troubleshoot_log_enabled` (Boolean)
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
 Read-Only:
 
@@ -1144,9 +1150,9 @@ Read-Only:
 
 Required:
 
-- `key` (String)
-- `operator` (String)
-- `values` (List of String)
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
 
 
 
@@ -1193,13 +1199,13 @@ Read-Only:
 
 Required:
 
-- `api_key` (String)
+- `api_key` (String) The 8x8 API key for authentication.
 - `name` (String) A custom name for your connector.
-- `sub_account_id` (String)
+- `sub_account_id` (String) The 8x8 sub-account ID is required for the Messaging API.
 
 Optional:
 
-- `country` (String)
+- `country` (String) The country code or region where your Viber messaging service is configured.
 - `description` (String) A description of what your connector is used for.
 - `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
@@ -1213,14 +1219,14 @@ Read-Only:
 
 Required:
 
-- `api_key` (String)
+- `api_key` (String) The 8x8 API key for authentication.
 - `name` (String) A custom name for your connector.
-- `sub_account_id` (String)
-- `template_id` (String)
+- `sub_account_id` (String) The 8x8 sub-account ID is required for the Messaging API.
+- `template_id` (String) The ID of a WhatsApp message template.
 
 Optional:
 
-- `country` (String)
+- `country` (String) The country code or region where your Viber messaging service is configured.
 - `description` (String) A description of what your connector is used for.
 - `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
@@ -1244,6 +1250,56 @@ Optional:
 Read-Only:
 
 - `id` (String)
+
+
+<a id="nestedatt--connectors--external_token_http"></a>
+### Nested Schema for `connectors.external_token_http`
+
+Required:
+
+- `endpoint` (String) The endpoint to get the token from (Using POST method). Descope will send the user information in the body of the request, and should return a JSON response with a 'token' string field.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication))
+- `description` (String) A description of what your connector is used for.
+- `headers` (Map of String) The headers to send with the request
+- `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
+- `insecure` (Boolean) Will ignore certificate errors raised by the client
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--external_token_http--authentication"></a>
+### Nested Schema for `connectors.external_token_http.authentication`
+
+Optional:
+
+- `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication--api_key))
+- `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication--basic))
+- `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+
+<a id="nestedatt--connectors--external_token_http--authentication--api_key"></a>
+### Nested Schema for `connectors.external_token_http.authentication.api_key`
+
+Required:
+
+- `key` (String) The API key.
+- `token` (String, Sensitive) The API secret.
+
+
+<a id="nestedatt--connectors--external_token_http--authentication--basic"></a>
+### Nested Schema for `connectors.external_token_http.authentication.basic`
+
+Required:
+
+- `password` (String, Sensitive) Password for basic HTTP authentication.
+- `username` (String) Username for basic HTTP authentication.
+
+
 
 
 <a id="nestedatt--connectors--fingerprint"></a>
@@ -1277,6 +1333,23 @@ Required:
 Optional:
 
 - `custom_domain` (String) The custom domain to fetch
+- `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--firebase_admin"></a>
+### Nested Schema for `connectors.firebase_admin`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `service_account` (String, Sensitive) The Firebase service account JSON.
+
+Optional:
+
 - `description` (String) A description of what your connector is used for.
 
 Read-Only:
@@ -1333,17 +1406,17 @@ Read-Only:
 
 Optional:
 
-- `api_key` (Attributes) (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--api_key))
-- `basic` (Attributes) (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--basic))
-- `bearer_token` (String, Sensitive)
+- `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--api_key))
+- `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--basic))
+- `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
 
 <a id="nestedatt--connectors--generic_email_gateway--authentication--api_key"></a>
 ### Nested Schema for `connectors.generic_email_gateway.authentication.api_key`
 
 Required:
 
-- `key` (String)
-- `token` (String, Sensitive)
+- `key` (String) The API key.
+- `token` (String, Sensitive) The API secret.
 
 
 <a id="nestedatt--connectors--generic_email_gateway--authentication--basic"></a>
@@ -1351,8 +1424,8 @@ Required:
 
 Required:
 
-- `password` (String, Sensitive)
-- `username` (String)
+- `password` (String, Sensitive) Password for basic HTTP authentication.
+- `username` (String) Username for basic HTTP authentication.
 
 
 
@@ -1384,17 +1457,17 @@ Read-Only:
 
 Optional:
 
-- `api_key` (Attributes) (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--api_key))
-- `basic` (Attributes) (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--basic))
-- `bearer_token` (String, Sensitive)
+- `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--api_key))
+- `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--basic))
+- `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
 
 <a id="nestedatt--connectors--generic_sms_gateway--authentication--api_key"></a>
 ### Nested Schema for `connectors.generic_sms_gateway.authentication.api_key`
 
 Required:
 
-- `key` (String)
-- `token` (String, Sensitive)
+- `key` (String) The API key.
+- `token` (String, Sensitive) The API secret.
 
 
 <a id="nestedatt--connectors--generic_sms_gateway--authentication--basic"></a>
@@ -1402,8 +1475,8 @@ Required:
 
 Required:
 
-- `password` (String, Sensitive)
-- `username` (String)
+- `password` (String, Sensitive) Password for basic HTTP authentication.
+- `username` (String) Username for basic HTTP authentication.
 
 
 
@@ -1489,17 +1562,17 @@ Read-Only:
 
 Optional:
 
-- `api_key` (Attributes) (see [below for nested schema](#nestedatt--connectors--http--authentication--api_key))
-- `basic` (Attributes) (see [below for nested schema](#nestedatt--connectors--http--authentication--basic))
-- `bearer_token` (String, Sensitive)
+- `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--http--authentication--api_key))
+- `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--http--authentication--basic))
+- `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
 
 <a id="nestedatt--connectors--http--authentication--api_key"></a>
 ### Nested Schema for `connectors.http.authentication.api_key`
 
 Required:
 
-- `key` (String)
-- `token` (String, Sensitive)
+- `key` (String) The API key.
+- `token` (String, Sensitive) The API secret.
 
 
 <a id="nestedatt--connectors--http--authentication--basic"></a>
@@ -1507,8 +1580,8 @@ Required:
 
 Required:
 
-- `password` (String, Sensitive)
-- `username` (String)
+- `password` (String, Sensitive) Password for basic HTTP authentication.
+- `username` (String) Username for basic HTTP authentication.
 
 
 
@@ -1621,13 +1694,13 @@ Required:
 
 Optional:
 
-- `audit_enabled` (Boolean)
-- `audit_filters` (Attributes List) (see [below for nested schema](#nestedatt--connectors--newrelic--audit_filters))
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--newrelic--audit_filters))
 - `data_center` (String) The New Relic data center the account belongs to. Possible values are: `US`, `EU`, `FedRAMP`. Default is `US`.
 - `description` (String) A description of what your connector is used for.
 - `logs_prefix` (String) Specify a custom prefix for all log fields. The default prefix is `descope.`.
 - `override_logs_prefix` (Boolean) Enable this option to use a custom prefix for log fields.
-- `troubleshoot_log_enabled` (Boolean)
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
 Read-Only:
 
@@ -1638,9 +1711,9 @@ Read-Only:
 
 Required:
 
-- `key` (String)
-- `operator` (String)
-- `values` (List of String)
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
 
 
 
@@ -1699,7 +1772,7 @@ Optional:
 
 - `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
 - `description` (String) A description of what your connector is used for.
-- `enterprise` (Boolean)
+- `enterprise` (Boolean) Enable reCAPTCHA Enterprise features for advanced bot protection, enhanced analytics, and enterprise-grade security.
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
 Read-Only:
@@ -1809,7 +1882,7 @@ Read-Only:
 
 Required:
 
-- `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--sendgrid--authentication))
+- `authentication` (Attributes) SendGrid API authentication configuration. (see [below for nested schema](#nestedatt--connectors--sendgrid--authentication))
 - `name` (String) A custom name for your connector.
 - `sender` (Attributes) The sender details that should be displayed in the email message. (see [below for nested schema](#nestedatt--connectors--sendgrid--sender))
 
@@ -1826,7 +1899,7 @@ Read-Only:
 
 Required:
 
-- `api_key` (String, Sensitive)
+- `api_key` (String, Sensitive) SendGrid API key for authentication.
 
 
 <a id="nestedatt--connectors--sendgrid--sender"></a>
@@ -1834,11 +1907,11 @@ Required:
 
 Required:
 
-- `email` (String)
+- `email` (String) The email address that will appear as the sender of the email.
 
 Optional:
 
-- `name` (String)
+- `name` (String) The display name that will appear as the sender of the email.
 
 
 
@@ -1867,11 +1940,11 @@ Read-Only:
 
 Required:
 
-- `email` (String)
+- `email` (String) The email address that will appear as the sender of the email.
 
 Optional:
 
-- `name` (String)
+- `name` (String) The display name that will appear as the sender of the email.
 
 
 
@@ -1916,10 +1989,10 @@ Read-Only:
 
 Required:
 
-- `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--smtp--authentication))
+- `authentication` (Attributes) SMTP server authentication credentials and method. (see [below for nested schema](#nestedatt--connectors--smtp--authentication))
 - `name` (String) A custom name for your connector.
 - `sender` (Attributes) The sender details that should be displayed in the email message. (see [below for nested schema](#nestedatt--connectors--smtp--sender))
-- `server` (Attributes) (see [below for nested schema](#nestedatt--connectors--smtp--server))
+- `server` (Attributes) SMTP server connection details including hostname and port. (see [below for nested schema](#nestedatt--connectors--smtp--server))
 
 Optional:
 
@@ -1935,12 +2008,12 @@ Read-Only:
 
 Required:
 
-- `password` (String, Sensitive)
-- `username` (String)
+- `password` (String, Sensitive) Password for SMTP server authentication.
+- `username` (String) Username for SMTP server authentication.
 
 Optional:
 
-- `method` (String)
+- `method` (String) SMTP authentication method (`plain` or `login`).
 
 
 <a id="nestedatt--connectors--smtp--sender"></a>
@@ -1948,11 +2021,11 @@ Optional:
 
 Required:
 
-- `email` (String)
+- `email` (String) The email address that will appear as the sender of the email.
 
 Optional:
 
-- `name` (String)
+- `name` (String) The display name that will appear as the sender of the email.
 
 
 <a id="nestedatt--connectors--smtp--server"></a>
@@ -1960,11 +2033,11 @@ Optional:
 
 Required:
 
-- `host` (String)
+- `host` (String) The hostname or IP address of the SMTP server.
 
 Optional:
 
-- `port` (Number)
+- `port` (Number) The port number to connect to on the SMTP server.
 
 
 
@@ -2002,10 +2075,10 @@ Required:
 
 Optional:
 
-- `audit_enabled` (Boolean)
-- `audit_filters` (Attributes List) (see [below for nested schema](#nestedatt--connectors--sumologic--audit_filters))
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--sumologic--audit_filters))
 - `description` (String) A description of what your connector is used for.
-- `troubleshoot_log_enabled` (Boolean)
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
 Read-Only:
 
@@ -2016,10 +2089,28 @@ Read-Only:
 
 Required:
 
-- `key` (String)
-- `operator` (String)
-- `values` (List of String)
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
 
+
+
+<a id="nestedatt--connectors--supabase"></a>
+### Nested Schema for `connectors.supabase`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `signing_secret` (String, Sensitive) The signing secret for your Supabase project.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+- `expiration_time` (Number) The duration in minutes for which the token is valid.
+
+Read-Only:
+
+- `id` (String)
 
 
 <a id="nestedatt--connectors--telesign"></a>
@@ -2081,10 +2172,10 @@ Read-Only:
 
 Required:
 
-- `account_sid` (String)
-- `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--twilio_core--authentication))
+- `account_sid` (String) Twilio Account SID from your Twilio Console.
+- `authentication` (Attributes) Twilio authentication credentials (either auth token or API key/secret). (see [below for nested schema](#nestedatt--connectors--twilio_core--authentication))
 - `name` (String) A custom name for your connector.
-- `senders` (Attributes) (see [below for nested schema](#nestedatt--connectors--twilio_core--senders))
+- `senders` (Attributes) Configuration for SMS and voice message senders. (see [below for nested schema](#nestedatt--connectors--twilio_core--senders))
 
 Optional:
 
@@ -2099,9 +2190,9 @@ Read-Only:
 
 Optional:
 
-- `api_key` (String, Sensitive)
-- `api_secret` (String, Sensitive)
-- `auth_token` (String, Sensitive)
+- `api_key` (String, Sensitive) Twilio API Key for authentication (used with API Secret).
+- `api_secret` (String, Sensitive) Twilio API Secret for authentication (used with API Key).
+- `auth_token` (String, Sensitive) Twilio Auth Token for authentication.
 
 
 <a id="nestedatt--connectors--twilio_core--senders"></a>
@@ -2109,19 +2200,19 @@ Optional:
 
 Required:
 
-- `sms` (Attributes) (see [below for nested schema](#nestedatt--connectors--twilio_core--senders--sms))
+- `sms` (Attributes) SMS sender configuration using either a phone number or messaging service. (see [below for nested schema](#nestedatt--connectors--twilio_core--senders--sms))
 
 Optional:
 
-- `voice` (Attributes) (see [below for nested schema](#nestedatt--connectors--twilio_core--senders--voice))
+- `voice` (Attributes) Voice call sender configuration. (see [below for nested schema](#nestedatt--connectors--twilio_core--senders--voice))
 
 <a id="nestedatt--connectors--twilio_core--senders--sms"></a>
 ### Nested Schema for `connectors.twilio_core.senders.sms`
 
 Optional:
 
-- `messaging_service_sid` (String)
-- `phone_number` (String)
+- `messaging_service_sid` (String) Twilio Messaging Service SID for sending SMS messages.
+- `phone_number` (String) Twilio phone number for sending SMS messages.
 
 
 <a id="nestedatt--connectors--twilio_core--senders--voice"></a>
@@ -2129,7 +2220,7 @@ Optional:
 
 Required:
 
-- `phone_number` (String)
+- `phone_number` (String) Twilio phone number for making voice calls.
 
 
 
@@ -2139,15 +2230,15 @@ Required:
 
 Required:
 
-- `account_sid` (String)
-- `authentication` (Attributes) (see [below for nested schema](#nestedatt--connectors--twilio_verify--authentication))
+- `account_sid` (String) Twilio Account SID from your Twilio Console.
+- `authentication` (Attributes) Twilio authentication credentials (either auth token or API key/secret). (see [below for nested schema](#nestedatt--connectors--twilio_verify--authentication))
 - `name` (String) A custom name for your connector.
-- `service_sid` (String)
+- `service_sid` (String) Twilio Verify Service SID for verification services.
 
 Optional:
 
 - `description` (String) A description of what your connector is used for.
-- `sender` (String)
+- `sender` (String) Optional sender identifier for verification messages.
 
 Read-Only:
 
@@ -2158,9 +2249,9 @@ Read-Only:
 
 Optional:
 
-- `api_key` (String, Sensitive)
-- `api_secret` (String, Sensitive)
-- `auth_token` (String, Sensitive)
+- `api_key` (String, Sensitive) Twilio API Key for authentication (used with API Secret).
+- `api_secret` (String, Sensitive) Twilio API Secret for authentication (used with API Key).
+- `auth_token` (String, Sensitive) Twilio Auth Token for authentication.
 
 
 
@@ -2170,7 +2261,7 @@ Optional:
 
 Required:
 
-- `data` (String)
+- `data` (String) The JSON data defining the authentication flow configuration, including metadata, screens, contents, and references.
 
 
 <a id="nestedatt--invite_settings"></a>
@@ -2178,11 +2269,11 @@ Required:
 
 Optional:
 
-- `add_magiclink_token` (Boolean)
-- `invite_url` (String)
-- `require_invitation` (Boolean)
-- `send_email` (Boolean)
-- `send_text` (Boolean)
+- `add_magiclink_token` (Boolean) Whether to include a magic link token in invitation messages.
+- `invite_url` (String) Custom URL to include in the message sent to invited users.
+- `require_invitation` (Boolean) Whether users must be invited before they can sign up to the project.
+- `send_email` (Boolean) Whether to send invitation emails to users.
+- `send_text` (Boolean) Whether to send invitation SMS messages to users.
 
 
 <a id="nestedatt--jwt_templates"></a>
@@ -2199,15 +2290,15 @@ Optional:
 Required:
 
 - `name` (String) Name of the JWT Template.
-- `template` (String)
+- `template` (String) The JSON template defining the structure and claims of the JWT token. This is expected to be a valid JSON object given as a `string` value.
 
 Optional:
 
 - `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
-- `conformance_issuer` (Boolean)
+- `conformance_issuer` (Boolean) Whether to use OIDC conformance for the JWT issuer field.
 - `description` (String) Description of the JWT Template.
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
-- `enforce_issuer` (Boolean)
+- `enforce_issuer` (Boolean) Whether to enforce that the JWT issuer matches the project configuration.
 
 Read-Only:
 
@@ -2220,15 +2311,15 @@ Read-Only:
 Required:
 
 - `name` (String) Name of the JWT Template.
-- `template` (String)
+- `template` (String) The JSON template defining the structure and claims of the JWT token. This is expected to be a valid JSON object given as a `string` value.
 
 Optional:
 
 - `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
-- `conformance_issuer` (Boolean)
+- `conformance_issuer` (Boolean) Whether to use OIDC conformance for the JWT issuer field.
 - `description` (String) Description of the JWT Template.
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
-- `enforce_issuer` (Boolean)
+- `enforce_issuer` (Boolean) Whether to enforce that the JWT issuer matches the project configuration.
 
 Read-Only:
 
@@ -2271,15 +2362,15 @@ Optional:
 
 Required:
 
-- `client_id` (String)
+- `client_id` (String) The unique client ID for the vendor.
 - `loginid_matched_attributes` (Set of String) A set of attributes from the vendor's user that should be used to match with the Descope user's login ID.
 - `vendor` (String) The name of the vendor the sessions are migrated from, in all lowercase.
 
 Optional:
 
-- `audience` (String)
-- `domain` (String)
-- `issuer` (String)
+- `audience` (String) The audience value if needed by the vendor..
+- `domain` (String) The domain value if needed by the vendor.
+- `issuer` (String) An issuer URL if needed by the vendor.
 
 
 
@@ -2288,4 +2379,4 @@ Optional:
 
 Required:
 
-- `data` (String)
+- `data` (String) The JSON data defining the visual styling and theme configuration used for authentication, widgets, etc.
