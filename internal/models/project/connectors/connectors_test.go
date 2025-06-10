@@ -16,7 +16,7 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.%": 48,
+				"connectors.%": 51,
 			}),
 		},
 		resource.TestStep{
@@ -104,8 +104,11 @@ func TestConnectors(t *testing.T) {
 						{
 							name = "Test aws-s3 Connector"
 							description = "A description for the aws-s3 connector"
+    						auth_type = "nhp6qmtm"
     						access_key_id = "ezzrllbqu22"
     						secret_access_key = "xiyuadzk4w64hog"
+    						role_arn = "a2nxhtk"
+    						external_id = "vlji3lwpfe"
     						region = "y2l5fg"
     						bucket = "ywdzxd"
     						audit_enabled = true
@@ -120,8 +123,11 @@ func TestConnectors(t *testing.T) {
 				"connectors.aws_s3.0.id":                       testacc.AttributeHasPrefix("CI"),
 				"connectors.aws_s3.0.name":                     "Test aws-s3 Connector",
 				"connectors.aws_s3.0.description":              "A description for the aws-s3 connector",
+				"connectors.aws_s3.0.auth_type":                "nhp6qmtm",
 				"connectors.aws_s3.0.access_key_id":            "ezzrllbqu22",
 				"connectors.aws_s3.0.secret_access_key":        "xiyuadzk4w64hog",
+				"connectors.aws_s3.0.role_arn":                 "a2nxhtk",
+				"connectors.aws_s3.0.external_id":              "vlji3lwpfe",
 				"connectors.aws_s3.0.region":                   "y2l5fg",
 				"connectors.aws_s3.0.bucket":                   "ywdzxd",
 				"connectors.aws_s3.0.audit_enabled":            true,
@@ -352,6 +358,40 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"external_token_http": [
+						{
+							name = "Test external-token-http Connector"
+							description = "A description for the external-token-http connector"
+    						endpoint = "w27xxsgz"
+    						authentication = {
+    							bearer_token = "xhmqmkcfhe4mk6"
+    						}
+    						headers = {
+    							"key" = "g6htpmp"
+    						}
+    						hmac_secret = "ooxzct5yxz"
+    						insecure = true
+    						use_static_ips = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.external_token_http.#":                             1,
+				"connectors.external_token_http.0.id":                          testacc.AttributeHasPrefix("CI"),
+				"connectors.external_token_http.0.name":                        "Test external-token-http Connector",
+				"connectors.external_token_http.0.description":                 "A description for the external-token-http connector",
+				"connectors.external_token_http.0.endpoint":                    "w27xxsgz",
+				"connectors.external_token_http.0.authentication.bearer_token": "xhmqmkcfhe4mk6",
+				"connectors.external_token_http.0.headers.key":                 "g6htpmp",
+				"connectors.external_token_http.0.hmac_secret":                 "ooxzct5yxz",
+				"connectors.external_token_http.0.insecure":                    true,
+				"connectors.external_token_http.0.use_static_ips":              true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"fingerprint": [
 						{
 							name = "Test fingerprint Connector"
@@ -395,6 +435,26 @@ func TestConnectors(t *testing.T) {
 				"connectors.fingerprint_descope.0.name":          "Test fingerprint-descope Connector",
 				"connectors.fingerprint_descope.0.description":   "A description for the fingerprint-descope connector",
 				"connectors.fingerprint_descope.0.custom_domain": "chk55vpucvwg",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"firebase_admin": [
+						{
+							name = "Test firebase-admin Connector"
+							description = "A description for the firebase-admin connector"
+    						service_account = "w4nbeixmfpmumt"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.firebase_admin.#":                 1,
+				"connectors.firebase_admin.0.id":              testacc.AttributeHasPrefix("CI"),
+				"connectors.firebase_admin.0.name":            "Test firebase-admin Connector",
+				"connectors.firebase_admin.0.description":     "A description for the firebase-admin connector",
+				"connectors.firebase_admin.0.service_account": "w4nbeixmfpmumt",
 			}),
 		},
 		resource.TestStep{
@@ -1092,6 +1152,28 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"supabase": [
+						{
+							name = "Test supabase Connector"
+							description = "A description for the supabase connector"
+    						signing_secret = "7z47p3qqxkpcc"
+    						expiration_time = 21
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.supabase.#":                 1,
+				"connectors.supabase.0.id":              testacc.AttributeHasPrefix("CI"),
+				"connectors.supabase.0.name":            "Test supabase Connector",
+				"connectors.supabase.0.description":     "A description for the supabase connector",
+				"connectors.supabase.0.signing_secret":  "7z47p3qqxkpcc",
+				"connectors.supabase.0.expiration_time": 21,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"telesign": [
 						{
 							name = "Test telesign Connector"
@@ -1184,7 +1266,7 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.%": 48,
+				"connectors.%": 51,
 			}),
 		},
 	)

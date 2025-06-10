@@ -227,7 +227,7 @@ issuer
 
 - Type: `string` 
 
-// description for issuer
+The issuer identifier for the OAuth provider.
 
 
 
@@ -272,4 +272,4 @@ claim_mapping
 
 - Type: `map` of `string` 
 
-// description for claim_mapping
+Maps OAuth provider claims to Descope user attributes.

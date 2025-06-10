@@ -53,7 +53,7 @@ func (m *SumoLogicModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *SumoLogicModel) Validate(h *helpers.Handler) {
 	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
-		h.Error("Invalid connector configuration", "The audit_filters field cannot be used when audit_enabled is set to false")
+		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
 }
 

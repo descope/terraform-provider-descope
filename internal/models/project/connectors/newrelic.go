@@ -59,10 +59,10 @@ func (m *NewRelicModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *NewRelicModel) Validate(h *helpers.Handler) {
 	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
-		h.Error("Invalid connector configuration", "The audit_filters field cannot be used when audit_enabled is set to false")
+		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
 	if !m.LogsPrefix.IsNull() && !m.OverrideLogsPrefix.ValueBool() {
-		h.Error("Invalid connector configuration", "The logs_prefix field cannot be used unless override_logs_prefix is set to true")
+		h.Conflict("The logs_prefix field cannot be used unless override_logs_prefix is set to true")
 	}
 }
 

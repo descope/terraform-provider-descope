@@ -2,6 +2,7 @@ package conngen
 
 import (
 	"log"
+	"slices"
 	"strings"
 	"unicode"
 
@@ -79,32 +80,66 @@ func (c *Connector) HasField(typ string) bool {
 }
 
 func (c *Connector) HasValidator() bool {
-	found := false
+	return slices.ContainsFunc(c.Fields, func(f *Field) bool {
+		return f.Dependency != nil
+	})
+}
+
+func (c *Connector) Prepare() {
+	// remove any fields that are not actually for configuration
+	c.Fields = slices.DeleteFunc(c.Fields, func(f *Field) bool {
+		return f.Type == "cloudformation-link"
+	})
+
+	// add the static IP field into the configuration as expected by the snapshot format
+	if c.SupportsStaticIPs() {
+		c.Fields = append(c.Fields, UseStaticIPsField)
+	}
+
 	for _, f := range c.Fields {
-		if f.Dependency != nil {
-			found = true
-			// use this chance to link dependencies and fields together
-			if f.Dependency.Field == nil {
+		// treat these types as regular string fields for now
+		if f.Type == "readonly-string" {
+			f.Type = FieldTypeString
+		}
+
+		if d := f.Dependency; d != nil {
+			// link dependencies and fields together
+			if d.Field == nil {
 				for _, curr := range c.Fields {
-					if f.Dependency.Name == curr.Name {
-						f.Dependency.Field = curr
+					if d.Name == curr.Name {
+						d.Field = curr
 					}
 				}
 			}
+
 			// a few sanity checks to make sure we support what's expected
-			if f.Required {
-				log.Fatalf("Unexpected required field with dependency %s", f.Name)
+			if d.Field == nil {
+				log.Fatalf("Failed to find matching field for dependency %s in connector %s", d.Name, c.ID)
 			}
-			if f.Dependency.Field == nil {
-				log.Fatalf("Failed to find matching field for dependency %s in connector %s", f.Dependency.Name, c.ID)
+			if d.Field.Type != FieldTypeBool && d.Field.Type != FieldTypeString {
+				log.Fatalf("Field %s has a dependency on %s of type %s which is not supported", f.Name, d.Name, d.Field.Type)
 			}
-			if f.Dependency.Field.Type != FieldTypeBool {
-				log.Fatalf("Field %s has a dependency on %s whose type is not a boolean (other types are not currently supported)", f.Name, f.Dependency.Field.Name)
+			if d.Field.Type == FieldTypeBool && f.Required {
+				log.Fatalf("Unexpected required field with boolean dependency %s", f.Name)
 			}
-			if f.Dependency.Value != true {
-				log.Fatalf("Field %s has a dependency whose value is not true (other values are not currently supported)", f.Name)
+			if d.Field.Type == FieldTypeBool && d.Value != true {
+				log.Fatalf("Field %s has a boolean dependency whose value is not true", f.Name)
+			}
+			if _, ok := d.Value.(string); !ok && d.Field.Type == FieldTypeString {
+				log.Fatalf("Field %s has a string dependency whose value is not a string", f.Name)
+			}
+
+			// we convert required fields with string dependencies to optional
+			if d.Field.Type == FieldTypeString {
+				if !f.Required {
+					log.Fatalf("Field %s has a string dependency so we expect it to be required in the template", f.Name)
+				}
+				f.Required = false
+				if d.Field.Initial == nil {
+					log.Fatalf("Field %s has a string dependency on field %s with no initial value", f.Name, d.Name)
+				}
 			}
 		}
+
 	}
-	return found
 }

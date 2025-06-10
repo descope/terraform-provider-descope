@@ -9,7 +9,7 @@ account_sid
 
 - Type: `string` (required)
 
-// description for account_sid
+Twilio Account SID from your Twilio Console.
 
 
 
@@ -18,7 +18,7 @@ service_sid
 
 - Type: `string` (required)
 
-// description for service_sid
+Twilio Verify Service SID for verification services.
 
 
 
@@ -27,7 +27,7 @@ sender
 
 - Type: `string` 
 
-// description for sender
+Optional sender identifier for verification messages.
 
 
 
@@ -36,4 +36,4 @@ authentication
 
 - Type: `object` of `connectors.TwilioAuthField` (required)
 
-// description for authentication
+Twilio authentication credentials (either auth token or API key/secret).

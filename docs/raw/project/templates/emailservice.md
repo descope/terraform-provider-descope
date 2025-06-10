@@ -9,7 +9,7 @@ connector
 
 - Type: `string` (required)
 
-// description for connector
+The name of the email connector to use for sending emails.
 
 
 
@@ -18,4 +18,4 @@ templates
 
 - Type: `list` of `templates.EmailTemplate` 
 
-// description for templates
+A list of email templates for different authentication flows.

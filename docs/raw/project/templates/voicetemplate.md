@@ -9,7 +9,7 @@ active
 
 - Type: `bool` 
 
-// description for active
+Whether this voice template is currently active and in use.
 
 
 
@@ -18,7 +18,7 @@ name
 
 - Type: `string` (required)
 
-// description for name
+Unique name for this voice template.
 
 
 
@@ -27,4 +27,4 @@ body
 
 - Type: `string` (required)
 
-// description for body
+The content of the voice message that will be spoken.

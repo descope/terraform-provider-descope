@@ -56,10 +56,10 @@ func (m *ForterModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *ForterModel) Validate(h *helpers.Handler) {
 	if !m.OverrideIPAddress.IsNull() && !m.Overrides.ValueBool() {
-		h.Error("Invalid connector configuration", "The override_ip_address field cannot be used unless overrides is set to true")
+		h.Conflict("The override_ip_address field cannot be used unless overrides is set to true")
 	}
 	if !m.OverrideUserEmail.IsNull() && !m.Overrides.ValueBool() {
-		h.Error("Invalid connector configuration", "The override_user_email field cannot be used unless overrides is set to true")
+		h.Conflict("The override_user_email field cannot be used unless overrides is set to true")
 	}
 }
 

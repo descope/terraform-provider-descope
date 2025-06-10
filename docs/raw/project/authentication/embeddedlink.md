@@ -20,4 +20,4 @@ expiration_time
 
 - Type: `duration` 
 
-The amount of time that the embedded link will be valid for.
+How long the embedded link remains valid before it expires.

@@ -18,7 +18,7 @@ server
 
 - Type: `object` of `connectors.ServerField` (required)
 
-// description for server
+SMTP server connection details including hostname and port.
 
 
 
@@ -27,7 +27,7 @@ authentication
 
 - Type: `object` of `connectors.SMTPAuthField` (required)
 
-// description for authentication
+SMTP server authentication credentials and method.
 
 
 
@@ -52,7 +52,7 @@ username
 
 - Type: `string` (required)
 
-// description for username
+Username for SMTP server authentication.
 
 
 
@@ -61,7 +61,7 @@ password
 
 - Type: `secret` (required)
 
-// description for password
+Password for SMTP server authentication.
 
 
 
@@ -71,4 +71,4 @@ method
 - Type: `string` 
 - Default: `"plain"`
 
-// description for method
+SMTP authentication method (`plain` or `login`).

@@ -30,7 +30,7 @@ audit_webhook
 
 - Type: `list` of `connectors.AuditWebhook` 
 
-// description for audit_webhook
+Webhook endpoint for receiving audit events and security logs.
 
 
 
@@ -39,7 +39,7 @@ aws_s3
 
 - Type: `list` of `connectors.AWSS3` 
 
-// description for aws_s3
+Amazon S3 storage service for file uploads and document management.
 
 
 
@@ -48,7 +48,7 @@ aws_translate
 
 - Type: `list` of `connectors.AWSTranslate` 
 
-// description for aws_translate
+Amazon Translate service for automatic language translation of content.
 
 
 
@@ -88,7 +88,7 @@ devrev_grow
 
 - Type: `list` of `connectors.DevRevGrow` 
 
-// description for devrev_grow
+DevRev Grow platform for customer support and product development integration.
 
 
 
@@ -107,7 +107,7 @@ eight_by_eight_viber
 
 - Type: `list` of `connectors.EightByEightViber` 
 
-// description for eight_by_eight_viber
+8x8 Viber integration for messaging through the Viber platform.
 
 
 
@@ -116,7 +116,7 @@ eight_by_eight_whatsapp
 
 - Type: `list` of `connectors.EightByEightWhatsapp` 
 
-// description for eight_by_eight_whatsapp
+8x8 WhatsApp integration for messaging through the WhatsApp Business platform.
 
 
 
@@ -126,6 +126,15 @@ elephant
 - Type: `list` of `connectors.Elephant` 
 
 Use this connector to obtain an identity trust score.
+
+
+
+external_token_http
+-------------------
+
+- Type: `list` of `connectors.ExternalTokenHTTP` 
+
+// description for external_token_http
 
 
 
@@ -144,7 +153,16 @@ fingerprint_descope
 
 - Type: `list` of `connectors.FingerprintDescope` 
 
-// description for fingerprint_descope
+Descope's built-in device fingerprinting for fraud detection.
+
+
+
+firebase_admin
+--------------
+
+- Type: `list` of `connectors.FirebaseAdmin` 
+
+// description for firebase_admin
 
 
 
@@ -162,7 +180,7 @@ generic_email_gateway
 
 - Type: `list` of `connectors.GenericEmailGateway` 
 
-// description for generic_email_gateway
+Generic email gateway for custom email service integrations.
 
 
 
@@ -171,7 +189,7 @@ generic_sms_gateway
 
 - Type: `list` of `connectors.GenericSMSGateway` 
 
-// description for generic_sms_gateway
+Generic SMS gateway for custom SMS service integrations.
 
 
 
@@ -180,7 +198,7 @@ google_cloud_translation
 
 - Type: `list` of `connectors.GoogleCloudTranslation` 
 
-// description for google_cloud_translation
+Google Cloud Translation API for automatic language translation.
 
 
 
@@ -189,7 +207,7 @@ google_maps_places
 
 - Type: `list` of `connectors.GoogleMapsPlaces` 
 
-// description for google_maps_places
+Google Maps Places API for address validation and autocomplete.
 
 
 
@@ -293,7 +311,7 @@ recaptcha_enterprise
 
 - Type: `list` of `connectors.RecaptchaEnterprise` 
 
-// description for recaptcha_enterprise
+Google reCAPTCHA Enterprise for advanced bot protection and risk assessment.
 
 
 
@@ -324,7 +342,7 @@ salesforce_marketing_cloud
 
 - Type: `list` of `connectors.SalesforceMarketingCloud` 
 
-// description for salesforce_marketing_cloud
+Salesforce Marketing Cloud for email marketing and customer engagement.
 
 
 
@@ -353,7 +371,7 @@ sendgrid
 
 - Type: `list` of `connectors.SendGrid` 
 
-// description for sendgrid
+SendGrid email delivery service for sending transactional emails.
 
 
 
@@ -362,7 +380,7 @@ ses
 
 - Type: `list` of `connectors.SES` 
 
-// description for ses
+Amazon Simple Email Service (SES) for sending emails through AWS infrastructure.
 
 
 
@@ -390,7 +408,7 @@ smtp
 
 - Type: `list` of `connectors.SMTP` 
 
-// description for smtp
+Simple Mail Transfer Protocol (SMTP) server for sending emails.
 
 
 
@@ -399,7 +417,7 @@ sns
 
 - Type: `list` of `connectors.SNS` 
 
-// description for sns
+Amazon Simple Notification Service (SNS) for sending SMS messages through AWS.
 
 
 
@@ -410,6 +428,15 @@ sumologic
 
 Sumo Logic, fast troubleshooting and investigation with AI/ML-powered log
 analytics
+
+
+
+supabase
+--------
+
+- Type: `list` of `connectors.Supabase` 
+
+Supabase
 
 
 
@@ -445,7 +472,7 @@ twilio_core
 
 - Type: `list` of `connectors.TwilioCore` 
 
-// description for twilio_core
+Twilio Core messaging service for sending SMS and voice messages.
 
 
 
@@ -454,4 +481,4 @@ twilio_verify
 
 - Type: `list` of `connectors.TwilioVerify` 
 
-// description for twilio_verify
+Twilio Verify service for phone number verification and two-factor authentication.
