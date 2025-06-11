@@ -164,7 +164,7 @@ resource "descope_project" "my_project" {
 ## Development
 
 See the [README](internal/README.md) file in the `internal` directory for more details about the development
-process, architecture, and tools, 
+process, architecture, and tools.
 
 ### Setup
 
