@@ -206,6 +206,12 @@ func (f *Field) ValidateNonZero() string {
 func (f *Field) GetTestAssignment() string {
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
+		if v, ok := f.Initial.(string); ok {
+			return fmt.Sprintf(`%q`, v)
+		}
+		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
+			return `""`
+		}
 		return fmt.Sprintf(`%q`, f.TestString())
 	case FieldTypeBool:
 		return `true`
@@ -226,20 +232,26 @@ func (f *Field) GetTestAssignment() string {
 	}
 }
 
-func (f *Field) GetTestCheck(list string, index int) string {
+func (f *Field) GetTestCheck() string {
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
-		return fmt.Sprintf(`"connectors.%s.%d.%s": %q`, list, index, f.AttributeName(), f.TestString())
+		if v, ok := f.Initial.(string); ok {
+			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), v)
+		}
+		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
+			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
+		}
+		return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.TestString())
 	case FieldTypeBool:
-		return fmt.Sprintf(`"connectors.%s.%d.%s": true`, list, index, f.AttributeName())
+		return fmt.Sprintf(`"%s": true`, f.AttributeName())
 	case FieldTypeNumber:
-		return fmt.Sprintf(`"connectors.%s.%d.%s": %d`, list, index, f.AttributeName(), f.TestNumber())
+		return fmt.Sprintf(`"%s": %d`, f.AttributeName(), f.TestNumber())
 	case FieldTypeObject:
-		return fmt.Sprintf(`"connectors.%s.%d.%s.key": %q`, list, index, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s.key": %q`, f.AttributeName(), f.TestString())
 	case FieldTypeAuditFilters:
-		return fmt.Sprintf(`"connectors.%s.%d.%s.0.values": []string{%q}`, list, index, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s.0.values": []string{%q}`, f.AttributeName(), f.TestString())
 	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`"connectors.%s.%d.%s.bearer_token": %q`, list, index, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s.bearer_token": %q`, f.AttributeName(), f.TestString())
 	default:
 		panic("unexpected field type: " + f.Type)
 	}

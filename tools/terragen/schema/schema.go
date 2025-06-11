@@ -19,6 +19,7 @@ type Schema struct {
 	Files    []*File
 	Warnings []string
 	Packages []string
+	Missing  int
 }
 
 func ParseSources(root string) *Schema {
@@ -277,7 +278,7 @@ func (s *Schema) ValidateIfNeeded() {
 	utils.Debug(0, "Validation")
 	utils.Debug(0, "==========")
 
-	missing := 0
+	s.Missing = 0
 	for _, f := range s.Files {
 		for _, m := range f.Models {
 			for _, field := range m.Fields {
@@ -285,7 +286,7 @@ func (s *Schema) ValidateIfNeeded() {
 					if !utils.Flags.SkipValidate {
 						fmt.Printf("[warning] missing documentation in %s.md: %s.%s\n", f.Name, m.Name, field.Name)
 					}
-					missing += 1
+					s.Missing += 1
 				}
 			}
 		}
@@ -302,8 +303,13 @@ func (s *Schema) ValidateIfNeeded() {
 		}
 	}
 
-	if len(s.Warnings) > 0 || missing > 0 {
-		fmt.Printf("[%s] schema missing documentation for %d fields\n", label, missing)
+	if len(s.Warnings) > 0 || s.Missing > 0 {
+		fmt.Printf("[%s] schema missing documentation for %d fields\n", label, s.Missing)
+	}
+}
+
+func (s *Schema) AbortIfNeeded() {
+	if len(s.Warnings) > 0 || s.Missing > 0 {
 		if !utils.Flags.SkipValidate {
 			os.Exit(1)
 		}

@@ -288,7 +288,7 @@ callback_domain
 
 - Type: `string` 
 
-The domain name for OAuth callback URLs when managing provider tokens.
+Use a custom domain in your OAuth verification screen.
 
 
 
@@ -297,4 +297,5 @@ redirect_url
 
 - Type: `string` 
 
-The redirect URL used for OAuth provider token management after authentication completion.
+Users will be directed to this URL after authentication. If redirect URL is specified in
+the SDK/API call, it will override this value.

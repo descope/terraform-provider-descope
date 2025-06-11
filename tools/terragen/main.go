@@ -39,6 +39,9 @@ func main() {
 	// generates updated raw .md documentation files
 	docgen.GenerateDocs(paths.Raw, schema)
 
+	// stop after generating .md files if needed
+	schema.AbortIfNeeded()
+
 	// add back boilerplate fields with hardcoded descriptions
 	conngen.AddBoilerplate(conns, schema)
 
