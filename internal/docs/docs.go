@@ -167,7 +167,11 @@ var docsOAuthProvider = map[string]string{
 	            "configured to use this authentication method.",
 	"client_id": "The client ID for the OAuth provider, used to identify the application to the provider.",
 	"client_secret": "The client secret for the OAuth provider, used to authenticate the application with the provider.",
-	"provider_token_management": "Settings related to token management for the OAuth provider.",
+	"manage_provider_tokens": "Whether to enable provider token management for this OAuth provider.",
+	"callback_domain": "Use a custom domain in your OAuth verification screen.",
+	"redirect_url": "Users will be directed to this URL after authentication. If redirect URL is specified in " +
+	                "the SDK/API call, it will override this value.",
+	"provider_token_management": "This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead.",
 	"prompts": "Custom prompts or consent screens that users may see during OAuth authentication.",
 	"allowed_grant_types": "The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens " +
 	                       "from the OAuth provider.",
@@ -181,11 +185,6 @@ var docsOAuthProvider = map[string]string{
 	"user_info_endpoint": "The URL where the application retrieves user information from the OAuth provider.",
 	"jwks_endpoint": "The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.",
 	"claim_mapping": "Maps OAuth provider claims to Descope user attributes.",
-}
-
-var docsOAuthProviderTokenManagement = map[string]string{
-	"callback_domain": "The domain name for OAuth callback URLs when managing provider tokens.",
-	"redirect_url": "The redirect URL used for OAuth provider token management after authentication completion.",
 }
 
 var docsOTP = map[string]string{

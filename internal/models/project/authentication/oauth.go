@@ -21,7 +21,7 @@ var OAuthValidator = objattr.NewValidator[OAuthModel]("must have a valid OAuth c
 var OAuthAttributes = map[string]schema.Attribute{
 	"disabled": boolattr.Default(false),
 	"system":   objattr.Optional[OAuthSystemProvidersModel](OAuthSystemProviderAttributes),
-	"custom":   mapattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"custom":   mapattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
 }
 
 type OAuthModel struct {
@@ -153,8 +153,11 @@ func ensureSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProvide
 		if !m.Scopes.IsEmpty() {
 			h.Invalid("Set a client_id and client_secret for the %s system provider in order to set the scopes attribute", name)
 		}
-		if !m.ProviderTokenManagement.IsNull() && !m.ProviderTokenManagement.IsUnknown() {
-			h.Invalid("Set a client_id and client_secret for the %s system provider in order to set the provider_token_management attribute", name)
+		if m.ManageProviderTokens.ValueBool() {
+			h.Invalid("Set a client_id and client_secret for the %s system provider in order to set the manage_provider_tokens attribute", name)
+		}
+		if m.CallbackDomain.ValueString() != "" {
+			h.Invalid("Set a client_id and client_secret for the %s system provider in order to set the callback_domain attribute", name)
 		}
 	}
 }
@@ -186,15 +189,15 @@ func ensureNoCustomProviderFields(h *helpers.Handler, field stringattr.Type, fie
 // System OAuth Providers
 
 var OAuthSystemProviderAttributes = map[string]schema.Attribute{
-	"apple":     objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
-	"discord":   objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
-	"facebook":  objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
-	"github":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
-	"gitlab":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
-	"google":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
-	"linkedin":  objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
-	"microsoft": objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
-	"slack":     objattr.Optional[OAuthProviderModel](OAuthProviderAttributes),
+	"apple":     objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"discord":   objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"facebook":  objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"github":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"gitlab":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"google":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"linkedin":  objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"microsoft": objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"slack":     objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
 }
 
 type OAuthSystemProvidersModel struct {
@@ -251,10 +254,15 @@ func getProviderValue(h *helpers.Handler, providers map[string]any, obj objattr.
 
 var systemClaimMapping = []string{"loginId", "username", "name", "email", "phoneNumber", "verifiedEmail", "verifiedPhone", "picture", "givenName", "middleName", "familyName"}
 
+var OAuthProviderValidator = objattr.NewValidator[OAuthProviderModel]("must have a valid OAuth provider configuration")
+
 var OAuthProviderAttributes = map[string]schema.Attribute{
 	"disabled":                  boolattr.Default(false),
 	"client_id":                 stringattr.Optional(),
 	"client_secret":             stringattr.SecretOptional(),
+	"manage_provider_tokens":    boolattr.Default(false),
+	"callback_domain":           stringattr.Optional(),
+	"redirect_url":              stringattr.Optional(),
 	"provider_token_management": objattr.Default[OAuthProviderTokenManagementModel](nil, OAuthProviderTokenManagementAttributes),
 	"prompts":                   strlistattr.Optional(stringvalidator.OneOf("none", "login", "consent", "select_account")),
 	"allowed_grant_types":       strlistattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
@@ -275,6 +283,9 @@ type OAuthProviderModel struct {
 	Disabled                boolattr.Type                                   `tfsdk:"disabled"`
 	ClientID                stringattr.Type                                 `tfsdk:"client_id"`
 	ClientSecret            stringattr.Type                                 `tfsdk:"client_secret"`
+	ManageProviderTokens    boolattr.Type                                   `tfsdk:"manage_provider_tokens"`
+	CallbackDomain          stringattr.Type                                 `tfsdk:"callback_domain"`
+	RedirectURL             stringattr.Type                                 `tfsdk:"redirect_url"`
 	ProviderTokenManagement objattr.Type[OAuthProviderTokenManagementModel] `tfsdk:"provider_token_management"`
 	Prompts                 strlistattr.Type                                `tfsdk:"prompts"`
 	Scopes                  strlistattr.Type                                `tfsdk:"scopes"`
@@ -296,12 +307,9 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	}
 	stringattr.Get(m.ClientID, data, "clientId")
 	stringattr.Get(m.ClientSecret, data, "clientSecret")
-	if m.ProviderTokenManagement.IsSet() { // XXX the fields are optional
-		data["manageProviderTokens"] = true
-		objattr.Get(m.ProviderTokenManagement, data, helpers.RootKey, h)
-	} else {
-		data["manageProviderTokens"] = false
-	}
+	boolattr.Get(m.ManageProviderTokens, data, "manageProviderTokens")
+	stringattr.Get(m.CallbackDomain, data, "callbackDomain")
+	stringattr.Get(m.RedirectURL, data, "redirectUrl")
 	if !m.Prompts.IsEmpty() {
 		strlistattr.Get(m.Prompts, data, "prompts", h)
 	}
@@ -338,9 +346,9 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 		m.Disabled = boolattr.Value(!b)
 	}
 	stringattr.Set(&m.ClientID, data, "clientId")
-	if data["manageProviderTokens"] == true {
-		objattr.Set(&m.ProviderTokenManagement, data, helpers.RootKey, h)
-	}
+	boolattr.Set(&m.ManageProviderTokens, data, "manageProviderTokens")
+	stringattr.Set(&m.CallbackDomain, data, "callbackDomain")
+	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
 	strlistattr.Set(&m.Prompts, data, "prompts", h) // XXX was skipped
 	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
@@ -355,26 +363,14 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	strmapattr.Nil(&m.ClaimMapping, h) // empty defaults are added by the backend
 }
 
+func (m *OAuthProviderModel) Validate(h *helpers.Handler) {
+	if m.ProviderTokenManagement.IsSet() {
+		h.Error("Deprecated Field", "The provider_token_management field is deprecated. Use manage_provider_tokens, callback_domain, and redirect_url fields directly on the OAuth provider instead.")
+	}
+}
+
 // Provider Token Management
 
-var OAuthProviderTokenManagementAttributes = map[string]schema.Attribute{
-	"callback_domain": stringattr.Optional(),
-	"redirect_url":    stringattr.Optional(),
-}
+var OAuthProviderTokenManagementAttributes = map[string]schema.Attribute{}
 
-type OAuthProviderTokenManagementModel struct {
-	CallbackDomain stringattr.Type `tfsdk:"callback_domain"`
-	RedirectURL    stringattr.Type `tfsdk:"redirect_url"`
-}
-
-func (m *OAuthProviderTokenManagementModel) Values(h *helpers.Handler) map[string]any {
-	data := map[string]any{}
-	stringattr.Get(m.CallbackDomain, data, "callbackDomain")
-	stringattr.Get(m.RedirectURL, data, "redirectUrl")
-	return data
-}
-
-func (m *OAuthProviderTokenManagementModel) SetValues(h *helpers.Handler, data map[string]any) {
-	stringattr.Set(&m.CallbackDomain, data, "callbackDomain")
-	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
-}
+type OAuthProviderTokenManagementModel struct{}
