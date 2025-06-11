@@ -47,7 +47,7 @@ conformance_issuer
 
 - Type: `bool` 
 
-// description for conformance_issuer
+Whether to use OIDC conformance for the JWT issuer field.
 
 
 
@@ -56,7 +56,7 @@ enforce_issuer
 
 - Type: `bool` 
 
-// description for enforce_issuer
+Whether to enforce that the JWT issuer matches the project configuration.
 
 
 
@@ -65,4 +65,5 @@ template
 
 - Type: `string` (required)
 
-// description for template
+The JSON template defining the structure and claims of the JWT token. This is expected
+to be a valid JSON object given as a `string` value.

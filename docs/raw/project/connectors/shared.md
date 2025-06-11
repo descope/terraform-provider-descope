@@ -9,7 +9,7 @@ email
 
 - Type: `string` (required)
 
-// description for email
+The email address that will appear as the sender of the email.
 
 
 
@@ -18,7 +18,7 @@ name
 
 - Type: `string` 
 
-// description for name
+The display name that will appear as the sender of the email.
 
 
 
@@ -34,7 +34,7 @@ host
 
 - Type: `string` (required)
 
-// description for host
+The hostname or IP address of the SMTP server.
 
 
 
@@ -44,7 +44,7 @@ port
 - Type: `int` 
 - Default: `25`
 
-// description for port
+The port number to connect to on the SMTP server.
 
 
 
@@ -60,7 +60,7 @@ key
 
 - Type: `string` (required)
 
-// description for key
+The field name to filter on (either 'actions' or 'tenants').
 
 
 
@@ -69,7 +69,7 @@ operator
 
 - Type: `string` (required)
 
-// description for operator
+The filter operation to apply ('includes' or 'excludes').
 
 
 
@@ -78,7 +78,7 @@ values
 
 - Type: `list` of `string` (required)
 
-// description for values
+The list of values to match against for the filter.
 
 
 
@@ -94,7 +94,7 @@ bearer_token
 
 - Type: `secret` 
 
-// description for bearer_token
+Bearer token for HTTP authentication.
 
 
 
@@ -103,7 +103,7 @@ basic
 
 - Type: `object` of `connectors.HTTPAuthBasicField` 
 
-// description for basic
+Basic authentication credentials (username and password).
 
 
 
@@ -112,7 +112,7 @@ api_key
 
 - Type: `object` of `connectors.HTTPAuthAPIKeyField` 
 
-// description for api_key
+API key authentication configuration.
 
 
 
@@ -128,7 +128,7 @@ username
 
 - Type: `string` (required)
 
-// description for username
+Username for basic HTTP authentication.
 
 
 
@@ -137,7 +137,7 @@ password
 
 - Type: `secret` (required)
 
-// description for password
+Password for basic HTTP authentication.
 
 
 
@@ -153,7 +153,7 @@ key
 
 - Type: `string` (required)
 
-// description for key
+The API key.
 
 
 
@@ -162,4 +162,4 @@ token
 
 - Type: `secret` (required)
 
-// description for token
+The API secret.

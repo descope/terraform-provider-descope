@@ -52,7 +52,7 @@ select_options
 
 - Type: `set` of `string` 
 
-When the attribute type is "multiselect". A list of options to chose from.
+When the attribute type is "multiselect". A list of options to choose from.
 
 
 
@@ -61,7 +61,7 @@ authorization
 
 - Type: `object` of `attributes.TenantAttributeAuthorization` 
 
-// description for authorization
+Determines the required permissions for this tenant.
 
 
 
@@ -77,7 +77,7 @@ view_permissions
 
 - Type: `set` of `string` 
 
-// description for view_permissions
+Determines the required permissions for this tenant.
 
 
 
@@ -102,7 +102,8 @@ type
 
 - Type: `string` (required)
 
-The type of the attribute. Choose one of "string", "number", "boolean", "singleselect", "multiselect", "date".
+The type of the attribute. Choose one of "string", "number", "boolean",
+"singleselect", "multiselect", "date".
 
 
 
@@ -111,7 +112,7 @@ select_options
 
 - Type: `set` of `string` 
 
-When the attribute type is "multiselect". A list of options to chose from.
+When the attribute type is "multiselect". A list of options to choose from.
 
 
 
@@ -120,7 +121,8 @@ widget_authorization
 
 - Type: `object` of `attributes.UserAttributeWidgetAuthorization` 
 
-The `UserAttributeWidgetAuthorization` object. Read the description below.
+Determines the permissions users are required to have to access this attribute
+in the user management widget.
 
 
 
@@ -136,7 +138,7 @@ view_permissions
 
 - Type: `set` of `string` 
 
-A list of permissions by name to set viewing permissions to the attribute in widgets. e.g "SSO Admin".
+The permissions users are required to have to view this attribute in the user management widget.
 
 
 
@@ -145,4 +147,4 @@ edit_permissions
 
 - Type: `set` of `string` 
 
-A list of permissions by name to set editing permissions to the attribute in widgets. e.g "SSO Admin".
+The permissions users are required to have to edit this attribute in the user management widget.

@@ -82,9 +82,7 @@ func (c *Connectors) readConnector(path string) {
 		return
 	}
 
-	if connector.SupportsStaticIPs() {
-		connector.Fields = append(connector.Fields, UseStaticIPsField)
-	}
+	connector.Prepare()
 
 	c.Connectors = append(c.Connectors, connector)
 	utils.Debug(1, "- %s", connector.ID)

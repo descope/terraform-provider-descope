@@ -9,7 +9,7 @@ connector
 
 - Type: `string` (required)
 
-// description for connector
+The name of the voice connector to use for making voice calls.
 
 
 
@@ -18,4 +18,4 @@ templates
 
 - Type: `list` of `templates.VoiceTemplate` 
 
-// description for templates
+A list of voice message templates for different purposes.

@@ -101,7 +101,8 @@ reuse_amount
 
 - Type: `int` 
 
-// description for reuse_amount
+The number of previous passwords whose hashes are kept to prevent users from
+reusing old passwords.
 
 
 

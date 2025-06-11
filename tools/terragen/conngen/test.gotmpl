@@ -39,12 +39,14 @@ func TestConnectors(t *testing.T) {
 {{- else }}
 			Check: p.Check(map[string]any{
 				"connectors.{{.AttributeName}}.#": 1,
-				"connectors.{{.AttributeName}}.0.id": testacc.AttributeHasPrefix("CI"),
-				"connectors.{{.AttributeName}}.0.name": "Test {{.ID}} Connector",
-                "connectors.{{.AttributeName}}.0.description": "A description for the {{.DataName}} connector",
-				{{- range .Fields }}
-				{{ .GetTestCheck $c.AttributeName 0 }},
-				{{- end }}
+				"connectors.{{.AttributeName}}.0": map[string]any{
+					"id": testacc.AttributeHasPrefix("CI"),
+					"name": "Test {{.ID}} Connector",
+					"description": "A description for the {{.DataName}} connector",
+					{{- range .Fields }}
+					{{.GetTestCheck }},
+					{{- end }}
+				},
 			}),
 {{- end}}
 		},

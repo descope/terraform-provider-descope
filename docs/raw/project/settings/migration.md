@@ -18,7 +18,7 @@ client_id
 
 - Type: `string` (required)
 
-// description for client_id
+The unique client ID for the vendor.
 
 
 
@@ -27,7 +27,7 @@ domain
 
 - Type: `string` 
 
-// description for domain
+The domain value if needed by the vendor.
 
 
 
@@ -36,7 +36,7 @@ audience
 
 - Type: `string` 
 
-// description for audience
+The audience value if needed by the vendor.
 
 
 
@@ -45,7 +45,7 @@ issuer
 
 - Type: `string` 
 
-// description for issuer
+An issuer URL if needed by the vendor.
 
 
 

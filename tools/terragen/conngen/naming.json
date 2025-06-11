@@ -65,6 +65,11 @@
       "file": "elephant",
       "struct": "Elephant"
     },
+    "external-token-http": {
+      "attribute": "external_token_http",
+      "file": "externaltokenhttp",
+      "struct": "ExternalTokenHTTP"
+    },
     "fingerprint": {
       "attribute": "fingerprint",
       "file": "fingerprint",
@@ -74,6 +79,11 @@
       "attribute": "fingerprint_descope",
       "file": "fingerprintdescope",
       "struct": "FingerprintDescope"
+    },
+    "firebase-admin": {
+      "attribute": "firebase_admin",
+      "file": "firebaseadmin",
+      "struct": "FirebaseAdmin"
     },
     "forter": {
       "attribute": "forter",
@@ -211,6 +221,11 @@
       "file": "sumologic",
       "struct": "SumoLogic"
     },
+    "supabase": {
+      "attribute": "supabase",
+      "file": "supabase",
+      "struct": "Supabase"
+    },
     "telesign": {
       "attribute": "telesign",
       "file": "telesign",
@@ -292,6 +307,10 @@
       "attribute": "audit_filters",
       "struct": "AuditFilters"
     },
+    "authType": {
+      "attribute": "auth_type",
+      "struct": "AuthType"
+    },
     "authentication": {
       "attribute": "authentication",
       "struct": "Authentication"
@@ -348,6 +367,10 @@
       "attribute": "default_environment",
       "struct": "DefaultEnvironment"
     },
+    "endpoint": {
+      "attribute": "endpoint",
+      "struct": "Endpoint"
+    },
     "enterprise": {
       "attribute": "enterprise",
       "struct": "Enterprise"
@@ -355,6 +378,14 @@
     "euRegion": {
       "attribute": "eu_region",
       "struct": "EURegion"
+    },
+    "expirationTimeMinutes": {
+      "attribute": "expiration_time",
+      "struct": "ExpirationTime"
+    },
+    "externalId": {
+      "attribute": "external_id",
+      "struct": "ExternalID"
     },
     "flowId": {
       "attribute": "flow_id",
@@ -436,6 +467,10 @@
       "attribute": "region",
       "struct": "Region"
     },
+    "roleArn": {
+      "attribute": "role_arn",
+      "struct": "RoleARN"
+    },
     "scope": {
       "attribute": "scope",
       "struct": "Scope"
@@ -464,6 +499,10 @@
       "attribute": "server_zone",
       "struct": "ServerZone"
     },
+    "serviceAccount": {
+      "attribute": "service_account",
+      "struct": "ServiceAccount"
+    },
     "serviceAccountJSON": {
       "attribute": "service_account_json",
       "struct": "ServiceAccountJSON"
@@ -471,6 +510,10 @@
     "sessionToken": {
       "attribute": "session_token",
       "struct": "SessionToken"
+    },
+    "signingSecret": {
+      "attribute": "signing_secret",
+      "struct": "SigningSecret"
     },
     "site": {
       "attribute": "site",

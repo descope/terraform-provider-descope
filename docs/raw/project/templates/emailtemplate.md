@@ -9,7 +9,7 @@ active
 
 - Type: `bool` 
 
-// description for active
+Whether this email template is currently active and in use.
 
 
 
@@ -18,7 +18,7 @@ name
 
 - Type: `string` (required)
 
-// description for name
+Unique name for this email template.
 
 
 
@@ -27,7 +27,7 @@ subject
 
 - Type: `string` (required)
 
-// description for subject
+Subject line of the email message.
 
 
 
@@ -36,7 +36,7 @@ html_body
 
 - Type: `string` 
 
-// description for html_body
+HTML content of the email message body, required if `use_plain_text_body` isn't set.
 
 
 
@@ -45,7 +45,7 @@ plain_text_body
 
 - Type: `string` 
 
-// description for plain_text_body
+Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
 
 
 
@@ -54,4 +54,4 @@ use_plain_text_body
 
 - Type: `bool` 
 
-// description for use_plain_text_body
+Whether to use the plain text body instead of HTML for the email.

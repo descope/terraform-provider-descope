@@ -53,7 +53,7 @@ func (m *RecaptchaModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *RecaptchaModel) Validate(h *helpers.Handler) {
 	if !m.AssessmentScore.IsNull() && !m.OverrideAssessment.ValueBool() {
-		h.Error("Invalid connector configuration", "The assessment_score field cannot be used unless override_assessment is set to true")
+		h.Conflict("The assessment_score field cannot be used unless override_assessment is set to true")
 	}
 }
 

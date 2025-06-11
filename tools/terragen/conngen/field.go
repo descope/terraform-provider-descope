@@ -36,6 +36,8 @@ type Field struct {
 	Required    bool             `json:"required"`
 	Dynamic     bool             `json:"dynamic"`
 	Initial     any              `json:"initialValue"`
+	Hidden      bool             `json:"hidden"`
+	Options     []*FieldOption   `json:"options"`
 	Dependency  *FieldDependency `json:"dependsOn"`
 
 	naming *Naming
@@ -47,6 +49,14 @@ func (f *Field) StructName() string {
 
 func (f *Field) defaultStructName() string {
 	return utils.CapitalCase(f.Name)
+}
+
+func (f *Field) OptionValues() []string {
+	values := []string{}
+	for _, option := range f.Options {
+		values = append(values, option.Value)
+	}
+	return values
 }
 
 func (f *Field) StructType() string {
@@ -79,13 +89,38 @@ func (f *Field) defaultAttributeName() string {
 func (f *Field) AttributeType() string {
 	switch f.Type {
 	case FieldTypeString:
+		validator := ""
+
+		if len(f.Options) > 0 {
+			values := []string{}
+			for _, option := range f.Options {
+				values = append(values, fmt.Sprintf("%q", option.Value))
+			}
+			validator = fmt.Sprintf("stringvalidator.OneOf(%s)", strings.Join(values, ", "))
+
+			if f.Required {
+				return fmt.Sprintf(`stringattr.Required(%s)`, validator)
+			}
+			if v, ok := f.Initial.(string); ok {
+				return fmt.Sprintf(`stringattr.Default(%q, %s)`, v, validator)
+			}
+			return fmt.Sprintf(`stringattr.Default("", %s)`, validator)
+		}
+
 		if f.Required {
-			return `stringattr.Required()`
+			return fmt.Sprintf(`stringattr.Required(%s)`, validator)
 		}
+
+		if validator != "" {
+			validator = ", " + validator
+		}
+
+		defValue := ""
 		if v, ok := f.Initial.(string); ok {
-			return fmt.Sprintf(`stringattr.Default(%q)`, v)
+			defValue = v
 		}
-		return `stringattr.Default("")`
+
+		return fmt.Sprintf(`stringattr.Default(%q, %s)`, defValue, validator)
 	case FieldTypeSecret:
 		if f.Required {
 			return `stringattr.SecretRequired()`
@@ -122,6 +157,17 @@ func (f *Field) AttributeType() string {
 }
 
 func (f *Field) GetValueStatement() string {
+	if f.Hidden {
+		switch f.Type {
+		case FieldTypeString:
+			return fmt.Sprintf(`c[%q] = %q`, f.Name, f.Initial.(string)) // nolint:forcetypeassert
+		case FieldTypeBool:
+			return fmt.Sprintf(`c[%q] = %t`, f.Name, f.Initial.(bool)) // nolint:forcetypeassert
+		default:
+			panic("unexpected hidden field type: " + f.Type)
+		}
+	}
+
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
@@ -194,6 +240,12 @@ func (f *Field) ValidateNonZero() string {
 func (f *Field) GetTestAssignment() string {
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
+		if v, ok := f.Initial.(string); ok {
+			return fmt.Sprintf(`%q`, v)
+		}
+		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
+			return `""`
+		}
 		return fmt.Sprintf(`%q`, f.TestString())
 	case FieldTypeBool:
 		return `true`
@@ -214,20 +266,26 @@ func (f *Field) GetTestAssignment() string {
 	}
 }
 
-func (f *Field) GetTestCheck(list string, index int) string {
+func (f *Field) GetTestCheck() string {
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
-		return fmt.Sprintf(`"connectors.%s.%d.%s": %q`, list, index, f.AttributeName(), f.TestString())
+		if v, ok := f.Initial.(string); ok {
+			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), v)
+		}
+		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
+			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
+		}
+		return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.TestString())
 	case FieldTypeBool:
-		return fmt.Sprintf(`"connectors.%s.%d.%s": true`, list, index, f.AttributeName())
+		return fmt.Sprintf(`"%s": true`, f.AttributeName())
 	case FieldTypeNumber:
-		return fmt.Sprintf(`"connectors.%s.%d.%s": %d`, list, index, f.AttributeName(), f.TestNumber())
+		return fmt.Sprintf(`"%s": %d`, f.AttributeName(), f.TestNumber())
 	case FieldTypeObject:
-		return fmt.Sprintf(`"connectors.%s.%d.%s.key": %q`, list, index, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s.key": %q`, f.AttributeName(), f.TestString())
 	case FieldTypeAuditFilters:
-		return fmt.Sprintf(`"connectors.%s.%d.%s.0.values": []string{%q}`, list, index, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s.0.values": []string{%q}`, f.AttributeName(), f.TestString())
 	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`"connectors.%s.%d.%s.bearer_token": %q`, list, index, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s.bearer_token": %q`, f.AttributeName(), f.TestString())
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
@@ -254,4 +312,11 @@ type FieldDependency struct {
 func (d *FieldDependency) DefaultValue() bool {
 	v, _ := d.Field.Initial.(bool)
 	return v
+}
+
+// Options
+
+type FieldOption struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }

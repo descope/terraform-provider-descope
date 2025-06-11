@@ -9,7 +9,7 @@ require_invitation
 
 - Type: `bool` 
 
-// description for require_invitation
+Whether users must be invited before they can sign up to the project.
 
 
 
@@ -18,7 +18,7 @@ invite_url
 
 - Type: `string` 
 
-// description for invite_url
+Custom URL to include in the message sent to invited users.
 
 
 
@@ -27,7 +27,7 @@ add_magiclink_token
 
 - Type: `bool` 
 
-// description for add_magiclink_token
+Whether to include a magic link token in invitation messages.
 
 
 
@@ -37,7 +37,7 @@ send_email
 - Type: `bool` 
 - Default: `true`
 
-// description for send_email
+Whether to send invitation emails to users.
 
 
 
@@ -46,4 +46,4 @@ send_text
 
 - Type: `bool` 
 
-// description for send_text
+Whether to send invitation SMS messages to users.

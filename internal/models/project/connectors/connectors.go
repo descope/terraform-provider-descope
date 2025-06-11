@@ -30,8 +30,10 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"eight_by_eight_viber":       listattr.Default[EightByEightViberModel](EightByEightViberAttributes),
 	"eight_by_eight_whatsapp":    listattr.Default[EightByEightWhatsappModel](EightByEightWhatsappAttributes),
 	"elephant":                   listattr.Default[ElephantModel](ElephantAttributes),
+	"external_token_http":        listattr.Default[ExternalTokenHTTPModel](ExternalTokenHTTPAttributes),
 	"fingerprint":                listattr.Default[FingerprintModel](FingerprintAttributes, FingerprintValidator),
 	"fingerprint_descope":        listattr.Default[FingerprintDescopeModel](FingerprintDescopeAttributes),
+	"firebase_admin":             listattr.Default[FirebaseAdminModel](FirebaseAdminAttributes),
 	"forter":                     listattr.Default[ForterModel](ForterAttributes, ForterValidator),
 	"generic_email_gateway":      listattr.Default[GenericEmailGatewayModel](GenericEmailGatewayAttributes),
 	"generic_sms_gateway":        listattr.Default[GenericSMSGatewayModel](GenericSMSGatewayAttributes),
@@ -60,6 +62,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"smtp":                       listattr.Default[SMTPModel](SMTPAttributes),
 	"sns":                        listattr.Default[SNSModel](SNSAttributes),
 	"sumologic":                  listattr.Default[SumoLogicModel](SumoLogicAttributes, SumoLogicValidator),
+	"supabase":                   listattr.Default[SupabaseModel](SupabaseAttributes),
 	"telesign":                   listattr.Default[TelesignModel](TelesignAttributes),
 	"traceable":                  listattr.Default[TraceableModel](TraceableAttributes),
 	"turnstile":                  listattr.Default[TurnstileModel](TurnstileAttributes),
@@ -81,8 +84,10 @@ type ConnectorsModel struct {
 	EightByEightViber        listattr.Type[EightByEightViberModel]        `tfsdk:"eight_by_eight_viber"`
 	EightByEightWhatsapp     listattr.Type[EightByEightWhatsappModel]     `tfsdk:"eight_by_eight_whatsapp"`
 	Elephant                 listattr.Type[ElephantModel]                 `tfsdk:"elephant"`
+	ExternalTokenHTTP        listattr.Type[ExternalTokenHTTPModel]        `tfsdk:"external_token_http"`
 	Fingerprint              listattr.Type[FingerprintModel]              `tfsdk:"fingerprint"`
 	FingerprintDescope       listattr.Type[FingerprintDescopeModel]       `tfsdk:"fingerprint_descope"`
+	FirebaseAdmin            listattr.Type[FirebaseAdminModel]            `tfsdk:"firebase_admin"`
 	Forter                   listattr.Type[ForterModel]                   `tfsdk:"forter"`
 	GenericEmailGateway      listattr.Type[GenericEmailGatewayModel]      `tfsdk:"generic_email_gateway"`
 	GenericSMSGateway        listattr.Type[GenericSMSGatewayModel]        `tfsdk:"generic_sms_gateway"`
@@ -111,6 +116,7 @@ type ConnectorsModel struct {
 	SMTP                     listattr.Type[SMTPModel]                     `tfsdk:"smtp"`
 	SNS                      listattr.Type[SNSModel]                      `tfsdk:"sns"`
 	SumoLogic                listattr.Type[SumoLogicModel]                `tfsdk:"sumologic"`
+	Supabase                 listattr.Type[SupabaseModel]                 `tfsdk:"supabase"`
 	Telesign                 listattr.Type[TelesignModel]                 `tfsdk:"telesign"`
 	Traceable                listattr.Type[TraceableModel]                `tfsdk:"traceable"`
 	Turnstile                listattr.Type[TurnstileModel]                `tfsdk:"turnstile"`
@@ -133,8 +139,10 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.EightByEightViber, data, "eight-by-eight-viber", h)
 	listattr.Get(m.EightByEightWhatsapp, data, "eight-by-eight-whatsapp", h)
 	listattr.Get(m.Elephant, data, "elephant", h)
+	listattr.Get(m.ExternalTokenHTTP, data, "external-token-http", h)
 	listattr.Get(m.Fingerprint, data, "fingerprint", h)
 	listattr.Get(m.FingerprintDescope, data, "fingerprint-descope", h)
+	listattr.Get(m.FirebaseAdmin, data, "firebase-admin", h)
 	listattr.Get(m.Forter, data, "forter", h)
 	listattr.Get(m.GenericEmailGateway, data, "generic-email-gateway", h)
 	listattr.Get(m.GenericSMSGateway, data, "generic-sms-gateway", h)
@@ -163,6 +171,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.SMTP, data, "smtp", h)
 	listattr.Get(m.SNS, data, "sns", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
+	listattr.Get(m.Supabase, data, "supabase", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
 	listattr.Get(m.Traceable, data, "traceable", h)
 	listattr.Get(m.Turnstile, data, "turnstile", h)
@@ -185,8 +194,10 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorsValues(h, data, "eight-by-eight-viber", &m.EightByEightViber)
 	setConnectorsValues(h, data, "eight-by-eight-whatsapp", &m.EightByEightWhatsapp)
 	setConnectorsValues(h, data, "elephant", &m.Elephant)
+	setConnectorsValues(h, data, "external-token-http", &m.ExternalTokenHTTP)
 	setConnectorsValues(h, data, "fingerprint", &m.Fingerprint)
 	setConnectorsValues(h, data, "fingerprint-descope", &m.FingerprintDescope)
+	setConnectorsValues(h, data, "firebase-admin", &m.FirebaseAdmin)
 	setConnectorsValues(h, data, "forter", &m.Forter)
 	setConnectorsValues(h, data, "generic-email-gateway", &m.GenericEmailGateway)
 	setConnectorsValues(h, data, "generic-sms-gateway", &m.GenericSMSGateway)
@@ -215,6 +226,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorsValues(h, data, "smtp", &m.SMTP)
 	setConnectorsValues(h, data, "sns", &m.SNS)
 	setConnectorsValues(h, data, "sumologic", &m.SumoLogic)
+	setConnectorsValues(h, data, "supabase", &m.Supabase)
 	setConnectorsValues(h, data, "telesign", &m.Telesign)
 	setConnectorsValues(h, data, "traceable", &m.Traceable)
 	setConnectorsValues(h, data, "turnstile", &m.Turnstile)
@@ -236,8 +248,10 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "eight-by-eight-viber", m.EightByEightViber)
 	addConnectorReferences(h, "eight-by-eight-whatsapp", m.EightByEightWhatsapp)
 	addConnectorReferences(h, "elephant", m.Elephant)
+	addConnectorReferences(h, "external-token-http", m.ExternalTokenHTTP)
 	addConnectorReferences(h, "fingerprint", m.Fingerprint)
 	addConnectorReferences(h, "fingerprint-descope", m.FingerprintDescope)
+	addConnectorReferences(h, "firebase-admin", m.FirebaseAdmin)
 	addConnectorReferences(h, "forter", m.Forter)
 	addConnectorReferences(h, "generic-email-gateway", m.GenericEmailGateway)
 	addConnectorReferences(h, "generic-sms-gateway", m.GenericSMSGateway)
@@ -266,6 +280,7 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "smtp", m.SMTP)
 	addConnectorReferences(h, "sns", m.SNS)
 	addConnectorReferences(h, "sumologic", m.SumoLogic)
+	addConnectorReferences(h, "supabase", m.Supabase)
 	addConnectorReferences(h, "telesign", m.Telesign)
 	addConnectorReferences(h, "traceable", m.Traceable)
 	addConnectorReferences(h, "turnstile", m.Turnstile)
@@ -288,8 +303,10 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.EightByEightViber)
 	addConnectorNames(h, names, m.EightByEightWhatsapp)
 	addConnectorNames(h, names, m.Elephant)
+	addConnectorNames(h, names, m.ExternalTokenHTTP)
 	addConnectorNames(h, names, m.Fingerprint)
 	addConnectorNames(h, names, m.FingerprintDescope)
+	addConnectorNames(h, names, m.FirebaseAdmin)
 	addConnectorNames(h, names, m.Forter)
 	addConnectorNames(h, names, m.GenericEmailGateway)
 	addConnectorNames(h, names, m.GenericSMSGateway)
@@ -318,6 +335,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.SMTP)
 	addConnectorNames(h, names, m.SNS)
 	addConnectorNames(h, names, m.SumoLogic)
+	addConnectorNames(h, names, m.Supabase)
 	addConnectorNames(h, names, m.Telesign)
 	addConnectorNames(h, names, m.Traceable)
 	addConnectorNames(h, names, m.Turnstile)
@@ -344,8 +362,10 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.Match(h, &m.EightByEightViber, state.EightByEightViber)
 	listattr.Match(h, &m.EightByEightWhatsapp, state.EightByEightWhatsapp)
 	listattr.Match(h, &m.Elephant, state.Elephant)
+	listattr.Match(h, &m.ExternalTokenHTTP, state.ExternalTokenHTTP)
 	listattr.Match(h, &m.Fingerprint, state.Fingerprint)
 	listattr.Match(h, &m.FingerprintDescope, state.FingerprintDescope)
+	listattr.Match(h, &m.FirebaseAdmin, state.FirebaseAdmin)
 	listattr.Match(h, &m.Forter, state.Forter)
 	listattr.Match(h, &m.GenericEmailGateway, state.GenericEmailGateway)
 	listattr.Match(h, &m.GenericSMSGateway, state.GenericSMSGateway)
@@ -374,6 +394,7 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.Match(h, &m.SMTP, state.SMTP)
 	listattr.Match(h, &m.SNS, state.SNS)
 	listattr.Match(h, &m.SumoLogic, state.SumoLogic)
+	listattr.Match(h, &m.Supabase, state.Supabase)
 	listattr.Match(h, &m.Telesign, state.Telesign)
 	listattr.Match(h, &m.Traceable, state.Traceable)
 	listattr.Match(h, &m.Turnstile, state.Turnstile)

@@ -46,7 +46,7 @@ invite_settings
 
 - Type: `object` of `settings.InviteSettings` 
 
-// description for invite_settings
+User invitation settings and behavior.
 
 
 

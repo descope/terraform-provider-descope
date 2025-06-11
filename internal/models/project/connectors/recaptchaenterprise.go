@@ -23,7 +23,6 @@ var RecaptchaEnterpriseAttributes = map[string]schema.Attribute{
 	"api_key":             stringattr.SecretRequired(),
 	"override_assessment": boolattr.Default(false),
 	"assessment_score":    floatattr.Default(0.5),
-	"enterprise":          boolattr.Default(true),
 }
 
 // Model
@@ -38,7 +37,6 @@ type RecaptchaEnterpriseModel struct {
 	APIKey             stringattr.Type `tfsdk:"api_key"`
 	OverrideAssessment boolattr.Type   `tfsdk:"override_assessment"`
 	AssessmentScore    floatattr.Type  `tfsdk:"assessment_score"`
-	Enterprise         boolattr.Type   `tfsdk:"enterprise"`
 }
 
 func (m *RecaptchaEnterpriseModel) Values(h *helpers.Handler) map[string]any {
@@ -57,7 +55,7 @@ func (m *RecaptchaEnterpriseModel) SetValues(h *helpers.Handler, data map[string
 
 func (m *RecaptchaEnterpriseModel) Validate(h *helpers.Handler) {
 	if !m.AssessmentScore.IsNull() && !m.OverrideAssessment.ValueBool() {
-		h.Error("Invalid connector configuration", "The assessment_score field cannot be used unless override_assessment is set to true")
+		h.Conflict("The assessment_score field cannot be used unless override_assessment is set to true")
 	}
 }
 
@@ -70,7 +68,7 @@ func (m *RecaptchaEnterpriseModel) ConfigurationValues(h *helpers.Handler) map[s
 	stringattr.Get(m.APIKey, c, "apiKey")
 	boolattr.Get(m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Get(m.AssessmentScore, c, "assessmentScore")
-	boolattr.Get(m.Enterprise, c, "enterprise")
+	c["enterprise"] = true
 	return c
 }
 
@@ -80,7 +78,6 @@ func (m *RecaptchaEnterpriseModel) SetConfigurationValues(c map[string]any, h *h
 	stringattr.Nil(&m.APIKey)
 	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
-	boolattr.Set(&m.Enterprise, c, "enterprise")
 }
 
 // Matching

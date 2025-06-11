@@ -18,6 +18,9 @@ ifneq ($(wildcard $(env)),)
   ifeq ($(DESCOPE_BASE_URL),)
     export DESCOPE_BASE_URL = $(shell cat $(env) | grep DESCOPE_BASE_URL | sed 's/^.*=//')
   endif
+  ifeq ($(DESCOPE_TEMPLATES_PATH),)
+    export DESCOPE_TEMPLATES_PATH = $(shell cat $(env) | grep DESCOPE_TEMPLATES_PATH | sed 's/^.*=//')
+  endif
 endif
 
 help: Makefile ## this help message

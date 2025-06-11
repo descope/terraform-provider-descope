@@ -20,7 +20,7 @@ expiration_time
 
 - Type: `duration` 
 
-// description for expiration_time
+How long the enchanted link remains valid before it expires.
 
 
 

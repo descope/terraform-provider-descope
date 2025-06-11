@@ -9,7 +9,7 @@ account_sid
 
 - Type: `string` (required)
 
-// description for account_sid
+Twilio Account SID from your Twilio Console.
 
 
 
@@ -18,7 +18,7 @@ senders
 
 - Type: `object` of `connectors.TwilioCoreSendersField` (required)
 
-// description for senders
+Configuration for SMS and voice message senders.
 
 
 
@@ -27,7 +27,7 @@ authentication
 
 - Type: `object` of `connectors.TwilioAuthField` (required)
 
-// description for authentication
+Twilio authentication credentials (either auth token or API key/secret).
 
 
 
@@ -43,7 +43,7 @@ sms
 
 - Type: `object` of `connectors.TwilioCoreSendersSMSField` (required)
 
-// description for sms
+SMS sender configuration using either a phone number or messaging service.
 
 
 
@@ -52,7 +52,7 @@ voice
 
 - Type: `object` of `connectors.TwilioCoreSendersVoiceField` 
 
-// description for voice
+Voice call sender configuration.
 
 
 
@@ -68,7 +68,7 @@ phone_number
 
 - Type: `string` 
 
-// description for phone_number
+Twilio phone number for sending SMS messages.
 
 
 
@@ -77,7 +77,7 @@ messaging_service_sid
 
 - Type: `string` 
 
-// description for messaging_service_sid
+Twilio Messaging Service SID for sending SMS messages.
 
 
 
@@ -93,7 +93,7 @@ phone_number
 
 - Type: `string` (required)
 
-// description for phone_number
+Twilio phone number for making voice calls.
 
 
 
@@ -109,7 +109,7 @@ auth_token
 
 - Type: `secret` 
 
-// description for auth_token
+Twilio Auth Token for authentication.
 
 
 
@@ -118,7 +118,7 @@ api_key
 
 - Type: `secret` 
 
-// description for api_key
+Twilio API Key for authentication (used with API Secret).
 
 
 
@@ -127,4 +127,4 @@ api_secret
 
 - Type: `secret` 
 
-// description for api_secret
+Twilio API Secret for authentication (used with API Key).

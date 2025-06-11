@@ -9,7 +9,7 @@ connector
 
 - Type: `string` (required)
 
-// description for connector
+The name of the SMS/text connector to use for sending text messages.
 
 
 
@@ -18,4 +18,4 @@ templates
 
 - Type: `list` of `templates.TextTemplate` 
 
-// description for templates
+A list of text message templates for different authentication flows.

@@ -157,12 +157,40 @@ The client secret for the OAuth provider, used to authenticate the application w
 
 
 
+manage_provider_tokens
+----------------------
+
+- Type: `bool` 
+
+Whether to enable provider token management for this OAuth provider.
+
+
+
+callback_domain
+---------------
+
+- Type: `string` 
+
+Use a custom domain in your OAuth verification screen.
+
+
+
+redirect_url
+------------
+
+- Type: `string` 
+
+Users will be directed to this URL after authentication. If redirect URL is specified in
+the SDK/API call, it will override this value.
+
+
+
 provider_token_management
 -------------------------
 
-- Type: `object` of `authentication.OAuthProviderTokenManagementAttribute` 
+- Type: `object` of `authentication.OAuthProviderTokenManagement` 
 
-Settings related to token management for the OAuth provider.
+This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead.
 
 
 
@@ -227,7 +255,7 @@ issuer
 
 - Type: `string` 
 
-// description for issuer
+The issuer identifier for the OAuth provider.
 
 
 
@@ -272,4 +300,4 @@ claim_mapping
 
 - Type: `map` of `string` 
 
-// description for claim_mapping
+Maps OAuth provider claims to Descope user attributes.

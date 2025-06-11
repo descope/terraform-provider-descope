@@ -18,7 +18,7 @@ authentication
 
 - Type: `object` of `connectors.SendGridAuthField` (required)
 
-// description for authentication
+SendGrid API authentication configuration.
 
 
 
@@ -34,4 +34,4 @@ api_key
 
 - Type: `secret` (required)
 
-// description for api_key
+SendGrid API key for authentication.

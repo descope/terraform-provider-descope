@@ -20,6 +20,9 @@ import (
     {{- if .HasField "object" }}
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
     {{- end }}
+    {{- if .HasEnumFields }}
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+    {{- end }}
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -68,13 +71,23 @@ func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any
 {{ if .HasValidator }}
 func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
     {{- range .Fields }}{{ if .Dependency }}
+	{{- if eq .Dependency.Field.Type "boolean" }}
 	{{- if .Dependency.DefaultValue }}
 	if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
-		h.Error("Invalid connector configuration", "The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} is set to false")
+		h.Conflict("The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} isn't set to true")
 	}
 	{{- else }}
 	if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
-		h.Error("Invalid connector configuration", "The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to true")
+		h.Conflict("The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to true")
+	}
+	{{- end }}
+	{{- end }}
+	{{- if eq .Dependency.Field.Type "string" }}
+	if m.{{ .StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "{{ .Dependency.Value }}" {
+		h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
+	}
+	if m.{{ .StructName }}.ValueString() == "" && !m.{{ .StructName }}.IsUnknown() && m.{{ .Dependency.Field.StructName }}.ValueString() == "{{ .Dependency.Value }}" {
+		h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
 	}
 	{{- end }}
 	{{- end }}{{ end }}
@@ -84,11 +97,18 @@ func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
 // Configuration
 
 func (m *{{.StructName}}Model) ConfigurationValues(h *helpers.Handler) map[string]any {
+	{{- if or (gt (len .Fields) 0) (gt (len .HiddenFields) 0) }}
 	c := map[string]any{}
     {{- range .Fields }}
     {{.GetValueStatement}}
     {{- end }}
+    {{- range .HiddenFields }}
+    {{.GetValueStatement}}
+    {{- end }}
 	return c
+	{{- else }}
+	return map[string]any{}
+    {{- end }}
 }
 
 {{ if gt (len .Fields) 0 }}
