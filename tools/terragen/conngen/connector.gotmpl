@@ -94,11 +94,18 @@ func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
 // Configuration
 
 func (m *{{.StructName}}Model) ConfigurationValues(h *helpers.Handler) map[string]any {
+	{{- if or (gt (len .Fields) 0) (gt (len .HiddenFields) 0) }}
 	c := map[string]any{}
     {{- range .Fields }}
     {{.GetValueStatement}}
     {{- end }}
+    {{- range .HiddenFields }}
+    {{.GetValueStatement}}
+    {{- end }}
 	return c
+	{{- else }}
+	return map[string]any{}
+    {{- end }}
 }
 
 {{ if gt (len .Fields) 0 }}

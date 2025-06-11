@@ -36,6 +36,7 @@ type Field struct {
 	Required    bool             `json:"required"`
 	Dynamic     bool             `json:"dynamic"`
 	Initial     any              `json:"initialValue"`
+	Hidden      bool             `json:"hidden"`
 	Dependency  *FieldDependency `json:"dependsOn"`
 
 	naming *Naming
@@ -122,6 +123,17 @@ func (f *Field) AttributeType() string {
 }
 
 func (f *Field) GetValueStatement() string {
+	if f.Hidden {
+		switch f.Type {
+		case FieldTypeString:
+			return fmt.Sprintf(`c[%q] = %q`, f.Name, f.Initial.(string))
+		case FieldTypeBool:
+			return fmt.Sprintf(`c[%q] = %t`, f.Name, f.Initial.(bool))
+		default:
+			panic("unexpected hidden field type: " + f.Type)
+		}
+	}
+
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:

@@ -12,12 +12,13 @@ import (
 // Connector
 
 type Connector struct {
-	ID          string         `json:"id"`
-	Name        string         `json:"name"`
-	Description string         `json:"description"`
-	BuiltIn     bool           `json:"builtin"`
-	Extra       map[string]any `json:"extra"`
-	Fields      []*Field       `json:"fields"`
+	ID           string         `json:"id"`
+	Name         string         `json:"name"`
+	Description  string         `json:"description"`
+	BuiltIn      bool           `json:"builtin"`
+	Extra        map[string]any `json:"extra"`
+	Fields       []*Field       `json:"fields"`
+	HiddenFields []*Field       `json:"allFields"`
 
 	naming *Naming
 }
@@ -89,6 +90,20 @@ func (c *Connector) Prepare() {
 	// remove any fields that are not actually for configuration
 	c.Fields = slices.DeleteFunc(c.Fields, func(f *Field) bool {
 		return f.Type == "cloudformation-link"
+	})
+
+	// split hidden fields to the fields list
+	c.Fields = slices.DeleteFunc(c.Fields, func(f *Field) bool {
+		if f.Hidden {
+			if f.Type != FieldTypeBool && f.Type != FieldTypeString {
+				log.Fatalf("Hidden field %s in connector %s has unsupported type %s", f.Name, c.ID, f.Type)
+			}
+			if f.Initial == nil {
+				log.Fatalf("Hidden field %s in connector %s must have an initial value", f.Name, c.ID)
+			}
+			c.HiddenFields = append(c.HiddenFields, f)
+		}
+		return f.Hidden
 	})
 
 	// add the static IP field into the configuration as expected by the snapshot format

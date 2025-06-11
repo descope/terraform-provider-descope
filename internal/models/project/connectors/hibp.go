@@ -36,8 +36,7 @@ func (m *HIBPModel) SetValues(h *helpers.Handler, data map[string]any) {
 // Configuration
 
 func (m *HIBPModel) ConfigurationValues(h *helpers.Handler) map[string]any {
-	c := map[string]any{}
-	return c
+	return map[string]any{}
 }
 
 // Matching

@@ -676,8 +676,6 @@ var docsRecaptchaEnterprise = map[string]string{
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 	                    "the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 	                    "and 0 is a bot.",
-	"enterprise": "Enable reCAPTCHA Enterprise features for advanced bot protection, enhanced " +
-	              "analytics, and enterprise-grade security.",
 }
 
 var docsRekognition = map[string]string{
