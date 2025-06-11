@@ -100,11 +100,11 @@ func (f *Field) AttributeType() string {
 
 			if f.Required {
 				return fmt.Sprintf(`stringattr.Required(%s)`, validator)
-			} else if v, ok := f.Initial.(string); ok {
-				return fmt.Sprintf(`stringattr.Default(%q, %s)`, v, validator)
-			} else {
-				return fmt.Sprintf(`stringattr.Default("", %s)`, validator)
 			}
+			if v, ok := f.Initial.(string); ok {
+				return fmt.Sprintf(`stringattr.Default(%q, %s)`, v, validator)
+			}
+			return fmt.Sprintf(`stringattr.Default("", %s)`, validator)
 		}
 
 		if f.Required {
@@ -160,9 +160,9 @@ func (f *Field) GetValueStatement() string {
 	if f.Hidden {
 		switch f.Type {
 		case FieldTypeString:
-			return fmt.Sprintf(`c[%q] = %q`, f.Name, f.Initial.(string))
+			return fmt.Sprintf(`c[%q] = %q`, f.Name, f.Initial.(string)) // nolint:forcetypeassert
 		case FieldTypeBool:
-			return fmt.Sprintf(`c[%q] = %t`, f.Name, f.Initial.(bool))
+			return fmt.Sprintf(`c[%q] = %t`, f.Name, f.Initial.(bool)) // nolint:forcetypeassert
 		default:
 			panic("unexpected hidden field type: " + f.Type)
 		}

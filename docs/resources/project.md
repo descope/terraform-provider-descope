@@ -135,7 +135,7 @@ Required:
 Optional:
 
 - `authorization` (Attributes) Determines the required permissions for this tenant. (see [below for nested schema](#nestedatt--attributes--tenant--authorization))
-- `select_options` (Set of String) When the attribute type is "multiselect". A list of options to chose from.
+- `select_options` (Set of String) When the attribute type is "multiselect". A list of options to choose from.
 
 <a id="nestedatt--attributes--tenant--authorization"></a>
 ### Nested Schema for `attributes.tenant.authorization`
@@ -326,6 +326,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -334,20 +335,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--custom--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--custom--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--custom--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.custom.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -373,6 +371,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -381,20 +380,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--apple--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.apple.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -405,6 +401,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -413,20 +410,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--discord--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.discord.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -437,6 +431,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -445,20 +440,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--facebook--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.facebook.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -469,6 +461,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -477,20 +470,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--github--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.github.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -501,6 +491,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -509,20 +500,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--gitlab--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.gitlab.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -533,6 +521,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -541,20 +530,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--google--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.google.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -565,6 +551,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -573,20 +560,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--linkedin--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.linkedin.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -597,6 +581,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -605,20 +590,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--microsoft--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.microsoft.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -629,6 +611,7 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
+- `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
@@ -637,20 +620,17 @@ Optional:
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 - `logo` (String) The URL of the logo associated with the OAuth provider.
+- `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) Settings related to token management for the OAuth provider. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--provider_token_management))
+- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--provider_token_management))
+- `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--slack--provider_token_management"></a>
 ### Nested Schema for `authentication.oauth.system.slack.provider_token_management`
-
-Optional:
-
-- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
-- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -2367,7 +2347,7 @@ Required:
 
 Optional:
 
-- `audience` (String) The audience value if needed by the vendor..
+- `audience` (String) The audience value if needed by the vendor.
 - `domain` (String) The domain value if needed by the vendor.
 - `issuer` (String) An issuer URL if needed by the vendor.
 

@@ -164,6 +164,5 @@ func (c *Connector) Prepare() {
 				}
 			}
 		}
-
 	}
 }
