@@ -80,6 +80,15 @@ func (c *Connector) HasField(typ string) bool {
 	return false
 }
 
+func (c *Connector) HasEnumFields() bool {
+	for _, f := range c.Fields {
+		if f.Type == FieldTypeString && len(f.Options) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
 func (c *Connector) HasValidator() bool {
 	return slices.ContainsFunc(c.Fields, func(f *Field) bool {
 		return f.Dependency != nil

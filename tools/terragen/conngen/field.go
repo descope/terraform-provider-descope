@@ -37,6 +37,7 @@ type Field struct {
 	Dynamic     bool             `json:"dynamic"`
 	Initial     any              `json:"initialValue"`
 	Hidden      bool             `json:"hidden"`
+	Options     []*FieldOption   `json:"options"`
 	Dependency  *FieldDependency `json:"dependsOn"`
 
 	naming *Naming
@@ -48,6 +49,14 @@ func (f *Field) StructName() string {
 
 func (f *Field) defaultStructName() string {
 	return utils.CapitalCase(f.Name)
+}
+
+func (f *Field) OptionValues() []string {
+	values := []string{}
+	for _, option := range f.Options {
+		values = append(values, option.Value)
+	}
+	return values
 }
 
 func (f *Field) StructType() string {
@@ -80,13 +89,38 @@ func (f *Field) defaultAttributeName() string {
 func (f *Field) AttributeType() string {
 	switch f.Type {
 	case FieldTypeString:
+		validator := ""
+
+		if len(f.Options) > 0 {
+			values := []string{}
+			for _, option := range f.Options {
+				values = append(values, fmt.Sprintf("%q", option.Value))
+			}
+			validator = fmt.Sprintf("stringvalidator.OneOf(%s)", strings.Join(values, ", "))
+
+			if f.Required {
+				return fmt.Sprintf(`stringattr.Required(%s)`, validator)
+			} else if v, ok := f.Initial.(string); ok {
+				return fmt.Sprintf(`stringattr.Default(%q, %s)`, v, validator)
+			} else {
+				return fmt.Sprintf(`stringattr.Default("", %s)`, validator)
+			}
+		}
+
 		if f.Required {
-			return `stringattr.Required()`
+			return fmt.Sprintf(`stringattr.Required(%s)`, validator)
 		}
+
+		if validator != "" {
+			validator = ", " + validator
+		}
+
+		defValue := ""
 		if v, ok := f.Initial.(string); ok {
-			return fmt.Sprintf(`stringattr.Default(%q)`, v)
+			defValue = v
 		}
-		return `stringattr.Default("")`
+
+		return fmt.Sprintf(`stringattr.Default(%q, %s)`, defValue, validator)
 	case FieldTypeSecret:
 		if f.Required {
 			return `stringattr.SecretRequired()`
@@ -278,4 +312,11 @@ type FieldDependency struct {
 func (d *FieldDependency) DefaultValue() bool {
 	v, _ := d.Field.Initial.(bool)
 	return v
+}
+
+// Options
+
+type FieldOption struct {
+	Name  string `json:"name"`
+	Value string `json:"value"`
 }

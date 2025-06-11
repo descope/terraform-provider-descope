@@ -8,6 +8,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -18,7 +19,7 @@ var AWSS3Attributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"auth_type":                stringattr.Required(),
+	"auth_type":                stringattr.Required(stringvalidator.OneOf("credentials", "assumeRole")),
 	"access_key_id":            stringattr.SecretOptional(),
 	"secret_access_key":        stringattr.SecretOptional(),
 	"role_arn":                 stringattr.Default(""),
