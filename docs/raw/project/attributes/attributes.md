@@ -52,7 +52,7 @@ select_options
 
 - Type: `set` of `string` 
 
-When the attribute type is "multiselect". A list of options to chose from.
+When the attribute type is "multiselect". A list of options to choose from.
 
 
 

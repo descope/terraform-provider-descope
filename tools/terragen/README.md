@@ -10,4 +10,4 @@ and documentation. The `terragen` tool has multiple phases:
 4. **Source Generation** (`srcgen/`): Creates compiled documentation Go files
 
 Run the tool with `make terragen`. You can also use `make terragen flags='--skip-validate'` to prevent
-it from aborting on missing or invalid data.
+it from aborting when missing or invalid data is encountered.

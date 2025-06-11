@@ -19,7 +19,7 @@ Use the Descope Terraform Provider to manage your [Descope](https://www.descope.
 using Terraform configuration files.
 
 * Modify project settings and authentication methods.
-* Create connectors, role, permissions, applications and other entities.
+* Create connectors, roles, permissions, applications and other entities.
 * Use custom themes and flows created in the Descope console.
 * Ensure dependencies between entities are satisfied.
 
@@ -163,6 +163,9 @@ resource "descope_project" "my_project" {
 
 ## Development
 
+See the [README](internal/README.md) file in the `internal` directory for more details about the development
+process, architecture, and tools, 
+
 ### Setup
 
 Clone the repository and run `make dev` to prepare your local environment for development. This will ensure
@@ -178,7 +181,7 @@ make dev
 
 ### Build and Test
 
-After making changes to source files, run `make install` to rebuild the and install the provider. You can also run
+After making changes to source files, run `make install` to rebuild and install the provider. You can also run
 the acceptance tests to ensure the provider works as expected.
 
 ```bash
@@ -190,16 +193,6 @@ make testcoverage
 
 # rebuild and install the provider
 make install
-```
-
-### Terragen
-
-The provider uses code generation where possible to ensure models, schemas, tests and docs are up to date and
-synchronized. After making changes to the provider source code be sure to run the `terragen` tool to ensure all
-schemas and docs are updated, and to be alerted if anything is missing.
-
-```bash
-make terragen
 ```
 
 <br/>

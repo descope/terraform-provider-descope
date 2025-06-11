@@ -77,7 +77,7 @@ var docsAttributes = map[string]string{
 var docsTenantAttribute = map[string]string{
 	"name": "The name of the attribute.",
 	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", \"multiselect\", \"date\".",
-	"select_options": "When the attribute type is \"multiselect\". A list of options to chose from.",
+	"select_options": "When the attribute type is \"multiselect\". A list of options to choose from.",
 	"authorization": "Determines the required permissions for this tenant.",
 }
 
@@ -939,7 +939,7 @@ var docsSessionMigration = map[string]string{
 	"vendor": "The name of the vendor the sessions are migrated from, in all lowercase.",
 	"client_id": "The unique client ID for the vendor.",
 	"domain": "The domain value if needed by the vendor.",
-	"audience": "The audience value if needed by the vendor..",
+	"audience": "The audience value if needed by the vendor.",
 	"issuer": "An issuer URL if needed by the vendor.",
 	"loginid_matched_attributes": "A set of attributes from the vendor's user that should be used to match with " +
 	                              "the Descope user's login ID.",

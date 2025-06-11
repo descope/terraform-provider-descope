@@ -36,7 +36,7 @@ audience
 
 - Type: `string` 
 
-The audience value if needed by the vendor..
+The audience value if needed by the vendor.
 
 
 

@@ -78,6 +78,6 @@ Connectors are dynamically generated from templates in the Descope API schema. T
 - Generates Go models with proper Terraform schema
 - Creates test files and documentation
 - Updates naming mappings in `naming.json`
-- Custom naming by editing `naming.json` and rerunning `make terraform`
+- Custom naming by editing `naming.json` and rerunning `make terragen`
 
 Note that some providers (like `smtp`, `sendgrid`, etc) have custom implementations.
