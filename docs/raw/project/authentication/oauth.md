@@ -160,7 +160,7 @@ The client secret for the OAuth provider, used to authenticate the application w
 provider_token_management
 -------------------------
 
-- Type: `object` of `authentication.OAuthProviderTokenManagementAttribute` 
+- Type: `object` of `authentication.OAuthProviderTokenManagement` 
 
 Settings related to token management for the OAuth provider.
 
@@ -273,3 +273,28 @@ claim_mapping
 - Type: `map` of `string` 
 
 Maps OAuth provider claims to Descope user attributes.
+
+
+
+
+
+OAuthProviderTokenManagement
+============================
+
+
+
+callback_domain
+---------------
+
+- Type: `string` 
+
+The domain name for OAuth callback URLs when managing provider tokens.
+
+
+
+redirect_url
+------------
+
+- Type: `string` 
+
+The redirect URL used for OAuth provider token management after authentication completion.

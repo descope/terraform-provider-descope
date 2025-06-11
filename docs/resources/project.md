@@ -346,8 +346,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -393,8 +393,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -425,8 +425,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -457,8 +457,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -489,8 +489,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -521,8 +521,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -553,8 +553,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -585,8 +585,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -617,8 +617,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -649,8 +649,8 @@ Optional:
 
 Optional:
 
-- `callback_domain` (String)
-- `redirect_url` (String)
+- `callback_domain` (String) The domain name for OAuth callback URLs when managing provider tokens.
+- `redirect_url` (String) The redirect URL used for OAuth provider token management after authentication completion.
 
 
 
@@ -1772,7 +1772,6 @@ Optional:
 
 - `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
 - `description` (String) A description of what your connector is used for.
-- `enterprise` (Boolean) Enable reCAPTCHA Enterprise features for advanced bot protection, enhanced analytics, and enterprise-grade security.
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
 Read-Only:

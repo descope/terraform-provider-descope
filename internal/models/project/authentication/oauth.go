@@ -255,7 +255,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"disabled":                  boolattr.Default(false),
 	"client_id":                 stringattr.Optional(),
 	"client_secret":             stringattr.SecretOptional(),
-	"provider_token_management": objattr.Default[OAuthProviderTokenManagementModel](nil, OAuthProviderTokenManagementAttribute),
+	"provider_token_management": objattr.Default[OAuthProviderTokenManagementModel](nil, OAuthProviderTokenManagementAttributes),
 	"prompts":                   strlistattr.Optional(stringvalidator.OneOf("none", "login", "consent", "select_account")),
 	"allowed_grant_types":       strlistattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
 	"scopes":                    strlistattr.Optional(),
@@ -357,7 +357,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 
 // Provider Token Management
 
-var OAuthProviderTokenManagementAttribute = map[string]schema.Attribute{
+var OAuthProviderTokenManagementAttributes = map[string]schema.Attribute{
 	"callback_domain": stringattr.Optional(),
 	"redirect_url":    stringattr.Optional(),
 }

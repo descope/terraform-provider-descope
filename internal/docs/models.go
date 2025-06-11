@@ -38,6 +38,7 @@ func InjectModels() {
 	inject(authentication.OAuthAttributes, docsOAuth)
 	inject(authentication.OAuthSystemProviderAttributes, docsOAuthSystemProvider)
 	inject(authentication.OAuthProviderAttributes, docsOAuthProvider)
+	inject(authentication.OAuthProviderTokenManagementAttributes, docsOAuthProviderTokenManagement)
 	inject(authentication.OTPAttributes, docsOTP)
 	inject(authentication.PasskeysAttributes, docsPasskeys)
 	inject(authentication.PasswordAttributes, docsPassword)

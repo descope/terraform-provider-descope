@@ -183,6 +183,11 @@ var docsOAuthProvider = map[string]string{
 	"claim_mapping": "Maps OAuth provider claims to Descope user attributes.",
 }
 
+var docsOAuthProviderTokenManagement = map[string]string{
+	"callback_domain": "The domain name for OAuth callback URLs when managing provider tokens.",
+	"redirect_url": "The redirect URL used for OAuth provider token management after authentication completion.",
+}
+
 var docsOTP = map[string]string{
 	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
 	            "API and SDK calls. Note that this does not affect authentication flows that are " +
