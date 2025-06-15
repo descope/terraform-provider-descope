@@ -40,7 +40,7 @@ func ConvertTerraformSliceToStringSlice(strs []types.String) []string {
 }
 
 // Converts a map of Terraform strings to a map of Go strings.
-func ConvertTerraformStringMapToStringMap(m map[string]types.String) map[string]string {
+func ConvertTerraformMapToStringMap(m map[string]types.String) map[string]string {
 	result := map[string]string{}
 	for k, v := range m {
 		result[k] = v.ValueString()
