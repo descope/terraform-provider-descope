@@ -10,13 +10,14 @@ import (
 )
 
 const (
-	FieldTypeString       = "string"
-	FieldTypeSecret       = "secret"
-	FieldTypeBool         = "boolean"
-	FieldTypeNumber       = "number"
-	FieldTypeHTTPAuth     = "httpAuth"
-	FieldTypeObject       = "object"
-	FieldTypeAuditFilters = "auditFilters"
+	FieldTypeString         = "string"
+	FieldTypeSecret         = "secret"
+	FieldTypeSecretJSONFile = "secret-json-file"
+	FieldTypeBool           = "boolean"
+	FieldTypeNumber         = "number"
+	FieldTypeHTTPAuth       = "httpAuth"
+	FieldTypeObject         = "object"
+	FieldTypeAuditFilters   = "auditFilters"
 )
 
 // Generated
@@ -61,7 +62,7 @@ func (f *Field) OptionValues() []string {
 
 func (f *Field) StructType() string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSecretJSONFile:
 		return `stringattr.Type`
 	case FieldTypeBool:
 		return `boolattr.Type`
@@ -121,7 +122,7 @@ func (f *Field) AttributeType() string {
 		}
 
 		return fmt.Sprintf(`stringattr.Default(%q, %s)`, defValue, validator)
-	case FieldTypeSecret:
+	case FieldTypeSecret, FieldTypeSecretJSONFile:
 		if f.Required {
 			return `stringattr.SecretRequired()`
 		}
@@ -170,7 +171,7 @@ func (f *Field) GetValueStatement() string {
 
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSecretJSONFile:
 		return fmt.Sprintf(`stringattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeBool:
 		return fmt.Sprintf(`boolattr.Get(%s, c, %q)`, accessor, f.Name)
@@ -192,7 +193,7 @@ func (f *Field) SetValueStatement() string {
 	switch f.Type {
 	case FieldTypeString:
 		return fmt.Sprintf(`stringattr.Set(%s, c, %q)`, accessor, f.Name)
-	case FieldTypeSecret:
+	case FieldTypeSecret, FieldTypeSecretJSONFile:
 		return fmt.Sprintf(`stringattr.Nil(%s)`, accessor)
 	case FieldTypeBool:
 		return fmt.Sprintf(`boolattr.Set(%s, c, %q)`, accessor, f.Name)
@@ -212,7 +213,7 @@ func (f *Field) SetValueStatement() string {
 func (f *Field) ValidateNonZero() string {
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSecretJSONFile:
 		initial, _ := f.Initial.(string)
 		return fmt.Sprintf(`%s.ValueString() != %q`, accessor, initial)
 	case FieldTypeBool:
@@ -239,7 +240,7 @@ func (f *Field) ValidateNonZero() string {
 
 func (f *Field) GetTestAssignment() string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSecretJSONFile:
 		if v, ok := f.Initial.(string); ok {
 			return fmt.Sprintf(`%q`, v)
 		}
@@ -268,7 +269,7 @@ func (f *Field) GetTestAssignment() string {
 
 func (f *Field) GetTestCheck() string {
 	switch f.Type {
-	case FieldTypeString, FieldTypeSecret:
+	case FieldTypeString, FieldTypeSecret, FieldTypeSecretJSONFile:
 		if v, ok := f.Initial.(string); ok {
 			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), v)
 		}
