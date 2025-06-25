@@ -807,6 +807,7 @@ Optional:
 
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
+- `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 
 
 <a id="nestedatt--authentication--totp"></a>
@@ -2274,6 +2275,7 @@ Required:
 Optional:
 
 - `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+- `auto_tenant_claim` (Boolean) When a user is associated with a single tenant, the tenant will be set as the user's active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
 - `conformance_issuer` (Boolean) Whether to use OIDC conformance for the JWT issuer field.
 - `description` (String) Description of the JWT Template.
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
@@ -2295,6 +2297,7 @@ Required:
 Optional:
 
 - `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+- `auto_tenant_claim` (Boolean) When a user is associated with a single tenant, the tenant will be set as the user's active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
 - `conformance_issuer` (Boolean) Whether to use OIDC conformance for the JWT issuer field.
 - `description` (String) Description of the JWT Template.
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.

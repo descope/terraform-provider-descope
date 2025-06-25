@@ -229,6 +229,8 @@ var docsSSO = map[string]string{
 	            "API and SDK calls. Note that this does not affect authentication flows that are " +
 	            "configured to use this authentication method.",
 	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
+	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
+	                "in tenant level settings or SDK/API call, they will override this value.",
 }
 
 var docsTOTP = map[string]string{
@@ -914,8 +916,11 @@ var docsStyles = map[string]string{
 var docsJWTTemplate = map[string]string{
 	"name": "Name of the JWT Template.",
 	"description": "Description of the JWT Template.",
-	"auth_schema": "The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).",
+	"auth_schema": "The authorization claims format - `default`, `tenantOnly` or `none`. " +
+	               "Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).",
 	"empty_claim_policy": "Policy for empty claims - `none`, `nil` or `delete`.",
+	"auto_tenant_claim": "When a user is associated with a single tenant, the tenant will be set as the user's " +
+	                     "active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.",
 	"conformance_issuer": "Whether to use OIDC conformance for the JWT issuer field.",
 	"enforce_issuer": "Whether to enforce that the JWT issuer matches the project configuration.",
 	"template": "The JSON template defining the structure and claims of the JWT token. This is expected " +
