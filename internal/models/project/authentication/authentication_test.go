@@ -37,9 +37,11 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.magic_link.disabled":        true,
-				"authentication.magic_link.redirect_url":    "https://example.com",
-				"authentication.magic_link.expiration_time": "3 minutes",
+				"authentication.magic_link": map[string]any{
+					"disabled":        true,
+					"redirect_url":    "https://example.com",
+					"expiration_time": "3 minutes",
+				},
 			}),
 		},
 		resource.TestStep{
@@ -71,9 +73,11 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.magic_link.disabled":        false,
-				"authentication.magic_link.redirect_url":    "https://example.com",
-				"authentication.magic_link.expiration_time": "5 minutes",
+				"authentication.magic_link": map[string]any{
+					"disabled":        false,
+					"redirect_url":    "https://example.com",
+					"expiration_time": "5 minutes",
+				},
 			}),
 		},
 		resource.TestStep{
@@ -137,13 +141,31 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.oauth.custom.%":                                 1,
-				"authentication.oauth.custom.mobile_ios.allowed_grant_types":    []string{"authorization_code", "implicit"},
-				"authentication.oauth.custom.mobile_ios.client_id":              "id",
-				"authentication.oauth.custom.mobile_ios.client_secret":          testacc.AttributeIsSet,
-				"authentication.oauth.custom.mobile_ios.authorization_endpoint": "https://auth.com",
-				"authentication.oauth.custom.mobile_ios.token_endpoint":         "https://token.com",
-				"authentication.oauth.custom.mobile_ios.user_info_endpoint":     "https://user.com",
+				"authentication.oauth.custom.%": 1,
+				"authentication.oauth.custom.mobile_ios": map[string]any{
+					"allowed_grant_types":    []string{"authorization_code", "implicit"},
+					"client_id":              "id",
+					"client_secret":          testacc.AttributeIsSet,
+					"authorization_endpoint": "https://auth.com",
+					"token_endpoint":         "https://token.com",
+					"user_info_endpoint":     "https://user.com",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						redirect_url = "https://example.com"
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso": map[string]any{
+					"disabled":     false,
+					"merge_users":  false,
+					"redirect_url": "https://example.com",
+				},
 			}),
 		},
 	)

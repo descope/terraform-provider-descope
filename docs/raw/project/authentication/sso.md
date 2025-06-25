@@ -21,3 +21,13 @@ merge_users
 - Type: `bool` 
 
 Whether to merge existing user accounts with new ones created through SSO authentication.
+
+
+
+redirect_url
+------------
+
+- Type: `string` 
+
+The URL the end user is redirected to after a successful authentication. If one is specified
+in tenant level settings or SDK/API call, they will override this value.
