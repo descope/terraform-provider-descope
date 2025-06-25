@@ -28,7 +28,8 @@ auth_schema
 - Type: `string` 
 - Default: `"default"`
 
-The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+The authorization claims format - `default`, `tenantOnly` or `none`.
+Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 
 
 
@@ -39,6 +40,16 @@ empty_claim_policy
 - Default: `"none"`
 
 Policy for empty claims - `none`, `nil` or `delete`.
+
+
+
+auto_tenant_claim
+-----------------
+
+- Type: `bool` 
+
+When a user is associated with a single tenant, the tenant will be set as the user's
+active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
 
 
 

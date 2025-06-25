@@ -26,11 +26,11 @@ func TestJWTTemplates(t *testing.T) {
 				jwt_templates = {
 					user_templates = [
 						{
-							"name": "foo",
-							"description": "a",
-							"template": "{}",
-							"auth_schema": "tenantOnly",
-							"empty_claim_policy": "delete",
+							name = "foo"
+							description = "a"
+							template = "{}"
+							auth_schema = "tenantOnly"
+							empty_claim_policy = "delete"
 						}
 					]
 				}
@@ -40,7 +40,9 @@ func TestJWTTemplates(t *testing.T) {
 				"jwt_templates.user_templates.0.id":                 testacc.AttributeHasPrefix("JT"),
 				"jwt_templates.user_templates.0.name":               "foo",
 				"jwt_templates.user_templates.0.description":        "a",
+				"jwt_templates.user_templates.0.auto_tenant_claim":  false,
 				"jwt_templates.user_templates.0.conformance_issuer": false,
+				"jwt_templates.user_templates.0.enforce_issuer":     false,
 				"jwt_templates.user_templates.0.auth_schema":        "tenantOnly",
 				"jwt_templates.user_templates.0.empty_claim_policy": "delete",
 				"jwt_templates.user_templates.0.template":           "{}",
@@ -51,16 +53,46 @@ func TestJWTTemplates(t *testing.T) {
 				jwt_templates = {
 					user_templates = [
 						{
-							"name": "foo",
-							"description": "a",
-							"template": "{}",
+							name = "foo"
+							description = "a"
+							template = "{}"
+							auth_schema = "tenantOnly"
+							empty_claim_policy = "delete"
+							auto_tenant_claim = true
+							conformance_issuer = true
+							enforce_issuer = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"jwt_templates.user_templates.#":                    1,
+				"jwt_templates.user_templates.0.id":                 testacc.AttributeHasPrefix("JT"),
+				"jwt_templates.user_templates.0.name":               "foo",
+				"jwt_templates.user_templates.0.description":        "a",
+				"jwt_templates.user_templates.0.auto_tenant_claim":  true,
+				"jwt_templates.user_templates.0.conformance_issuer": true,
+				"jwt_templates.user_templates.0.enforce_issuer":     true,
+				"jwt_templates.user_templates.0.auth_schema":        "tenantOnly",
+				"jwt_templates.user_templates.0.empty_claim_policy": "delete",
+				"jwt_templates.user_templates.0.template":           "{}",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				jwt_templates = {
+					user_templates = [
+						{
+							name = "foo"
+							description = "a"
+							template = "{}"
 						}
 					]
 					access_key_templates = [
 						{
-							"name": "foo",
-							"description": "b",
-							"template": "{}",
+							name = "foo"
+							description = "b"
+							template = "{}"
 						}
 					]
 				}
@@ -72,16 +104,16 @@ func TestJWTTemplates(t *testing.T) {
 				jwt_templates = {
 					user_templates = [
 						{
-							"name": "foo",
-							"description": "a",
-							"template": "{}",
+							name = "foo"
+							description = "a"
+							template = "{}"
 						}
 					]
 					access_key_templates = [
 						{
-							"name": "bar",
-							"description": "b",
-							"template": "{}",
+							name = "bar"
+							description = "b"
+							template = "{}"
 						}
 					]
 				}
@@ -103,16 +135,16 @@ func TestJWTTemplates(t *testing.T) {
 				jwt_templates = {
 					user_templates = [
 						{
-							"name": "foo",
-							"description": "a",
-							"template": "{}",
+							name = "foo"
+							description = "a"
+							template = "{}"
 						}
 					]
 					access_key_templates = [
 						{
-							"name": "bar",
-							"description": "b",
-							"template": "{}",
+							name = "bar"
+							description = "b"
+							template = "{}"
 						}
 					]
 				}
@@ -127,16 +159,16 @@ func TestJWTTemplates(t *testing.T) {
 				jwt_templates = {
 					user_templates = [
 						{
-							"name": "foo",
-							"description": "a",
-							"template": "{}",
+							name = "foo"
+							description = "a"
+							template = "{}"
 						}
 					]
 					access_key_templates = [
 						{
-							"name": "bar",
-							"description": "b",
-							"template": "{}",
+							name = "bar"
+							description = "b"
+							template = "{}"
 						}
 					]
 				}
@@ -151,16 +183,16 @@ func TestJWTTemplates(t *testing.T) {
 				jwt_templates = {
 					user_templates = [
 						{
-							"name": "foo",
-							"description": "a",
-							"template": "{}",
+							name = "foo",
+							description = "a"
+							template = "{}"
 						}
 					]
 					access_key_templates = [
 						{
-							"name": "bar",
-							"description": "b",
-							"template": "{}",
+							name = "bar"
+							description = "b"
+							template = "{}"
 						}
 					]
 				}
@@ -174,9 +206,9 @@ func TestJWTTemplates(t *testing.T) {
 				jwt_templates = {
 					user_templates = [
 						{
-							"name": "foo",
-							"description": "a",
-							"template": "{}",
+							name = "foo"
+							description = "a"
+							template = "{}"
 						}
 					]
 				}
