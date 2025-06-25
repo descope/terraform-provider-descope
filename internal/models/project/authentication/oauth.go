@@ -313,15 +313,15 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	if !m.Prompts.IsEmpty() {
 		strlistattr.Get(m.Prompts, data, "prompts", h)
 	}
+	if !m.AllowedGrantTypes.IsEmpty() {
+		strlistattr.Get(m.AllowedGrantTypes, data, "allowedGrantTypes", h)
+	}
 	if !m.Scopes.IsEmpty() {
 		strlistattr.Get(m.Scopes, data, "scopes", h)
 	}
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
-	if !m.AllowedGrantTypes.IsEmpty() {
-		strlistattr.Get(m.AllowedGrantTypes, data, "allowedGrantTypes", h)
-	}
 	stringattr.Get(m.Issuer, data, "issuer")
 	stringattr.Get(m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Get(m.TokenEndpoint, data, "tokenUrl")
@@ -349,17 +349,23 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	boolattr.Set(&m.ManageProviderTokens, data, "manageProviderTokens")
 	stringattr.Set(&m.CallbackDomain, data, "callbackDomain")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
-	strlistattr.Set(&m.Prompts, data, "prompts", h) // XXX was skipped
+	strlistattr.Set(&m.Prompts, data, "prompts", h)                     // XXX was skipped
+	strlistattr.Set(&m.AllowedGrantTypes, data, "allowedGrantTypes", h) // XXX was skipped
 	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
-	stringattr.Set(&m.Description, data, "description")
-	stringattr.Set(&m.Logo, data, "logo")
-	strlistattr.Set(&m.AllowedGrantTypes, data, "allowedGrantTypes", h) // XXX was skipped
-	stringattr.Set(&m.Issuer, data, "issuer")
-	stringattr.Set(&m.AuthorizationEndpoint, data, "authUrl")
-	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")
-	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
-	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
+
+	customData := map[string]any{} // use empty map for system providers, effectively making Set act like Nil below
+	if custom, _ := data["custom"].(bool); custom {
+		customData = data
+	}
+	stringattr.Set(&m.Description, customData, "description")
+	stringattr.Set(&m.Logo, customData, "logo")
+	stringattr.Set(&m.Issuer, customData, "issuer")
+	stringattr.Set(&m.AuthorizationEndpoint, customData, "authUrl")
+	stringattr.Set(&m.TokenEndpoint, customData, "tokenUrl")
+	stringattr.Set(&m.UserInfoEndpoint, customData, "userDataUrl")
+	stringattr.Set(&m.JWKsEndpoint, customData, "jwksUrl")
+
 	strmapattr.Nil(&m.ClaimMapping, h) // empty defaults are added by the backend
 }
 
