@@ -47,3 +47,17 @@ func (m *RoleModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Description, data, "description")
 	strsetattr.Set(&m.Permissions, data, "permissions", h)
 }
+
+// Matching
+
+func (m *RoleModel) GetName() stringattr.Type {
+	return m.Name
+}
+
+func (m *RoleModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *RoleModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
