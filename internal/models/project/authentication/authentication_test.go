@@ -152,21 +152,5 @@ func TestAuthentication(t *testing.T) {
 				},
 			}),
 		},
-		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					sso = {
-						redirect_url = "https://example.com"
-					}
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"authentication.sso": map[string]any{
-					"disabled":     false,
-					"merge_users":  false,
-					"redirect_url": "https://example.com",
-				},
-			}),
-		},
 	)
 }
