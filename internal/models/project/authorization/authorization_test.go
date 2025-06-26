@@ -16,6 +16,42 @@ func TestAuthorization(t *testing.T) {
 				authorization = {
 					roles = [
 						{
+							name = "Admin"
+							permissions = ["User Admin"]
+						}
+					]
+					permissions = [
+						{
+							name = "User Admin"
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`system permission`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authorization = {
+					roles = [
+						{
+							name = "Admin"
+							permissions = ["User Admin"]
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authorization.roles.#":             1,
+				"authorization.roles.0.name":        "Admin",
+				"authorization.roles.0.permissions": []string{"User Admin"},
+				"authorization.permissions.#":       0,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authorization = {
+					roles = [
+						{
 							name = "App Developer"
 							description = "Builds apps and uploads new beta builds"
 							permissions = ["build-apps", "upload-builds", "install-builds"]

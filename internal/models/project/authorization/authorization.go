@@ -1,12 +1,20 @@
 package authorization
 
 import (
+	"slices"
+
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/setattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+var systemPermissions = []string{
+	"Impersonate",
+	"User Admin",
+	"SSO Admin",
+}
 
 var AuthorizationValidator = objattr.NewValidator[AuthorizationModel]("must have unique role and permission names")
 
@@ -46,9 +54,18 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 	permissions := map[string]int{}
 	roles := map[string]int{}
 
+	for _, n := range systemPermissions {
+		permissions[n] = 1
+	}
+
 	for p := range setattr.Iterator(m.Permissions, h) {
 		name := p.Name.ValueString()
 		permissions[name] += 1
+
+		if slices.Contains(systemPermissions, name) {
+			h.Invalid("The permission '%s' is a system permission and is already defined", name)
+			return
+		}
 	}
 
 	for r := range setattr.Iterator(m.Roles, h) {
