@@ -4,6 +4,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -32,7 +33,7 @@ type OIDCModel struct {
 	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
 }
 
-func (m *OIDCModel) Values(h *Handler) map[string]any {
+func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	settings := map[string]any{}
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
 	strlistattr.Get(m.Claims, settings, "claims", h)
@@ -43,11 +44,25 @@ func (m *OIDCModel) Values(h *Handler) map[string]any {
 	return data
 }
 
-func (m *OIDCModel) SetValues(h *Handler, data map[string]any) {
+func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setSharedApplicationData(h, data, &m.ID, &m.Name, &m.Description, &m.Logo, &m.Disabled)
 	if settings, ok := data["oidc"].(map[string]any); ok {
-		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
+		stringattr.Nil(&m.LoginPageURL) // XXX reset by the backend on response for now
 		strlistattr.Set(&m.Claims, settings, "claims", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 	}
+}
+
+// Matching
+
+func (m *OIDCModel) GetName() stringattr.Type {
+	return m.Name
+}
+
+func (m *OIDCModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *OIDCModel) SetID(id stringattr.Type) {
+	m.ID = id
 }
