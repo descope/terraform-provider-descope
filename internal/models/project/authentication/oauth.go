@@ -175,6 +175,7 @@ func validateSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProvi
 	ensureNoCustomProviderFields(h, m.TokenEndpoint, "token_endpoint", name)
 	ensureNoCustomProviderFields(h, m.UserInfoEndpoint, "user_info_endpoint", name)
 	ensureNoCustomProviderFields(h, m.JWKsEndpoint, "jwks_endpoint", name)
+
 	if !m.ClaimMapping.IsEmpty() {
 		h.Error("Reserved Attribute", "The %s OAuth provider is a system provider and its claim_mapping attribute is reserved", name)
 	}
@@ -353,20 +354,14 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	strlistattr.Set(&m.AllowedGrantTypes, data, "allowedGrantTypes", h) // XXX was skipped
 	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
-
-	customData := map[string]any{} // use empty map for system providers, effectively making Set act like Nil below
-	if custom, _ := data["custom"].(bool); custom {
-		customData = data
-	}
-	stringattr.Set(&m.Description, customData, "description")
-	stringattr.Set(&m.Logo, customData, "logo")
-	stringattr.Set(&m.Issuer, customData, "issuer")
-	stringattr.Set(&m.AuthorizationEndpoint, customData, "authUrl")
-	stringattr.Set(&m.TokenEndpoint, customData, "tokenUrl")
-	stringattr.Set(&m.UserInfoEndpoint, customData, "userDataUrl")
-	stringattr.Set(&m.JWKsEndpoint, customData, "jwksUrl")
-
-	strmapattr.Nil(&m.ClaimMapping, h) // empty defaults are added by the backend
+	stringattr.Set(&m.Description, data, "description")
+	stringattr.Set(&m.Logo, data, "logo")
+	stringattr.Set(&m.Issuer, data, "issuer")
+	stringattr.Set(&m.AuthorizationEndpoint, data, "authUrl")
+	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")
+	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
+	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
+	strmapattr.Nil(&m.ClaimMapping, h) // XXX empty defaults are added by the backend, add parsing for refresh
 }
 
 func (m *OAuthProviderModel) Validate(h *helpers.Handler) {
