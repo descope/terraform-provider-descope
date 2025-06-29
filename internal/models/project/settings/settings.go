@@ -71,7 +71,6 @@ type SettingsModel struct {
 }
 
 func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
-	m.Check(h)
 	data := map[string]any{}
 	stringattr.Get(m.AppURL, data, "appUrl")
 	stringattr.Get(m.CustomDomain, data, "customDomain")
@@ -156,7 +155,11 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.SessionMigration, data, "externalAuthConfig", h)
 }
 
-func (m *SettingsModel) Check(h *helpers.Handler) {
+func (m *SettingsModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.AppURL, m.CustomDomain, m.RefreshTokenCookieDomain, m.SessionTokenCookieDomain, m.TestUsersStaticOTP, m.TestUsersVerifierRegExp) {
+		return // skip validation if there are unknown values
+	}
+
 	appDomain := ""
 	if v := m.AppURL.ValueString(); v != "" {
 		if appURL, err := url.Parse(v); err == nil {
@@ -203,10 +206,6 @@ func (m *SettingsModel) Check(h *helpers.Handler) {
 	if (m.TestUsersStaticOTP.ValueString() == "") != (m.TestUsersVerifierRegExp.ValueString() == "") {
 		h.Invalid("The test_users_static_otp and test_users_verifier_regexp attributes must be set together")
 	}
-}
-
-func (m *SettingsModel) Validate(h *helpers.Handler) {
-	// XXX move Check here eventually
 }
 
 func getJWTTemplate(field stringattr.Type, data map[string]any, key string, typ string, h *helpers.Handler) {
