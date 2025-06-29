@@ -73,7 +73,7 @@ func (m *SAMLModel) Values(h *helpers.Handler) map[string]any {
 func (m *SAMLModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setSharedApplicationData(h, data, &m.ID, &m.Name, &m.Description, &m.Logo, &m.Disabled)
 	if settings, ok := data["saml"].(map[string]any); ok {
-		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
+		stringattr.Nil(&m.LoginPageURL) // XXX reset by the backend on response for now
 		if useMetadataInfo, ok := settings["useMetadataInfo"].(bool); ok && useMetadataInfo {
 			objattr.Set(&m.DynamicConfiguration, settings, helpers.RootKey, h)
 		} else {

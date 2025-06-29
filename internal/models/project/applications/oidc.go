@@ -47,7 +47,7 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setSharedApplicationData(h, data, &m.ID, &m.Name, &m.Description, &m.Logo, &m.Disabled)
 	if settings, ok := data["oidc"].(map[string]any); ok {
-		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
+		stringattr.Nil(&m.LoginPageURL) // XXX reset by the backend on response for now
 		strlistattr.Set(&m.Claims, settings, "claims", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 	}
