@@ -56,7 +56,7 @@ func SetMatching[T any, M helpers.MatchableModel[T]](l *Type[T], data map[string
 		}
 	}
 
-	// get the current elements in the list, so can update/delete them
+	// get the current elements in the list, so we can update/delete them
 	current, diags := l.ToSlice(h.Ctx)
 	h.Diagnostics.Append(diags...)
 	if diags.HasError() {

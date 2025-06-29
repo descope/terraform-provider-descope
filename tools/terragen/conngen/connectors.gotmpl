@@ -38,7 +38,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
     {{- range .Connectors }}
-	setConnectorsValues(h, data, "{{.DataName}}", &m.{{.StructName}})
+	listattr.SetMatching(&m.{{.StructName}}, data, "{{.DataName}}", h)
     {{- end }}
 }
 

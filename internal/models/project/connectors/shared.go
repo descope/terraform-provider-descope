@@ -41,12 +41,6 @@ func setConnectorValues(id, name, description *stringattr.Type, data map[string]
 	stringattr.Set(description, data, "description")
 }
 
-// Connector Identifiers
-
-func setConnectorsValues[T any, M helpers.MatchableModel[T]](h *helpers.Handler, data map[string]any, key string, connectors *listattr.Type[T]) {
-	listattr.Set[T, M](connectors, data, key, h)
-}
-
 // Connector Utils
 
 func addConnectorReferences[T any, M helpers.MatchableModel[T]](h *helpers.Handler, key string, connectors listattr.Type[T]) {
