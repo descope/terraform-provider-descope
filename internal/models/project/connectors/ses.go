@@ -61,7 +61,7 @@ func (m *SESModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 
 func (m *SESModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.AccessKeyId, c, "accessKeyId")
-	stringattr.Set(&m.Secret, c, "secretAccessKey")
+	stringattr.Nil(&m.Secret)
 	stringattr.Set(&m.Region, c, "awsSNSRegion")
 	stringattr.Set(&m.Endpoint, c, "awsEndpoint")
 	objattr.Set(&m.Sender, c, helpers.RootKey, h)

@@ -175,6 +175,7 @@ func validateSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProvi
 	ensureNoCustomProviderFields(h, m.TokenEndpoint, "token_endpoint", name)
 	ensureNoCustomProviderFields(h, m.UserInfoEndpoint, "user_info_endpoint", name)
 	ensureNoCustomProviderFields(h, m.JWKsEndpoint, "jwks_endpoint", name)
+
 	if !m.ClaimMapping.IsEmpty() {
 		h.Error("Reserved Attribute", "The %s OAuth provider is a system provider and its claim_mapping attribute is reserved", name)
 	}
@@ -313,15 +314,15 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	if !m.Prompts.IsEmpty() {
 		strlistattr.Get(m.Prompts, data, "prompts", h)
 	}
+	if !m.AllowedGrantTypes.IsEmpty() {
+		strlistattr.Get(m.AllowedGrantTypes, data, "allowedGrantTypes", h)
+	}
 	if !m.Scopes.IsEmpty() {
 		strlistattr.Get(m.Scopes, data, "scopes", h)
 	}
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
-	if !m.AllowedGrantTypes.IsEmpty() {
-		strlistattr.Get(m.AllowedGrantTypes, data, "allowedGrantTypes", h)
-	}
 	stringattr.Get(m.Issuer, data, "issuer")
 	stringattr.Get(m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Get(m.TokenEndpoint, data, "tokenUrl")
@@ -349,18 +350,18 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	boolattr.Set(&m.ManageProviderTokens, data, "manageProviderTokens")
 	stringattr.Set(&m.CallbackDomain, data, "callbackDomain")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
-	strlistattr.Set(&m.Prompts, data, "prompts", h) // XXX was skipped
+	strlistattr.Set(&m.Prompts, data, "prompts", h)                     // XXX was skipped
+	strlistattr.Set(&m.AllowedGrantTypes, data, "allowedGrantTypes", h) // XXX was skipped
 	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")
-	strlistattr.Set(&m.AllowedGrantTypes, data, "allowedGrantTypes", h) // XXX was skipped
 	stringattr.Set(&m.Issuer, data, "issuer")
 	stringattr.Set(&m.AuthorizationEndpoint, data, "authUrl")
 	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")
 	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
-	strmapattr.Nil(&m.ClaimMapping, h) // empty defaults are added by the backend
+	strmapattr.Nil(&m.ClaimMapping, h) // XXX empty defaults are added by the backend, add parsing for refresh
 }
 
 func (m *OAuthProviderModel) Validate(h *helpers.Handler) {

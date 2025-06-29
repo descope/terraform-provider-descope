@@ -32,3 +32,17 @@ func (m *PermissionModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Description, data, "description")
 }
+
+// Matching
+
+func (m *PermissionModel) GetName() stringattr.Type {
+	return m.Name
+}
+
+func (m *PermissionModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *PermissionModel) SetID(id stringattr.Type) {
+	m.ID = id
+}

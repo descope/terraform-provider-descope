@@ -823,8 +823,8 @@ Optional:
 
 Optional:
 
-- `permissions` (Attributes Set) A list of `Permission` objects. (see [below for nested schema](#nestedatt--authorization--permissions))
-- `roles` (Attributes Set) A list of `Role` objects. (see [below for nested schema](#nestedatt--authorization--roles))
+- `permissions` (Attributes List) A list of `Permission` objects. (see [below for nested schema](#nestedatt--authorization--permissions))
+- `roles` (Attributes List) A list of `Role` objects. (see [below for nested schema](#nestedatt--authorization--roles))
 
 <a id="nestedatt--authorization--permissions"></a>
 ### Nested Schema for `authorization.permissions`
@@ -2274,6 +2274,7 @@ Required:
 Optional:
 
 - `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+- `auto_tenant_claim` (Boolean) When a user is associated with a single tenant, the tenant will be set as the user's active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
 - `conformance_issuer` (Boolean) Whether to use OIDC conformance for the JWT issuer field.
 - `description` (String) Description of the JWT Template.
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
@@ -2295,6 +2296,7 @@ Required:
 Optional:
 
 - `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
+- `auto_tenant_claim` (Boolean) When a user is associated with a single tenant, the tenant will be set as the user's active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
 - `conformance_issuer` (Boolean) Whether to use OIDC conformance for the JWT issuer field.
 - `description` (String) Description of the JWT Template.
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.

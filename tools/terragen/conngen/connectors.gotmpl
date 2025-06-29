@@ -38,7 +38,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
     {{- range .Connectors }}
-	setConnectorsValues(h, data, "{{.DataName}}", &m.{{.StructName}})
+	listattr.SetMatching(&m.{{.StructName}}, data, "{{.DataName}}", h)
     {{- end }}
 }
 
@@ -62,7 +62,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 
 func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
     {{- range .Connectors }}
-    listattr.Match(h, &m.{{.StructName}}, state.{{.StructName}})
+    listattr.ModifyMatching(h, &m.{{.StructName}}, state.{{.StructName}})
     {{- end }}
 
 	// Upgrade existing identifiers for SMTP connectors to support static IPs

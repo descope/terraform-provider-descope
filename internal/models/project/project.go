@@ -26,7 +26,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"project_settings": objattr.Optional[settings.SettingsModel](settings.SettingsAttributes, settings.SettingsValidator),
 	"invite_settings":  objattr.Default(settings.InviteSettingsDefault, settings.InviteSettingsAttributes),
 	"authentication":   objattr.Optional[authentication.AuthenticationModel](authentication.AuthenticationAttributes),
-	"authorization":    objattr.Optional[authorization.AuthorizationModel](authorization.AuthorizationAttributes, authorization.AuthorizationValidator),
+	"authorization":    objattr.Optional[authorization.AuthorizationModel](authorization.AuthorizationAttributes, authorization.AuthorizationModifier, authorization.AuthorizationValidator),
 	"attributes":       objattr.Default(attributes.AttributesDefault, attributes.AttributesAttributes),
 	"connectors":       objattr.Optional[connectors.ConnectorsModel](connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
 	"applications":     objattr.Default(applications.ApplicationsDefault, applications.ApplicationsAttributes, applications.ApplicationsValidator),

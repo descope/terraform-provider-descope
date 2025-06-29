@@ -48,9 +48,10 @@ func Get(n types.Int64, data map[string]any, key string) {
 
 func Set(n *types.Int64, data map[string]any, key string) {
 	if v, ok := data[key].(float64); ok {
-		*n = types.Int64Value(int64(v))
-	}
-	if v, ok := data[key].(int64); ok {
-		*n = types.Int64Value(v)
+		*n = Value(int64(v))
+	} else if v, ok := data[key].(int64); ok {
+		*n = Value(v)
+	} else if n.IsUnknown() {
+		*n = Value(0)
 	}
 }

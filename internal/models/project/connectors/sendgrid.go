@@ -85,6 +85,6 @@ func (m *SendGridAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 	return data
 }
 
-func (m *SendGridAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	stringattr.Set(&m.ApiKey, data, "apiKey")
+func (m *SendGridAuthFieldModel) SetValues(h *helpers.Handler, _ map[string]any) {
+	stringattr.Nil(&m.ApiKey)
 }

@@ -16,6 +16,7 @@ var JWTTemplateAttributes = map[string]schema.Attribute{
 	"description":        stringattr.Default(""),
 	"auth_schema":        stringattr.Default("default", stringvalidator.OneOf("default", "tenantOnly", "none")),
 	"empty_claim_policy": stringattr.Default("none", stringvalidator.OneOf("none", "nil", "delete")),
+	"auto_tenant_claim":  boolattr.Default(false),
 	"conformance_issuer": boolattr.Default(false),
 	"enforce_issuer":     boolattr.Default(false),
 	"template":           stringattr.Required(),
@@ -27,6 +28,7 @@ type JWTTemplateModel struct {
 	Description       stringattr.Type `tfsdk:"description"`
 	AuthSchema        stringattr.Type `tfsdk:"auth_schema"`
 	EmptyClaimPolicy  stringattr.Type `tfsdk:"empty_claim_policy"`
+	AutoDCT           boolattr.Type   `tfsdk:"auto_tenant_claim"`
 	ConformanceIssuer boolattr.Type   `tfsdk:"conformance_issuer"`
 	EnforceIssuer     boolattr.Type   `tfsdk:"enforce_issuer"`
 	Template          stringattr.Type `tfsdk:"template"`
@@ -38,6 +40,7 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.AuthSchema, data, "authSchema")
 	stringattr.Get(m.EmptyClaimPolicy, data, "emptyClaimPolicy")
+	boolattr.Get(m.AutoDCT, data, "autoDCT")
 	boolattr.Get(m.ConformanceIssuer, data, "conformanceIssuer")
 	boolattr.Get(m.EnforceIssuer, data, "enforceIssuer")
 
@@ -67,6 +70,7 @@ func (m *JWTTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.AuthSchema, data, "authSchema")
 	stringattr.Set(&m.EmptyClaimPolicy, data, "emptyClaimPolicy")
+	boolattr.Set(&m.AutoDCT, data, "autoDCT")
 	boolattr.Set(&m.ConformanceIssuer, data, "conformanceIssuer")
 	boolattr.Set(&m.EnforceIssuer, data, "enforceIssuer")
 

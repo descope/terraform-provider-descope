@@ -48,7 +48,9 @@ func Get(b types.Bool, data map[string]any, key string) {
 
 func Set(b *types.Bool, data map[string]any, key string) {
 	if v, ok := data[key].(bool); ok {
-		*b = types.BoolValue(v)
+		*b = Value(v)
+	} else if b.IsUnknown() {
+		*b = Value(false)
 	}
 }
 
@@ -60,6 +62,8 @@ func GetNot(b types.Bool, data map[string]any, key string) {
 
 func SetNot(b *types.Bool, data map[string]any, key string) {
 	if v, ok := data[key].(bool); ok {
-		*b = types.BoolValue(!v)
+		*b = Value(!v)
+	} else if b.IsUnknown() {
+		*b = Value(true)
 	}
 }

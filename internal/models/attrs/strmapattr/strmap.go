@@ -69,7 +69,7 @@ func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 	}
 
 	values := helpers.Require(s.ToMap(h.Ctx))
-	data[key] = attrs.ConvertTerraformStringMapToStringMap(values)
+	data[key] = attrs.ConvertTerraformMapToStringMap(values)
 }
 
 func Set(s *Type, data map[string]any, key string, h *helpers.Handler) {
