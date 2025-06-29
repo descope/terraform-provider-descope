@@ -84,3 +84,17 @@ func (m *JWTTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
 		m.Template = stringattr.Value(template)
 	}
 }
+
+// Matching
+
+func (m *JWTTemplateModel) GetName() stringattr.Type {
+	return m.Name
+}
+
+func (m *JWTTemplateModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *JWTTemplateModel) SetID(id stringattr.Type) {
+	m.ID = id
+}

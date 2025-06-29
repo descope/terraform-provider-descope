@@ -48,7 +48,7 @@ type SAMLModel struct {
 	ForceAuthentication    boolattr.Type                           `tfsdk:"force_authentication"`
 }
 
-func (m *SAMLModel) Values(h *Handler) map[string]any {
+func (m *SAMLModel) Values(h *helpers.Handler) map[string]any {
 	settings := map[string]any{}
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
 	if m.DynamicConfiguration.IsSet() {
@@ -70,7 +70,7 @@ func (m *SAMLModel) Values(h *Handler) map[string]any {
 	return data
 }
 
-func (m *SAMLModel) SetValues(h *Handler, data map[string]any) {
+func (m *SAMLModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setSharedApplicationData(h, data, &m.ID, &m.Name, &m.Description, &m.Logo, &m.Disabled)
 	if settings, ok := data["saml"].(map[string]any); ok {
 		stringattr.Set(&m.LoginPageURL, settings, "loginPageUrl")
@@ -88,6 +88,20 @@ func (m *SAMLModel) SetValues(h *Handler, data map[string]any) {
 	}
 }
 
+// Matching
+
+func (m *SAMLModel) GetName() stringattr.Type {
+	return m.Name
+}
+
+func (m *SAMLModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *SAMLModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
+
 // Attribute Mapping
 
 var AttributeMappingAttributes = map[string]schema.Attribute{
@@ -100,14 +114,14 @@ type AttributeMappingModel struct {
 	Value stringattr.Type `tfsdk:"value"`
 }
 
-func (m *AttributeMappingModel) Values(h *Handler) map[string]any {
+func (m *AttributeMappingModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Value, data, "value")
 	return data
 }
 
-func (m *AttributeMappingModel) SetValues(h *Handler, data map[string]any) {
+func (m *AttributeMappingModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Value, data, "value")
 }
@@ -122,13 +136,13 @@ type DynamicConfigurationModel struct {
 	MetadataURL stringattr.Type `tfsdk:"metadata_url"`
 }
 
-func (m *DynamicConfigurationModel) Values(h *Handler) map[string]any {
+func (m *DynamicConfigurationModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.MetadataURL, data, "metadataUrl")
 	return data
 }
 
-func (m *DynamicConfigurationModel) SetValues(h *Handler, data map[string]any) {
+func (m *DynamicConfigurationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.MetadataURL, data, "metadataUrl")
 }
 
@@ -146,7 +160,7 @@ type ManualConfigurationModel struct {
 	Certificate stringattr.Type `tfsdk:"certificate"`
 }
 
-func (m *ManualConfigurationModel) Values(h *Handler) map[string]any {
+func (m *ManualConfigurationModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.ACSURL, data, "acsUrl")
 	stringattr.Get(m.EntityID, data, "entityId")
@@ -154,7 +168,7 @@ func (m *ManualConfigurationModel) Values(h *Handler) map[string]any {
 	return data
 }
 
-func (m *ManualConfigurationModel) SetValues(h *Handler, data map[string]any) {
+func (m *ManualConfigurationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.ACSURL, data, "acsUrl")
 	stringattr.Set(&m.EntityID, data, "entityId")
 	stringattr.Set(&m.Certificate, data, "certificate")

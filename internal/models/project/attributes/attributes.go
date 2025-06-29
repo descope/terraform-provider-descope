@@ -34,10 +34,10 @@ func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	if m.Tenant.IsUnknown() {
+	if m.Tenant.IsEmpty() { // XXX test without this check
 		listattr.Set(&m.Tenant, data, "tenant", h)
 	}
-	if m.User.IsUnknown() {
+	if m.User.IsEmpty() { // XXX test without this check
 		listattr.Set(&m.User, data, "user", h)
 	}
 }

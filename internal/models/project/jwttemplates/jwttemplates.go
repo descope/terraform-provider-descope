@@ -3,7 +3,6 @@ package jwttemplates
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -33,16 +32,8 @@ func (m *JWTTemplatesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *JWTTemplatesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	if m.UserTemplates.IsUnknown() {
-		listattr.Set(&m.UserTemplates, data, "userTemplates", h)
-	} else {
-		m.setTemplateValues(h, data, "userTemplates", &m.UserTemplates)
-	}
-	if m.AccessKeyTemplates.IsUnknown() {
-		listattr.Set(&m.AccessKeyTemplates, data, "keyTemplates", h)
-	} else {
-		m.setTemplateValues(h, data, "keyTemplates", &m.AccessKeyTemplates)
-	}
+	listattr.SetMatching(&m.UserTemplates, data, "userTemplates", h)
+	listattr.SetMatching(&m.AccessKeyTemplates, data, "keyTemplates", h)
 }
 
 func (m *JWTTemplatesModel) CollectReferences(h *helpers.Handler) {
@@ -67,36 +58,4 @@ func (m *JWTTemplatesModel) Validate(h *helpers.Handler) {
 			h.Conflict("The JWT template name '%s' is used %d times", k, v)
 		}
 	}
-}
-
-func (m *JWTTemplatesModel) setTemplateValues(h *helpers.Handler, data map[string]any, key string, list *listattr.Type[JWTTemplateModel]) {
-	templates := m.getTemplateIDs(data, key)
-	for template := range listattr.MutatingIterator(list, h) {
-		name := template.Name.ValueString()
-		id, found := templates[name]
-		if found {
-			value := stringattr.Value(id)
-			if !template.ID.Equal(value) {
-				h.Log("Setting new ID '%s' for %s JWT template named '%s'", id, key, name)
-				template.ID = value
-			} else {
-				h.Log("Keeping existing ID '%s' for %s JWT template named '%s'", id, key, name)
-			}
-		} else {
-			h.Error("JWT template not found", "Expected to find %s JWT template to match with '%s'", key, name)
-		}
-	}
-}
-
-func (m *JWTTemplatesModel) getTemplateIDs(data map[string]any, key string) map[string]string {
-	templates := map[string]string{}
-	rs, _ := data[key].([]any)
-	for _, v := range rs {
-		if r, ok := v.(map[string]any); ok {
-			id, _ := r["id"].(string)
-			name, _ := r["name"].(string)
-			templates[name] = id
-		}
-	}
-	return templates
 }

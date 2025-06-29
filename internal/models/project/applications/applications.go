@@ -33,20 +33,8 @@ func (m *ApplicationsModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *ApplicationsModel) SetValues(h *helpers.Handler, data map[string]any) {
-	if m.OIDCApplications.IsUnknown() {
-		listattr.Set(&m.OIDCApplications, data, "oidc", h)
-	} else {
-		for app := range listattr.MutatingIterator(&m.OIDCApplications, h) {
-			RequireID(h, data, "oidc", app.Name, &app.ID)
-		}
-	}
-	if m.SAMLApplications.IsUnknown() {
-		listattr.Set(&m.SAMLApplications, data, "saml", h)
-	} else {
-		for app := range listattr.MutatingIterator(&m.SAMLApplications, h) {
-			RequireID(h, data, "saml", app.Name, &app.ID)
-		}
-	}
+	listattr.SetMatching(&m.OIDCApplications, data, "oidc", h)
+	listattr.SetMatching(&m.SAMLApplications, data, "saml", h)
 }
 
 func (m *ApplicationsModel) Check(h *helpers.Handler) {
