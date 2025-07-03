@@ -16,6 +16,7 @@ type Connector struct {
 	Name         string         `json:"name"`
 	Description  string         `json:"description"`
 	BuiltIn      bool           `json:"builtin"`
+	Validator    bool           `json:"validator"`
 	Extra        map[string]any `json:"extra"`
 	Fields       []*Field       `json:"fields"`
 	HiddenFields []*Field       `json:"allFields"`
@@ -90,7 +91,7 @@ func (c *Connector) HasEnumFields() bool {
 }
 
 func (c *Connector) HasValidator() bool {
-	return slices.ContainsFunc(c.Fields, func(f *Field) bool {
+	return c.Validator || slices.ContainsFunc(c.Fields, func(f *Field) bool {
 		return f.Dependency != nil
 	})
 }

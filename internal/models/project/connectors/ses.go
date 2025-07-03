@@ -4,16 +4,22 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+var SASValidator = objattr.NewValidator[SESModel]("must have a valid configuration")
 
 var SESAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"access_key_id": stringattr.Required(),
-	"secret":        stringattr.SecretRequired(),
+	"auth_type":     stringattr.Required(stringvalidator.OneOf("credentials", "assumeRole")),
+	"access_key_id": stringattr.SecretOptional(),
+	"secret":        stringattr.SecretOptional(),
+	"role_arn":      stringattr.Default(""),
+	"external_id":   stringattr.Default(""),
 	"region":        stringattr.Required(),
 	"endpoint":      stringattr.Default(""),
 	"sender":        objattr.Required[SenderFieldModel](SenderFieldAttributes),
@@ -26,8 +32,11 @@ type SESModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
+	AuthType    stringattr.Type                `tfsdk:"auth_type"`
 	AccessKeyId stringattr.Type                `tfsdk:"access_key_id"`
 	Secret      stringattr.Type                `tfsdk:"secret"`
+	RoleARN     stringattr.Type                `tfsdk:"role_arn"`
+	ExternalID  stringattr.Type                `tfsdk:"external_id"`
 	Region      stringattr.Type                `tfsdk:"region"`
 	Endpoint    stringattr.Type                `tfsdk:"endpoint"`
 	Sender      objattr.Type[SenderFieldModel] `tfsdk:"sender"`
@@ -44,6 +53,33 @@ func (m *SESModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
+	}
+}
+
+func (m *SESModel) Validate(h *helpers.Handler) {
+	if m.AccessKeyId.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "credentials" {
+		h.Conflict("The access_key_id field can only be used when auth_type is set to 'credentials'")
+	}
+	if m.AccessKeyId.ValueString() == "" && !m.AccessKeyId.IsUnknown() && m.AuthType.ValueString() == "credentials" {
+		h.Conflict("The access_key_id field is required when auth_type is set to 'credentials'")
+	}
+	if m.Secret.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "credentials" {
+		h.Conflict("The secret field can only be used when auth_type is set to 'credentials'")
+	}
+	if m.Secret.ValueString() == "" && !m.Secret.IsUnknown() && m.AuthType.ValueString() == "credentials" {
+		h.Conflict("The secret field is required when auth_type is set to 'credentials'")
+	}
+	if m.RoleARN.ValueString() != "" && m.AuthType.ValueString() != "assumeRole" {
+		h.Conflict("The role_arn field can only be used when auth_type is set to 'assumeRole'")
+	}
+	if m.RoleARN.ValueString() == "" && !m.RoleARN.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
+		h.Conflict("The role_arn field is required when auth_type is set to 'assumeRole'")
+	}
+	if m.ExternalID.ValueString() != "" && m.AuthType.ValueString() != "assumeRole" {
+		h.Conflict("The external_id field can only be used when auth_type is set to 'assumeRole'")
+	}
+	if m.ExternalID.ValueString() == "" && !m.ExternalID.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
+		h.Conflict("The external_id field is required when auth_type is set to 'assumeRole'")
 	}
 }
 
