@@ -12,7 +12,8 @@
     "id": "twilio-verify"
   },
   {
-    "id": "ses"
+    "id": "ses",
+    "validator": true
   },
   {
     "id": "sns"
