@@ -7,7 +7,8 @@ SES
 auth_type
 ---------
 
-- Type: `string` (required)
+- Type: `string` 
+- Default: `"credentials"`
 
 The authentication type to use.
 

@@ -1932,7 +1932,6 @@ Optional:
 
 Required:
 
-- `auth_type` (String) The authentication type to use.
 - `name` (String) A custom name for your connector.
 - `region` (String) AWS region to send requests to (e.g. `us-west-2`).
 - `sender` (Attributes) The sender details that should be displayed in the email message. (see [below for nested schema](#nestedatt--connectors--ses--sender))
@@ -1940,6 +1939,7 @@ Required:
 Optional:
 
 - `access_key_id` (String, Sensitive) AWS Access key ID.
+- `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
 - `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
 - `external_id` (String) The external ID to use when assuming the role.
