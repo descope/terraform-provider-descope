@@ -691,6 +691,8 @@ var docsRecaptchaEnterprise = map[string]string{
 	"site_key": "The site key is used to invoke reCAPTCHA Enterprise service on your site or " +
 	            "mobile application.",
 	"api_key": "API key associated with the current project.",
+	"base_url": "Apply a custom url to the reCAPTCHA Enterprise scripts. This is useful when " +
+	            "attempting to use reCAPTCHA globally. Defaults to https://www.google.com",
 	"override_assessment": "Override the default assessment model. Note: Overriding assessment is intended " +
 	                       "for automated testing and should not be utilized in production environments.",
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +

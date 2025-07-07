@@ -975,6 +975,7 @@ func TestConnectors(t *testing.T) {
     						project_id = "yhw7b6yel"
     						site_key = "ikzbbly"
     						api_key = "mhvece"
+    						base_url = ""
     						override_assessment = true
     						assessment_score = 15
 						}
@@ -990,6 +991,7 @@ func TestConnectors(t *testing.T) {
 					"project_id":          "yhw7b6yel",
 					"site_key":            "ikzbbly",
 					"api_key":             "mhvece",
+					"base_url":            "",
 					"override_assessment": true,
 					"assessment_score":    15,
 				},
