@@ -211,6 +211,15 @@ Get address autocompletions from Place Autocomplete Data API.
 
 
 
+google_cloud_logging
+--------------------
+
+- Type: `list` of `connectors.GoogleCloudLogging` 
+
+Stream logs and audit events with the Google Cloud Logging connector.
+
+
+
 hibp
 ----
 

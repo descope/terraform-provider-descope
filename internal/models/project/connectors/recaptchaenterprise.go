@@ -21,6 +21,7 @@ var RecaptchaEnterpriseAttributes = map[string]schema.Attribute{
 	"project_id":          stringattr.Required(),
 	"site_key":            stringattr.Required(),
 	"api_key":             stringattr.SecretRequired(),
+	"base_url":            stringattr.Default(""),
 	"override_assessment": boolattr.Default(false),
 	"assessment_score":    floatattr.Default(0.5),
 }
@@ -35,6 +36,7 @@ type RecaptchaEnterpriseModel struct {
 	ProjectID          stringattr.Type `tfsdk:"project_id"`
 	SiteKey            stringattr.Type `tfsdk:"site_key"`
 	APIKey             stringattr.Type `tfsdk:"api_key"`
+	BaseURL            stringattr.Type `tfsdk:"base_url"`
 	OverrideAssessment boolattr.Type   `tfsdk:"override_assessment"`
 	AssessmentScore    floatattr.Type  `tfsdk:"assessment_score"`
 }
@@ -66,6 +68,7 @@ func (m *RecaptchaEnterpriseModel) ConfigurationValues(h *helpers.Handler) map[s
 	stringattr.Get(m.ProjectID, c, "projectId")
 	stringattr.Get(m.SiteKey, c, "siteKey")
 	stringattr.Get(m.APIKey, c, "apiKey")
+	stringattr.Get(m.BaseURL, c, "baseUrl")
 	boolattr.Get(m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Get(m.AssessmentScore, c, "assessmentScore")
 	c["enterprise"] = true
@@ -76,6 +79,7 @@ func (m *RecaptchaEnterpriseModel) SetConfigurationValues(c map[string]any, h *h
 	stringattr.Set(&m.ProjectID, c, "projectId")
 	stringattr.Set(&m.SiteKey, c, "siteKey")
 	stringattr.Nil(&m.APIKey)
+	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
 }

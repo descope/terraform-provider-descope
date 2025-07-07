@@ -39,6 +39,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"generic_sms_gateway":        listattr.Default[GenericSMSGatewayModel](GenericSMSGatewayAttributes),
 	"google_cloud_translation":   listattr.Default[GoogleCloudTranslationModel](GoogleCloudTranslationAttributes),
 	"google_maps_places":         listattr.Default[GoogleMapsPlacesModel](GoogleMapsPlacesAttributes),
+	"google_cloud_logging":       listattr.Default[GoogleCloudLoggingModel](GoogleCloudLoggingAttributes, GoogleCloudLoggingValidator),
 	"hibp":                       listattr.Default[HIBPModel](HIBPAttributes),
 	"http":                       listattr.Default[HTTPModel](HTTPAttributes),
 	"hubspot":                    listattr.Default[HubSpotModel](HubSpotAttributes),
@@ -93,6 +94,7 @@ type ConnectorsModel struct {
 	GenericSMSGateway        listattr.Type[GenericSMSGatewayModel]        `tfsdk:"generic_sms_gateway"`
 	GoogleCloudTranslation   listattr.Type[GoogleCloudTranslationModel]   `tfsdk:"google_cloud_translation"`
 	GoogleMapsPlaces         listattr.Type[GoogleMapsPlacesModel]         `tfsdk:"google_maps_places"`
+	GoogleCloudLogging       listattr.Type[GoogleCloudLoggingModel]       `tfsdk:"google_cloud_logging"`
 	HIBP                     listattr.Type[HIBPModel]                     `tfsdk:"hibp"`
 	HTTP                     listattr.Type[HTTPModel]                     `tfsdk:"http"`
 	HubSpot                  listattr.Type[HubSpotModel]                  `tfsdk:"hubspot"`
@@ -148,6 +150,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.GenericSMSGateway, data, "generic-sms-gateway", h)
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.Get(m.GoogleMapsPlaces, data, "google-maps-places", h)
+	listattr.Get(m.GoogleCloudLogging, data, "googlecloudlogging", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
@@ -203,6 +206,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatching(&m.GenericSMSGateway, data, "generic-sms-gateway", h)
 	listattr.SetMatching(&m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.SetMatching(&m.GoogleMapsPlaces, data, "google-maps-places", h)
+	listattr.SetMatching(&m.GoogleCloudLogging, data, "googlecloudlogging", h)
 	listattr.SetMatching(&m.HIBP, data, "hibp", h)
 	listattr.SetMatching(&m.HTTP, data, "http", h)
 	listattr.SetMatching(&m.HubSpot, data, "hubspot", h)
@@ -257,6 +261,7 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "generic-sms-gateway", m.GenericSMSGateway)
 	addConnectorReferences(h, "google-cloud-translation", m.GoogleCloudTranslation)
 	addConnectorReferences(h, "google-maps-places", m.GoogleMapsPlaces)
+	addConnectorReferences(h, "googlecloudlogging", m.GoogleCloudLogging)
 	addConnectorReferences(h, "hibp", m.HIBP)
 	addConnectorReferences(h, "http", m.HTTP)
 	addConnectorReferences(h, "hubspot", m.HubSpot)
@@ -312,6 +317,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.GenericSMSGateway)
 	addConnectorNames(h, names, m.GoogleCloudTranslation)
 	addConnectorNames(h, names, m.GoogleMapsPlaces)
+	addConnectorNames(h, names, m.GoogleCloudLogging)
 	addConnectorNames(h, names, m.HIBP)
 	addConnectorNames(h, names, m.HTTP)
 	addConnectorNames(h, names, m.HubSpot)
@@ -371,6 +377,7 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatching(h, &m.GenericSMSGateway, state.GenericSMSGateway)
 	listattr.ModifyMatching(h, &m.GoogleCloudTranslation, state.GoogleCloudTranslation)
 	listattr.ModifyMatching(h, &m.GoogleMapsPlaces, state.GoogleMapsPlaces)
+	listattr.ModifyMatching(h, &m.GoogleCloudLogging, state.GoogleCloudLogging)
 	listattr.ModifyMatching(h, &m.HIBP, state.HIBP)
 	listattr.ModifyMatching(h, &m.HTTP, state.HTTP)
 	listattr.ModifyMatching(h, &m.HubSpot, state.HubSpot)

@@ -19,7 +19,7 @@ var AWSS3Attributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"auth_type":                stringattr.Required(stringvalidator.OneOf("credentials", "assumeRole")),
+	"auth_type":                stringattr.Default("credentials", stringvalidator.OneOf("credentials", "assumeRole")),
 	"access_key_id":            stringattr.SecretOptional(),
 	"secret_access_key":        stringattr.SecretOptional(),
 	"role_arn":                 stringattr.Default(""),
