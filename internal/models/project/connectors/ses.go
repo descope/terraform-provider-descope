@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var SASValidator = objattr.NewValidator[SESModel]("must have a valid configuration")
+var SESValidator = objattr.NewValidator[SESModel]("must have a valid configuration")
 
 var SESAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),

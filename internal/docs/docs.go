@@ -740,8 +740,11 @@ var docsSendGridAuthField = map[string]string{
 var docsSES = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"auth_type": "The authentication type to use.",
 	"access_key_id": "AWS Access key ID.",
 	"secret": "AWS Secret Access Key.",
+	"role_arn": "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id": "The external ID to use when assuming the role.",
 	"region": "AWS region to send requests to (e.g. `us-west-2`).",
 	"endpoint": "An optional endpoint URL (hostname only or fully qualified URI).",
 	"sender": "The sender details that should be displayed in the email message.",

@@ -56,7 +56,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"sardine":                    listattr.Default[SardineModel](SardineAttributes),
 	"segment":                    listattr.Default[SegmentModel](SegmentAttributes),
 	"sendgrid":                   listattr.Default[SendGridModel](SendGridAttributes),
-	"ses":                        listattr.Default[SESModel](SESAttributes),
+	"ses":                        listattr.Default[SESModel](SESAttributes, SESValidator),
 	"slack":                      listattr.Default[SlackModel](SlackAttributes),
 	"smartling":                  listattr.Default[SmartlingModel](SmartlingAttributes),
 	"smtp":                       listattr.Default[SMTPModel](SMTPAttributes),
