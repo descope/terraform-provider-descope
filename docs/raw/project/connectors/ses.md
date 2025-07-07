@@ -4,10 +4,19 @@ SES
 
 
 
+auth_type
+---------
+
+- Type: `string` (required)
+
+The authentication type to use.
+
+
+
 access_key_id
 -------------
 
-- Type: `string` (required)
+- Type: `secret` 
 
 AWS Access key ID.
 
@@ -16,9 +25,27 @@ AWS Access key ID.
 secret
 ------
 
-- Type: `secret` (required)
+- Type: `secret` 
 
 AWS Secret Access Key.
+
+
+
+role_arn
+--------
+
+- Type: `string` 
+
+The Amazon Resource Name (ARN) of the role to assume.
+
+
+
+external_id
+-----------
+
+- Type: `string` 
+
+The external ID to use when assuming the role.
 
 
 
