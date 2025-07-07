@@ -110,6 +110,11 @@
       "file": "googlemapsplaces",
       "struct": "GoogleMapsPlaces"
     },
+    "googlecloudlogging": {
+      "attribute": "google_cloud_logging",
+      "file": "googlecloudlogging",
+      "struct": "GoogleCloudLogging"
+    },
     "hibp": {
       "attribute": "hibp",
       "file": "hibp",
@@ -506,6 +511,10 @@
     "serviceAccountJSON": {
       "attribute": "service_account_json",
       "struct": "ServiceAccountJSON"
+    },
+    "serviceAccountKey": {
+      "attribute": "service_account_key",
+      "struct": "ServiceAccountKey"
     },
     "sessionToken": {
       "attribute": "session_token",

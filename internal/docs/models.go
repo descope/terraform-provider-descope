@@ -67,6 +67,7 @@ func InjectModels() {
 	inject(connectors.ForterAttributes, docsForter)
 	inject(connectors.GenericEmailGatewayAttributes, docsGenericEmailGateway)
 	inject(connectors.GenericSMSGatewayAttributes, docsGenericSMSGateway)
+	inject(connectors.GoogleCloudLoggingAttributes, docsGoogleCloudLogging)
 	inject(connectors.GoogleCloudTranslationAttributes, docsGoogleCloudTranslation)
 	inject(connectors.GoogleMapsPlacesAttributes, docsGoogleMapsPlaces)
 	inject(connectors.HIBPAttributes, docsHIBP)

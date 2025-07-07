@@ -352,6 +352,7 @@ var docsConnectors = map[string]string{
 	"google_cloud_translation": "Localize the language of your login and user journey screens with " +
 	                            "the Google Cloud Translation connector.",
 	"google_maps_places": "Get address autocompletions from Place Autocomplete Data API.",
+	"google_cloud_logging": "Stream logs and audit events with the Google Cloud Logging connector.",
 	"hibp": "Check if passwords have been previously exposed in data breaches with the Have I " +
 	        "Been Pwned connector.",
 	"http": "A general purpose HTTP client",
@@ -542,6 +543,19 @@ var docsGenericSMSGateway = map[string]string{
 	               "the provided signature",
 	"insecure": "Will ignore certificate errors raised by the client",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+}
+
+var docsGoogleCloudLogging = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"service_account_key": "A Service Account Key JSON file created from a service account on your Google " +
+	                       "Cloud project. This file is used to authenticate and authorize the connector to " +
+	                       "access Google Cloud Logging. The service account this key belongs to must have " +
+	                       "the appropriate permissions to write logs.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
 var docsGoogleCloudTranslation = map[string]string{
