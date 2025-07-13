@@ -20,7 +20,7 @@ func EnsureFlowIDs(m mapattr.Type[FlowModel], data map[string]any, key string, h
 			if valueID, _ := v["flowId"].(string); valueID != "" && valueID != flowID {
 				h.Warn("Possible flow mismatch", "The '%s' flow data specifies a different flowId '%s'. You can update the flow data to use the same flowId or ignore this warning to use the '%s' flowId.", flowID, valueID, flowID)
 			}
-			values["flowId"] = flowID
+			v["flowId"] = flowID
 		}
 	}
 }

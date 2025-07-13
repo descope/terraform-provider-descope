@@ -20,8 +20,8 @@ var OAuthValidator = objattr.NewValidator[OAuthModel]("must have a valid OAuth c
 
 var OAuthAttributes = map[string]schema.Attribute{
 	"disabled": boolattr.Default(false),
-	"system":   objattr.Optional[OAuthSystemProvidersModel](OAuthSystemProviderAttributes),
-	"custom":   mapattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"system":   objattr.Default[OAuthSystemProvidersModel](nil, OAuthSystemProviderAttributes),
+	"custom":   mapattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
 }
 
 type OAuthModel struct {
@@ -190,15 +190,15 @@ func ensureNoCustomProviderFields(h *helpers.Handler, field stringattr.Type, fie
 // System OAuth Providers
 
 var OAuthSystemProviderAttributes = map[string]schema.Attribute{
-	"apple":     objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
-	"discord":   objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
-	"facebook":  objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
-	"github":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
-	"gitlab":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
-	"google":    objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
-	"linkedin":  objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
-	"microsoft": objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
-	"slack":     objattr.Optional[OAuthProviderModel](OAuthProviderAttributes, OAuthProviderValidator),
+	"apple":     objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
+	"discord":   objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
+	"facebook":  objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
+	"github":    objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
+	"gitlab":    objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
+	"google":    objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
+	"linkedin":  objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
+	"microsoft": objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
+	"slack":     objattr.Default[OAuthProviderModel](nil, OAuthProviderAttributes, OAuthProviderValidator),
 }
 
 type OAuthSystemProvidersModel struct {

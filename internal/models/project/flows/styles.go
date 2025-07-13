@@ -39,7 +39,7 @@ func (m *StylesModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 // Computed Mapping
 
-func getStylesData(data stringattr.Type, h *helpers.Handler) map[string]any {
+func getStylesData(data stringattr.Type, _ *helpers.Handler) map[string]any {
 	m := map[string]any{}
 	if err := json.Unmarshal([]byte(data.ValueString()), &m); err != nil {
 		panic("Invalid styles data after valdiation: " + err.Error())

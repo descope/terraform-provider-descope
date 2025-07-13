@@ -26,10 +26,11 @@ var (
 func TestFlows(t *testing.T) {
 	p := testacc.Project(t)
 	testacc.Run(t,
+		// Styles
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"styles.data": testacc.AttributeIsSet,
+				"styles.data": testacc.AttributeIsNotSet,
 			}),
 		},
 		resource.TestStep{
@@ -52,6 +53,7 @@ func TestFlows(t *testing.T) {
 				"styles.data": testacc.AttributeMatchesJSON(basicStyle),
 			}),
 		},
+		// Flows
 		resource.TestStep{
 			Config: p.Config(`
 				flows = {
@@ -157,7 +159,7 @@ func TestFlows(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"flows.%": 2,
+				"flows.%": 0,
 			}),
 		},
 		resource.TestStep{
