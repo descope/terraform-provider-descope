@@ -16,7 +16,7 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.%": 51,
+				"connectors.%": 52,
 			}),
 		},
 		resource.TestStep{
@@ -654,6 +654,34 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"google_cloud_logging": [
+						{
+							name = "Test googlecloudlogging Connector"
+							description = "A description for the googlecloudlogging connector"
+    						service_account_key = "uz5iva7he6kss72nz"
+    						audit_enabled = true
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+    						troubleshoot_log_enabled = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.google_cloud_logging.#": 1,
+				"connectors.google_cloud_logging.0": map[string]any{
+					"id":                       testacc.AttributeHasPrefix("CI"),
+					"name":                     "Test googlecloudlogging Connector",
+					"description":              "A description for the googlecloudlogging connector",
+					"service_account_key":      "uz5iva7he6kss72nz",
+					"audit_enabled":            true,
+					"audit_filters.0.values":   []string{"kekpon4oj34w"},
+					"troubleshoot_log_enabled": true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"hibp": [
 						{
 							name = "Test hibp Connector"
@@ -947,6 +975,7 @@ func TestConnectors(t *testing.T) {
     						project_id = "yhw7b6yel"
     						site_key = "ikzbbly"
     						api_key = "mhvece"
+    						base_url = ""
     						override_assessment = true
     						assessment_score = 15
 						}
@@ -962,6 +991,7 @@ func TestConnectors(t *testing.T) {
 					"project_id":          "yhw7b6yel",
 					"site_key":            "ikzbbly",
 					"api_key":             "mhvece",
+					"base_url":            "",
 					"override_assessment": true,
 					"assessment_score":    15,
 				},
@@ -1354,7 +1384,7 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"connectors.%": 51,
+				"connectors.%": 52,
 			}),
 		},
 	)

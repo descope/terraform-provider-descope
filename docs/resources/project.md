@@ -807,6 +807,7 @@ Optional:
 
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
+- `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 
 
 <a id="nestedatt--authentication--totp"></a>
@@ -885,6 +886,7 @@ Optional:
 - `forter` (Attributes List) Leverage ML-based risk scores for fraud prevention with the Forter connector. (see [below for nested schema](#nestedatt--connectors--forter))
 - `generic_email_gateway` (Attributes List) Send emails using a generic Email gateway. (see [below for nested schema](#nestedatt--connectors--generic_email_gateway))
 - `generic_sms_gateway` (Attributes List) Send messages using a generic SMS gateway. (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway))
+- `google_cloud_logging` (Attributes List) Stream logs and audit events with the Google Cloud Logging connector. (see [below for nested schema](#nestedatt--connectors--google_cloud_logging))
 - `google_cloud_translation` (Attributes List) Localize the language of your login and user journey screens with the Google Cloud Translation connector. (see [below for nested schema](#nestedatt--connectors--google_cloud_translation))
 - `google_maps_places` (Attributes List) Get address autocompletions from Place Autocomplete Data API. (see [below for nested schema](#nestedatt--connectors--google_maps_places))
 - `hibp` (Attributes List) Check if passwords have been previously exposed in data breaches with the Have I Been Pwned connector. (see [below for nested schema](#nestedatt--connectors--hibp))
@@ -1018,7 +1020,6 @@ Required:
 
 Required:
 
-- `auth_type` (String) The authentication type to use.
 - `bucket` (String) The AWS S3 bucket. This bucket should already exist for the connector to work.
 - `name` (String) A custom name for your connector.
 - `region` (String) The AWS S3 region, e.g. `us-east-1`.
@@ -1028,6 +1029,7 @@ Optional:
 - `access_key_id` (String, Sensitive) The unique AWS access key ID.
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--aws_s3--audit_filters))
+- `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
 - `external_id` (String) The external ID to use when assuming the role.
 - `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
@@ -1461,6 +1463,36 @@ Required:
 
 
 
+<a id="nestedatt--connectors--google_cloud_logging"></a>
+### Nested Schema for `connectors.google_cloud_logging`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `service_account_key` (String, Sensitive) A Service Account Key JSON file created from a service account on your Google Cloud project. This file is used to authenticate and authorize the connector to access Google Cloud Logging. The service account this key belongs to must have the appropriate permissions to write logs.
+
+Optional:
+
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--google_cloud_logging--audit_filters))
+- `description` (String) A description of what your connector is used for.
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--google_cloud_logging--audit_filters"></a>
+### Nested Schema for `connectors.google_cloud_logging.audit_filters`
+
+Required:
+
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
+
+
+
 <a id="nestedatt--connectors--google_cloud_translation"></a>
 ### Nested Schema for `connectors.google_cloud_translation`
 
@@ -1751,6 +1783,7 @@ Required:
 Optional:
 
 - `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
+- `base_url` (String) Apply a custom url to the reCAPTCHA Enterprise scripts. This is useful when attempting to use reCAPTCHA globally. Defaults to https://www.google.com
 - `description` (String) A description of what your connector is used for.
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
@@ -1899,7 +1932,6 @@ Optional:
 
 Required:
 
-- `auth_type` (String) The authentication type to use.
 - `name` (String) A custom name for your connector.
 - `region` (String) AWS region to send requests to (e.g. `us-west-2`).
 - `sender` (Attributes) The sender details that should be displayed in the email message. (see [below for nested schema](#nestedatt--connectors--ses--sender))
@@ -1907,6 +1939,7 @@ Required:
 Optional:
 
 - `access_key_id` (String, Sensitive) AWS Access key ID.
+- `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
 - `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
 - `external_id` (String) The external ID to use when assuming the role.

@@ -93,16 +93,19 @@ func (f *Field) AttributeType() string {
 
 		if len(f.Options) > 0 {
 			values := []string{}
+			if !f.Required {
+				values = append(values, `""`)
+			}
 			for _, option := range f.Options {
 				values = append(values, fmt.Sprintf("%q", option.Value))
 			}
 			validator = fmt.Sprintf("stringvalidator.OneOf(%s)", strings.Join(values, ", "))
 
-			if f.Required {
-				return fmt.Sprintf(`stringattr.Required(%s)`, validator)
-			}
 			if v, ok := f.Initial.(string); ok {
 				return fmt.Sprintf(`stringattr.Default(%q, %s)`, v, validator)
+			}
+			if f.Required {
+				return fmt.Sprintf(`stringattr.Required(%s)`, validator)
 			}
 			return fmt.Sprintf(`stringattr.Default("", %s)`, validator)
 		}
