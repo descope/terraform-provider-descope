@@ -93,7 +93,7 @@ func (f *Field) AttributeType() string {
 
 		if len(f.Options) > 0 {
 			values := []string{}
-			if len(f.Options) > 0 && !f.Required {
+			if !f.Required {
 				values = append(values, `""`)
 			}
 			for _, option := range f.Options {
