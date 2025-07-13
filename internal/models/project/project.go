@@ -32,7 +32,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"applications":     objattr.Default(applications.ApplicationsDefault, applications.ApplicationsAttributes, applications.ApplicationsValidator),
 	"jwt_templates":    objattr.Default(jwttemplates.JWTTemplatesDefault, jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
 	"styles":           objattr.Optional[flows.StylesModel](flows.StylesAttributes, flows.StylesValidator),
-	"flows":            mapattr.Optional[flows.FlowModel](flows.FlowAttributes, flows.FlowsValidator),
+	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowsValidator),
 }
 
 type ProjectModel struct {
@@ -67,9 +67,8 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.Attributes, data, "attributes", h)
 	objattr.Get(m.JWTTemplates, data, "jwtTemplates", h)
 	objattr.Get(m.Styles, data, "styles", h)
-	if !m.Flows.IsNull() && !m.Flows.IsUnknown() {
-		data["flows"] = flows.Get(m.Flows, h)
-	}
+	mapattr.Get(m.Flows, data, "flows", h)
+	flows.EnsureFlowIDs(m.Flows, data, "flows", h)
 	return data
 }
 
@@ -91,7 +90,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
 	objattr.Set(&m.Styles, data, "styles", h)
 	if m.Flows.IsEmpty() {
-		flows.Set(&m.Flows, data, "flows", h)
+		mapattr.Set(&m.Flows, data, "flows", h)
 	}
 }
 

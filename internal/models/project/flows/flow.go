@@ -22,6 +22,10 @@ func (m *FlowModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *FlowModel) SetValues(h *helpers.Handler, data map[string]any) {
+	if m.Data.ValueString() != "" {
+		return // We do not currently update the flow data if it's already set because it might be different after apply
+	}
+
 	b, err := json.Marshal(data)
 	if err != nil {
 		h.Error("Invalid flow data", "Failed to parse JSON: %s", err.Error())
