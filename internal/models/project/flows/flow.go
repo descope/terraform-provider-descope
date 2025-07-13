@@ -9,7 +9,7 @@ import (
 )
 
 var FlowAttributes = map[string]schema.Attribute{
-	"data": stringattr.Required(),
+	"data": stringattr.Required(stringattr.JSONValidator("metadata", "contents")),
 }
 
 type FlowModel struct {
@@ -28,7 +28,7 @@ func (m *FlowModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 	b, err := json.Marshal(data)
 	if err != nil {
-		h.Error("Invalid flow data", "Failed to parse JSON: %s", err.Error())
+		h.Error("Unexpected flow data", "Failed to parse JSON: %s", err.Error())
 		return
 	}
 	m.Data = stringattr.Value(string(b))
@@ -37,17 +37,7 @@ func (m *FlowModel) SetValues(h *helpers.Handler, data map[string]any) {
 func (m *FlowModel) Check(h *helpers.Handler) {
 	data := getFlowData(m.Data, h)
 
-	for _, field := range []string{"metadata", "contents"} {
-		if data[field] == nil {
-			h.Error("Invalid flow data", "Expected a JSON object with a %s field", field)
-		}
-	}
-
-	references, ok := data["references"].(map[string]any)
-	if !ok {
-		return
-	}
-
+	references, _ := data["references"].(map[string]any)
 	if connectors, ok := references["connectors"].(map[string]any); ok {
 		for name := range connectors {
 			if ref := h.Refs.Get(helpers.ConnectorReferenceKey, name); ref == nil {
@@ -61,7 +51,7 @@ func (m *FlowModel) Check(h *helpers.Handler) {
 func getFlowData(data stringattr.Type, h *helpers.Handler) map[string]any {
 	m := map[string]any{}
 	if err := json.Unmarshal([]byte(data.ValueString()), &m); err != nil {
-		h.Error("Invalid flow data", "Failed to parse JSON: %s", err.Error())
+		panic("Invalid flow data after valdiation: " + err.Error())
 	}
 	return m
 }
