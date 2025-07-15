@@ -88,7 +88,7 @@ func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, 
 }
 
 func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if o.IsNull() {
+	if !helpers.ShouldSetAttributeValue(h.Ctx, o) {
 		return
 	}
 
@@ -103,7 +103,7 @@ func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string,
 	}
 
 	var value M
-	if o.IsUnknown() {
+	if o.IsNull() || o.IsUnknown() {
 		value = new(T)
 	} else {
 		value = helpers.Require(o.ToObject(h.Ctx))

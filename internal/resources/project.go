@@ -5,6 +5,7 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/entities"
 	"github.com/descope/terraform-provider-descope/internal/infra"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -12,7 +13,6 @@ import (
 
 const (
 	projectEntity = "project"
-	importKey     = "descopeImport"
 )
 
 var (
@@ -87,6 +87,7 @@ func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest
 
 func (r *projectResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	tflog.Info(ctx, "Reading project resource")
+	ctx = helpers.ContextWithImportState(ctx, req, resp)
 
 	entity := entities.NewProjectEntity(ctx, req.State, &resp.Diagnostics)
 	if entity.Diagnostics.HasError() {
@@ -163,7 +164,7 @@ func (r *projectResource) Delete(ctx context.Context, req resource.DeleteRequest
 }
 
 func (r *projectResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	diags := resp.Private.SetKey(ctx, importKey, []byte(`{}`))
-	resp.Diagnostics.Append(diags...)
-	resp.Diagnostics.Append(resp.State.SetAttribute(ctx, path.Root("id"), req.ID)...) // XXX switch back to passthrough
+	tflog.Info(ctx, "Importing project resource")
+	helpers.MarkImportState(ctx, resp)
+	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
 }

@@ -105,7 +105,7 @@ func Get[T any, M helpers.Model[T]](m Type[T], data map[string]any, key string, 
 }
 
 func Set[T any, M helpers.Model[T]](m *Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if m.IsNull() {
+	if !helpers.ShouldSetAttributeValue(h.Ctx, m) {
 		return
 	}
 
