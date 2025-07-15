@@ -51,7 +51,7 @@ func (m *FlowModel) Check(h *helpers.Handler) {
 func getFlowData(data stringattr.Type, _ *helpers.Handler) map[string]any {
 	m := map[string]any{}
 	if err := json.Unmarshal([]byte(data.ValueString()), &m); err != nil {
-		panic("Invalid flow data after valdiation: " + err.Error())
+		panic("Invalid flow data after validation: " + err.Error())
 	}
 	return m
 }
