@@ -16,6 +16,14 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
+				"connectors": testacc.AttributeIsNotSet,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {}
+			`),
+			Check: p.Check(map[string]any{
 				"connectors.%": 52,
 			}),
 		},
@@ -1382,7 +1390,9 @@ func TestConnectors(t *testing.T) {
 			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
 		},
 		resource.TestStep{
-			Config: p.Config(),
+			Config: p.Config(`
+				connectors = {}
+			`),
 			Check: p.Check(map[string]any{
 				"connectors.%": 52,
 			}),
