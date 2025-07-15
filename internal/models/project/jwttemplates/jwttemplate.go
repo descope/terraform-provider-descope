@@ -47,7 +47,7 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 	// convert template JSON string to map
 	template := map[string]any{}
 	if err := json.Unmarshal([]byte(m.Template.ValueString()), &template); err != nil {
-		panic("Invalid template data after valdiation: " + err.Error())
+		panic("Invalid template data after validation: " + err.Error())
 	}
 	data["template"] = template
 
