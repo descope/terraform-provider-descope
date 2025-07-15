@@ -51,16 +51,6 @@ Localize the language of your login and user journey screens with the Amazon Tra
 
 
 
-clear
------
-
-- Type: `list` of `connectors.Clear` 
-
-Add sophisticated identity verification processes to your user journey with the
-CLEAR Verified connector.
-
-
-
 cybersixgill
 ------------
 

@@ -51,7 +51,6 @@ func InjectModels() {
 	inject(connectors.AuditWebhookAttributes, docsAuditWebhook)
 	inject(connectors.AWSS3Attributes, docsAWSS3)
 	inject(connectors.AWSTranslateAttributes, docsAWSTranslate)
-	inject(connectors.ClearAttributes, docsClear)
 	inject(connectors.ConnectorsAttributes, docsConnectors)
 	inject(connectors.CybersixgillAttributes, docsCybersixgill)
 	inject(connectors.DatadogAttributes, docsDatadog)

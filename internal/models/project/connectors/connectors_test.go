@@ -24,7 +24,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 52,
+				"connectors.%": 51,
 			}),
 		},
 		resource.TestStep{
@@ -176,30 +176,6 @@ func TestConnectors(t *testing.T) {
 					"secret_access_key": "xiyuadzk4w64hog",
 					"session_token":     "wnx4upgg3mft",
 					"region":            "us-east-1",
-				},
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				connectors = {
-					"clear": [
-						{
-							name = "Test clear Connector"
-							description = "A description for the clear connector"
-    						project_id = "yhw7b6yel"
-    						api_key = "mhvece"
-						}
-					]
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"connectors.clear.#": 1,
-				"connectors.clear.0": map[string]any{
-					"id":          testacc.AttributeHasPrefix("CI"),
-					"name":        "Test clear Connector",
-					"description": "A description for the clear connector",
-					"project_id":  "yhw7b6yel",
-					"api_key":     "mhvece",
 				},
 			}),
 		},
@@ -1394,7 +1370,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 52,
+				"connectors.%": 51,
 			}),
 		},
 	)

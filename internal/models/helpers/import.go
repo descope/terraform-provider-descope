@@ -8,21 +8,23 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-const importKey = "descopeImport"
+type contextKey string
+
+const importKey contextKey = "descopeImport"
 
 // Sets a private key in the response to indicate that the resource is being imported.
 func MarkImportState(ctx context.Context, resp *resource.ImportStateResponse) {
 	tflog.Info(ctx, "Setting import key for resource")
-	d := resp.Private.SetKey(ctx, importKey, []byte(`{}`))
+	d := resp.Private.SetKey(ctx, string(importKey), []byte(`{}`))
 	resp.Diagnostics.Append(d...)
 }
 
 // Used in read operations to check if the import key is set in the state and mark the context accordingly.
 func ContextWithImportState(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) context.Context {
-	if value, _ := req.Private.GetKey(ctx, importKey); value != nil {
+	if value, _ := req.Private.GetKey(ctx, string(importKey)); value != nil {
 		tflog.Info(ctx, "Unsetting import key for reading resource")
 		ctx = context.WithValue(ctx, importKey, true)
-		d := resp.Private.SetKey(ctx, importKey, nil)
+		d := resp.Private.SetKey(ctx, string(importKey), nil)
 		resp.Diagnostics.Append(d...)
 	}
 	return ctx
