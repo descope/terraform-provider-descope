@@ -81,7 +81,7 @@ func (v jsonValidator) ValidateString(ctx context.Context, req validator.StringR
 
 	for _, field := range v.required {
 		if _, ok := m[field]; !ok {
-			resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Invalid Attribute Value", fmt.Sprintf("Attribute %s is expected to be valid JSON with a '%s' field", req.Path, field)))
+			resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Missing Required Field", fmt.Sprintf("The JSON object at attribute %s must contain a '%s' field", req.Path, field)))
 			return
 		}
 	}
