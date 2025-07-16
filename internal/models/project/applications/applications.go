@@ -19,11 +19,6 @@ type ApplicationsModel struct {
 	SAMLApplications listattr.Type[SAMLModel] `tfsdk:"saml_applications"`
 }
 
-var ApplicationsDefault = &ApplicationsModel{
-	OIDCApplications: listattr.Empty[OIDCModel](),
-	SAMLApplications: listattr.Empty[SAMLModel](),
-}
-
 func (m *ApplicationsModel) Values(h *helpers.Handler) map[string]any {
 	m.Check(h)
 	data := map[string]any{}

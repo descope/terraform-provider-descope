@@ -313,13 +313,6 @@ var docsAWSTranslate = map[string]string{
 	"region": "The AWS region to which this client will send requests. (e.g. us-east-1.)",
 }
 
-var docsClear = map[string]string{
-	"name": "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"project_id": "Your CLEAR project ID.",
-	"api_key": "Your CLEAR API key.",
-}
-
 var docsConnectors = map[string]string{
 	"abuseipdb": "Utilize IP threat intelligence to block malicious login attempts with the " +
 	             "AbuseIPDB connector.",
@@ -328,8 +321,6 @@ var docsConnectors = map[string]string{
 	"audit_webhook": "Send audit events to a custom webhook.",
 	"aws_s3": "Stream authentication audit logs with the Amazon S3 connector.",
 	"aws_translate": "Localize the language of your login and user journey screens with the Amazon Translate connector.",
-	"clear": "Add sophisticated identity verification processes to your user journey with the " +
-	         "CLEAR Verified connector.",
 	"cybersixgill": "Utilize threat intelligence to block malicious login attempts or check leaks " +
 	                "with the Cybersixgill connector.",
 	"datadog": "Stream authentication audit logs with the Datadog connector.",

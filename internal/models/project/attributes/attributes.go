@@ -16,11 +16,6 @@ var AttributesAttributes = map[string]schema.Attribute{
 	"user":   listattr.Default[UserAttributeModel](UserAttributeAttributes),
 }
 
-var AttributesDefault = &AttributesModel{
-	Tenant: listattr.Empty[TenantAttributeModel](),
-	User:   listattr.Empty[UserAttributeModel](),
-}
-
 type AttributesModel struct {
 	Tenant listattr.Type[TenantAttributeModel] `tfsdk:"tenant"`
 	User   listattr.Type[UserAttributeModel]   `tfsdk:"user"`
@@ -65,17 +60,8 @@ func (m *TenantAttributeModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.Authorization, data, helpers.RootKey, h)
 	stringattr.Get(m.Name, data, "displayName")
 	stringattr.Get(m.Type, data, "type")
+	getOptions(m.SelectOptions, data, "options", h)
 	data["name"] = strcase.ToLowerCamel(m.Name.ValueString())
-
-	options := []map[string]any{}
-	for option := range strsetattr.Iterator(m.SelectOptions, h) {
-		options = append(options, map[string]any{
-			"label": option,
-			"value": option,
-		})
-	}
-	data["options"] = options
-
 	return data
 }
 
@@ -83,18 +69,7 @@ func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any
 	objattr.Set(&m.Authorization, data, helpers.RootKey, h)
 	stringattr.Set(&m.Name, data, "displayName")
 	stringattr.Set(&m.Type, data, "type")
-
-	options := []string{}
-	if vs, ok := data["options"].([]any); ok {
-		for _, v := range vs {
-			if os, ok := v.(map[string]any); ok {
-				if option, ok := os["label"].(string); ok {
-					options = append(options, option)
-				}
-			}
-		}
-	}
-	m.SelectOptions = strsetattr.Value(options)
+	setOptions(&m.SelectOptions, data, "options", h)
 }
 
 // Widget Authorization
@@ -138,16 +113,8 @@ func (m *UserAttributeModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.WidgetAuthorization, data, helpers.RootKey, h)
 	stringattr.Get(m.Name, data, "displayName")
 	stringattr.Get(m.Type, data, "type")
+	getOptions(m.SelectOptions, data, "options", h)
 	data["name"] = strcase.ToLowerCamel(m.Name.ValueString())
-
-	options := []map[string]any{}
-	for option := range strsetattr.Iterator(m.SelectOptions, h) {
-		options = append(options, map[string]any{
-			"label": option,
-			"value": option,
-		})
-	}
-	data["options"] = options
 	return data
 }
 
@@ -155,18 +122,7 @@ func (m *UserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) 
 	objattr.Set(&m.WidgetAuthorization, data, helpers.RootKey, h)
 	stringattr.Set(&m.Name, data, "displayName")
 	stringattr.Set(&m.Type, data, "type")
-
-	options := []string{}
-	if vs, ok := data["options"].([]any); ok {
-		for _, v := range vs {
-			if os, ok := v.(map[string]any); ok {
-				if option, ok := os["label"].(string); ok {
-					options = append(options, option)
-				}
-			}
-		}
-	}
-	m.SelectOptions = strsetattr.Value(options)
+	setOptions(&m.SelectOptions, data, "options", h)
 }
 
 // Widget Authorization
@@ -191,4 +147,28 @@ func (m *UserAttributeAuthorizationModel) Values(h *helpers.Handler) map[string]
 func (m *UserAttributeAuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	strsetattr.Set(&m.ViewPermissions, data, "viewPermissions", h)
 	strsetattr.Set(&m.EditPermissions, data, "editPermissions", h)
+}
+
+// Shared
+
+func getOptions(s strsetattr.Type, data map[string]any, key string, h *helpers.Handler) {
+	options := []map[string]any{}
+	for option := range strsetattr.Iterator(s, h) {
+		options = append(options, map[string]any{"label": option, "value": option})
+	}
+	data[key] = options
+}
+
+func setOptions(s *strsetattr.Type, data map[string]any, key string, _ *helpers.Handler) {
+	result := []string{}
+	if vs, ok := data[key].([]any); ok {
+		for _, v := range vs {
+			if os, ok := v.(map[string]any); ok {
+				if option, ok := os["label"].(string); ok {
+					result = append(result, option)
+				}
+			}
+		}
+	}
+	*s = strsetattr.Value(result)
 }

@@ -25,14 +25,14 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"tags":             strsetattr.Optional(stringvalidator.LengthBetween(1, 50)),
 	"project_settings": objattr.Optional[settings.SettingsModel](settings.SettingsAttributes, settings.SettingsValidator),
 	"invite_settings":  objattr.Default(settings.InviteSettingsDefault, settings.InviteSettingsAttributes),
-	"authentication":   objattr.Optional[authentication.AuthenticationModel](authentication.AuthenticationAttributes),
-	"authorization":    objattr.Optional[authorization.AuthorizationModel](authorization.AuthorizationAttributes, authorization.AuthorizationModifier, authorization.AuthorizationValidator),
-	"attributes":       objattr.Default(attributes.AttributesDefault, attributes.AttributesAttributes),
-	"connectors":       objattr.Optional[connectors.ConnectorsModel](connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
-	"applications":     objattr.Default(applications.ApplicationsDefault, applications.ApplicationsAttributes, applications.ApplicationsValidator),
-	"jwt_templates":    objattr.Default(jwttemplates.JWTTemplatesDefault, jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
-	"styles":           objattr.Optional[flows.StylesModel](flows.StylesAttributes, flows.StylesValidator),
-	"flows":            mapattr.Optional[flows.FlowModel](flows.FlowAttributes, flows.FlowsValidator),
+	"authentication":   objattr.Default[authentication.AuthenticationModel](nil, authentication.AuthenticationAttributes),
+	"authorization":    objattr.Default[authorization.AuthorizationModel](nil, authorization.AuthorizationAttributes, authorization.AuthorizationModifier, authorization.AuthorizationValidator),
+	"attributes":       objattr.Default[attributes.AttributesModel](nil, attributes.AttributesAttributes),
+	"connectors":       objattr.Default[connectors.ConnectorsModel](nil, connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
+	"applications":     objattr.Default[applications.ApplicationsModel](nil, applications.ApplicationsAttributes, applications.ApplicationsValidator),
+	"jwt_templates":    objattr.Default[jwttemplates.JWTTemplatesModel](nil, jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
+	"styles":           objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
+	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
 }
 
 type ProjectModel struct {
@@ -67,9 +67,8 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.Attributes, data, "attributes", h)
 	objattr.Get(m.JWTTemplates, data, "jwtTemplates", h)
 	objattr.Get(m.Styles, data, "styles", h)
-	if !m.Flows.IsNull() && !m.Flows.IsUnknown() {
-		data["flows"] = flows.Get(m.Flows, h)
-	}
+	mapattr.Get(m.Flows, data, "flows", h)
+	flows.EnsureFlowIDs(m.Flows, data, "flows", h)
 	return data
 }
 
@@ -91,7 +90,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
 	objattr.Set(&m.Styles, data, "styles", h)
 	if m.Flows.IsEmpty() {
-		flows.Set(&m.Flows, data, "flows", h)
+		mapattr.Set(&m.Flows, data, "flows", h)
 	}
 }
 

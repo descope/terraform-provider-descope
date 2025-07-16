@@ -871,7 +871,6 @@ Optional:
 - `audit_webhook` (Attributes List) Send audit events to a custom webhook. (see [below for nested schema](#nestedatt--connectors--audit_webhook))
 - `aws_s3` (Attributes List) Stream authentication audit logs with the Amazon S3 connector. (see [below for nested schema](#nestedatt--connectors--aws_s3))
 - `aws_translate` (Attributes List) Localize the language of your login and user journey screens with the Amazon Translate connector. (see [below for nested schema](#nestedatt--connectors--aws_translate))
-- `clear` (Attributes List) Add sophisticated identity verification processes to your user journey with the CLEAR Verified connector. (see [below for nested schema](#nestedatt--connectors--clear))
 - `cybersixgill` (Attributes List) Utilize threat intelligence to block malicious login attempts or check leaks with the Cybersixgill connector. (see [below for nested schema](#nestedatt--connectors--cybersixgill))
 - `datadog` (Attributes List) Stream authentication audit logs with the Datadog connector. (see [below for nested schema](#nestedatt--connectors--datadog))
 - `devrev_grow` (Attributes List) DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto an AI-native platform to follow the journey of a visitor to a lead, to a contact, and then to a user - to create a champion, not a churned user. (see [below for nested schema](#nestedatt--connectors--devrev_grow))
@@ -1065,24 +1064,6 @@ Optional:
 
 - `description` (String) A description of what your connector is used for.
 - `session_token` (String, Sensitive) (Optional) A security or session token to use with these credentials. Usually present for temporary credentials.
-
-Read-Only:
-
-- `id` (String)
-
-
-<a id="nestedatt--connectors--clear"></a>
-### Nested Schema for `connectors.clear`
-
-Required:
-
-- `api_key` (String, Sensitive) Your CLEAR API key.
-- `name` (String) A custom name for your connector.
-- `project_id` (String) Your CLEAR project ID.
-
-Optional:
-
-- `description` (String) A description of what your connector is used for.
 
 Read-Only:
 

@@ -7,15 +7,15 @@ import (
 )
 
 var AuthenticationAttributes = map[string]schema.Attribute{
-	"otp":            objattr.Optional[OTPModel](OTPAttributes),
-	"magic_link":     objattr.Optional[MagicLinkModel](MagicLinkAttributes),
-	"enchanted_link": objattr.Optional[EnchantedLinkModel](EnchantedLinkAttributes),
-	"embedded_link":  objattr.Optional[EmbeddedLinkModel](EmbeddedLinkAttributes),
-	"password":       objattr.Optional[PasswordModel](PasswordAttributes),
-	"oauth":          objattr.Optional[OAuthModel](OAuthAttributes, OAuthValidator),
-	"sso":            objattr.Optional[SSOModel](SSOAttributes),
-	"totp":           objattr.Optional[TOTPModel](TOTPAttributes),
-	"passkeys":       objattr.Optional[PasskeysModel](PasskeysAttributes),
+	"otp":            objattr.Default[OTPModel](nil, OTPAttributes),
+	"magic_link":     objattr.Default[MagicLinkModel](nil, MagicLinkAttributes),
+	"enchanted_link": objattr.Default[EnchantedLinkModel](nil, EnchantedLinkAttributes),
+	"embedded_link":  objattr.Default[EmbeddedLinkModel](nil, EmbeddedLinkAttributes),
+	"password":       objattr.Default[PasswordModel](nil, PasswordAttributes),
+	"oauth":          objattr.Default[OAuthModel](nil, OAuthAttributes, OAuthValidator),
+	"sso":            objattr.Default[SSOModel](nil, SSOAttributes),
+	"totp":           objattr.Default[TOTPModel](nil, TOTPAttributes),
+	"passkeys":       objattr.Default[PasskeysModel](nil, PasskeysAttributes),
 }
 
 type AuthenticationModel struct {

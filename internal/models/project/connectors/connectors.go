@@ -22,7 +22,6 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"audit_webhook":              listattr.Default[AuditWebhookModel](AuditWebhookAttributes),
 	"aws_s3":                     listattr.Default[AWSS3Model](AWSS3Attributes, AWSS3Validator),
 	"aws_translate":              listattr.Default[AWSTranslateModel](AWSTranslateAttributes),
-	"clear":                      listattr.Default[ClearModel](ClearAttributes),
 	"cybersixgill":               listattr.Default[CybersixgillModel](CybersixgillAttributes),
 	"datadog":                    listattr.Default[DatadogModel](DatadogAttributes, DatadogValidator),
 	"devrev_grow":                listattr.Default[DevRevGrowModel](DevRevGrowAttributes),
@@ -77,7 +76,6 @@ type ConnectorsModel struct {
 	AuditWebhook             listattr.Type[AuditWebhookModel]             `tfsdk:"audit_webhook"`
 	AWSS3                    listattr.Type[AWSS3Model]                    `tfsdk:"aws_s3"`
 	AWSTranslate             listattr.Type[AWSTranslateModel]             `tfsdk:"aws_translate"`
-	Clear                    listattr.Type[ClearModel]                    `tfsdk:"clear"`
 	Cybersixgill             listattr.Type[CybersixgillModel]             `tfsdk:"cybersixgill"`
 	Datadog                  listattr.Type[DatadogModel]                  `tfsdk:"datadog"`
 	DevRevGrow               listattr.Type[DevRevGrowModel]               `tfsdk:"devrev_grow"`
@@ -133,7 +131,6 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.AuditWebhook, data, "audit-webhook", h)
 	listattr.Get(m.AWSS3, data, "aws-s3", h)
 	listattr.Get(m.AWSTranslate, data, "aws-translate", h)
-	listattr.Get(m.Clear, data, "clear", h)
 	listattr.Get(m.Cybersixgill, data, "cybersixgill", h)
 	listattr.Get(m.Datadog, data, "datadog", h)
 	listattr.Get(m.DevRevGrow, data, "devrev-grow", h)
@@ -189,7 +186,6 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatching(&m.AuditWebhook, data, "audit-webhook", h)
 	listattr.SetMatching(&m.AWSS3, data, "aws-s3", h)
 	listattr.SetMatching(&m.AWSTranslate, data, "aws-translate", h)
-	listattr.SetMatching(&m.Clear, data, "clear", h)
 	listattr.SetMatching(&m.Cybersixgill, data, "cybersixgill", h)
 	listattr.SetMatching(&m.Datadog, data, "datadog", h)
 	listattr.SetMatching(&m.DevRevGrow, data, "devrev-grow", h)
@@ -244,7 +240,6 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "audit-webhook", m.AuditWebhook)
 	addConnectorReferences(h, "aws-s3", m.AWSS3)
 	addConnectorReferences(h, "aws-translate", m.AWSTranslate)
-	addConnectorReferences(h, "clear", m.Clear)
 	addConnectorReferences(h, "cybersixgill", m.Cybersixgill)
 	addConnectorReferences(h, "datadog", m.Datadog)
 	addConnectorReferences(h, "devrev-grow", m.DevRevGrow)
@@ -300,7 +295,6 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.AuditWebhook)
 	addConnectorNames(h, names, m.AWSS3)
 	addConnectorNames(h, names, m.AWSTranslate)
-	addConnectorNames(h, names, m.Clear)
 	addConnectorNames(h, names, m.Cybersixgill)
 	addConnectorNames(h, names, m.Datadog)
 	addConnectorNames(h, names, m.DevRevGrow)
@@ -360,7 +354,6 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatching(h, &m.AuditWebhook, state.AuditWebhook)
 	listattr.ModifyMatching(h, &m.AWSS3, state.AWSS3)
 	listattr.ModifyMatching(h, &m.AWSTranslate, state.AWSTranslate)
-	listattr.ModifyMatching(h, &m.Clear, state.Clear)
 	listattr.ModifyMatching(h, &m.Cybersixgill, state.Cybersixgill)
 	listattr.ModifyMatching(h, &m.Datadog, state.Datadog)
 	listattr.ModifyMatching(h, &m.DevRevGrow, state.DevRevGrow)

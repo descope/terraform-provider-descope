@@ -14,11 +14,6 @@ var JWTTemplatesAttributes = map[string]schema.Attribute{
 	"access_key_templates": listattr.Default[JWTTemplateModel](JWTTemplateAttributes),
 }
 
-var JWTTemplatesDefault = &JWTTemplatesModel{
-	UserTemplates:      listattr.Empty[JWTTemplateModel](),
-	AccessKeyTemplates: listattr.Empty[JWTTemplateModel](),
-}
-
 type JWTTemplatesModel struct {
 	UserTemplates      listattr.Type[JWTTemplateModel] `tfsdk:"user_templates"`
 	AccessKeyTemplates listattr.Type[JWTTemplateModel] `tfsdk:"access_key_templates"`

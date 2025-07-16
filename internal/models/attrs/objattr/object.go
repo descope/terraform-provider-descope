@@ -88,6 +88,10 @@ func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, 
 }
 
 func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string, h *helpers.Handler) {
+	if !helpers.ShouldSetAttributeValue(h.Ctx, o) {
+		return
+	}
+
 	var m map[string]any
 	if key == helpers.RootKey {
 		m = data

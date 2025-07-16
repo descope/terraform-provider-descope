@@ -19,7 +19,7 @@ var JWTTemplateAttributes = map[string]schema.Attribute{
 	"auto_tenant_claim":  boolattr.Default(false),
 	"conformance_issuer": boolattr.Default(false),
 	"enforce_issuer":     boolattr.Default(false),
-	"template":           stringattr.Required(),
+	"template":           stringattr.Required(stringattr.JSONValidator()),
 }
 
 type JWTTemplateModel struct {
@@ -47,7 +47,7 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 	// convert template JSON string to map
 	template := map[string]any{}
 	if err := json.Unmarshal([]byte(m.Template.ValueString()), &template); err != nil {
-		h.Invalid("Expected a valid JSON string for the template attribute")
+		panic("Invalid template data after validation: " + err.Error())
 	}
 	data["template"] = template
 
@@ -74,6 +74,7 @@ func (m *JWTTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ConformanceIssuer, data, "conformanceIssuer")
 	boolattr.Set(&m.EnforceIssuer, data, "enforceIssuer")
 
+	// We do not currently update the template data if it's already set because it might be different after apply
 	if m.Template.ValueString() == "" {
 		template := "{}"
 		if t, ok := data["template"].(map[string]any); ok {

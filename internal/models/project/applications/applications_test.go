@@ -15,6 +15,15 @@ func TestApplications(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
+				"applications.%": 0,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+				}
+			`),
+			Check: p.Check(map[string]any{
 				"applications.%": 2,
 			}),
 		},

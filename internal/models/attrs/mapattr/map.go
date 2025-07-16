@@ -26,6 +26,9 @@ func Empty[T any]() Type[T] {
 }
 
 func valueOf[T any](ctx context.Context, value map[string]*T) Type[T] {
+	if value == nil {
+		return maptype.NewNullValue[T](ctx)
+	}
 	return helpers.Require(maptype.NewValue(ctx, value))
 }
 
@@ -76,7 +79,13 @@ func Default[T any](values map[string]*T, attributes map[string]schema.Attribute
 }
 
 func Get[T any, M helpers.Model[T]](m Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if m.IsNull() || m.IsUnknown() {
+	if m.IsUnknown() {
+		return
+	}
+	if m.IsNull() {
+		if key != helpers.RootKey {
+			data[key] = nil
+		}
 		return
 	}
 
@@ -96,6 +105,10 @@ func Get[T any, M helpers.Model[T]](m Type[T], data map[string]any, key string, 
 }
 
 func Set[T any, M helpers.Model[T]](m *Type[T], data map[string]any, key string, h *helpers.Handler) {
+	if !helpers.ShouldSetAttributeValue(h.Ctx, m) {
+		return
+	}
+
 	values := data
 	if key != helpers.RootKey {
 		values, _ = data[key].(map[string]any)
