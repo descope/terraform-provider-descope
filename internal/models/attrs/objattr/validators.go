@@ -5,6 +5,7 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 func NewValidator[T any, M validatableModel[T]](description string) validator.Object {
@@ -33,7 +34,8 @@ func (v *objectValidator[T, M]) MarkdownDescription(ctx context.Context) string 
 }
 
 func (v *objectValidator[T, M]) ValidateObject(ctx context.Context, req validator.ObjectRequest, resp *validator.ObjectResponse) {
-	if req.ConfigValue.IsNull() {
+	tflog.Debug(ctx, "Validating object", map[string]any{"path": req.Path.String()})
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
 
