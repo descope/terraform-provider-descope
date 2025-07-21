@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 )
 
-var FlowIDValidator = mapvalidator.KeysAre(stringattr.FlowIDValidator)
+var FlowIDValidator = mapvalidator.KeysAre(stringattr.MachineIDValidator)
 
 func EnsureFlowIDs(m mapattr.Type[FlowModel], data map[string]any, key string, h *helpers.Handler) {
 	values := data

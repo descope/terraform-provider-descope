@@ -30,48 +30,53 @@ func valueOf[T any](ctx context.Context, values []*T) Type[T] {
 }
 
 func Required[T any](attributes map[string]schema.Attribute, extras ...any) schema.ListNestedAttribute {
-	listValidators, objectValidators := parseExtras(extras)
+	listValidators, objectValidators, listModifers, objectModifiers := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
-		Attributes: attributes,
-		Validators: objectValidators,
+		Attributes:    attributes,
+		Validators:    objectValidators,
+		PlanModifiers: objectModifiers,
 	}
 	return schema.ListNestedAttribute{
-		Required:     true,
-		NestedObject: nested,
-		CustomType:   listtype.NewType[T](context.Background()),
-		Validators:   listValidators,
+		Required:      true,
+		NestedObject:  nested,
+		CustomType:    listtype.NewType[T](context.Background()),
+		Validators:    listValidators,
+		PlanModifiers: listModifers,
 	}
 }
 
 func Optional[T any](attributes map[string]schema.Attribute, extras ...any) schema.ListNestedAttribute {
-	listValidators, objectValidators := parseExtras(extras)
+	listValidators, objectValidators, listModifers, objectModifiers := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
-		Attributes: attributes,
-		Validators: objectValidators,
+		Attributes:    attributes,
+		Validators:    objectValidators,
+		PlanModifiers: objectModifiers,
 	}
 	return schema.ListNestedAttribute{
 		Optional:      true,
 		Computed:      true,
 		NestedObject:  nested,
 		CustomType:    listtype.NewType[T](context.Background()),
-		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
 		Validators:    listValidators,
+		PlanModifiers: append([]planmodifier.List{listplanmodifier.UseStateForUnknown()}, listModifers...),
 	}
 }
 
 func Default[T any](attributes map[string]schema.Attribute, extras ...any) schema.ListNestedAttribute {
-	listValidators, objectValidators := parseExtras(extras)
+	listValidators, objectValidators, listModifers, objectModifiers := parseExtras(extras)
 	nested := schema.NestedAttributeObject{
-		Attributes: attributes,
-		Validators: objectValidators,
+		Attributes:    attributes,
+		Validators:    objectValidators,
+		PlanModifiers: objectModifiers,
 	}
 	return schema.ListNestedAttribute{
-		Optional:     true,
-		Computed:     true,
-		NestedObject: nested,
-		CustomType:   listtype.NewType[T](context.Background()),
-		Default:      listdefault.StaticValue(Empty[T]().ListValue),
-		Validators:   listValidators,
+		Optional:      true,
+		Computed:      true,
+		NestedObject:  nested,
+		CustomType:    listtype.NewType[T](context.Background()),
+		Default:       listdefault.StaticValue(Empty[T]().ListValue),
+		Validators:    listValidators,
+		PlanModifiers: listModifers,
 	}
 }
 
@@ -176,19 +181,19 @@ func MutatingIterator[T any](l *Type[T], h *helpers.Handler) iter.Seq[*T] {
 	}
 }
 
-func parseExtras(extras []any) (listValidators []validator.List, objectValidators []validator.Object) {
+func parseExtras(extras []any) (listValidators []validator.List, objectValidators []validator.Object, listModifiers []planmodifier.List, objectModifiers []planmodifier.Object) {
 	for _, e := range extras {
-		matched := false
-		if v, ok := e.(validator.List); ok {
-			matched = true
+		switch v := e.(type) {
+		case validator.List:
 			listValidators = append(listValidators, v)
-		}
-		if v, ok := e.(validator.Object); ok {
-			matched = true
+		case validator.Object:
 			objectValidators = append(objectValidators, v)
-		}
-		if !matched {
-			panic(fmt.Sprintf("unexpected extra value of type %T in attribute", e))
+		case planmodifier.List:
+			listModifiers = append(listModifiers, v)
+		case planmodifier.Object:
+			objectModifiers = append(objectModifiers, v)
+		default:
+			panic(fmt.Sprintf("unexpected extra value of type %T in list attribute", e))
 		}
 	}
 	return
