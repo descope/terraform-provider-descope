@@ -7,8 +7,20 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 )
 
-func NewModifier[T any, M modifiableModel[T]](description string) planmodifier.Object {
-	return &objectModifier[T, M]{description: description}
+type ModifierOptions int
+
+const (
+	ModifierAllowNullState ModifierOptions = iota
+)
+
+func NewModifier[T any, M modifiableModel[T]](description string, options ...ModifierOptions) planmodifier.Object {
+	modifier := &objectModifier[T, M]{description: description}
+	for i := range options {
+		if options[i] == ModifierAllowNullState {
+			modifier.allowNullState = true
+		}
+	}
+	return modifier
 }
 
 // Model
@@ -21,7 +33,8 @@ type modifiableModel[T any] interface {
 // Implementation
 
 type objectModifier[T any, M modifiableModel[T]] struct {
-	description string
+	description    string
+	allowNullState bool
 }
 
 func (v *objectModifier[T, M]) Description(_ context.Context) string {
@@ -33,13 +46,15 @@ func (v *objectModifier[T, M]) MarkdownDescription(ctx context.Context) string {
 }
 
 func (v *objectModifier[T, M]) PlanModifyObject(ctx context.Context, req planmodifier.ObjectRequest, resp *planmodifier.ObjectResponse) {
-	if req.StateValue.IsNull() || req.PlanValue.IsNull() || req.State.Raw.IsNull() || req.Plan.Raw.IsNull() {
+	if req.PlanValue.IsNull() || req.Plan.Raw.IsNull() {
 		return
 	}
-
 	plan := modelFromObject[T, M](ctx, req.PlanValue, &resp.Diagnostics)
-	state := modelFromObject[T, M](ctx, req.StateValue, &resp.Diagnostics)
-	if resp.Diagnostics.HasError() {
+
+	var state M
+	if !req.StateValue.IsNull() && !req.State.Raw.IsNull() {
+		state = modelFromObject[T, M](ctx, req.StateValue, &resp.Diagnostics)
+	} else if !v.allowNullState {
 		return
 	}
 
