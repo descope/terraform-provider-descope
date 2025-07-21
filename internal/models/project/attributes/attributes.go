@@ -11,9 +11,11 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
+var AttributesModifier = objattr.NewModifier[AttributesModel]("maintains attribute order between plan changes")
+
 var AttributesAttributes = map[string]schema.Attribute{
-	"tenant": listattr.Default[TenantAttributeModel](TenantAttributeAttributes, TenantAttributeValidator, TenantAttributeModifier),
-	"user":   listattr.Default[UserAttributeModel](UserAttributeAttributes, UserAttributeValidator, UserAttributeModifier),
+	"tenant": listattr.Default[TenantAttributeModel](TenantAttributeAttributes, TenantAttributeModifier),
+	"user":   listattr.Default[UserAttributeModel](UserAttributeAttributes, UserAttributeModifier),
 }
 
 type AttributesModel struct {
@@ -29,34 +31,29 @@ func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	if m.Tenant.IsEmpty() { // XXX test without this check
-		listattr.Set(&m.Tenant, data, "tenant", h)
-	}
-	if m.User.IsEmpty() { // XXX test without this check
-		listattr.Set(&m.User, data, "user", h)
-	}
+	listattr.SetMatching(&m.Tenant, data, "tenant", "displayName", h)
+	listattr.SetMatching(&m.User, data, "user", "displayName", h)
+}
+
+func (m *AttributesModel) Modify(h *helpers.Handler, state *AttributesModel) {
+	listattr.ModifyMatching(h, &m.Tenant, state.Tenant)
+	listattr.ModifyMatching(h, &m.User, state.User)
 }
 
 // Tenant Attributes
 
-var attributeTypeValidator = stringvalidator.OneOf("string", "number", "boolean", "singleselect", "multiselect", "date")
-
-var TenantAttributeValidator = objattr.NewValidator[TenantAttributeModel]("must have a valid configuration")
-
-var TenantAttributeModifier = objattr.NewModifier[TenantAttributeModel]("must have a valid configuration", objattr.ModifierAllowNullState)
+var TenantAttributeModifier = objattr.NewModifier[TenantAttributeModel]("ensures a suitable id is used", objattr.ModifierAllowNullState)
 
 var TenantAttributeAttributes = map[string]schema.Attribute{
-	"display_name":   stringattr.Optional(stringattr.StandardLenValidator),
-	"machine_name":   stringattr.Optional(stringattr.MachineIDValidator, stringvalidator.LengthAtMost(20)),
-	"name":           stringattr.Renamed("name", "display_name", stringvalidator.LengthAtMost(20)),
+	"id":             stringattr.Optional(stringattr.MachineIDValidator, stringvalidator.LengthAtMost(20)),
+	"name":           stringattr.Required(stringattr.StandardLenValidator),
 	"type":           stringattr.Required(attributeTypeValidator),
-	"select_options": strsetattr.Default(),
 	"authorization":  objattr.Default[TenantAttributeAuthorizationModel](nil, TenantAttributeAuthorizationAttributes),
+	"select_options": strsetattr.Default(),
 }
 
 type TenantAttributeModel struct {
-	DisplayName   stringattr.Type                                 `tfsdk:"display_name"`
-	MachineName   stringattr.Type                                 `tfsdk:"machine_name"`
+	ID            stringattr.Type                                 `tfsdk:"id"`
 	Name          stringattr.Type                                 `tfsdk:"name"`
 	Type          stringattr.Type                                 `tfsdk:"type"`
 	SelectOptions strsetattr.Type                                 `tfsdk:"select_options"`
@@ -65,61 +62,40 @@ type TenantAttributeModel struct {
 
 func (m *TenantAttributeModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	objattr.Get(m.Authorization, data, helpers.RootKey, h)
-	stringattr.Get(m.DisplayName, data, "displayName")
-	stringattr.Get(m.MachineName, data, "name")
+	stringattr.Get(m.ID, data, "name")
+	stringattr.Get(m.Name, data, "displayName")
 	stringattr.Get(m.Type, data, "type")
+	objattr.Get(m.Authorization, data, helpers.RootKey, h)
 	getOptions(m.SelectOptions, data, "options", h)
 	return data
 }
 
 func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	objattr.Set(&m.Authorization, data, helpers.RootKey, h)
-	stringattr.Set(&m.DisplayName, data, "displayName")
-	stringattr.Set(&m.MachineName, data, "name")
+	stringattr.Set(&m.ID, data, "name")
+	stringattr.Set(&m.Name, data, "displayName")
 	stringattr.Set(&m.Type, data, "type")
+	objattr.Set(&m.Authorization, data, helpers.RootKey, h)
 	setOptions(&m.SelectOptions, data, "options", h)
 }
 
 func (m *TenantAttributeModel) Modify(h *helpers.Handler, _ *TenantAttributeModel) {
-	if n := m.Name.ValueString(); n != "" && m.DisplayName.IsUnknown() && m.MachineName.IsUnknown() {
-		c := strcase.ToLowerCamel(n)
-		h.Log("Using name attribute to modify attributes in tenant attribute to set them to '%s' and '%s'", n, c)
-		m.DisplayName = stringattr.Value(n)
-		m.MachineName = stringattr.Value(c)
-	} else if n := m.DisplayName.ValueString(); n != "" && m.MachineName.IsUnknown() {
-		c := strcase.ToLowerCamel(n)
-		h.Log("Using display_name attribute to modify machine_name attribute in tenant attribute to set it to '%s'", c)
-		m.MachineName = stringattr.Value(c)
+	if v := m.Name.ValueString(); v != "" && m.ID.IsUnknown() {
+		id := strcase.ToLowerCamel(v)
+		h.Log("Using name attribute to modify id attribute in tenant attribute to '%s'", id)
+		m.ID = stringattr.Value(id)
 	}
 }
 
-func (m *TenantAttributeModel) Validate(h *helpers.Handler) {
-	if n := m.Name.ValueString(); n != "" {
-		c := strcase.ToLowerCamel(n)
-		if n != c {
-			h.Warn("The display_name attribute should be set to '%s' and the machine_name attribute should be set to '%s' to match the behavior of the deprecated name attribute from previous versions of the provider", n, c)
-		}
-		if v := m.DisplayName.ValueString(); v != "" {
-			if v != n {
-				h.Error("Unexpected Value Conflict", "The display_name attribute is expected to be set to same value '%s' as the deprecated name attribute, and the deprecated name attribute should be removed", n)
-			} else {
-				h.Error("Conflicting Attribute Values", "The deprecated name attribute should be removed once the display_name attribute is set")
-			}
-		}
-		if v := m.MachineName.ValueString(); v != "" {
-			if v != c {
-				h.Error("Unexpected Value Conflict", "The machine_name attribute is expected to be set to '%s' to match the value that was generated from the value '%s' of the deprecated name attribute", c, n)
-			} else {
-				h.Error("Conflicting Attribute Values", "The deprecated name attribute should be removed once the machine_name attribute is set")
-			}
-		}
-		return
-	}
+func (m *TenantAttributeModel) GetName() stringattr.Type {
+	return m.Name
+}
 
-	if m.DisplayName.ValueString() == "" && !m.DisplayName.IsUnknown() {
-		h.Invalid("The display_name attribute is required and must not be empty")
-	}
+func (m *TenantAttributeModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *TenantAttributeModel) SetID(id stringattr.Type) {
+	m.ID = id
 }
 
 // Widget Authorization
@@ -144,85 +120,60 @@ func (m *TenantAttributeAuthorizationModel) SetValues(h *helpers.Handler, data m
 
 // User Attributes
 
-var UserAttributeValidator = objattr.NewValidator[UserAttributeModel]("must have a valid configuration")
-
 var UserAttributeModifier = objattr.NewModifier[UserAttributeModel]("must have a valid configuration", objattr.ModifierAllowNullState)
 
 var UserAttributeAttributes = map[string]schema.Attribute{
-	"display_name":         stringattr.Optional(stringattr.StandardLenValidator),
-	"machine_name":         stringattr.Optional(stringattr.MachineIDValidator, stringvalidator.LengthAtMost(20)),
-	"name":                 stringattr.Renamed("name", "display_name", stringvalidator.LengthAtMost(20)),
+	"id":                   stringattr.Optional(stringattr.MachineIDValidator, stringvalidator.LengthAtMost(20)),
+	"name":                 stringattr.Required(stringattr.StandardLenValidator),
 	"type":                 stringattr.Required(attributeTypeValidator),
-	"select_options":       strsetattr.Default(),
 	"widget_authorization": objattr.Default[UserAttributeAuthorizationModel](nil, UserAttributeWidgetAuthorizationAttributes),
+	"select_options":       strsetattr.Default(),
 }
 
 type UserAttributeModel struct {
-	DisplayName         stringattr.Type                               `tfsdk:"display_name"`
-	MachineName         stringattr.Type                               `tfsdk:"machine_name"`
+	ID                  stringattr.Type                               `tfsdk:"id"`
 	Name                stringattr.Type                               `tfsdk:"name"`
 	Type                stringattr.Type                               `tfsdk:"type"`
-	SelectOptions       strsetattr.Type                               `tfsdk:"select_options"`
 	WidgetAuthorization objattr.Type[UserAttributeAuthorizationModel] `tfsdk:"widget_authorization"`
+	SelectOptions       strsetattr.Type                               `tfsdk:"select_options"`
 }
 
 func (m *UserAttributeModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	objattr.Get(m.WidgetAuthorization, data, helpers.RootKey, h)
-	stringattr.Get(m.DisplayName, data, "displayName")
-	stringattr.Get(m.MachineName, data, "name")
+	stringattr.Get(m.ID, data, "name")
+	stringattr.Get(m.Name, data, "displayName")
 	stringattr.Get(m.Type, data, "type")
+	objattr.Get(m.WidgetAuthorization, data, helpers.RootKey, h)
 	getOptions(m.SelectOptions, data, "options", h)
 	return data
 }
 
 func (m *UserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	objattr.Set(&m.WidgetAuthorization, data, helpers.RootKey, h)
-	stringattr.Set(&m.DisplayName, data, "displayName")
-	stringattr.Set(&m.MachineName, data, "name")
+	stringattr.Set(&m.ID, data, "name")
+	stringattr.Set(&m.Name, data, "displayName")
 	stringattr.Set(&m.Type, data, "type")
+	objattr.Set(&m.WidgetAuthorization, data, helpers.RootKey, h)
 	setOptions(&m.SelectOptions, data, "options", h)
 }
 
 func (m *UserAttributeModel) Modify(h *helpers.Handler, _ *UserAttributeModel) {
-	if n := m.Name.ValueString(); n != "" && m.DisplayName.IsUnknown() && m.MachineName.IsUnknown() {
-		c := strcase.ToLowerCamel(n)
-		h.Log("Using name attribute to modify attributes in user attribute to set them to '%s' and '%s'", n, c)
-		m.DisplayName = stringattr.Value(n)
-		m.MachineName = stringattr.Value(c)
-	} else if n := m.DisplayName.ValueString(); n != "" && m.MachineName.IsUnknown() {
-		c := strcase.ToLowerCamel(n)
-		h.Log("Using display_name attribute to modify machine_name attribute in user attribute to set it to '%s'", c)
-		m.MachineName = stringattr.Value(c)
+	if v := m.Name.ValueString(); v != "" && m.ID.IsUnknown() {
+		id := strcase.ToLowerCamel(v)
+		h.Log("Using name attribute to modify id attribute in user attribute to '%s'", id)
+		m.ID = stringattr.Value(id)
 	}
 }
 
-func (m *UserAttributeModel) Validate(h *helpers.Handler) {
-	if n := m.Name.ValueString(); n != "" {
-		c := strcase.ToLowerCamel(n)
-		if n != c {
-			h.Warn("Deprecated Attribute", "The display_name attribute should be set to '%s' and the machine_name attribute should be set to '%s' to match the behavior of the deprecated name attribute from previous versions of the provider", n, c)
-		}
-		if v := m.DisplayName.ValueString(); v != "" {
-			if v != n {
-				h.Error("Unexpected Value Conflict", "The display_name attribute is expected to be set to same value '%s' as the deprecated name attribute, and the deprecated name attribute should be removed", n)
-			} else {
-				h.Error("Conflicting Attribute Values", "The deprecated name attribute should be removed once the display_name attribute is set")
-			}
-		}
-		if v := m.MachineName.ValueString(); v != "" {
-			if v != c {
-				h.Error("Unexpected Value Conflict", "The machine_name attribute is expected to be set to '%s' to match the value that was generated from the value '%s' of the deprecated name attribute", c, n)
-			} else {
-				h.Error("Conflicting Attribute Values", "The deprecated name attribute should be removed once the machine_name attribute is set")
-			}
-		}
-		return
-	}
+func (m *UserAttributeModel) GetName() stringattr.Type {
+	return m.Name
+}
 
-	if m.DisplayName.ValueString() == "" && !m.DisplayName.IsUnknown() {
-		h.Invalid("The display_name is required and must not be empty")
-	}
+func (m *UserAttributeModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *UserAttributeModel) SetID(id stringattr.Type) {
+	m.ID = id
 }
 
 // Widget Authorization
@@ -250,6 +201,8 @@ func (m *UserAttributeAuthorizationModel) SetValues(h *helpers.Handler, data map
 }
 
 // Shared
+
+var attributeTypeValidator = stringvalidator.OneOf("string", "number", "boolean", "singleselect", "multiselect", "date")
 
 func getOptions(s strsetattr.Type, data map[string]any, key string, h *helpers.Handler) {
 	options := []map[string]any{}

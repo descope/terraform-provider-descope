@@ -38,8 +38,8 @@ func (m *AuthorizationModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
-	listattr.SetMatching(&m.Roles, data, "roles", h)
-	listattr.SetMatching(&m.Permissions, data, "permissions", h)
+	listattr.SetMatching(&m.Roles, data, "roles", "name", h)
+	listattr.SetMatching(&m.Permissions, data, "permissions", "name", h)
 }
 
 func (m *AuthorizationModel) CollectReferences(h *helpers.Handler) {

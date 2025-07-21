@@ -46,7 +46,7 @@ func ModifyMatching[T any, M helpers.MatchableModel[T]](h *helpers.Handler, plan
 }
 
 // Like Set but looks for matching model objects in the list by name.
-func SetMatching[T any, M helpers.MatchableModel[T]](l *Type[T], data map[string]any, key string, h *helpers.Handler) {
+func SetMatching[T any, M helpers.MatchableModel[T]](l *Type[T], data map[string]any, key string, subkey string, h *helpers.Handler) {
 	// convert the data in the map to a slice of objects
 	objects := []map[string]any{}
 	values, _ := data[key].([]any)
@@ -71,7 +71,7 @@ func SetMatching[T any, M helpers.MatchableModel[T]](l *Type[T], data map[string
 	for _, e := range current {
 		var existing M = e
 		for i, o := range objects {
-			if n, _ := o["name"].(string); n == existing.GetName().ValueString() {
+			if n, _ := o[subkey].(string); n == existing.GetName().ValueString() {
 				// if the name matches, we update the existing object
 				existing.SetValues(h, o)
 				// remove from the list so we know it's not a new model object
