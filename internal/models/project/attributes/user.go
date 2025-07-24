@@ -16,7 +16,7 @@ var UserAttributeAttributes = map[string]schema.Attribute{
 	"name":                 stringattr.Required(stringattr.StandardLenValidator),
 	"type":                 stringattr.Required(attributeTypeValidator),
 	"select_options":       strsetattr.Default(),
-	"widget_authorization": objattr.Default[UserAttributeAuthorizationModel](nil, UserAttributeWidgetAuthorizationAttributes),
+	"widget_authorization": objattr.Default(UserAttributeAuthorizationDefault, UserAttributeWidgetAuthorizationAttributes),
 }
 
 type UserAttributeModel struct {
@@ -26,17 +26,19 @@ type UserAttributeModel struct {
 
 func (m *UserAttributeModel) Values(h *helpers.Handler) map[string]any {
 	data := m.AttributeModel.Values(h)
-	objattr.Get(m.WidgetAuthorization, data, helpers.RootKey, h)
+	if m.WidgetAuthorization.IsSet() {
+		objattr.Get(m.WidgetAuthorization, data, helpers.RootKey, h)
+	}
 	return data
 }
 
 func (m *UserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	(&m.AttributeModel).SetValues(h, data)
-	setOptions(&m.SelectOptions, data, "options", h)
+	m.AttributeModel.SetValues(h, data)
+	objattr.Set(&m.WidgetAuthorization, data, helpers.RootKey, h)
 }
 
 func (m *UserAttributeModel) Modify(h *helpers.Handler, _ *UserAttributeModel) {
-	(&m.AttributeModel).Modify(h)
+	m.AttributeModel.Modify(h)
 }
 
 // Widget Authorization
@@ -44,6 +46,11 @@ func (m *UserAttributeModel) Modify(h *helpers.Handler, _ *UserAttributeModel) {
 var UserAttributeWidgetAuthorizationAttributes = map[string]schema.Attribute{
 	"view_permissions": strsetattr.Default(),
 	"edit_permissions": strsetattr.Default(),
+}
+
+var UserAttributeAuthorizationDefault = &UserAttributeAuthorizationModel{
+	ViewPermissions: strsetattr.Empty(),
+	EditPermissions: strsetattr.Empty(),
 }
 
 type UserAttributeAuthorizationModel struct {

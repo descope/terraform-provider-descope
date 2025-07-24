@@ -16,7 +16,7 @@ var TenantAttributeAttributes = map[string]schema.Attribute{
 	"name":           stringattr.Required(stringattr.StandardLenValidator),
 	"type":           stringattr.Required(attributeTypeValidator),
 	"select_options": strsetattr.Default(),
-	"authorization":  objattr.Default[TenantAttributeAuthorizationModel](nil, TenantAttributeAuthorizationAttributes),
+	"authorization":  objattr.Default(TenantAttributeAuthorizationDefault, TenantAttributeAuthorizationAttributes),
 }
 
 type TenantAttributeModel struct {
@@ -31,18 +31,22 @@ func (m *TenantAttributeModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *TenantAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
-	(&m.AttributeModel).SetValues(h, data)
+	m.AttributeModel.SetValues(h, data)
 	objattr.Set(&m.Authorization, data, helpers.RootKey, h)
 }
 
 func (m *TenantAttributeModel) Modify(h *helpers.Handler, _ *TenantAttributeModel) {
-	(&m.AttributeModel).Modify(h)
+	m.AttributeModel.Modify(h)
 }
 
 // Widget Authorization
 
 var TenantAttributeAuthorizationAttributes = map[string]schema.Attribute{
 	"view_permissions": strsetattr.Default(),
+}
+
+var TenantAttributeAuthorizationDefault = &TenantAttributeAuthorizationModel{
+	ViewPermissions: strsetattr.Empty(),
 }
 
 type TenantAttributeAuthorizationModel struct {
