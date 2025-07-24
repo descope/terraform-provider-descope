@@ -28,7 +28,7 @@ type SessionMigrationModel struct {
 	LoginIDMatchedAttributes strsetattr.Type `tfsdk:"loginid_matched_attributes"`
 }
 
-var SessionMigrationDefaujlt = &SessionMigrationModel{
+var SessionMigrationDefault = &SessionMigrationModel{
 	Vendor:                   stringattr.Value(""),
 	ClientID:                 stringattr.Value(""),
 	Domain:                   stringattr.Value(""),

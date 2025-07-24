@@ -40,7 +40,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"user_jwt_template":                   stringattr.Default(""),
 	"access_key_jwt_template":             stringattr.Default(""),
-	"session_migration":                   objattr.Default(SessionMigrationDefaujlt, SessionMigrationAttributes, SessionMigrationValidator),
+	"session_migration":                   objattr.Default(SessionMigrationDefault, SessionMigrationAttributes, SessionMigrationValidator),
 }
 
 type SettingsModel struct {
