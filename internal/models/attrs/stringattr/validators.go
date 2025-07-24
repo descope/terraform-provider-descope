@@ -9,6 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 var TimeUnitValidator = stringvalidator.OneOf("seconds", "minutes", "hours", "days", "weeks")
@@ -39,6 +40,7 @@ func (v nonEmptyValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 func (v nonEmptyValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	tflog.Trace(ctx, "Validating string", map[string]any{"path": req.Path.String()})
 	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}
@@ -64,6 +66,7 @@ func (v jsonValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 func (v jsonValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	tflog.Trace(ctx, "Validating string", map[string]any{"path": req.Path.String()})
 	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
 		return
 	}

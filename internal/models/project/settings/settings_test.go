@@ -297,10 +297,12 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
-					session_migration = {}
+					session_migration = {
+						vendor = "foo"
+					}
 				}
 			`),
-			ExpectError: regexp.MustCompile(`Inappropriate value`),
+			ExpectError: regexp.MustCompile(`Invalid Attribute Value`),
 		},
 		resource.TestStep{
 			Config: p.Config(`
@@ -345,7 +347,14 @@ func TestSettings(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"project_settings.session_migration.%": 0,
+				"project_settings.session_migration": map[string]any{
+					"vendor":                     "",
+					"client_id":                  "",
+					"domain":                     "",
+					"audience":                   "",
+					"issuer":                     "",
+					"loginid_matched_attributes": []string{},
+				},
 			}),
 		},
 	)

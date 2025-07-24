@@ -23,6 +23,7 @@ var RecaptchaEnterpriseAttributes = map[string]schema.Attribute{
 	"api_key":             stringattr.SecretRequired(),
 	"base_url":            stringattr.Default(""),
 	"override_assessment": boolattr.Default(false),
+	"bot_threshold":       floatattr.Default(0.5),
 	"assessment_score":    floatattr.Default(0.5),
 }
 
@@ -38,6 +39,7 @@ type RecaptchaEnterpriseModel struct {
 	APIKey             stringattr.Type `tfsdk:"api_key"`
 	BaseURL            stringattr.Type `tfsdk:"base_url"`
 	OverrideAssessment boolattr.Type   `tfsdk:"override_assessment"`
+	BotThreshold       floatattr.Type  `tfsdk:"bot_threshold"`
 	AssessmentScore    floatattr.Type  `tfsdk:"assessment_score"`
 }
 
@@ -70,6 +72,7 @@ func (m *RecaptchaEnterpriseModel) ConfigurationValues(h *helpers.Handler) map[s
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	boolattr.Get(m.OverrideAssessment, c, "overrideAssessment")
+	floatattr.Get(m.BotThreshold, c, "botThreshold")
 	floatattr.Get(m.AssessmentScore, c, "assessmentScore")
 	c["enterprise"] = true
 	return c
@@ -81,6 +84,7 @@ func (m *RecaptchaEnterpriseModel) SetConfigurationValues(c map[string]any, h *h
 	stringattr.Nil(&m.APIKey)
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
+	floatattr.Set(&m.BotThreshold, c, "botThreshold")
 	floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
 }
 

@@ -25,15 +25,10 @@
       "file": "awstranslate",
       "struct": "AWSTranslate"
     },
-    "clear": {
-      "attribute": "clear",
-      "file": "clear",
-      "struct": "Clear"
-    },
-    "cybersixgill": {
-      "attribute": "cybersixgill",
-      "file": "cybersixgill",
-      "struct": "Cybersixgill"
+    "bitsight": {
+      "attribute": "bitsight",
+      "file": "bitsight",
+      "struct": "Bitsight"
     },
     "datadog": {
       "attribute": "datadog",

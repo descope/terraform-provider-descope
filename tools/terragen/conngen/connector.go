@@ -29,7 +29,7 @@ func (c *Connector) IsExperimental() bool {
 }
 
 func (c *Connector) IsSkipped() bool {
-	return c.ID == "smtp-v2"
+	return c.ID == "smtp-v2" || c.ID == "clear"
 }
 
 func (c *Connector) SupportsStaticIPs() bool {
