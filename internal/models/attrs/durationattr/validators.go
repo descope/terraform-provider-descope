@@ -7,6 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/helpers/validatordiag"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 func MinimumValue(duration string) validator.String {
@@ -28,6 +29,7 @@ func (v durationValidator) MarkdownDescription(ctx context.Context) string {
 }
 
 func (v durationValidator) ValidateString(ctx context.Context, request validator.StringRequest, response *validator.StringResponse) {
+	tflog.Trace(ctx, "Validating duration", map[string]any{"path": request.Path.String()})
 	if request.ConfigValue.IsNull() || request.ConfigValue.IsUnknown() {
 		return
 	}

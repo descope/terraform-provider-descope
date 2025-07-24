@@ -182,10 +182,10 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
-					"cybersixgill": [
+					"bitsight": [
 						{
-							name = "Test cybersixgill Connector"
-							description = "A description for the cybersixgill connector"
+							name = "Test bitsight Connector"
+							description = "A description for the bitsight connector"
     						client_id = "sgetgyvq"
     						client_secret = "tjpxl7uy4wbb"
 						}
@@ -193,11 +193,11 @@ func TestConnectors(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.cybersixgill.#": 1,
-				"connectors.cybersixgill.0": map[string]any{
+				"connectors.bitsight.#": 1,
+				"connectors.bitsight.0": map[string]any{
 					"id":            testacc.AttributeHasPrefix("CI"),
-					"name":          "Test cybersixgill Connector",
-					"description":   "A description for the cybersixgill connector",
+					"name":          "Test bitsight Connector",
+					"description":   "A description for the bitsight connector",
 					"client_id":     "sgetgyvq",
 					"client_secret": "tjpxl7uy4wbb",
 				},
@@ -961,6 +961,7 @@ func TestConnectors(t *testing.T) {
     						api_key = "mhvece"
     						base_url = ""
     						override_assessment = true
+    						bot_threshold = 12
     						assessment_score = 15
 						}
 					]
@@ -977,6 +978,7 @@ func TestConnectors(t *testing.T) {
 					"api_key":             "mhvece",
 					"base_url":            "",
 					"override_assessment": true,
+					"bot_threshold":       12,
 					"assessment_score":    15,
 				},
 			}),

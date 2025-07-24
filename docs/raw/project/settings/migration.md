@@ -7,7 +7,7 @@ SessionMigration
 vendor
 ------
 
-- Type: `string` (required)
+- Type: `string` 
 
 The name of the vendor the sessions are migrated from, in all lowercase.
 
@@ -16,7 +16,7 @@ The name of the vendor the sessions are migrated from, in all lowercase.
 client_id
 ---------
 
-- Type: `string` (required)
+- Type: `string` 
 
 The unique client ID for the vendor.
 
@@ -52,7 +52,7 @@ An issuer URL if needed by the vendor.
 loginid_matched_attributes
 --------------------------
 
-- Type: `set` of `string` (required)
+- Type: `set` of `string` 
 
 A set of attributes from the vendor's user that should be used to match with
 the Descope user's login ID.

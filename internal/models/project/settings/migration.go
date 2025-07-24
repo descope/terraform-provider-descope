@@ -5,19 +5,18 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
-	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
 var SessionMigrationValidator = objattr.NewValidator[SessionMigrationModel]("must have a valid configuration")
 
 var SessionMigrationAttributes = map[string]schema.Attribute{
-	"vendor":                     stringattr.Required(stringattr.StandardLenValidator),
-	"client_id":                  stringattr.Required(stringattr.StandardLenValidator),
+	"vendor":                     stringattr.Default("", stringattr.StandardLenValidator),
+	"client_id":                  stringattr.Default("", stringattr.StandardLenValidator),
 	"domain":                     stringattr.Default("", stringattr.StandardLenValidator),
 	"audience":                   stringattr.Default("", stringattr.StandardLenValidator),
 	"issuer":                     stringattr.Default("", stringattr.StandardLenValidator),
-	"loginid_matched_attributes": strsetattr.Required(setvalidator.SizeAtLeast(1), stringattr.StandardLenValidator),
+	"loginid_matched_attributes": strsetattr.Default(stringattr.StandardLenValidator),
 }
 
 type SessionMigrationModel struct {
@@ -29,15 +28,25 @@ type SessionMigrationModel struct {
 	LoginIDMatchedAttributes strsetattr.Type `tfsdk:"loginid_matched_attributes"`
 }
 
+var SessionMigrationDefault = &SessionMigrationModel{
+	Vendor:                   stringattr.Value(""),
+	ClientID:                 stringattr.Value(""),
+	Domain:                   stringattr.Value(""),
+	Audience:                 stringattr.Value(""),
+	Issuer:                   stringattr.Value(""),
+	LoginIDMatchedAttributes: strsetattr.Empty(),
+}
+
 func (m *SessionMigrationModel) Values(h *helpers.Handler) map[string]any {
 	vendor := m.Vendor.ValueString()
 
 	c := map[string]any{}
 	stringattr.Get(m.ClientID, c, "clientId")
-	if vendor == "auth0" {
+	switch vendor {
+	case "auth0":
 		stringattr.Get(m.Domain, c, "domain")
 		stringattr.Get(m.Audience, c, "audience")
-	} else if vendor == "okta" {
+	case "okta":
 		stringattr.Get(m.Issuer, c, "issuer")
 	}
 
@@ -61,18 +70,28 @@ func (m *SessionMigrationModel) SetValues(h *helpers.Handler, data map[string]an
 		stringattr.Nil(&m.Audience)
 		stringattr.Set(&m.Issuer, v, "issuer")
 	} else {
-		h.Error("Unexpected session migration vendor", "Expected to find a valid configuration key")
+		m.Vendor = stringattr.Value("")
+		stringattr.Nil(&m.ClientID)
+		stringattr.Nil(&m.Domain)
+		stringattr.Nil(&m.Audience)
+		stringattr.Nil(&m.Issuer)
 	}
 	strsetattr.Set(&m.LoginIDMatchedAttributes, data, "loginIdExternalUserSources", h)
 }
 
 func (m *SessionMigrationModel) Validate(h *helpers.Handler) {
-	if helpers.HasUnknownValues(m.Vendor, m.Domain, m.Audience, m.Issuer) {
+	if helpers.HasUnknownValues(m.Vendor, m.ClientID, m.Domain, m.Audience, m.Issuer, m.LoginIDMatchedAttributes) {
 		return
 	}
 
 	vendor := m.Vendor.ValueString()
+
 	switch vendor {
+	case "":
+		if m.ClientID.ValueString() != "" || m.Domain.ValueString() != "" || m.Audience.ValueString() != "" || m.Issuer.ValueString() != "" || !m.LoginIDMatchedAttributes.IsEmpty() {
+			h.Invalid("The other session_migration attributes must not be set when vendor is not specified")
+		}
+		return
 	case "auth0":
 		if m.Domain.ValueString() == "" {
 			h.Missing("The domain attribute is required for %s session migration", vendor)
@@ -92,5 +111,12 @@ func (m *SessionMigrationModel) Validate(h *helpers.Handler) {
 		}
 	default:
 		h.Invalid("Unsupported session migration vendor: %s", vendor)
+	}
+
+	if m.ClientID.ValueString() == "" {
+		h.Missing("The client_id attribute is required for %s session migration", vendor)
+	}
+	if m.LoginIDMatchedAttributes.IsEmpty() {
+		h.Missing("The loginid_matched_attributes attribute is expected to be a non-empty list for %s session migration", vendor)
 	}
 }

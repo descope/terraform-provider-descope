@@ -40,7 +40,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"user_jwt_template":                   stringattr.Default(""),
 	"access_key_jwt_template":             stringattr.Default(""),
-	"session_migration":                   objattr.Default[SessionMigrationModel](nil, SessionMigrationAttributes, SessionMigrationValidator),
+	"session_migration":                   objattr.Default(SessionMigrationDefault, SessionMigrationAttributes, SessionMigrationValidator),
 }
 
 type SettingsModel struct {
@@ -108,7 +108,11 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	data["testUserAllowFixedAuth"] = m.TestUsersStaticOTP.ValueString() != ""
 	getJWTTemplate(m.UserJWTTemplate, data, "userTemplateId", "user", h)
 	getJWTTemplate(m.AccessKeyJWTTemplate, data, "keyTemplateId", "key", h)
-	objattr.Get(m.SessionMigration, data, "externalAuthConfig", h)
+	if v, _ := m.SessionMigration.ToObject(h.Ctx); v != nil && v.Vendor.ValueString() != "" {
+		objattr.Get(m.SessionMigration, data, "externalAuthConfig", h)
+	} else {
+		data["externalAuthConfig"] = nil
+	}
 	return data
 }
 
@@ -152,7 +156,9 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")     // replaced by template name by UpdateReferences later
 	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId") // replaced by template name by UpdateReferences later
-	objattr.Set(&m.SessionMigration, data, "externalAuthConfig", h)
+	if data["externalAuthConfig"] != nil {                         // server returns no object if not set
+		objattr.Set(&m.SessionMigration, data, "externalAuthConfig", h)
+	}
 }
 
 func (m *SettingsModel) Validate(h *helpers.Handler) {

@@ -22,7 +22,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"audit_webhook":              listattr.Default[AuditWebhookModel](AuditWebhookAttributes),
 	"aws_s3":                     listattr.Default[AWSS3Model](AWSS3Attributes, AWSS3Validator),
 	"aws_translate":              listattr.Default[AWSTranslateModel](AWSTranslateAttributes),
-	"cybersixgill":               listattr.Default[CybersixgillModel](CybersixgillAttributes),
+	"bitsight":                   listattr.Default[BitsightModel](BitsightAttributes),
 	"datadog":                    listattr.Default[DatadogModel](DatadogAttributes, DatadogValidator),
 	"devrev_grow":                listattr.Default[DevRevGrowModel](DevRevGrowAttributes),
 	"docebo":                     listattr.Default[DoceboModel](DoceboAttributes),
@@ -76,7 +76,7 @@ type ConnectorsModel struct {
 	AuditWebhook             listattr.Type[AuditWebhookModel]             `tfsdk:"audit_webhook"`
 	AWSS3                    listattr.Type[AWSS3Model]                    `tfsdk:"aws_s3"`
 	AWSTranslate             listattr.Type[AWSTranslateModel]             `tfsdk:"aws_translate"`
-	Cybersixgill             listattr.Type[CybersixgillModel]             `tfsdk:"cybersixgill"`
+	Bitsight                 listattr.Type[BitsightModel]                 `tfsdk:"bitsight"`
 	Datadog                  listattr.Type[DatadogModel]                  `tfsdk:"datadog"`
 	DevRevGrow               listattr.Type[DevRevGrowModel]               `tfsdk:"devrev_grow"`
 	Docebo                   listattr.Type[DoceboModel]                   `tfsdk:"docebo"`
@@ -131,7 +131,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.AuditWebhook, data, "audit-webhook", h)
 	listattr.Get(m.AWSS3, data, "aws-s3", h)
 	listattr.Get(m.AWSTranslate, data, "aws-translate", h)
-	listattr.Get(m.Cybersixgill, data, "cybersixgill", h)
+	listattr.Get(m.Bitsight, data, "bitsight", h)
 	listattr.Get(m.Datadog, data, "datadog", h)
 	listattr.Get(m.DevRevGrow, data, "devrev-grow", h)
 	listattr.Get(m.Docebo, data, "docebo", h)
@@ -186,7 +186,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatching(&m.AuditWebhook, data, "audit-webhook", "name", h)
 	listattr.SetMatching(&m.AWSS3, data, "aws-s3", "name", h)
 	listattr.SetMatching(&m.AWSTranslate, data, "aws-translate", "name", h)
-	listattr.SetMatching(&m.Cybersixgill, data, "cybersixgill", "name", h)
+	listattr.SetMatching(&m.Bitsight, data, "bitsight", "name", h)
 	listattr.SetMatching(&m.Datadog, data, "datadog", "name", h)
 	listattr.SetMatching(&m.DevRevGrow, data, "devrev-grow", "name", h)
 	listattr.SetMatching(&m.Docebo, data, "docebo", "name", h)
@@ -240,7 +240,7 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "audit-webhook", m.AuditWebhook)
 	addConnectorReferences(h, "aws-s3", m.AWSS3)
 	addConnectorReferences(h, "aws-translate", m.AWSTranslate)
-	addConnectorReferences(h, "cybersixgill", m.Cybersixgill)
+	addConnectorReferences(h, "bitsight", m.Bitsight)
 	addConnectorReferences(h, "datadog", m.Datadog)
 	addConnectorReferences(h, "devrev-grow", m.DevRevGrow)
 	addConnectorReferences(h, "docebo", m.Docebo)
@@ -295,7 +295,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.AuditWebhook)
 	addConnectorNames(h, names, m.AWSS3)
 	addConnectorNames(h, names, m.AWSTranslate)
-	addConnectorNames(h, names, m.Cybersixgill)
+	addConnectorNames(h, names, m.Bitsight)
 	addConnectorNames(h, names, m.Datadog)
 	addConnectorNames(h, names, m.DevRevGrow)
 	addConnectorNames(h, names, m.Docebo)
@@ -354,7 +354,7 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatching(h, &m.AuditWebhook, state.AuditWebhook)
 	listattr.ModifyMatching(h, &m.AWSS3, state.AWSS3)
 	listattr.ModifyMatching(h, &m.AWSTranslate, state.AWSTranslate)
-	listattr.ModifyMatching(h, &m.Cybersixgill, state.Cybersixgill)
+	listattr.ModifyMatching(h, &m.Bitsight, state.Bitsight)
 	listattr.ModifyMatching(h, &m.Datadog, state.Datadog)
 	listattr.ModifyMatching(h, &m.DevRevGrow, state.DevRevGrow)
 	listattr.ModifyMatching(h, &m.Docebo, state.Docebo)

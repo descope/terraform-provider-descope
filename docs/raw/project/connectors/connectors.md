@@ -51,13 +51,13 @@ Localize the language of your login and user journey screens with the Amazon Tra
 
 
 
-cybersixgill
-------------
+bitsight
+--------
 
-- Type: `list` of `connectors.Cybersixgill` 
+- Type: `list` of `connectors.Bitsight` 
 
 Utilize threat intelligence to block malicious login attempts or check leaks
-with the Cybersixgill connector.
+with the Bitsight Threat Intelligence connector.
 
 
 
