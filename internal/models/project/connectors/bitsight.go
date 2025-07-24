@@ -8,7 +8,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var CybersixgillAttributes = map[string]schema.Attribute{
+var BitsightAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
@@ -19,7 +19,7 @@ var CybersixgillAttributes = map[string]schema.Attribute{
 
 // Model
 
-type CybersixgillModel struct {
+type BitsightModel struct {
 	ID          stringattr.Type `tfsdk:"id"`
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
@@ -28,14 +28,14 @@ type CybersixgillModel struct {
 	ClientSecret stringattr.Type `tfsdk:"client_secret"`
 }
 
-func (m *CybersixgillModel) Values(h *helpers.Handler) map[string]any {
+func (m *BitsightModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
-	data["type"] = "cybersixgill"
+	data["type"] = "bitsight"
 	data["configuration"] = m.ConfigurationValues(h)
 	return data
 }
 
-func (m *CybersixgillModel) SetValues(h *helpers.Handler, data map[string]any) {
+func (m *BitsightModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
@@ -44,28 +44,28 @@ func (m *CybersixgillModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 // Configuration
 
-func (m *CybersixgillModel) ConfigurationValues(h *helpers.Handler) map[string]any {
+func (m *BitsightModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.ClientID, c, "clientId")
 	stringattr.Get(m.ClientSecret, c, "clientSecret")
 	return c
 }
 
-func (m *CybersixgillModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+func (m *BitsightModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ClientID, c, "clientId")
 	stringattr.Nil(&m.ClientSecret)
 }
 
 // Matching
 
-func (m *CybersixgillModel) GetName() stringattr.Type {
+func (m *BitsightModel) GetName() stringattr.Type {
 	return m.Name
 }
 
-func (m *CybersixgillModel) GetID() stringattr.Type {
+func (m *BitsightModel) GetID() stringattr.Type {
 	return m.ID
 }
 
-func (m *CybersixgillModel) SetID(id stringattr.Type) {
+func (m *BitsightModel) SetID(id stringattr.Type) {
 	m.ID = id
 }

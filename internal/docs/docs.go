@@ -313,6 +313,15 @@ var docsAWSTranslate = map[string]string{
 	"region": "The AWS region to which this client will send requests. (e.g. us-east-1.)",
 }
 
+var docsBitsight = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"client_id": "API Client ID issued when you create the credentials in Bitsight Threat " +
+	             "Intelligence.",
+	"client_secret": "Client secret issued when you create the credentials in Bitsight Threat " +
+	                 "Intelligence.",
+}
+
 var docsConnectors = map[string]string{
 	"abuseipdb": "Utilize IP threat intelligence to block malicious login attempts with the " +
 	             "AbuseIPDB connector.",
@@ -321,8 +330,8 @@ var docsConnectors = map[string]string{
 	"audit_webhook": "Send audit events to a custom webhook.",
 	"aws_s3": "Stream authentication audit logs with the Amazon S3 connector.",
 	"aws_translate": "Localize the language of your login and user journey screens with the Amazon Translate connector.",
-	"cybersixgill": "Utilize threat intelligence to block malicious login attempts or check leaks " +
-	                "with the Cybersixgill connector.",
+	"bitsight": "Utilize threat intelligence to block malicious login attempts or check leaks " +
+	            "with the Bitsight Threat Intelligence connector.",
 	"datadog": "Stream authentication audit logs with the Datadog connector.",
 	"devrev_grow": "DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto " +
 	               "an AI-native platform to follow the journey of a visitor to a lead, to a contact, and " +
@@ -388,13 +397,6 @@ var docsConnectors = map[string]string{
 	               "phone calls, sending and receiving text messages, and performing other communication functions.",
 	"twilio_verify": "Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms, " +
 	                 "voice and e-mail. Choose this connector only if you are a Twilio Verify customer.",
-}
-
-var docsCybersixgill = map[string]string{
-	"name": "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"client_id": "API Client ID issued when you create the credentials in Cybersixgill.",
-	"client_secret": "Client secret issued when you create the credentials in Cybersixgill.",
 }
 
 var docsDatadog = map[string]string{
@@ -686,6 +688,9 @@ var docsRecaptchaEnterprise = map[string]string{
 	            "attempting to use reCAPTCHA globally. Defaults to https://www.google.com",
 	"override_assessment": "Override the default assessment model. Note: Overriding assessment is intended " +
 	                       "for automated testing and should not be utilized in production environments.",
+	"bot_threshold": "The bot threshold is used to determine whether the request is a bot or a human. " +
+	                 "The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot. " +
+	                 "If the score is below this threshold, the request is considered a bot.",
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 	                    "the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 	                    "and 0 is a bot.",
