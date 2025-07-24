@@ -36,10 +36,10 @@ func isImportState(ctx context.Context) bool {
 	return value
 }
 
-// If an attribute value is already set to Null we do not overwrite it, so we don't not cause
+// If an attribute value is already set to Null we do not overwrite it, so we don't cause
 // provider errors due to inconsistent values before and after the plan is applied. We also
-// don't want to read/write state the plan writer isn't interested in, and left the attribute
-// as its default value of Null.
+// don't want to read/write state the plan writer isn't interested in, and elected to leave
+// the attribute as its default value of Null.
 //
 // When importing resources though the attribute values are Null because there's no state yet,
 // unlike during other operations where they are Unknown if not set and the attribute doesn't
