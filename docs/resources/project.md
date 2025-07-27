@@ -129,12 +129,13 @@ Optional:
 
 Required:
 
-- `name` (String) The name of the attribute.
+- `name` (String) The name of the attribute. This value is called `Display Name` in the Descope console.
 - `type` (String) The type of the attribute. Choose one of "string", "number", "boolean", "singleselect", "multiselect", "date".
 
 Optional:
 
 - `authorization` (Attributes) Determines the required permissions for this tenant. (see [below for nested schema](#nestedatt--attributes--tenant--authorization))
+- `id` (String) An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. If a value is not provided then an appropriate one will be created from the value of `name`.
 - `select_options` (Set of String) When the attribute type is "multiselect". A list of options to choose from.
 
 <a id="nestedatt--attributes--tenant--authorization"></a>
@@ -151,11 +152,12 @@ Optional:
 
 Required:
 
-- `name` (String) The name of the attribute.
+- `name` (String) The name of the attribute. This value is called `Display Name` in the Descope console.
 - `type` (String) The type of the attribute. Choose one of "string", "number", "boolean", "singleselect", "multiselect", "date".
 
 Optional:
 
+- `id` (String) An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. If a value is not provided then an appropriate one will be created from the value of `name`.
 - `select_options` (Set of String) When the attribute type is "multiselect". A list of options to choose from.
 - `widget_authorization` (Attributes) Determines the permissions users are required to have to access this attribute in the user management widget. (see [below for nested schema](#nestedatt--attributes--user--widget_authorization))
 
@@ -871,7 +873,7 @@ Optional:
 - `audit_webhook` (Attributes List) Send audit events to a custom webhook. (see [below for nested schema](#nestedatt--connectors--audit_webhook))
 - `aws_s3` (Attributes List) Stream authentication audit logs with the Amazon S3 connector. (see [below for nested schema](#nestedatt--connectors--aws_s3))
 - `aws_translate` (Attributes List) Localize the language of your login and user journey screens with the Amazon Translate connector. (see [below for nested schema](#nestedatt--connectors--aws_translate))
-- `cybersixgill` (Attributes List) Utilize threat intelligence to block malicious login attempts or check leaks with the Cybersixgill connector. (see [below for nested schema](#nestedatt--connectors--cybersixgill))
+- `bitsight` (Attributes List) Utilize threat intelligence to block malicious login attempts or check leaks with the Bitsight Threat Intelligence connector. (see [below for nested schema](#nestedatt--connectors--bitsight))
 - `datadog` (Attributes List) Stream authentication audit logs with the Datadog connector. (see [below for nested schema](#nestedatt--connectors--datadog))
 - `devrev_grow` (Attributes List) DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto an AI-native platform to follow the journey of a visitor to a lead, to a contact, and then to a user - to create a champion, not a churned user. (see [below for nested schema](#nestedatt--connectors--devrev_grow))
 - `docebo` (Attributes List) Get user information from Docebo in your Descope user journeys with the Docebo connector. (see [below for nested schema](#nestedatt--connectors--docebo))
@@ -1070,13 +1072,13 @@ Read-Only:
 - `id` (String)
 
 
-<a id="nestedatt--connectors--cybersixgill"></a>
-### Nested Schema for `connectors.cybersixgill`
+<a id="nestedatt--connectors--bitsight"></a>
+### Nested Schema for `connectors.bitsight`
 
 Required:
 
-- `client_id` (String) API Client ID issued when you create the credentials in Cybersixgill.
-- `client_secret` (String, Sensitive) Client secret issued when you create the credentials in Cybersixgill.
+- `client_id` (String) API Client ID issued when you create the credentials in Bitsight Threat Intelligence.
+- `client_secret` (String, Sensitive) Client secret issued when you create the credentials in Bitsight Threat Intelligence.
 - `name` (String) A custom name for your connector.
 
 Optional:
@@ -1765,6 +1767,7 @@ Optional:
 
 - `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
 - `base_url` (String) Apply a custom url to the reCAPTCHA Enterprise scripts. This is useful when attempting to use reCAPTCHA globally. Defaults to https://www.google.com
+- `bot_threshold` (Number) The bot threshold is used to determine whether the request is a bot or a human. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot. If the score is below this threshold, the request is considered a bot.
 - `description` (String) A description of what your connector is used for.
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
@@ -2358,17 +2361,14 @@ Optional:
 <a id="nestedatt--project_settings--session_migration"></a>
 ### Nested Schema for `project_settings.session_migration`
 
-Required:
-
-- `client_id` (String) The unique client ID for the vendor.
-- `loginid_matched_attributes` (Set of String) A set of attributes from the vendor's user that should be used to match with the Descope user's login ID.
-- `vendor` (String) The name of the vendor the sessions are migrated from, in all lowercase.
-
 Optional:
 
 - `audience` (String) The audience value if needed by the vendor.
+- `client_id` (String) The unique client ID for the vendor.
 - `domain` (String) The domain value if needed by the vendor.
 - `issuer` (String) An issuer URL if needed by the vendor.
+- `loginid_matched_attributes` (Set of String) A set of attributes from the vendor's user that should be used to match with the Descope user's login ID.
+- `vendor` (String) The name of the vendor the sessions are migrated from, in all lowercase.
 
 
 

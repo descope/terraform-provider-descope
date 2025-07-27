@@ -75,7 +75,9 @@ var docsAttributes = map[string]string{
 }
 
 var docsTenantAttribute = map[string]string{
-	"name": "The name of the attribute.",
+	"id": "An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. " +
+	      "If a value is not provided then an appropriate one will be created from the value of `name`.",
+	"name": "The name of the attribute. This value is called `Display Name` in the Descope console.",
 	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", \"multiselect\", \"date\".",
 	"select_options": "When the attribute type is \"multiselect\". A list of options to choose from.",
 	"authorization": "Determines the required permissions for this tenant.",
@@ -86,7 +88,9 @@ var docsTenantAttributeAuthorization = map[string]string{
 }
 
 var docsUserAttribute = map[string]string{
-	"name": "The name of the attribute.",
+	"id": "An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. " +
+	      "If a value is not provided then an appropriate one will be created from the value of `name`.",
+	"name": "The name of the attribute. This value is called `Display Name` in the Descope console.",
 	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", " +
 	        "\"singleselect\", \"multiselect\", \"date\".",
 	"select_options": "When the attribute type is \"multiselect\". A list of options to choose from.",

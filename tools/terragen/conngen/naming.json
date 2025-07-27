@@ -319,6 +319,10 @@
       "attribute": "base_url",
       "struct": "BaseURL"
     },
+    "botThreshold": {
+      "attribute": "bot_threshold",
+      "struct": "BotThreshold"
+    },
     "bucket": {
       "attribute": "bucket",
       "struct": "Bucket"

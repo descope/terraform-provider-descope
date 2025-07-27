@@ -2,6 +2,7 @@ package conngen
 
 import (
 	"log"
+	"os"
 	"slices"
 	"strings"
 	"unicode"
@@ -29,7 +30,11 @@ func (c *Connector) IsExperimental() bool {
 }
 
 func (c *Connector) IsSkipped() bool {
-	return c.ID == "smtp-v2" || c.ID == "clear"
+	ids := []string{"smtp-v2", "clear"}
+	if v := os.Getenv("DESCOPE_SKIP_CONNECTORS"); v != "" {
+		ids = append(ids, strings.Split(v, ",")...)
+	}
+	return slices.Contains(ids, c.ID)
 }
 
 func (c *Connector) SupportsStaticIPs() bool {
