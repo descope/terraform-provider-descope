@@ -8,30 +8,30 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var EmailServiceValidator = objattr.NewValidator[EmailServiceModel]("must have unique template names and a valid configuration")
+var EmailInviteValidator = objattr.NewValidator[EmailInviteModel]("must have unique template names and a valid configuration")
 
-var EmailServiceAttributes = map[string]schema.Attribute{
+var EmailInviteAttributes = map[string]schema.Attribute{
 	"connector": stringattr.Required(),
 	"templates": listattr.Default[EmailTemplateModel](EmailTemplateAttributes, EmailTemplateValidator),
 }
 
-type EmailServiceModel struct {
+type EmailInviteModel struct {
 	Connector stringattr.Type                   `tfsdk:"connector"`
 	Templates listattr.Type[EmailTemplateModel] `tfsdk:"templates"`
 }
 
-func (m *EmailServiceModel) Values(h *helpers.Handler) map[string]any {
-	return getEmailValues(h, m.Connector, "emailServiceProvider", m.Templates, "emailTemplates")
+func (m *EmailInviteModel) Values(h *helpers.Handler) map[string]any {
+	return getEmailValues(h, m.Connector, "inviteEmailProviderId", m.Templates, "inviteEmailTemplates")
 }
 
-func (m *EmailServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
-	setEmailValues(h, data, &m.Connector, "emailServiceProvider", &m.Templates, "emailTemplates")
+func (m *EmailInviteModel) SetValues(h *helpers.Handler, data map[string]any) {
+	setEmailValues(h, data, &m.Connector, "inviteEmailProviderId", &m.Templates, "inviteEmailTemplates")
 }
 
-func (m *EmailServiceModel) Validate(h *helpers.Handler) {
+func (m *EmailInviteModel) Validate(h *helpers.Handler) {
 	validateEmailValues(h, m.Connector, m.Templates)
 }
 
-func (m *EmailServiceModel) UpdateReferences(h *helpers.Handler) {
+func (m *EmailInviteModel) UpdateReferences(h *helpers.Handler) {
 	replaceConnectorIDWithReference(&m.Connector, h)
 }
