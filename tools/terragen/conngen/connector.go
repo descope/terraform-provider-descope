@@ -137,6 +137,10 @@ func (c *Connector) Prepare() {
 			f.Type = FieldTypeSecret
 		}
 
+		if f.Type == "secret-file" {
+			f.Type = FieldTypeSecret
+		}
+
 		if d := f.Dependency; d != nil {
 			// link dependencies and fields together
 			if d.Field == nil {
