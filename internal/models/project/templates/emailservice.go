@@ -35,6 +35,9 @@ func (m *EmailServiceModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *EmailServiceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Connector, data, "emailServiceProvider")
+	if m.Connector.ValueString() == "" { // special case for server responses that instead of "Descope" return an empty string
+		m.Connector = stringattr.Value(helpers.DescopeConnector)
+	}
 
 	if m.Templates.IsEmpty() {
 		listattr.Set(&m.Templates, data, "emailTemplates", h)

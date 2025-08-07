@@ -63,15 +63,23 @@ func (m *InviteSettingsModel) UpdateReferences(h *helpers.Handler) {
 }
 
 func convertKeysFromService(data map[string]any) {
-	data["inviteEmailProviderId"] = data["emailServiceProvider"]
-	delete(data, "emailServiceProvider")
-	data["inviteEmailTemplates"] = data["emailTemplates"]
-	delete(data, "emailTemplates")
+	if v, ok := data["emailServiceProvider"]; ok {
+		data["inviteEmailProviderId"] = v
+		delete(data, "emailServiceProvider")
+	}
+	if v, ok := data["emailTemplates"]; ok {
+		data["inviteEmailTemplates"] = v
+		delete(data, "emailTemplates")
+	}
 }
 
 func convertKeysToService(data map[string]any) {
-	data["emailServiceProvider"] = data["inviteEmailProviderId"]
-	delete(data, "inviteEmailProviderId")
-	data["emailTemplates"] = data["inviteEmailTemplates"]
-	delete(data, "inviteEmailTemplates")
+	if v, ok := data["inviteEmailProviderId"]; ok {
+		data["emailServiceProvider"] = v
+		delete(data, "inviteEmailProviderId")
+	}
+	if v, ok := data["inviteEmailTemplates"]; ok {
+		data["emailTemplates"] = v
+		delete(data, "inviteEmailTemplates")
+	}
 }
