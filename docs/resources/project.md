@@ -2269,10 +2269,43 @@ Required:
 Optional:
 
 - `add_magiclink_token` (Boolean) Whether to include a magic link token in invitation messages.
+- `email_service` (Attributes) Settings related to sending invitation emails. (see [below for nested schema](#nestedatt--invite_settings--email_service))
 - `invite_url` (String) Custom URL to include in the message sent to invited users.
 - `require_invitation` (Boolean) Whether users must be invited before they can sign up to the project.
 - `send_email` (Boolean) Whether to send invitation emails to users.
 - `send_text` (Boolean) Whether to send invitation SMS messages to users.
+
+<a id="nestedatt--invite_settings--email_service"></a>
+### Nested Schema for `invite_settings.email_service`
+
+Required:
+
+- `connector` (String) The name of the email connector to use for sending emails.
+
+Optional:
+
+- `templates` (Attributes List) A list of email templates for different authentication flows. (see [below for nested schema](#nestedatt--invite_settings--email_service--templates))
+
+<a id="nestedatt--invite_settings--email_service--templates"></a>
+### Nested Schema for `invite_settings.email_service.templates`
+
+Required:
+
+- `name` (String) Unique name for this email template.
+- `subject` (String) Subject line of the email message.
+
+Optional:
+
+- `active` (Boolean) Whether this email template is currently active and in use.
+- `html_body` (String) HTML content of the email message body, required if `use_plain_text_body` isn't set.
+- `plain_text_body` (String) Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
+- `use_plain_text_body` (Boolean) Whether to use the plain text body instead of HTML for the email.
+
+Read-Only:
+
+- `id` (String)
+
+
 
 
 <a id="nestedatt--jwt_templates"></a>

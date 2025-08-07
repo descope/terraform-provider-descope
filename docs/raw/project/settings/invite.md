@@ -47,3 +47,12 @@ send_text
 - Type: `bool` 
 
 Whether to send invitation SMS messages to users.
+
+
+
+email_service
+-------------
+
+- Type: `object` of `templates.EmailService` 
+
+Settings related to sending invitation emails.

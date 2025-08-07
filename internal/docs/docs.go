@@ -957,6 +957,7 @@ var docsInviteSettings = map[string]string{
 	"add_magiclink_token": "Whether to include a magic link token in invitation messages.",
 	"send_email": "Whether to send invitation emails to users.",
 	"send_text": "Whether to send invitation SMS messages to users.",
+	"email_service": "Settings related to sending invitation emails.",
 }
 
 var docsSessionMigration = map[string]string{
