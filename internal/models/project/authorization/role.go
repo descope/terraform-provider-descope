@@ -14,8 +14,8 @@ var RoleAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringvalidator.LengthAtMost(100)),
 	"description": stringattr.Optional(stringattr.StandardLenValidator),
 	"permissions": strsetattr.Optional(),
-	"default":     boolattr.Optional(),
-	"private":     boolattr.Optional(),
+	"default":     boolattr.Default(false),
+	"private":     boolattr.Default(false),
 }
 
 type RoleModel struct {
@@ -69,20 +69,4 @@ func (m *RoleModel) GetID() stringattr.Type {
 
 func (m *RoleModel) SetID(id stringattr.Type) {
 	m.ID = id
-}
-
-func (m *RoleModel) SetPrivate(private boolattr.Type) {
-	m.Private = private
-}
-
-func (m *RoleModel) IsPrivate() bool {
-	return m.Private.ValueBool()
-}
-
-func (m *RoleModel) SetDefault(def boolattr.Type) {
-	m.Default = def
-}
-
-func (m *RoleModel) IsDefault() bool {
-	return m.Default.ValueBool()
 }
