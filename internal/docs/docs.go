@@ -257,6 +257,8 @@ var docsRole = map[string]string{
 	"name": "A name for the role.",
 	"description": "A description for the role.",
 	"permissions": "A list of permissions by name to be included in the role.",
+	"default": "Whether this role should automatically be assigned to users that are created without any roles.",
+	"private": "Whether this role should not be displayed to tenant admins.",
 }
 
 var docsAbuseIPDB = map[string]string{
