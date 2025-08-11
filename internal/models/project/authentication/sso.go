@@ -28,7 +28,6 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.MergeUsers, data, "mergeUsers")
 	stringattr.Get(m.RedirectURL, data, "redirectUrl")
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
-
 	return data
 }
 
