@@ -57,7 +57,7 @@ func (m *SESModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *SESModel) Validate(h *helpers.Handler) {
-	// checking for "assumeRole" value even in the "credentials" cehcks to take into account Null value during validation
+	// checking for "assumeRole" value even in the "credentials" checks to take into account Null value during validation
 	if m.AccessKeyId.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() == "assumeRole" {
 		h.Conflict("The access_key_id field can only be used when auth_type is set to 'credentials'")
 	}
