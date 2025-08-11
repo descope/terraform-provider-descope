@@ -36,6 +36,9 @@ func (n *Naming) GetName(category, id, kind, fallback string) string {
 	}
 	idNames, ok := categoryNames[id]
 	if !ok {
+		if category == "connector" && kind == "file" && !utils.Flags.AddConnectors {
+			return fallback
+		}
 		idNames = map[string]string{}
 		categoryNames[id] = idNames
 	}

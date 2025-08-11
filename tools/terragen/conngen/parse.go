@@ -14,9 +14,7 @@ func ParseConnectors(datadir string, templatesdir string) *Connectors {
 		Naming: &Naming{},
 	}
 
-	if !utils.Flags.SkipTemplates {
-		conns.Read(datadir, templatesdir)
-	}
+	conns.Read(datadir, templatesdir)
 
 	conns.Naming.Read(datadir)
 

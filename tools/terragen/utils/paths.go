@@ -41,16 +41,13 @@ func PreparePaths() *Paths {
 
 	data := filepath.Join(root, "tools", "terragen", "conngen")
 
-	templates := ""
-	if !Flags.SkipTemplates {
-		templates = strings.TrimSpace(os.Getenv("DESCOPE_TEMPLATES_PATH"))
-		if templates == "" {
-			log.Fatalf("expected path to templates in DESCOPE_TEMPLATES_PATH environment variable")
-		}
-		templates = filepath.Clean(templates)
-		if info, err := os.Stat(templates); os.IsNotExist(err) || !info.IsDir() {
-			log.Fatalf("expected to find templates directory at path: %s", templates)
-		}
+	templates := strings.TrimSpace(os.Getenv("DESCOPE_TEMPLATES_PATH"))
+	if templates == "" {
+		log.Fatalf("expected path to templates in DESCOPE_TEMPLATES_PATH environment variable")
+	}
+	templates = filepath.Clean(templates)
+	if info, err := os.Stat(templates); os.IsNotExist(err) || !info.IsDir() {
+		log.Fatalf("expected to find templates directory at path: %s", templates)
 	}
 
 	return &Paths{
