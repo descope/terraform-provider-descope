@@ -96,7 +96,7 @@ hide_saml
 
 
 Setting this to `true` will hide the SAML configuration option.
-Note: At least one of SAML or OIDC must remain enabled for SSO functionality.
+Note: At least one of SAML or OIDC must remain enabled.
 
 
 
@@ -107,4 +107,4 @@ hide_oidc
 
 
 Setting this to `true` will hide the OIDC configuration option.
-Note: At least one of SAML or OIDC must remain enabled for SSO functionality.
+Note: At least one of SAML or OIDC must remain enabled.
