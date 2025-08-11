@@ -164,13 +164,30 @@ func TestAuthentication(t *testing.T) {
 			Config: p.Config(`
 				authentication = {
 					sso = {
-						sso_suite_style_id = "koko"
+						sso_suite_settings = {
+							hide_saml = true
+							hide_oidc = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("The attributes hide_oidc and hide_saml cannot both be true"),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							style_id = "koko"
+							hide_saml = true
+						}
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso": map[string]any{
-					"sso_suite_style_id": "koko",
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"style_id":  "koko",
+					"hide_saml": true,
 				},
 			}),
 		},
