@@ -132,13 +132,14 @@ func (c *Connector) Prepare() {
 			f.Type = FieldTypeString
 		}
 
-		// treat secret-json-file as a secret field, as they are essentially identical
-		if f.Type == "secret-json-file" {
+		// treat secret file fields as regular secret fields, as they are essentially identical
+		if f.Type == "secret-file" || f.Type == "secret-json-file" {
 			f.Type = FieldTypeSecret
 		}
 
-		if f.Type == "secret-file" {
-			f.Type = FieldTypeSecret
+		// treat secret-object fields are regular object fields until we add support for it
+		if f.Type == "secret-object" {
+			f.Type = FieldTypeObject
 		}
 
 		if d := f.Dependency; d != nil {

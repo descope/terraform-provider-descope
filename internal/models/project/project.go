@@ -102,5 +102,6 @@ func (m *ProjectModel) CollectReferences(h *helpers.Handler) {
 
 func (m *ProjectModel) UpdateReferences(h *helpers.Handler) {
 	objattr.UpdateReferences(&m.Authentication, h)
+	objattr.UpdateReferences(&m.Invite, h)
 	objattr.UpdateReferences(&m.Settings, h)
 }
