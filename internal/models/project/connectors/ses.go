@@ -57,30 +57,33 @@ func (m *SESModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *SESModel) Validate(h *helpers.Handler) {
-	// checking for "assumeRole" value even in the "credentials" checks to take into account Null value during validation
-	if m.AccessKeyId.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() == "assumeRole" {
-		h.Conflict("The access_key_id field can only be used when auth_type is set to 'credentials'")
-	}
-	if m.AccessKeyId.ValueString() == "" && !m.AccessKeyId.IsUnknown() && m.AuthType.ValueString() != "assumeRole" {
+	isCredentials := m.AuthType.ValueString() == "credentials" || m.AuthType.ValueString() == ""
+	isAssumeRole := m.AuthType.ValueString() == "assumeRole"
+
+	if isCredentials && m.AccessKeyId.ValueString() == "" && !m.AccessKeyId.IsUnknown() {
 		h.Conflict("The access_key_id field is required when auth_type is set to 'credentials'")
 	}
-	if m.Secret.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() == "assumeRole" {
-		h.Conflict("The secret field can only be used when auth_type is set to 'credentials'")
-	}
-	if m.Secret.ValueString() == "" && !m.Secret.IsUnknown() && m.AuthType.ValueString() != "assumeRole" {
+	if isCredentials && m.Secret.ValueString() == "" && !m.Secret.IsUnknown() {
 		h.Conflict("The secret field is required when auth_type is set to 'credentials'")
 	}
-	if m.RoleARN.ValueString() != "" && m.AuthType.ValueString() != "assumeRole" {
-		h.Conflict("The role_arn field can only be used when auth_type is set to 'assumeRole'")
+	if !isCredentials && m.AccessKeyId.ValueString() != "" {
+		h.Conflict("The access_key_id field can only be used when auth_type is set to 'credentials'")
 	}
-	if m.RoleARN.ValueString() == "" && !m.RoleARN.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
+	if !isCredentials && m.Secret.ValueString() != "" {
+		h.Conflict("The secret field can only be used when auth_type is set to 'credentials'")
+	}
+
+	if isAssumeRole && m.RoleARN.ValueString() == "" && !m.RoleARN.IsUnknown() {
 		h.Conflict("The role_arn field is required when auth_type is set to 'assumeRole'")
 	}
-	if m.ExternalID.ValueString() != "" && m.AuthType.ValueString() != "assumeRole" {
-		h.Conflict("The external_id field can only be used when auth_type is set to 'assumeRole'")
-	}
-	if m.ExternalID.ValueString() == "" && !m.ExternalID.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
+	if isAssumeRole && m.ExternalID.ValueString() == "" && !m.ExternalID.IsUnknown() {
 		h.Conflict("The external_id field is required when auth_type is set to 'assumeRole'")
+	}
+	if !isAssumeRole && m.RoleARN.ValueString() != "" {
+		h.Conflict("The role_arn field can only be used when auth_type is set to 'assumeRole'")
+	}
+	if !isAssumeRole && m.ExternalID.ValueString() != "" {
+		h.Conflict("The external_id field can only be used when auth_type is set to 'assumeRole'")
 	}
 }
 
