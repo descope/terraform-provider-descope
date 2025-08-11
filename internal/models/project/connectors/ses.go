@@ -57,29 +57,33 @@ func (m *SESModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *SESModel) Validate(h *helpers.Handler) {
-	if m.AccessKeyId.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "credentials" {
-		h.Conflict("The access_key_id field can only be used when auth_type is set to 'credentials'")
-	}
-	if m.AccessKeyId.ValueString() == "" && !m.AccessKeyId.IsUnknown() && m.AuthType.ValueString() == "credentials" {
+	isCredentials := m.AuthType.ValueString() == "credentials" || m.AuthType.ValueString() == ""
+	isAssumeRole := m.AuthType.ValueString() == "assumeRole"
+
+	if isCredentials && m.AccessKeyId.ValueString() == "" && !m.AccessKeyId.IsUnknown() {
 		h.Conflict("The access_key_id field is required when auth_type is set to 'credentials'")
 	}
-	if m.Secret.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "credentials" {
-		h.Conflict("The secret field can only be used when auth_type is set to 'credentials'")
-	}
-	if m.Secret.ValueString() == "" && !m.Secret.IsUnknown() && m.AuthType.ValueString() == "credentials" {
+	if isCredentials && m.Secret.ValueString() == "" && !m.Secret.IsUnknown() {
 		h.Conflict("The secret field is required when auth_type is set to 'credentials'")
 	}
-	if m.RoleARN.ValueString() != "" && m.AuthType.ValueString() != "assumeRole" {
-		h.Conflict("The role_arn field can only be used when auth_type is set to 'assumeRole'")
+	if !isCredentials && m.AccessKeyId.ValueString() != "" {
+		h.Conflict("The access_key_id field can only be used when auth_type is set to 'credentials'")
 	}
-	if m.RoleARN.ValueString() == "" && !m.RoleARN.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
+	if !isCredentials && m.Secret.ValueString() != "" {
+		h.Conflict("The secret field can only be used when auth_type is set to 'credentials'")
+	}
+
+	if isAssumeRole && m.RoleARN.ValueString() == "" && !m.RoleARN.IsUnknown() {
 		h.Conflict("The role_arn field is required when auth_type is set to 'assumeRole'")
 	}
-	if m.ExternalID.ValueString() != "" && m.AuthType.ValueString() != "assumeRole" {
-		h.Conflict("The external_id field can only be used when auth_type is set to 'assumeRole'")
-	}
-	if m.ExternalID.ValueString() == "" && !m.ExternalID.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
+	if isAssumeRole && m.ExternalID.ValueString() == "" && !m.ExternalID.IsUnknown() {
 		h.Conflict("The external_id field is required when auth_type is set to 'assumeRole'")
+	}
+	if !isAssumeRole && m.RoleARN.ValueString() != "" {
+		h.Conflict("The role_arn field can only be used when auth_type is set to 'assumeRole'")
+	}
+	if !isAssumeRole && m.ExternalID.ValueString() != "" {
+		h.Conflict("The external_id field can only be used when auth_type is set to 'assumeRole'")
 	}
 }
 
@@ -87,8 +91,11 @@ func (m *SESModel) Validate(h *helpers.Handler) {
 
 func (m *SESModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
+	stringattr.Get(m.AuthType, c, "authType")
 	stringattr.Get(m.AccessKeyId, c, "accessKeyId")
 	stringattr.Get(m.Secret, c, "secretAccessKey")
+	stringattr.Get(m.RoleARN, c, "roleArn")
+	stringattr.Get(m.ExternalID, c, "externalId")
 	stringattr.Get(m.Region, c, "region")
 	stringattr.Get(m.Endpoint, c, "endpoint")
 	objattr.Get(m.Sender, c, helpers.RootKey, h)
@@ -96,10 +103,16 @@ func (m *SESModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *SESModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AuthType, c, "authType")
 	stringattr.Nil(&m.AccessKeyId)
 	stringattr.Nil(&m.Secret)
-	stringattr.Set(&m.Region, c, "awsSNSRegion")
-	stringattr.Set(&m.Endpoint, c, "awsEndpoint")
+	stringattr.Set(&m.RoleARN, c, "roleArn")
+	stringattr.Set(&m.ExternalID, c, "externalId")
+	stringattr.Set(&m.Region, c, "region")
+	stringattr.Set(&m.Endpoint, c, "endpoint")
+	if !m.Sender.IsSet() {
+		m.Sender = objattr.Value(&SenderFieldModel{}) // XXX switch this together with the Set / Opt refactor
+	}
 	objattr.Set(&m.Sender, c, helpers.RootKey, h)
 }
 
