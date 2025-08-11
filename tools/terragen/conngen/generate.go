@@ -2,7 +2,9 @@ package conngen
 
 import (
 	_ "embed"
+	"os"
 	"path/filepath"
+	"slices"
 
 	"github.com/descope/terraform-provider-descope/tools/terragen/utils"
 )
@@ -16,6 +18,21 @@ var connectorsTemplateData []byte
 //go:embed test.gotmpl
 var testTemplateData []byte
 
+func TrimConnectors(dir string, conns *Connectors) {
+	if utils.Flags.AddConnectors {
+		return
+	}
+
+	conns.Connectors = slices.DeleteFunc(conns.Connectors, func(connector *Connector) bool {
+		if !connector.BuiltIn {
+			path := filepath.Join(dir, connector.FileName()+".go")
+			_, err := os.Stat(path)
+			return err != nil
+		}
+		return false
+	})
+}
+
 func GenerateSources(dir string, conns *Connectors) {
 	connectorTemplate := utils.LoadTemplate("connector", connectorTemplateData)
 	for _, connector := range conns.Connectors {
@@ -26,16 +43,12 @@ func GenerateSources(dir string, conns *Connectors) {
 	}
 
 	connectorsTemplate := utils.LoadTemplate("connectors", connectorsTemplateData)
-	if !utils.Flags.SkipTemplates {
-		path := filepath.Join(dir, "connectors.go")
-		utils.WriteGoSource(path, conns, connectorsTemplate, true)
-	}
+	path := filepath.Join(dir, "connectors.go")
+	utils.WriteGoSource(path, conns, connectorsTemplate, true)
 
 	testTemplate := utils.LoadTemplate("test", testTemplateData)
-	if !utils.Flags.SkipTemplates {
-		path := filepath.Join(dir, "connectors_test.go")
-		utils.WriteGoSource(path, conns, testTemplate, true)
-	}
+	path = filepath.Join(dir, "connectors_test.go")
+	utils.WriteGoSource(path, conns, testTemplate, true)
 }
 
 func UpdateNaming(dir string, conns *Connectors) {

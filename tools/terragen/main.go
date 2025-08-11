@@ -15,10 +15,13 @@ func main() {
 	// ensures that required paths are available and creates directories for generated files
 	paths := utils.PreparePaths()
 
-	// parses all connector template metadata (unless --skip-templates flag was set)
+	// parses all connector template metadata
 	conns := conngen.ParseConnectors(paths.Data, paths.Templates)
 
-	// generates .go sources and tests for all connector models (unless --skip-templates flag was set)
+	// remove any connectors from the templates that don't already exist (unless --add-connectors flag was set)
+	conngen.TrimConnectors(paths.Connectors, conns)
+
+	// generates .go sources and tests for all connector models
 	conngen.GenerateSources(paths.Connectors, conns)
 
 	// creates a simple schema representation by parsing attributes in all model .go source files
