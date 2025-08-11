@@ -160,5 +160,19 @@ func TestAuthentication(t *testing.T) {
 				},
 			}),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_style_id = "koko"
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso": map[string]any{
+					"sso_suite_style_id": "koko",
+				},
+			}),
+		},
 	)
 }
