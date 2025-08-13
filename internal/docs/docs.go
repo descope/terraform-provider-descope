@@ -235,6 +235,17 @@ var docsSSO = map[string]string{
 	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
 	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
 	                "in tenant level settings or SDK/API call, they will override this value.",
+	"sso_suite_settings": "Configuration block for the SSO Suite.",
+}
+
+var docsSSOSuite = map[string]string{
+	"style_id": "Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in " +
+	            "the console for it to be used.",
+	"hide_scim": "Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.",
+	"hide_groups_mapping": "Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.",
+	"hide_domains": "Setting this to `true` will hide the domains configuration section in the SSO Suite interface.",
+	"hide_saml": "Setting this to `true` will hide the SAML configuration option.",
+	"hide_oidc": "Setting this to `true` will hide the OIDC configuration option.",
 }
 
 var docsTOTP = map[string]string{
