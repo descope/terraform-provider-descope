@@ -42,6 +42,7 @@ func InjectModels() {
 	inject(authentication.PasskeysAttributes, docsPasskeys)
 	inject(authentication.PasswordAttributes, docsPassword)
 	inject(authentication.SSOAttributes, docsSSO)
+	inject(authentication.SSOSuiteAttributes, docsSSOSuite)
 	inject(authentication.TOTPAttributes, docsTOTP)
 	inject(authorization.AuthorizationAttributes, docsAuthorization)
 	inject(authorization.PermissionAttributes, docsPermission)

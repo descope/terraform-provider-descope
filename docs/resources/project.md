@@ -810,6 +810,20 @@ Optional:
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
+- `sso_suite_settings` (Attributes) Configuration block for the SSO Suite. (see [below for nested schema](#nestedatt--authentication--sso--sso_suite_settings))
+
+<a id="nestedatt--authentication--sso--sso_suite_settings"></a>
+### Nested Schema for `authentication.sso.sso_suite_settings`
+
+Optional:
+
+- `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
+- `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
+- `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
+- `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
+- `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
+- `style_id` (String) Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in the console for it to be used.
+
 
 
 <a id="nestedatt--authentication--totp"></a>
