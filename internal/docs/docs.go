@@ -225,6 +225,8 @@ var docsPassword = map[string]string{
 	"reuse_amount": "The number of previous passwords whose hashes are kept to prevent users from " +
 	                "reusing old passwords.",
 	"uppercase": "Whether passwords must contain at least one uppercase letter.",
+	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., " +
+	               "whether a user already exists.",
 	"email_service": "Settings related to sending password reset emails as part of the password feature.",
 }
 
