@@ -115,6 +115,16 @@ Whether passwords must contain at least one uppercase letter.
 
 
 
+mask_errors
+-----------
+
+- Type: `bool` 
+
+Prevents information about user accounts from being revealed in error messages, e.g.,
+whether a user already exists.
+
+
+
 email_service
 -------------
 

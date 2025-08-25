@@ -762,6 +762,7 @@ Optional:
 - `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
 - `lock_attempts` (Number) The number of failed login attempts allowed before an account is locked.
 - `lowercase` (Boolean) Whether passwords must contain at least one lowercase letter.
+- `mask_errors` (Boolean) Prevents information about user accounts from being revealed in error messages, e.g., whether a user already exists.
 - `min_length` (Number) The minimum length of the password that users are required to use. The maximum length is always `64`.
 - `non_alphanumeric` (Boolean) Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).
 - `number` (Boolean) Whether passwords must contain at least one number.
