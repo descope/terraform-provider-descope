@@ -119,3 +119,13 @@ flows
 - Type: `map` of `flows.Flow` 
 
 Custom authentication flows to use in this project.
+
+
+
+widgets
+-------
+
+- Type: `map` of `widgets.Widget` 
+
+Embeddable components designed to facilitate the delegation of operations to
+tenant admins and end users.
