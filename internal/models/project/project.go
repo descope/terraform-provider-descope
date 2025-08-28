@@ -14,6 +14,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/project/flows"
 	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
 	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
+	"github.com/descope/terraform-provider-descope/internal/models/project/widgets"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -33,6 +34,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"jwt_templates":    objattr.Default[jwttemplates.JWTTemplatesModel](nil, jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
 	"styles":           objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
 	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
+	"widgets":          mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
 }
 
 type ProjectModel struct {
@@ -50,6 +52,7 @@ type ProjectModel struct {
 	JWTTemplates   objattr.Type[jwttemplates.JWTTemplatesModel]     `tfsdk:"jwt_templates"`
 	Styles         objattr.Type[flows.StylesModel]                  `tfsdk:"styles"`
 	Flows          mapattr.Type[flows.FlowModel]                    `tfsdk:"flows"`
+	Widgets        mapattr.Type[widgets.WidgetModel]                `tfsdk:"widgets"`
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -69,6 +72,8 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.Styles, data, "styles", h)
 	mapattr.Get(m.Flows, data, "flows", h)
 	flows.EnsureFlowIDs(m.Flows, data, "flows", h)
+	mapattr.Get(m.Widgets, data, "widgets", h)
+	widgets.EnsureWidgetIDs(m.Widgets, data, "widgets", h)
 	return data
 }
 
@@ -91,6 +96,9 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.Styles, data, "styles", h)
 	if m.Flows.IsEmpty() {
 		mapattr.Set(&m.Flows, data, "flows", h)
+	}
+	if m.Widgets.IsEmpty() {
+		mapattr.Set(&m.Widgets, data, "widgets", h)
 	}
 }
 

@@ -33,6 +33,7 @@ description: |-
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
 - `tags` (Set of String) Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
+- `widgets` (Attributes Map) Embeddable components designed to facilitate the delegation of operations to tenant admins and end users. (see [below for nested schema](#nestedatt--widgets))
 
 ### Read-Only
 
@@ -2428,3 +2429,11 @@ Optional:
 Required:
 
 - `data` (String) The JSON data defining the visual styling and theme configuration used for authentication, widgets, etc.
+
+
+<a id="nestedatt--widgets"></a>
+### Nested Schema for `widgets`
+
+Required:
+
+- `data` (String) The JSON data defining the widget. This will usually be exported as a `.json` file from the Descope console, and set in the `.tf` file using the `data = file("...")` syntax.
