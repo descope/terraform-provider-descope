@@ -44,7 +44,7 @@ func TestWidgets(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"widgets.%": 0,
+				"widgets.%": 1,
 			}),
 		},
 		resource.TestStep{
