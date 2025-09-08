@@ -17,6 +17,8 @@ var docsProject = map[string]string{
 	"jwt_templates": "Defines templates for JSON Web Tokens (JWT) used for authentication.",
 	"styles": "Custom styles that can be applied to the project's authentication flows.",
 	"flows": "Custom authentication flows to use in this project.",
+	"widgets": "Embeddable components designed to facilitate the delegation of operations to " +
+	           "tenant admins and end users.",
 }
 
 var docsApplications = map[string]string{
@@ -1063,4 +1065,9 @@ var docsVoiceTemplate = map[string]string{
 	"active": "Whether this voice template is currently active and in use.",
 	"name": "Unique name for this voice template.",
 	"body": "The content of the voice message that will be spoken.",
+}
+
+var docsWidget = map[string]string{
+	"data": "The JSON data defining the widget. This will usually be exported as a `.json` file from the Descope console, " +
+	        "and set in the `.tf` file using the `data = file(\"...\")` syntax.",
 }

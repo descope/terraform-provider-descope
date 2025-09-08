@@ -15,6 +15,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
 	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
 	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
+	"github.com/descope/terraform-provider-descope/internal/models/project/widgets"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -124,6 +125,7 @@ func InjectModels() {
 	inject(templates.TextTemplateAttributes, docsTextTemplate)
 	inject(templates.VoiceServiceAttributes, docsVoiceService)
 	inject(templates.VoiceTemplateAttributes, docsVoiceTemplate)
+	inject(widgets.WidgetAttributes, docsWidget)
 }
 
 func inject(model map[string]schema.Attribute, docs map[string]string) {
