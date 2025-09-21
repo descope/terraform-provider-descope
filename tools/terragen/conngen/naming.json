@@ -355,6 +355,14 @@
       "attribute": "country",
       "struct": "Country"
     },
+    "createSupabaseUser": {
+      "attribute": "create_users",
+      "struct": "CreateUsers"
+    },
+    "customClaimsMapping": {
+      "attribute": "custom_claims_mapping",
+      "struct": "CustomClaimsMapping"
+    },
     "customDomain": {
       "attribute": "custom_domain",
       "struct": "CustomDomain"
@@ -459,6 +467,10 @@
       "attribute": "post_url",
       "struct": "PostURL"
     },
+    "privateKey": {
+      "attribute": "private_key",
+      "struct": "PrivateKey"
+    },
     "projectId": {
       "attribute": "project_id",
       "struct": "ProjectID"
@@ -542,6 +554,14 @@
     "subdomain": {
       "attribute": "subdomain",
       "struct": "Subdomain"
+    },
+    "supabaseServiceRoleKey": {
+      "attribute": "service_role_api_key",
+      "struct": "ServiceRoleAPIKey"
+    },
+    "supabaseUrl": {
+      "attribute": "project_base_url",
+      "struct": "ProjectBaseURL"
     },
     "teamId": {
       "attribute": "team_id",

@@ -875,7 +875,18 @@ var docsSumoLogic = map[string]string{
 var docsSupabase = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"auth_type": "The authentication type to use.",
 	"signing_secret": "The signing secret for your Supabase project.",
+	"private_key": "The private key in JWK format used to sign the JWT. You can generate a key using " +
+	               "tools like `npx supabase gen signing-key --algorithm ES256`. Make sure to use " +
+	               "the ES256 algorithm.",
+	"create_users": "Enable to automatically create users in Supabase when generating tokens. Will " +
+	                "only create a new user if one does not already exist. When disabled, only JWT " +
+	                "tokens will be generated, WITHOUT user creation.",
+	"project_base_url": "Your Supabase Project's API base URL, e.g.: " +
+	                    "https://<your-project-id>.supabase.co.",
+	"service_role_api_key": "The service role API key for your Supabase project, required to create users.",
+	"custom_claims_mapping": "A mapping of Descope user fields or JWT claims to Supabase custom claims",
 	"expiration_time": "The duration in minutes for which the token is valid.",
 }
 

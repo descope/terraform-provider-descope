@@ -3,19 +3,31 @@
 package connectors
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/floatattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+var SupabaseValidator = objattr.NewValidator[SupabaseModel]("must have a valid configuration")
 
 var SupabaseAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"signing_secret":  stringattr.SecretRequired(),
-	"expiration_time": floatattr.Default(60),
+	"auth_type":             stringattr.Default("legacyJWTSecret", stringvalidator.OneOf("legacyJWTSecret", "jwtSigningKey")),
+	"signing_secret":        stringattr.SecretOptional(),
+	"private_key":           stringattr.SecretOptional(),
+	"create_users":          boolattr.Default(false),
+	"project_base_url":      stringattr.Default(""),
+	"service_role_api_key":  stringattr.SecretOptional(),
+	"custom_claims_mapping": strmapattr.Default(),
+	"expiration_time":       floatattr.Default(60),
 }
 
 // Model
@@ -25,8 +37,14 @@ type SupabaseModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	SigningSecret  stringattr.Type `tfsdk:"signing_secret"`
-	ExpirationTime floatattr.Type  `tfsdk:"expiration_time"`
+	AuthType            stringattr.Type `tfsdk:"auth_type"`
+	SigningSecret       stringattr.Type `tfsdk:"signing_secret"`
+	PrivateKey          stringattr.Type `tfsdk:"private_key"`
+	CreateUsers         boolattr.Type   `tfsdk:"create_users"`
+	ProjectBaseURL      stringattr.Type `tfsdk:"project_base_url"`
+	ServiceRoleAPIKey   stringattr.Type `tfsdk:"service_role_api_key"`
+	CustomClaimsMapping strmapattr.Type `tfsdk:"custom_claims_mapping"`
+	ExpirationTime      floatattr.Type  `tfsdk:"expiration_time"`
 }
 
 func (m *SupabaseModel) Values(h *helpers.Handler) map[string]any {
@@ -43,17 +61,56 @@ func (m *SupabaseModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 }
 
+func (m *SupabaseModel) Validate(h *helpers.Handler) {
+	if m.SigningSecret.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "legacyJWTSecret" {
+		h.Conflict("The signing_secret field can only be used when auth_type is set to 'legacyJWTSecret'")
+	}
+	if m.SigningSecret.ValueString() == "" && !m.SigningSecret.IsUnknown() && m.AuthType.ValueString() == "legacyJWTSecret" {
+		h.Conflict("The signing_secret field is required when auth_type is set to 'legacyJWTSecret'")
+	}
+	if m.PrivateKey.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "jwtSigningKey" {
+		h.Conflict("The private_key field can only be used when auth_type is set to 'jwtSigningKey'")
+	}
+	if m.PrivateKey.ValueString() == "" && !m.PrivateKey.IsUnknown() && m.AuthType.ValueString() == "jwtSigningKey" {
+		h.Conflict("The private_key field is required when auth_type is set to 'jwtSigningKey'")
+	}
+	if !m.ProjectBaseURL.IsNull() && !m.CreateUsers.ValueBool() {
+		h.Conflict("The project_base_url field cannot be used unless create_users is set to true")
+	}
+	if !m.ProjectBaseURL.IsUnknown() && m.ProjectBaseURL.ValueString() == "" && m.CreateUsers.ValueBool() {
+		h.Conflict("The project_base_url field is required when create_users is set to true")
+	}
+	if !m.ServiceRoleAPIKey.IsNull() && !m.CreateUsers.ValueBool() {
+		h.Conflict("The service_role_api_key field cannot be used unless create_users is set to true")
+	}
+	if !m.ServiceRoleAPIKey.IsUnknown() && m.ServiceRoleAPIKey.ValueString() == "" && m.CreateUsers.ValueBool() {
+		h.Conflict("The service_role_api_key field is required when create_users is set to true")
+	}
+}
+
 // Configuration
 
 func (m *SupabaseModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
+	stringattr.Get(m.AuthType, c, "authType")
 	stringattr.Get(m.SigningSecret, c, "signingSecret")
+	stringattr.Get(m.PrivateKey, c, "privateKey")
+	boolattr.Get(m.CreateUsers, c, "createSupabaseUser")
+	stringattr.Get(m.ProjectBaseURL, c, "supabaseUrl")
+	stringattr.Get(m.ServiceRoleAPIKey, c, "supabaseServiceRoleKey")
+	getHeaders(m.CustomClaimsMapping, c, "customClaimsMapping", h)
 	floatattr.Get(m.ExpirationTime, c, "expirationTimeMinutes")
 	return c
 }
 
 func (m *SupabaseModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AuthType, c, "authType")
 	stringattr.Nil(&m.SigningSecret)
+	stringattr.Nil(&m.PrivateKey)
+	boolattr.Set(&m.CreateUsers, c, "createSupabaseUser")
+	stringattr.Set(&m.ProjectBaseURL, c, "supabaseUrl")
+	stringattr.Nil(&m.ServiceRoleAPIKey)
+	setHeaders(&m.CustomClaimsMapping, c, "customClaimsMapping", h)
 	floatattr.Set(&m.ExpirationTime, c, "expirationTimeMinutes")
 }
 

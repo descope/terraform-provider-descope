@@ -33,7 +33,7 @@ func MergeDocs(conns *Connectors, sc *schema.Schema) {
 	for _, c := range conns.Connectors {
 		mergeConnectorDocs(c, sc)
 		for _, f := range model.Fields {
-			if f.Name == c.ID && c.Description != "" {
+			if f.Name == c.AttributeName() && c.Description != "" {
 				f.Description = wordwrap.WrapString(c.Description, 80)
 			}
 		}

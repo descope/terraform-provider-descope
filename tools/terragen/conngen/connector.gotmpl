@@ -71,25 +71,37 @@ func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any
 {{ if .HasValidator }}
 func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
     {{- range .Fields }}{{ if .Dependency }}
-	{{- if eq .Dependency.Field.Type "boolean" }}
-	{{- if .Dependency.DefaultValue }}
-	if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
-		h.Conflict("The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} isn't set to true")
-	}
-	{{- else }}
-	if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
-		h.Conflict("The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to true")
-	}
-	{{- end }}
-	{{- end }}
-	{{- if eq .Dependency.Field.Type "string" }}
-	if m.{{ .StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "{{ .Dependency.Value }}" {
-		h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
-	}
-	if m.{{ .StructName }}.ValueString() == "" && !m.{{ .StructName }}.IsUnknown() && m.{{ .Dependency.Field.StructName }}.ValueString() == "{{ .Dependency.Value }}" {
-		h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
-	}
-	{{- end }}
+		{{- if eq .Dependency.Field.Type "boolean" }}
+			{{- if .Dependency.DefaultValue }}
+				if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
+					h.Conflict("The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} isn't set to true")
+				}
+				{{- if .Required }}
+					if !m.{{ .StructName }}.IsUnknown() && {{ .IsZero }} && (m.{{ .Dependency.Field.StructName }}.IsNull() || m.{{ .Dependency.Field.StructName }}.ValueBool()) {
+						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is true")
+					}
+				{{- end }}
+			{{- else }}
+				if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
+					h.Conflict("The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to true")
+				}
+				{{- if .Required }}
+					if !m.{{ .StructName }}.IsUnknown() && {{ .IsZero }} && m.{{ .Dependency.Field.StructName }}.ValueBool() {
+						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to true")
+					}
+				{{- end }}
+			{{- end }}
+		{{- end }}
+		{{- if eq .Dependency.Field.Type "string" }}
+			if {{ .IsNonZero }} && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "{{ .Dependency.Value }}" {
+				h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
+			}
+			{{- if .Required }}
+				if {{ .IsZero }} && !m.{{ .StructName }}.IsUnknown() && m.{{ .Dependency.Field.StructName }}.ValueString() == "{{ .Dependency.Value }}" {
+					h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
+				}
+			{{- end }}
+		{{- end }}
 	{{- end }}{{ end }}
 }
 {{ end }}
