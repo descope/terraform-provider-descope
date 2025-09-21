@@ -13,6 +13,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -175,13 +176,14 @@ func validateSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProvi
 	ensureNoCustomProviderFields(h, m.TokenEndpoint, "token_endpoint", name)
 	ensureNoCustomProviderFields(h, m.UserInfoEndpoint, "user_info_endpoint", name)
 	ensureNoCustomProviderFields(h, m.JWKsEndpoint, "jwks_endpoint", name)
+	ensureNoCustomProviderFields(h, m.UseClientAssertion, "use_client_assertion", name)
 
 	if !m.ClaimMapping.IsEmpty() {
 		h.Error("Reserved Attribute", "The %s OAuth provider is a system provider and its claim_mapping attribute is reserved", name)
 	}
 }
 
-func ensureNoCustomProviderFields(h *helpers.Handler, field stringattr.Type, fieldKey, name string) {
+func ensureNoCustomProviderFields(h *helpers.Handler, field attr.Value, fieldKey, name string) {
 	if !field.IsUnknown() && !field.IsNull() {
 		h.Error("Reserved Attribute", "The %s OAuth provider is a system provider and its %s attribute is reserved", name, fieldKey)
 	}
@@ -277,6 +279,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"token_endpoint":         stringattr.Optional(),
 	"user_info_endpoint":     stringattr.Optional(),
 	"jwks_endpoint":          stringattr.Optional(),
+	"use_client_assertion":   boolattr.Optional(),
 	"claim_mapping":          strmapattr.Optional(),
 }
 
@@ -299,6 +302,7 @@ type OAuthProviderModel struct {
 	TokenEndpoint           stringattr.Type                                 `tfsdk:"token_endpoint"`
 	UserInfoEndpoint        stringattr.Type                                 `tfsdk:"user_info_endpoint"`
 	JWKsEndpoint            stringattr.Type                                 `tfsdk:"jwks_endpoint"`
+	UseClientAssertion      boolattr.Type                                   `tfsdk:"use_client_assertion"`
 	ClaimMapping            strmapattr.Type                                 `tfsdk:"claim_mapping"`
 }
 
@@ -328,6 +332,7 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.TokenEndpoint, data, "tokenUrl")
 	stringattr.Get(m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Get(m.JWKsEndpoint, data, "jwksUrl")
+	boolattr.Get(m.UseClientAssertion, data, "useClientAssertion")
 	claimMapping := map[string]any{}
 	customAttributes := map[string]string{}
 	for k, v := range strmapattr.Iterator(m.ClaimMapping, h) {
@@ -361,6 +366,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	stringattr.Set(&m.TokenEndpoint, data, "tokenUrl")
 	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
+	boolattr.Set(&m.UseClientAssertion, data, "useClientAssertion")
 	strmapattr.Nil(&m.ClaimMapping, h) // XXX empty defaults are added by the backend, add parsing for refresh
 }
 

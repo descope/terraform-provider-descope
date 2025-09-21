@@ -190,6 +190,7 @@ var docsOAuthProvider = map[string]string{
 	"token_endpoint": "The URL where the application requests an access token from the OAuth provider.",
 	"user_info_endpoint": "The URL where the application retrieves user information from the OAuth provider.",
 	"jwks_endpoint": "The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.",
+	"use_client_assertion": "Use private key JWT (client assertion) instead of client secret.",
 	"claim_mapping": "Maps OAuth provider claims to Descope user attributes.",
 }
 

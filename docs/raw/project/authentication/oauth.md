@@ -295,6 +295,15 @@ The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAut
 
 
 
+use_client_assertion
+--------------------
+
+- Type: `bool` 
+
+Use private key JWT (client assertion) instead of client secret.
+
+
+
 claim_mapping
 -------------
 

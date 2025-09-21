@@ -345,6 +345,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--custom--provider_token_management"></a>
@@ -390,6 +391,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--apple--provider_token_management"></a>
@@ -420,6 +422,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--discord--provider_token_management"></a>
@@ -450,6 +453,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--facebook--provider_token_management"></a>
@@ -480,6 +484,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--github--provider_token_management"></a>
@@ -510,6 +515,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--gitlab--provider_token_management"></a>
@@ -540,6 +546,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--google--provider_token_management"></a>
@@ -570,6 +577,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--linkedin--provider_token_management"></a>
@@ -600,6 +608,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--microsoft--provider_token_management"></a>
@@ -630,6 +639,7 @@ Optional:
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
+- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--slack--provider_token_management"></a>
