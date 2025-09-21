@@ -40,8 +40,8 @@ An optional endpoint URL (hostname only or fully qualified URI).
 
 
 
-organization_number
--------------------
+origination_number
+------------------
 
 - Type: `string` 
 
@@ -76,3 +76,12 @@ template_id
 
 The template for sending text messages to recipients in India. The template ID must be
 associated with the sender ID.
+
+
+
+organization_number
+-------------------
+
+- Type: `string` 
+
+Deprecated, use the `origination_number` attribute instead.

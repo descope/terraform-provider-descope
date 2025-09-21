@@ -31,14 +31,36 @@ func TestConnectorsShared(t *testing.T) {
 							}
 						}
 					]
+					"sns" = [
+						{
+							name = "My SNS Connector"
+							description = "Foo Bar"
+							access_key_id = "Foo"
+							secret = "Bar"
+							region = "us-west-2"
+							organization_number = "123456789012"
+						}
+					]
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.smtp.#":                1,
-				"connectors.smtp.0.id":             testacc.AttributeMatchesPattern(`^(CI|MP)`),
-				"connectors.smtp.0.name":           "My SMTP Connector",
-				"connectors.smtp.0.description":    "",
-				"connectors.smtp.0.use_static_ips": false,
+				"connectors.smtp.#": 1,
+				"connectors.smtp.0": map[string]any{
+					"id":             testacc.AttributeMatchesPattern(`^(CI|MP)`),
+					"name":           "My SMTP Connector",
+					"description":    "",
+					"use_static_ips": false,
+				},
+				"connectors.sns.#": 1,
+				"connectors.sns.0": map[string]any{
+					"id":                  testacc.AttributeMatchesPattern(`^(CI|MP)`),
+					"name":                "My SNS Connector",
+					"description":         "Foo Bar",
+					"access_key_id":       "Foo",
+					"secret":              "Bar",
+					"region":              "us-west-2",
+					"organization_number": "123456789012",
+				},
 			}),
 		},
 	)

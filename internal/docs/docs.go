@@ -853,13 +853,14 @@ var docsSNS = map[string]string{
 	"secret": "AWS Secret Access Key.",
 	"region": "AWS region to send requests to (e.g. `us-west-2`).",
 	"endpoint": "An optional endpoint URL (hostname only or fully qualified URI).",
-	"organization_number": "An optional phone number from which the text messages are going to be sent. Make sure it " +
-	                       "is registered properly in your server.",
+	"origination_number": "An optional phone number from which the text messages are going to be sent. Make sure it " +
+	                      "is registered properly in your server.",
 	"sender_id": "The name of the sender from which the text message is going to be sent (see SNS documentation " +
 	             "regarding acceptable IDs and supported regions/countries).",
 	"entity_id": "The entity ID or principal entity (PE) ID for sending text messages to recipients in India.",
 	"template_id": "The template for sending text messages to recipients in India. The template ID must be " +
 	               "associated with the sender ID.",
+	"organization_number": "Deprecated, use the `origination_number` attribute instead.",
 }
 
 var docsSumoLogic = map[string]string{
