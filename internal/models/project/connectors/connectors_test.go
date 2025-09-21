@@ -1252,7 +1252,15 @@ func TestConnectors(t *testing.T) {
 						{
 							name = "Test supabase Connector"
 							description = "A description for the supabase connector"
+    						auth_type = "legacyJWTSecret"
     						signing_secret = "7z47p3qqxkpcc"
+    						private_key = ""
+    						create_users = true
+    						project_base_url = "bq7uctq453b"
+    						service_role_api_key = "5wfi6yzcy6ipcznpdr5ddi"
+    						custom_claims_mapping = {
+    							"key" = "qy7xiug7baj44hxxfyu"
+    						}
     						expiration_time = 21
 						}
 					]
@@ -1261,11 +1269,17 @@ func TestConnectors(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"connectors.supabase.#": 1,
 				"connectors.supabase.0": map[string]any{
-					"id":              testacc.AttributeHasPrefix("CI"),
-					"name":            "Test supabase Connector",
-					"description":     "A description for the supabase connector",
-					"signing_secret":  "7z47p3qqxkpcc",
-					"expiration_time": 21,
+					"id":                        testacc.AttributeHasPrefix("CI"),
+					"name":                      "Test supabase Connector",
+					"description":               "A description for the supabase connector",
+					"auth_type":                 "legacyJWTSecret",
+					"signing_secret":            "7z47p3qqxkpcc",
+					"private_key":               "",
+					"create_users":              true,
+					"project_base_url":          "bq7uctq453b",
+					"service_role_api_key":      "5wfi6yzcy6ipcznpdr5ddi",
+					"custom_claims_mapping.key": "qy7xiug7baj44hxxfyu",
+					"expiration_time":           21,
 				},
 			}),
 		},

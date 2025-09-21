@@ -62,7 +62,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"smtp":                       listattr.Default[SMTPModel](SMTPAttributes),
 	"sns":                        listattr.Default[SNSModel](SNSAttributes),
 	"sumologic":                  listattr.Default[SumoLogicModel](SumoLogicAttributes, SumoLogicValidator),
-	"supabase":                   listattr.Default[SupabaseModel](SupabaseAttributes),
+	"supabase":                   listattr.Default[SupabaseModel](SupabaseAttributes, SupabaseValidator),
 	"telesign":                   listattr.Default[TelesignModel](TelesignAttributes),
 	"traceable":                  listattr.Default[TraceableModel](TraceableAttributes),
 	"turnstile":                  listattr.Default[TurnstileModel](TurnstileAttributes),

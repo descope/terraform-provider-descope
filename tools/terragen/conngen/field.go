@@ -110,7 +110,7 @@ func (f *Field) AttributeType() string {
 			return fmt.Sprintf(`stringattr.Default("", %s)`, validator)
 		}
 
-		if f.Required {
+		if f.Required && f.Dependency == nil {
 			return fmt.Sprintf(`stringattr.Required(%s)`, validator)
 		}
 
@@ -125,12 +125,12 @@ func (f *Field) AttributeType() string {
 
 		return fmt.Sprintf(`stringattr.Default(%q, %s)`, defValue, validator)
 	case FieldTypeSecret:
-		if f.Required {
+		if f.Required && f.Dependency == nil {
 			return `stringattr.SecretRequired()`
 		}
 		return `stringattr.SecretOptional()`
 	case FieldTypeBool:
-		if f.Required {
+		if f.Required && f.Dependency == nil {
 			return `boolattr.Required()`
 		}
 		if f.Initial == true {
@@ -138,7 +138,7 @@ func (f *Field) AttributeType() string {
 		}
 		return `boolattr.Default(false)`
 	case FieldTypeNumber:
-		if f.Required {
+		if f.Required && f.Dependency == nil {
 			return `floatattr.Required()`
 		}
 		if v, ok := f.Initial.(float64); ok {
@@ -150,7 +150,7 @@ func (f *Field) AttributeType() string {
 	case FieldTypeAuditFilters:
 		return `listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes)`
 	case FieldTypeHTTPAuth:
-		if f.Required {
+		if f.Required && f.Dependency == nil {
 			return `objattr.Required[HTTPAuthFieldModel](HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
 		}
 		return `objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator)`
@@ -212,21 +212,35 @@ func (f *Field) SetValueStatement() string {
 	}
 }
 
-func (f *Field) ValidateNonZero() string {
+func (f *Field) IsZero() string {
 	accessor := fmt.Sprintf(`m.%s`, f.StructName())
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
-		initial, _ := f.Initial.(string)
-		return fmt.Sprintf(`%s.ValueString() != %q`, accessor, initial)
+		return fmt.Sprintf(`%s.ValueString() == ""`, accessor)
 	case FieldTypeBool:
-		operator := ""
-		if f.Initial == true {
-			operator = "!"
-		}
-		return fmt.Sprintf(`%s%s.ValueBool()`, operator, accessor)
+		return fmt.Sprintf(`!%s.ValueBool()`, accessor)
 	case FieldTypeNumber:
-		initial, _ := f.Initial.(float64)
-		return fmt.Sprintf(`%s.ValueFloat64() != %g`, accessor, initial)
+		return fmt.Sprintf(`%s.ValueFloat64() == 0`, accessor)
+	case FieldTypeObject:
+		return fmt.Sprintf(`%s.IsEmpty()`, accessor)
+	case FieldTypeAuditFilters:
+		return fmt.Sprintf(`%s.IsEmpty()`, accessor)
+	case FieldTypeHTTPAuth:
+		return fmt.Sprintf(`!%s.IsSet()`, accessor)
+	default:
+		panic("unexpected field type: " + f.Type)
+	}
+}
+
+func (f *Field) IsNonZero() string {
+	accessor := fmt.Sprintf(`m.%s`, f.StructName())
+	switch f.Type {
+	case FieldTypeString, FieldTypeSecret:
+		return fmt.Sprintf(`%s.ValueString() != ""`, accessor)
+	case FieldTypeBool:
+		return fmt.Sprintf(`%s.ValueBool()`, accessor)
+	case FieldTypeNumber:
+		return fmt.Sprintf(`%s.ValueFloat64() != 0`, accessor)
 	case FieldTypeObject:
 		return fmt.Sprintf(`!%s.IsEmpty()`, accessor)
 	case FieldTypeAuditFilters:
