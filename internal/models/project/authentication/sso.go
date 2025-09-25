@@ -90,6 +90,7 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
 	boolattr.Set(&m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Set(&m.HideSAML, data, "hideSsoSuiteSaml")
+	boolattr.Set(&m.HideOIDC, data, "hideSsoSuiteOidc")
 	boolattr.Set(&m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
 }
 
