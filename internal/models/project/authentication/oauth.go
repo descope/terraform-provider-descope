@@ -58,7 +58,9 @@ func (m *OAuthModel) Values(h *helpers.Handler) map[string]any {
 		}
 
 		ensureRequiredCustomProviderField(h, provider.ClientID, "client_id", name)
-		ensureRequiredCustomProviderField(h, provider.ClientSecret, "client_secret", name)
+		if !provider.UseClientAssertion.ValueBool() {
+			ensureRequiredCustomProviderField(h, provider.ClientSecret, "client_secret", name)
+		}
 		ensureRequiredCustomProviderField(h, provider.AllowedGrantTypes, "allowed_grant_types", name)
 		ensureRequiredCustomProviderField(h, provider.AuthorizationEndpoint, "authorization_endpoint", name)
 		ensureRequiredCustomProviderField(h, provider.TokenEndpoint, "token_endpoint", name)
@@ -122,7 +124,7 @@ func (m *OAuthModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, name string) {
+func ensureRequiredCustomProviderField(h *helpers.Handler, field attr.Value, fieldKey, name string) {
 	var invalid bool
 
 	switch v := field.(type) {
@@ -135,7 +137,7 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field any, fieldKey, 
 	}
 
 	if invalid {
-		h.Error("Invalid Custom OAuth Provider", "Custom provider %s must set a non-empty value for the %s attribute", name, fieldKey)
+		h.Error("Invalid Custom OAuth Provider", "Custom provider %s needs a non-empty value for the %s attribute", name, fieldKey)
 	}
 }
 
@@ -279,7 +281,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"token_endpoint":         stringattr.Optional(),
 	"user_info_endpoint":     stringattr.Optional(),
 	"jwks_endpoint":          stringattr.Optional(),
-	"use_client_assertion":   boolattr.Optional(),
+	"use_client_assertion":   boolattr.Default(false),
 	"claim_mapping":          strmapattr.Optional(),
 }
 
