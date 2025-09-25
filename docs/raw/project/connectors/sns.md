@@ -7,7 +7,7 @@ SNS
 access_key_id
 -------------
 
-- Type: `string` (required)
+- Type: `secret` (required)
 
 AWS Access key ID.
 

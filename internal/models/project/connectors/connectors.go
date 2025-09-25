@@ -60,7 +60,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"slack":                      listattr.Default[SlackModel](SlackAttributes),
 	"smartling":                  listattr.Default[SmartlingModel](SmartlingAttributes),
 	"smtp":                       listattr.Default[SMTPModel](SMTPAttributes),
-	"sns":                        listattr.Default[SNSModel](SNSAttributes),
+	"sns":                        listattr.Default[SNSModel](SNSAttributes, SNSValidator),
 	"sumologic":                  listattr.Default[SumoLogicModel](SumoLogicAttributes, SumoLogicValidator),
 	"supabase":                   listattr.Default[SupabaseModel](SupabaseAttributes, SupabaseValidator),
 	"telesign":                   listattr.Default[TelesignModel](TelesignAttributes),

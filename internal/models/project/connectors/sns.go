@@ -1,10 +1,13 @@
 package connectors
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+var SNSValidator = objattr.NewValidator[SNSModel]("must have a valid configuration")
 
 var SNSAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -58,6 +61,12 @@ func (m *SNSModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 }
 
+func (m *SNSModel) Validate(h *helpers.Handler) {
+	if m.OrganizationNumber.ValueString() != "" && m.OriginationNumber.ValueString() != "" {
+		h.Conflict("The organization_number field has been renamed to origination_number, please use only origination_number going forward")
+	}
+}
+
 // Configuration
 
 func (m *SNSModel) ConfigurationValues(h *helpers.Handler) map[string]any {
@@ -74,8 +83,6 @@ func (m *SNSModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	// Deprecated fields
 	if m.OriginationNumber.ValueString() == "" {
 		stringattr.Get(m.OrganizationNumber, c, "originationNumber")
-	} else if m.OrganizationNumber.ValueString() != "" {
-		h.Conflict("The organization_number field has been renamed to origination_number, please use only origination_number going forward")
 	}
 	return c
 }
