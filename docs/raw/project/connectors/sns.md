@@ -84,4 +84,4 @@ organization_number
 
 - Type: `string` 
 
-Deprecated, use the `origination_number` attribute instead.
+Use the `origination_number` attribute instead.

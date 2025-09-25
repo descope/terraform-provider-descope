@@ -860,7 +860,7 @@ var docsSNS = map[string]string{
 	"entity_id": "The entity ID or principal entity (PE) ID for sending text messages to recipients in India.",
 	"template_id": "The template for sending text messages to recipients in India. The template ID must be " +
 	               "associated with the sender ID.",
-	"organization_number": "Deprecated, use the `origination_number` attribute instead.",
+	"organization_number": "Use the `origination_number` attribute instead.",
 }
 
 var docsSumoLogic = map[string]string{
