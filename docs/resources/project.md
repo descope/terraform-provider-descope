@@ -819,6 +819,7 @@ Optional:
 
 Optional:
 
+- `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.

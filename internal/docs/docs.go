@@ -250,6 +250,7 @@ var docsSSOSuite = map[string]string{
 	"hide_domains": "Setting this to `true` will hide the domains configuration section in the SSO Suite interface.",
 	"hide_saml": "Setting this to `true` will hide the SAML configuration option.",
 	"hide_oidc": "Setting this to `true` will hide the OIDC configuration option.",
+	"force_domain_verification": "Setting this to `true` will allow only verified domains to be used.",
 }
 
 var docsTOTP = map[string]string{

@@ -102,3 +102,12 @@ hide_oidc
 - Type: `bool` 
 
 Setting this to `true` will hide the OIDC configuration option.
+
+
+
+force_domain_verification
+-------------------------
+
+- Type: `bool` 
+
+Setting this to `true` will allow only verified domains to be used.
