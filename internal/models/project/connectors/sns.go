@@ -92,7 +92,9 @@ func (m *SNSModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) 
 	stringattr.Nil(&m.Secret)
 	stringattr.Set(&m.Region, c, "awsSNSRegion")
 	stringattr.Set(&m.Endpoint, c, "awsEndpoint")
-	stringattr.Set(&m.OriginationNumber, c, "originationNumber")
+	if m.OrganizationNumber.ValueString() == "" { // Don't overwrite when deprecated field is set
+		stringattr.Set(&m.OriginationNumber, c, "originationNumber")
+	}
 	stringattr.Set(&m.SenderID, c, "senderId")
 	stringattr.Set(&m.EntityID, c, "entityId")
 	stringattr.Set(&m.TemplateID, c, "templateId")
