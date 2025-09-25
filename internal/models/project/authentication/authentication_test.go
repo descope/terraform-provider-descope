@@ -135,6 +135,21 @@ func TestAuthentication(t *testing.T) {
 			Config: p.Config(`
 				authentication = {
 					oauth = {
+						system = {
+							apple = {
+								client_id = "id"
+								use_client_assertion = true
+							}
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Reserved Attribute`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					oauth = {
 						custom = {
 							mobile_ios = {
 								allowed_grant_types = ["authorization_code", "implicit"]
@@ -157,6 +172,37 @@ func TestAuthentication(t *testing.T) {
 					"authorization_endpoint": "https://auth.com",
 					"token_endpoint":         "https://token.com",
 					"user_info_endpoint":     "https://user.com",
+					"use_client_assertion":   false,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					oauth = {
+						custom = {
+							mobile_ios = {
+								allowed_grant_types = ["authorization_code", "implicit"]
+								client_id = "id"
+								authorization_endpoint = "https://auth.com"
+								token_endpoint = "https://token.com"
+								user_info_endpoint = "https://user.com"
+								use_client_assertion = true
+							}
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.oauth.custom.%": 1,
+				"authentication.oauth.custom.mobile_ios": map[string]any{
+					"allowed_grant_types":    []string{"authorization_code", "implicit"},
+					"client_id":              "id",
+					"client_secret":          testacc.AttributeIsNotSet,
+					"authorization_endpoint": "https://auth.com",
+					"token_endpoint":         "https://token.com",
+					"user_info_endpoint":     "https://user.com",
+					"use_client_assertion":   true,
 				},
 			}),
 		},
