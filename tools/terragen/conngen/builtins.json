@@ -16,6 +16,7 @@
     "validator": true
   },
   {
-    "id": "sns"
+    "id": "sns",
+    "validator": true
   }
 ]
