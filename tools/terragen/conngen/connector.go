@@ -159,25 +159,39 @@ func (c *Connector) Prepare() {
 			if d.Field.Type != FieldTypeBool && d.Field.Type != FieldTypeString {
 				log.Fatalf("Field %s has a dependency on %s of type %s which is not supported", f.Name, d.Name, d.Field.Type)
 			}
-			if d.Field.Type == FieldTypeBool && f.Required {
-				log.Fatalf("Unexpected required field with boolean dependency %s", f.Name)
-			}
+
+			// ensure some assumptions about boolean dependencies
 			if d.Field.Type == FieldTypeBool && d.Value != true {
 				log.Fatalf("Field %s has a boolean dependency whose value is not true", f.Name)
 			}
+			if d.Field.Type == FieldTypeBool && d.Field.Initial == nil {
+				d.Field.Initial = false
+			}
+
+			// ensure some assumptions about string dependencies
 			if _, ok := d.Value.(string); !ok && d.Field.Type == FieldTypeString {
 				log.Fatalf("Field %s has a string dependency whose value is not a string", f.Name)
 			}
+			if d.Field.Type == FieldTypeString && (d.Field.Initial == nil || d.Field.Initial == "") {
+				log.Fatalf("Field %s has a string dependency on field %s with no initial value", f.Name, d.Name)
+			}
 
-			// we convert required fields with string dependencies to optional
-			if d.Field.Type == FieldTypeString {
-				if !f.Required {
-					log.Fatalf("Field %s has a string dependency so we expect it to be required in the template", f.Name)
+			// only certain configurations were tested, any new ones should be verified
+			switch f.Type {
+			case FieldTypeString, FieldTypeSecret:
+				if f.Required && f.Initial != nil && f.Initial != "" {
+					log.Fatalf("Field %s of type %s has a non-zero initial value which is not supported", f.Name, f.Type)
 				}
-				f.Required = false
-				if d.Field.Initial == nil {
-					log.Fatalf("Field %s has a string dependency on field %s with no initial value", f.Name, d.Name)
+			case FieldTypeNumber:
+				if f.Required && f.Initial != nil && f.Initial != 0 {
+					log.Fatalf("Field %s of type %s has a non-zero initial value which is not supported", f.Name, f.Type)
 				}
+			case FieldTypeAuditFilters:
+				if f.Required && f.Initial != nil {
+					log.Fatalf("Field %s of type %s has a non-zero initial value which is not supported", f.Name, f.Type)
+				}
+			default:
+				log.Fatalf("Field %s has a dependency but is of type %s which is not supported", f.Name, f.Type)
 			}
 		}
 	}

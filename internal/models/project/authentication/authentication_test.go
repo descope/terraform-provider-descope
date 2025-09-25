@@ -193,5 +193,50 @@ func TestAuthentication(t *testing.T) {
 				},
 			}),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_domains = true
+							force_domain_verification = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("The attributes force_domain_verification and hide_domains cannot both be true"),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							force_domain_verification = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"force_domain_verification": true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							force_domain_verification = false
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"force_domain_verification": false,
+				},
+			}),
+		},
 	)
 }

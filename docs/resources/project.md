@@ -829,6 +829,7 @@ Optional:
 
 Optional:
 
+- `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
@@ -2073,7 +2074,7 @@ Optional:
 
 Required:
 
-- `access_key_id` (String) AWS Access key ID.
+- `access_key_id` (String, Sensitive) AWS Access key ID.
 - `name` (String) A custom name for your connector.
 - `region` (String) AWS region to send requests to (e.g. `us-west-2`).
 - `secret` (String, Sensitive) AWS Secret Access Key.
@@ -2083,7 +2084,8 @@ Optional:
 - `description` (String) A description of what your connector is used for.
 - `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
 - `entity_id` (String) The entity ID or principal entity (PE) ID for sending text messages to recipients in India.
-- `organization_number` (String) An optional phone number from which the text messages are going to be sent. Make sure it is registered properly in your server.
+- `organization_number` (String, Deprecated) Use the `origination_number` attribute instead.
+- `origination_number` (String) An optional phone number from which the text messages are going to be sent. Make sure it is registered properly in your server.
 - `sender_id` (String) The name of the sender from which the text message is going to be sent (see SNS documentation regarding acceptable IDs and supported regions/countries).
 - `template_id` (String) The template for sending text messages to recipients in India. The template ID must be associated with the sender ID.
 
@@ -2128,12 +2130,18 @@ Required:
 Required:
 
 - `name` (String) A custom name for your connector.
-- `signing_secret` (String, Sensitive) The signing secret for your Supabase project.
 
 Optional:
 
+- `auth_type` (String) The authentication type to use.
+- `create_users` (Boolean) Enable to automatically create users in Supabase when generating tokens. Will only create a new user if one does not already exist. When disabled, only JWT tokens will be generated, WITHOUT user creation.
+- `custom_claims_mapping` (Map of String) A mapping of Descope user fields or JWT claims to Supabase custom claims
 - `description` (String) A description of what your connector is used for.
 - `expiration_time` (Number) The duration in minutes for which the token is valid.
+- `private_key` (String, Sensitive) The private key in JWK format used to sign the JWT. You can generate a key using tools like `npx supabase gen signing-key --algorithm ES256`. Make sure to use the ES256 algorithm.
+- `project_base_url` (String) Your Supabase Project's API base URL, e.g.: https://<your-project-id>.supabase.co.
+- `service_role_api_key` (String, Sensitive) The service role API key for your Supabase project, required to create users.
+- `signing_secret` (String, Sensitive) The signing secret for your Supabase project.
 
 Read-Only:
 

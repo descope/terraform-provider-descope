@@ -1,0 +1,2 @@
+# Preserve authored Markdown formatting in docs
+docs/**/*.md

@@ -43,30 +43,33 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 var SSOSuiteValidator = objattr.NewValidator[SSOSuiteModel]("must have a valid configuration")
 
 var SSOSuiteAttributes = map[string]schema.Attribute{
-	"style_id":            stringattr.Default(""),
-	"hide_scim":           boolattr.Default(false),
-	"hide_groups_mapping": boolattr.Default(false),
-	"hide_domains":        boolattr.Default(false),
-	"hide_saml":           boolattr.Default(false),
-	"hide_oidc":           boolattr.Default(false),
+	"style_id":                  stringattr.Default(""),
+	"hide_scim":                 boolattr.Default(false),
+	"hide_groups_mapping":       boolattr.Default(false),
+	"hide_domains":              boolattr.Default(false),
+	"hide_saml":                 boolattr.Default(false),
+	"hide_oidc":                 boolattr.Default(false),
+	"force_domain_verification": boolattr.Default(false),
 }
 
 type SSOSuiteModel struct {
-	StyleID           stringattr.Type `tfsdk:"style_id"`
-	HideSCIM          boolattr.Type   `tfsdk:"hide_scim"`
-	HideGroupsMapping boolattr.Type   `tfsdk:"hide_groups_mapping"`
-	HideDomains       boolattr.Type   `tfsdk:"hide_domains"`
-	HideSAML          boolattr.Type   `tfsdk:"hide_saml"`
-	HideOIDC          boolattr.Type   `tfsdk:"hide_oidc"`
+	StyleID                 stringattr.Type `tfsdk:"style_id"`
+	HideSCIM                boolattr.Type   `tfsdk:"hide_scim"`
+	HideGroupsMapping       boolattr.Type   `tfsdk:"hide_groups_mapping"`
+	HideDomains             boolattr.Type   `tfsdk:"hide_domains"`
+	HideSAML                boolattr.Type   `tfsdk:"hide_saml"`
+	HideOIDC                boolattr.Type   `tfsdk:"hide_oidc"`
+	ForceDomainVerification boolattr.Type   `tfsdk:"force_domain_verification"`
 }
 
 var SSOSuiteDefault = &SSOSuiteModel{
-	StyleID:           stringattr.Value(""),
-	HideSCIM:          boolattr.Value(false),
-	HideGroupsMapping: boolattr.Value(false),
-	HideDomains:       boolattr.Value(false),
-	HideSAML:          boolattr.Value(false),
-	HideOIDC:          boolattr.Value(false),
+	StyleID:                 stringattr.Value(""),
+	HideSCIM:                boolattr.Value(false),
+	HideGroupsMapping:       boolattr.Value(false),
+	HideDomains:             boolattr.Value(false),
+	HideSAML:                boolattr.Value(false),
+	HideOIDC:                boolattr.Value(false),
+	ForceDomainVerification: boolattr.Value(false),
 }
 
 func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
@@ -77,6 +80,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Get(m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Get(m.HideOIDC, data, "hideSsoSuiteOidc")
+	boolattr.Get(m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
 	return data
 }
 
@@ -87,14 +91,19 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Set(&m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Set(&m.HideOIDC, data, "hideSsoSuiteOidc")
+	boolattr.Set(&m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
 	if helpers.HasUnknownValues(m.HideSAML, m.HideOIDC) {
 		return
+	} else if m.HideSAML.ValueBool() && m.HideOIDC.ValueBool() {
+		h.Invalid("The attributes hide_oidc and hide_saml cannot both be true")
 	}
 
-	if m.HideSAML.ValueBool() && m.HideOIDC.ValueBool() {
-		h.Invalid("The attributes hide_oidc and hide_saml cannot both be true")
+	if helpers.HasUnknownValues(m.HideDomains, m.ForceDomainVerification) {
+		return
+	} else if m.HideDomains.ValueBool() && m.ForceDomainVerification.ValueBool() {
+		h.Invalid("The attributes force_domain_verification and hide_domains cannot both be true")
 	}
 }
