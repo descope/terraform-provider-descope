@@ -1,0 +1,142 @@
+{
+  "contents": {
+    "startTask": "1",
+    "tasks": {
+      "0": {
+        "action": "logged-in",
+        "id": "0",
+        "name": "End",
+        "next": {},
+        "type": "automated",
+        "view": {
+          "x": 756,
+          "y": 0
+        }
+      },
+      "1": {
+        "action": "oauth-start",
+        "arguments": {
+          "allowSetDefaultProvider": {
+            "type": "inline",
+            "value": true
+          },
+          "defaultProvider": {
+            "type": "inline",
+            "value": "apple"
+          },
+          "exchangeStepId": {
+            "type": "inline",
+            "value": "1.end"
+          },
+          "prompt": {
+            "type": "inline",
+            "value": []
+          },
+          "redirectUrl": {
+            "type": "inline",
+            "value": ""
+          }
+        },
+        "errorHandlingV2": {
+          "OAuthExchangeCodeFailed": {
+            "errorHandlingType": "automatic"
+          },
+          "OAuthStartFailed": {
+            "errorHandlingType": "automatic"
+          }
+        },
+        "id": "1",
+        "name": "Sign Up or In / OAuth",
+        "next": {
+          "rules": [
+            {
+              "interactionId": "success",
+              "taskId": "1.end"
+            }
+          ]
+        },
+        "type": "automated",
+        "view": {
+          "x": 252,
+          "y": -60
+        }
+      },
+      "1.end": {
+        "action": "exchange-oauth-code",
+        "arguments": {
+          "allowSetDefaultProvider": {
+            "type": "inline",
+            "value": true
+          },
+          "defaultProvider": {
+            "type": "inline",
+            "value": "apple"
+          },
+          "exchangeStepId": {
+            "type": "inline",
+            "value": "1.end"
+          },
+          "prompt": {
+            "type": "inline",
+            "value": []
+          },
+          "redirectUrl": {
+            "type": "inline",
+            "value": ""
+          }
+        },
+        "errorHandlingV2": {
+          "OAuthExchangeCodeFailed": {
+            "errorHandlingType": "automatic"
+          },
+          "OAuthStartFailed": {
+            "errorHandlingType": "automatic"
+          }
+        },
+        "id": "1.end",
+        "name": "Sign Up or In / OAuth",
+        "next": {
+          "rules": [
+            {
+              "interactionId": "success",
+              "taskId": "0"
+            }
+          ]
+        },
+        "type": "automated",
+        "view": {
+          "x": 252,
+          "y": -60
+        }
+      },
+      "start": {
+        "id": "start",
+        "name": "start",
+        "next": {
+          "rules": [
+            {
+              "interactionId": "",
+              "taskId": "1"
+            }
+          ]
+        },
+        "view": {
+          "x": 0,
+          "y": 0
+        }
+      }
+    }
+  },
+  "flowId": "references-flow",
+  "metadata": {
+    "componentsVersion": "2.0.295",
+    "description": "A flow for testing",
+    "name": "References Flow"
+  },
+  "references": {
+    "roles": {
+      "My User Role": "ROL2kytoq1RRvE147xvkGxu6xXEJxY"
+    }
+  },
+  "screens": []
+}
