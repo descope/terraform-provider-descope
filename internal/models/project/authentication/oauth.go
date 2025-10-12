@@ -262,17 +262,22 @@ var systemClaimMapping = []string{"loginId", "username", "name", "email", "phone
 var OAuthProviderValidator = objattr.NewValidator[OAuthProviderModel]("must have a valid OAuth provider configuration")
 
 var OAuthProviderAttributes = map[string]schema.Attribute{
-	"disabled":                  boolattr.Default(false),
-	"client_id":                 stringattr.Optional(),
-	"client_secret":             stringattr.SecretOptional(),
-	"manage_provider_tokens":    boolattr.Default(false),
-	"callback_domain":           stringattr.Optional(),
-	"redirect_url":              stringattr.Optional(),
-	"provider_token_management": objattr.Default[OAuthProviderTokenManagementModel](nil, OAuthProviderTokenManagementAttributes),
-	"prompts":                   strlistattr.Optional(stringvalidator.OneOf("none", "login", "consent", "select_account")),
-	"allowed_grant_types":       strlistattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
-	"scopes":                    strlistattr.Optional(),
-	"merge_user_accounts":       boolattr.Default(true),
+	"disabled":                   boolattr.Default(false),
+	"client_id":                  stringattr.Optional(),
+	"client_secret":              stringattr.SecretOptional(),
+	"manage_provider_tokens":     boolattr.Default(false),
+	"callback_domain":            stringattr.Optional(),
+	"redirect_url":               stringattr.Optional(),
+	"provider_token_management":  objattr.Default[OAuthProviderTokenManagementModel](nil, OAuthProviderTokenManagementAttributes),
+	"prompts":                    strlistattr.Optional(stringvalidator.OneOf("none", "login", "consent", "select_account")),
+	"allowed_grant_types":        strlistattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
+	"scopes":                     strlistattr.Optional(),
+	"merge_user_accounts":        boolattr.Default(true),
+	"default_sso_roles":          strlistattr.Optional(),
+	"native_client_id":           stringattr.Optional(),
+	"native_client_secret":       stringattr.SecretOptional(),
+	"apple_key_generator":        objattr.Default[AppleKeyGeneratorModel](nil, AppleKeyGeneratorModelAttributes),
+	"native_apple_key_generator": objattr.Default[AppleKeyGeneratorModel](nil, AppleKeyGeneratorModelAttributes),
 	// editable for custom only
 	"description":            stringattr.Optional(),
 	"logo":                   stringattr.Optional(),
@@ -283,6 +288,32 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"jwks_endpoint":          stringattr.Optional(),
 	"use_client_assertion":   boolattr.Default(false),
 	"claim_mapping":          strmapattr.Optional(),
+}
+
+type AppleKeyGeneratorModel struct {
+	KeyID      stringattr.Type `tfsdk:"key_id"`
+	TeamID     stringattr.Type `tfsdk:"team_id"`
+	PrivateKey stringattr.Type `tfsdk:"private_key"`
+}
+
+var AppleKeyGeneratorModelAttributes = map[string]schema.Attribute{
+	"key_id":      stringattr.Required(),
+	"team_id":     stringattr.Required(),
+	"private_key": stringattr.SecretRequired(),
+}
+
+func (m *AppleKeyGeneratorModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	stringattr.Get(m.KeyID, data, "key_id")
+	stringattr.Get(m.TeamID, data, "team_id")
+	stringattr.Get(m.PrivateKey, data, "private_key")
+	return data
+}
+
+func (m *AppleKeyGeneratorModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.KeyID, data, "key_id")
+	stringattr.Set(&m.TeamID, data, "team_id")
+	stringattr.Set(&m.PrivateKey, data, "private_key")
 }
 
 type OAuthProviderModel struct {
@@ -305,7 +336,13 @@ type OAuthProviderModel struct {
 	UserInfoEndpoint        stringattr.Type                                 `tfsdk:"user_info_endpoint"`
 	JWKsEndpoint            stringattr.Type                                 `tfsdk:"jwks_endpoint"`
 	UseClientAssertion      boolattr.Type                                   `tfsdk:"use_client_assertion"`
+	UseNativeClient         boolattr.Type                                   `tfsdk:"use_native_client"`
 	ClaimMapping            strmapattr.Type                                 `tfsdk:"claim_mapping"`
+	DefaultSSORoles         strlistattr.Type                                `tfsdk:"default_sso_roles"`
+	NativeClientID          stringattr.Type                                 `tfsdk:"native_client_id"`
+	NativeClientSecret      stringattr.Type                                 `tfsdk:"native_client_secret"`
+	AppleKeyGenerator       objattr.Type[AppleKeyGeneratorModel]            `tfsdk:"apple_key_generator"`
+	NativeAppleKeyGenerator objattr.Type[AppleKeyGeneratorModel]            `tfsdk:"native_apple_key_generator"`
 }
 
 func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
@@ -346,6 +383,17 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	}
 	claimMapping["customAttributes"] = customAttributes
 	data["userDataClaimsMapping"] = claimMapping
+	if !m.DefaultSSORoles.IsEmpty() {
+		strlistattr.Get(m.DefaultSSORoles, data, "defaultSSORoles", h)
+	}
+	stringattr.Get(m.NativeClientID, data, "nativeClientId")
+	stringattr.Get(m.NativeClientSecret, data, "nativeClientSecret")
+	if !m.AppleKeyGenerator.IsNull() && !m.AppleKeyGenerator.IsUnknown() {
+		objattr.Get(m.AppleKeyGenerator, data, "appleKeyGenerator", h)
+	}
+	if !m.NativeAppleKeyGenerator.IsNull() && !m.NativeAppleKeyGenerator.IsUnknown() {
+		objattr.Get(m.NativeAppleKeyGenerator, data, "nativeAppleKeyGenerator", h)
+	}
 	return data
 }
 
@@ -369,6 +417,25 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
 	boolattr.Set(&m.UseClientAssertion, data, "useClientAssertion")
+	m.UseNativeClient = boolattr.Value(false)
+	if _, ok := data["nativeClientId"]; ok {
+		stringattr.Set(&m.NativeClientID, data, "nativeClientId")
+		m.UseNativeClient = boolattr.Value(true)
+	}
+	if _, ok := data["nativeClientSecret"]; ok {
+		stringattr.Set(&m.NativeClientSecret, data, "nativeClientSecret")
+		m.UseNativeClient = boolattr.Value(true)
+	}
+
+	if _, ok := data["defaultSSORoles"]; ok {
+		strlistattr.Set(&m.DefaultSSORoles, data, "defaultSSORoles", h)
+	}
+	if _, ok := data["appleKeyGenerator"]; ok {
+		objattr.Set(&m.AppleKeyGenerator, data, "appleKeyGenerator", h)
+	}
+	if _, ok := data["nativeAppleKeyGenerator"]; ok {
+		objattr.Set(&m.NativeAppleKeyGenerator, data, "nativeAppleKeyGenerator", h)
+	}
 	strmapattr.Nil(&m.ClaimMapping, h) // XXX empty defaults are added by the backend, add parsing for refresh
 }
 
