@@ -50,8 +50,8 @@ func getFlowData(data stringattr.Type, _ *helpers.Handler) map[string]any {
 
 func ensureReferences(data map[string]any, key string, entity string, ref string, h *helpers.Handler) {
 	references, _ := data["references"].(map[string]any)
-	if connectors, ok := references[key].(map[string]any); ok {
-		for name := range connectors {
+	if names, ok := references[key].(map[string]any); ok {
+		for name := range names {
 			if r := h.Refs.Get(ref, name); r == nil {
 				flowID, _ := data["flowId"].(string)
 				h.Error("Unknown "+entity+" reference", "The flow %s requires a %s named '%s' to be defined", flowID, entity, name)
