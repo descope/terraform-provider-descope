@@ -36,16 +36,8 @@ func (m *FlowModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *FlowModel) Check(h *helpers.Handler) {
 	data := getFlowData(m.Data, h)
-
-	references, _ := data["references"].(map[string]any)
-	if connectors, ok := references["connectors"].(map[string]any); ok {
-		for name := range connectors {
-			if ref := h.Refs.Get(helpers.ConnectorReferenceKey, name); ref == nil {
-				flowID, _ := data["flowId"].(string)
-				h.Error("Unknown connector reference", "The flow %s requires a connector named '%s' to be defined", flowID, name)
-			}
-		}
-	}
+	ensureReferences(data, "connectors", "connector", helpers.ConnectorReferenceKey, h)
+	ensureReferences(data, "roles", "role", helpers.RoleReferenceKey, h)
 }
 
 func getFlowData(data stringattr.Type, _ *helpers.Handler) map[string]any {
@@ -54,4 +46,16 @@ func getFlowData(data stringattr.Type, _ *helpers.Handler) map[string]any {
 		panic("Invalid flow data after validation: " + err.Error())
 	}
 	return m
+}
+
+func ensureReferences(data map[string]any, key string, entity string, ref string, h *helpers.Handler) {
+	references, _ := data["references"].(map[string]any)
+	if names, ok := references[key].(map[string]any); ok {
+		for name := range names {
+			if r := h.Refs.Get(ref, name); r == nil {
+				flowID, _ := data["flowId"].(string)
+				h.Error("Unknown "+entity+" reference", "The flow %s requires a %s named '%s' to be defined", flowID, entity, name)
+			}
+		}
+	}
 }
