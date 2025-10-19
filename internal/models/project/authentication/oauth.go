@@ -149,8 +149,27 @@ func ensureSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProvide
 
 	ownAccount := m.ClientID.ValueString() != ""
 	if ownAccount {
-		if m.ClientSecret.ValueString() == "" {
-			h.Missing("The client_id attribute was set for the %s system provider but the client_secret attribute was not", name)
+		if name != "apple" {
+			if m.ClientSecret.ValueString() == "" {
+				h.Missing("The client_id attribute was set for the %s system provider but the client_secret attribute was not set", name)
+			}
+		} else {
+			if m.ClientSecret.ValueString() == "" && !m.AppleKeyGenerator.IsSet() {
+				h.Missing("The client_id attribute was set for the %s system provider but the client_secret or apple_key_generator attribute was not set", name)
+			}
+			if m.ClientSecret.ValueString() != "" && m.AppleKeyGenerator.IsSet() {
+				h.Invalid("The client_secret and the apple_key_generator attributes cannot both be set for the %s system provider", name)
+			}
+
+			nativeClientID := m.NativeClientID.ValueString()
+			if nativeClientID != "" {
+				if m.NativeClientSecret.ValueString() == "" && !m.NativeAppleKeyGenerator.IsSet() {
+					h.Missing("The native_client_id attribute was set for the %s system provider but the native_client_secret or native_apple_key_generator attribute was not set", name)
+				}
+				if m.NativeClientSecret.ValueString() != "" && m.NativeAppleKeyGenerator.IsSet() {
+					h.Invalid("The native_client_secret and the native_apple_key_generator attributes cannot both be set for the %s system provider", name)
+				}
+			}
 		}
 	} else {
 		if !m.Scopes.IsEmpty() {
