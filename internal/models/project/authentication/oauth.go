@@ -411,7 +411,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
 	boolattr.Set(&m.UseClientAssertion, data, "useClientAssertion")
 	stringattr.Set(&m.NativeClientID, data, "nativeClientId")
-	stringattr.Set(&m.NativeClientSecret, data, "nativeClientSecret")
+	stringattr.Nil(&m.NativeClientSecret)
 
 	objattr.Set(&m.AppleKeyGenerator, data, "appleKeyGenerator", h)
 	objattr.Set(&m.NativeAppleKeyGenerator, data, "nativeAppleKeyGenerator", h)
