@@ -273,7 +273,6 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"allowed_grant_types":        strlistattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
 	"scopes":                     strlistattr.Optional(),
 	"merge_user_accounts":        boolattr.Default(true),
-	"default_sso_roles":          strlistattr.Optional(),
 	"native_client_id":           stringattr.Optional(),
 	"native_client_secret":       stringattr.SecretOptional(),
 	"apple_key_generator":        objattr.Default[AppleKeyGeneratorModel](nil, AppleKeyGeneratorModelAttributes),
