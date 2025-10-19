@@ -401,9 +401,6 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	data["userDataClaimsMapping"] = claimMapping
 	stringattr.Get(m.NativeClientID, data, "nativeClientId")
 	stringattr.Get(m.NativeClientSecret, data, "nativeClientSecret")
-	if m.NativeClientID.ValueString() != "" {
-		data["useNativeClient"] = true
-	}
 	objattr.Get(m.AppleKeyGenerator, data, "appleKeyGenerator", h)
 	objattr.Get(m.NativeAppleKeyGenerator, data, "nativeAppleKeyGenerator", h)
 	return data

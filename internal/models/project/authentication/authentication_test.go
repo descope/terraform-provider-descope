@@ -108,13 +108,23 @@ func TestAuthentication(t *testing.T) {
 						system = {
 							apple = {
 								allowed_grant_types = ["authorization_code", "implicit"]
+								client_id = "id"
+								client_secret = "secret"
+								native_client_id = "id"
+								native_client_secret = "secret"
 							}
 						}
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.oauth.system.apple.allowed_grant_types": []string{"authorization_code", "implicit"},
+				"authentication.oauth.system.apple": map[string]any{
+					"allowed_grant_types":  []string{"authorization_code", "implicit"},
+					"client_id":            "id",
+					"client_secret":        "secret",
+					"native_client_id":     "id",
+					"native_client_secret": "secret",
+				},
 			}),
 		},
 		resource.TestStep{
