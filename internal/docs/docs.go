@@ -155,19 +155,7 @@ var docsOAuth = map[string]string{
 	"custom": "Custom OAuth providers configured for this project.",
 }
 
-var docsOAuthSystemProvider = map[string]string{
-	"apple": "Apple's OAuth provider, allowing users to authenticate with their Apple Account.",
-	"discord": "Discord's OAuth provider, allowing users to authenticate with their Discord account.",
-	"facebook": "Facebook's OAuth provider, allowing users to authenticate with their Facebook account.",
-	"github": "GitHub's OAuth provider, allowing users to authenticate with their GitHub account.",
-	"gitlab": "GitLab's OAuth provider, allowing users to authenticate with their GitLab account.",
-	"google": "Google's OAuth provider, allowing users to authenticate with their Google account.",
-	"linkedin": "LinkedIn's OAuth provider, allowing users to authenticate with their LinkedIn account.",
-	"microsoft": "Microsoft's OAuth provider, allowing users to authenticate with their Microsoft account.",
-	"slack": "Slack's OAuth provider, allowing users to authenticate with their Slack account.",
-}
-
-var docsOAuthProvider = map[string]string{
+var docsOAuthProviderCustom = map[string]string{
 	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
 	            "API and SDK calls. Note that this does not affect authentication flows that are " +
 	            "configured to use this authentication method.",
@@ -177,16 +165,11 @@ var docsOAuthProvider = map[string]string{
 	"callback_domain": "Use a custom domain in your OAuth verification screen.",
 	"redirect_url": "Users will be directed to this URL after authentication. If redirect URL is specified in " +
 	                "the SDK/API call, it will override this value.",
-	"provider_token_management": "This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead.",
 	"prompts": "Custom prompts or consent screens that users may see during OAuth authentication.",
 	"allowed_grant_types": "The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens " +
 	                       "from the OAuth provider.",
 	"scopes": "Scopes of access that the application requests from the user's account on the OAuth provider.",
 	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
-	"native_client_id": "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
-	"native_client_secret": "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
-	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for applications.",
-	"native_apple_key_generator": "The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps.",
 	"description": "A brief description of the OAuth provider.",
 	"logo": "The URL of the logo associated with the OAuth provider.",
 	"issuer": "The issuer identifier for the OAuth provider.",
@@ -198,10 +181,60 @@ var docsOAuthProvider = map[string]string{
 	"claim_mapping": "Maps OAuth provider claims to Descope user attributes.",
 }
 
-var docsAppleKeyGeneratorModel = map[string]string{
+var docsOAuthProviderSystem = map[string]string{
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
+	"client_id": "The client ID for the OAuth provider, used to identify the application to the provider.",
+	"client_secret": "The client secret for the OAuth provider, used to authenticate the application with the provider.",
+	"manage_provider_tokens": "Whether to enable provider token management for this OAuth provider.",
+	"callback_domain": "Use a custom domain in your OAuth verification screen.",
+	"redirect_url": "Users will be directed to this URL after authentication. If redirect URL is specified in " +
+	                "the SDK/API call, it will override this value.",
+	"prompts": "Custom prompts or consent screens that users may see during OAuth authentication.",
+	"allowed_grant_types": "The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens " +
+	                       "from the OAuth provider.",
+	"scopes": "Scopes of access that the application requests from the user's account on the OAuth provider.",
+	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
+}
+
+var docsOAuthProviderApple = map[string]string{
+	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
+	            "API and SDK calls. Note that this does not affect authentication flows that are " +
+	            "configured to use this authentication method.",
+	"client_id": "The client ID for the OAuth provider, used to identify the application to the provider.",
+	"client_secret": "The client secret for the OAuth provider, used to authenticate the application with the provider.",
+	"manage_provider_tokens": "Whether to enable provider token management for this OAuth provider.",
+	"callback_domain": "Use a custom domain in your OAuth verification screen.",
+	"redirect_url": "Users will be directed to this URL after authentication. If redirect URL is specified in " +
+	                "the SDK/API call, it will override this value.",
+	"prompts": "Custom prompts or consent screens that users may see during OAuth authentication.",
+	"allowed_grant_types": "The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens " +
+	                       "from the OAuth provider.",
+	"scopes": "Scopes of access that the application requests from the user's account on the OAuth provider.",
+	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
+	"native_client_id": "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
+	"native_client_secret": "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
+	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for applications.",
+	"native_apple_key_generator": "The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps.",
+}
+
+var docsOAuthProviderAppleKeyGenerator = map[string]string{
 	"key_id": "The apple generator key id produced by Apple.",
 	"team_id": "The apple generator team id assigned to the key by Apple.",
 	"private_key": "The apple generator private key produced by Apple.",
+}
+
+var docsOAuthSystemProvider = map[string]string{
+	"apple": "Apple's OAuth provider, allowing users to authenticate with their Apple Account.",
+	"discord": "Discord's OAuth provider, allowing users to authenticate with their Discord account.",
+	"facebook": "Facebook's OAuth provider, allowing users to authenticate with their Facebook account.",
+	"github": "GitHub's OAuth provider, allowing users to authenticate with their GitHub account.",
+	"gitlab": "GitLab's OAuth provider, allowing users to authenticate with their GitLab account.",
+	"google": "Google's OAuth provider, allowing users to authenticate with their Google account.",
+	"linkedin": "LinkedIn's OAuth provider, allowing users to authenticate with their LinkedIn account.",
+	"microsoft": "Microsoft's OAuth provider, allowing users to authenticate with their Microsoft account.",
+	"slack": "Slack's OAuth provider, allowing users to authenticate with their Slack account.",
 }
 
 var docsOTP = map[string]string{

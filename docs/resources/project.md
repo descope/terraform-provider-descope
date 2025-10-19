@@ -328,7 +328,6 @@ Optional:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--custom--apple_key_generator))
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
@@ -341,40 +340,12 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--custom--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--custom--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
 - `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
 - `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
 - `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--custom--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.custom.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--custom--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.custom.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--custom--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.custom.provider_token_management`
-
 
 
 <a id="nestedatt--authentication--oauth--system"></a>
@@ -399,28 +370,18 @@ Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
 - `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
 - `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--native_apple_key_generator))
 - `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
 
 <a id="nestedatt--authentication--oauth--system--apple--apple_key_generator"></a>
 ### Nested Schema for `authentication.oauth.system.apple.apple_key_generator`
@@ -442,10 +403,6 @@ Required:
 - `team_id` (String) The apple generator team id assigned to the key by Apple.
 
 
-<a id="nestedatt--authentication--oauth--system--apple--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.apple.provider_token_management`
-
-
 
 <a id="nestedatt--authentication--oauth--system--discord"></a>
 ### Nested Schema for `authentication.oauth.system.discord`
@@ -453,53 +410,15 @@ Required:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--system--discord--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.discord.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--discord--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.discord.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--discord--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.discord.provider_token_management`
-
 
 
 <a id="nestedatt--authentication--oauth--system--facebook"></a>
@@ -508,53 +427,15 @@ Required:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--system--facebook--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.facebook.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--facebook--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.facebook.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--facebook--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.facebook.provider_token_management`
-
 
 
 <a id="nestedatt--authentication--oauth--system--github"></a>
@@ -563,53 +444,15 @@ Required:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--system--github--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.github.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--github--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.github.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--github--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.github.provider_token_management`
-
 
 
 <a id="nestedatt--authentication--oauth--system--gitlab"></a>
@@ -618,53 +461,15 @@ Required:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--system--gitlab--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.gitlab.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--gitlab--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.gitlab.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--gitlab--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.gitlab.provider_token_management`
-
 
 
 <a id="nestedatt--authentication--oauth--system--google"></a>
@@ -673,53 +478,15 @@ Required:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--system--google--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.google.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--google--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.google.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--google--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.google.provider_token_management`
-
 
 
 <a id="nestedatt--authentication--oauth--system--linkedin"></a>
@@ -728,53 +495,15 @@ Required:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--system--linkedin--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.linkedin.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--linkedin--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.linkedin.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--linkedin--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.linkedin.provider_token_management`
-
 
 
 <a id="nestedatt--authentication--oauth--system--microsoft"></a>
@@ -783,53 +512,15 @@ Required:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--system--microsoft--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.microsoft.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--microsoft--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.microsoft.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--microsoft--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.microsoft.provider_token_management`
-
 
 
 <a id="nestedatt--authentication--oauth--system--slack"></a>
@@ -838,53 +529,15 @@ Required:
 Optional:
 
 - `allowed_grant_types` (List of String) The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from the OAuth provider.
-- `apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic apple client secret for applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--apple_key_generator))
-- `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
-- `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
-- `description` (String) A brief description of the OAuth provider.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `issuer` (String) The issuer identifier for the OAuth provider.
-- `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
-- `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
-- `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
 - `scopes` (List of String) Scopes of access that the application requests from the user's account on the OAuth provider.
-- `token_endpoint` (String) The URL where the application requests an access token from the OAuth provider.
-- `use_client_assertion` (Boolean) Use private key JWT (client assertion) instead of client secret.
-- `user_info_endpoint` (String) The URL where the application retrieves user information from the OAuth provider.
-
-<a id="nestedatt--authentication--oauth--system--slack--apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.slack.apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--slack--native_apple_key_generator"></a>
-### Nested Schema for `authentication.oauth.system.slack.native_apple_key_generator`
-
-Required:
-
-- `key_id` (String) The apple generator key id produced by Apple.
-- `private_key` (String, Sensitive) The apple generator private key produced by Apple.
-- `team_id` (String) The apple generator team id assigned to the key by Apple.
-
-
-<a id="nestedatt--authentication--oauth--system--slack--provider_token_management"></a>
-### Nested Schema for `authentication.oauth.system.slack.provider_token_management`
-
 
 
 
