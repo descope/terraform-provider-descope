@@ -39,6 +39,7 @@ func InjectModels() {
 	inject(authentication.OAuthAttributes, docsOAuth)
 	inject(authentication.OAuthSystemProviderAttributes, docsOAuthSystemProvider)
 	inject(authentication.OAuthProviderAttributes, docsOAuthProvider)
+	inject(authentication.AppleKeyGeneratorModelAttributes, docsAppleKeyGeneratorModel)
 	inject(authentication.OTPAttributes, docsOTP)
 	inject(authentication.PasskeysAttributes, docsPasskeys)
 	inject(authentication.PasswordAttributes, docsPassword)
