@@ -183,6 +183,10 @@ var docsOAuthProvider = map[string]string{
 	                       "from the OAuth provider.",
 	"scopes": "Scopes of access that the application requests from the user's account on the OAuth provider.",
 	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
+	"native_client_id": "The client ID for the OAuth provider, used to identify native applications to the provider.",
+	"native_client_secret": "The client secret for the OAuth provider, used to authenticate native applications with the provider.",
+	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for applications.",
+	"native_apple_key_generator": "he apple key generator object describing how to create a dynamic naive apple client secret for native applications.",
 	"description": "A brief description of the OAuth provider.",
 	"logo": "The URL of the logo associated with the OAuth provider.",
 	"issuer": "The issuer identifier for the OAuth provider.",
@@ -192,6 +196,12 @@ var docsOAuthProvider = map[string]string{
 	"jwks_endpoint": "The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.",
 	"use_client_assertion": "Use private key JWT (client assertion) instead of client secret.",
 	"claim_mapping": "Maps OAuth provider claims to Descope user attributes.",
+}
+
+var docsAppleKeyGeneratorModel = map[string]string{
+	"key_id": "The apple generator key id produced by Apple.",
+	"team_id": "The apple generator team id assigned to the key by Apple.",
+	"private_key": "The apple generator private key produced by Apple.",
 }
 
 var docsOTP = map[string]string{

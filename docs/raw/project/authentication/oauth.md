@@ -232,6 +232,42 @@ Whether to merge existing user accounts with new ones created through OAuth auth
 
 
 
+native_client_id
+----------------
+
+- Type: `string` 
+
+The client ID for the OAuth provider, used to identify native applications to the provider.
+
+
+
+native_client_secret
+--------------------
+
+- Type: `secret` 
+
+The client secret for the OAuth provider, used to authenticate native applications with the provider.
+
+
+
+apple_key_generator
+-------------------
+
+- Type: `object` of `authentication.AppleKeyGeneratorModel` 
+
+The apple key generator object describing how to create a dynamic apple client secret for applications.
+
+
+
+native_apple_key_generator
+--------------------------
+
+- Type: `object` of `authentication.AppleKeyGeneratorModel` 
+
+he apple key generator object describing how to create a dynamic naive apple client secret for native applications.
+
+
+
 description
 -----------
 
@@ -310,3 +346,37 @@ claim_mapping
 - Type: `map` of `string` 
 
 Maps OAuth provider claims to Descope user attributes.
+
+
+
+
+
+AppleKeyGeneratorModel
+======================
+
+
+
+key_id
+------
+
+- Type: `string` (required)
+
+The apple generator key id produced by Apple.
+
+
+
+team_id
+-------
+
+- Type: `string` (required)
+
+The apple generator team id assigned to the key by Apple.
+
+
+
+private_key
+-----------
+
+- Type: `secret` (required)
+
+The apple generator private key produced by Apple.
