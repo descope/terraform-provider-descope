@@ -304,16 +304,16 @@ var AppleKeyGeneratorModelAttributes = map[string]schema.Attribute{
 
 func (m *AppleKeyGeneratorModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	stringattr.Get(m.KeyID, data, "key_id")
-	stringattr.Get(m.TeamID, data, "team_id")
-	stringattr.Get(m.PrivateKey, data, "private_key")
+	stringattr.Get(m.KeyID, data, "keyId")
+	stringattr.Get(m.TeamID, data, "teamId")
+	stringattr.Get(m.PrivateKey, data, "privateKey")
 	return data
 }
 
 func (m *AppleKeyGeneratorModel) SetValues(h *helpers.Handler, data map[string]any) {
-	stringattr.Set(&m.KeyID, data, "key_id")
-	stringattr.Set(&m.TeamID, data, "team_id")
-	stringattr.Set(&m.PrivateKey, data, "private_key")
+	stringattr.Set(&m.KeyID, data, "keyId")
+	stringattr.Set(&m.TeamID, data, "teamId")
+	stringattr.Nil(&m.PrivateKey)
 }
 
 type OAuthProviderModel struct {
@@ -336,9 +336,7 @@ type OAuthProviderModel struct {
 	UserInfoEndpoint        stringattr.Type                                 `tfsdk:"user_info_endpoint"`
 	JWKsEndpoint            stringattr.Type                                 `tfsdk:"jwks_endpoint"`
 	UseClientAssertion      boolattr.Type                                   `tfsdk:"use_client_assertion"`
-	UseNativeClient         boolattr.Type                                   `tfsdk:"use_native_client"`
 	ClaimMapping            strmapattr.Type                                 `tfsdk:"claim_mapping"`
-	DefaultSSORoles         strlistattr.Type                                `tfsdk:"default_sso_roles"`
 	NativeClientID          stringattr.Type                                 `tfsdk:"native_client_id"`
 	NativeClientSecret      stringattr.Type                                 `tfsdk:"native_client_secret"`
 	AppleKeyGenerator       objattr.Type[AppleKeyGeneratorModel]            `tfsdk:"apple_key_generator"`
@@ -383,17 +381,13 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	}
 	claimMapping["customAttributes"] = customAttributes
 	data["userDataClaimsMapping"] = claimMapping
-	if !m.DefaultSSORoles.IsEmpty() {
-		strlistattr.Get(m.DefaultSSORoles, data, "defaultSSORoles", h)
-	}
 	stringattr.Get(m.NativeClientID, data, "nativeClientId")
 	stringattr.Get(m.NativeClientSecret, data, "nativeClientSecret")
-	if !m.AppleKeyGenerator.IsNull() && !m.AppleKeyGenerator.IsUnknown() {
-		objattr.Get(m.AppleKeyGenerator, data, "appleKeyGenerator", h)
+	if m.NativeClientID.ValueString() != "" {
+		data["useNativeClient"] = true
 	}
-	if !m.NativeAppleKeyGenerator.IsNull() && !m.NativeAppleKeyGenerator.IsUnknown() {
-		objattr.Get(m.NativeAppleKeyGenerator, data, "nativeAppleKeyGenerator", h)
-	}
+	objattr.Get(m.AppleKeyGenerator, data, "appleKeyGenerator", h)
+	objattr.Get(m.NativeAppleKeyGenerator, data, "nativeAppleKeyGenerator", h)
 	return data
 }
 
@@ -417,25 +411,11 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
 	boolattr.Set(&m.UseClientAssertion, data, "useClientAssertion")
-	m.UseNativeClient = boolattr.Value(false)
-	if _, ok := data["nativeClientId"]; ok {
-		stringattr.Set(&m.NativeClientID, data, "nativeClientId")
-		m.UseNativeClient = boolattr.Value(true)
-	}
-	if _, ok := data["nativeClientSecret"]; ok {
-		stringattr.Set(&m.NativeClientSecret, data, "nativeClientSecret")
-		m.UseNativeClient = boolattr.Value(true)
-	}
+	stringattr.Set(&m.NativeClientID, data, "nativeClientId")
+	stringattr.Set(&m.NativeClientSecret, data, "nativeClientSecret")
 
-	if _, ok := data["defaultSSORoles"]; ok {
-		strlistattr.Set(&m.DefaultSSORoles, data, "defaultSSORoles", h)
-	}
-	if _, ok := data["appleKeyGenerator"]; ok {
-		objattr.Set(&m.AppleKeyGenerator, data, "appleKeyGenerator", h)
-	}
-	if _, ok := data["nativeAppleKeyGenerator"]; ok {
-		objattr.Set(&m.NativeAppleKeyGenerator, data, "nativeAppleKeyGenerator", h)
-	}
+	objattr.Set(&m.AppleKeyGenerator, data, "appleKeyGenerator", h)
+	objattr.Set(&m.NativeAppleKeyGenerator, data, "nativeAppleKeyGenerator", h)
 	strmapattr.Nil(&m.ClaimMapping, h) // XXX empty defaults are added by the backend, add parsing for refresh
 }
 
