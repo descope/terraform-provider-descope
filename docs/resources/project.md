@@ -341,9 +341,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--custom--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--custom--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--custom--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -411,9 +411,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--apple--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -466,9 +466,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--discord--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -521,9 +521,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--facebook--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -576,9 +576,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--github--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -631,9 +631,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--gitlab--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -686,9 +686,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--google--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -741,9 +741,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--linkedin--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -796,9 +796,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--microsoft--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.
@@ -851,9 +851,9 @@ Optional:
 - `logo` (String) The URL of the logo associated with the OAuth provider.
 - `manage_provider_tokens` (Boolean) Whether to enable provider token management for this OAuth provider.
 - `merge_user_accounts` (Boolean) Whether to merge existing user accounts with new ones created through OAuth authentication.
-- `native_apple_key_generator` (Attributes) he apple key generator object describing how to create a dynamic naive apple client secret for native applications. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--native_apple_key_generator))
-- `native_client_id` (String) The client ID for the OAuth provider, used to identify native applications to the provider.
-- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate native applications with the provider.
+- `native_apple_key_generator` (Attributes) The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--native_apple_key_generator))
+- `native_client_id` (String) The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
+- `native_client_secret` (String, Sensitive) The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 - `prompts` (List of String) Custom prompts or consent screens that users may see during OAuth authentication.
 - `provider_token_management` (Attributes) This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead. (see [below for nested schema](#nestedatt--authentication--oauth--system--slack--provider_token_management))
 - `redirect_url` (String) Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API call, it will override this value.

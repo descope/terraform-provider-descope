@@ -237,7 +237,7 @@ native_client_id
 
 - Type: `string` 
 
-The client ID for the OAuth provider, used to identify native applications to the provider.
+The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
 
 
 
@@ -246,7 +246,7 @@ native_client_secret
 
 - Type: `secret` 
 
-The client secret for the OAuth provider, used to authenticate native applications with the provider.
+The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 
 
 
@@ -264,7 +264,7 @@ native_apple_key_generator
 
 - Type: `object` of `authentication.AppleKeyGeneratorModel` 
 
-he apple key generator object describing how to create a dynamic naive apple client secret for native applications.
+The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps.
 
 
 
