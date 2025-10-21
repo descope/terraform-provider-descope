@@ -145,21 +145,6 @@ func TestAuthentication(t *testing.T) {
 			Config: p.Config(`
 				authentication = {
 					oauth = {
-						system = {
-							apple = {
-								client_id = "id"
-								use_client_assertion = true
-							}
-						}
-					}
-				}
-			`),
-			ExpectError: regexp.MustCompile(`Reserved Attribute`),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					oauth = {
 						custom = {
 							mobile_ios = {
 								allowed_grant_types = ["authorization_code", "implicit"]

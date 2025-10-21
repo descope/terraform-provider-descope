@@ -34,7 +34,6 @@ type OAuthSystemProvidersModel struct {
 
 func (m *OAuthSystemProvidersModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	// XXX might need to drop if null
 	objattr.Get(m.Apple, data, "apple", h)
 	objattr.Get(m.Discord, data, "discord", h)
 	objattr.Get(m.Facebook, data, "facebook", h)
@@ -44,6 +43,13 @@ func (m *OAuthSystemProvidersModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.Linkedin, data, "linkedin", h)
 	objattr.Get(m.Microsoft, data, "microsoft", h)
 	objattr.Get(m.Slack, data, "slack", h)
+	// strip any nil values added for providers that were left as default value, otherwise
+	// the backend will complain that it didn't get a map value
+	for k, v := range data {
+		if v == nil {
+			delete(data, k)
+		}
+	}
 	return data
 }
 
