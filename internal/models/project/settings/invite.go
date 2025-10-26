@@ -22,6 +22,7 @@ type InviteSettingsModel struct {
 	RequireInvitation boolattr.Type                             `tfsdk:"require_invitation"`
 	InviteURL         stringattr.Type                           `tfsdk:"invite_url"`
 	AddMagicLinkToken boolattr.Type                             `tfsdk:"add_magiclink_token"`
+	InviteExpireUser  boolattr.Type                             `tfsdk:"invite_expire_user"`
 	SendEmail         boolattr.Type                             `tfsdk:"send_email"`
 	SendText          boolattr.Type                             `tfsdk:"send_text"`
 	EmailService      objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
@@ -31,6 +32,7 @@ var InviteSettingsDefault = &InviteSettingsModel{
 	RequireInvitation: boolattr.Value(false),
 	InviteURL:         stringattr.Value(""),
 	AddMagicLinkToken: boolattr.Value(false),
+	InviteExpireUser:  boolattr.Value(false),
 	SendEmail:         boolattr.Value(true),
 	SendText:          boolattr.Value(false),
 	EmailService:      objattr.Value[templates.EmailServiceModel](nil),
@@ -40,6 +42,7 @@ func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	boolattr.GetNot(m.RequireInvitation, data, "projectSelfProvisioning")
 	stringattr.Get(m.InviteURL, data, "inviteUrl")
+	boolattr.Get(m.InviteExpireUser, data, "inviteExpireUser")
 	boolattr.Get(m.AddMagicLinkToken, data, "inviteMagicLink")
 	boolattr.Get(m.SendEmail, data, "inviteSendEmail")
 	boolattr.Get(m.SendText, data, "inviteSendSms")
@@ -53,6 +56,7 @@ func (m *InviteSettingsModel) SetValues(h *helpers.Handler, data map[string]any)
 	boolattr.SetNot(&m.RequireInvitation, data, "projectSelfProvisioning")
 	stringattr.Set(&m.InviteURL, data, "inviteUrl")
 	boolattr.Set(&m.AddMagicLinkToken, data, "inviteMagicLink")
+	boolattr.Set(&m.InviteExpireUser, data, "inviteExpireUser")
 	boolattr.Set(&m.SendEmail, data, "inviteSendEmail")
 	boolattr.Set(&m.SendText, data, "inviteSendSms")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
