@@ -8,7 +8,7 @@ import (
 )
 
 var PermissionAttributes = map[string]schema.Attribute{
-	"id":          stringattr.Identifier(),
+	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringvalidator.LengthAtMost(100)),
 	"description": stringattr.Optional(stringattr.StandardLenValidator),
 }

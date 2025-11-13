@@ -79,10 +79,6 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 				h.Error("Missing Permission", "The role '%s' references a permission '%s' that doesn't exist", name, p)
 			}
 		}
-
-		if r.Key.ValueString() == "" {
-			h.Warn("Missing Key Attribute", "The role '%s' will use the generated value '%s' for its key attribute. It's strongly recommended to set an explicit value for the key attribute in the plan file to ensure roles are preserved correctly across plan changes.", name, r.GetKey().ValueString())
-		}
 	}
 
 	for k, v := range permissions {
@@ -99,6 +95,13 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 }
 
 func (m *AuthorizationModel) Modify(h *helpers.Handler, state *AuthorizationModel) {
+	for r := range listattr.MutatingIterator(&m.Roles, h) {
+		if r.Key.ValueString() == "" {
+			r.Key = r.GetDefaultKey()
+			h.Warn("Missing Key Attribute", "The role '%s' will use the generated value '%s' for its key attribute. It's strongly recommended to set an explicit value for the key attribute in each role in the Terraform plan to ensure user roles are maintained correctly across plan changes.", r.Name.ValueString(), r.Key.ValueString())
+		}
+	}
+
 	listattr.ModifyKeyed(h, &m.Roles, state.Roles)
 	listattr.ModifyMatching(h, &m.Permissions, state.Permissions)
 }

@@ -11,7 +11,7 @@ import (
 )
 
 var RoleAttributes = map[string]schema.Attribute{
-	"id":          stringattr.Identifier(),
+	"id":          stringattr.IdentifierMatched(),
 	"key":         stringattr.Optional(),
 	"name":        stringattr.Required(stringvalidator.LengthAtMost(100)),
 	"description": stringattr.Optional(stringattr.StandardLenValidator),
@@ -63,11 +63,15 @@ func (m *RoleModel) SetValues(h *helpers.Handler, data map[string]any) {
 // Matching
 
 func (m *RoleModel) GetKey() stringattr.Type {
-	if m.Key.ValueString() != "" {
-		return m.Key
+	if m.Key.ValueString() == "" {
+		return m.GetDefaultKey()
 	}
+	return m.Key
+}
+
+func (m *RoleModel) GetDefaultKey() stringattr.Type {
 	name := m.Name.ValueString()
-	value := strcase.ToKebab(name)
+	value := strcase.ToSnake(name)
 	return stringattr.Value(value)
 }
 
