@@ -43,14 +43,14 @@ func setConnectorValues(id, name, description *stringattr.Type, data map[string]
 
 // Connector Utils
 
-func addConnectorReferences[T any, M helpers.MatchableModel[T]](h *helpers.Handler, key string, connectors listattr.Type[T]) {
+func addConnectorReferences[T any, M helpers.NamedModel[T]](h *helpers.Handler, key string, connectors listattr.Type[T]) {
 	for v := range listattr.Iterator(connectors, h) {
 		var connector M = v
 		h.Refs.Add(helpers.ConnectorReferenceKey, key, connector.GetID().ValueString(), connector.GetName().ValueString())
 	}
 }
 
-func addConnectorNames[T any, M helpers.MatchableModel[T]](h *helpers.Handler, names map[string]int, connectors listattr.Type[T]) {
+func addConnectorNames[T any, M helpers.NamedModel[T]](h *helpers.Handler, names map[string]int, connectors listattr.Type[T]) {
 	for v := range listattr.Iterator(connectors, h) {
 		var connector M = v
 		if v := connector.GetName().ValueString(); v != "" {

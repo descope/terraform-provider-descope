@@ -7,7 +7,7 @@ import (
 )
 
 // Ensures keyed models preserve their ids even through changes to their names or the order in the list.
-func ModifyKeyed[T any, M helpers.KeyedModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
+func ModifyMatchingKeys[T any, M helpers.KeyedModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
 	// First for each existing model object look for a matching one in the plan and
 	// give it the ID value, effectively mimicking UseStateForUnknown. This should usually
 	// be enough to handle the first common case where a model object is added to a list
@@ -27,7 +27,7 @@ func ModifyKeyed[T any, M helpers.KeyedModel[T]](h *helpers.Handler, plan *Type[
 }
 
 // A simple heuristic for preserving model object IDs by matching names or the order in the list.
-func ModifyMatching[T any, M helpers.MatchableModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
+func ModifyMatchingNames[T any, M helpers.NamedModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
 	unmatched := []M{}
 	// First for each existing model object look for a matching one in the plan and
 	// give it the ID value, effectively mimicking UseStateForUnknown. This should usually
@@ -66,7 +66,7 @@ func ModifyMatching[T any, M helpers.MatchableModel[T]](h *helpers.Handler, plan
 }
 
 // Like Set but looks for matching model objects in the list by name.
-func SetMatching[T any, M helpers.MatchableModel[T]](l *Type[T], data map[string]any, key string, subkey string, h *helpers.Handler) {
+func SetMatchingNames[T any, M helpers.NamedModel[T]](l *Type[T], data map[string]any, key string, subkey string, h *helpers.Handler) {
 	// convert the data in the map to a slice of objects
 	objects := []map[string]any{}
 	values, _ := data[key].([]any)

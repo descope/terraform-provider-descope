@@ -14,18 +14,20 @@ type Model[T any] interface {
 	*T
 }
 
-// A model that can be matched by name and ID, primarily for making more friendly diffs in lists.
-type MatchableModel[T any] interface {
+// A model that can be matched by name, primarily for making more friendly diffs in lists.
+type NamedModel[T any] interface {
 	Model[T]
 	GetName() types.String
 	GetID() types.String
 	SetID(id types.String)
 }
 
-// A model that can be matched by key, primarily for ensuring entities preserve their ids across plan changes.
+// A model that has a stable key, primarily for ensuring models preserve their ids across plan changes in lists.
 type KeyedModel[T any] interface {
-	MatchableModel[T]
+	Model[T]
 	GetKey() types.String
+	GetID() types.String
+	SetID(id types.String)
 }
 
 // A model that can return a list of references to other model objects.

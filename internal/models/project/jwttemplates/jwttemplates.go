@@ -27,8 +27,8 @@ func (m *JWTTemplatesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *JWTTemplatesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	listattr.SetMatching(&m.UserTemplates, data, "userTemplates", "name", h)
-	listattr.SetMatching(&m.AccessKeyTemplates, data, "keyTemplates", "name", h)
+	listattr.SetMatchingNames(&m.UserTemplates, data, "userTemplates", "name", h)
+	listattr.SetMatchingNames(&m.AccessKeyTemplates, data, "keyTemplates", "name", h)
 }
 
 func (m *JWTTemplatesModel) CollectReferences(h *helpers.Handler) {

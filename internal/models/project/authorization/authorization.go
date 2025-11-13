@@ -38,8 +38,8 @@ func (m *AuthorizationModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
-	listattr.SetMatching(&m.Roles, data, "roles", "name", h)
-	listattr.SetMatching(&m.Permissions, data, "permissions", "name", h)
+	listattr.SetMatchingNames(&m.Roles, data, "roles", "name", h)
+	listattr.SetMatchingNames(&m.Permissions, data, "permissions", "name", h)
 }
 
 func (m *AuthorizationModel) CollectReferences(h *helpers.Handler) {
@@ -102,6 +102,6 @@ func (m *AuthorizationModel) Modify(h *helpers.Handler, state *AuthorizationMode
 		}
 	}
 
-	listattr.ModifyKeyed(h, &m.Roles, state.Roles)
-	listattr.ModifyMatching(h, &m.Permissions, state.Permissions)
+	listattr.ModifyMatchingKeys(h, &m.Roles, state.Roles)
+	listattr.ModifyMatchingNames(h, &m.Permissions, state.Permissions)
 }
