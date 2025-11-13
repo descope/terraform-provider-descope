@@ -16,6 +16,7 @@ func TestAuthorization(t *testing.T) {
 				authorization = {
 					roles = [
 						{
+							key = "admin"
 							name = "Admin"
 							permissions = ["User Admin"]
 						}
@@ -34,6 +35,7 @@ func TestAuthorization(t *testing.T) {
 				authorization = {
 					roles = [
 						{
+							key = "admin"
 							name = "Admin"
 							permissions = ["User Admin"]
 						}
@@ -52,11 +54,13 @@ func TestAuthorization(t *testing.T) {
 				authorization = {
 					roles = [
 						{
+							key = "app-developer"
 							name = "App Developer"
 							description = "Builds apps and uploads new beta builds"
 							permissions = ["build-apps", "upload-builds", "install-builds"]
 						},
 						{
+							key = "app-tester"
 							name = "App Tester"
 							description = "Installs and tests beta releases"
 							permissions = ["install-builds"]
@@ -77,11 +81,13 @@ func TestAuthorization(t *testing.T) {
 				authorization = {
 					roles = [
 						{
+							key = "app-developer"
 							name = "App Developer"
 							description = "Builds apps and uploads new beta builds"
 							permissions = ["build-apps", "upload-builds", "install-builds"]
 						},
 						{
+							key = "app-tester"
 							name = "App Tester"
 							description = "Installs and tests beta releases"
 							permissions = ["install-builds"]
