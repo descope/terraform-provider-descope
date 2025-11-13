@@ -21,7 +21,7 @@ var AuthorizationValidator = objattr.NewValidator[AuthorizationModel]("must have
 var AuthorizationModifier = objattr.NewModifier[AuthorizationModel]("maintains permission and role identifiers between plan changes")
 
 var AuthorizationAttributes = map[string]schema.Attribute{
-	"roles":       listattr.Default[RoleModel](RoleAttributes, RoleModifier),
+	"roles":       listattr.Default[RoleModel](RoleAttributes),
 	"permissions": listattr.Default[PermissionModel](PermissionAttributes),
 }
 
@@ -78,6 +78,10 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 			if count := permissions[p]; count == 0 {
 				h.Error("Missing Permission", "The role '%s' references a permission '%s' that doesn't exist", name, p)
 			}
+		}
+
+		if r.Key.ValueString() == "" {
+			h.Warn("Missing Key Attribute", "The role '%s' will use the generated value '%s' for its key attribute. It's strongly recommended to set an explicit value for the key attribute in the plan file to ensure roles are preserved correctly across plan changes.", name, r.GetKey().ValueString())
 		}
 	}
 
