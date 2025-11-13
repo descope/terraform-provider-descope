@@ -12,8 +12,8 @@ import (
 var InviteSettingsAttributes = map[string]schema.Attribute{
 	"require_invitation":   boolattr.Default(false),
 	"invite_url":           stringattr.Default(""),
-	"expire_invited_users": boolattr.Default(false),
 	"add_magiclink_token":  boolattr.Default(false),
+	"expire_invited_users": boolattr.Default(false),
 	"send_email":           boolattr.Default(true),
 	"send_text":            boolattr.Default(false),
 	"email_service":        objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
@@ -43,8 +43,8 @@ func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	boolattr.GetNot(m.RequireInvitation, data, "projectSelfProvisioning")
 	stringattr.Get(m.InviteURL, data, "inviteUrl")
-	boolattr.Get(m.ExpireInvitedUsers, data, "inviteExpireUser")
 	boolattr.Get(m.AddMagicLinkToken, data, "inviteMagicLink")
+	boolattr.Get(m.ExpireInvitedUsers, data, "inviteExpireUser")
 	boolattr.Get(m.SendEmail, data, "inviteSendEmail")
 	boolattr.Get(m.SendText, data, "inviteSendSms")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)

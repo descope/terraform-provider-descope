@@ -997,6 +997,7 @@ var docsInviteSettings = map[string]string{
 	"require_invitation": "Whether users must be invited before they can sign up to the project.",
 	"invite_url": "Custom URL to include in the message sent to invited users.",
 	"add_magiclink_token": "Whether to include a magic link token in invitation messages.",
+	"expire_invited_users": "Expire the user account if the invitation is not accepted within the expiration time.",
 	"send_email": "Whether to send invitation emails to users.",
 	"send_text": "Whether to send invitation SMS messages to users.",
 	"email_service": "Settings related to sending invitation emails.",
