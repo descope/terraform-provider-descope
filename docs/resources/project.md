@@ -2547,6 +2547,7 @@ Optional:
 
 - `add_magiclink_token` (Boolean) Whether to include a magic link token in invitation messages.
 - `email_service` (Attributes) Settings related to sending invitation emails. (see [below for nested schema](#nestedatt--invite_settings--email_service))
+- `expire_invited_users` (Boolean) Expire the user account if the invitation is not accepted within the expiration time.
 - `invite_url` (String) Custom URL to include in the message sent to invited users.
 - `require_invitation` (Boolean) Whether users must be invited before they can sign up to the project.
 - `send_email` (Boolean) Whether to send invitation emails to users.

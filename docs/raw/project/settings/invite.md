@@ -31,6 +31,15 @@ Whether to include a magic link token in invitation messages.
 
 
 
+expire_invited_users
+--------------------
+
+- Type: `bool` 
+
+Expire the user account if the invitation is not accepted within the expiration time.
+
+
+
 send_email
 ----------
 
