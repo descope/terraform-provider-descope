@@ -6,6 +6,28 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 )
 
+// Ensures keyed models preserve their ids even through changes to their names or the order in the list.
+func ModifyKeyed[T any, M helpers.KeyedModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
+	// First for each existing model object look for a matching one in the plan and
+	// give it the ID value, effectively mimicking UseStateForUnknown. This should usually
+	// be enough to handle the first common case where a model object is added to a list
+	// but the other objects in the list aren't changed.
+	for e := range Iterator(state, h) {
+		var existing M = e
+		for p := range MutatingIterator(plan, h) {
+			var planned M = p
+			// prefer matching by key if the existing model has a value for it, and only
+			// match by name if there's still no existing key value in the state
+			sameKey := existing.GetKey().ValueString() != "" && planned.GetKey().Equal(existing.GetKey())
+			sameName := existing.GetKey().ValueString() == "" && planned.GetName().Equal(existing.GetName())
+			if sameKey || sameName {
+				planned.SetID(existing.GetID())
+				break
+			}
+		}
+	}
+}
+
 // A simple heuristic for preserving model object IDs by matching names or the order in the list.
 func ModifyMatching[T any, M helpers.MatchableModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
 	unmatched := []M{}

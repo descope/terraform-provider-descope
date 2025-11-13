@@ -22,6 +22,12 @@ type MatchableModel[T any] interface {
 	SetID(id types.String)
 }
 
+// A model that can be matched by key, primarily for ensuring entities preserve their ids across plan changes.
+type KeyedModel[T any] interface {
+	MatchableModel[T]
+	GetKey() types.String
+}
+
 // A model that can return a list of references to other model objects.
 type CollectReferencesModel[T any] interface {
 	Model[T]

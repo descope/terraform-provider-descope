@@ -21,7 +21,7 @@ var AuthorizationValidator = objattr.NewValidator[AuthorizationModel]("must have
 var AuthorizationModifier = objattr.NewModifier[AuthorizationModel]("maintains permission and role identifiers between plan changes")
 
 var AuthorizationAttributes = map[string]schema.Attribute{
-	"roles":       listattr.Default[RoleModel](RoleAttributes),
+	"roles":       listattr.Default[RoleModel](RoleAttributes, RoleModifier),
 	"permissions": listattr.Default[PermissionModel](PermissionAttributes),
 }
 
@@ -95,6 +95,6 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 }
 
 func (m *AuthorizationModel) Modify(h *helpers.Handler, state *AuthorizationModel) {
-	listattr.ModifyMatching(h, &m.Roles, state.Roles)
+	listattr.ModifyKeyed(h, &m.Roles, state.Roles)
 	listattr.ModifyMatching(h, &m.Permissions, state.Permissions)
 }
