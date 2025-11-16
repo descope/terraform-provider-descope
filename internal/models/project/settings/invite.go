@@ -2,6 +2,7 @@ package settings
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/durationattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -14,6 +15,7 @@ var InviteSettingsAttributes = map[string]schema.Attribute{
 	"invite_url":           stringattr.Default(""),
 	"add_magiclink_token":  boolattr.Default(false),
 	"expire_invited_users": boolattr.Default(false),
+	"invite_expiration":    durationattr.Default("1 week", durationattr.MinimumValue("1 hour")),
 	"send_email":           boolattr.Default(true),
 	"send_text":            boolattr.Default(false),
 	"email_service":        objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
@@ -24,6 +26,7 @@ type InviteSettingsModel struct {
 	InviteURL          stringattr.Type                           `tfsdk:"invite_url"`
 	AddMagicLinkToken  boolattr.Type                             `tfsdk:"add_magiclink_token"`
 	ExpireInvitedUsers boolattr.Type                             `tfsdk:"expire_invited_users"`
+	InviteExpiration   durationattr.Type                         `tfsdk:"invite_expiration"`
 	SendEmail          boolattr.Type                             `tfsdk:"send_email"`
 	SendText           boolattr.Type                             `tfsdk:"send_text"`
 	EmailService       objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
@@ -34,6 +37,7 @@ var InviteSettingsDefault = &InviteSettingsModel{
 	InviteURL:          stringattr.Value(""),
 	AddMagicLinkToken:  boolattr.Value(false),
 	ExpireInvitedUsers: boolattr.Value(false),
+	InviteExpiration:   durationattr.Value("1 week"),
 	SendEmail:          boolattr.Value(true),
 	SendText:           boolattr.Value(false),
 	EmailService:       objattr.Value[templates.EmailServiceModel](nil),
@@ -45,6 +49,7 @@ func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.InviteURL, data, "inviteUrl")
 	boolattr.Get(m.AddMagicLinkToken, data, "inviteMagicLink")
 	boolattr.Get(m.ExpireInvitedUsers, data, "inviteExpireUser")
+	durationattr.Get(m.InviteExpiration, data, "inviteExpirationTime")
 	boolattr.Get(m.SendEmail, data, "inviteSendEmail")
 	boolattr.Get(m.SendText, data, "inviteSendSms")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
@@ -58,6 +63,7 @@ func (m *InviteSettingsModel) SetValues(h *helpers.Handler, data map[string]any)
 	stringattr.Set(&m.InviteURL, data, "inviteUrl")
 	boolattr.Set(&m.AddMagicLinkToken, data, "inviteMagicLink")
 	boolattr.Set(&m.ExpireInvitedUsers, data, "inviteExpireUser")
+	durationattr.Set(&m.InviteExpiration, data, "inviteExpirationTime")
 	boolattr.Set(&m.SendEmail, data, "inviteSendEmail")
 	boolattr.Set(&m.SendText, data, "inviteSendSms")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
