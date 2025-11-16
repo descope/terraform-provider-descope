@@ -357,5 +357,69 @@ func TestSettings(t *testing.T) {
 				},
 			}),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				invite_settings = {
+					require_invitation = false
+					invite_url = "https://gil.sh/flows"
+					add_magiclink_token = true
+					expire_invited_users = true
+					invite_expiration = "2 weeks"
+					send_email = true
+					send_text = false
+					email_service = {
+						connector = "My SMTP Connector"
+						templates = [
+							{
+								active = true
+								name = "My Template"
+								subject = "Welcome"
+								plain_text_body = "Body"
+								use_plain_text_body = true
+							}
+						]
+					}
+				}
+				connectors = {
+					smtp = [
+						{
+							name = "My SMTP Connector"
+							sender = {
+								email = "foo@foo.com"
+							}
+							server = {
+								host = "smtp.foo.com"
+							}
+							authentication = {
+						    	username = "foo"
+								password = "bar"
+							}
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"invite_settings": map[string]any{
+					"require_invitation":   false,
+					"invite_url":           "https://gil.sh/flows",
+					"add_magiclink_token":  true,
+					"expire_invited_users": true,
+					"invite_expiration":    "2 weeks",
+					"send_email":           true,
+					"send_text":            false,
+					"email_service": map[string]any{
+						"connector":   "My SMTP Connector",
+						"templates.#": 1,
+						"templates.0": map[string]any{
+							"active":              true,
+							"name":                "My Template",
+							"subject":             "Welcome",
+							"plain_text_body":     "Body",
+							"use_plain_text_body": true,
+						},
+					},
+				},
+			}),
+		},
 	)
 }

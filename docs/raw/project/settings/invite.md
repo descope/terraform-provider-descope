@@ -40,6 +40,17 @@ Expire the user account if the invitation is not accepted within the expiration 
 
 
 
+invite_expiration
+-----------------
+
+- Type: `duration` 
+
+The expiry time for the invitation, meant to be used together with
+`expire_invited_users` and/or `add_magiclink_token`. Use values such
+as "2 weeks", "4 days", etc. The minimum value is "1 hour".
+
+
+
 send_email
 ----------
 

@@ -9,7 +9,9 @@ import (
 )
 
 func Run(t *testing.T, steps ...resource.TestStep) {
-	t.Parallel()
+	if local, _ := IsLocalEnvironment(); local {
+		t.Parallel()
+	}
 	resource.Test(t, TestCase(t, steps...))
 }
 
