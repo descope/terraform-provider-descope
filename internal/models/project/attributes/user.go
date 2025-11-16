@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var UserAttributeModifier = objattr.NewModifier[UserAttributeModel]("must have a valid configuration", objattr.ModifierAllowNullState)
+var UserAttributeModifier = objattr.NewModifier[UserAttributeModel]("ensures the user attribute has an id value", objattr.ModifierAllowNullState)
 
 var UserAttributeAttributes = map[string]schema.Attribute{
 	"id":                   stringattr.Optional(stringattr.MachineIDValidator, stringvalidator.LengthAtMost(20)),
