@@ -250,8 +250,8 @@ var docsSSO = map[string]string{
 	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
 	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
 		"in tenant level settings or SDK/API call, they will override this value.",
-	"sso_suite_settings":                           "Configuration block for the SSO Suite.",
-	"allow_duplicate_sso_domains_in_other_tenants": "Whether to allow duplicate SSO domain across tenants.",
+	"sso_suite_settings":      "Configuration block for the SSO Suite.",
+	"allow_duplicate_domains": "Whether to allow duplicate SSO domain across tenants.",
 }
 
 var docsSSOSuite = map[string]string{

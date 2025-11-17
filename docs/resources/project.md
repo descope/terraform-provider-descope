@@ -1063,7 +1063,7 @@ Optional:
 - `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 - `sso_suite_settings` (Attributes) Configuration block for the SSO Suite. (see [below for nested schema](#nestedatt--authentication--sso--sso_suite_settings))
-- `allow_duplicate_sso_domains_in_other_tenants` (Boolean) Whether to allow duplicate SSO domain across tenants.
+- `allow_duplicate_domains` (Boolean) Whether to allow duplicate SSO domain across tenants.
 
 <a id="nestedatt--authentication--sso--sso_suite_settings"></a>
 ### Nested Schema for `authentication.sso.sso_suite_settings`

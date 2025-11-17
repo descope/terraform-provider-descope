@@ -43,7 +43,7 @@ Configuration block for the SSO Suite.
 
 
 
-allow_duplicate_sso_domains_in_other_tenants
+allow_duplicate_domains
 -----------
 
 - Type: `bool` 

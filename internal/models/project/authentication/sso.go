@@ -9,11 +9,11 @@ import (
 )
 
 var SSOAttributes = map[string]schema.Attribute{
-	"disabled":           boolattr.Default(false),
-	"merge_users":        boolattr.Default(false),
-	"redirect_url":       stringattr.Default(""),
-	"sso_suite_settings": objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
-	"allow_duplicate_sso_domains_in_other_tenants": boolattr.Default(false),
+	"disabled":                boolattr.Default(false),
+	"merge_users":             boolattr.Default(false),
+	"redirect_url":            stringattr.Default(""),
+	"sso_suite_settings":      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
+	"allow_duplicate_domains": boolattr.Default(false),
 }
 
 type SSOModel struct {
@@ -21,7 +21,7 @@ type SSOModel struct {
 	MergeUsers                             boolattr.Type               `tfsdk:"merge_users"`
 	RedirectURL                            stringattr.Type             `tfsdk:"redirect_url"`
 	SSOSuiteSettings                       objattr.Type[SSOSuiteModel] `tfsdk:"sso_suite_settings"`
-	AllowDuplicateSSODomainsInOtherTenants boolattr.Type               `tfsdk:"allow_duplicate_sso_domains_in_other_tenants"`
+	AllowDuplicateSSODomainsInOtherTenants boolattr.Type               `tfsdk:"allow_duplicate_domains"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
