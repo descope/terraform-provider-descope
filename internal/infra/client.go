@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"os"
 	"sync"
 
 	"github.com/descope/go-sdk/descope/api"
@@ -143,7 +144,12 @@ func (c *Client) getAPIClient(projectID string) *api.Client {
 
 	apiClient, ok := c.apiClients[projectID]
 	if !ok {
-		params := api.ClientParams{ProjectID: projectID, BaseURL: c.baseURL}
+		headers := map[string]string{}
+		if v := os.Getenv("DESCOPE_USER_AGENT"); v != "" {
+			headers["user-agent"] = v
+		}
+
+		params := api.ClientParams{ProjectID: projectID, BaseURL: c.baseURL, CustomDefaultHeaders: headers}
 		apiClient = api.NewClient(params)
 		c.apiClients[projectID] = apiClient
 	}
