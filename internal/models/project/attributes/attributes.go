@@ -24,6 +24,6 @@ func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
-	listattr.SetMatching(&m.Tenant, data, "tenant", "displayName", h)
-	listattr.SetMatching(&m.User, data, "user", "displayName", h)
+	listattr.SetMatchingNames(&m.Tenant, data, "tenant", "displayName", h)
+	listattr.SetMatchingNames(&m.User, data, "user", "displayName", h)
 }

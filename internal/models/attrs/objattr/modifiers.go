@@ -10,6 +10,8 @@ import (
 type ModifierOptions int
 
 const (
+	// When this is used the Modify function will be called on the model even if its State value is null,
+	// in which case the state parameter passed to the Modify function call will be nil.
 	ModifierAllowNullState ModifierOptions = iota
 )
 
