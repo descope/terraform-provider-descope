@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"os"
 	"sync"
 
@@ -20,6 +21,7 @@ type Response struct {
 }
 
 type Client struct {
+	version       string
 	projectID     string
 	managementKey string
 	baseURL       string
@@ -28,8 +30,9 @@ type Client struct {
 	lock       sync.Mutex
 }
 
-func NewClient(projectID, managementKey, baseURL string) *Client {
+func NewClient(version, projectID, managementKey, baseURL string) *Client {
 	return &Client{
+		version:       version,
 		projectID:     projectID,
 		managementKey: managementKey,
 		baseURL:       baseURL,
@@ -144,15 +147,30 @@ func (c *Client) getAPIClient(projectID string) *api.Client {
 
 	apiClient, ok := c.apiClients[projectID]
 	if !ok {
-		headers := map[string]string{}
-		if v := os.Getenv("DESCOPE_USER_AGENT"); v != "" {
-			headers["user-agent"] = v
-		}
-
-		params := api.ClientParams{ProjectID: projectID, BaseURL: c.baseURL, CustomDefaultHeaders: headers}
-		apiClient = api.NewClient(params)
+		apiClient = makeClient(c.version, projectID, c.baseURL)
 		c.apiClients[projectID] = apiClient
 	}
 
 	return apiClient
+}
+
+func makeClient(version, projectID, baseURL string) *api.Client {
+	headers := map[string]string{
+		"user-agent": makeUserAgent(version),
+	}
+
+	params := api.ClientParams{
+		ProjectID:            projectID,
+		BaseURL:              baseURL,
+		CustomDefaultHeaders: headers,
+	}
+
+	return api.NewClient(params)
+}
+
+func makeUserAgent(version string) string {
+	if v := os.Getenv("DESCOPE_USER_AGENT"); v != "" {
+		return v
+	}
+	return fmt.Sprintf("terraform-provider-descope/%s", version)
 }

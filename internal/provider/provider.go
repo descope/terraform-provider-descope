@@ -106,7 +106,7 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	client := infra.NewClient(projectID, managementKey, baseURL)
+	client := infra.NewClient(p.version, projectID, managementKey, baseURL)
 	resp.DataSourceData = client
 	resp.ResourceData = client
 

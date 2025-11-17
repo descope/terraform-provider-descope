@@ -8,12 +8,10 @@ import (
 
 // Ensures keyed models preserve their ids even through changes to their names or the order in the list.
 func ModifyMatchingKeys[T any, M helpers.KeyedModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
-	// First for each existing model object look for a matching one in the plan and
-	// give it the ID value, effectively mimicking UseStateForUnknown. This should usually
-	// be enough to handle the first common case where a model object is added to a list
-	// but the other objects in the list aren't changed.
-	// For each model object in the plan look for a matching existing one in the state
-	// and give it the ID value, effectively mimicking UseStateForUnknown.
+	// For each planned model object look for a matching existing one by key or name and
+	// give it the existing ID value. We only consider the name if the existing model object
+	// doesn't have a key, which most likely means that this is the first plan change since
+	// the key attribute was added.
 	for p := range MutatingIterator(plan, h) {
 		var planned M = p
 		for e := range Iterator(state, h) {
