@@ -28,6 +28,7 @@ func valueOf[T any](ctx context.Context, values []*T) Type[T] {
 	return helpers.Require(settype.NewValue(ctx, values))
 }
 
+// Deprecated: The set type is buggy, use a list instead.
 func Required[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
@@ -40,6 +41,7 @@ func Required[T any](attributes map[string]schema.Attribute, validators ...valid
 	}
 }
 
+// Deprecated: The set type is buggy, use a list instead.
 func Optional[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
@@ -54,6 +56,7 @@ func Optional[T any](attributes map[string]schema.Attribute, validators ...valid
 	}
 }
 
+// Deprecated: The set type is buggy, use a list instead.
 func Default[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,

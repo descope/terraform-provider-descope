@@ -282,6 +282,10 @@ var docsPermission = map[string]string{
 }
 
 var docsRole = map[string]string{
+	"key": "A persistent value that identifies a role uniquely across plan changes and configuration updates. It " +
+	       "is used exclusively by the Terraform provider during planning, to ensure that user roles are maintained " +
+	       "consistently even when role names or other details are changed. Once the `key` is set it should never be " +
+	       "changed, otherwise the role will be removed and a new one will be created instead.",
 	"name": "A name for the role.",
 	"description": "A description for the role.",
 	"permissions": "A list of permissions by name to be included in the role.",

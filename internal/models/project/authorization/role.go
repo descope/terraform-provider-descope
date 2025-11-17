@@ -7,10 +7,12 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/iancoleman/strcase"
 )
 
 var RoleAttributes = map[string]schema.Attribute{
-	"id":          stringattr.Identifier(),
+	"id":          stringattr.IdentifierMatched(),
+	"key":         stringattr.Optional(),
 	"name":        stringattr.Required(stringvalidator.LengthAtMost(100)),
 	"description": stringattr.Optional(stringattr.StandardLenValidator),
 	"permissions": strsetattr.Optional(),
@@ -20,6 +22,7 @@ var RoleAttributes = map[string]schema.Attribute{
 
 type RoleModel struct {
 	ID          stringattr.Type `tfsdk:"id"`
+	Key         stringattr.Type `tfsdk:"key"`
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 	Permissions strsetattr.Type `tfsdk:"permissions"`
@@ -58,6 +61,16 @@ func (m *RoleModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 // Matching
+
+func (m *RoleModel) GetKey() stringattr.Type {
+	return m.Key
+}
+
+func (m *RoleModel) GetDefaultKey() stringattr.Type {
+	name := m.Name.ValueString()
+	value := strcase.ToSnake(name)
+	return stringattr.Value(value)
+}
 
 func (m *RoleModel) GetName() stringattr.Type {
 	return m.Name

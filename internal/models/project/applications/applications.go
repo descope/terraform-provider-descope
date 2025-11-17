@@ -28,8 +28,8 @@ func (m *ApplicationsModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *ApplicationsModel) SetValues(h *helpers.Handler, data map[string]any) {
-	listattr.SetMatching(&m.OIDCApplications, data, "oidc", "name", h)
-	listattr.SetMatching(&m.SAMLApplications, data, "saml", "name", h)
+	listattr.SetMatchingNames(&m.OIDCApplications, data, "oidc", "name", h)
+	listattr.SetMatchingNames(&m.SAMLApplications, data, "saml", "name", h)
 }
 
 func (m *ApplicationsModel) Check(h *helpers.Handler) {
