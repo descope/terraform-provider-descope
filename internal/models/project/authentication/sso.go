@@ -13,13 +13,15 @@ var SSOAttributes = map[string]schema.Attribute{
 	"merge_users":        boolattr.Default(false),
 	"redirect_url":       stringattr.Default(""),
 	"sso_suite_settings": objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
+	"allow_duplicate_sso_domains_in_other_tenants": boolattr.Default(false),
 }
 
 type SSOModel struct {
-	Disabled         boolattr.Type               `tfsdk:"disabled"`
-	MergeUsers       boolattr.Type               `tfsdk:"merge_users"`
-	RedirectURL      stringattr.Type             `tfsdk:"redirect_url"`
-	SSOSuiteSettings objattr.Type[SSOSuiteModel] `tfsdk:"sso_suite_settings"`
+	Disabled                               boolattr.Type               `tfsdk:"disabled"`
+	MergeUsers                             boolattr.Type               `tfsdk:"merge_users"`
+	RedirectURL                            stringattr.Type             `tfsdk:"redirect_url"`
+	SSOSuiteSettings                       objattr.Type[SSOSuiteModel] `tfsdk:"sso_suite_settings"`
+	AllowDuplicateSSODomainsInOtherTenants boolattr.Type               `tfsdk:"allow_duplicate_sso_domains_in_other_tenants"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
@@ -28,6 +30,7 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.MergeUsers, data, "mergeUsers")
 	stringattr.Get(m.RedirectURL, data, "redirectUrl")
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
+	boolattr.Get(m.AllowDuplicateSSODomainsInOtherTenants, data, "allowDuplicateSSODomainsInOtherTenants")
 	return data
 }
 
@@ -36,6 +39,7 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.MergeUsers, data, "mergeUsers")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
+	boolattr.Set(&m.AllowDuplicateSSODomainsInOtherTenants, data, "allowDuplicateSSODomainsInOtherTenants")
 }
 
 // SSO Suite Settings
