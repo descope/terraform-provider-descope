@@ -48,7 +48,7 @@ allow_duplicate_sso_domains_in_other_tenants
 
 - Type: `bool` 
 
-Whether to allow duplicate SSO domain across tenants.
+Whether to allow duplicate SSO domains across tenants.
 
 
 
