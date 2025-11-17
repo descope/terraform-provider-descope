@@ -104,7 +104,7 @@ func (m *ExampleModel) Values(h *helpers.Handler) map[string]any {
 Deserialize the field from JSON in the `SetValues()` method using the appropriate `Set` function.
 
 This function is called when we read the project state from the backend or we get a response after an update, and
-we want to update the model struct with the data from the snapshot respresentation.
+we want to update the model struct with the data from the snapshot representation.
 
 > [!TIP]
 > You can almost always copy the lines from the `Values` function, change `Get` to `Set`, and add an `&` before
