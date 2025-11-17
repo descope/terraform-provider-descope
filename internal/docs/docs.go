@@ -251,7 +251,7 @@ var docsSSO = map[string]string{
 	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
 		"in tenant level settings or SDK/API call, they will override this value.",
 	"sso_suite_settings":                           "Configuration block for the SSO Suite.",
-	"allow_duplicate_sso_domains_in_other_tenants": "Whether to allow duplicate SSO domain across tenants.",
+	"allow_duplicate_sso_domains_in_other_tenants": "Whether to allow duplicate SSO domains across tenants.",
 }
 
 var docsSSOSuite = map[string]string{
