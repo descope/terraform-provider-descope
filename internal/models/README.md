@@ -113,7 +113,7 @@ we want to update the model struct with the data from the snapshot respresentati
 ```go
 func (m *ExampleModel) SetValues(h *helpers.Handler, data map[string]any) {
     stringattr.Set(&m.ExistingField, data, "existingField")
-    boolattr.Set(&m.NewField, data, "newField", h)  // ← new line
+    boolattr.Set(&m.NewField, data, "newField")  // ← new line
 }
 ```
 
