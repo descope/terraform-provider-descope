@@ -44,11 +44,12 @@ Configuration block for the SSO Suite.
 
 
 allow_duplicate_domains
------------
+-----------------------
 
 - Type: `bool` 
 
 Whether to allow duplicate SSO domains across tenants.
+
 
 
 
