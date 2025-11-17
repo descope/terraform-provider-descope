@@ -32,6 +32,7 @@ jobs:
           DESCOPE_PROJECT_ID: ${{ secrets.DESCOPE_PROJECT_ID }}
           DESCOPE_MANAGEMENT_KEY: ${{ secrets.DESCOPE_MANAGEMENT_KEY }}
           DESCOPE_BASE_URL: https://api.descope.com
+          DESCOPE_USER_AGENT: ${{ secrets.DESCOPE_USER_AGENT }}
           TF_ACC: 1
         run: |
           echo "Running acceptance tests"

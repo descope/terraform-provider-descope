@@ -147,14 +147,14 @@ func (c *Client) getAPIClient(projectID string) *api.Client {
 
 	apiClient, ok := c.apiClients[projectID]
 	if !ok {
-		apiClient = makeClient(c.version, projectID, c.baseURL)
+		apiClient = makeAPIClient(c.version, projectID, c.baseURL)
 		c.apiClients[projectID] = apiClient
 	}
 
 	return apiClient
 }
 
-func makeClient(version, projectID, baseURL string) *api.Client {
+func makeAPIClient(version, projectID, baseURL string) *api.Client {
 	headers := map[string]string{
 		"user-agent": makeUserAgent(version),
 	}
