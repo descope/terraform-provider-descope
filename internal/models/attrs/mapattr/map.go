@@ -10,7 +10,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -57,7 +56,7 @@ func Optional[T any](attributes map[string]schema.Attribute, extras ...any) sche
 		Computed:      true,
 		NestedObject:  nested,
 		CustomType:    maptype.NewType[T](context.Background()),
-		PlanModifiers: []planmodifier.Map{mapplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.Map{helpers.UseValidStateForUnknown()},
 		Validators:    mapValidators,
 	}
 }

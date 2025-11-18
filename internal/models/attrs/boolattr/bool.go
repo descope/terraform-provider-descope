@@ -1,9 +1,9 @@
 package boolattr
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/booldefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/boolplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -27,7 +27,7 @@ func Optional(validators ...validator.Bool) schema.BoolAttribute {
 		Optional:      true,
 		Computed:      true,
 		Validators:    validators,
-		PlanModifiers: []planmodifier.Bool{boolplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.Bool{helpers.UseValidStateForUnknown()},
 	}
 }
 

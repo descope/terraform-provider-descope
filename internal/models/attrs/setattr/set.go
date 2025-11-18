@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
@@ -52,7 +51,7 @@ func Optional[T any](attributes map[string]schema.Attribute, validators ...valid
 		Computed:      true,
 		NestedObject:  nested,
 		CustomType:    settype.NewType[T](context.Background()),
-		PlanModifiers: []planmodifier.Set{setplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.Set{helpers.UseValidStateForUnknown()},
 	}
 }
 
