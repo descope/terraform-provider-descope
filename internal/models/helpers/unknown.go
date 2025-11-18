@@ -5,7 +5,6 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
-	"github.com/hashicorp/terraform-plugin-go/tftypes"
 )
 
 // UseValidStateForUnknown behaves the same as the framework provided UseStateForUnknown
@@ -33,7 +32,7 @@ func (m useValidStateForUnknownModifier) MarkdownDescription(ctx context.Context
 	return m.Description(ctx)
 }
 
-func (m useValidStateForUnknownModifier) ShouldModifyPlan(rawState tftypes.Value, stateValue, planValue, configValue attr.Value) bool {
+func (m useValidStateForUnknownModifier) ShouldModifyPlan(stateValue, planValue, configValue attr.Value) bool {
 	// Do nothing if there is no valid state value (resource is being created or state value was null).
 	if stateValue.IsNull() {
 		return false
@@ -53,49 +52,49 @@ func (m useValidStateForUnknownModifier) ShouldModifyPlan(rawState tftypes.Value
 }
 
 func (m useValidStateForUnknownModifier) PlanModifyBool(_ context.Context, req planmodifier.BoolRequest, resp *planmodifier.BoolResponse) {
-	if m.ShouldModifyPlan(req.State.Raw, req.StateValue, req.PlanValue, req.ConfigValue) {
+	if m.ShouldModifyPlan(req.StateValue, req.PlanValue, req.ConfigValue) {
 		resp.PlanValue = req.StateValue
 	}
 }
 
 func (m useValidStateForUnknownModifier) PlanModifyFloat64(_ context.Context, req planmodifier.Float64Request, resp *planmodifier.Float64Response) {
-	if m.ShouldModifyPlan(req.State.Raw, req.StateValue, req.PlanValue, req.ConfigValue) {
+	if m.ShouldModifyPlan(req.StateValue, req.PlanValue, req.ConfigValue) {
 		resp.PlanValue = req.StateValue
 	}
 }
 
 func (m useValidStateForUnknownModifier) PlanModifyInt64(_ context.Context, req planmodifier.Int64Request, resp *planmodifier.Int64Response) {
-	if m.ShouldModifyPlan(req.State.Raw, req.StateValue, req.PlanValue, req.ConfigValue) {
+	if m.ShouldModifyPlan(req.StateValue, req.PlanValue, req.ConfigValue) {
 		resp.PlanValue = req.StateValue
 	}
 }
 
 func (m useValidStateForUnknownModifier) PlanModifyList(_ context.Context, req planmodifier.ListRequest, resp *planmodifier.ListResponse) {
-	if m.ShouldModifyPlan(req.State.Raw, req.StateValue, req.PlanValue, req.ConfigValue) {
+	if m.ShouldModifyPlan(req.StateValue, req.PlanValue, req.ConfigValue) {
 		resp.PlanValue = req.StateValue
 	}
 }
 
 func (m useValidStateForUnknownModifier) PlanModifyMap(_ context.Context, req planmodifier.MapRequest, resp *planmodifier.MapResponse) {
-	if m.ShouldModifyPlan(req.State.Raw, req.StateValue, req.PlanValue, req.ConfigValue) {
+	if m.ShouldModifyPlan(req.StateValue, req.PlanValue, req.ConfigValue) {
 		resp.PlanValue = req.StateValue
 	}
 }
 
 func (m useValidStateForUnknownModifier) PlanModifyObject(_ context.Context, req planmodifier.ObjectRequest, resp *planmodifier.ObjectResponse) {
-	if m.ShouldModifyPlan(req.State.Raw, req.StateValue, req.PlanValue, req.ConfigValue) {
+	if m.ShouldModifyPlan(req.StateValue, req.PlanValue, req.ConfigValue) {
 		resp.PlanValue = req.StateValue
 	}
 }
 
 func (m useValidStateForUnknownModifier) PlanModifySet(_ context.Context, req planmodifier.SetRequest, resp *planmodifier.SetResponse) {
-	if m.ShouldModifyPlan(req.State.Raw, req.StateValue, req.PlanValue, req.ConfigValue) {
+	if m.ShouldModifyPlan(req.StateValue, req.PlanValue, req.ConfigValue) {
 		resp.PlanValue = req.StateValue
 	}
 }
 
 func (m useValidStateForUnknownModifier) PlanModifyString(_ context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
-	if m.ShouldModifyPlan(req.State.Raw, req.StateValue, req.PlanValue, req.ConfigValue) {
+	if m.ShouldModifyPlan(req.StateValue, req.PlanValue, req.ConfigValue) {
 		resp.PlanValue = req.StateValue
 	}
 }
