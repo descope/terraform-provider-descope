@@ -12,7 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/mapplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -48,7 +47,7 @@ func Optional(extras ...any) schema.MapAttribute {
 		CustomType:    valuemaptype.NewType[types.String](context.Background()),
 		ElementType:   types.StringType,
 		Validators:    parseExtras(extras),
-		PlanModifiers: []planmodifier.Map{mapplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.Map{helpers.UseValidStateForUnknown()},
 	}
 }
 

@@ -1,10 +1,10 @@
 package stringattr
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -18,7 +18,7 @@ func Value(value string) Type {
 func Identifier() schema.StringAttribute {
 	return schema.StringAttribute{
 		Computed:      true,
-		PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.String{helpers.UseValidStateForUnknown()},
 	}
 }
 
@@ -58,7 +58,7 @@ func Optional(validators ...validator.String) schema.StringAttribute {
 		Optional:      true,
 		Computed:      true,
 		Validators:    validators,
-		PlanModifiers: []planmodifier.String{stringplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.String{helpers.UseValidStateForUnknown()},
 	}
 }
 

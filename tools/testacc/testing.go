@@ -2,14 +2,14 @@ package testacc
 
 import (
 	"os"
-	"strings"
+	"strconv"
 	"testing"
 
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
 func Run(t *testing.T, steps ...resource.TestStep) {
-	if local, _ := IsLocalEnvironment(); local {
+	if parallel, _ := strconv.ParseBool(os.Getenv("DESCOPE_TESTACC_PARALLEL")); parallel {
 		t.Parallel()
 	}
 	resource.Test(t, TestCase(t, steps...))
@@ -25,9 +25,4 @@ func TestCase(t *testing.T, steps ...resource.TestStep) resource.TestCase {
 		ProtoV6ProviderFactories: protoV6ProviderFactories,
 		Steps:                    steps,
 	}
-}
-
-func IsLocalEnvironment() (bool, error) {
-	env := os.Getenv("DESCOPE_BASE_URL")
-	return strings.Contains(env, "localhost"), nil
 }

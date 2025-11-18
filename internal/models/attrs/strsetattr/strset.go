@@ -15,7 +15,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/setplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
@@ -50,7 +49,7 @@ func Optional(extras ...any) schema.SetAttribute {
 		CustomType:    valuesettype.NewType[types.String](context.Background()),
 		ElementType:   types.StringType,
 		Validators:    parseExtras(extras),
-		PlanModifiers: []planmodifier.Set{setplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.Set{helpers.UseValidStateForUnknown()},
 	}
 }
 
