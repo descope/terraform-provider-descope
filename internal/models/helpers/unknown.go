@@ -34,12 +34,7 @@ func (m useValidStateForUnknownModifier) MarkdownDescription(ctx context.Context
 }
 
 func (m useValidStateForUnknownModifier) ShouldModifyPlan(rawState tftypes.Value, stateValue, planValue, configValue attr.Value) bool {
-	// Do nothing if there is no state (resource is being created).
-	if rawState.IsNull() {
-		return false
-	}
-
-	// Do nothing if there is no valid state value.
+	// Do nothing if there is no valid state value (resource is being created or state value was null).
 	if stateValue.IsNull() {
 		return false
 	}
