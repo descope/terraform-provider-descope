@@ -1,9 +1,9 @@
 package intattr
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64default"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -27,7 +27,7 @@ func Optional(validators ...validator.Int64) schema.Int64Attribute {
 		Optional:      true,
 		Computed:      true,
 		Validators:    validators,
-		PlanModifiers: []planmodifier.Int64{int64planmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.Int64{helpers.UseValidStateForUnknown()},
 	}
 }
 

@@ -10,7 +10,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
@@ -58,7 +57,7 @@ func Optional[T any](attributes map[string]schema.Attribute, extras ...any) sche
 		NestedObject:  nested,
 		CustomType:    listtype.NewType[T](context.Background()),
 		Validators:    listValidators,
-		PlanModifiers: append([]planmodifier.List{listplanmodifier.UseStateForUnknown()}, listModifers...),
+		PlanModifiers: append([]planmodifier.List{helpers.UseValidStateForUnknown()}, listModifers...),
 	}
 }
 
