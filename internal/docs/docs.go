@@ -186,7 +186,7 @@ var docsOAuthProvider = map[string]string{
 	"native_client_id": "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"native_client_secret": "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for applications.",
-	"native_apple_key_generator": "The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps.",
+	"native_apple_key_generator": "The apple key generator object describing how to create a dynamic native apple client secret for mobile apps.",
 	"description": "A brief description of the OAuth provider.",
 	"logo": "The URL of the logo associated with the OAuth provider.",
 	"issuer": "The issuer identifier for the OAuth provider.",
