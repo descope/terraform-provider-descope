@@ -51,6 +51,34 @@ The number of failed login attempts allowed before an account is locked.
 
 
 
+temporary_lock
+--------------
+
+- Type: `bool` 
+
+Whether the user account should be temporarily locked after a specified number of failed login attempts.
+
+
+
+temporary_lock_attempts
+-----------------------
+
+- Type: `int` 
+- Default: `3`
+
+The number of failed login attempts allowed before an account is temporarily locked.
+
+
+
+temporary_lock_duration
+-----------------------
+
+- Type: `duration` 
+
+The amount of time before the user can sign in again after the account is temporarily locked.
+
+
+
 lowercase
 ---------
 

@@ -1019,6 +1019,9 @@ Optional:
 - `number` (Boolean) Whether passwords must contain at least one number.
 - `reuse` (Boolean) Whether to forbid password reuse when users change their password.
 - `reuse_amount` (Number) The number of previous passwords whose hashes are kept to prevent users from reusing old passwords.
+- `temporary_lock` (Boolean) Whether the user account should be temporarily locked after a specified number of failed login attempts.
+- `temporary_lock_attempts` (Number) The number of failed login attempts allowed before an account is temporarily locked.
+- `temporary_lock_duration` (String) The amount of time before the user can sign in again after the account is temporarily locked.
 - `uppercase` (Boolean) Whether passwords must contain at least one uppercase letter.
 
 <a id="nestedatt--authentication--password--email_service"></a>
