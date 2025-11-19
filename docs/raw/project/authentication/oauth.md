@@ -264,7 +264,7 @@ native_apple_key_generator
 
 - Type: `object` of `authentication.AppleKeyGeneratorModel` 
 
-The apple key generator object describing how to create a dynamic naive apple client secret for mobile apps.
+The apple key generator object describing how to create a dynamic native apple client secret for mobile apps.
 
 
 
