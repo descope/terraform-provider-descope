@@ -6,28 +6,33 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 )
 
+// A backwards compatibility matching function that uses keys if they are present, otherwise falls back to names.
+func ModifyMatchingKeysOrNames[T any, M helpers.KeyedModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
+	matchKeys := true
+	for e := range Iterator(state, h) {
+		var existing M = e
+		if existing.GetKey().ValueString() == "" {
+			matchKeys = false
+		}
+	}
+	if matchKeys {
+		ModifyMatchingKeys[T, M](h, plan, state)
+	} else {
+		ModifyMatchingNames[T, M](h, plan, state)
+	}
+}
+
 // Ensures keyed models preserve their ids even through changes to their names or the order in the list.
 func ModifyMatchingKeys[T any, M helpers.KeyedModel[T]](h *helpers.Handler, plan *Type[T], state Type[T]) {
-	// For each planned model object look for a matching existing one by key or name and
-	// give it the existing ID value. We only consider the name if the existing model object
-	// doesn't have a key, which most likely means that this is the first plan change since
-	// the key attribute was added.
+	// For each planned model object look for a matching existing one by key and give it the existing ID value.
 	for p := range MutatingIterator(plan, h) {
 		var planned M = p
 		for e := range Iterator(state, h) {
 			var existing M = e
-			if existing.GetKey().ValueString() != "" {
-				if planned.GetKey().Equal(existing.GetKey()) {
-					h.Log("Setting ID '%s' for %T named '%s' by matching key", existing.GetID().ValueString(), *planned, planned.GetName().ValueString())
-					planned.SetID(existing.GetID())
-					break
-				}
-			} else {
-				if planned.GetName().Equal(existing.GetName()) {
-					h.Log("Setting ID '%s' for %T named '%s' by matching name", existing.GetID().ValueString(), *planned, planned.GetName().ValueString())
-					planned.SetID(existing.GetID())
-					break
-				}
+			if planned.GetKey().Equal(existing.GetKey()) {
+				h.Log("Setting ID '%s' for %T named '%s' by matching key", existing.GetID().ValueString(), *planned, planned.GetName().ValueString())
+				planned.SetID(existing.GetID())
+				break
 			}
 		}
 		if planned.GetID().ValueString() == "" {

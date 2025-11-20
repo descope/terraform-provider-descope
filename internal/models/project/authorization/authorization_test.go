@@ -16,7 +16,6 @@ func TestAuthorization(t *testing.T) {
 				authorization = {
 					roles = [
 						{
-							key = "admin"
 							name = "Admin"
 							permissions = ["User Admin"]
 						}
@@ -35,6 +34,25 @@ func TestAuthorization(t *testing.T) {
 				authorization = {
 					roles = [
 						{
+							name = "Admin"
+							permissions = ["User Admin"]
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authorization.roles.#":             1,
+				"authorization.roles.0.key":         "",
+				"authorization.roles.0.name":        "Admin",
+				"authorization.roles.0.permissions": []string{"User Admin"},
+				"authorization.permissions.#":       0,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authorization = {
+					roles = [
+						{
 							key = "admin"
 							name = "Admin"
 							permissions = ["User Admin"]
@@ -44,6 +62,7 @@ func TestAuthorization(t *testing.T) {
 			`),
 			Check: p.Check(map[string]any{
 				"authorization.roles.#":             1,
+				"authorization.roles.0.key":         "admin",
 				"authorization.roles.0.name":        "Admin",
 				"authorization.roles.0.permissions": []string{"User Admin"},
 				"authorization.permissions.#":       0,
