@@ -76,7 +76,9 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 		name := r.Name.ValueString()
 		roleNames[name] += 1
 
-		if key := r.Key.ValueString(); key != "" {
+		if key := r.Key.ValueString(); key == "" {
+			h.Warn("Missing Key Attribute In "+name+" Role", "The role '%s' is missing a value for the 'key' attribute. It's strongly recommended to set a unique value (e.g., '%s') as the value of the 'key' attribute in the Terraform plan to ensure user roles are maintained correctly in future plan changes. This will become an error in a future version of the provider.", name, strcase.ToSnake(name))
+		} else {
 			roleKeys[key] += 1
 		}
 
@@ -106,29 +108,17 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 	}
 
 	if len(roleKeys) > 0 && len(roleKeys) != len(roleNames) {
-		h.Missing("The 'key' attribute must be set for all roles")
+		h.Missing("The 'key' attribute must be set in all objects in the 'roles' list")
 	}
 }
 
 func (m *AuthorizationModel) Modify(h *helpers.Handler, state *AuthorizationModel) {
-	// we use this chance to warn the user about missing role keys
-	planKeys := map[string]string{}
-	for p := range listattr.MutatingIterator(&m.Roles, h) {
-		name := p.Name.ValueString()
-		if p.Key.ValueString() == "" {
-			h.Warn("Missing Key Attribute In "+name+" Role", "The role '%s' is missing a value for the 'key' attribute. It's strongly recommended to set a unique value (e.g., '%s') as the value of the 'key' attribute in the Terraform plan to ensure user roles are maintained correctly in future plan changes. This will become an error in a future version of the provider.", name, strcase.ToSnake(name))
-		} else {
-			// keep the key->name mapping in the plan to compare against the state below
-			planKeys[name] = p.Key.ValueString()
-		}
-	}
-
 	// try to warn a about accidental role key changes
-	for s := range listattr.Iterator(state.Roles, h) {
-		name := s.Name.ValueString()
-		stateKey := s.Key.ValueString()
-		if planKey, ok := planKeys[name]; ok && stateKey != "" && stateKey != planKey {
-			h.Warn("Role Key Modified", "The key for role '%s' has been modified in the plan from '%s' to '%s'. This may lead to unintended changes to user roles.", name, stateKey, planKey)
+	for p := range listattr.Iterator(m.Roles, h) {
+		for s := range listattr.Iterator(state.Roles, h) {
+			if p.Name.Equal(s.Name) && !p.Key.Equal(s.Key) && p.Key.ValueString() != "" && s.Key.ValueString() != "" {
+				h.Warn("Role Key Modified", "The key for role '%s' has been modified in the plan from '%s' to '%s'. This may lead to unintended changes to user roles.", p.Name.ValueString(), s.Key.ValueString(), p.Key.ValueString())
+			}
 		}
 	}
 
