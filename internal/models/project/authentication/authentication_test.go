@@ -292,5 +292,25 @@ func TestAuthentication(t *testing.T) {
 				},
 			}),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					password = {
+						disabled = true
+						temporary_lock = true
+						temporary_lock_attempts = 7
+						temporary_lock_duration = "1 hour"
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.password": map[string]any{
+					"disabled":                true,
+					"temporary_lock":          true,
+					"temporary_lock_attempts": 7,
+					"temporary_lock_duration": "1 hour",
+				},
+			}),
+		},
 	)
 }
