@@ -14,10 +14,15 @@ func MinimumValue(duration string) validator.String {
 	return &durationValidator{minimum: duration}
 }
 
+func MaximumValue(duration string) validator.String {
+	return &durationValidator{maximum: duration}
+}
+
 var formatValidator validator.String = &durationValidator{}
 
 type durationValidator struct {
 	minimum string
+	maximum string
 }
 
 func (v durationValidator) Description(_ context.Context) string {
@@ -47,6 +52,15 @@ func (v durationValidator) ValidateString(ctx context.Context, request validator
 		}
 		if seconds < minSeconds {
 			response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(request.Path, "must be at least "+v.minimum, request.ConfigValue.String()))
+		}
+	}
+	if v.maximum != "" {
+		maxSeconds, ok := getSeconds(v.maximum)
+		if !ok {
+			response.Diagnostics.Append(validatordiag.BugInProviderDiagnostic("Invalid value for maximum duration: " + v.maximum))
+		}
+		if seconds > maxSeconds {
+			response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(request.Path, "must be at most "+v.maximum, request.ConfigValue.String()))
 		}
 	}
 }

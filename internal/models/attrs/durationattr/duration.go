@@ -45,7 +45,7 @@ func Default(value string, validators ...validator.String) schema.StringAttribut
 	}
 }
 
-func Get(s types.String, data map[string]any, key string) {
+func Get(s Type, data map[string]any, key string) {
 	if !s.IsNull() && !s.IsUnknown() {
 		num, unit, _ := parseString(s.ValueString())
 		data[key] = num
@@ -53,19 +53,41 @@ func Get(s types.String, data map[string]any, key string) {
 	}
 }
 
-func Set(s *types.String, data map[string]any, key string) {
-	num, hasNum := data[key].(int64)
-	if v, ok := data[key].(float64); ok {
-		hasNum = true
-		num = int64(v)
-	}
+func Set(s *Type, data map[string]any, key string) {
+	num, hasNum := getNumber(data, key)
 	unit, hasUnit := data[key+"Unit"].(string)
 	if !hasNum || !hasUnit {
 		return
 	}
 	value := composeString(num, unit)
 	if value != s.ValueString()+"s" { // don't overwrite singular with plural
-		*s = types.StringValue(value)
+		*s = Value(value)
+	}
+}
+
+func GetMinutes(s Type, data map[string]any, key string) {
+	if !s.IsNull() && !s.IsUnknown() {
+		seconds, _ := getSeconds(s.ValueString())
+		minutes := seconds / 60
+		data[key] = minutes
+	}
+}
+
+func SetMinutes(s *Type, data map[string]any, key string) {
+	if num, ok := getNumber(data, key); ok {
+		value := composeString(num, "minutes")
+		// compare incoming value to existing value in seconds, since an existing value
+		// might have a been set with different units
+		a, _ := getSeconds(value)
+		b, ok := getSeconds(s.ValueString())
+		// only set if there's no existing value or the value is different, since in
+		// the latter case we can assume it's a state refresh
+		if !ok || a != b {
+			*s = Value(value)
+		}
+	}
+	if s.IsUnknown() {
+		*s = Value("")
 	}
 }
 
@@ -96,4 +118,13 @@ func parseString(s string) (num int64, unit string, ok bool) {
 		return
 	}
 	return num, unit, true
+}
+
+func getNumber(data map[string]any, key string) (n int64, ok bool) {
+	n, ok = data[key].(int64)
+	if flt, isFloat := data[key].(float64); isFloat {
+		ok = true
+		n = int64(flt)
+	}
+	return
 }

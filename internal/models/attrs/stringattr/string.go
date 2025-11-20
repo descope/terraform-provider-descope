@@ -99,7 +99,7 @@ func Set(s *Type, data map[string]any, key string) {
 	}
 }
 
-func Nil(s *types.String) {
+func Nil(s *Type) {
 	if s.IsUnknown() {
 		*s = Value("")
 	}
