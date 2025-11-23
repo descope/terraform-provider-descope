@@ -223,13 +223,12 @@ func (m *ExampleModel) UpdateReferences(h *helpers.Handler) {
 
 ## Special Cases
 
-### Key-Value Mapping Differences
+### Duration Attribute
 
-Some attributes use different keys between Terraform (tfsdk) and JSON (API):
+The duration attribute automatically adds two keys, one for the number with the same JSON key
+and another for the unit string with a `Unit` suffix added to the JSON key:
 
 ```go
-// Terraform uses "refresh_token_expiration"
-// But JSON API uses "refreshTokenExpiration"
 durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 ```
 
@@ -238,16 +237,14 @@ durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 Use the `GetNot` or custom logic for inverted values:
 
 ```go
-// "disabled" in Terraform maps to "enabled" (inverted) in JSON
 boolattr.GetNot(m.Disabled, data, "enabled")
 ```
 
 ### Nested Lists with Matching
 
-For lists that need to preserve order across updates:
+For lists that might return from the backend in a different order:
 
 ```go
-// In SetValues, use SetMatchingNames to match by a key field
 listattr.SetMatchingNames(&m.Items, data, "items", "name", h)
 ```
 

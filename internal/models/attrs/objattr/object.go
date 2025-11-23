@@ -10,7 +10,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -49,7 +48,7 @@ func Optional[T any](attributes map[string]schema.Attribute, extras ...any) sche
 		CustomType:    objtype.NewType[T](context.Background()),
 		Attributes:    attributes,
 		Validators:    validators,
-		PlanModifiers: append([]planmodifier.Object{objectplanmodifier.UseStateForUnknown()}, modifiers...),
+		PlanModifiers: append([]planmodifier.Object{helpers.UseValidStateForUnknown()}, modifiers...),
 	}
 }
 

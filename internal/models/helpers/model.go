@@ -26,7 +26,6 @@ type NamedModel[T any] interface {
 type KeyedModel[T any] interface {
 	NamedModel[T]
 	GetKey() types.String
-	GetDefaultKey() types.String
 }
 
 // A model that can return a list of references to other model objects.

@@ -12,7 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listdefault"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/listplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
@@ -48,7 +47,7 @@ func Optional(extras ...any) schema.ListAttribute {
 		CustomType:    valuelisttype.NewType[types.String](context.Background()),
 		ElementType:   types.StringType,
 		Validators:    parseExtras(extras),
-		PlanModifiers: []planmodifier.List{listplanmodifier.UseStateForUnknown()},
+		PlanModifiers: []planmodifier.List{helpers.UseValidStateForUnknown()},
 	}
 }
 
