@@ -163,7 +163,6 @@ func TestApplications(t *testing.T) {
 							manual_configuration = {
 								acs_url = "https://example.com/acs"
 								entity_id = "foo"
-								certificate = "bar"
 							}
 							acs_allowed_callback_urls = ["https://example.com/foo", "https://example.com/bar"]
 							subject_name_id_type = "email"
@@ -199,7 +198,7 @@ func TestApplications(t *testing.T) {
 					"manual_configuration": map[string]any{
 						"acs_url":     "https://example.com/acs",
 						"entity_id":   "foo",
-						"certificate": "bar",
+						"certificate": "",
 					},
 					"acs_allowed_callback_urls": []string{"https://example.com/foo", "https://example.com/bar"},
 					"subject_name_id_type":      "email",

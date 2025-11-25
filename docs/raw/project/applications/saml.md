@@ -199,6 +199,6 @@ Enter the `Entity Id` from the SP.
 certificate
 -----------
 
-- Type: `string` (required)
+- Type: `string` 
 
 Enter the `Certificate` from the SP.
