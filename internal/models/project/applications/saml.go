@@ -151,7 +151,7 @@ func (m *DynamicConfigurationModel) SetValues(h *helpers.Handler, data map[strin
 var ManualConfigurationAttributes = map[string]schema.Attribute{
 	"acs_url":     stringattr.Required(),
 	"entity_id":   stringattr.Required(),
-	"certificate": stringattr.Required(),
+	"certificate": stringattr.Default(""),
 }
 
 type ManualConfigurationModel struct {

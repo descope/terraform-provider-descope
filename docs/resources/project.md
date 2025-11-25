@@ -111,8 +111,11 @@ Required:
 Required:
 
 - `acs_url` (String) Enter the `ACS URL` from the SP.
-- `certificate` (String) Enter the `Certificate` from the SP.
 - `entity_id` (String) Enter the `Entity Id` from the SP.
+
+Optional:
+
+- `certificate` (String) Enter the `Certificate` from the SP.
 
 
 
