@@ -14,6 +14,7 @@ var SSOAttributes = map[string]schema.Attribute{
 	"redirect_url":            stringattr.Default(""),
 	"sso_suite_settings":      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
 	"allow_duplicate_domains": boolattr.Default(false),
+	"allow_override_roles":    boolattr.Default(false),
 }
 
 type SSOModel struct {
