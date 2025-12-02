@@ -255,6 +255,7 @@ var docsSSO = map[string]string{
 	                "in tenant level settings or SDK/API call, they will override this value.",
 	"sso_suite_settings": "Configuration block for the SSO Suite.",
 	"allow_duplicate_domains": "Whether to allow duplicate SSO domains across tenants.",
+	"allow_override_roles": "Whether to allow overriding user's roles with SSO related roles.",
 }
 
 var docsSSOSuite = map[string]string{
