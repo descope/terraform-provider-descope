@@ -22,6 +22,7 @@ type SSOModel struct {
 	RedirectURL                            stringattr.Type             `tfsdk:"redirect_url"`
 	SSOSuiteSettings                       objattr.Type[SSOSuiteModel] `tfsdk:"sso_suite_settings"`
 	AllowDuplicateSSODomainsInOtherTenants boolattr.Type               `tfsdk:"allow_duplicate_domains"`
+	AllowOverrideRoles                     boolattr.Type               `tfsdk:"allow_override_roles"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
@@ -31,6 +32,7 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.RedirectURL, data, "redirectUrl")
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
 	boolattr.Get(m.AllowDuplicateSSODomainsInOtherTenants, data, "allowDuplicateSSODomainsInOtherTenants")
+	boolattr.Get(m.AllowOverrideRoles, data, "allowOverrideRoles")
 	return data
 }
 
@@ -40,6 +42,7 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
 	boolattr.Set(&m.AllowDuplicateSSODomainsInOtherTenants, data, "allowDuplicateSSODomainsInOtherTenants")
+	boolattr.Set(&m.AllowOverrideRoles, data, "allowOverrideRoles")
 }
 
 // SSO Suite Settings
