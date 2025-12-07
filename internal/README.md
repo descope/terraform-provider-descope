@@ -26,7 +26,6 @@
 Some makefile commands require these environment variables or a config file at `tools/config.env` with:
 
 ```bash
-DESCOPE_PROJECT_ID=P...                   # required for testacc
 DESCOPE_MANAGEMENT_KEY=K...               # required for testacc
 DESCOPE_BASE_URL=https://api.descope.com  # optional for testacc
 DESCOPE_TEMPLATES_PATH=...                # required for terragen

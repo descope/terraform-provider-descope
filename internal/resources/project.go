@@ -68,7 +68,7 @@ func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest
 		return
 	}
 
-	res, err := r.client.Create(ctx, infra.PrincipalProjectID, projectEntity, values)
+	res, err := r.client.Create(ctx, infra.EmptyProjectID, projectEntity, values)
 	if failure, ok := infra.AsValidationError(err); ok {
 		resp.Diagnostics.AddError("Invalid project configuration", failure)
 		return

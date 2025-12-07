@@ -19,4 +19,3 @@ description: |-
 
 - `base_url` (String)
 - `management_key` (String, Sensitive)
-- `project_id` (String)
