@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-const EmptyProjectID = ""
+const NoProjectID = ""
 
 type Response struct {
 	Entity string         `json:"entity"`
