@@ -52,6 +52,15 @@ Whether to allow duplicate SSO domains across tenants.
 
 
 
+allow_override_roles
+-----------------------
+
+- Type: `bool` 
+
+Whether to allow overriding user's roles with SSO related roles.
+
+
+
 
 
 SSOSuite
