@@ -13,6 +13,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/project/connectors"
 	"github.com/descope/terraform-provider-descope/internal/models/project/flows"
 	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
+	"github.com/descope/terraform-provider-descope/internal/models/project/lists"
 	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
 	"github.com/descope/terraform-provider-descope/internal/models/project/widgets"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -35,6 +36,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"styles":           objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
 	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
 	"widgets":          mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
+	"lists":            objattr.Default[lists.ListsModel](nil, lists.ListsAttributes),
 }
 
 type ProjectModel struct {
@@ -53,6 +55,7 @@ type ProjectModel struct {
 	Styles         objattr.Type[flows.StylesModel]                  `tfsdk:"styles"`
 	Flows          mapattr.Type[flows.FlowModel]                    `tfsdk:"flows"`
 	Widgets        mapattr.Type[widgets.WidgetModel]                `tfsdk:"widgets"`
+	Lists          objattr.Type[lists.ListsModel]                   `tfsdk:"lists"`
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -74,6 +77,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	flows.EnsureFlowIDs(m.Flows, data, "flows", h)
 	mapattr.Get(m.Widgets, data, "widgets", h)
 	widgets.EnsureWidgetIDs(m.Widgets, data, "widgets", h)
+	objattr.Get(m.Lists, data, "lists", h)
 	return data
 }
 
@@ -100,6 +104,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if m.Widgets.IsEmpty() {
 		mapattr.Set(&m.Widgets, data, "widgets", h)
 	}
+	objattr.Set(&m.Lists, data, "lists", h)
 }
 
 func (m *ProjectModel) CollectReferences(h *helpers.Handler) {

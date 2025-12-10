@@ -9,6 +9,7 @@ const (
 	ConnectorReferenceKey   = "ref:connector"
 	RoleReferenceKey        = "ref:role"
 	JWTTemplateReferenceKey = "ref:jwttemplate"
+	ListReferenceKey        = "ref:list"
 )
 
 type ModelReference struct {
