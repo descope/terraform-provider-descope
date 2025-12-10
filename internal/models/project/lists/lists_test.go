@@ -33,7 +33,7 @@ func TestLists(t *testing.T) {
 							name = "JSON List"
 							description = "A JSON list"
 							type = "json"
-							data = ` + jsonList + `
+							data = jsonencode(` + jsonList + `)
 						}
 					]
 				}
@@ -55,7 +55,7 @@ func TestLists(t *testing.T) {
 							name = "Texts List"
 							description = "A texts list"
 							type = "texts"
-							data = ` + textsList + `
+							data = jsondecode(` + textsList + `)
 						}
 					]
 				}
@@ -77,7 +77,7 @@ func TestLists(t *testing.T) {
 							name = "IPs List"
 							description = "An IPs list"
 							type = "ips"
-							data = ` + ipsList + `
+							data = jsondecode(` + ipsList + `)
 						}
 					]
 				}
@@ -98,17 +98,17 @@ func TestLists(t *testing.T) {
 						{
 							name = "JSON List"
 							type = "json"
-							data = ` + jsonList + `
+							data = jsonencode(` + jsonList + `)
 						},
 						{
 							name = "Texts List"
 							type = "texts"
-							data = ` + textsList + `
+							data = jsondecode(` + textsList + `)
 						},
 						{
 							name = "IPs List"
 							type = "ips"
-							data = ` + ipsList + `
+							data = jsondecode(` + ipsList + `)
 						}
 					]
 				}
@@ -125,7 +125,7 @@ func TestLists(t *testing.T) {
 						{
 							name = "Invalid List"
 							type = "invalid"
-							data = ` + jsonList + `
+							data = jsonencode(` + jsonList + `)
 						}
 					]
 				}
@@ -150,7 +150,7 @@ func TestLists(t *testing.T) {
 					list = [
 						{
 							name = "List Without Type"
-							data = ` + jsonList + `
+							data = jsonencode(` + jsonList + `)
 						}
 					]
 				}
@@ -168,7 +168,7 @@ func TestLists(t *testing.T) {
 						{
 							name = "` + strings.Repeat("a", 101) + `"
 							type = "json"
-							data = ` + jsonList + `
+							data = jsonencode(` + jsonList + `)
 						}
 					]
 				}
