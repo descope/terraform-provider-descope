@@ -129,3 +129,12 @@ widgets
 
 Embeddable components designed to facilitate the delegation of operations to
 tenant admins and end users.
+
+
+
+lists
+-----
+
+- Type: `list` of `lists.List` 
+
+// description for lists

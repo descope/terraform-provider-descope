@@ -53,7 +53,7 @@ Whether to allow duplicate SSO domains across tenants.
 
 
 allow_override_roles
------------------------
+--------------------
 
 - Type: `bool` 
 
