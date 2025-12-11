@@ -69,20 +69,36 @@ func (m *ListModel) Validate(h *helpers.Handler) {
 	}
 
 	var v any
-	json.Unmarshal([]byte(m.Data.ValueString()), &v)
+	_ = json.Unmarshal([]byte(m.Data.ValueString()), &v)
 
 	switch m.Type.ValueString() {
-	case "texts", "ips":
-		if _, ok := v.([]any); ok {
-			for _, item := range v.([]any) {
-				if s, ok := item.(string); !ok {
-					h.Invalid("The 'data' attribute must be a JSON array of strings for list types 'texts' and 'ips'")
-				} else if m.Type.ValueString() == "ips" && !isPermittedIPValid(s) {
-					h.Invalid("The 'data' attribute must be a JSON array of valid IP strings for list type 'ips'")
-				}
+	case "texts":
+		valid := true
+		arr, ok := v.([]any)
+		if !ok {
+			valid = false
+		}
+		for _, item := range arr {
+			if _, ok := item.(string); !ok {
+				valid = false
 			}
-		} else {
-			h.Invalid("The 'data' attribute must be a JSON array of strings for list types 'texts' and 'ips'")
+		}
+		if !valid {
+			h.Invalid("The 'data' attribute must be a JSON array of strings for list type 'texts'")
+		}
+	case "ips":
+		valid := true
+		arr, ok := v.([]any)
+		if !ok {
+			valid = false
+		}
+		for _, item := range arr {
+			if s, ok := item.(string); !ok || !isPermittedIPValid(s) {
+				valid = false
+			}
+		}
+		if !valid {
+			h.Invalid("The 'data' attribute must be a JSON array of IP strings for list type 'ips'")
 		}
 	case "json":
 		if _, ok := v.(map[string]any); !ok {
