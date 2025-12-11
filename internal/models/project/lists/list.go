@@ -51,15 +51,15 @@ func (m *ListModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Type, data, "type")
 
-	// We do not currently update the data value if it's already set because it might be different after apply
-	if m.Data.ValueString() == "" {
-		value := "{}"
-		if v, ok := data["data"]; ok {
-			if b, err := json.Marshal(v); err == nil {
-				value = string(b)
-			}
+	// always update the data value from the API response if present
+	if v, ok := data["data"]; ok {
+		if b, err := json.Marshal(v); err == nil {
+			m.Data = stringattr.Value(string(b))
 		}
-		m.Data = stringattr.Value(value)
+		// in case of marshaling fails, keep existing value to avoid breaking state
+	} else if m.Data.ValueString() == "" {
+		// set default if data is not in response and not already set
+		m.Data = stringattr.Value("{}")
 	}
 }
 
