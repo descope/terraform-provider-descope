@@ -46,14 +46,17 @@ func (p *descopeProvider) Schema(_ context.Context, _ provider.SchemaRequest, re
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
 			"project_id": schema.StringAttribute{
-				Optional: true,
+				Optional:           true,
+				DeprecationMessage: "The project_id attribute in the 'descope' provider block is no longer required and can be safely removed",
 			},
 			"management_key": schema.StringAttribute{
-				Optional:  true,
-				Sensitive: true,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "A valid management key for your Descope company",
 			},
 			"base_url": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "An optional base URL for the Descope API",
 			},
 		},
 	}
@@ -68,9 +71,6 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	if config.ProjectID.IsUnknown() {
-		resp.Diagnostics.AddAttributeError(path.Root("project_id"), "Unknown Descope Project ID", "The provider cannot create the Descope client as there is an unknown configuration value for the Descope project ID. Either target apply the source of the value first, set the value statically in the configuration, or use the DESCOPE_PROJECT_ID environment variable.")
-	}
 	if config.ManagementKey.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(path.Root("management_key"), "Unknown Descope Management Key", "The provider cannot create the Descope client as there is an unknown configuration value for the Descope management key. Either target apply the source of the value first, set the value statically in the configuration, or use the DESCOPE_MANAGEMENT_KEY environment variable.")
 	}
@@ -81,9 +81,8 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	projectID := os.Getenv("DESCOPE_PROJECT_ID")
-	if !config.ProjectID.IsNull() {
-		projectID = config.ProjectID.ValueString()
+	if v := os.Getenv("DESCOPE_PROJECT_ID"); v != "" {
+		resp.Diagnostics.AddWarning("Redudant Descope Project ID", "The Descope provider no longer requires the DESCOPE_PROJECT_ID environment variable to be set and the value '"+v+"' will be ignored")
 	}
 
 	managementKey := os.Getenv("DESCOPE_MANAGEMENT_KEY")
@@ -96,9 +95,6 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 		baseURL = config.BaseURL.ValueString()
 	}
 
-	if projectID == "" {
-		resp.Diagnostics.AddAttributeError(path.Root("project_id"), "Missing Descope Project ID", "The provider cannot create the Descope client as there is a missing or empty value for the Descope project ID. Set the project_id value in the configuration or use the DESCOPE_PROJECT_ID environment variable. If either is already set, ensure the value is not empty.")
-	}
 	if managementKey == "" {
 		resp.Diagnostics.AddAttributeError(path.Root("management_key"), "Missing Descope Management Key", "The provider cannot create the Descope client as there is a missing or empty value for the Descope management key. Set the management_key value in the configuration or use the DESCOPE_MANAGEMENT_KEY environment variable. If either is already set, ensure the value is not empty.")
 	}
@@ -106,7 +102,7 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	client := infra.NewClient(p.version, projectID, managementKey, baseURL)
+	client := infra.NewClient(p.version, managementKey, baseURL)
 	resp.DataSourceData = client
 	resp.ResourceData = client
 
