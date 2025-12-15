@@ -32,6 +32,7 @@ type descopeProvider struct {
 }
 
 type descopeProviderConfig struct {
+	ProjectID     types.String `tfsdk:"project_id"`
 	ManagementKey types.String `tfsdk:"management_key"`
 	BaseURL       types.String `tfsdk:"base_url"`
 }
@@ -44,12 +45,18 @@ func (p *descopeProvider) Metadata(_ context.Context, _ provider.MetadataRequest
 func (p *descopeProvider) Schema(_ context.Context, _ provider.SchemaRequest, resp *provider.SchemaResponse) {
 	resp.Schema = schema.Schema{
 		Attributes: map[string]schema.Attribute{
+			"project_id": schema.StringAttribute{
+				Optional:           true,
+				DeprecationMessage: "The project_id attribute in the 'descope' provider block is no longer required and can be safely removed",
+			},
 			"management_key": schema.StringAttribute{
-				Optional:  true,
-				Sensitive: true,
+				Optional:    true,
+				Sensitive:   true,
+				Description: "A valid management key for your Descope company",
 			},
 			"base_url": schema.StringAttribute{
-				Optional: true,
+				Optional:    true,
+				Description: "An optional base URL for the Descope API",
 			},
 		},
 	}
@@ -72,6 +79,10 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 	}
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	if v := os.Getenv("DESCOPE_PROJECT_ID"); v != "" {
+		resp.Diagnostics.AddWarning("Redudant Descope Project ID", "The Descope provider no longer requires the DESCOPE_PROJECT_ID environment variable to be set and the value '"+v+"' will be ignored")
 	}
 
 	managementKey := os.Getenv("DESCOPE_MANAGEMENT_KEY")
