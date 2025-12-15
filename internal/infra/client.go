@@ -12,7 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-const PrincipalProjectID = "<principal>"
+const NoProjectID = ""
 
 type Response struct {
 	Entity string         `json:"entity"`
@@ -22,7 +22,6 @@ type Response struct {
 
 type Client struct {
 	version       string
-	projectID     string
 	managementKey string
 	baseURL       string
 
@@ -30,10 +29,9 @@ type Client struct {
 	lock       sync.Mutex
 }
 
-func NewClient(version, projectID, managementKey, baseURL string) *Client {
+func NewClient(version, managementKey, baseURL string) *Client {
 	return &Client{
 		version:       version,
-		projectID:     projectID,
 		managementKey: managementKey,
 		baseURL:       baseURL,
 		apiClients:    map[string]*api.Client{},
@@ -62,8 +60,8 @@ func (c *Client) Create(ctx context.Context, projectID, entity string, data map[
 }
 
 func (c *Client) Read(ctx context.Context, projectID, entity, entityID string) (*Response, error) {
-	if projectID == c.projectID || projectID == PrincipalProjectID {
-		return nil, errors.New("principal project may not be read by the provider")
+	if projectID == "" {
+		return nil, errors.New("project ID must be provided for a read operation")
 	}
 
 	httpQuery := map[string]string{
@@ -87,8 +85,8 @@ func (c *Client) Read(ctx context.Context, projectID, entity, entityID string) (
 }
 
 func (c *Client) Update(ctx context.Context, projectID, entity, entityID string, data map[string]any) (*Response, error) {
-	if projectID == c.projectID || projectID == PrincipalProjectID {
-		return nil, errors.New("principal project may not be updated by the provider")
+	if projectID == "" {
+		return nil, errors.New("project ID must be provided for an update operation")
 	}
 
 	httpBody := map[string]any{
@@ -113,8 +111,8 @@ func (c *Client) Update(ctx context.Context, projectID, entity, entityID string,
 }
 
 func (c *Client) Delete(ctx context.Context, projectID, entity, entityID string) error {
-	if projectID == c.projectID || projectID == PrincipalProjectID {
-		return errors.New("principal project may not be deleted by the provider")
+	if projectID == "" {
+		return errors.New("project ID must be provided for a delete operation")
 	}
 
 	httpQuery := map[string]string{
@@ -138,10 +136,6 @@ func (c *Client) Delete(ctx context.Context, projectID, entity, entityID string)
 }
 
 func (c *Client) getAPIClient(projectID string) *api.Client {
-	if projectID == PrincipalProjectID {
-		projectID = c.projectID
-	}
-
 	c.lock.Lock()
 	defer c.lock.Unlock()
 

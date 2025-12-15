@@ -33,9 +33,6 @@ using Terraform configuration files.
 -   A pro or enterprise tier license for your Descope company.
 -   A valid management key for your Descope company. You can create one in the
     [Company section](https://app.descope.com/settings/company) of the Descope console.
--   The project ID of one of the existing projects in your Descope company. You can
-    find it in the [Project section](https://app.descope.com/settings/project) of the
-    Descope console. This project will not be modified in any way by the provider.
 
 ### Usage
 
@@ -52,12 +49,11 @@ terraform {
 }
 ```
 
-Configure the Descope provider with the project ID and management key above and declare a `descope_project` resource
-to create a new project for use with Terraform:
+Configure the Descope provider with the management key as explained above and declare
+a `descope_project` resource to create a new project for use with Terraform:
 
 ```hcl
 provider "descope" {
-  project_id = "P..."
   management_key = "K..."
 }
 

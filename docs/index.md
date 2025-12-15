@@ -17,6 +17,6 @@ description: |-
 
 ### Optional
 
-- `base_url` (String)
-- `management_key` (String, Sensitive)
-- `project_id` (String)
+- `base_url` (String) An optional base URL for the Descope API
+- `management_key` (String, Sensitive) A valid management key for your Descope company
+- `project_id` (String, Deprecated)

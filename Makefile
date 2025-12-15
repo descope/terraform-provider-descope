@@ -9,9 +9,6 @@ endif
 
 env ?= tools/config.env
 ifneq ($(wildcard $(env)),)
-  ifeq ($(DESCOPE_PROJECT_ID),)
-    export DESCOPE_PROJECT_ID = $(shell cat $(env) | grep DESCOPE_PROJECT_ID | sed 's/^.*=//')
-  endif
   ifeq ($(DESCOPE_MANAGEMENT_KEY),)
     export DESCOPE_MANAGEMENT_KEY = $(shell cat $(env) | grep DESCOPE_MANAGEMENT_KEY | sed 's/^.*=//')
   endif

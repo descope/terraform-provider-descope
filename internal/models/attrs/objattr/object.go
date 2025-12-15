@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"maps"
+	"slices"
 
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/types/objtype"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -86,8 +87,14 @@ func Get[T any, M helpers.Model[T]](o Type[T], data map[string]any, key string, 
 	}
 }
 
-func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string, h *helpers.Handler) {
-	if !helpers.ShouldSetAttributeValue(h.Ctx, o) {
+type SetOption int
+
+const (
+	AlwaysSetAttributeValue SetOption = iota
+)
+
+func Set[T any, M helpers.Model[T]](o *Type[T], data map[string]any, key string, h *helpers.Handler, options ...SetOption) {
+	if !helpers.ShouldSetAttributeValue(h.Ctx, o) && !slices.Contains(options, AlwaysSetAttributeValue) {
 		return
 	}
 

@@ -33,7 +33,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"attributes":       objattr.Default[attributes.AttributesModel](nil, attributes.AttributesAttributes),
 	"connectors":       objattr.Default[connectors.ConnectorsModel](nil, connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
 	"applications":     objattr.Default[applications.ApplicationsModel](nil, applications.ApplicationsAttributes, applications.ApplicationsValidator),
-	"jwt_templates":    objattr.Default[jwttemplates.JWTTemplatesModel](nil, jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
+	"jwt_templates":    objattr.Optional[jwttemplates.JWTTemplatesModel](jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
 	"styles":           objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
 	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
 	"widgets":          mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
@@ -97,7 +97,11 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.Applications, data, "applications", h)
 	objattr.Set(&m.Authorization, data, "authorization", h)
 	objattr.Set(&m.Attributes, data, "attributes", h)
-	objattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
+	if v, _ := m.Settings.ToObject(h.Ctx); v != nil && (v.UserJWTTemplate.ValueString() != "" || v.AccessKeyJWTTemplate.ValueString() != "") {
+		objattr.Set(&m.JWTTemplates, data, "jwtTemplates", h, objattr.AlwaysSetAttributeValue)
+	} else {
+		objattr.Set(&m.JWTTemplates, data, "jwtTemplates", h)
+	}
 	objattr.Set(&m.Styles, data, "styles", h)
 	if m.Flows.IsEmpty() {
 		mapattr.Set(&m.Flows, data, "flows", h)
