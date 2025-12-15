@@ -37,7 +37,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"styles":           objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
 	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
 	"widgets":          mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
-	"lists":            listattr.Default[lists.ListModel](lists.ListAttributes, lists.ListValidator),
+	"lists":            listattr.Default[lists.ListModel](lists.ListAttributes, lists.ListValidator, lists.ListsModifier),
 }
 
 type ProjectModel struct {

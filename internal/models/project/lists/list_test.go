@@ -24,7 +24,6 @@ var (
 func TestLists(t *testing.T) {
 	p := testacc.Project(t)
 	testacc.Run(t,
-		// JSON type list
 		resource.TestStep{
 			Config: p.Config(`
 				lists = [
@@ -37,14 +36,15 @@ func TestLists(t *testing.T) {
 				]
 			`),
 			Check: p.Check(map[string]any{
-				"lists.#":             1,
-				"lists.0.name":        "JSON List",
-				"lists.0.description": "A JSON list",
-				"lists.0.type":        "json",
-				"lists.0.data":        testacc.AttributeIsSet,
+				"lists.#": 1,
+				"lists.0": map[string]any{
+					"name":        "JSON List",
+					"description": "A JSON list",
+					"type":        "json",
+					"data":        testacc.AttributeIsSet,
+				},
 			}),
 		},
-		// texts
 		resource.TestStep{
 			Config: p.Config(`
 				lists = [
@@ -57,14 +57,15 @@ func TestLists(t *testing.T) {
 				]
 			`),
 			Check: p.Check(map[string]any{
-				"lists.#":             1,
-				"lists.0.name":        "Texts List",
-				"lists.0.description": "A texts list",
-				"lists.0.type":        "texts",
-				"lists.0.data":        testacc.AttributeIsSet,
+				"lists.#": 1,
+				"lists.0": map[string]any{
+					"name":        "Texts List",
+					"description": "A texts list",
+					"type":        "texts",
+					"data":        testacc.AttributeIsSet,
+				},
 			}),
 		},
-		// ips
 		resource.TestStep{
 			Config: p.Config(`
 				lists = [
@@ -77,14 +78,15 @@ func TestLists(t *testing.T) {
 				]
 			`),
 			Check: p.Check(map[string]any{
-				"lists.#":             1,
-				"lists.0.name":        "IPs List",
-				"lists.0.description": "An IPs list",
-				"lists.0.type":        "ips",
-				"lists.0.data":        testacc.AttributeIsSet,
+				"lists.#": 1,
+				"lists.0": map[string]any{
+					"name":        "IPs List",
+					"description": "An IPs list",
+					"type":        "ips",
+					"data":        testacc.AttributeIsSet,
+				},
 			}),
 		},
-		// Multiple lists
 		resource.TestStep{
 			Config: p.Config(`
 				lists = [
@@ -109,7 +111,6 @@ func TestLists(t *testing.T) {
 				"lists.#": 3,
 			}),
 		},
-		// invalid type
 		resource.TestStep{
 			Config: p.Config(`
 				lists = [
@@ -122,32 +123,6 @@ func TestLists(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`Invalid Attribute Value`),
 		},
-		// empty
-		resource.TestStep{
-			Config: p.Config(`
-				lists = [
-				]
-			`),
-			Check: p.Check(map[string]any{
-				"lists.#": 0,
-			}),
-		},
-		// list without type (should work, type is optional)
-		resource.TestStep{
-			Config: p.Config(`
-				lists = [
-					{
-						name = "List Without Type"
-						data = jsonencode(` + jsonList + `)
-					}
-				]
-			`),
-			Check: p.Check(map[string]any{
-				"lists.#":      1,
-				"lists.0.name": "List Without Type",
-			}),
-		},
-		// list with invalid name (too long)
 		resource.TestStep{
 			Config: p.Config(`
 				lists = [
@@ -158,7 +133,15 @@ func TestLists(t *testing.T) {
 					}
 				]
 			`),
-			ExpectError: regexp.MustCompile(`Invalid Attribute Value`),
+			ExpectError: regexp.MustCompile(`Invalid Attribute Value Length`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				lists = []
+			`),
+			Check: p.Check(map[string]any{
+				"lists.#": 0,
+			}),
 		},
 	)
 }

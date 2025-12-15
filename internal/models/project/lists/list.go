@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -11,10 +12,12 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
+var ListsModifier = listattr.NewModifierMatchingNames[ListModel]("maintains list identifiers between plan changes")
+
 var ListValidator = objattr.NewValidator[ListModel]("must have a valid data value")
 
 var ListAttributes = map[string]schema.Attribute{
-	"id":          stringattr.Identifier(),
+	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringvalidator.LengthAtMost(100)),
 	"description": stringattr.Default("", stringattr.StandardLenValidator),
 	"type":        stringattr.Required(stringvalidator.OneOf("texts", "ips", "json")),
@@ -104,8 +107,6 @@ func (m *ListModel) Validate(h *helpers.Handler) {
 		if _, ok := v.(map[string]any); !ok {
 			h.Invalid("The 'data' attribute must be a JSON object for list type 'json'")
 		}
-	default:
-		panic("Unhandled list type in validation: " + m.Type.ValueString())
 	}
 }
 
