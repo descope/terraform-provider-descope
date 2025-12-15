@@ -218,10 +218,24 @@ func TestJWTTemplates(t *testing.T) {
 				"jwt_templates.access_key_templates.#": 0,
 			}),
 		},
-		resource.TestStep{ // XXX fix settings optional
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					user_jwt_template = "foo"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"jwt_templates.user_templates.#":       1,
+				"jwt_templates.access_key_templates.#": 0,
+			}),
+		},
+		resource.TestStep{ // XXX project_settings is optional, so we can't just remove it as a way to clear user_jwt_template
 			Config: p.Config(`
 				project_settings = {
 					user_jwt_template = ""
+				}
+				jwt_templates = {
+					user_templates = []
 				}
 			`),
 			Check: p.Check(map[string]any{
