@@ -129,3 +129,12 @@ widgets
 
 Embeddable components designed to facilitate the delegation of operations to
 tenant admins and end users.
+
+
+
+lists
+-----
+
+- Type: `list` of `lists.List` 
+
+Lists that can be used for various purposes in the project, such as IP allowlists, text lists, or custom JSON data.

@@ -1,6 +1,7 @@
 package project
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/mapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
@@ -13,6 +14,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/project/connectors"
 	"github.com/descope/terraform-provider-descope/internal/models/project/flows"
 	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
+	"github.com/descope/terraform-provider-descope/internal/models/project/lists"
 	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
 	"github.com/descope/terraform-provider-descope/internal/models/project/widgets"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -35,6 +37,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"styles":           objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
 	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
 	"widgets":          mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
+	"lists":            listattr.Default[lists.ListModel](lists.ListAttributes, lists.ListValidator, lists.ListsModifier),
 }
 
 type ProjectModel struct {
@@ -53,6 +56,7 @@ type ProjectModel struct {
 	Styles         objattr.Type[flows.StylesModel]                  `tfsdk:"styles"`
 	Flows          mapattr.Type[flows.FlowModel]                    `tfsdk:"flows"`
 	Widgets        mapattr.Type[widgets.WidgetModel]                `tfsdk:"widgets"`
+	Lists          listattr.Type[lists.ListModel]                   `tfsdk:"lists"`
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -74,6 +78,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	flows.EnsureFlowIDs(m.Flows, data, "flows", h)
 	mapattr.Get(m.Widgets, data, "widgets", h)
 	widgets.EnsureWidgetIDs(m.Widgets, data, "widgets", h)
+	listattr.Get(m.Lists, data, "lists", h)
 	return data
 }
 
@@ -104,6 +109,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if m.Widgets.IsEmpty() {
 		mapattr.Set(&m.Widgets, data, "widgets", h)
 	}
+	listattr.SetMatchingNames(&m.Lists, data, "lists", "name", h)
 }
 
 func (m *ProjectModel) CollectReferences(h *helpers.Handler) {
