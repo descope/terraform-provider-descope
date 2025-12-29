@@ -292,6 +292,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"allowed_grant_types":        strlistattr.Optional(stringvalidator.OneOf("authorization_code", "implicit")),
 	"scopes":                     strlistattr.Optional(),
 	"merge_user_accounts":        boolattr.Default(true),
+	"disable_jit_updates":        boolattr.Default(false),
 	"native_client_id":           stringattr.Optional(),
 	"native_client_secret":       stringattr.SecretOptional(),
 	"apple_key_generator":        objattr.Default[AppleKeyGeneratorModel](nil, AppleKeyGeneratorModelAttributes),
@@ -345,6 +346,7 @@ type OAuthProviderModel struct {
 	Prompts                 strlistattr.Type                                `tfsdk:"prompts"`
 	Scopes                  strlistattr.Type                                `tfsdk:"scopes"`
 	MergeUserAccounts       boolattr.Type                                   `tfsdk:"merge_user_accounts"`
+	DisableJITUpdates       boolattr.Type                                   `tfsdk:"disable_jit_updates"`
 	Description             stringattr.Type                                 `tfsdk:"description"`
 	Logo                    stringattr.Type                                 `tfsdk:"logo"`
 	AllowedGrantTypes       strlistattr.Type                                `tfsdk:"allowed_grant_types"`
@@ -380,6 +382,7 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 		strlistattr.Get(m.Scopes, data, "scopes", h)
 	}
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
+	boolattr.Get(m.DisableJITUpdates, data, "JITUpdatesDisabled")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
 	stringattr.Get(m.Issuer, data, "issuer")
@@ -418,6 +421,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	strlistattr.Set(&m.AllowedGrantTypes, data, "allowedGrantTypes", h) // XXX was skipped
 	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
+	boolattr.Set(&m.DisableJITUpdates, data, "JITUpdatesDisabled")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")
 	stringattr.Set(&m.Issuer, data, "issuer")

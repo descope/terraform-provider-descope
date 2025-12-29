@@ -20,11 +20,11 @@ type TOTPModel struct {
 func (m *TOTPModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	boolattr.GetNot(m.Disabled, data, "enabled")
-	stringattr.Get(m.ServiceLabel, data, "serviceLabelTemplate")
+	stringattr.Get(m.ServiceLabel, data, "issuerLabelTemplate")
 	return data
 }
 
 func (m *TOTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
-	stringattr.Set(&m.ServiceLabel, data, "serviceLabelTemplate")
+	stringattr.Set(&m.ServiceLabel, data, "issuerLabelTemplate")
 }

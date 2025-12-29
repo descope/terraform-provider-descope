@@ -30,6 +30,7 @@ description: |-
 - `flows` (Attributes Map) Custom authentication flows to use in this project. (see [below for nested schema](#nestedatt--flows))
 - `invite_settings` (Attributes) User invitation settings and behavior. (see [below for nested schema](#nestedatt--invite_settings))
 - `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
+- `lists` (Attributes List) Lists that can be used for various purposes in the project, such as IP allowlists, text lists, or custom JSON data. (see [below for nested schema](#nestedatt--lists))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
 - `tags` (Set of String) Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
@@ -338,6 +339,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -408,6 +410,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -463,6 +466,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -518,6 +522,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -573,6 +578,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -628,6 +634,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -683,6 +690,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -738,6 +746,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -793,6 +802,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -848,6 +858,7 @@ Optional:
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.
+- `disable_jit_updates` (Boolean) By default the user attribute mapping configuration is used to update the user's attributes automatically during sign in. Disable this if you want this to happen only during user creation.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `issuer` (String) The issuer identifier for the OAuth provider.
 - `jwks_endpoint` (String) The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
@@ -1382,6 +1393,7 @@ Optional:
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--datadog--audit_filters))
 - `description` (String) A description of what your connector is used for.
+- `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `site` (String) The Datadog site to send logs to. Default is `datadoghq.com`. European, free tier and other customers should set their site accordingly.
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
@@ -2647,6 +2659,24 @@ Read-Only:
 
 - `id` (String)
 
+
+
+<a id="nestedatt--lists"></a>
+### Nested Schema for `lists`
+
+Required:
+
+- `data` (String) The JSON data for the list. The format depends on the `type`: - For `"texts"` and `"ips"` types: Must be a JSON array of strings (e.g., `["item1", "item2"]`) - For `"ips"` type: Each string must be a valid IP address or CIDR range - For `"json"` type: Must be a JSON object (e.g., `{"key": "value"}`)
+- `name` (String) The name of the list. Maximum length is 100 characters.
+- `type` (String) The type of list. Must be one of: - `"texts"` - A list of text strings - `"ips"` - A list of IP addresses or CIDR ranges - `"json"` - A JSON object
+
+Optional:
+
+- `description` (String) An optional description for the list. Defaults to an empty string if not provided.
+
+Read-Only:
+
+- `id` (String)
 
 
 <a id="nestedatt--project_settings"></a>

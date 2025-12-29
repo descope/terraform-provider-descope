@@ -19,6 +19,8 @@ var docsProject = map[string]string{
 	"flows": "Custom authentication flows to use in this project.",
 	"widgets": "Embeddable components designed to facilitate the delegation of operations to " +
 	           "tenant admins and end users.",
+	"lists": "Lists that can be used for various purposes in the project, such as IP allowlists, " +
+	         "text lists, or custom JSON data.",
 }
 
 var docsApplications = map[string]string{
@@ -183,6 +185,9 @@ var docsOAuthProvider = map[string]string{
 	                       "from the OAuth provider.",
 	"scopes": "Scopes of access that the application requests from the user's account on the OAuth provider.",
 	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
+	"disable_jit_updates": "By default the user attribute mapping configuration is used to update the user's " +
+	                       "attributes automatically during sign in. Disable this if you want this to happen " +
+	                       "only during user creation.",
 	"native_client_id": "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"native_client_secret": "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for applications.",
@@ -452,6 +457,7 @@ var docsDatadog = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 	                 "tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs.",
 }
 
 var docsDevRevGrow = map[string]string{
@@ -1000,6 +1006,19 @@ var docsJWTTemplate = map[string]string{
 var docsJWTTemplates = map[string]string{
 	"user_templates": "A list of `User` type JWT Templates.",
 	"access_key_templates": "A list of `Access Key` type JWT Templates.",
+}
+
+var docsList = map[string]string{
+	"name": "The name of the list. Maximum length is 100 characters.",
+	"description": "An optional description for the list. Defaults to an empty string if not provided.",
+	"type": "The type of list. Must be one of: " +
+	        "- `\"texts\"` - A list of text strings " +
+	        "- `\"ips\"` - A list of IP addresses or CIDR ranges " +
+	        "- `\"json\"` - A JSON object",
+	"data": "The JSON data for the list. The format depends on the `type`: " +
+	        "- For `\"texts\"` and `\"ips\"` types: Must be a JSON array of strings (e.g., `[\"item1\", \"item2\"]`) " +
+	        "- For `\"ips\"` type: Each string must be a valid IP address or CIDR range " +
+	        "- For `\"json\"` type: Must be a JSON object (e.g., `{\"key\": \"value\"}`)",
 }
 
 var docsInviteSettings = map[string]string{

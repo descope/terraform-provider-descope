@@ -215,6 +215,7 @@ func TestConnectors(t *testing.T) {
     						audit_enabled = true
     						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
     						troubleshoot_log_enabled = true
+    						mask_pii = true
 						}
 					]
 				}
@@ -230,6 +231,7 @@ func TestConnectors(t *testing.T) {
 					"audit_enabled":            true,
 					"audit_filters.0.values":   []string{"kekpon4oj34w"},
 					"troubleshoot_log_enabled": true,
+					"mask_pii":                 true,
 				},
 			}),
 		},
