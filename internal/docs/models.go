@@ -13,6 +13,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/project/connectors"
 	"github.com/descope/terraform-provider-descope/internal/models/project/flows"
 	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
+	"github.com/descope/terraform-provider-descope/internal/models/project/lists"
 	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
 	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/descope/terraform-provider-descope/internal/models/project/widgets"
@@ -117,6 +118,7 @@ func InjectModels() {
 	inject(flows.StylesAttributes, docsStyles)
 	inject(jwttemplates.JWTTemplateAttributes, docsJWTTemplate)
 	inject(jwttemplates.JWTTemplatesAttributes, docsJWTTemplates)
+	inject(lists.ListAttributes, docsList)
 	inject(settings.InviteSettingsAttributes, docsInviteSettings)
 	inject(settings.SessionMigrationAttributes, docsSessionMigration)
 	inject(settings.SettingsAttributes, docsSettings)

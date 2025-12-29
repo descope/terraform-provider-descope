@@ -137,4 +137,5 @@ lists
 
 - Type: `list` of `lists.List` 
 
-Lists that can be used for various purposes in the project, such as IP allowlists, text lists, or custom JSON data.
+Lists that can be used for various purposes in the project, such as IP allowlists,
+text lists, or custom JSON data.

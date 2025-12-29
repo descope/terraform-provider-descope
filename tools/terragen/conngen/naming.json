@@ -439,6 +439,10 @@
       "attribute": "logs_prefix",
       "struct": "LogsPrefix"
     },
+    "maskPII": {
+      "attribute": "mask_pii",
+      "struct": "MaskPII"
+    },
     "overrideAssessment": {
       "attribute": "override_assessment",
       "struct": "OverrideAssessment"

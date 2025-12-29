@@ -30,6 +30,7 @@ description: |-
 - `flows` (Attributes Map) Custom authentication flows to use in this project. (see [below for nested schema](#nestedatt--flows))
 - `invite_settings` (Attributes) User invitation settings and behavior. (see [below for nested schema](#nestedatt--invite_settings))
 - `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
+- `lists` (Attributes List) Lists that can be used for various purposes in the project, such as IP allowlists, text lists, or custom JSON data. (see [below for nested schema](#nestedatt--lists))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
 - `tags` (Set of String) Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
@@ -1392,6 +1393,7 @@ Optional:
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--datadog--audit_filters))
 - `description` (String) A description of what your connector is used for.
+- `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `site` (String) The Datadog site to send logs to. Default is `datadoghq.com`. European, free tier and other customers should set their site accordingly.
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
@@ -2657,6 +2659,24 @@ Read-Only:
 
 - `id` (String)
 
+
+
+<a id="nestedatt--lists"></a>
+### Nested Schema for `lists`
+
+Required:
+
+- `data` (String) The JSON data for the list. The format depends on the `type`: - For `"texts"` and `"ips"` types: Must be a JSON array of strings (e.g., `["item1", "item2"]`) - For `"ips"` type: Each string must be a valid IP address or CIDR range - For `"json"` type: Must be a JSON object (e.g., `{"key": "value"}`)
+- `name` (String) The name of the list. Maximum length is 100 characters.
+- `type` (String) The type of list. Must be one of: - `"texts"` - A list of text strings - `"ips"` - A list of IP addresses or CIDR ranges - `"json"` - A JSON object
+
+Optional:
+
+- `description` (String) An optional description for the list. Defaults to an empty string if not provided.
+
+Read-Only:
+
+- `id` (String)
 
 
 <a id="nestedatt--project_settings"></a>
