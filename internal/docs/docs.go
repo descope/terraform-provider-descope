@@ -183,6 +183,9 @@ var docsOAuthProvider = map[string]string{
 	                       "from the OAuth provider.",
 	"scopes": "Scopes of access that the application requests from the user's account on the OAuth provider.",
 	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
+	"disable_jit_updates": "By default the user attribute mapping configuration is used to update the user's " +
+	                       "attributes automatically during sign in. Disable this if you want this to happen " +
+	                       "only during user creation.",
 	"native_client_id": "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"native_client_secret": "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for applications.",
