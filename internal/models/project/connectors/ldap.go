@@ -4,10 +4,13 @@ package connectors
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+var LDAPValidator = objattr.NewValidator[LDAPModel]("must have a valid configuration")
 
 var LDAPAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -16,10 +19,10 @@ var LDAPAttributes = map[string]schema.Attribute{
 
 	"server_url":          stringattr.Required(),
 	"use_mtls":            boolattr.Default(false),
-	"bind_dn":             stringattr.Required(),
-	"bind_password":       stringattr.SecretRequired(),
-	"client_certificate":  stringattr.SecretRequired(),
-	"client_key":          stringattr.SecretRequired(),
+	"bind_dn":             stringattr.Default(""),
+	"bind_password":       stringattr.SecretOptional(),
+	"client_certificate":  stringattr.SecretOptional(),
+	"client_key":          stringattr.SecretOptional(),
 	"ca_certificate":      stringattr.SecretOptional(),
 	"reject_unauthorized": boolattr.Default(true),
 }
@@ -52,6 +55,36 @@ func (m *LDAPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
+	}
+}
+
+func (m *LDAPModel) Validate(h *helpers.Handler) {
+	if !m.BindDN.IsNull() && !m.UseMTLS.IsNull() && m.UseMTLS.ValueBool() {
+		h.Conflict("The bind_dn field cannot be used when use_mtls isn't set to false")
+	}
+	if !m.BindDN.IsUnknown() && m.BindDN.ValueString() == "" && (m.UseMTLS.IsNull() || !m.UseMTLS.ValueBool()) {
+		h.Conflict("The bind_dn field is required when use_mtls is false")
+	}
+	if !m.BindPassword.IsNull() && !m.UseMTLS.IsNull() && m.UseMTLS.ValueBool() {
+		h.Conflict("The bind_password field cannot be used when use_mtls isn't set to false")
+	}
+	if !m.BindPassword.IsUnknown() && m.BindPassword.ValueString() == "" && (m.UseMTLS.IsNull() || !m.UseMTLS.ValueBool()) {
+		h.Conflict("The bind_password field is required when use_mtls is false")
+	}
+	if !m.ClientCertificate.IsNull() && !m.UseMTLS.ValueBool() {
+		h.Conflict("The client_certificate field cannot be used unless use_mtls is set to true")
+	}
+	if !m.ClientCertificate.IsUnknown() && m.ClientCertificate.ValueString() == "" && m.UseMTLS.ValueBool() {
+		h.Conflict("The client_certificate field is required when use_mtls is set to true")
+	}
+	if !m.ClientKey.IsNull() && !m.UseMTLS.ValueBool() {
+		h.Conflict("The client_key field cannot be used unless use_mtls is set to true")
+	}
+	if !m.ClientKey.IsUnknown() && m.ClientKey.ValueString() == "" && m.UseMTLS.ValueBool() {
+		h.Conflict("The client_key field is required when use_mtls is set to true")
+	}
+	if !m.CACertificate.IsNull() && !m.UseMTLS.ValueBool() {
+		h.Conflict("The ca_certificate field cannot be used unless use_mtls is set to true")
 	}
 }
 

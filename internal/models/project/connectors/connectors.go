@@ -48,7 +48,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"hubspot":                    listattr.Default[HubSpotModel](HubSpotAttributes),
 	"incode":                     listattr.Default[IncodeModel](IncodeAttributes),
 	"intercom":                   listattr.Default[IntercomModel](IntercomAttributes),
-	"ldap":                       listattr.Default[LDAPModel](LDAPAttributes),
+	"ldap":                       listattr.Default[LDAPModel](LDAPAttributes, LDAPValidator),
 	"lokalise":                   listattr.Default[LokaliseModel](LokaliseAttributes),
 	"mixpanel":                   listattr.Default[MixpanelModel](MixpanelAttributes, MixpanelValidator),
 	"mparticle":                  listattr.Default[MParticleModel](MParticleAttributes),

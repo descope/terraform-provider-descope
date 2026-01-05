@@ -95,6 +95,15 @@ func (c *Connector) HasEnumFields() bool {
 	return false
 }
 
+func (c *Connector) HasValuesDependency() bool {
+	for _, f := range c.Fields {
+		if f.Dependency != nil && f.Dependency.Field.Type == FieldTypeString && len(f.Dependency.Values) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
 func (c *Connector) HasValidator() bool {
 	return c.Validator || slices.ContainsFunc(c.Fields, func(f *Field) bool {
 		return f.Dependency != nil
@@ -161,8 +170,8 @@ func (c *Connector) Prepare() {
 			}
 
 			// ensure some assumptions about boolean dependencies
-			if d.Field.Type == FieldTypeBool && d.Value != true {
-				log.Fatalf("Field %s has a boolean dependency whose value is not true", f.Name)
+			if d.Field.Type == FieldTypeBool && d.Value != true && d.Value != false {
+				log.Fatalf("Field %s has a boolean dependency whose value is not a booelean", f.Name)
 			}
 			if d.Field.Type == FieldTypeBool && d.Field.Initial == nil {
 				d.Field.Initial = false

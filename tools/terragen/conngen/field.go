@@ -295,6 +295,9 @@ func (f *Field) GetTestCheck() string {
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
 			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
 		}
+		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeBool && d.Value != true {
+			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
+		}
 		if len(f.Options) > 0 {
 			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.Options[0].Value)
 		}
@@ -333,9 +336,17 @@ type FieldDependency struct {
 	*Field
 }
 
-func (d *FieldDependency) DefaultValue() bool {
-	v, _ := d.Field.Initial.(bool)
-	return v
+func (d *FieldDependency) DefaultValue() any {
+	switch d.Field.Type {
+	case FieldTypeString, FieldTypeSecret:
+		v, _ := d.Field.Initial.(string)
+		return v
+	case FieldTypeBool:
+		v, _ := d.Field.Initial.(bool)
+		return v
+	default:
+		return d.Field.Initial
+	}
 }
 
 func (d *FieldDependency) ValuesSlice() string {

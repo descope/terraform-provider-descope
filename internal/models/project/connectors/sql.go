@@ -3,6 +3,8 @@
 package connectors
 
 import (
+	"slices"
+
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/floatattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
