@@ -171,7 +171,7 @@ func (c *Connector) Prepare() {
 
 			// ensure some assumptions about boolean dependencies
 			if d.Field.Type == FieldTypeBool && d.Value != true && d.Value != false {
-				log.Fatalf("Field %s has a boolean dependency whose value is not a booelean", f.Name)
+				log.Fatalf("Field %s has a boolean dependency whose value is not a boolean", f.Name)
 			}
 			if d.Field.Type == FieldTypeBool && d.Field.Initial == nil {
 				d.Field.Initial = false
