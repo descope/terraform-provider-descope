@@ -706,7 +706,7 @@
     },
     "rfc9421KeyId": {
       "attribute": "rfc9421_key_id",
-      "struct": "RFC9421KeyId"
+      "struct": "RFC9421KeyID"
     },
     "rfc9421PrivateKey": {
       "attribute": "rfc9421_private_key",
