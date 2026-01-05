@@ -126,7 +126,7 @@ func InjectModels() {
 	inject(connectors.TwilioAuthFieldAttributes, docsTwilioAuthField)
 	inject(connectors.TwilioVerifyAttributes, docsTwilioVerify)
 	inject(connectors.UnibeamAttributes, docsUnibeam)
-	inject(connectors.ZerobounceAttributes, docsZerobounce)
+	inject(connectors.ZeroBounceAttributes, docsZeroBounce)
 	inject(flows.FlowAttributes, docsFlow)
 	inject(flows.StylesAttributes, docsStyles)
 	inject(jwttemplates.JWTTemplateAttributes, docsJWTTemplate)

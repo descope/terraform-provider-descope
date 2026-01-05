@@ -1151,7 +1151,7 @@ var docsUnibeam = map[string]string{
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
-var docsZerobounce = map[string]string{
+var docsZeroBounce = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
 	"api_key": "The ZeroBounce API key.",

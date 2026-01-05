@@ -312,7 +312,7 @@
     "zerobounce": {
       "attribute": "zerobounce",
       "file": "zerobounce",
-      "struct": "Zerobounce"
+      "struct": "ZeroBounce"
     }
   },
   "field": {

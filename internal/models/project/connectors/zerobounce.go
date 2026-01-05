@@ -9,7 +9,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var ZerobounceAttributes = map[string]schema.Attribute{
+var ZeroBounceAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
@@ -20,7 +20,7 @@ var ZerobounceAttributes = map[string]schema.Attribute{
 
 // Model
 
-type ZerobounceModel struct {
+type ZeroBounceModel struct {
 	ID          stringattr.Type `tfsdk:"id"`
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
@@ -29,14 +29,14 @@ type ZerobounceModel struct {
 	Region stringattr.Type `tfsdk:"region"`
 }
 
-func (m *ZerobounceModel) Values(h *helpers.Handler) map[string]any {
+func (m *ZeroBounceModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "zerobounce"
 	data["configuration"] = m.ConfigurationValues(h)
 	return data
 }
 
-func (m *ZerobounceModel) SetValues(h *helpers.Handler, data map[string]any) {
+func (m *ZeroBounceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
@@ -45,28 +45,28 @@ func (m *ZerobounceModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 // Configuration
 
-func (m *ZerobounceModel) ConfigurationValues(h *helpers.Handler) map[string]any {
+func (m *ZeroBounceModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.Region, c, "region")
 	return c
 }
 
-func (m *ZerobounceModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+func (m *ZeroBounceModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Nil(&m.APIKey)
 	stringattr.Set(&m.Region, c, "region")
 }
 
 // Matching
 
-func (m *ZerobounceModel) GetName() stringattr.Type {
+func (m *ZeroBounceModel) GetName() stringattr.Type {
 	return m.Name
 }
 
-func (m *ZerobounceModel) GetID() stringattr.Type {
+func (m *ZeroBounceModel) GetID() stringattr.Type {
 	return m.ID
 }
 
-func (m *ZerobounceModel) SetID(id stringattr.Type) {
+func (m *ZeroBounceModel) SetID(id stringattr.Type) {
 	m.ID = id
 }

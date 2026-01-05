@@ -80,7 +80,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"twilio_core":                listattr.Default[TwilioCoreModel](TwilioCoreAttributes),
 	"twilio_verify":              listattr.Default[TwilioVerifyModel](TwilioVerifyAttributes),
 	"unibeam":                    listattr.Default[UnibeamModel](UnibeamAttributes),
-	"zerobounce":                 listattr.Default[ZerobounceModel](ZerobounceAttributes),
+	"zerobounce":                 listattr.Default[ZeroBounceModel](ZeroBounceAttributes),
 }
 
 type ConnectorsModel struct {
@@ -147,7 +147,7 @@ type ConnectorsModel struct {
 	TwilioCore               listattr.Type[TwilioCoreModel]               `tfsdk:"twilio_core"`
 	TwilioVerify             listattr.Type[TwilioVerifyModel]             `tfsdk:"twilio_verify"`
 	Unibeam                  listattr.Type[UnibeamModel]                  `tfsdk:"unibeam"`
-	Zerobounce               listattr.Type[ZerobounceModel]               `tfsdk:"zerobounce"`
+	ZeroBounce               listattr.Type[ZeroBounceModel]               `tfsdk:"zerobounce"`
 }
 
 func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
@@ -215,7 +215,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.TwilioCore, data, "twilio-core", h)
 	listattr.Get(m.TwilioVerify, data, "twilio-verify", h)
 	listattr.Get(m.Unibeam, data, "unibeam", h)
-	listattr.Get(m.Zerobounce, data, "zerobounce", h)
+	listattr.Get(m.ZeroBounce, data, "zerobounce", h)
 	return data
 }
 
@@ -283,7 +283,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.TwilioCore, data, "twilio-core", "name", h)
 	listattr.SetMatchingNames(&m.TwilioVerify, data, "twilio-verify", "name", h)
 	listattr.SetMatchingNames(&m.Unibeam, data, "unibeam", "name", h)
-	listattr.SetMatchingNames(&m.Zerobounce, data, "zerobounce", "name", h)
+	listattr.SetMatchingNames(&m.ZeroBounce, data, "zerobounce", "name", h)
 }
 
 func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
@@ -350,7 +350,7 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "twilio-core", m.TwilioCore)
 	addConnectorReferences(h, "twilio-verify", m.TwilioVerify)
 	addConnectorReferences(h, "unibeam", m.Unibeam)
-	addConnectorReferences(h, "zerobounce", m.Zerobounce)
+	addConnectorReferences(h, "zerobounce", m.ZeroBounce)
 }
 
 func (m *ConnectorsModel) Validate(h *helpers.Handler) {
@@ -418,7 +418,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.TwilioCore)
 	addConnectorNames(h, names, m.TwilioVerify)
 	addConnectorNames(h, names, m.Unibeam)
-	addConnectorNames(h, names, m.Zerobounce)
+	addConnectorNames(h, names, m.ZeroBounce)
 	for k, v := range names {
 		if v > 1 {
 			h.Error("Connector names must be unique", "The connector name '%s' is used %d times", k, v)
@@ -490,7 +490,7 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.TwilioCore, state.TwilioCore)
 	listattr.ModifyMatchingNames(h, &m.TwilioVerify, state.TwilioVerify)
 	listattr.ModifyMatchingNames(h, &m.Unibeam, state.Unibeam)
-	listattr.ModifyMatchingNames(h, &m.Zerobounce, state.Zerobounce)
+	listattr.ModifyMatchingNames(h, &m.ZeroBounce, state.ZeroBounce)
 
 	// Upgrade existing identifiers for SMTP connectors to support static IPs
 	for c := range listattr.MutatingIterator(&m.SMTP, h) {

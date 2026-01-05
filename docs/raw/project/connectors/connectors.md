@@ -602,6 +602,6 @@ passwordless authentication and transaction approval.
 zerobounce
 ----------
 
-- Type: `list` of `connectors.Zerobounce` 
+- Type: `list` of `connectors.ZeroBounce` 
 
 Email validation with ZeroBounce
