@@ -1040,7 +1040,7 @@ var docsSplunk = map[string]string{
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
-var docsSql = map[string]string{
+var docsSQL = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
 	"engine_name": "The database engine type.",

@@ -269,7 +269,7 @@
     "sql": {
       "attribute": "sql",
       "file": "sql",
-      "struct": "Sql"
+      "struct": "SQL"
     },
     "sumologic": {
       "attribute": "sumologic",

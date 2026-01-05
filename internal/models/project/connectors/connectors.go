@@ -71,7 +71,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"smtp":                       listattr.Default[SMTPModel](SMTPAttributes),
 	"sns":                        listattr.Default[SNSModel](SNSAttributes, SNSValidator),
 	"splunk":                     listattr.Default[SplunkModel](SplunkAttributes, SplunkValidator),
-	"sql":                        listattr.Default[SqlModel](SqlAttributes),
+	"sql":                        listattr.Default[SQLModel](SQLAttributes),
 	"sumologic":                  listattr.Default[SumoLogicModel](SumoLogicAttributes, SumoLogicValidator),
 	"supabase":                   listattr.Default[SupabaseModel](SupabaseAttributes, SupabaseValidator),
 	"telesign":                   listattr.Default[TelesignModel](TelesignAttributes),
@@ -138,7 +138,7 @@ type ConnectorsModel struct {
 	SMTP                     listattr.Type[SMTPModel]                     `tfsdk:"smtp"`
 	SNS                      listattr.Type[SNSModel]                      `tfsdk:"sns"`
 	Splunk                   listattr.Type[SplunkModel]                   `tfsdk:"splunk"`
-	Sql                      listattr.Type[SqlModel]                      `tfsdk:"sql"`
+	SQL                      listattr.Type[SQLModel]                      `tfsdk:"sql"`
 	SumoLogic                listattr.Type[SumoLogicModel]                `tfsdk:"sumologic"`
 	Supabase                 listattr.Type[SupabaseModel]                 `tfsdk:"supabase"`
 	Telesign                 listattr.Type[TelesignModel]                 `tfsdk:"telesign"`
@@ -206,7 +206,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.SMTP, data, "smtp", h)
 	listattr.Get(m.SNS, data, "sns", h)
 	listattr.Get(m.Splunk, data, "splunk", h)
-	listattr.Get(m.Sql, data, "sql", h)
+	listattr.Get(m.SQL, data, "sql", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Supabase, data, "supabase", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
@@ -274,7 +274,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.SMTP, data, "smtp", "name", h)
 	listattr.SetMatchingNames(&m.SNS, data, "sns", "name", h)
 	listattr.SetMatchingNames(&m.Splunk, data, "splunk", "name", h)
-	listattr.SetMatchingNames(&m.Sql, data, "sql", "name", h)
+	listattr.SetMatchingNames(&m.SQL, data, "sql", "name", h)
 	listattr.SetMatchingNames(&m.SumoLogic, data, "sumologic", "name", h)
 	listattr.SetMatchingNames(&m.Supabase, data, "supabase", "name", h)
 	listattr.SetMatchingNames(&m.Telesign, data, "telesign", "name", h)
@@ -341,7 +341,7 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "smtp", m.SMTP)
 	addConnectorReferences(h, "sns", m.SNS)
 	addConnectorReferences(h, "splunk", m.Splunk)
-	addConnectorReferences(h, "sql", m.Sql)
+	addConnectorReferences(h, "sql", m.SQL)
 	addConnectorReferences(h, "sumologic", m.SumoLogic)
 	addConnectorReferences(h, "supabase", m.Supabase)
 	addConnectorReferences(h, "telesign", m.Telesign)
@@ -409,7 +409,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.SMTP)
 	addConnectorNames(h, names, m.SNS)
 	addConnectorNames(h, names, m.Splunk)
-	addConnectorNames(h, names, m.Sql)
+	addConnectorNames(h, names, m.SQL)
 	addConnectorNames(h, names, m.SumoLogic)
 	addConnectorNames(h, names, m.Supabase)
 	addConnectorNames(h, names, m.Telesign)
@@ -481,7 +481,7 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.SMTP, state.SMTP)
 	listattr.ModifyMatchingNames(h, &m.SNS, state.SNS)
 	listattr.ModifyMatchingNames(h, &m.Splunk, state.Splunk)
-	listattr.ModifyMatchingNames(h, &m.Sql, state.Sql)
+	listattr.ModifyMatchingNames(h, &m.SQL, state.SQL)
 	listattr.ModifyMatchingNames(h, &m.SumoLogic, state.SumoLogic)
 	listattr.ModifyMatchingNames(h, &m.Supabase, state.Supabase)
 	listattr.ModifyMatchingNames(h, &m.Telesign, state.Telesign)

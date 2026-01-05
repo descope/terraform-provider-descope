@@ -263,6 +263,9 @@ func (f *Field) GetTestAssignment() string {
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
 			return `""`
 		}
+		if len(f.Options) > 0 {
+			return fmt.Sprintf(`%q`, f.Options[0].Value)
+		}
 		return fmt.Sprintf(`%q`, f.TestString())
 	case FieldTypeBool:
 		return `true`
@@ -291,6 +294,9 @@ func (f *Field) GetTestCheck() string {
 		}
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
 			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
+		}
+		if len(f.Options) > 0 {
+			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.Options[0].Value)
 		}
 		return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.TestString())
 	case FieldTypeBool:

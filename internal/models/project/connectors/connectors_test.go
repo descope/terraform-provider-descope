@@ -1554,7 +1554,7 @@ func TestConnectors(t *testing.T) {
 						{
 							name = "Test sql Connector"
 							description = "A description for the sql connector"
-    						engine_name = "frl3xi3bhq"
+    						engine_name = "cockroach"
     						database_name = "dn6ojnmolduu"
     						service_name = "a2oorm5qgsr"
     						host = "i5ak"
@@ -1571,7 +1571,7 @@ func TestConnectors(t *testing.T) {
 					"id":            testacc.AttributeHasPrefix("CI"),
 					"name":          "Test sql Connector",
 					"description":   "A description for the sql connector",
-					"engine_name":   "frl3xi3bhq",
+					"engine_name":   "cockroach",
 					"database_name": "dn6ojnmolduu",
 					"service_name":  "a2oorm5qgsr",
 					"host":          "i5ak",

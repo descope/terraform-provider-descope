@@ -113,7 +113,7 @@ func InjectModels() {
 	inject(connectors.SMTPAuthFieldAttributes, docsSMTPAuthField)
 	inject(connectors.SNSAttributes, docsSNS)
 	inject(connectors.SplunkAttributes, docsSplunk)
-	inject(connectors.SqlAttributes, docsSql)
+	inject(connectors.SQLAttributes, docsSQL)
 	inject(connectors.SumoLogicAttributes, docsSumoLogic)
 	inject(connectors.SupabaseAttributes, docsSupabase)
 	inject(connectors.TelesignAttributes, docsTelesign)

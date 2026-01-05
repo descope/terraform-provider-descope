@@ -515,7 +515,7 @@ Stream logs and audit events with the Splunk HTTP Event Collector (HEC).
 sql
 ----
 
-- Type: `list` of `connectors.Sql` 
+- Type: `list` of `connectors.SQL` 
 
 SQL connector for relational databases including PostgreSQL, MySQL, MariaDB,
 Microsoft SQL Server (MSSQL), Oracle, CockroachDB, and Amazon Redshift.

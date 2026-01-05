@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var SqlAttributes = map[string]schema.Attribute{
+var SQLAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
@@ -26,7 +26,7 @@ var SqlAttributes = map[string]schema.Attribute{
 
 // Model
 
-type SqlModel struct {
+type SQLModel struct {
 	ID          stringattr.Type `tfsdk:"id"`
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
@@ -40,14 +40,14 @@ type SqlModel struct {
 	Password     stringattr.Type `tfsdk:"password"`
 }
 
-func (m *SqlModel) Values(h *helpers.Handler) map[string]any {
+func (m *SQLModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "sql"
 	data["configuration"] = m.ConfigurationValues(h)
 	return data
 }
 
-func (m *SqlModel) SetValues(h *helpers.Handler, data map[string]any) {
+func (m *SQLModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
@@ -56,7 +56,7 @@ func (m *SqlModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 // Configuration
 
-func (m *SqlModel) ConfigurationValues(h *helpers.Handler) map[string]any {
+func (m *SQLModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.EngineName, c, "engineName")
 	stringattr.Get(m.DatabaseName, c, "databaseName")
@@ -68,7 +68,7 @@ func (m *SqlModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	return c
 }
 
-func (m *SqlModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+func (m *SQLModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.EngineName, c, "engineName")
 	stringattr.Set(&m.DatabaseName, c, "databaseName")
 	stringattr.Set(&m.ServiceName, c, "serviceName")
@@ -80,14 +80,14 @@ func (m *SqlModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) 
 
 // Matching
 
-func (m *SqlModel) GetName() stringattr.Type {
+func (m *SQLModel) GetName() stringattr.Type {
 	return m.Name
 }
 
-func (m *SqlModel) GetID() stringattr.Type {
+func (m *SQLModel) GetID() stringattr.Type {
 	return m.ID
 }
 
-func (m *SqlModel) SetID(id stringattr.Type) {
+func (m *SQLModel) SetID(id stringattr.Type) {
 	m.ID = id
 }
