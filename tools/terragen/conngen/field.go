@@ -327,14 +327,19 @@ func (f *Field) TestNumber() int {
 // Dependency
 
 type FieldDependency struct {
-	Name  string `json:"name"`
-	Value any    `json:"value"`
+	Name   string   `json:"name"`
+	Value  any      `json:"value"`
+	Values []string `json:"values"`
 	*Field
 }
 
 func (d *FieldDependency) DefaultValue() bool {
 	v, _ := d.Field.Initial.(bool)
 	return v
+}
+
+func (d *FieldDependency) ValuesSlice() string {
+	return fmt.Sprintf("%#v", d.Values)
 }
 
 // Options

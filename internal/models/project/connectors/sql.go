@@ -4,11 +4,14 @@ package connectors
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/floatattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+var SQLValidator = objattr.NewValidator[SQLModel]("must have a valid configuration")
 
 var SQLAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -51,6 +54,15 @@ func (m *SQLModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
+	}
+}
+
+func (m *SQLModel) Validate(h *helpers.Handler) {
+	if m.DatabaseName.ValueString() != "" && m.EngineName.ValueString() != "" && !slices.Contains([]string{"cockroach", "mariadb", "mysql", "postgres", "redshift", "mssql"}, m.EngineName.ValueString()) {
+		h.Conflict("The database_name field can only be used when engine_name is one of [cockroach mariadb mysql postgres redshift mssql]")
+	}
+	if m.ServiceName.ValueString() != "" && m.EngineName.ValueString() != "" && m.EngineName.ValueString() != "oracle" {
+		h.Conflict("The service_name field can only be used when engine_name is set to 'oracle'")
 	}
 }
 

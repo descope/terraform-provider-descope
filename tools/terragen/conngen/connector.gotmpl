@@ -93,13 +93,24 @@ func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
 			{{- end }}
 		{{- end }}
 		{{- if eq .Dependency.Field.Type "string" }}
-			if {{ .IsNonZero }} && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "{{ .Dependency.Value }}" {
-				h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
-			}
-			{{- if .Required }}
-				if {{ .IsZero }} && !m.{{ .StructName }}.IsUnknown() && m.{{ .Dependency.Field.StructName }}.ValueString() == "{{ .Dependency.Value }}" {
-					h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
+			{{- if .Dependency.Value }}
+				if {{ .IsNonZero }} && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "{{ .Dependency.Value }}" {
+					h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
 				}
+				{{- if .Required }}
+					if {{ .IsZero }} && !m.{{ .StructName }}.IsUnknown() && m.{{ .Dependency.Field.StructName }}.ValueString() == "{{ .Dependency.Value }}" {
+						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
+					}
+				{{- end }}
+			{{- else }}
+				if {{ .IsNonZero }} && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && !slices.Contains({{ .Dependency.ValuesSlice }}, m.{{ .Dependency.Field.StructName }}.ValueString()) {
+					h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is one of {{ .Dependency.Values }}")
+				}
+				{{- if .Required }}
+					if {{ .IsZero }} && !m.{{ .StructName }}.IsUnknown() && slices.Contains({{ .Dependency.ValuesSlice }}, m.{{ .Dependency.Field.StructName }}.ValueString()) {
+						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is one of {{ .Dependency.Values }}")
+					}
+				{{- end }}
 			{{- end }}
 		{{- end }}
 	{{- end }}{{ end }}

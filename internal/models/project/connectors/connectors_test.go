@@ -1556,7 +1556,7 @@ func TestConnectors(t *testing.T) {
 							description = "A description for the sql connector"
     						engine_name = "cockroach"
     						database_name = "dn6ojnmolduu"
-    						service_name = "a2oorm5qgsr"
+    						service_name = ""
     						host = "i5ak"
     						port = 4
     						username = "c33yu7ld"
@@ -1573,7 +1573,7 @@ func TestConnectors(t *testing.T) {
 					"description":   "A description for the sql connector",
 					"engine_name":   "cockroach",
 					"database_name": "dn6ojnmolduu",
-					"service_name":  "a2oorm5qgsr",
+					"service_name":  "",
 					"host":          "i5ak",
 					"port":          4,
 					"username":      "c33yu7ld",

@@ -169,11 +169,12 @@ func (c *Connector) Prepare() {
 			}
 
 			// ensure some assumptions about string dependencies
-			if _, ok := d.Value.(string); !ok && d.Field.Type == FieldTypeString {
-				log.Fatalf("Field %s has a string dependency whose value is not a string", f.Name)
-			}
-			if d.Field.Type == FieldTypeString && (d.Field.Initial == nil || d.Field.Initial == "") {
-				log.Fatalf("Field %s has a string dependency on field %s with no initial value", f.Name, d.Name)
+			if d.Field.Type == FieldTypeString {
+				if d.Value == nil && len(d.Values) == 0 {
+					log.Fatalf("Field %s has a string dependency with no value(s) set", f.Name)
+				} else if _, ok := d.Value.(string); !ok && d.Value != nil {
+					log.Fatalf("Field %s has a string dependency whose value is not a string", f.Name)
+				}
 			}
 
 			// only certain configurations were tested, any new ones should be verified
