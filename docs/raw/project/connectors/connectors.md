@@ -24,6 +24,15 @@ Amplitude connector.
 
 
 
+arkose
+------
+
+- Type: `list` of `connectors.Arkose` 
+
+Use the Arkose connector to integrate with Arkose's bot and fraud detection.
+
+
+
 audit_webhook
 -------------
 
@@ -58,6 +67,24 @@ bitsight
 
 Utilize threat intelligence to block malicious login attempts or check leaks
 with the Bitsight Threat Intelligence connector.
+
+
+
+coralogix
+---------
+
+- Type: `list` of `connectors.Coralogix` 
+
+Send audit events and troubleshooting logs to Coralogix.
+
+
+
+darwinium
+---------
+
+- Type: `list` of `connectors.Darwinium` 
+
+Connect to Darwinium API for fraud detection and device intelligence.
 
 
 
@@ -210,6 +237,16 @@ Stream logs and audit events with the Google Cloud Logging connector.
 
 
 
+hcaptcha
+--------
+
+- Type: `list` of `connectors.HCaptcha` 
+
+hCaptcha can help protect your applications from bots, spam, and other forms of
+automated abuse.
+
+
+
 hibp
 ----
 
@@ -259,6 +296,16 @@ the Intercom connector.
 
 
 
+ldap
+----
+
+- Type: `list` of `connectors.LDAP` 
+
+Use this connector to authenticate users against an LDAP directory server with
+support for both password and mTLS authentication.
+
+
+
 lokalise
 --------
 
@@ -266,6 +313,15 @@ lokalise
 
 Localize the language of your login and user journey screens with the Lokalise
 connector.
+
+
+
+mixpanel
+--------
+
+- Type: `list` of `connectors.Mixpanel` 
+
+Stream authentication audit logs and troubleshoot logs to Mixpanel.
 
 
 
@@ -285,6 +341,34 @@ newrelic
 - Type: `list` of `connectors.NewRelic` 
 
 Stream authentication audit logs with the New Relic connector.
+
+
+
+opentelemetry
+-------------
+
+- Type: `list` of `connectors.OpenTelemetry` 
+
+Send audit events and troubleshooting logs to an OpenTelemetry-compatible
+endpoint using OTLP over HTTP or gRPC.
+
+
+
+ping_directory
+--------------
+
+- Type: `list` of `connectors.PingDirectory` 
+
+Authenticate against PingDirectory.
+
+
+
+postmark
+--------
+
+- Type: `list` of `connectors.Postmark` 
+
+Send emails using Postmark
 
 
 
@@ -419,6 +503,25 @@ Amazon Simple Notification Service (SNS) for sending SMS messages through AWS.
 
 
 
+splunk
+------
+
+- Type: `list` of `connectors.Splunk` 
+
+Stream logs and audit events with the Splunk HTTP Event Collector (HEC).
+
+
+
+sql
+----
+
+- Type: `list` of `connectors.Sql` 
+
+SQL connector for relational databases including PostgreSQL, MySQL, MariaDB,
+Microsoft SQL Server (MSSQL), Oracle, CockroachDB, and Amazon Redshift.
+
+
+
 sumologic
 ---------
 
@@ -483,3 +586,22 @@ twilio_verify
 
 Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms,
 voice and e-mail. Choose this connector only if you are a Twilio Verify customer.
+
+
+
+unibeam
+-------
+
+- Type: `list` of `connectors.Unibeam` 
+
+SIM-based authentication and approval using Unibeam's OnSim technology for
+passwordless authentication and transaction approval.
+
+
+
+zerobounce
+----------
+
+- Type: `list` of `connectors.Zerobounce` 
+
+Email validation with ZeroBounce

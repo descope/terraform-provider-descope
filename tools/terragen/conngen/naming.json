@@ -10,6 +10,11 @@
       "file": "amplitude",
       "struct": "Amplitude"
     },
+    "arkose": {
+      "attribute": "arkose",
+      "file": "arkose",
+      "struct": "Arkose"
+    },
     "audit-webhook": {
       "attribute": "audit_webhook",
       "file": "auditwebhook",
@@ -29,6 +34,16 @@
       "attribute": "bitsight",
       "file": "bitsight",
       "struct": "Bitsight"
+    },
+    "coralogix": {
+      "attribute": "coralogix",
+      "file": "coralogix",
+      "struct": "Coralogix"
+    },
+    "darwinium": {
+      "attribute": "darwinium",
+      "file": "darwinium",
+      "struct": "Darwinium"
     },
     "datadog": {
       "attribute": "datadog",
@@ -110,6 +125,11 @@
       "file": "googlecloudlogging",
       "struct": "GoogleCloudLogging"
     },
+    "hcaptcha": {
+      "attribute": "hcaptcha",
+      "file": "hcaptcha",
+      "struct": "HCaptcha"
+    },
     "hibp": {
       "attribute": "hibp",
       "file": "hibp",
@@ -135,10 +155,20 @@
       "file": "intercom",
       "struct": "Intercom"
     },
+    "ldap": {
+      "attribute": "ldap",
+      "file": "ldap",
+      "struct": "LDAP"
+    },
     "lokalise": {
       "attribute": "lokalise",
       "file": "lokalise",
       "struct": "Lokalise"
+    },
+    "mixpanel": {
+      "attribute": "mixpanel",
+      "file": "mixpanel",
+      "struct": "Mixpanel"
     },
     "mparticle": {
       "attribute": "mparticle",
@@ -149,6 +179,21 @@
       "attribute": "newrelic",
       "file": "newrelic",
       "struct": "NewRelic"
+    },
+    "opentelemetry": {
+      "attribute": "opentelemetry",
+      "file": "opentelemetry",
+      "struct": "OpenTelemetry"
+    },
+    "ping-directory": {
+      "attribute": "ping_directory",
+      "file": "pingdirectory",
+      "struct": "PingDirectory"
+    },
+    "post-mark": {
+      "attribute": "postmark",
+      "file": "postmark",
+      "struct": "Postmark"
     },
     "radar": {
       "attribute": "radar",
@@ -216,6 +261,16 @@
       "attribute": "sns",
       "struct": "SNS"
     },
+    "splunk": {
+      "attribute": "splunk",
+      "file": "splunk",
+      "struct": "Splunk"
+    },
+    "sql": {
+      "attribute": "sql",
+      "file": "sql",
+      "struct": "Sql"
+    },
     "sumologic": {
       "attribute": "sumologic",
       "file": "sumologic",
@@ -248,6 +303,16 @@
     "twilio-verify": {
       "attribute": "twilio_verify",
       "struct": "TwilioVerify"
+    },
+    "unibeam": {
+      "attribute": "unibeam",
+      "file": "unibeam",
+      "struct": "Unibeam"
+    },
+    "zerobounce": {
+      "attribute": "zerobounce",
+      "file": "zerobounce",
+      "struct": "Zerobounce"
     }
   },
   "field": {
@@ -315,9 +380,49 @@
       "attribute": "authentication",
       "struct": "Authentication"
     },
+    "awsAccessKeyId": {
+      "attribute": "aws_access_key_id",
+      "struct": "AWSAccessKeyID"
+    },
+    "awsAuthType": {
+      "attribute": "aws_auth_type",
+      "struct": "AWSAuthType"
+    },
+    "awsExternalId": {
+      "attribute": "aws_external_id",
+      "struct": "AWSExternalID"
+    },
+    "awsRegion": {
+      "attribute": "aws_region",
+      "struct": "AWSRegion"
+    },
+    "awsRoleArn": {
+      "attribute": "aws_role_arn",
+      "struct": "AWSRoleARN"
+    },
+    "awsSecretAccessKey": {
+      "attribute": "aws_secret_access_key",
+      "struct": "AWSSecretAccessKey"
+    },
+    "awsService": {
+      "attribute": "aws_service",
+      "struct": "AWSService"
+    },
     "baseUrl": {
       "attribute": "base_url",
       "struct": "BaseURL"
+    },
+    "bearerToken": {
+      "attribute": "bearer_token",
+      "struct": "BearerToken"
+    },
+    "bindDn": {
+      "attribute": "bind_dn",
+      "struct": "BindDN"
+    },
+    "bindPassword": {
+      "attribute": "bind_password",
+      "struct": "BindPassword"
     },
     "botThreshold": {
       "attribute": "bot_threshold",
@@ -327,13 +432,29 @@
       "attribute": "bucket",
       "struct": "Bucket"
     },
+    "caCert": {
+      "attribute": "ca_certificate",
+      "struct": "CACertificate"
+    },
     "cardId": {
       "attribute": "card_id",
       "struct": "CardID"
     },
+    "clientBaseUrl": {
+      "attribute": "client_base_url",
+      "struct": "ClientBaseURL"
+    },
+    "clientCert": {
+      "attribute": "client_certificate",
+      "struct": "ClientCertificate"
+    },
     "clientId": {
       "attribute": "client_id",
       "struct": "ClientID"
+    },
+    "clientKey": {
+      "attribute": "client_key",
+      "struct": "ClientKey"
     },
     "clientSecret": {
       "attribute": "client_secret",
@@ -371,17 +492,41 @@
       "attribute": "customer_id",
       "struct": "CustomerID"
     },
+    "customerId": {
+      "attribute": "customer_id",
+      "struct": "CustomerID"
+    },
     "dataCenter": {
       "attribute": "data_center",
       "struct": "DataCenter"
+    },
+    "databaseName": {
+      "attribute": "database_name",
+      "struct": "DatabaseName"
     },
     "defaultEnvironment": {
       "attribute": "default_environment",
       "struct": "DefaultEnvironment"
     },
+    "defaultMessage": {
+      "attribute": "default_message",
+      "struct": "DefaultMessage"
+    },
+    "defaultResult": {
+      "attribute": "default_result",
+      "struct": "DefaultResult"
+    },
+    "emailFrom": {
+      "attribute": "email_from",
+      "struct": "EmailFrom"
+    },
     "endpoint": {
       "attribute": "endpoint",
       "struct": "Endpoint"
+    },
+    "engineName": {
+      "attribute": "engine_name",
+      "struct": "EngineName"
     },
     "enterprise": {
       "attribute": "enterprise",
@@ -390,6 +535,10 @@
     "euRegion": {
       "attribute": "eu_region",
       "struct": "EURegion"
+    },
+    "euResidency": {
+      "attribute": "eu_residency",
+      "struct": "EUResidency"
     },
     "expirationTimeMinutes": {
       "attribute": "expiration_time",
@@ -407,6 +556,14 @@
       "attribute": "headers",
       "struct": "Headers"
     },
+    "hecToken": {
+      "attribute": "hec_token",
+      "struct": "HecToken"
+    },
+    "hecUrl": {
+      "attribute": "hec_url",
+      "struct": "HecURL"
+    },
     "hmacSecret": {
       "attribute": "hmac_secret",
       "struct": "HMACSecret"
@@ -423,9 +580,17 @@
       "attribute": "include_headers_in_context",
       "struct": "IncludeHeadersInContext"
     },
+    "index": {
+      "attribute": "index",
+      "struct": "Index"
+    },
     "insecure": {
       "attribute": "insecure",
       "struct": "Insecure"
+    },
+    "journeyName": {
+      "attribute": "journey_name",
+      "struct": "JourneyName"
     },
     "language": {
       "attribute": "language",
@@ -442,6 +607,22 @@
     "maskPII": {
       "attribute": "mask_pii",
       "struct": "MaskPII"
+    },
+    "messageStreamId": {
+      "attribute": "message_stream_id",
+      "struct": "MessageStreamId"
+    },
+    "nativeApiName": {
+      "attribute": "native_api_name",
+      "struct": "NativeApiName"
+    },
+    "nativeBlobKeyName": {
+      "attribute": "native_blob_key_name",
+      "struct": "NativeBlobKeyName"
+    },
+    "nodeName": {
+      "attribute": "node_name",
+      "struct": "NodeName"
     },
     "overrideAssessment": {
       "attribute": "override_assessment",
@@ -463,9 +644,21 @@
       "attribute": "overrides",
       "struct": "Overrides"
     },
+    "passphrase": {
+      "attribute": "passphrase",
+      "struct": "Passphrase"
+    },
     "password": {
       "attribute": "password",
       "struct": "Password"
+    },
+    "pemCert": {
+      "attribute": "pem_certificate",
+      "struct": "PemCertificate"
+    },
+    "port": {
+      "attribute": "port",
+      "struct": "Port"
     },
     "postUrl": {
       "attribute": "post_url",
@@ -475,21 +668,69 @@
       "attribute": "private_key",
       "struct": "PrivateKey"
     },
+    "profilingTagsScriptUrl": {
+      "attribute": "profiling_tags_script_url",
+      "struct": "ProfilingTagsScriptURL"
+    },
     "projectId": {
       "attribute": "project_id",
       "struct": "ProjectID"
+    },
+    "projectToken": {
+      "attribute": "project_token",
+      "struct": "ProjectToken"
+    },
+    "protocol": {
+      "attribute": "protocol",
+      "struct": "Protocol"
     },
     "publicApiKey": {
       "attribute": "public_api_key",
       "struct": "PublicAPIKey"
     },
+    "publicKey": {
+      "attribute": "public_key",
+      "struct": "PublicKey"
+    },
     "region": {
       "attribute": "region",
       "struct": "Region"
     },
+    "rejectUnauthorized": {
+      "attribute": "reject_unauthorized",
+      "struct": "RejectUnauthorized"
+    },
+    "rfc9421Components": {
+      "attribute": "rfc9421_components",
+      "struct": "RFC9421Components"
+    },
+    "rfc9421KeyId": {
+      "attribute": "rfc9421_key_id",
+      "struct": "RFC9421KeyId"
+    },
+    "rfc9421PrivateKey": {
+      "attribute": "rfc9421_private_key",
+      "struct": "RFC9421PrivateKey"
+    },
+    "rfc9421SignatureTTL": {
+      "attribute": "rfc9421_signature_ttl",
+      "struct": "RFC9421SignatureTTL"
+    },
+    "rfc9421SigningEnabled": {
+      "attribute": "rfc9421_signing_enabled",
+      "struct": "RFC9421SigningEnabled"
+    },
     "roleArn": {
       "attribute": "role_arn",
       "struct": "RoleARN"
+    },
+    "saSecret": {
+      "attribute": "service_account_secret",
+      "struct": "ServiceAccountSecret"
+    },
+    "saUsername": {
+      "attribute": "service_account_username",
+      "struct": "ServiceAccountUsername"
     },
     "scope": {
       "attribute": "scope",
@@ -511,6 +752,10 @@
       "attribute": "sender",
       "struct": "Sender"
     },
+    "serverAPIToken": {
+      "attribute": "server_apitoken",
+      "struct": "ServerAPIToken"
+    },
     "serverUrl": {
       "attribute": "server_url",
       "struct": "ServerURL"
@@ -530,6 +775,10 @@
     "serviceAccountKey": {
       "attribute": "service_account_key",
       "struct": "ServiceAccountKey"
+    },
+    "serviceName": {
+      "attribute": "service_name",
+      "struct": "ServiceName"
     },
     "sessionToken": {
       "attribute": "session_token",
@@ -591,6 +840,10 @@
       "attribute": "use_cloudflare_integration",
       "struct": "UseCloudflareIntegration"
     },
+    "useMTLS": {
+      "attribute": "use_mtls",
+      "struct": "UseMTLS"
+    },
     "useStaticIps": {
       "attribute": "use_static_ips",
       "struct": "UseStaticIPs"
@@ -607,9 +860,17 @@
       "attribute": "username",
       "struct": "Username"
     },
+    "verifyBaseUrl": {
+      "attribute": "verify_base_url",
+      "struct": "VerifyBaseURL"
+    },
     "version": {
       "attribute": "version",
       "struct": "Version"
+    },
+    "webApiName": {
+      "attribute": "web_api_name",
+      "struct": "WebAPIName"
     },
     "writeKey": {
       "attribute": "write_key",
