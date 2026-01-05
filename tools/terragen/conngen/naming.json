@@ -753,7 +753,7 @@
       "struct": "Sender"
     },
     "serverAPIToken": {
-      "attribute": "server_apitoken",
+      "attribute": "server_api_token",
       "struct": "ServerAPIToken"
     },
     "serverUrl": {

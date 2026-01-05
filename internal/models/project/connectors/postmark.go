@@ -13,7 +13,7 @@ var PostmarkAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"server_apitoken":   stringattr.SecretRequired(),
+	"server_api_token":  stringattr.SecretRequired(),
 	"message_stream_id": stringattr.Required(),
 	"email_from":        stringattr.Required(),
 }
@@ -25,7 +25,7 @@ type PostmarkModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	ServerAPIToken  stringattr.Type `tfsdk:"server_apitoken"`
+	ServerAPIToken  stringattr.Type `tfsdk:"server_api_token"`
 	MessageStreamID stringattr.Type `tfsdk:"message_stream_id"`
 	EmailFrom       stringattr.Type `tfsdk:"email_from"`
 }

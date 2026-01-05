@@ -1170,7 +1170,7 @@ func TestConnectors(t *testing.T) {
 						{
 							name = "Test post-mark Connector"
 							description = "A description for the post-mark connector"
-    						server_apitoken = "jaoojy2mld2e3k"
+    						server_api_token = "jaoojy2mld2e3k"
     						message_stream_id = "sui7rpficj3ie2v"
     						email_from = "qaldvatln"
 						}
@@ -1183,7 +1183,7 @@ func TestConnectors(t *testing.T) {
 					"id":                testacc.AttributeHasPrefix("CI"),
 					"name":              "Test post-mark Connector",
 					"description":       "A description for the post-mark connector",
-					"server_apitoken":   "jaoojy2mld2e3k",
+					"server_api_token":  "jaoojy2mld2e3k",
 					"message_stream_id": "sui7rpficj3ie2v",
 					"email_from":        "qaldvatln",
 				},

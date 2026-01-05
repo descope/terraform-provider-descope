@@ -834,7 +834,7 @@ var docsPingDirectory = map[string]string{
 var docsPostmark = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"server_apitoken": "The API token for authenticating with the Postmark server",
+	"server_api_token": "The API token for authenticating with the Postmark server",
 	"message_stream_id": "The ID of the message stream to use for the email",
 	"email_from": "The email address that will appear in the 'From' field of the sent email",
 }
