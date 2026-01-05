@@ -1160,10 +1160,13 @@ Optional:
 
 - `abuseipdb` (Attributes List) Utilize IP threat intelligence to block malicious login attempts with the AbuseIPDB connector. (see [below for nested schema](#nestedatt--connectors--abuseipdb))
 - `amplitude` (Attributes List) Track user activity and traits at any point in your user journey with the Amplitude connector. (see [below for nested schema](#nestedatt--connectors--amplitude))
+- `arkose` (Attributes List) Use the Arkose connector to integrate with Arkose's bot and fraud detection. (see [below for nested schema](#nestedatt--connectors--arkose))
 - `audit_webhook` (Attributes List) Send audit events to a custom webhook. (see [below for nested schema](#nestedatt--connectors--audit_webhook))
 - `aws_s3` (Attributes List) Stream authentication audit logs with the Amazon S3 connector. (see [below for nested schema](#nestedatt--connectors--aws_s3))
 - `aws_translate` (Attributes List) Localize the language of your login and user journey screens with the Amazon Translate connector. (see [below for nested schema](#nestedatt--connectors--aws_translate))
 - `bitsight` (Attributes List) Utilize threat intelligence to block malicious login attempts or check leaks with the Bitsight Threat Intelligence connector. (see [below for nested schema](#nestedatt--connectors--bitsight))
+- `coralogix` (Attributes List) Send audit events and troubleshooting logs to Coralogix. (see [below for nested schema](#nestedatt--connectors--coralogix))
+- `darwinium` (Attributes List) Connect to Darwinium API for fraud detection and device intelligence. (see [below for nested schema](#nestedatt--connectors--darwinium))
 - `datadog` (Attributes List) Stream authentication audit logs with the Datadog connector. (see [below for nested schema](#nestedatt--connectors--datadog))
 - `devrev_grow` (Attributes List) DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto an AI-native platform to follow the journey of a visitor to a lead, to a contact, and then to a user - to create a champion, not a churned user. (see [below for nested schema](#nestedatt--connectors--devrev_grow))
 - `docebo` (Attributes List) Get user information from Docebo in your Descope user journeys with the Docebo connector. (see [below for nested schema](#nestedatt--connectors--docebo))
@@ -1180,14 +1183,20 @@ Optional:
 - `google_cloud_logging` (Attributes List) Stream logs and audit events with the Google Cloud Logging connector. (see [below for nested schema](#nestedatt--connectors--google_cloud_logging))
 - `google_cloud_translation` (Attributes List) Localize the language of your login and user journey screens with the Google Cloud Translation connector. (see [below for nested schema](#nestedatt--connectors--google_cloud_translation))
 - `google_maps_places` (Attributes List) Get address autocompletions from Place Autocomplete Data API. (see [below for nested schema](#nestedatt--connectors--google_maps_places))
+- `hcaptcha` (Attributes List) hCaptcha can help protect your applications from bots, spam, and other forms of automated abuse. (see [below for nested schema](#nestedatt--connectors--hcaptcha))
 - `hibp` (Attributes List) Check if passwords have been previously exposed in data breaches with the Have I Been Pwned connector. (see [below for nested schema](#nestedatt--connectors--hibp))
 - `http` (Attributes List) A general purpose HTTP client (see [below for nested schema](#nestedatt--connectors--http))
 - `hubspot` (Attributes List) Orchestrate customer identity information from your Descope user journey with the HubSpot connector. (see [below for nested schema](#nestedatt--connectors--hubspot))
 - `incode` (Attributes List) Use the Incode connection to run identity verification processes like document checks or facial recognition. (see [below for nested schema](#nestedatt--connectors--incode))
 - `intercom` (Attributes List) Orchestrate customer identity information from your Descope user journey with the Intercom connector. (see [below for nested schema](#nestedatt--connectors--intercom))
+- `ldap` (Attributes List) Use this connector to authenticate users against an LDAP directory server with support for both password and mTLS authentication. (see [below for nested schema](#nestedatt--connectors--ldap))
 - `lokalise` (Attributes List) Localize the language of your login and user journey screens with the Lokalise connector. (see [below for nested schema](#nestedatt--connectors--lokalise))
+- `mixpanel` (Attributes List) Stream authentication audit logs and troubleshoot logs to Mixpanel. (see [below for nested schema](#nestedatt--connectors--mixpanel))
 - `mparticle` (Attributes List) Track and send user event data (e.g. page views, purchases, etc.) across connected tools using the mParticle connector. (see [below for nested schema](#nestedatt--connectors--mparticle))
 - `newrelic` (Attributes List) Stream authentication audit logs with the New Relic connector. (see [below for nested schema](#nestedatt--connectors--newrelic))
+- `opentelemetry` (Attributes List) Send audit events and troubleshooting logs to an OpenTelemetry-compatible endpoint using OTLP over HTTP or gRPC. (see [below for nested schema](#nestedatt--connectors--opentelemetry))
+- `ping_directory` (Attributes List) Authenticate against PingDirectory. (see [below for nested schema](#nestedatt--connectors--ping_directory))
+- `postmark` (Attributes List) Send emails using Postmark (see [below for nested schema](#nestedatt--connectors--postmark))
 - `radar` (Attributes List) Get address autocompletions from Radar Autocomplete API. (see [below for nested schema](#nestedatt--connectors--radar))
 - `recaptcha` (Attributes List) Prevent bot attacks on your login pages with the reCAPTCHA v3 connector. (see [below for nested schema](#nestedatt--connectors--recaptcha))
 - `recaptcha_enterprise` (Attributes List) Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPTCHA Enterprise connector. (see [below for nested schema](#nestedatt--connectors--recaptcha_enterprise))
@@ -1202,6 +1211,8 @@ Optional:
 - `smartling` (Attributes List) Localize the language of your login and user journey screens with the Smartling connector. (see [below for nested schema](#nestedatt--connectors--smartling))
 - `smtp` (Attributes List) Simple Mail Transfer Protocol (SMTP) server for sending emails. (see [below for nested schema](#nestedatt--connectors--smtp))
 - `sns` (Attributes List) Amazon Simple Notification Service (SNS) for sending SMS messages through AWS. (see [below for nested schema](#nestedatt--connectors--sns))
+- `splunk` (Attributes List) Stream logs and audit events with the Splunk HTTP Event Collector (HEC). (see [below for nested schema](#nestedatt--connectors--splunk))
+- `sql` (Attributes List) SQL connector for relational databases including PostgreSQL, MySQL, MariaDB, Microsoft SQL Server (MSSQL), Oracle, CockroachDB, and Amazon Redshift. (see [below for nested schema](#nestedatt--connectors--sql))
 - `sumologic` (Attributes List) Stream logs and audit events with the Sumo Logic connector. (see [below for nested schema](#nestedatt--connectors--sumologic))
 - `supabase` (Attributes List) Generate external tokens for user authentication in Supabase projects. (see [below for nested schema](#nestedatt--connectors--supabase))
 - `telesign` (Attributes List) Verify phone numbers and leverage granular risk scores for adaptive MFA with the Telesign Intelligence connector. (see [below for nested schema](#nestedatt--connectors--telesign))
@@ -1209,6 +1220,8 @@ Optional:
 - `turnstile` (Attributes List) Prevent bot attacks on your login pages with the Turnstile connector. (see [below for nested schema](#nestedatt--connectors--turnstile))
 - `twilio_core` (Attributes List) Twilio is a cloud-based communication provider of communication tools for making and receiving phone calls, sending and receiving text messages, and performing other communication functions. (see [below for nested schema](#nestedatt--connectors--twilio_core))
 - `twilio_verify` (Attributes List) Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms, voice and e-mail. Choose this connector only if you are a Twilio Verify customer. (see [below for nested schema](#nestedatt--connectors--twilio_verify))
+- `unibeam` (Attributes List) SIM-based authentication and approval using Unibeam's OnSim technology for passwordless authentication and transaction approval. (see [below for nested schema](#nestedatt--connectors--unibeam))
+- `zerobounce` (Attributes List) Email validation with ZeroBounce (see [below for nested schema](#nestedatt--connectors--zerobounce))
 
 <a id="nestedatt--connectors--abuseipdb"></a>
 ### Nested Schema for `connectors.abuseipdb`
@@ -1240,6 +1253,26 @@ Optional:
 - `description` (String) A description of what your connector is used for.
 - `server_url` (String) The server URL of the Amplitude API, when using different api or a custom domain in Amplitude.
 - `server_zone` (String) `EU` or `US`. Sets the Amplitude server zone. Set this to `EU` for Amplitude projects created in `EU` data center. Default is `US`.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--arkose"></a>
+### Nested Schema for `connectors.arkose`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `private_key` (String, Sensitive) The private key that can be copied from the Keys screen in the Arkose portal.
+- `public_key` (String) The public key that's shown in the Keys screen in the Arkose portal.
+
+Optional:
+
+- `client_base_url` (String) A custom base URL to use when loading the Arkose client script. If not provided, the default value of `https://client-api.arkoselabs.com/v2` will be used.
+- `description` (String) A description of what your connector is used for.
+- `verify_base_url` (String) A custom base URL to use when verifying the session token using the Arkose Verify API. If not provided, the default value of `https://verify-api.arkoselabs.com/api/v4` will be used.
 
 Read-Only:
 
@@ -1374,6 +1407,63 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--coralogix"></a>
+### Nested Schema for `connectors.coralogix`
+
+Required:
+
+- `bearer_token` (String, Sensitive) Bearer token issued by Coralogix as Send-Your-Data API key
+- `endpoint` (String) The ingress OpenTelemetry endpoint URL.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--coralogix--audit_filters))
+- `description` (String) A description of what your connector is used for.
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--coralogix--audit_filters"></a>
+### Nested Schema for `connectors.coralogix.audit_filters`
+
+Required:
+
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
+
+
+
+<a id="nestedatt--connectors--darwinium"></a>
+### Nested Schema for `connectors.darwinium`
+
+Required:
+
+- `journey_name` (String) The name of the Darwinium journey to use for profiling.
+- `name` (String) A custom name for your connector.
+- `node_name` (String) The name of the Darwinium node.
+- `pem_certificate` (String, Sensitive) The PEM certificate for client authentication.
+- `private_key` (String, Sensitive) The private key for client authentication.
+- `web_api_name` (String) The name of the Darwinium Web API to use.
+
+Optional:
+
+- `default_result` (String) The default result to return if no result is available.
+- `description` (String) A description of what your connector is used for.
+- `native_api_name` (String) The name of the Darwinium Native Mobile API to use.
+- `native_blob_key_name` (String) The key name for the native profiling blob sent via the client parameter. If not provided, the default key of 'nativeProfilingBlob' will be used.
+- `passphrase` (String, Sensitive) The passphrase for the PEM certificate, if applicable.
+- `profiling_tags_script_url` (String) The custom URL where the Darwinium Tags script is hosted. If not provided, the default Darwinium script URL will be used.
 
 Read-Only:
 
@@ -1805,6 +1895,27 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--hcaptcha"></a>
+### Nested Schema for `connectors.hcaptcha`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `secret_key` (String, Sensitive) The secret key authorizes communication between Descope backend and the hCaptcha server to verify the user's response.
+- `site_key` (String) The site key is used to invoke hCaptcha service on your site or mobile application.
+
+Optional:
+
+- `assessment_score` (Number) When configured, the hCaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
+- `bot_threshold` (Number) The bot threshold is used to determine whether the request is a bot or a human. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot. If the score is below this threshold, the request is considered a bot.
+- `description` (String) A description of what your connector is used for.
+- `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
+
+Read-Only:
+
+- `id` (String)
+
+
 <a id="nestedatt--connectors--hibp"></a>
 ### Nested Schema for `connectors.hibp`
 
@@ -1928,6 +2039,30 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--ldap"></a>
+### Nested Schema for `connectors.ldap`
+
+Required:
+
+- `bind_dn` (String) The Distinguished Name to bind with for searching.
+- `bind_password` (String, Sensitive) The password for the bind DN.
+- `client_certificate` (String, Sensitive) The client certificate in PEM format for mTLS authentication.
+- `client_key` (String, Sensitive) The client private key in PEM format for mTLS authentication.
+- `name` (String) A custom name for your connector.
+- `server_url` (String) The LDAP server URL (e.g., ldap://localhost:389 or ldaps://localhost:636 for SSL/TLS).
+
+Optional:
+
+- `ca_certificate` (String, Sensitive) The Certificate Authority certificate in PEM format for validating the server certificate.
+- `description` (String) A description of what your connector is used for.
+- `reject_unauthorized` (Boolean) Reject connections to LDAP servers with invalid certificates.
+- `use_mtls` (Boolean) Enable mutual TLS authentication for LDAP connection.
+
+Read-Only:
+
+- `id` (String)
+
+
 <a id="nestedatt--connectors--lokalise"></a>
 ### Nested Schema for `connectors.lokalise`
 
@@ -1947,6 +2082,43 @@ Optional:
 Read-Only:
 
 - `id` (String)
+
+
+<a id="nestedatt--connectors--mixpanel"></a>
+### Nested Schema for `connectors.mixpanel`
+
+Required:
+
+- `name` (String) A custom name for your connector.
+- `project_token` (String) The unique Mixpanel project token used to identify the project where data will be sent.
+
+Optional:
+
+- `api_secret` (String, Sensitive) The Mixpanel API secret key used for authenticating API requests.
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--mixpanel--audit_filters))
+- `description` (String) A description of what your connector is used for.
+- `eu_residency` (Boolean) Indicates if your Mixpanel project data is stored in the EU region.
+- `logs_prefix` (String) Specify a custom prefix for all log fields. The default prefix is `descope.`.
+- `override_logs_prefix` (Boolean) Enable this option to use a custom prefix for log fields.
+- `project_id` (String) The unique identifier for your Mixpanel project.
+- `service_account_secret` (String, Sensitive) The Mixpanel service account secret used for integration.
+- `service_account_username` (String) The Mixpanel service account username used for integration.
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--mixpanel--audit_filters"></a>
+### Nested Schema for `connectors.mixpanel.audit_filters`
+
+Required:
+
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
+
 
 
 <a id="nestedatt--connectors--mparticle"></a>
@@ -2001,6 +2173,105 @@ Required:
 - `operator` (String) The filter operation to apply ('includes' or 'excludes').
 - `values` (List of String) The list of values to match against for the filter.
 
+
+
+<a id="nestedatt--connectors--opentelemetry"></a>
+### Nested Schema for `connectors.opentelemetry`
+
+Required:
+
+- `endpoint` (String) The OTLP endpoint URL.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--opentelemetry--audit_filters))
+- `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication))
+- `description` (String) A description of what your connector is used for.
+- `headers` (Map of String) The headers to send with the request
+- `insecure` (Boolean) Will ignore certificate errors raised by the client
+- `protocol` (String) Protocol to use for OTLP: http or grpc.
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--opentelemetry--audit_filters"></a>
+### Nested Schema for `connectors.opentelemetry.audit_filters`
+
+Required:
+
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
+
+
+<a id="nestedatt--connectors--opentelemetry--authentication"></a>
+### Nested Schema for `connectors.opentelemetry.authentication`
+
+Optional:
+
+- `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication--api_key))
+- `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication--basic))
+- `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+
+<a id="nestedatt--connectors--opentelemetry--authentication--api_key"></a>
+### Nested Schema for `connectors.opentelemetry.authentication.api_key`
+
+Required:
+
+- `key` (String) The API key.
+- `token` (String, Sensitive) The API secret.
+
+
+<a id="nestedatt--connectors--opentelemetry--authentication--basic"></a>
+### Nested Schema for `connectors.opentelemetry.authentication.basic`
+
+Required:
+
+- `password` (String, Sensitive) Password for basic HTTP authentication.
+- `username` (String) Username for basic HTTP authentication.
+
+
+
+
+<a id="nestedatt--connectors--ping_directory"></a>
+### Nested Schema for `connectors.ping_directory`
+
+Required:
+
+- `host` (String) PingDirectory's REST API host.
+- `name` (String) A custom name for your connector.
+- `port` (Number) PingDirectory's REST API port.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--postmark"></a>
+### Nested Schema for `connectors.postmark`
+
+Required:
+
+- `email_from` (String) The email address that will appear in the 'From' field of the sent email
+- `message_stream_id` (String) The ID of the message stream to use for the email
+- `name` (String) A custom name for your connector.
+- `server_apitoken` (String, Sensitive) The API token for authenticating with the Postmark server
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
 
 
 <a id="nestedatt--connectors--radar"></a>
@@ -2356,6 +2627,61 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--splunk"></a>
+### Nested Schema for `connectors.splunk`
+
+Required:
+
+- `hec_token` (String, Sensitive) An HTTP Event Collector token configured on your Splunk project.
+- `hec_url` (String) The URL to be used accessing your Splunk system, including the appropriate port
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `audit_enabled` (Boolean) Whether to enable streaming of audit events.
+- `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--splunk--audit_filters))
+- `description` (String) A description of what your connector is used for.
+- `index` (String) An optional index to use for all sent events
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--splunk--audit_filters"></a>
+### Nested Schema for `connectors.splunk.audit_filters`
+
+Required:
+
+- `key` (String) The field name to filter on (either 'actions' or 'tenants').
+- `operator` (String) The filter operation to apply ('includes' or 'excludes').
+- `values` (List of String) The list of values to match against for the filter.
+
+
+
+<a id="nestedatt--connectors--sql"></a>
+### Nested Schema for `connectors.sql`
+
+Required:
+
+- `engine_name` (String) The database engine type.
+- `host` (String) The database host.
+- `name` (String) A custom name for your connector.
+- `password` (String, Sensitive) The database password.
+- `username` (String) The database username.
+
+Optional:
+
+- `database_name` (String) The database name.
+- `description` (String) A description of what your connector is used for.
+- `port` (Number) The database port. If not specified, the default port for the selected engine will be used.
+- `service_name` (String) The Oracle service name (required for Oracle only).
+
+Read-Only:
+
+- `id` (String)
+
+
 <a id="nestedatt--connectors--sumologic"></a>
 ### Nested Schema for `connectors.sumologic`
 
@@ -2550,6 +2876,45 @@ Optional:
 - `api_secret` (String, Sensitive) Twilio API Secret for authentication (used with API Key).
 - `auth_token` (String, Sensitive) Twilio Auth Token for authentication.
 
+
+
+<a id="nestedatt--connectors--unibeam"></a>
+### Nested Schema for `connectors.unibeam`
+
+Required:
+
+- `client_id` (String) OAuth2 client ID for authentication.
+- `client_secret` (String, Sensitive) OAuth2 client secret for authentication.
+- `customer_id` (String) Your Unibeam customer ID.
+- `hmac_secret` (String, Sensitive) HMAC secret supplied by Unibeam for securing communications.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `default_message` (String) Default message to display when no message is provided in the command.
+- `description` (String) A description of what your connector is used for.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--zerobounce"></a>
+### Nested Schema for `connectors.zerobounce`
+
+Required:
+
+- `api_key` (String, Sensitive) The ZeroBounce API key.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+- `region` (String) ZeroBounce platform region.
+
+Read-Only:
+
+- `id` (String)
 
 
 
