@@ -26,7 +26,7 @@ type PostmarkModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 
 	ServerAPIToken  stringattr.Type `tfsdk:"server_apitoken"`
-	MessageStreamId stringattr.Type `tfsdk:"message_stream_id"`
+	MessageStreamID stringattr.Type `tfsdk:"message_stream_id"`
 	EmailFrom       stringattr.Type `tfsdk:"email_from"`
 }
 
@@ -49,14 +49,14 @@ func (m *PostmarkModel) SetValues(h *helpers.Handler, data map[string]any) {
 func (m *PostmarkModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.ServerAPIToken, c, "serverAPIToken")
-	stringattr.Get(m.MessageStreamId, c, "messageStreamId")
+	stringattr.Get(m.MessageStreamID, c, "messageStreamId")
 	stringattr.Get(m.EmailFrom, c, "emailFrom")
 	return c
 }
 
 func (m *PostmarkModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Nil(&m.ServerAPIToken)
-	stringattr.Set(&m.MessageStreamId, c, "messageStreamId")
+	stringattr.Set(&m.MessageStreamID, c, "messageStreamId")
 	stringattr.Set(&m.EmailFrom, c, "emailFrom")
 }
 

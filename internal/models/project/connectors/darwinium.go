@@ -36,9 +36,9 @@ type DarwiniumModel struct {
 	NodeName               stringattr.Type `tfsdk:"node_name"`
 	JourneyName            stringattr.Type `tfsdk:"journey_name"`
 	WebAPIName             stringattr.Type `tfsdk:"web_api_name"`
-	NativeApiName          stringattr.Type `tfsdk:"native_api_name"`
+	NativeAPIName          stringattr.Type `tfsdk:"native_api_name"`
 	NativeBlobKeyName      stringattr.Type `tfsdk:"native_blob_key_name"`
-	PemCertificate         stringattr.Type `tfsdk:"pem_certificate"`
+	PEMCertificate         stringattr.Type `tfsdk:"pem_certificate"`
 	PrivateKey             stringattr.Type `tfsdk:"private_key"`
 	Passphrase             stringattr.Type `tfsdk:"passphrase"`
 	ProfilingTagsScriptURL stringattr.Type `tfsdk:"profiling_tags_script_url"`
@@ -66,9 +66,9 @@ func (m *DarwiniumModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 	stringattr.Get(m.NodeName, c, "nodeName")
 	stringattr.Get(m.JourneyName, c, "journeyName")
 	stringattr.Get(m.WebAPIName, c, "webApiName")
-	stringattr.Get(m.NativeApiName, c, "nativeApiName")
+	stringattr.Get(m.NativeAPIName, c, "nativeApiName")
 	stringattr.Get(m.NativeBlobKeyName, c, "nativeBlobKeyName")
-	stringattr.Get(m.PemCertificate, c, "pemCert")
+	stringattr.Get(m.PEMCertificate, c, "pemCert")
 	stringattr.Get(m.PrivateKey, c, "privateKey")
 	stringattr.Get(m.Passphrase, c, "passphrase")
 	stringattr.Get(m.ProfilingTagsScriptURL, c, "profilingTagsScriptUrl")
@@ -80,9 +80,9 @@ func (m *DarwiniumModel) SetConfigurationValues(c map[string]any, h *helpers.Han
 	stringattr.Set(&m.NodeName, c, "nodeName")
 	stringattr.Set(&m.JourneyName, c, "journeyName")
 	stringattr.Set(&m.WebAPIName, c, "webApiName")
-	stringattr.Set(&m.NativeApiName, c, "nativeApiName")
+	stringattr.Set(&m.NativeAPIName, c, "nativeApiName")
 	stringattr.Set(&m.NativeBlobKeyName, c, "nativeBlobKeyName")
-	stringattr.Nil(&m.PemCertificate)
+	stringattr.Nil(&m.PEMCertificate)
 	stringattr.Nil(&m.PrivateKey)
 	stringattr.Nil(&m.Passphrase)
 	stringattr.Set(&m.ProfilingTagsScriptURL, c, "profilingTagsScriptUrl")

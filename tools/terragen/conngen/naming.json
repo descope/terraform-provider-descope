@@ -610,11 +610,11 @@
     },
     "messageStreamId": {
       "attribute": "message_stream_id",
-      "struct": "MessageStreamId"
+      "struct": "MessageStreamID"
     },
     "nativeApiName": {
       "attribute": "native_api_name",
-      "struct": "NativeApiName"
+      "struct": "NativeAPIName"
     },
     "nativeBlobKeyName": {
       "attribute": "native_blob_key_name",
@@ -654,7 +654,7 @@
     },
     "pemCert": {
       "attribute": "pem_certificate",
-      "struct": "PemCertificate"
+      "struct": "PEMCertificate"
     },
     "port": {
       "attribute": "port",
