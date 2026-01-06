@@ -261,10 +261,10 @@ func (f *Field) GetTestAssignment() string {
 			return fmt.Sprintf(`%q`, v)
 		}
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
-			return `""`
+			return `null`
 		}
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeBool && d.Value != true {
-			return `""`
+			return `null`
 		}
 		if len(f.Options) > 0 {
 			return fmt.Sprintf(`%q`, f.Options[0].Value)
@@ -296,9 +296,15 @@ func (f *Field) GetTestCheck() string {
 			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), v)
 		}
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
+			if f.Type == FieldTypeSecret {
+				return fmt.Sprintf(`"%s": testacc.AttributeIsNotSet`, f.AttributeName())
+			}
 			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
 		}
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeBool && d.Value != true {
+			if f.Type == FieldTypeSecret {
+				return fmt.Sprintf(`"%s": testacc.AttributeIsNotSet`, f.AttributeName())
+			}
 			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
 		}
 		if len(f.Options) > 0 {

@@ -149,8 +149,8 @@ func TestConnectors(t *testing.T) {
     						auth_type = "credentials"
     						access_key_id = "ezzrllbqu22"
     						secret_access_key = "xiyuadzk4w64hog"
-    						role_arn = ""
-    						external_id = ""
+    						role_arn = null
+    						external_id = null
     						region = "y2l5fg"
     						bucket = "ywdzxd"
     						audit_enabled = true
@@ -936,8 +936,8 @@ func TestConnectors(t *testing.T) {
 							description = "A description for the ldap connector"
     						server_url = "wluvduhqc"
     						use_mtls = true
-    						bind_dn = ""
-    						bind_password = ""
+    						bind_dn = null
+    						bind_password = null
     						client_certificate = "ag66debo7j"
     						client_key = "ade26grht"
     						ca_certificate = "7h545x"
@@ -955,7 +955,7 @@ func TestConnectors(t *testing.T) {
 					"server_url":          "wluvduhqc",
 					"use_mtls":            true,
 					"bind_dn":             "",
-					"bind_password":       "",
+					"bind_password":       testacc.AttributeIsNotSet,
 					"client_certificate":  "ag66debo7j",
 					"client_key":          "ade26grht",
 					"ca_certificate":      "7h545x",
@@ -1556,7 +1556,7 @@ func TestConnectors(t *testing.T) {
 							description = "A description for the sql connector"
     						engine_name = "cockroach"
     						database_name = "dn6ojnmolduu"
-    						service_name = ""
+    						service_name = null
     						host = "i5ak"
     						port = 4
     						username = "c33yu7ld"
@@ -1618,7 +1618,7 @@ func TestConnectors(t *testing.T) {
 							description = "A description for the supabase connector"
     						auth_type = "legacyJWTSecret"
     						signing_secret = "7z47p3qqxkpcc"
-    						private_key = ""
+    						private_key = null
     						create_users = true
     						project_base_url = "bq7uctq453b"
     						service_role_api_key = "5wfi6yzcy6ipcznpdr5ddi"
@@ -1638,7 +1638,7 @@ func TestConnectors(t *testing.T) {
 					"description":               "A description for the supabase connector",
 					"auth_type":                 "legacyJWTSecret",
 					"signing_secret":            "7z47p3qqxkpcc",
-					"private_key":               "",
+					"private_key":               testacc.AttributeIsNotSet,
 					"create_users":              true,
 					"project_base_url":          "bq7uctq453b",
 					"service_role_api_key":      "5wfi6yzcy6ipcznpdr5ddi",
