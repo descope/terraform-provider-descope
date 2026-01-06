@@ -95,6 +95,15 @@ func (c *Connector) HasEnumFields() bool {
 	return false
 }
 
+func (c *Connector) HasValuesDependency() bool {
+	for _, f := range c.Fields {
+		if f.Dependency != nil && f.Dependency.Field.Type == FieldTypeString && len(f.Dependency.Values) > 0 {
+			return true
+		}
+	}
+	return false
+}
+
 func (c *Connector) HasValidator() bool {
 	return c.Validator || slices.ContainsFunc(c.Fields, func(f *Field) bool {
 		return f.Dependency != nil
@@ -161,19 +170,20 @@ func (c *Connector) Prepare() {
 			}
 
 			// ensure some assumptions about boolean dependencies
-			if d.Field.Type == FieldTypeBool && d.Value != true {
-				log.Fatalf("Field %s has a boolean dependency whose value is not true", f.Name)
+			if d.Field.Type == FieldTypeBool && d.Value != true && d.Value != false {
+				log.Fatalf("Field %s has a boolean dependency whose value is not a boolean", f.Name)
 			}
 			if d.Field.Type == FieldTypeBool && d.Field.Initial == nil {
 				d.Field.Initial = false
 			}
 
 			// ensure some assumptions about string dependencies
-			if _, ok := d.Value.(string); !ok && d.Field.Type == FieldTypeString {
-				log.Fatalf("Field %s has a string dependency whose value is not a string", f.Name)
-			}
-			if d.Field.Type == FieldTypeString && (d.Field.Initial == nil || d.Field.Initial == "") {
-				log.Fatalf("Field %s has a string dependency on field %s with no initial value", f.Name, d.Name)
+			if d.Field.Type == FieldTypeString {
+				if d.Value == nil && len(d.Values) == 0 {
+					log.Fatalf("Field %s has a string dependency with no value(s) set", f.Name)
+				} else if _, ok := d.Value.(string); !ok && d.Value != nil {
+					log.Fatalf("Field %s has a string dependency whose value is not a string", f.Name)
+				}
 			}
 
 			// only certain configurations were tested, any new ones should be verified

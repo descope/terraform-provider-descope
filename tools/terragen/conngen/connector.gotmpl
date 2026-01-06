@@ -3,6 +3,10 @@
 package connectors
 
 import (
+    {{- if .HasValuesDependency }}
+	"slices"
+
+	{{ end }}
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
     {{- if .HasField "boolean" }}
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
@@ -72,34 +76,45 @@ func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any
 func (m *{{.StructName}}Model) Validate(h *helpers.Handler) {
     {{- range .Fields }}{{ if .Dependency }}
 		{{- if eq .Dependency.Field.Type "boolean" }}
-			{{- if .Dependency.DefaultValue }}
-				if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
-					h.Conflict("The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} isn't set to true")
+			{{- if eq .Dependency.DefaultValue .Dependency.Value }}
+				if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.IsNull() && {{ if .Dependency.Value }}!{{ end }}m.{{ .Dependency.Field.StructName }}.ValueBool() {
+					h.Conflict("The {{.AttributeName}} field cannot be used when {{ .Dependency.Field.AttributeName }} isn't set to {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
 				}
 				{{- if .Required }}
-					if !m.{{ .StructName }}.IsUnknown() && {{ .IsZero }} && (m.{{ .Dependency.Field.StructName }}.IsNull() || m.{{ .Dependency.Field.StructName }}.ValueBool()) {
-						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is true")
+					if !m.{{ .StructName }}.IsUnknown() && {{ .IsZero }} && (m.{{ .Dependency.Field.StructName }}.IsNull() || {{ if not .Dependency.Value }}!{{ end }}m.{{ .Dependency.Field.StructName }}.ValueBool()) {
+						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
 					}
 				{{- end }}
 			{{- else }}
-				if !m.{{ .StructName }}.IsNull() && !m.{{ .Dependency.Field.StructName }}.ValueBool() {
-					h.Conflict("The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to true")
+				if !m.{{ .StructName }}.IsNull() && {{ if .Dependency.Value }}!{{ end }}m.{{ .Dependency.Field.StructName }}.ValueBool() {
+					h.Conflict("The {{.AttributeName}} field cannot be used unless {{ .Dependency.Field.AttributeName }} is set to {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
 				}
 				{{- if .Required }}
-					if !m.{{ .StructName }}.IsUnknown() && {{ .IsZero }} && m.{{ .Dependency.Field.StructName }}.ValueBool() {
-						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to true")
+					if !m.{{ .StructName }}.IsUnknown() && {{ .IsZero }} && {{ if not .Dependency.Value }}!{{ end }}m.{{ .Dependency.Field.StructName }}.ValueBool() {
+						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
 					}
 				{{- end }}
 			{{- end }}
 		{{- end }}
 		{{- if eq .Dependency.Field.Type "string" }}
-			if {{ .IsNonZero }} && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "{{ .Dependency.Value }}" {
-				h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
-			}
-			{{- if .Required }}
-				if {{ .IsZero }} && !m.{{ .StructName }}.IsUnknown() && m.{{ .Dependency.Field.StructName }}.ValueString() == "{{ .Dependency.Value }}" {
-					h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
+			{{- if .Dependency.Value }}
+				if {{ .IsNonZero }} && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && m.{{ .Dependency.Field.StructName }}.ValueString() != "{{ .Dependency.Value }}" {
+					h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
 				}
+				{{- if .Required }}
+					if {{ .IsZero }} && !m.{{ .StructName }}.IsUnknown() && m.{{ .Dependency.Field.StructName }}.ValueString() == "{{ .Dependency.Value }}" {
+						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is set to '{{ .Dependency.Value }}'")
+					}
+				{{- end }}
+			{{- else }}
+				if {{ .IsNonZero }} && m.{{ .Dependency.Field.StructName }}.ValueString() != "" && !slices.Contains({{ .Dependency.ValuesSlice }}, m.{{ .Dependency.Field.StructName }}.ValueString()) {
+					h.Conflict("The {{.AttributeName}} field can only be used when {{ .Dependency.Field.AttributeName }} is one of {{ .Dependency.Values }}")
+				}
+				{{- if .Required }}
+					if {{ .IsZero }} && !m.{{ .StructName }}.IsUnknown() && slices.Contains({{ .Dependency.ValuesSlice }}, m.{{ .Dependency.Field.StructName }}.ValueString()) {
+						h.Conflict("The {{.AttributeName}} field is required when {{ .Dependency.Field.AttributeName }} is one of {{ .Dependency.Values }}")
+					}
+				{{- end }}
 			{{- end }}
 		{{- end }}
 	{{- end }}{{ end }}

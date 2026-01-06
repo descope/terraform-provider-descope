@@ -322,20 +322,20 @@ func TestSettings(t *testing.T) {
 			Config: p.Config(`
 				project_settings = {
 					session_migration = {
-						vendor = "okta"
+						vendor = "auth0"
 						client_id = "foo"
-						issuer = "bar"
+						domain = "bar"
 						loginid_matched_attributes = [ "username", "email" ]
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"project_settings.session_migration": map[string]any{
-					"vendor":                     "okta",
+					"vendor":                     "auth0",
 					"client_id":                  "foo",
-					"domain":                     "",
+					"domain":                     "bar",
 					"audience":                   "",
-					"issuer":                     "bar",
+					"issuer":                     "",
 					"loginid_matched_attributes": []string{"username", "email"},
 				},
 			}),

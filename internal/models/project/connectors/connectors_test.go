@@ -24,7 +24,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 51,
+				"connectors.%": 64,
 			}),
 		},
 		resource.TestStep{
@@ -78,6 +78,34 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"arkose": [
+						{
+							name = "Test arkose Connector"
+							description = "A description for the arkose connector"
+    						public_key = "kmu3h3pg3"
+    						private_key = "6wzyztm5y5"
+    						client_base_url = "3dcpofddnrx4k"
+    						verify_base_url = "m5qggic77j4up"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.arkose.#": 1,
+				"connectors.arkose.0": map[string]any{
+					"id":              testacc.AttributeHasPrefix("CI"),
+					"name":            "Test arkose Connector",
+					"description":     "A description for the arkose connector",
+					"public_key":      "kmu3h3pg3",
+					"private_key":     "6wzyztm5y5",
+					"client_base_url": "3dcpofddnrx4k",
+					"verify_base_url": "m5qggic77j4up",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"audit_webhook": [
 						{
 							name = "Test audit-webhook Connector"
@@ -121,8 +149,8 @@ func TestConnectors(t *testing.T) {
     						auth_type = "credentials"
     						access_key_id = "ezzrllbqu22"
     						secret_access_key = "xiyuadzk4w64hog"
-    						role_arn = ""
-    						external_id = ""
+    						role_arn = null
+    						external_id = null
     						region = "y2l5fg"
     						bucket = "ywdzxd"
     						audit_enabled = true
@@ -200,6 +228,76 @@ func TestConnectors(t *testing.T) {
 					"description":   "A description for the bitsight connector",
 					"client_id":     "sgetgyvq",
 					"client_secret": "tjpxl7uy4wbb",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"coralogix": [
+						{
+							name = "Test coralogix Connector"
+							description = "A description for the coralogix connector"
+    						endpoint = "w27xxsgz"
+    						bearer_token = "crofrx55slg"
+    						audit_enabled = true
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+    						troubleshoot_log_enabled = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.coralogix.#": 1,
+				"connectors.coralogix.0": map[string]any{
+					"id":                       testacc.AttributeHasPrefix("CI"),
+					"name":                     "Test coralogix Connector",
+					"description":              "A description for the coralogix connector",
+					"endpoint":                 "w27xxsgz",
+					"bearer_token":             "crofrx55slg",
+					"audit_enabled":            true,
+					"audit_filters.0.values":   []string{"kekpon4oj34w"},
+					"troubleshoot_log_enabled": true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"darwinium": [
+						{
+							name = "Test darwinium Connector"
+							description = "A description for the darwinium connector"
+    						node_name = "cj5xfuxh"
+    						journey_name = "bqcn6agnoaz"
+    						web_api_name = "gvfmtkwduj"
+    						native_api_name = "5eueoffvbkuv6"
+    						native_blob_key_name = "vb3xh3zfwwa2axkia"
+    						pem_certificate = "dxcctnq"
+    						private_key = "6wzyztm5y5"
+    						passphrase = "dyej4pcteo"
+    						profiling_tags_script_url = "rfgrebigspjtsccxmiyu4l"
+    						default_result = "pass"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.darwinium.#": 1,
+				"connectors.darwinium.0": map[string]any{
+					"id":                        testacc.AttributeHasPrefix("CI"),
+					"name":                      "Test darwinium Connector",
+					"description":               "A description for the darwinium connector",
+					"node_name":                 "cj5xfuxh",
+					"journey_name":              "bqcn6agnoaz",
+					"web_api_name":              "gvfmtkwduj",
+					"native_api_name":           "5eueoffvbkuv6",
+					"native_blob_key_name":      "vb3xh3zfwwa2axkia",
+					"pem_certificate":           "dxcctnq",
+					"private_key":               "6wzyztm5y5",
+					"passphrase":                "dyej4pcteo",
+					"profiling_tags_script_url": "rfgrebigspjtsccxmiyu4l",
+					"default_result":            "pass",
 				},
 			}),
 		},
@@ -668,6 +766,36 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"hcaptcha": [
+						{
+							name = "Test hcaptcha Connector"
+							description = "A description for the hcaptcha connector"
+    						site_key = "ikzbbly"
+    						secret_key = "wi4bhwt7a"
+    						bot_threshold = 12
+    						override_assessment = true
+    						assessment_score = 15
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.hcaptcha.#": 1,
+				"connectors.hcaptcha.0": map[string]any{
+					"id":                  testacc.AttributeHasPrefix("CI"),
+					"name":                "Test hcaptcha Connector",
+					"description":         "A description for the hcaptcha connector",
+					"site_key":            "ikzbbly",
+					"secret_key":          "wi4bhwt7a",
+					"bot_threshold":       12,
+					"override_assessment": true,
+					"assessment_score":    15,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"hibp": [
 						{
 							name = "Test hibp Connector"
@@ -802,6 +930,42 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"ldap": [
+						{
+							name = "Test ldap Connector"
+							description = "A description for the ldap connector"
+    						server_url = "wluvduhqc"
+    						use_mtls = true
+    						bind_dn = null
+    						bind_password = null
+    						client_certificate = "ag66debo7j"
+    						client_key = "ade26grht"
+    						ca_certificate = "7h545x"
+    						reject_unauthorized = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.ldap.#": 1,
+				"connectors.ldap.0": map[string]any{
+					"id":                  testacc.AttributeHasPrefix("CI"),
+					"name":                "Test ldap Connector",
+					"description":         "A description for the ldap connector",
+					"server_url":          "wluvduhqc",
+					"use_mtls":            true,
+					"bind_dn":             "",
+					"bind_password":       testacc.AttributeIsNotSet,
+					"client_certificate":  "ag66debo7j",
+					"client_key":          "ade26grht",
+					"ca_certificate":      "7h545x",
+					"reject_unauthorized": true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"lokalise": [
 						{
 							name = "Test lokalise Connector"
@@ -826,6 +990,48 @@ func TestConnectors(t *testing.T) {
 					"team_id":              "ontsaz",
 					"card_id":              "uo4way",
 					"translation_provider": "zdmwgn7cvt7zfpsmrww",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"mixpanel": [
+						{
+							name = "Test mixpanel Connector"
+							description = "A description for the mixpanel connector"
+    						project_token = "inazr4ilpcxv"
+    						api_secret = "hgg666mus"
+    						project_id = "yhw7b6yel"
+    						service_account_username = "26hhhmmzsm"
+    						service_account_secret = "xqbxbtxf"
+    						eu_residency = true
+    						audit_enabled = true
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+    						troubleshoot_log_enabled = true
+    						override_logs_prefix = true
+    						logs_prefix = "descope."
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.mixpanel.#": 1,
+				"connectors.mixpanel.0": map[string]any{
+					"id":                       testacc.AttributeHasPrefix("CI"),
+					"name":                     "Test mixpanel Connector",
+					"description":              "A description for the mixpanel connector",
+					"project_token":            "inazr4ilpcxv",
+					"api_secret":               "hgg666mus",
+					"project_id":               "yhw7b6yel",
+					"service_account_username": "26hhhmmzsm",
+					"service_account_secret":   "xqbxbtxf",
+					"eu_residency":             true,
+					"audit_enabled":            true,
+					"audit_filters.0.values":   []string{"kekpon4oj34w"},
+					"troubleshoot_log_enabled": true,
+					"override_logs_prefix":     true,
+					"logs_prefix":              "descope.",
 				},
 			}),
 		},
@@ -890,6 +1096,96 @@ func TestConnectors(t *testing.T) {
 					"troubleshoot_log_enabled": true,
 					"override_logs_prefix":     true,
 					"logs_prefix":              "descope.",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"opentelemetry": [
+						{
+							name = "Test opentelemetry Connector"
+							description = "A description for the opentelemetry connector"
+    						endpoint = "w27xxsgz"
+    						protocol = "http"
+    						authentication = {
+    							bearer_token = "xhmqmkcfhe4mk6"
+    						}
+    						headers = {
+    							"key" = "g6htpmp"
+    						}
+    						insecure = true
+    						audit_enabled = true
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+    						troubleshoot_log_enabled = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.opentelemetry.#": 1,
+				"connectors.opentelemetry.0": map[string]any{
+					"id":                          testacc.AttributeHasPrefix("CI"),
+					"name":                        "Test opentelemetry Connector",
+					"description":                 "A description for the opentelemetry connector",
+					"endpoint":                    "w27xxsgz",
+					"protocol":                    "http",
+					"authentication.bearer_token": "xhmqmkcfhe4mk6",
+					"headers.key":                 "g6htpmp",
+					"insecure":                    true,
+					"audit_enabled":               true,
+					"audit_filters.0.values":      []string{"kekpon4oj34w"},
+					"troubleshoot_log_enabled":    true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"ping_directory": [
+						{
+							name = "Test ping-directory Connector"
+							description = "A description for the ping-directory connector"
+    						host = "i5ak"
+    						port = 4
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.ping_directory.#": 1,
+				"connectors.ping_directory.0": map[string]any{
+					"id":          testacc.AttributeHasPrefix("CI"),
+					"name":        "Test ping-directory Connector",
+					"description": "A description for the ping-directory connector",
+					"host":        "i5ak",
+					"port":        4,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"postmark": [
+						{
+							name = "Test post-mark Connector"
+							description = "A description for the post-mark connector"
+    						server_api_token = "jaoojy2mld2e3k"
+    						message_stream_id = "sui7rpficj3ie2v"
+    						email_from = "qaldvatln"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.postmark.#": 1,
+				"connectors.postmark.0": map[string]any{
+					"id":                testacc.AttributeHasPrefix("CI"),
+					"name":              "Test post-mark Connector",
+					"description":       "A description for the post-mark connector",
+					"server_api_token":  "jaoojy2mld2e3k",
+					"message_stream_id": "sui7rpficj3ie2v",
+					"email_from":        "qaldvatln",
 				},
 			}),
 		},
@@ -1222,6 +1518,72 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"splunk": [
+						{
+							name = "Test splunk Connector"
+							description = "A description for the splunk connector"
+    						hec_token = "djxzrnkm"
+    						hec_url = "o3lhr4"
+    						index = "dpaew"
+    						audit_enabled = true
+    						audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+    						troubleshoot_log_enabled = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.splunk.#": 1,
+				"connectors.splunk.0": map[string]any{
+					"id":                       testacc.AttributeHasPrefix("CI"),
+					"name":                     "Test splunk Connector",
+					"description":              "A description for the splunk connector",
+					"hec_token":                "djxzrnkm",
+					"hec_url":                  "o3lhr4",
+					"index":                    "dpaew",
+					"audit_enabled":            true,
+					"audit_filters.0.values":   []string{"kekpon4oj34w"},
+					"troubleshoot_log_enabled": true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"sql": [
+						{
+							name = "Test sql Connector"
+							description = "A description for the sql connector"
+    						engine_name = "cockroach"
+    						database_name = "dn6ojnmolduu"
+    						service_name = null
+    						host = "i5ak"
+    						port = 4
+    						username = "c33yu7ld"
+    						password = "l2eergg2"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.sql.#": 1,
+				"connectors.sql.0": map[string]any{
+					"id":            testacc.AttributeHasPrefix("CI"),
+					"name":          "Test sql Connector",
+					"description":   "A description for the sql connector",
+					"engine_name":   "cockroach",
+					"database_name": "dn6ojnmolduu",
+					"service_name":  "",
+					"host":          "i5ak",
+					"port":          4,
+					"username":      "c33yu7ld",
+					"password":      "l2eergg2",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"sumologic": [
 						{
 							name = "Test sumologic Connector"
@@ -1256,7 +1618,7 @@ func TestConnectors(t *testing.T) {
 							description = "A description for the supabase connector"
     						auth_type = "legacyJWTSecret"
     						signing_secret = "7z47p3qqxkpcc"
-    						private_key = ""
+    						private_key = null
     						create_users = true
     						project_base_url = "bq7uctq453b"
     						service_role_api_key = "5wfi6yzcy6ipcznpdr5ddi"
@@ -1276,7 +1638,7 @@ func TestConnectors(t *testing.T) {
 					"description":               "A description for the supabase connector",
 					"auth_type":                 "legacyJWTSecret",
 					"signing_secret":            "7z47p3qqxkpcc",
-					"private_key":               "",
+					"private_key":               testacc.AttributeIsNotSet,
 					"create_users":              true,
 					"project_base_url":          "bq7uctq453b",
 					"service_role_api_key":      "5wfi6yzcy6ipcznpdr5ddi",
@@ -1385,10 +1747,64 @@ func TestConnectors(t *testing.T) {
 		},
 		resource.TestStep{
 			Config: p.Config(`
+				connectors = {
+					"unibeam": [
+						{
+							name = "Test unibeam Connector"
+							description = "A description for the unibeam connector"
+    						customer_id = "2brt4jplly"
+    						client_id = "sgetgyvq"
+    						client_secret = "tjpxl7uy4wbb"
+    						hmac_secret = "ooxzct5yxz"
+    						default_message = "e7nzdo574trtfa"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.unibeam.#": 1,
+				"connectors.unibeam.0": map[string]any{
+					"id":              testacc.AttributeHasPrefix("CI"),
+					"name":            "Test unibeam Connector",
+					"description":     "A description for the unibeam connector",
+					"customer_id":     "2brt4jplly",
+					"client_id":       "sgetgyvq",
+					"client_secret":   "tjpxl7uy4wbb",
+					"hmac_secret":     "ooxzct5yxz",
+					"default_message": "e7nzdo574trtfa",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"zerobounce": [
+						{
+							name = "Test zerobounce Connector"
+							description = "A description for the zerobounce connector"
+    						api_key = "mhvece"
+    						region = "default"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.zerobounce.#": 1,
+				"connectors.zerobounce.0": map[string]any{
+					"id":          testacc.AttributeHasPrefix("CI"),
+					"name":        "Test zerobounce Connector",
+					"description": "A description for the zerobounce connector",
+					"api_key":     "mhvece",
+					"region":      "default",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 51,
+				"connectors.%": 64,
 			}),
 		},
 	)

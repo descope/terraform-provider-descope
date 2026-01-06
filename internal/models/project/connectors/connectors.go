@@ -19,10 +19,13 @@ var ConnectorsModifier = objattr.NewModifier[ConnectorsModel]("maintains connect
 var ConnectorsAttributes = map[string]schema.Attribute{
 	"abuseipdb":                  listattr.Default[AbuseIPDBModel](AbuseIPDBAttributes),
 	"amplitude":                  listattr.Default[AmplitudeModel](AmplitudeAttributes),
+	"arkose":                     listattr.Default[ArkoseModel](ArkoseAttributes),
 	"audit_webhook":              listattr.Default[AuditWebhookModel](AuditWebhookAttributes),
 	"aws_s3":                     listattr.Default[AWSS3Model](AWSS3Attributes, AWSS3Validator),
 	"aws_translate":              listattr.Default[AWSTranslateModel](AWSTranslateAttributes),
 	"bitsight":                   listattr.Default[BitsightModel](BitsightAttributes),
+	"coralogix":                  listattr.Default[CoralogixModel](CoralogixAttributes, CoralogixValidator),
+	"darwinium":                  listattr.Default[DarwiniumModel](DarwiniumAttributes),
 	"datadog":                    listattr.Default[DatadogModel](DatadogAttributes, DatadogValidator),
 	"devrev_grow":                listattr.Default[DevRevGrowModel](DevRevGrowAttributes),
 	"docebo":                     listattr.Default[DoceboModel](DoceboAttributes),
@@ -39,14 +42,20 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"google_cloud_translation":   listattr.Default[GoogleCloudTranslationModel](GoogleCloudTranslationAttributes),
 	"google_maps_places":         listattr.Default[GoogleMapsPlacesModel](GoogleMapsPlacesAttributes),
 	"google_cloud_logging":       listattr.Default[GoogleCloudLoggingModel](GoogleCloudLoggingAttributes, GoogleCloudLoggingValidator),
+	"hcaptcha":                   listattr.Default[HCaptchaModel](HCaptchaAttributes, HCaptchaValidator),
 	"hibp":                       listattr.Default[HIBPModel](HIBPAttributes),
 	"http":                       listattr.Default[HTTPModel](HTTPAttributes),
 	"hubspot":                    listattr.Default[HubSpotModel](HubSpotAttributes),
 	"incode":                     listattr.Default[IncodeModel](IncodeAttributes),
 	"intercom":                   listattr.Default[IntercomModel](IntercomAttributes),
+	"ldap":                       listattr.Default[LDAPModel](LDAPAttributes, LDAPValidator),
 	"lokalise":                   listattr.Default[LokaliseModel](LokaliseAttributes),
+	"mixpanel":                   listattr.Default[MixpanelModel](MixpanelAttributes, MixpanelValidator),
 	"mparticle":                  listattr.Default[MParticleModel](MParticleAttributes),
 	"newrelic":                   listattr.Default[NewRelicModel](NewRelicAttributes, NewRelicValidator),
+	"opentelemetry":              listattr.Default[OpenTelemetryModel](OpenTelemetryAttributes, OpenTelemetryValidator),
+	"ping_directory":             listattr.Default[PingDirectoryModel](PingDirectoryAttributes),
+	"postmark":                   listattr.Default[PostmarkModel](PostmarkAttributes),
 	"radar":                      listattr.Default[RadarModel](RadarAttributes),
 	"recaptcha":                  listattr.Default[RecaptchaModel](RecaptchaAttributes, RecaptchaValidator),
 	"recaptcha_enterprise":       listattr.Default[RecaptchaEnterpriseModel](RecaptchaEnterpriseAttributes, RecaptchaEnterpriseValidator),
@@ -61,6 +70,8 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"smartling":                  listattr.Default[SmartlingModel](SmartlingAttributes),
 	"smtp":                       listattr.Default[SMTPModel](SMTPAttributes),
 	"sns":                        listattr.Default[SNSModel](SNSAttributes, SNSValidator),
+	"splunk":                     listattr.Default[SplunkModel](SplunkAttributes, SplunkValidator),
+	"sql":                        listattr.Default[SQLModel](SQLAttributes, SQLValidator),
 	"sumologic":                  listattr.Default[SumoLogicModel](SumoLogicAttributes, SumoLogicValidator),
 	"supabase":                   listattr.Default[SupabaseModel](SupabaseAttributes, SupabaseValidator),
 	"telesign":                   listattr.Default[TelesignModel](TelesignAttributes),
@@ -68,15 +79,20 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"turnstile":                  listattr.Default[TurnstileModel](TurnstileAttributes),
 	"twilio_core":                listattr.Default[TwilioCoreModel](TwilioCoreAttributes),
 	"twilio_verify":              listattr.Default[TwilioVerifyModel](TwilioVerifyAttributes),
+	"unibeam":                    listattr.Default[UnibeamModel](UnibeamAttributes),
+	"zerobounce":                 listattr.Default[ZeroBounceModel](ZeroBounceAttributes),
 }
 
 type ConnectorsModel struct {
 	AbuseIPDB                listattr.Type[AbuseIPDBModel]                `tfsdk:"abuseipdb"`
 	Amplitude                listattr.Type[AmplitudeModel]                `tfsdk:"amplitude"`
+	Arkose                   listattr.Type[ArkoseModel]                   `tfsdk:"arkose"`
 	AuditWebhook             listattr.Type[AuditWebhookModel]             `tfsdk:"audit_webhook"`
 	AWSS3                    listattr.Type[AWSS3Model]                    `tfsdk:"aws_s3"`
 	AWSTranslate             listattr.Type[AWSTranslateModel]             `tfsdk:"aws_translate"`
 	Bitsight                 listattr.Type[BitsightModel]                 `tfsdk:"bitsight"`
+	Coralogix                listattr.Type[CoralogixModel]                `tfsdk:"coralogix"`
+	Darwinium                listattr.Type[DarwiniumModel]                `tfsdk:"darwinium"`
 	Datadog                  listattr.Type[DatadogModel]                  `tfsdk:"datadog"`
 	DevRevGrow               listattr.Type[DevRevGrowModel]               `tfsdk:"devrev_grow"`
 	Docebo                   listattr.Type[DoceboModel]                   `tfsdk:"docebo"`
@@ -93,14 +109,20 @@ type ConnectorsModel struct {
 	GoogleCloudTranslation   listattr.Type[GoogleCloudTranslationModel]   `tfsdk:"google_cloud_translation"`
 	GoogleMapsPlaces         listattr.Type[GoogleMapsPlacesModel]         `tfsdk:"google_maps_places"`
 	GoogleCloudLogging       listattr.Type[GoogleCloudLoggingModel]       `tfsdk:"google_cloud_logging"`
+	HCaptcha                 listattr.Type[HCaptchaModel]                 `tfsdk:"hcaptcha"`
 	HIBP                     listattr.Type[HIBPModel]                     `tfsdk:"hibp"`
 	HTTP                     listattr.Type[HTTPModel]                     `tfsdk:"http"`
 	HubSpot                  listattr.Type[HubSpotModel]                  `tfsdk:"hubspot"`
 	Incode                   listattr.Type[IncodeModel]                   `tfsdk:"incode"`
 	Intercom                 listattr.Type[IntercomModel]                 `tfsdk:"intercom"`
+	LDAP                     listattr.Type[LDAPModel]                     `tfsdk:"ldap"`
 	Lokalise                 listattr.Type[LokaliseModel]                 `tfsdk:"lokalise"`
+	Mixpanel                 listattr.Type[MixpanelModel]                 `tfsdk:"mixpanel"`
 	MParticle                listattr.Type[MParticleModel]                `tfsdk:"mparticle"`
 	NewRelic                 listattr.Type[NewRelicModel]                 `tfsdk:"newrelic"`
+	OpenTelemetry            listattr.Type[OpenTelemetryModel]            `tfsdk:"opentelemetry"`
+	PingDirectory            listattr.Type[PingDirectoryModel]            `tfsdk:"ping_directory"`
+	Postmark                 listattr.Type[PostmarkModel]                 `tfsdk:"postmark"`
 	Radar                    listattr.Type[RadarModel]                    `tfsdk:"radar"`
 	Recaptcha                listattr.Type[RecaptchaModel]                `tfsdk:"recaptcha"`
 	RecaptchaEnterprise      listattr.Type[RecaptchaEnterpriseModel]      `tfsdk:"recaptcha_enterprise"`
@@ -115,6 +137,8 @@ type ConnectorsModel struct {
 	Smartling                listattr.Type[SmartlingModel]                `tfsdk:"smartling"`
 	SMTP                     listattr.Type[SMTPModel]                     `tfsdk:"smtp"`
 	SNS                      listattr.Type[SNSModel]                      `tfsdk:"sns"`
+	Splunk                   listattr.Type[SplunkModel]                   `tfsdk:"splunk"`
+	SQL                      listattr.Type[SQLModel]                      `tfsdk:"sql"`
 	SumoLogic                listattr.Type[SumoLogicModel]                `tfsdk:"sumologic"`
 	Supabase                 listattr.Type[SupabaseModel]                 `tfsdk:"supabase"`
 	Telesign                 listattr.Type[TelesignModel]                 `tfsdk:"telesign"`
@@ -122,16 +146,21 @@ type ConnectorsModel struct {
 	Turnstile                listattr.Type[TurnstileModel]                `tfsdk:"turnstile"`
 	TwilioCore               listattr.Type[TwilioCoreModel]               `tfsdk:"twilio_core"`
 	TwilioVerify             listattr.Type[TwilioVerifyModel]             `tfsdk:"twilio_verify"`
+	Unibeam                  listattr.Type[UnibeamModel]                  `tfsdk:"unibeam"`
+	ZeroBounce               listattr.Type[ZeroBounceModel]               `tfsdk:"zerobounce"`
 }
 
 func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	listattr.Get(m.AbuseIPDB, data, "abuseipdb", h)
 	listattr.Get(m.Amplitude, data, "amplitude", h)
+	listattr.Get(m.Arkose, data, "arkose", h)
 	listattr.Get(m.AuditWebhook, data, "audit-webhook", h)
 	listattr.Get(m.AWSS3, data, "aws-s3", h)
 	listattr.Get(m.AWSTranslate, data, "aws-translate", h)
 	listattr.Get(m.Bitsight, data, "bitsight", h)
+	listattr.Get(m.Coralogix, data, "coralogix", h)
+	listattr.Get(m.Darwinium, data, "darwinium", h)
 	listattr.Get(m.Datadog, data, "datadog", h)
 	listattr.Get(m.DevRevGrow, data, "devrev-grow", h)
 	listattr.Get(m.Docebo, data, "docebo", h)
@@ -148,14 +177,20 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.Get(m.GoogleMapsPlaces, data, "google-maps-places", h)
 	listattr.Get(m.GoogleCloudLogging, data, "googlecloudlogging", h)
+	listattr.Get(m.HCaptcha, data, "hcaptcha", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
 	listattr.Get(m.HubSpot, data, "hubspot", h)
 	listattr.Get(m.Incode, data, "incode", h)
 	listattr.Get(m.Intercom, data, "intercom", h)
+	listattr.Get(m.LDAP, data, "ldap", h)
 	listattr.Get(m.Lokalise, data, "lokalise", h)
+	listattr.Get(m.Mixpanel, data, "mixpanel", h)
 	listattr.Get(m.MParticle, data, "mparticle", h)
 	listattr.Get(m.NewRelic, data, "newrelic", h)
+	listattr.Get(m.OpenTelemetry, data, "opentelemetry", h)
+	listattr.Get(m.PingDirectory, data, "ping-directory", h)
+	listattr.Get(m.Postmark, data, "post-mark", h)
 	listattr.Get(m.Radar, data, "radar", h)
 	listattr.Get(m.Recaptcha, data, "recaptcha", h)
 	listattr.Get(m.RecaptchaEnterprise, data, "recaptcha-enterprise", h)
@@ -170,6 +205,8 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
 	listattr.Get(m.SNS, data, "sns", h)
+	listattr.Get(m.Splunk, data, "splunk", h)
+	listattr.Get(m.SQL, data, "sql", h)
 	listattr.Get(m.SumoLogic, data, "sumologic", h)
 	listattr.Get(m.Supabase, data, "supabase", h)
 	listattr.Get(m.Telesign, data, "telesign", h)
@@ -177,16 +214,21 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Turnstile, data, "turnstile", h)
 	listattr.Get(m.TwilioCore, data, "twilio-core", h)
 	listattr.Get(m.TwilioVerify, data, "twilio-verify", h)
+	listattr.Get(m.Unibeam, data, "unibeam", h)
+	listattr.Get(m.ZeroBounce, data, "zerobounce", h)
 	return data
 }
 
 func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.AbuseIPDB, data, "abuseipdb", "name", h)
 	listattr.SetMatchingNames(&m.Amplitude, data, "amplitude", "name", h)
+	listattr.SetMatchingNames(&m.Arkose, data, "arkose", "name", h)
 	listattr.SetMatchingNames(&m.AuditWebhook, data, "audit-webhook", "name", h)
 	listattr.SetMatchingNames(&m.AWSS3, data, "aws-s3", "name", h)
 	listattr.SetMatchingNames(&m.AWSTranslate, data, "aws-translate", "name", h)
 	listattr.SetMatchingNames(&m.Bitsight, data, "bitsight", "name", h)
+	listattr.SetMatchingNames(&m.Coralogix, data, "coralogix", "name", h)
+	listattr.SetMatchingNames(&m.Darwinium, data, "darwinium", "name", h)
 	listattr.SetMatchingNames(&m.Datadog, data, "datadog", "name", h)
 	listattr.SetMatchingNames(&m.DevRevGrow, data, "devrev-grow", "name", h)
 	listattr.SetMatchingNames(&m.Docebo, data, "docebo", "name", h)
@@ -203,14 +245,20 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.GoogleCloudTranslation, data, "google-cloud-translation", "name", h)
 	listattr.SetMatchingNames(&m.GoogleMapsPlaces, data, "google-maps-places", "name", h)
 	listattr.SetMatchingNames(&m.GoogleCloudLogging, data, "googlecloudlogging", "name", h)
+	listattr.SetMatchingNames(&m.HCaptcha, data, "hcaptcha", "name", h)
 	listattr.SetMatchingNames(&m.HIBP, data, "hibp", "name", h)
 	listattr.SetMatchingNames(&m.HTTP, data, "http", "name", h)
 	listattr.SetMatchingNames(&m.HubSpot, data, "hubspot", "name", h)
 	listattr.SetMatchingNames(&m.Incode, data, "incode", "name", h)
 	listattr.SetMatchingNames(&m.Intercom, data, "intercom", "name", h)
+	listattr.SetMatchingNames(&m.LDAP, data, "ldap", "name", h)
 	listattr.SetMatchingNames(&m.Lokalise, data, "lokalise", "name", h)
+	listattr.SetMatchingNames(&m.Mixpanel, data, "mixpanel", "name", h)
 	listattr.SetMatchingNames(&m.MParticle, data, "mparticle", "name", h)
 	listattr.SetMatchingNames(&m.NewRelic, data, "newrelic", "name", h)
+	listattr.SetMatchingNames(&m.OpenTelemetry, data, "opentelemetry", "name", h)
+	listattr.SetMatchingNames(&m.PingDirectory, data, "ping-directory", "name", h)
+	listattr.SetMatchingNames(&m.Postmark, data, "post-mark", "name", h)
 	listattr.SetMatchingNames(&m.Radar, data, "radar", "name", h)
 	listattr.SetMatchingNames(&m.Recaptcha, data, "recaptcha", "name", h)
 	listattr.SetMatchingNames(&m.RecaptchaEnterprise, data, "recaptcha-enterprise", "name", h)
@@ -225,6 +273,8 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.Smartling, data, "smartling", "name", h)
 	listattr.SetMatchingNames(&m.SMTP, data, "smtp", "name", h)
 	listattr.SetMatchingNames(&m.SNS, data, "sns", "name", h)
+	listattr.SetMatchingNames(&m.Splunk, data, "splunk", "name", h)
+	listattr.SetMatchingNames(&m.SQL, data, "sql", "name", h)
 	listattr.SetMatchingNames(&m.SumoLogic, data, "sumologic", "name", h)
 	listattr.SetMatchingNames(&m.Supabase, data, "supabase", "name", h)
 	listattr.SetMatchingNames(&m.Telesign, data, "telesign", "name", h)
@@ -232,15 +282,20 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.Turnstile, data, "turnstile", "name", h)
 	listattr.SetMatchingNames(&m.TwilioCore, data, "twilio-core", "name", h)
 	listattr.SetMatchingNames(&m.TwilioVerify, data, "twilio-verify", "name", h)
+	listattr.SetMatchingNames(&m.Unibeam, data, "unibeam", "name", h)
+	listattr.SetMatchingNames(&m.ZeroBounce, data, "zerobounce", "name", h)
 }
 
 func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "abuseipdb", m.AbuseIPDB)
 	addConnectorReferences(h, "amplitude", m.Amplitude)
+	addConnectorReferences(h, "arkose", m.Arkose)
 	addConnectorReferences(h, "audit-webhook", m.AuditWebhook)
 	addConnectorReferences(h, "aws-s3", m.AWSS3)
 	addConnectorReferences(h, "aws-translate", m.AWSTranslate)
 	addConnectorReferences(h, "bitsight", m.Bitsight)
+	addConnectorReferences(h, "coralogix", m.Coralogix)
+	addConnectorReferences(h, "darwinium", m.Darwinium)
 	addConnectorReferences(h, "datadog", m.Datadog)
 	addConnectorReferences(h, "devrev-grow", m.DevRevGrow)
 	addConnectorReferences(h, "docebo", m.Docebo)
@@ -257,14 +312,20 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "google-cloud-translation", m.GoogleCloudTranslation)
 	addConnectorReferences(h, "google-maps-places", m.GoogleMapsPlaces)
 	addConnectorReferences(h, "googlecloudlogging", m.GoogleCloudLogging)
+	addConnectorReferences(h, "hcaptcha", m.HCaptcha)
 	addConnectorReferences(h, "hibp", m.HIBP)
 	addConnectorReferences(h, "http", m.HTTP)
 	addConnectorReferences(h, "hubspot", m.HubSpot)
 	addConnectorReferences(h, "incode", m.Incode)
 	addConnectorReferences(h, "intercom", m.Intercom)
+	addConnectorReferences(h, "ldap", m.LDAP)
 	addConnectorReferences(h, "lokalise", m.Lokalise)
+	addConnectorReferences(h, "mixpanel", m.Mixpanel)
 	addConnectorReferences(h, "mparticle", m.MParticle)
 	addConnectorReferences(h, "newrelic", m.NewRelic)
+	addConnectorReferences(h, "opentelemetry", m.OpenTelemetry)
+	addConnectorReferences(h, "ping-directory", m.PingDirectory)
+	addConnectorReferences(h, "post-mark", m.Postmark)
 	addConnectorReferences(h, "radar", m.Radar)
 	addConnectorReferences(h, "recaptcha", m.Recaptcha)
 	addConnectorReferences(h, "recaptcha-enterprise", m.RecaptchaEnterprise)
@@ -279,6 +340,8 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "smartling", m.Smartling)
 	addConnectorReferences(h, "smtp", m.SMTP)
 	addConnectorReferences(h, "sns", m.SNS)
+	addConnectorReferences(h, "splunk", m.Splunk)
+	addConnectorReferences(h, "sql", m.SQL)
 	addConnectorReferences(h, "sumologic", m.SumoLogic)
 	addConnectorReferences(h, "supabase", m.Supabase)
 	addConnectorReferences(h, "telesign", m.Telesign)
@@ -286,16 +349,21 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "turnstile", m.Turnstile)
 	addConnectorReferences(h, "twilio-core", m.TwilioCore)
 	addConnectorReferences(h, "twilio-verify", m.TwilioVerify)
+	addConnectorReferences(h, "unibeam", m.Unibeam)
+	addConnectorReferences(h, "zerobounce", m.ZeroBounce)
 }
 
 func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	names := map[string]int{}
 	addConnectorNames(h, names, m.AbuseIPDB)
 	addConnectorNames(h, names, m.Amplitude)
+	addConnectorNames(h, names, m.Arkose)
 	addConnectorNames(h, names, m.AuditWebhook)
 	addConnectorNames(h, names, m.AWSS3)
 	addConnectorNames(h, names, m.AWSTranslate)
 	addConnectorNames(h, names, m.Bitsight)
+	addConnectorNames(h, names, m.Coralogix)
+	addConnectorNames(h, names, m.Darwinium)
 	addConnectorNames(h, names, m.Datadog)
 	addConnectorNames(h, names, m.DevRevGrow)
 	addConnectorNames(h, names, m.Docebo)
@@ -312,14 +380,20 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.GoogleCloudTranslation)
 	addConnectorNames(h, names, m.GoogleMapsPlaces)
 	addConnectorNames(h, names, m.GoogleCloudLogging)
+	addConnectorNames(h, names, m.HCaptcha)
 	addConnectorNames(h, names, m.HIBP)
 	addConnectorNames(h, names, m.HTTP)
 	addConnectorNames(h, names, m.HubSpot)
 	addConnectorNames(h, names, m.Incode)
 	addConnectorNames(h, names, m.Intercom)
+	addConnectorNames(h, names, m.LDAP)
 	addConnectorNames(h, names, m.Lokalise)
+	addConnectorNames(h, names, m.Mixpanel)
 	addConnectorNames(h, names, m.MParticle)
 	addConnectorNames(h, names, m.NewRelic)
+	addConnectorNames(h, names, m.OpenTelemetry)
+	addConnectorNames(h, names, m.PingDirectory)
+	addConnectorNames(h, names, m.Postmark)
 	addConnectorNames(h, names, m.Radar)
 	addConnectorNames(h, names, m.Recaptcha)
 	addConnectorNames(h, names, m.RecaptchaEnterprise)
@@ -334,6 +408,8 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.Smartling)
 	addConnectorNames(h, names, m.SMTP)
 	addConnectorNames(h, names, m.SNS)
+	addConnectorNames(h, names, m.Splunk)
+	addConnectorNames(h, names, m.SQL)
 	addConnectorNames(h, names, m.SumoLogic)
 	addConnectorNames(h, names, m.Supabase)
 	addConnectorNames(h, names, m.Telesign)
@@ -341,6 +417,8 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.Turnstile)
 	addConnectorNames(h, names, m.TwilioCore)
 	addConnectorNames(h, names, m.TwilioVerify)
+	addConnectorNames(h, names, m.Unibeam)
+	addConnectorNames(h, names, m.ZeroBounce)
 	for k, v := range names {
 		if v > 1 {
 			h.Error("Connector names must be unique", "The connector name '%s' is used %d times", k, v)
@@ -351,10 +429,13 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.AbuseIPDB, state.AbuseIPDB)
 	listattr.ModifyMatchingNames(h, &m.Amplitude, state.Amplitude)
+	listattr.ModifyMatchingNames(h, &m.Arkose, state.Arkose)
 	listattr.ModifyMatchingNames(h, &m.AuditWebhook, state.AuditWebhook)
 	listattr.ModifyMatchingNames(h, &m.AWSS3, state.AWSS3)
 	listattr.ModifyMatchingNames(h, &m.AWSTranslate, state.AWSTranslate)
 	listattr.ModifyMatchingNames(h, &m.Bitsight, state.Bitsight)
+	listattr.ModifyMatchingNames(h, &m.Coralogix, state.Coralogix)
+	listattr.ModifyMatchingNames(h, &m.Darwinium, state.Darwinium)
 	listattr.ModifyMatchingNames(h, &m.Datadog, state.Datadog)
 	listattr.ModifyMatchingNames(h, &m.DevRevGrow, state.DevRevGrow)
 	listattr.ModifyMatchingNames(h, &m.Docebo, state.Docebo)
@@ -371,14 +452,20 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.GoogleCloudTranslation, state.GoogleCloudTranslation)
 	listattr.ModifyMatchingNames(h, &m.GoogleMapsPlaces, state.GoogleMapsPlaces)
 	listattr.ModifyMatchingNames(h, &m.GoogleCloudLogging, state.GoogleCloudLogging)
+	listattr.ModifyMatchingNames(h, &m.HCaptcha, state.HCaptcha)
 	listattr.ModifyMatchingNames(h, &m.HIBP, state.HIBP)
 	listattr.ModifyMatchingNames(h, &m.HTTP, state.HTTP)
 	listattr.ModifyMatchingNames(h, &m.HubSpot, state.HubSpot)
 	listattr.ModifyMatchingNames(h, &m.Incode, state.Incode)
 	listattr.ModifyMatchingNames(h, &m.Intercom, state.Intercom)
+	listattr.ModifyMatchingNames(h, &m.LDAP, state.LDAP)
 	listattr.ModifyMatchingNames(h, &m.Lokalise, state.Lokalise)
+	listattr.ModifyMatchingNames(h, &m.Mixpanel, state.Mixpanel)
 	listattr.ModifyMatchingNames(h, &m.MParticle, state.MParticle)
 	listattr.ModifyMatchingNames(h, &m.NewRelic, state.NewRelic)
+	listattr.ModifyMatchingNames(h, &m.OpenTelemetry, state.OpenTelemetry)
+	listattr.ModifyMatchingNames(h, &m.PingDirectory, state.PingDirectory)
+	listattr.ModifyMatchingNames(h, &m.Postmark, state.Postmark)
 	listattr.ModifyMatchingNames(h, &m.Radar, state.Radar)
 	listattr.ModifyMatchingNames(h, &m.Recaptcha, state.Recaptcha)
 	listattr.ModifyMatchingNames(h, &m.RecaptchaEnterprise, state.RecaptchaEnterprise)
@@ -393,6 +480,8 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.Smartling, state.Smartling)
 	listattr.ModifyMatchingNames(h, &m.SMTP, state.SMTP)
 	listattr.ModifyMatchingNames(h, &m.SNS, state.SNS)
+	listattr.ModifyMatchingNames(h, &m.Splunk, state.Splunk)
+	listattr.ModifyMatchingNames(h, &m.SQL, state.SQL)
 	listattr.ModifyMatchingNames(h, &m.SumoLogic, state.SumoLogic)
 	listattr.ModifyMatchingNames(h, &m.Supabase, state.Supabase)
 	listattr.ModifyMatchingNames(h, &m.Telesign, state.Telesign)
@@ -400,6 +489,8 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.Turnstile, state.Turnstile)
 	listattr.ModifyMatchingNames(h, &m.TwilioCore, state.TwilioCore)
 	listattr.ModifyMatchingNames(h, &m.TwilioVerify, state.TwilioVerify)
+	listattr.ModifyMatchingNames(h, &m.Unibeam, state.Unibeam)
+	listattr.ModifyMatchingNames(h, &m.ZeroBounce, state.ZeroBounce)
 
 	// Upgrade existing identifiers for SMTP connectors to support static IPs
 	for c := range listattr.MutatingIterator(&m.SMTP, h) {

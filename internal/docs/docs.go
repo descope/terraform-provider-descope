@@ -319,6 +319,18 @@ var docsAmplitude = map[string]string{
 	               "projects created in `EU` data center. Default is `US`.",
 }
 
+var docsArkose = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"public_key": "The public key that's shown in the Keys screen in the Arkose portal.",
+	"private_key": "The private key that can be copied from the Keys screen in the Arkose portal.",
+	"client_base_url": "A custom base URL to use when loading the Arkose client script. If not provided, " +
+	                   "the default value of `https://client-api.arkoselabs.com/v2` will be used.",
+	"verify_base_url": "A custom base URL to use when verifying the session token using the Arkose " +
+	                   "Verify API. If not provided, the default value of " +
+	                   "`https://verify-api.arkoselabs.com/api/v4` will be used.",
+}
+
 var docsAuditWebhook = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -375,11 +387,14 @@ var docsConnectors = map[string]string{
 	             "AbuseIPDB connector.",
 	"amplitude": "Track user activity and traits at any point in your user journey with the " +
 	             "Amplitude connector.",
+	"arkose": "Use the Arkose connector to integrate with Arkose's bot and fraud detection.",
 	"audit_webhook": "Send audit events to a custom webhook.",
 	"aws_s3": "Stream authentication audit logs with the Amazon S3 connector.",
 	"aws_translate": "Localize the language of your login and user journey screens with the Amazon Translate connector.",
 	"bitsight": "Utilize threat intelligence to block malicious login attempts or check leaks " +
 	            "with the Bitsight Threat Intelligence connector.",
+	"coralogix": "Send audit events and troubleshooting logs to Coralogix.",
+	"darwinium": "Connect to Darwinium API for fraud detection and device intelligence.",
 	"datadog": "Stream authentication audit logs with the Datadog connector.",
 	"devrev_grow": "DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto " +
 	               "an AI-native platform to follow the journey of a visitor to a lead, to a contact, and " +
@@ -401,6 +416,8 @@ var docsConnectors = map[string]string{
 	                            "the Google Cloud Translation connector.",
 	"google_maps_places": "Get address autocompletions from Place Autocomplete Data API.",
 	"google_cloud_logging": "Stream logs and audit events with the Google Cloud Logging connector.",
+	"hcaptcha": "hCaptcha can help protect your applications from bots, spam, and other forms of " +
+	            "automated abuse.",
 	"hibp": "Check if passwords have been previously exposed in data breaches with the Have I " +
 	        "Been Pwned connector.",
 	"http": "A general purpose HTTP client",
@@ -410,11 +427,18 @@ var docsConnectors = map[string]string{
 	          "checks or facial recognition.",
 	"intercom": "Orchestrate customer identity information from your Descope user journey with " +
 	            "the Intercom connector.",
+	"ldap": "Use this connector to authenticate users against an LDAP directory server with " +
+	        "support for both password and mTLS authentication.",
 	"lokalise": "Localize the language of your login and user journey screens with the Lokalise " +
 	            "connector.",
+	"mixpanel": "Stream authentication audit logs and troubleshoot logs to Mixpanel.",
 	"mparticle": "Track and send user event data (e.g. page views, purchases, etc.) across " +
 	             "connected tools using the mParticle connector.",
 	"newrelic": "Stream authentication audit logs with the New Relic connector.",
+	"opentelemetry": "Send audit events and troubleshooting logs to an OpenTelemetry-compatible " +
+	                 "endpoint using OTLP over HTTP or gRPC.",
+	"ping_directory": "Authenticate against PingDirectory.",
+	"postmark": "Send emails using Postmark",
 	"radar": "Get address autocompletions from Radar Autocomplete API.",
 	"recaptcha": "Prevent bot attacks on your login pages with the reCAPTCHA v3 connector.",
 	"recaptcha_enterprise": "Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPTCHA Enterprise connector.",
@@ -434,6 +458,9 @@ var docsConnectors = map[string]string{
 	             "connector.",
 	"smtp": "Simple Mail Transfer Protocol (SMTP) server for sending emails.",
 	"sns": "Amazon Simple Notification Service (SNS) for sending SMS messages through AWS.",
+	"splunk": "Stream logs and audit events with the Splunk HTTP Event Collector (HEC).",
+	"sql": "SQL connector for relational databases including PostgreSQL, MySQL, MariaDB, " +
+	       "Microsoft SQL Server (MSSQL), Oracle, CockroachDB, and Amazon Redshift.",
 	"sumologic": "Stream logs and audit events with the Sumo Logic connector.",
 	"supabase": "Generate external tokens for user authentication in Supabase projects.",
 	"telesign": "Verify phone numbers and leverage granular risk scores for adaptive MFA with the " +
@@ -445,6 +472,37 @@ var docsConnectors = map[string]string{
 	               "phone calls, sending and receiving text messages, and performing other communication functions.",
 	"twilio_verify": "Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms, " +
 	                 "voice and e-mail. Choose this connector only if you are a Twilio Verify customer.",
+	"unibeam": "SIM-based authentication and approval using Unibeam's OnSim technology for " +
+	           "passwordless authentication and transaction approval.",
+	"zerobounce": "Email validation with ZeroBounce",
+}
+
+var docsCoralogix = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"endpoint": "The ingress OpenTelemetry endpoint URL.",
+	"bearer_token": "Bearer token issued by Coralogix as Send-Your-Data API key",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+}
+
+var docsDarwinium = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"node_name": "The name of the Darwinium node.",
+	"journey_name": "The name of the Darwinium journey to use for profiling.",
+	"web_api_name": "The name of the Darwinium Web API to use.",
+	"native_api_name": "The name of the Darwinium Native Mobile API to use.",
+	"native_blob_key_name": "The key name for the native profiling blob sent via the client parameter. If not " +
+	                        "provided, the default key of 'nativeProfilingBlob' will be used.",
+	"pem_certificate": "The PEM certificate for client authentication.",
+	"private_key": "The private key for client authentication.",
+	"passphrase": "The passphrase for the PEM certificate, if applicable.",
+	"profiling_tags_script_url": "The custom URL where the Darwinium Tags script is hosted. If not provided, the " +
+	                             "default Darwinium script URL will be used.",
+	"default_result": "The default result to return if no result is available.",
 }
 
 var docsDatadog = map[string]string{
@@ -616,6 +674,23 @@ var docsGoogleMapsPlaces = map[string]string{
 	"region": "The region code, specified as a CLDR two-character region code.",
 }
 
+var docsHCaptcha = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"site_key": "The site key is used to invoke hCaptcha service on your site or mobile " +
+	            "application.",
+	"secret_key": "The secret key authorizes communication between Descope backend and the hCaptcha " +
+	              "server to verify the user's response.",
+	"bot_threshold": "The bot threshold is used to determine whether the request is a bot or a human. " +
+	                 "The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot. " +
+	                 "If the score is below this threshold, the request is considered a bot.",
+	"override_assessment": "Override the default assessment model. Note: Overriding assessment is intended " +
+	                       "for automated testing and should not be utilized in production environments.",
+	"assessment_score": "When configured, the hCaptcha action will return the score without assessing the " +
+	                    "request. The score ranges between 0 and 1, where 1 is a human interaction and 0 " +
+	                    "is a bot.",
+}
+
 var docsHIBP = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -663,6 +738,21 @@ var docsIntercom = map[string]string{
 	"region": "Regional Hosting - US, EU, or AU. default: US",
 }
 
+var docsLDAP = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"server_url": "The LDAP server URL (e.g., ldap://localhost:389 or ldaps://localhost:636 for " +
+	              "SSL/TLS).",
+	"use_mtls": "Enable mutual TLS authentication for LDAP connection.",
+	"bind_dn": "The Distinguished Name to bind with for searching.",
+	"bind_password": "The password for the bind DN.",
+	"client_certificate": "The client certificate in PEM format for mTLS authentication.",
+	"client_key": "The client private key in PEM format for mTLS authentication.",
+	"ca_certificate": "The Certificate Authority certificate in PEM format for validating the server " +
+	                  "certificate.",
+	"reject_unauthorized": "Reject connections to LDAP servers with invalid certificates.",
+}
+
 var docsLokalise = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -673,6 +763,24 @@ var docsLokalise = map[string]string{
 	           "provided, the team credit will be used.",
 	"translation_provider": "The translation provider to use ('gengo', 'google', 'lokalise', 'deepl'), " +
 	                        "default is 'deepl'.",
+}
+
+var docsMixpanel = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"project_token": "The unique Mixpanel project token used to identify the project where data will " +
+	                 "be sent.",
+	"api_secret": "The Mixpanel API secret key used for authenticating API requests.",
+	"project_id": "The unique identifier for your Mixpanel project.",
+	"service_account_username": "The Mixpanel service account username used for integration.",
+	"service_account_secret": "The Mixpanel service account secret used for integration.",
+	"eu_residency": "Indicates if your Mixpanel project data is stored in the EU region.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"override_logs_prefix": "Enable this option to use a custom prefix for log fields.",
+	"logs_prefix": "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
 }
 
 var docsMParticle = map[string]string{
@@ -700,6 +808,35 @@ var docsNewRelic = map[string]string{
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"override_logs_prefix": "Enable this option to use a custom prefix for log fields.",
 	"logs_prefix": "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
+}
+
+var docsOpenTelemetry = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"endpoint": "The OTLP endpoint URL.",
+	"protocol": "Protocol to use for OTLP: http or grpc.",
+	"authentication": "Authentication Information",
+	"headers": "The headers to send with the request",
+	"insecure": "Will ignore certificate errors raised by the client",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+}
+
+var docsPingDirectory = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"host": "PingDirectory's REST API host.",
+	"port": "PingDirectory's REST API port.",
+}
+
+var docsPostmark = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"server_api_token": "The API token for authenticating with the Postmark server",
+	"message_stream_id": "The ID of the message stream to use for the email",
+	"email_from": "The email address that will appear in the 'From' field of the sent email",
 }
 
 var docsRadar = map[string]string{
@@ -891,6 +1028,31 @@ var docsSNS = map[string]string{
 	"organization_number": "Use the `origination_number` attribute instead.",
 }
 
+var docsSplunk = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"hec_token": "An HTTP Event Collector token configured on your Splunk project.",
+	"hec_url": "The URL to be used accessing your Splunk system, including the appropriate port",
+	"index": "An optional index to use for all sent events",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+	                 "tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+}
+
+var docsSQL = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"engine_name": "The database engine type.",
+	"database_name": "The database name.",
+	"service_name": "The Oracle service name (required for Oracle only).",
+	"host": "The database host.",
+	"port": "The database port. If not specified, the default port for the selected engine " +
+	        "will be used.",
+	"username": "The database username.",
+	"password": "The database password.",
+}
+
 var docsSumoLogic = map[string]string{
 	"name": "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -977,6 +1139,23 @@ var docsTwilioVerify = map[string]string{
 	"service_sid": "Twilio Verify Service SID for verification services.",
 	"sender": "Optional sender identifier for verification messages.",
 	"authentication": "Twilio authentication credentials (either auth token or API key/secret).",
+}
+
+var docsUnibeam = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"customer_id": "Your Unibeam customer ID.",
+	"client_id": "OAuth2 client ID for authentication.",
+	"client_secret": "OAuth2 client secret for authentication.",
+	"hmac_secret": "HMAC secret supplied by Unibeam for securing communications.",
+	"default_message": "Default message to display when no message is provided in the command.",
+}
+
+var docsZeroBounce = map[string]string{
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_key": "The ZeroBounce API key.",
+	"region": "ZeroBounce platform region.",
 }
 
 var docsFlow = map[string]string{

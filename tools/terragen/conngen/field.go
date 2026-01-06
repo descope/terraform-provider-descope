@@ -261,7 +261,13 @@ func (f *Field) GetTestAssignment() string {
 			return fmt.Sprintf(`%q`, v)
 		}
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
-			return `""`
+			return `null`
+		}
+		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeBool && d.Value != true {
+			return `null`
+		}
+		if len(f.Options) > 0 {
+			return fmt.Sprintf(`%q`, f.Options[0].Value)
 		}
 		return fmt.Sprintf(`%q`, f.TestString())
 	case FieldTypeBool:
@@ -290,7 +296,19 @@ func (f *Field) GetTestCheck() string {
 			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), v)
 		}
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
+			if f.Type == FieldTypeSecret {
+				return fmt.Sprintf(`"%s": testacc.AttributeIsNotSet`, f.AttributeName())
+			}
 			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
+		}
+		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeBool && d.Value != true {
+			if f.Type == FieldTypeSecret {
+				return fmt.Sprintf(`"%s": testacc.AttributeIsNotSet`, f.AttributeName())
+			}
+			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
+		}
+		if len(f.Options) > 0 {
+			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.Options[0].Value)
 		}
 		return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.TestString())
 	case FieldTypeBool:
@@ -321,14 +339,27 @@ func (f *Field) TestNumber() int {
 // Dependency
 
 type FieldDependency struct {
-	Name  string `json:"name"`
-	Value any    `json:"value"`
+	Name   string   `json:"name"`
+	Value  any      `json:"value"`
+	Values []string `json:"values"`
 	*Field
 }
 
-func (d *FieldDependency) DefaultValue() bool {
-	v, _ := d.Field.Initial.(bool)
-	return v
+func (d *FieldDependency) DefaultValue() any {
+	switch d.Field.Type {
+	case FieldTypeString, FieldTypeSecret:
+		v, _ := d.Field.Initial.(string)
+		return v
+	case FieldTypeBool:
+		v, _ := d.Field.Initial.(bool)
+		return v
+	default:
+		return d.Field.Initial
+	}
+}
+
+func (d *FieldDependency) ValuesSlice() string {
+	return fmt.Sprintf("%#v", d.Values)
 }
 
 // Options
