@@ -263,6 +263,9 @@ func (f *Field) GetTestAssignment() string {
 		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
 			return `""`
 		}
+		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeBool && d.Value != true {
+			return `""`
+		}
 		if len(f.Options) > 0 {
 			return fmt.Sprintf(`%q`, f.Options[0].Value)
 		}
