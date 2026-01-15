@@ -28,6 +28,8 @@ func InjectModels() {
 	inject(applications.AttributeMappingAttributes, docsAttributeMapping)
 	inject(applications.DynamicConfigurationAttributes, docsDynamicConfiguration)
 	inject(applications.ManualConfigurationAttributes, docsManualConfiguration)
+	inject(attributes.AccessKeyAttributeAttributes, docsAccessKeyAttribute)
+	inject(attributes.AccessKeyAttributeWidgetAuthorizationAttributes, docsAccessKeyAttributeWidgetAuthorization)
 	inject(attributes.AttributesAttributes, docsAttributes)
 	inject(attributes.TenantAttributeAttributes, docsTenantAttribute)
 	inject(attributes.TenantAttributeAuthorizationAttributes, docsTenantAttributeAuthorization)

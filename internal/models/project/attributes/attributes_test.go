@@ -177,6 +177,35 @@ func TestAttributes(t *testing.T) {
 			}),
 		},
 		resource.TestStep{
+			Config: p.Config(`
+				attributes = {
+					access_keys = var.foo1 != null ? [var.foo1] : []
+				}
+			`) + p.Variables(`
+				variable "foo1" {
+					default = {
+						name = "bar1"
+						type = "number"
+						select_options = ["x1", "y1", "z1"]
+						authorization = {
+         					view_permissions = ["foo", "bar"]
+        				}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"attributes.access_keys": map[string]any{
+					"#":                1,
+					"0.name":           "bar1",
+					"0.type":           "number",
+					"0.select_options": []string{"x1", "y1", "z1"},
+					"0.authorization": map[string]any{
+						"view_permissions": []string{"foo", "bar"},
+					},
+				},
+			}),
+		},
+		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
 				"attributes.user.#": 0,
