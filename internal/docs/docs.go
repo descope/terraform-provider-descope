@@ -73,9 +73,29 @@ var docsManualConfiguration = map[string]string{
 	"certificate": "Enter the `Certificate` from the SP.",
 }
 
+var docsAccessKeyAttribute = map[string]string{
+	"id": "An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. " +
+	      "If a value is not provided then an appropriate one will be created from the value of `name`.",
+	"name": "The name of the attribute. This value is called `Display Name` in the Descope console.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", " +
+	        "\"singleselect\", \"multiselect\", \"date\".",
+	"select_options": "When the attribute type is \"multiselect\". A list of options to choose from.",
+	"widget_authorization": "Determines the permissions access key are required to have to access this attribute " +
+	                        "in the access key management widget.",
+}
+
+var docsAccessKeyAttributeWidgetAuthorization = map[string]string{
+	"view_permissions": "The permissions users are required to have to view this attribute in the access key management widget.",
+	"edit_permissions": "The permissions users are required to have to edit this attribute in the access key management widget.",
+}
+
 var docsAttributes = map[string]string{
-	"tenant": "A list of `TenantAttribute`. Read the description below.",
-	"user": "A list of `UserAttribute`. Read the description below.",
+	"tenant": "A list of custom attributes for storing additional details about " +
+	          "each tenant in the project.",
+	"user": "A list of custom attributes for storing additional details about " +
+	        "each user in the project.",
+	"access_key": "A list of custom attributes for storing additional details about " +
+	              "each access key in the project.",
 }
 
 var docsTenantAttribute = map[string]string{

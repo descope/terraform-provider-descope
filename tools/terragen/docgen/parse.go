@@ -138,7 +138,7 @@ func scanUntilBreak(path string, s *bufio.Scanner) []string {
 		if len(line) == 0 {
 			blanks += 1
 		} else if blanks == 2 {
-			log.Fatalf("unexpected number of blank lines in documentation file at path %s", path)
+			log.Fatalf("unexpected number of blank lines, make sure there are exactly 3 blanks lines between each attribute in documentation file %s", path)
 		} else {
 			blanks = 0
 		}
