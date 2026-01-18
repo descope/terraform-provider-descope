@@ -15,6 +15,7 @@ var SSOAttributes = map[string]schema.Attribute{
 	"sso_suite_settings":      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
 	"allow_duplicate_domains": boolattr.Default(false),
 	"allow_override_roles":    boolattr.Default(false),
+	"groups_priority":         boolattr.Default(false),
 }
 
 type SSOModel struct {
@@ -24,6 +25,7 @@ type SSOModel struct {
 	SSOSuiteSettings                       objattr.Type[SSOSuiteModel] `tfsdk:"sso_suite_settings"`
 	AllowDuplicateSSODomainsInOtherTenants boolattr.Type               `tfsdk:"allow_duplicate_domains"`
 	AllowOverrideRoles                     boolattr.Type               `tfsdk:"allow_override_roles"`
+	GroupsPriority                         boolattr.Type               `tfsdk:"groups_priority"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
@@ -34,6 +36,7 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
 	boolattr.Get(m.AllowDuplicateSSODomainsInOtherTenants, data, "allowDuplicateSSODomainsInOtherTenants")
 	boolattr.Get(m.AllowOverrideRoles, data, "allowOverrideRoles")
+	boolattr.Get(m.GroupsPriority, data, "groupPriorityEnabled")
 	return data
 }
 
@@ -44,6 +47,7 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
 	boolattr.Set(&m.AllowDuplicateSSODomainsInOtherTenants, data, "allowDuplicateSSODomainsInOtherTenants")
 	boolattr.Set(&m.AllowOverrideRoles, data, "allowOverrideRoles")
+	boolattr.Set(&m.GroupsPriority, data, "groupPriorityEnabled")
 }
 
 // SSO Suite Settings

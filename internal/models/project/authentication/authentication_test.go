@@ -295,6 +295,18 @@ func TestAuthentication(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				authentication = {
+					sso = {
+						groups_priority = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.groups_priority": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
 					password = {
 						disabled = true
 						temporary_lock = true
