@@ -261,6 +261,7 @@ var docsSSO = map[string]string{
 	"sso_suite_settings": "Configuration block for the SSO Suite.",
 	"allow_duplicate_domains": "Whether to allow duplicate SSO domains across tenants.",
 	"allow_override_roles": "Whether to allow overriding user's roles with SSO related roles.",
+	"groups_priority": "Whether to enable groups priority.",
 }
 
 var docsSSOSuite = map[string]string{
