@@ -187,7 +187,7 @@ func TestAttributes(t *testing.T) {
 						name = "bar1"
 						type = "number"
 						select_options = ["x1", "y1", "z1"]
-						authorization = {
+						widget_authorization = {
          					view_permissions = ["foo", "bar"]
         				}
 					}
@@ -199,7 +199,7 @@ func TestAttributes(t *testing.T) {
 					"0.name":           "bar1",
 					"0.type":           "number",
 					"0.select_options": []string{"x1", "y1", "z1"},
-					"0.authorization": map[string]any{
+					"0.widget_authorization": map[string]any{
 						"view_permissions": []string{"foo", "bar"},
 					},
 				},
