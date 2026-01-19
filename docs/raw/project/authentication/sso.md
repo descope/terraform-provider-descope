@@ -61,6 +61,15 @@ Whether to allow overriding user's roles with SSO related roles.
 
 
 
+groups_priority
+---------------
+
+- Type: `bool` 
+
+Whether to enable groups priority.
+
+
+
 
 
 SSOSuite
