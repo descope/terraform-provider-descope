@@ -22,12 +22,12 @@ func (m *AttributesModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	listattr.Get(m.Tenant, data, "tenant", h)
 	listattr.Get(m.User, data, "user", h)
-	listattr.Get(m.AccessKey, data, "access_key", h)
+	listattr.Get(m.AccessKey, data, "accessKey", h)
 	return data
 }
 
 func (m *AttributesModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.Tenant, data, "tenant", "displayName", h)
 	listattr.SetMatchingNames(&m.User, data, "user", "displayName", h)
-	listattr.SetMatchingNames(&m.AccessKey, data, "access_key", "displayName", h)
+	listattr.SetMatchingNames(&m.AccessKey, data, "accessKey", "displayName", h)
 }
