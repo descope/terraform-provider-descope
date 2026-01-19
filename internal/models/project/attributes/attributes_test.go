@@ -179,7 +179,7 @@ func TestAttributes(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				attributes = {
-					access_keys = var.foo1 != null ? [var.foo1] : []
+					access_key = var.foo1 != null ? [var.foo1] : []
 				}
 			`) + p.Variables(`
 				variable "foo1" {
@@ -194,7 +194,7 @@ func TestAttributes(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"attributes.access_keys": map[string]any{
+				"attributes.access_key": map[string]any{
 					"#":                1,
 					"0.name":           "bar1",
 					"0.type":           "number",
@@ -208,7 +208,9 @@ func TestAttributes(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(),
 			Check: p.Check(map[string]any{
-				"attributes.user.#": 0,
+				"attributes.user.#":       0,
+				"attributes.tenant.#":     0,
+				"attributes.access_key.#": 0,
 			}),
 		},
 	)
