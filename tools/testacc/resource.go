@@ -17,6 +17,10 @@ func Project(t *testing.T) *Resource {
 	return newResource(t, "project", "test")
 }
 
+func Descoper(t *testing.T) *Resource {
+	return newResource(t, "descoper", "test")
+}
+
 func ManagementKey(t *testing.T) *Resource {
 	return newResource(t, "management_key", "test")
 }
@@ -25,7 +29,7 @@ func newResource(t *testing.T, typ, id string) *Resource {
 	return &Resource{
 		Type: typ,
 		ID:   id,
-		Name: generateName(t),
+		Name: GenerateAlias(t),
 	}
 }
 
@@ -91,7 +95,7 @@ resource "descope_%s" "%s" {
 }
 `
 
-func generateName(t *testing.T) string {
+func GenerateAlias(t *testing.T) string {
 	test := strings.TrimPrefix(t.Name(), "Test")
 	ts := time.Now().Format("01021504") // MMddHHmm
 	rand, err := uuid.GenerateUUID()

@@ -1,6 +1,8 @@
 package stringattr
 
 import (
+	"slices"
+
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -99,9 +101,17 @@ func Get(s Type, data map[string]any, key string) {
 	}
 }
 
-func Set(s *Type, data map[string]any, key string) {
+type SetOption int
+
+const (
+	SkipIfAlreadySet SetOption = iota
+)
+
+func Set(s *Type, data map[string]any, key string, options ...SetOption) {
 	if v, ok := data[key].(string); ok {
-		*s = Value(v)
+		if s.ValueString() == "" && !slices.Contains(options, SkipIfAlreadySet) {
+			*s = Value(v)
+		}
 	} else {
 		Nil(s)
 	}

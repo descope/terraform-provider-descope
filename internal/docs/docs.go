@@ -2,6 +2,31 @@
 
 package docs
 
+var docsDescoper = map[string]string{
+	"email": "The email address of the Descope console user.",
+	"phone": "The phone number of the Descope console user.",
+	"name": "The display name of the Descope console user.",
+	"rbac": "Access control settings for the Descope console user. This defines the permissions " +
+	        "granted to the user, either as a company admin or for specific projects or project tags.",
+}
+
+var docsDescoperProjectRole = map[string]string{
+	"project_ids": "The project IDs this role assignment applies to.",
+	"role": "The role to grant. Must be one of: `admin`, `developer`, `support`, `auditor`.",
+}
+
+var docsRBac = map[string]string{
+	"is_company_admin": "Whether this user has company-wide admin access. When set to `true`, the user " +
+	                    "cannot have `tag_roles` or `project_roles`.",
+	"tag_roles": "A list of role assignments for projects matching specific tags.",
+	"project_roles": "A list of role assignments for specific projects by their ID.",
+}
+
+var docsDescoperTagRole = map[string]string{
+	"tags": "The project tags this role assignment applies to.",
+	"role": "The role to grant. Must be one of: `admin`, `developer`, `support`, `auditor`.",
+}
+
 var docsManagementKey = map[string]string{
 	"name": "A name for the management key.",
 	"description": "A description for the management key.",
