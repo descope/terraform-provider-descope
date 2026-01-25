@@ -53,6 +53,14 @@ func SecretOptional(validators ...validator.String) schema.StringAttribute {
 	}
 }
 
+func SecretComputed() schema.StringAttribute {
+	return schema.StringAttribute{
+		Computed:      true,
+		Sensitive:     true,
+		PlanModifiers: []planmodifier.String{helpers.UseValidStateForUnknown()},
+	}
+}
+
 func Optional(validators ...validator.String) schema.StringAttribute {
 	return schema.StringAttribute{
 		Optional:      true,

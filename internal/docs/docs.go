@@ -2,6 +2,42 @@
 
 package docs
 
+var docsManagementKey = map[string]string{
+	"name": "A name for the management key.",
+	"description": "A description for the management key.",
+	"status": "The status of the management key. Must be either `active` or `inactive`.",
+	"expire_time": "The expiration time of the management key as a Unix timestamp. If not set, " +
+	               "the key will not expire. Changing this value after creation will require " +
+	               "the management key to be replaced.",
+	"permitted_ips": "A list of IP addresses or CIDR ranges that are allowed to use this management key. " +
+	                 "If not set, the key can be used from any IP address.",
+	"rebac": "Access control settings for the management key. This defines the permissions granted " +
+	         "to the management key, either at the company level or for specific projects or for " +
+	         "project tags. Changing this value after creation will require the management key " +
+	         "to be replaced.",
+	"cleartext": "The plaintext value of the management key. This is only available after the key is " +
+	             "created and cannot be retrieved later. Store this value securely as it is required " +
+	             "to authenticate API requests.",
+}
+
+var docsProjectRole = map[string]string{
+	"project_ids": "The list of project IDs this role grant applies to.",
+	"roles": "The roles the management key will be granted.",
+}
+
+var docsReBac = map[string]string{
+	"company_roles": "A list of company-level role names that are granted to the management key.",
+	"project_roles": "A list of project-level role names that are granted to the management key for " +
+	                 "specific project by their project ID.",
+	"tag_roles": "A list of project-level role names that are granted to the management key for " +
+	             "for all projects that have a specific tag.",
+}
+
+var docsTagRole = map[string]string{
+	"tags": "The list of project tags this role grant applies to.",
+	"roles": "The roles the management key will be granted.",
+}
+
 var docsProject = map[string]string{
 	"name": "The name of the Descope project.",
 	"environment": "This can be set to `production` to mark production projects, otherwise this should be " +
