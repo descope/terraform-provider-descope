@@ -11,20 +11,24 @@ var docsDescoper = map[string]string{
 }
 
 var docsDescoperProjectRole = map[string]string{
-	"project_ids": "The project IDs this role assignment applies to.",
-	"role": "The role to grant. Must be one of: `admin`, `developer`, `support`, `auditor`.",
+	"project_ids": "The project IDs this role grant applies to.",
+	"role": "The roles the descoper will be granted in the applicable projects. " +
+	        "Must be one of: `admin`, `developer`, `support`, `auditor`.",
 }
 
 var docsRBac = map[string]string{
-	"is_company_admin": "Whether this user has company-wide admin access. When set to `true`, the user " +
-	                    "cannot have `tag_roles` or `project_roles`.",
-	"tag_roles": "A list of role assignments for projects matching specific tags.",
-	"project_roles": "A list of role assignments for specific projects by their ID.",
+	"is_company_admin": "Whether this descoper has company-wide admin access. When set to `true`, " +
+	                    "the descoper cannot have `tag_roles` or `project_roles`.",
+	"project_roles": "A list of roles that are granted to the descoper for specific " +
+	                 "projects by their project ID.",
+	"tag_roles": "A list of roles that are granted to the descoper for all projects " +
+	             "that have a specific tag.",
 }
 
 var docsDescoperTagRole = map[string]string{
 	"tags": "The project tags this role assignment applies to.",
-	"role": "The role to grant. Must be one of: `admin`, `developer`, `support`, `auditor`.",
+	"role": "The role the descoper will be granted in the applicable projects. " +
+	        "Must be one of: `admin`, `developer`, `support`, `auditor`.",
 }
 
 var docsManagementKey = map[string]string{
@@ -46,21 +50,22 @@ var docsManagementKey = map[string]string{
 }
 
 var docsProjectRole = map[string]string{
-	"project_ids": "The list of project IDs this role grant applies to.",
-	"roles": "The roles the management key will be granted.",
+	"project_ids": "The project IDs this role grant applies to.",
+	"roles": "The roles the management key will be granted in the applicable projects.",
 }
 
 var docsReBac = map[string]string{
-	"company_roles": "A list of company-level role names that are granted to the management key.",
+	"company_roles": "A list of company-level role names that are granted to the management key. This " +
+	                 "attribute is mutually exclusive with `tag_roles` and `project_roles`.",
 	"project_roles": "A list of project-level role names that are granted to the management key for " +
-	                 "specific project by their project ID.",
+	                 "specific projects by their project ID.",
 	"tag_roles": "A list of project-level role names that are granted to the management key for " +
-	             "for all projects that have a specific tag.",
+	             "all projects that have a specific tag.",
 }
 
 var docsTagRole = map[string]string{
-	"tags": "The list of project tags this role grant applies to.",
-	"roles": "The roles the management key will be granted.",
+	"tags": "The project tags this role grant applies to.",
+	"roles": "The roles the management key will be granted in the applicable projects.",
 }
 
 var docsProject = map[string]string{

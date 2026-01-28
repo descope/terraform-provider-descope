@@ -9,7 +9,7 @@ project_ids
 
 - Type: `set` of `string` (required)
 
-The project IDs this role assignment applies to.
+The project IDs this role grant applies to.
 
 
 
@@ -18,4 +18,5 @@ role
 
 - Type: `string` (required)
 
-The role to grant. Must be one of: `admin`, `developer`, `support`, `auditor`.
+The roles the descoper will be granted in the applicable projects.
+Must be one of: `admin`, `developer`, `support`, `auditor`.

@@ -18,4 +18,5 @@ role
 
 - Type: `string` (required)
 
-The role to grant. Must be one of: `admin`, `developer`, `support`, `auditor`.
+The role the descoper will be granted in the applicable projects.
+Must be one of: `admin`, `developer`, `support`, `auditor`.

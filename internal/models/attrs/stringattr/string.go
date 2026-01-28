@@ -109,7 +109,7 @@ const (
 
 func Set(s *Type, data map[string]any, key string, options ...SetOption) {
 	if v, ok := data[key].(string); ok {
-		if s.ValueString() == "" && !slices.Contains(options, SkipIfAlreadySet) {
+		if s.ValueString() == "" || !slices.Contains(options, SkipIfAlreadySet) {
 			*s = Value(v)
 		}
 	} else {
