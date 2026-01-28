@@ -5,17 +5,42 @@ import (
 	"maps"
 	"strconv"
 	"strings"
+	"testing"
+	"time"
 
+	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/stretchr/testify/require"
 )
 
+func Project(t *testing.T) *Resource {
+	return newResource(t, "project", "test")
+}
+
+func Descoper(t *testing.T) *Resource {
+	return newResource(t, "descoper", "test")
+}
+
+func ManagementKey(t *testing.T) *Resource {
+	return newResource(t, "management_key", "test")
+}
+
+func newResource(t *testing.T, typ, id string) *Resource {
+	return &Resource{
+		Type: typ,
+		ID:   id,
+		Name: GenerateAlias(t),
+	}
+}
+
 type Resource struct {
-	Type string
-	Name string
+	Type string // the resource type without the 'descope_' prefix
+	ID   string // the resource name in the Terraform config
+	Name string // the value of the 'name' attribute
 }
 
 func (r *Resource) Path() string {
-	return fmt.Sprintf(`%s.%s`, r.Type, r.Name)
+	return fmt.Sprintf(`descope_%s.%s`, r.Type, r.ID)
 }
 
 func (r *Resource) Variables(s ...string) string {
@@ -23,11 +48,9 @@ func (r *Resource) Variables(s ...string) string {
 }
 
 func (r *Resource) Config(s ...string) string {
-	return fmt.Sprintf(`
-		resource %q %q {
-			%s
-		}
-		`, r.Type, r.Name, strings.Join(s, "\n"))
+	n := fmt.Sprintf(`name = %q`, r.Name)
+	s = append([]string{n}, s...)
+	return fmt.Sprintf(resourceFormat, r.Type, r.ID, strings.Join(s, "\n	"))
 }
 
 func (r *Resource) Check(checks map[string]any, extras ...resource.TestCheckFunc) resource.TestCheckFunc {
@@ -64,6 +87,21 @@ func (r *Resource) Check(checks map[string]any, extras ...resource.TestCheckFunc
 	}
 	f = append(f, extras...)
 	return resource.ComposeAggregateTestCheckFunc(f...)
+}
+
+const resourceFormat = `
+resource "descope_%s" "%s" {
+	%s
+}
+`
+
+func GenerateAlias(t *testing.T) string {
+	test := strings.TrimPrefix(t.Name(), "Test")
+	ts := time.Now().Format("01021504") // MMddHHmm
+	rand, err := uuid.GenerateUUID()
+	require.NoError(t, err)
+	suffix := rand[len(rand)-8:]
+	return fmt.Sprintf("testacc-%s-%s-%s", test, ts, suffix)
 }
 
 func flatten(checks map[string]any, keypath string) map[string]any {
