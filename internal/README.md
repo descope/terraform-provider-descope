@@ -1,5 +1,96 @@
 # Development
 
+## Getting Started
+
+This guide helps you set up a local development environment and work with existing Descope projects.
+
+### Prerequisites
+
+1. Run `make dev` to build and install the local provider (see [Setup and Installation](#setup-and-installation))
+2. Obtain a management key from the Descope console (see [Configuration](#configuration) for environment setup)
+3. Create a working directory with a `main.tf` file containing the below provider configuration.
+4. Run `terraform init` to initialize the Terraform provider in the working directory.
+5. Continue to the next steps depending on whether you want to create a new project or import an existing one.
+
+```hcl
+terraform {
+  required_providers {
+    descope = {
+      source = "descope/descope"
+    }
+  }
+}
+
+provider "descope" {
+  management_key = "K..."
+  base_url       = "https://api.descope.com"  # or your local instance
+}
+```
+
+### Importing an Existing Project
+
+#### Add an import block:
+
+In your `main.tf` file, append an `import` block for the plan generation command to be able to know which
+project's configuration to read:
+
+```hcl
+import {
+  to = descope_project.my_project
+  id = "P..."  # your project ID
+}
+```
+
+#### Generate configuration from your existing project:
+
+Ignore any errors, as long as the `export.tf` file is created this is working as intended.
+
+```bash
+terraform plan -generate-config-out="export.tf"
+```
+
+#### Clean up the generated file:
+
+- Remove any `oauth` system configurations that shouldn't be managed.
+- Remove any inline `flows`, `styles`, email templates, etc.
+- Replace any secret placeholders with the actual secret values.
+
+#### Import state for the existing project:
+
+Move the contents of the `export.tf` into the `main.tf` file, replacing the `import` block completely, then
+run this command with the actual projectId to initialize the Terraform state for the existing project. This
+is required as otherwise Terraform will try to create the project.
+
+```bash
+terraform import descope_project.my_project P...
+```
+
+#### Make changes and apply:
+
+Edit your `.tf` file (e.g., change the project name) and run:
+
+```bash
+terraform plan   # preview changes
+terraform apply  # apply changes
+```
+
+### Creating a New Project
+
+#### Add a project resource to your `main.tf`:
+
+```hcl
+resource "descope_project" "my_project" {
+  name = "My New Project"
+}
+```
+
+#### Initialize and apply:
+
+```bash
+terraform plan   # preview changes
+terraform apply  # create the project
+```
+
 ## Commands
 
 ### Setup and Installation

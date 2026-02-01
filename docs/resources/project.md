@@ -1079,8 +1079,8 @@ Optional:
 - `allow_duplicate_domains` (Boolean) Whether to allow duplicate SSO domains across tenants.
 - `allow_override_roles` (Boolean) Whether to allow overriding user's roles with SSO related roles.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `groups_priority` (Boolean) Whether to enable groups priority.
+- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 - `sso_suite_settings` (Attributes) Configuration block for the SSO Suite. (see [below for nested schema](#nestedatt--authentication--sso--sso_suite_settings))
 
@@ -2045,16 +2045,16 @@ Read-Only:
 
 Required:
 
-- `bind_dn` (String) The Distinguished Name to bind with for searching.
-- `bind_password` (String, Sensitive) The password for the bind DN.
-- `client_certificate` (String, Sensitive) The client certificate in PEM format for mTLS authentication.
-- `client_key` (String, Sensitive) The client private key in PEM format for mTLS authentication.
 - `name` (String) A custom name for your connector.
 - `server_url` (String) The LDAP server URL (e.g., ldap://localhost:389 or ldaps://localhost:636 for SSL/TLS).
 
 Optional:
 
+- `bind_dn` (String) The Distinguished Name to bind with for searching.
+- `bind_password` (String, Sensitive) The password for the bind DN.
 - `ca_certificate` (String, Sensitive) The Certificate Authority certificate in PEM format for validating the server certificate.
+- `client_certificate` (String, Sensitive) The client certificate in PEM format for mTLS authentication.
+- `client_key` (String, Sensitive) The client private key in PEM format for mTLS authentication.
 - `description` (String) A description of what your connector is used for.
 - `reject_unauthorized` (Boolean) Reject connections to LDAP servers with invalid certificates.
 - `use_mtls` (Boolean) Enable mutual TLS authentication for LDAP connection.
@@ -2264,7 +2264,7 @@ Required:
 - `email_from` (String) The email address that will appear in the 'From' field of the sent email
 - `message_stream_id` (String) The ID of the message stream to use for the email
 - `name` (String) A custom name for your connector.
-- `server_apitoken` (String, Sensitive) The API token for authenticating with the Postmark server
+- `server_api_token` (String, Sensitive) The API token for authenticating with the Postmark server
 
 Optional:
 
