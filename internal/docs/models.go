@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/descope/terraform-provider-descope/internal/models/project"
+	"github.com/descope/terraform-provider-descope/internal/models/project/adminportal"
 	"github.com/descope/terraform-provider-descope/internal/models/project/applications"
 	"github.com/descope/terraform-provider-descope/internal/models/project/attributes"
 	"github.com/descope/terraform-provider-descope/internal/models/project/authentication"
@@ -22,6 +23,8 @@ import (
 
 func InjectModels() {
 	inject(project.ProjectAttributes, docsProject)
+	inject(adminportal.AdminPortalWidgetAttributes, docsAdminPortalWidget)
+	inject(adminportal.AdminPortalAttributes, docsAdminPortal)
 	inject(applications.ApplicationsAttributes, docsApplications)
 	inject(applications.OIDCAttributes, docsOIDC)
 	inject(applications.SAMLAttributes, docsSAML)
