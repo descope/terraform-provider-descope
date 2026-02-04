@@ -1104,8 +1104,8 @@ Optional:
 - `allow_duplicate_domains` (Boolean) Whether to allow duplicate SSO domains across tenants.
 - `allow_override_roles` (Boolean) Whether to allow overriding user's roles with SSO related roles.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `groups_priority` (Boolean) Whether to enable groups priority.
+- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 - `sso_suite_settings` (Attributes) Configuration block for the SSO Suite. (see [below for nested schema](#nestedatt--authentication--sso--sso_suite_settings))
 

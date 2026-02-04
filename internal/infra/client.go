@@ -3,7 +3,6 @@ package infra
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"os"
 	"sync"
@@ -60,10 +59,6 @@ func (c *Client) Create(ctx context.Context, projectID, entity string, data map[
 }
 
 func (c *Client) Read(ctx context.Context, projectID, entity, entityID string) (*Response, error) {
-	if projectID == "" {
-		return nil, errors.New("project ID must be provided for a read operation")
-	}
-
 	httpQuery := map[string]string{
 		"entity": entity,
 		"id":     entityID,
@@ -85,10 +80,6 @@ func (c *Client) Read(ctx context.Context, projectID, entity, entityID string) (
 }
 
 func (c *Client) Update(ctx context.Context, projectID, entity, entityID string, data map[string]any) (*Response, error) {
-	if projectID == "" {
-		return nil, errors.New("project ID must be provided for an update operation")
-	}
-
 	httpBody := map[string]any{
 		"entity": entity,
 		"id":     entityID,
@@ -111,10 +102,6 @@ func (c *Client) Update(ctx context.Context, projectID, entity, entityID string,
 }
 
 func (c *Client) Delete(ctx context.Context, projectID, entity, entityID string) error {
-	if projectID == "" {
-		return errors.New("project ID must be provided for a delete operation")
-	}
-
 	httpQuery := map[string]string{
 		"entity": entity,
 		"id":     entityID,
