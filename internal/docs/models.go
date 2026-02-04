@@ -5,6 +5,8 @@ package docs
 import (
 	"fmt"
 
+	"github.com/descope/terraform-provider-descope/internal/models/descoper"
+	"github.com/descope/terraform-provider-descope/internal/models/managementkey"
 	"github.com/descope/terraform-provider-descope/internal/models/project"
 	"github.com/descope/terraform-provider-descope/internal/models/project/applications"
 	"github.com/descope/terraform-provider-descope/internal/models/project/attributes"
@@ -21,6 +23,14 @@ import (
 )
 
 func InjectModels() {
+	inject(descoper.DescoperAttributes, docsDescoper)
+	inject(descoper.DescoperProjectRoleAttributes, docsDescoperProjectRole)
+	inject(descoper.RBacAttributes, docsRBac)
+	inject(descoper.DescoperTagRoleAttributes, docsDescoperTagRole)
+	inject(managementkey.ManagementKeyAttributes, docsManagementKey)
+	inject(managementkey.ProjectRoleAttributes, docsProjectRole)
+	inject(managementkey.ReBacAttributes, docsReBac)
+	inject(managementkey.TagRoleAttributes, docsTagRole)
 	inject(project.ProjectAttributes, docsProject)
 	inject(applications.ApplicationsAttributes, docsApplications)
 	inject(applications.OIDCAttributes, docsOIDC)
