@@ -1079,10 +1079,26 @@ Optional:
 - `allow_duplicate_domains` (Boolean) Whether to allow duplicate SSO domains across tenants.
 - `allow_override_roles` (Boolean) Whether to allow overriding user's roles with SSO related roles.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
+- `groups_attribute_name_required` (Boolean) When configuring SSO the groups attribute name must be specified.
 - `groups_priority` (Boolean) Whether to enable groups priority.
+- `limit_mapping_to_mandatory_attributes` (Boolean) Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
+- `mandatory_user_attributes` (Attributes List) Define the required Descope attributes that must be populated when receiving SSO information. (see [below for nested schema](#nestedatt--authentication--sso--mandatory_user_attributes))
 - `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
+- `sso_domains_required` (Boolean) When configuring SSO an SSO domain must be specified.
 - `sso_suite_settings` (Attributes) Configuration block for the SSO Suite. (see [below for nested schema](#nestedatt--authentication--sso--sso_suite_settings))
+
+<a id="nestedatt--authentication--sso--mandatory_user_attributes"></a>
+### Nested Schema for `authentication.sso.mandatory_user_attributes`
+
+Required:
+
+- `id` (String) The identifier for the attribute. This value is called `Machine Name` in the Descope console.
+
+Optional:
+
+- `custom` (Boolean) Whether the attribute is a custom attribute defined in addition to the default Descope user attributes.
+
 
 <a id="nestedatt--authentication--sso--sso_suite_settings"></a>
 ### Nested Schema for `authentication.sso.sso_suite_settings`

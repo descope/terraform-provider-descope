@@ -328,6 +328,15 @@ var docsSSO = map[string]string{
 	"allow_duplicate_domains": "Whether to allow duplicate SSO domains across tenants.",
 	"allow_override_roles": "Whether to allow overriding user's roles with SSO related roles.",
 	"groups_priority": "Whether to enable groups priority.",
+	"mandatory_user_attributes": "Define the required Descope attributes that must be populated when receiving SSO information.",
+	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
+	"sso_domains_required": "When configuring SSO an SSO domain must be specified.",
+	"groups_attribute_name_required": "When configuring SSO the groups attribute name must be specified.",
+}
+
+var docsMandatoryUserAttribute = map[string]string{
+	"id": "The identifier for the attribute. This value is called `Machine Name` in the Descope console.",
+	"custom": "Whether the attribute is a custom attribute defined in addition to the default Descope user attributes.",
 }
 
 var docsSSOSuite = map[string]string{
