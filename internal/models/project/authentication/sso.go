@@ -25,9 +25,11 @@ var SSOAttributes = map[string]schema.Attribute{
 	"groups_attribute_name_required":        boolattr.Default(false),
 }
 
-var customAttributePrefix = "customAttributes."
-var groupsAttributeName = "group"
-var ssoDomainsAttributeName = "ssoDomains"
+const (
+	customAttributePrefix   = "customAttributes."
+	groupsAttributeName     = "group"
+	ssoDomainsAttributeName = "ssoDomains"
+)
 
 type SSOModel struct {
 	Disabled                               boolattr.Type                              `tfsdk:"disabled"`
@@ -53,7 +55,7 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.AllowOverrideRoles, data, "allowOverrideRoles")
 	boolattr.Get(m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 
-	getMandatoryUserAttributesValues(m.MandatoryUserAttributes, m.SSODomainsRequired, m.GroupsAttributeNameRequired, h, data)
+	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.SSODomainsRequired, &m.GroupsAttributeNameRequired, h, data)
 
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
 	return data
@@ -69,7 +71,7 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 	boolattr.Set(&m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 
-	setMandatoryUserAttributesValues(m.MandatoryUserAttributes, m.SSODomainsRequired, m.GroupsAttributeNameRequired, h, data)
+	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.SSODomainsRequired, &m.GroupsAttributeNameRequired, h, data)
 
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
 }
@@ -169,7 +171,7 @@ func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
 }
 
 // mandatoryUserAttributes field includes user attributes as strings, custom attributes are prefixed with "customAttributes." and "ssoDomains" and "group" are special attributes.
-func setMandatoryUserAttributesValues(mandatoryUserAttributes listattr.Type[MandatoryUserAttributeModel], ssoDomainsRequired boolattr.Type, groupsAttributeNameRequired boolattr.Type, h *helpers.Handler, data map[string]any) {
+func setMandatoryUserAttributesValues(mandatoryUserAttributes *listattr.Type[MandatoryUserAttributeModel], ssoDomainsRequired *boolattr.Type, groupsAttributeNameRequired *boolattr.Type, h *helpers.Handler, data map[string]any) {
 	attributes, ok := data["mandatoryUserAttributes"]
 	if !ok {
 		return
@@ -178,14 +180,23 @@ func setMandatoryUserAttributesValues(mandatoryUserAttributes listattr.Type[Mand
 	groupsRequired := false
 	mandatoryUserAttributesData := []map[string]any{}
 
-	for _, attribute := range attributes.([]interface{}) {
-		attributeStr, ok := attribute.(string)
-		if !ok {
-			continue
+	var attrs []string
+	switch v := attributes.(type) {
+	case []any:
+		for _, item := range v {
+			if s, ok := item.(string); ok {
+				attrs = append(attrs, s)
+			}
 		}
-		if attribute == ssoDomainsAttributeName {
+	case []string:
+		attrs = v
+	default:
+		return
+	}
+	for _, attributeStr := range attrs {
+		if attributeStr == ssoDomainsAttributeName {
 			domainsRequired = true
-		} else if attribute == groupsAttributeName {
+		} else if attributeStr == groupsAttributeName {
 			groupsRequired = true
 		} else {
 			if strings.HasPrefix(attributeStr, customAttributePrefix) {
@@ -195,7 +206,7 @@ func setMandatoryUserAttributesValues(mandatoryUserAttributes listattr.Type[Mand
 				})
 			} else {
 				mandatoryUserAttributesData = append(mandatoryUserAttributesData, map[string]any{
-					"value":  attribute,
+					"value":  attributeStr,
 					"custom": false,
 				})
 			}
@@ -207,33 +218,44 @@ func setMandatoryUserAttributesValues(mandatoryUserAttributes listattr.Type[Mand
 		"groupsRequired":          groupsRequired,
 		"mandatoryUserAttributes": mandatoryUserAttributesData,
 	}
-	listattr.Set(&mandatoryUserAttributes, tempData, "mandatoryUserAttributes", h)
-	boolattr.Set(&ssoDomainsRequired, tempData, "domainsRequired")
-	boolattr.Set(&groupsAttributeNameRequired, tempData, "groupsRequired")
+	listattr.Set(mandatoryUserAttributes, tempData, "mandatoryUserAttributes", h)
+	boolattr.Set(ssoDomainsRequired, tempData, "domainsRequired")
+	boolattr.Set(groupsAttributeNameRequired, tempData, "groupsRequired")
 }
 
-func getMandatoryUserAttributesValues(mandatoryUserAttributes listattr.Type[MandatoryUserAttributeModel], ssoDomainsRequired boolattr.Type, groupsAttributeNameRequired boolattr.Type, h *helpers.Handler, data map[string]any) {
+func getMandatoryUserAttributesValues(mandatoryUserAttributes *listattr.Type[MandatoryUserAttributeModel], ssoDomainsRequired *boolattr.Type, groupsAttributeNameRequired *boolattr.Type, h *helpers.Handler, data map[string]any) {
 	tempData := map[string]any{}
-	listattr.Get(mandatoryUserAttributes, tempData, "mandatoryUserAttributes", h)
-	boolattr.Get(ssoDomainsRequired, tempData, "domainsRequired")
-	boolattr.Get(groupsAttributeNameRequired, tempData, "groupsRequired")
+	listattr.Get(*mandatoryUserAttributes, tempData, "mandatoryUserAttributes", h)
+	boolattr.Get(*ssoDomainsRequired, tempData, "domainsRequired")
+	boolattr.Get(*groupsAttributeNameRequired, tempData, "groupsRequired")
 
 	attributes := []string{}
-	for _, attribute := range tempData["mandatoryUserAttributes"].([]any) {
+	mandatoryAttrs, ok := tempData["mandatoryUserAttributes"].([]any)
+	if !ok {
+		mandatoryAttrs = []any{}
+	}
+	for _, attribute := range mandatoryAttrs {
 		attributeData, ok := attribute.(map[string]any)
 		if !ok {
 			continue
 		}
-		if attributeData["custom"].(bool) {
-			attributes = append(attributes, customAttributePrefix+attributeData["value"].(string))
+		custom, _ := attributeData["custom"].(bool)
+		value, ok := attributeData["value"].(string)
+		if !ok {
+			continue
+		}
+		if custom {
+			attributes = append(attributes, customAttributePrefix+value)
 		} else {
-			attributes = append(attributes, attributeData["value"].(string))
+			attributes = append(attributes, value)
 		}
 	}
-	if tempData["domainsRequired"].(bool) {
+	domainsRequired, _ := tempData["domainsRequired"].(bool)
+	if domainsRequired {
 		attributes = append(attributes, ssoDomainsAttributeName)
 	}
-	if tempData["groupsRequired"].(bool) {
+	groupsRequired, _ := tempData["groupsRequired"].(bool)
+	if groupsRequired {
 		attributes = append(attributes, groupsAttributeName)
 	}
 

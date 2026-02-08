@@ -342,9 +342,13 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso.sso_domains_required":           true,
-				"authentication.sso.groups_attribute_name_required": true,
-				"authentication.sso.mandatory_user_attributes.#":    2,
+				"authentication.sso.sso_domains_required":               true,
+				"authentication.sso.groups_attribute_name_required":     true,
+				"authentication.sso.mandatory_user_attributes.#":        2,
+				"authentication.sso.mandatory_user_attributes.0.id":     "email",
+				"authentication.sso.mandatory_user_attributes.0.custom": false,
+				"authentication.sso.mandatory_user_attributes.1.id":     "department",
+				"authentication.sso.mandatory_user_attributes.1.custom": true,
 			}),
 		},
 		resource.TestStep{
