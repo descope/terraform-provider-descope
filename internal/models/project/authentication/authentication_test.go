@@ -307,6 +307,61 @@ func TestAuthentication(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				authentication = {
+					sso = {
+						allow_override_roles = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.allow_override_roles": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						allow_override_roles = false
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.allow_override_roles": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_domains_required = true
+						groups_attribute_name_required = true
+						mandatory_user_attributes = [
+							{ id = "email", custom = false },
+							{ id = "department", custom = true }
+						]
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_domains_required":           true,
+				"authentication.sso.groups_attribute_name_required": true,
+				"authentication.sso.mandatory_user_attributes.#":    2,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						limit_mapping_to_mandatory_attributes = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.limit_mapping_to_mandatory_attributes": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
 					password = {
 						disabled = true
 						temporary_lock = true
