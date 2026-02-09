@@ -2,6 +2,72 @@
 
 package docs
 
+var docsDescoper = map[string]string{
+	"email": "The email address of the Descope console user.",
+	"phone": "The phone number of the Descope console user.",
+	"name": "The display name of the Descope console user.",
+	"rbac": "Access control settings for the Descope console user. This defines the permissions " +
+	        "granted to the user, either as a company admin or for specific projects or project tags.",
+}
+
+var docsDescoperProjectRole = map[string]string{
+	"project_ids": "The project IDs this role grant applies to.",
+	"role": "The roles the descoper will be granted in the applicable projects. " +
+	        "Must be one of: `admin`, `developer`, `support`, `auditor`.",
+}
+
+var docsRBac = map[string]string{
+	"is_company_admin": "Whether this descoper has company-wide admin access. When set to `true`, " +
+	                    "the descoper cannot have `tag_roles` or `project_roles`.",
+	"project_roles": "A list of roles that are granted to the descoper for specific " +
+	                 "projects by their project ID.",
+	"tag_roles": "A list of roles that are granted to the descoper for all projects " +
+	             "that have a specific tag.",
+}
+
+var docsDescoperTagRole = map[string]string{
+	"tags": "The project tags this role assignment applies to.",
+	"role": "The role the descoper will be granted in the applicable projects. " +
+	        "Must be one of: `admin`, `developer`, `support`, `auditor`.",
+}
+
+var docsManagementKey = map[string]string{
+	"name": "A name for the management key.",
+	"description": "A description for the management key.",
+	"status": "The status of the management key. Must be either `active` or `inactive`.",
+	"expire_time": "The expiration time of the management key as a Unix timestamp. If not set, " +
+	               "the key will not expire. Changing this value after creation will require " +
+	               "the management key to be replaced.",
+	"permitted_ips": "A list of IP addresses or CIDR ranges that are allowed to use this management key. " +
+	                 "If not set, the key can be used from any IP address.",
+	"rebac": "Access control settings for the management key. This defines the permissions granted " +
+	         "to the management key, either at the company level or for specific projects or for " +
+	         "project tags. Changing this value after creation will require the management key " +
+	         "to be replaced.",
+	"cleartext": "The plaintext value of the management key. This is only available after the key is " +
+	             "created and cannot be retrieved later. Store this value securely as it is required " +
+	             "to authenticate API requests.",
+}
+
+var docsProjectRole = map[string]string{
+	"project_ids": "The project IDs this role grant applies to.",
+	"roles": "The roles the management key will be granted in the applicable projects.",
+}
+
+var docsReBac = map[string]string{
+	"company_roles": "A list of company-level role names that are granted to the management key. This " +
+	                 "attribute is mutually exclusive with `tag_roles` and `project_roles`.",
+	"project_roles": "A list of project-level role names that are granted to the management key for " +
+	                 "specific projects by their project ID.",
+	"tag_roles": "A list of project-level role names that are granted to the management key for " +
+	             "all projects that have a specific tag.",
+}
+
+var docsTagRole = map[string]string{
+	"tags": "The project tags this role grant applies to.",
+	"roles": "The roles the management key will be granted in the applicable projects.",
+}
+
 var docsProject = map[string]string{
 	"name": "The name of the Descope project.",
 	"environment": "This can be set to `production` to mark production projects, otherwise this should be " +
@@ -85,9 +151,29 @@ var docsManualConfiguration = map[string]string{
 	"certificate": "Enter the `Certificate` from the SP.",
 }
 
+var docsAccessKeyAttribute = map[string]string{
+	"id": "An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. " +
+	      "If a value is not provided then an appropriate one will be created from the value of `name`.",
+	"name": "The name of the attribute. This value is called `Display Name` in the Descope console.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", " +
+	        "\"singleselect\", \"multiselect\", \"date\".",
+	"select_options": "When the attribute type is \"multiselect\". A list of options to choose from.",
+	"widget_authorization": "Determines the permissions access key are required to have to access this attribute " +
+	                        "in the access key management widget.",
+}
+
+var docsAccessKeyAttributeWidgetAuthorization = map[string]string{
+	"view_permissions": "The permissions users are required to have to view this attribute in the access key management widget.",
+	"edit_permissions": "The permissions users are required to have to edit this attribute in the access key management widget.",
+}
+
 var docsAttributes = map[string]string{
-	"tenant": "A list of `TenantAttribute`. Read the description below.",
-	"user": "A list of `UserAttribute`. Read the description below.",
+	"tenant": "A list of custom attributes for storing additional details about " +
+	          "each tenant in the project.",
+	"user": "A list of custom attributes for storing additional details about " +
+	        "each user in the project.",
+	"access_key": "A list of custom attributes for storing additional details about " +
+	              "each access key in the project.",
 }
 
 var docsTenantAttribute = map[string]string{

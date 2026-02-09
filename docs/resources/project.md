@@ -146,8 +146,33 @@ Optional:
 
 Optional:
 
-- `tenant` (Attributes List) A list of `TenantAttribute`. Read the description below. (see [below for nested schema](#nestedatt--attributes--tenant))
-- `user` (Attributes List) A list of `UserAttribute`. Read the description below. (see [below for nested schema](#nestedatt--attributes--user))
+- `access_key` (Attributes List) A list of custom attributes for storing additional details about each access key in the project. (see [below for nested schema](#nestedatt--attributes--access_key))
+- `tenant` (Attributes List) A list of custom attributes for storing additional details about each tenant in the project. (see [below for nested schema](#nestedatt--attributes--tenant))
+- `user` (Attributes List) A list of custom attributes for storing additional details about each user in the project. (see [below for nested schema](#nestedatt--attributes--user))
+
+<a id="nestedatt--attributes--access_key"></a>
+### Nested Schema for `attributes.access_key`
+
+Required:
+
+- `name` (String) The name of the attribute. This value is called `Display Name` in the Descope console.
+- `type` (String) The type of the attribute. Choose one of "string", "number", "boolean", "singleselect", "multiselect", "date".
+
+Optional:
+
+- `id` (String) An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. If a value is not provided then an appropriate one will be created from the value of `name`.
+- `select_options` (Set of String) When the attribute type is "multiselect". A list of options to choose from.
+- `widget_authorization` (Attributes) Determines the permissions access key are required to have to access this attribute in the access key management widget. (see [below for nested schema](#nestedatt--attributes--access_key--widget_authorization))
+
+<a id="nestedatt--attributes--access_key--widget_authorization"></a>
+### Nested Schema for `attributes.access_key.widget_authorization`
+
+Optional:
+
+- `edit_permissions` (Set of String) The permissions users are required to have to edit this attribute in the access key management widget.
+- `view_permissions` (Set of String) The permissions users are required to have to view this attribute in the access key management widget.
+
+
 
 <a id="nestedatt--attributes--tenant"></a>
 ### Nested Schema for `attributes.tenant`
@@ -1099,8 +1124,8 @@ Optional:
 - `allow_duplicate_domains` (Boolean) Whether to allow duplicate SSO domains across tenants.
 - `allow_override_roles` (Boolean) Whether to allow overriding user's roles with SSO related roles.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `groups_priority` (Boolean) Whether to enable groups priority.
+- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 - `sso_suite_settings` (Attributes) Configuration block for the SSO Suite. (see [below for nested schema](#nestedatt--authentication--sso--sso_suite_settings))
 
@@ -1964,11 +1989,23 @@ Required:
 Optional:
 
 - `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--http--authentication))
+- `aws_access_key_id` (String, Sensitive) The unique AWS access key ID.
+- `aws_auth_type` (String) Apply AWS signature version 4 authentication to the request.
+- `aws_external_id` (String) The external ID to use when assuming the role.
+- `aws_region` (String) The AWS region, e.g. `us-east-1`.
+- `aws_role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
+- `aws_secret_access_key` (String, Sensitive) The secret AWS access key.
+- `aws_service` (String) The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.
 - `description` (String) A description of what your connector is used for.
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `include_headers_in_context` (Boolean) The connector response context will also include the headers. The context will have a "body" attribute and a "headers" attribute. See more details in the help guide
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
+- `rfc9421_components` (String) HTTP message components to include in the signature (e.g., @method, @target-uri, @authority, content-type, content-digest). Leave empty to use defaults: @method, @target-uri, @authority
+- `rfc9421_key_id` (String) Identifier for the signing key. This will be included in the signature metadata to help the recipient identify which key was used for verification
+- `rfc9421_private_key` (String, Sensitive) Provide a private key in PEM format or an HMAC secret. Algorithms such as ECDSA P-256/P-384, Ed25519, and RSA are supported. You can paste the key with or without newlines; both formats are accepted.
+- `rfc9421_signature_ttl` (Number) How long the signature is valid for, in seconds. Default is 300 seconds (5 minutes). The signature includes automatic replay protection via a randomly generated nonce
+- `rfc9421_signing_enabled` (Boolean) Enable RFC 9421 HTTP Message Signatures for cryptographically signing requests. Supports multiple algorithms including ECDSA, Ed25519, RSA, and HMAC
 - `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 Read-Only:
@@ -2065,16 +2102,16 @@ Read-Only:
 
 Required:
 
-- `bind_dn` (String) The Distinguished Name to bind with for searching.
-- `bind_password` (String, Sensitive) The password for the bind DN.
-- `client_certificate` (String, Sensitive) The client certificate in PEM format for mTLS authentication.
-- `client_key` (String, Sensitive) The client private key in PEM format for mTLS authentication.
 - `name` (String) A custom name for your connector.
 - `server_url` (String) The LDAP server URL (e.g., ldap://localhost:389 or ldaps://localhost:636 for SSL/TLS).
 
 Optional:
 
+- `bind_dn` (String) The Distinguished Name to bind with for searching.
+- `bind_password` (String, Sensitive) The password for the bind DN.
 - `ca_certificate` (String, Sensitive) The Certificate Authority certificate in PEM format for validating the server certificate.
+- `client_certificate` (String, Sensitive) The client certificate in PEM format for mTLS authentication.
+- `client_key` (String, Sensitive) The client private key in PEM format for mTLS authentication.
 - `description` (String) A description of what your connector is used for.
 - `reject_unauthorized` (Boolean) Reject connections to LDAP servers with invalid certificates.
 - `use_mtls` (Boolean) Enable mutual TLS authentication for LDAP connection.
@@ -2284,7 +2321,7 @@ Required:
 - `email_from` (String) The email address that will appear in the 'From' field of the sent email
 - `message_stream_id` (String) The ID of the message stream to use for the email
 - `name` (String) A custom name for your connector.
-- `server_apitoken` (String, Sensitive) The API token for authenticating with the Postmark server
+- `server_api_token` (String, Sensitive) The API token for authenticating with the Postmark server
 
 Optional:
 

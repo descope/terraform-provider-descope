@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 )
 
-// inject documentation into models before using them
+// Inject documentation into models before using them
 func init() {
 	docs.InjectModels()
 }
