@@ -7,6 +7,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/project/adminportal"
 	"github.com/descope/terraform-provider-descope/internal/models/project/applications"
 	"github.com/descope/terraform-provider-descope/internal/models/project/attributes"
 	"github.com/descope/terraform-provider-descope/internal/models/project/authentication"
@@ -38,6 +39,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
 	"widgets":          mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
 	"lists":            listattr.Default[lists.ListModel](lists.ListAttributes, lists.ListValidator, lists.ListsModifier),
+	"admin_portal":     objattr.Default[adminportal.AdminPortalModel](nil, adminportal.AdminPortalAttributes, adminportal.AdminPortalValidator),
 }
 
 type ProjectModel struct {
@@ -57,6 +59,7 @@ type ProjectModel struct {
 	Flows          mapattr.Type[flows.FlowModel]                    `tfsdk:"flows"`
 	Widgets        mapattr.Type[widgets.WidgetModel]                `tfsdk:"widgets"`
 	Lists          listattr.Type[lists.ListModel]                   `tfsdk:"lists"`
+	AdminPortal    objattr.Type[adminportal.AdminPortalModel]       `tfsdk:"admin_portal"`
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -79,6 +82,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	mapattr.Get(m.Widgets, data, "widgets", h)
 	widgets.EnsureWidgetIDs(m.Widgets, data, "widgets", h)
 	listattr.Get(m.Lists, data, "lists", h)
+	objattr.Get(m.AdminPortal, data, "adminportal", h)
 	return data
 }
 
@@ -110,6 +114,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 		mapattr.Set(&m.Widgets, data, "widgets", h)
 	}
 	listattr.SetMatchingNames(&m.Lists, data, "lists", "name", h)
+	objattr.Set(&m.AdminPortal, data, "adminportal", h)
 }
 
 func (m *ProjectModel) CollectReferences(h *helpers.Handler) {

@@ -21,6 +21,7 @@ description: |-
 
 ### Optional
 
+- `admin_portal` (Attributes) Admin portal configuration - A hosted page for end users to access and use Descope Widgets (see [below for nested schema](#nestedatt--admin_portal))
 - `applications` (Attributes) Applications that are registered with the project. (see [below for nested schema](#nestedatt--applications))
 - `attributes` (Attributes) Custom attributes that can be attached to users and tenants. (see [below for nested schema](#nestedatt--attributes))
 - `authentication` (Attributes) Settings for each authentication method. (see [below for nested schema](#nestedatt--authentication))
@@ -39,6 +40,25 @@ description: |-
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedatt--admin_portal"></a>
+### Nested Schema for `admin_portal`
+
+Optional:
+
+- `enabled` (Boolean) Whether the Admin Portal is enabled
+- `style_id` (String) The style id to use
+- `widgets` (Attributes List) The widgets to show in the Admin Portal (see [below for nested schema](#nestedatt--admin_portal--widgets))
+
+<a id="nestedatt--admin_portal--widgets"></a>
+### Nested Schema for `admin_portal.widgets`
+
+Required:
+
+- `type` (String) The type of the Widget
+- `widget_id` (String) The unique identifier of the Widget
+
+
 
 <a id="nestedatt--applications"></a>
 ### Nested Schema for `applications`
