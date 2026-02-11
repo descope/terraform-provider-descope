@@ -3045,7 +3045,7 @@ Optional:
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
 - `enforce_issuer` (Boolean) Whether to enforce that the JWT issuer matches the project configuration.
 - `exclude_permission_claim` (Boolean) Whether to exclude the permissions claim from the JWT token.
-- `override_subject_claim` (String) Custom value to override the standard `sub` (subject) claim in the JWT token. Leave empty to use the default subject claim.
+- `override_subject_claim` (Boolean) Whether to override the standard `sub` (subject) claim in the JWT token.
 
 Read-Only:
 
@@ -3070,7 +3070,7 @@ Optional:
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
 - `enforce_issuer` (Boolean) Whether to enforce that the JWT issuer matches the project configuration.
 - `exclude_permission_claim` (Boolean) Whether to exclude the permissions claim from the JWT token.
-- `override_subject_claim` (String) Custom value to override the standard `sub` (subject) claim in the JWT token. Leave empty to use the default subject claim.
+- `override_subject_claim` (Boolean) Whether to override the standard `sub` (subject) claim in the JWT token.
 
 Read-Only:
 

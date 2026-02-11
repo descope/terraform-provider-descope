@@ -1278,9 +1278,8 @@ var docsJWTTemplate = map[string]string{
 	"conformance_issuer":       "Whether to use OIDC conformance for the JWT issuer field.",
 	"enforce_issuer":           "Whether to enforce that the JWT issuer matches the project configuration.",
 	"exclude_permission_claim": "Whether to exclude the permissions claim from the JWT token.",
-	"override_subject_claim": "Custom value to override the standard `sub` (subject) claim in the JWT token. " +
-		"Leave empty to use the default subject claim.",
-	"add_jti_claim": "Whether to add a `jti` (JWT ID) claim to the token for uniqueness tracking.",
+	"override_subject_claim":   "Whether to override the standard `sub` (subject) claim in the JWT token.",
+	"add_jti_claim":            "Whether to add a `jti` (JWT ID) claim to the token for uniqueness tracking.",
 	"template": "The JSON template defining the structure and claims of the JWT token. This is expected " +
 		"to be a valid JSON object given as a `string` value.",
 }

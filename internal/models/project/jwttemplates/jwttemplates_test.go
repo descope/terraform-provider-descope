@@ -61,9 +61,9 @@ func TestJWTTemplates(t *testing.T) {
 						auto_tenant_claim = true
 						conformance_issuer = true
 						enforce_issuer = true
-						exclude_permission_claim = true
-						override_subject_claim = "custom-sub"
-						add_jti_claim = true
+					exclude_permission_claim = true
+					override_subject_claim = true
+					add_jti_claim = true
 					}
 				]
 			}
@@ -77,7 +77,7 @@ func TestJWTTemplates(t *testing.T) {
 				"jwt_templates.user_templates.0.conformance_issuer":       true,
 				"jwt_templates.user_templates.0.enforce_issuer":           true,
 				"jwt_templates.user_templates.0.exclude_permission_claim": true,
-				"jwt_templates.user_templates.0.override_subject_claim":   "custom-sub",
+				"jwt_templates.user_templates.0.override_subject_claim":   true,
 				"jwt_templates.user_templates.0.add_jti_claim":            true,
 				"jwt_templates.user_templates.0.auth_schema":              "tenantOnly",
 				"jwt_templates.user_templates.0.empty_claim_policy":       "delete",

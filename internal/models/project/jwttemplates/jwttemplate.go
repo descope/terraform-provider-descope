@@ -20,7 +20,7 @@ var JWTTemplateAttributes = map[string]schema.Attribute{
 	"conformance_issuer":       boolattr.Default(false),
 	"enforce_issuer":           boolattr.Default(false),
 	"exclude_permission_claim": boolattr.Default(false),
-	"override_subject_claim":   stringattr.Default(""),
+	"override_subject_claim":   boolattr.Default(false),
 	"add_jti_claim":            boolattr.Default(false),
 	"template":                 stringattr.Required(stringattr.JSONValidator()),
 }
@@ -35,7 +35,7 @@ type JWTTemplateModel struct {
 	ConformanceIssuer      boolattr.Type   `tfsdk:"conformance_issuer"`
 	EnforceIssuer          boolattr.Type   `tfsdk:"enforce_issuer"`
 	ExcludePermissionClaim boolattr.Type   `tfsdk:"exclude_permission_claim"`
-	OverrideSubjectClaim   stringattr.Type `tfsdk:"override_subject_claim"`
+	OverrideSubjectClaim   boolattr.Type   `tfsdk:"override_subject_claim"`
 	AddJtiClaim            boolattr.Type   `tfsdk:"add_jti_claim"`
 	Template               stringattr.Type `tfsdk:"template"`
 }
@@ -50,7 +50,7 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.ConformanceIssuer, data, "conformanceIssuer")
 	boolattr.Get(m.EnforceIssuer, data, "enforceIssuer")
 	boolattr.Get(m.ExcludePermissionClaim, data, "excludePermissionClaim")
-	stringattr.Get(m.OverrideSubjectClaim, data, "overrideSubjectClaim")
+	boolattr.Get(m.OverrideSubjectClaim, data, "overrideSubjectClaim")
 	boolattr.Get(m.AddJtiClaim, data, "addJtiClaim")
 
 	// convert template JSON string to map
@@ -83,7 +83,7 @@ func (m *JWTTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ConformanceIssuer, data, "conformanceIssuer")
 	boolattr.Set(&m.EnforceIssuer, data, "enforceIssuer")
 	boolattr.Set(&m.ExcludePermissionClaim, data, "excludePermissionClaim")
-	stringattr.Set(&m.OverrideSubjectClaim, data, "overrideSubjectClaim")
+	boolattr.Set(&m.OverrideSubjectClaim, data, "overrideSubjectClaim")
 	boolattr.Set(&m.AddJtiClaim, data, "addJtiClaim")
 
 	// We do not currently update the template data if it's already set because it might be different after apply
