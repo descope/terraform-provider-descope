@@ -139,3 +139,12 @@ lists
 
 Lists that can be used for various purposes in the project, such as IP allowlists,
 text lists, or custom JSON data.
+
+
+
+admin_portal
+------------
+
+- Type: `object` of `adminportal.AdminPortal` 
+
+Admin portal configuration - A hosted page for end users to access and use Descope Widgets

@@ -87,6 +87,18 @@ var docsProject = map[string]string{
 	           "tenant admins and end users.",
 	"lists": "Lists that can be used for various purposes in the project, such as IP allowlists, " +
 	         "text lists, or custom JSON data.",
+	"admin_portal": "Admin portal configuration - A hosted page for end users to access and use Descope Widgets",
+}
+
+var docsAdminPortalWidget = map[string]string{
+	"widget_id": "The unique identifier of the Widget",
+	"type": "The type of the Widget",
+}
+
+var docsAdminPortal = map[string]string{
+	"enabled": "Whether the Admin Portal is enabled",
+	"style_id": "The style id to use",
+	"widgets": "The widgets to show in the Admin Portal",
 }
 
 var docsApplications = map[string]string{
