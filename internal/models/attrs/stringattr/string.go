@@ -1,6 +1,7 @@
 package stringattr
 
 import (
+	"fmt"
 	"slices"
 
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -30,69 +31,83 @@ func IdentifierMatched() schema.StringAttribute {
 	}
 }
 
-func Required(validators ...validator.String) schema.StringAttribute {
+func Required(extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
 	return schema.StringAttribute{
-		Required:   true,
-		Validators: append([]validator.String{NonEmptyValidator}, validators...),
+		Required:      true,
+		Validators:    append([]validator.String{NonEmptyValidator}, validators...),
+		PlanModifiers: modifiers,
 	}
 }
 
-func SecretRequired(validators ...validator.String) schema.StringAttribute {
+func SecretRequired(extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
 	return schema.StringAttribute{
-		Required:   true,
-		Sensitive:  true,
-		Validators: append([]validator.String{NonEmptyValidator}, validators...),
+		Required:      true,
+		Sensitive:     true,
+		Validators:    append([]validator.String{NonEmptyValidator}, validators...),
+		PlanModifiers: modifiers,
 	}
 }
 
-func SecretOptional(validators ...validator.String) schema.StringAttribute {
+func SecretOptional(extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
 	return schema.StringAttribute{
-		Optional:   true,
-		Computed:   true,
-		Sensitive:  true,
-		Validators: validators,
-		Default:    &nullDefault{},
-	}
-}
-
-func SecretComputed() schema.StringAttribute {
-	return schema.StringAttribute{
+		Optional:      true,
 		Computed:      true,
 		Sensitive:     true,
-		PlanModifiers: []planmodifier.String{helpers.UseValidStateForUnknown()},
+		Validators:    validators,
+		PlanModifiers: modifiers,
+		Default:       &nullDefault{},
 	}
 }
 
-func Optional(validators ...validator.String) schema.StringAttribute {
+func SecretGenerated(optional bool, extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
+	return schema.StringAttribute{
+		Optional:      optional,
+		Computed:      true,
+		Sensitive:     true,
+		Validators:    validators,
+		PlanModifiers: append([]planmodifier.String{helpers.UseValidStateForUnknown()}, modifiers...),
+	}
+}
+
+func Optional(extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
 	return schema.StringAttribute{
 		Optional:      true,
 		Computed:      true,
 		Validators:    validators,
-		PlanModifiers: []planmodifier.String{helpers.UseValidStateForUnknown()},
+		PlanModifiers: append([]planmodifier.String{helpers.UseValidStateForUnknown()}, modifiers...),
 	}
 }
 
-func Default(value string, validators ...validator.String) schema.StringAttribute {
+func Default(value string, extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
 	return schema.StringAttribute{
-		Optional:   true,
-		Computed:   true,
-		Validators: validators,
-		Default:    stringdefault.StaticString(value),
+		Optional:      true,
+		Computed:      true,
+		Validators:    validators,
+		PlanModifiers: modifiers,
+		Default:       stringdefault.StaticString(value),
 	}
 }
 
-func Deprecated(message string, validators ...validator.String) schema.StringAttribute {
+func Deprecated(message string, extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
 	return schema.StringAttribute{
 		Optional:           true,
 		Computed:           true,
 		DeprecationMessage: message + " This attribute will be removed in a future version of the provider.",
 		Validators:         validators,
+		PlanModifiers:      modifiers,
 		Default:            &nullDefault{},
 	}
 }
 
-func Renamed(oldname, newname string, validators ...validator.String) schema.StringAttribute {
-	return Deprecated("The "+oldname+" attribute has been renamed, set the "+newname+" attribute instead.", validators...)
+func Renamed(oldname, newname string, extras ...any) schema.StringAttribute {
+	return Deprecated("The "+oldname+" attribute has been renamed, set the "+newname+" attribute instead.", extras...)
 }
 
 func Get(s Type, data map[string]any, key string) {
@@ -121,4 +136,22 @@ func Nil(s *Type) {
 	if s.IsUnknown() {
 		*s = Value("")
 	}
+}
+
+func parseExtras(extras []any) (validators []validator.String, modifiers []planmodifier.String) {
+	for _, e := range extras {
+		matched := false
+		if validator, ok := e.(validator.String); ok {
+			matched = true
+			validators = append(validators, validator)
+		}
+		if modifier, ok := e.(planmodifier.String); ok {
+			matched = true
+			modifiers = append(modifiers, modifier)
+		}
+		if !matched {
+			panic(fmt.Sprintf("unexpected extra value of type %T in string attribute", e))
+		}
+	}
+	return
 }

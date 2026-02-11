@@ -20,7 +20,7 @@ var ManagementKeyAttributes = map[string]schema.Attribute{
 	"expire_time":   intattr.Default(0, int64planmodifier.RequiresReplace()),
 	"permitted_ips": strlistattr.Default(),
 	"rebac":         objattr.Required[ReBacModel](ReBacAttributes, ReBacValidator, objectplanmodifier.RequiresReplace()),
-	"cleartext":     stringattr.SecretComputed(),
+	"cleartext":     stringattr.SecretGenerated(false),
 }
 
 type ManagementKeyModel struct {

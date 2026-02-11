@@ -10,25 +10,30 @@ import (
 
 	"github.com/hashicorp/go-uuid"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/stretchr/testify/require"
 )
 
 func Project(t *testing.T) *Resource {
-	return newResource(t, "project", "test")
+	return newResource(t, "project")
 }
 
 func Descoper(t *testing.T) *Resource {
-	return newResource(t, "descoper", "test")
+	return newResource(t, "descoper")
 }
 
 func ManagementKey(t *testing.T) *Resource {
-	return newResource(t, "management_key", "test")
+	return newResource(t, "management_key")
 }
 
-func newResource(t *testing.T, typ, id string) *Resource {
+func InboundApp(t *testing.T) *Resource {
+	return newResource(t, "inbound_app")
+}
+
+func newResource(t *testing.T, typ string) *Resource {
 	return &Resource{
 		Type: typ,
-		ID:   id,
+		ID:   "test",
 		Name: GenerateAlias(t),
 	}
 }
@@ -102,6 +107,24 @@ func GenerateAlias(t *testing.T) string {
 	require.NoError(t, err)
 	suffix := rand[len(rand)-8:]
 	return fmt.Sprintf("testacc-%s-%s-%s", test, ts, suffix)
+}
+
+func GenerateImportStateID(path string, attrs ...string) resource.ImportStateIdFunc {
+	return func(state *terraform.State) (string, error) {
+		resources, ok := state.RootModule().Resources[path]
+		if !ok {
+			return "", fmt.Errorf("resource not found: %s", path) // nolint:forbidigo
+		}
+		var parts []string
+		for _, attr := range attrs {
+			v, ok := resources.Primary.Attributes[attr]
+			if !ok || v == "" {
+				return "", fmt.Errorf("attribute %q not found in %s", attr, path) // nolint:forbidigo
+			}
+			parts = append(parts, v)
+		}
+		return strings.Join(parts, "/"), nil
+	}
 }
 
 func flatten(checks map[string]any, keypath string) map[string]any {
