@@ -49,9 +49,9 @@ func (m *JWTTemplateModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.AutoDCT, data, "autoDCT")
 	boolattr.Get(m.ConformanceIssuer, data, "conformanceIssuer")
 	boolattr.Get(m.EnforceIssuer, data, "enforceIssuer")
-	boolattr.Get(m.ExcludePermissionClaim, data, "excludePermissionClaim")
-	boolattr.Get(m.OverrideSubjectClaim, data, "overrideSubjectClaim")
-	boolattr.Get(m.AddJtiClaim, data, "addJtiClaim")
+	boolattr.Get(m.ExcludePermissionClaim, data, "excludePermissions")
+	boolattr.Get(m.OverrideSubjectClaim, data, "overrideSubject")
+	boolattr.Get(m.AddJtiClaim, data, "addJti")
 
 	// convert template JSON string to map
 	template := map[string]any{}
@@ -82,9 +82,9 @@ func (m *JWTTemplateModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.AutoDCT, data, "autoDCT")
 	boolattr.Set(&m.ConformanceIssuer, data, "conformanceIssuer")
 	boolattr.Set(&m.EnforceIssuer, data, "enforceIssuer")
-	boolattr.Set(&m.ExcludePermissionClaim, data, "excludePermissionClaim")
-	boolattr.Set(&m.OverrideSubjectClaim, data, "overrideSubjectClaim")
-	boolattr.Set(&m.AddJtiClaim, data, "addJtiClaim")
+	boolattr.Set(&m.ExcludePermissionClaim, data, "excludePermissions")
+	boolattr.Set(&m.OverrideSubjectClaim, data, "overrideSubject")
+	boolattr.Set(&m.AddJtiClaim, data, "addJti")
 
 	// We do not currently update the template data if it's already set because it might be different after apply
 	if m.Template.ValueString() == "" {
