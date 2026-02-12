@@ -1275,13 +1275,13 @@ var docsJWTTemplate = map[string]string{
 	"empty_claim_policy": "Policy for empty claims - `none`, `nil` or `delete`.",
 	"auto_tenant_claim": "When a user is associated with a single tenant, the tenant will be set as the user's " +
 		"active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.",
-	"conformance_issuer":       "Whether to use OIDC conformance for the JWT issuer field.",
-	"enforce_issuer":           "Whether to enforce that the JWT issuer matches the project configuration.",
-	"exclude_permission_claim": "Whether to exclude the permissions claim from the JWT token.",
-	"override_subject_claim":   "Whether to override the standard `sub` (subject) claim in the JWT token.",
-	"add_jti_claim":            "Whether to add a `jti` (JWT ID) claim to the token for uniqueness tracking.",
+	"conformance_issuer": "Whether to use OIDC conformance for the JWT issuer field.",
+	"enforce_issuer":     "Whether to enforce that the JWT issuer matches the project configuration.",
 	"template": "The JSON template defining the structure and claims of the JWT token. This is expected " +
 		"to be a valid JSON object given as a `string` value.",
+	"exclude_permission_claim": "Whether to exclude permissions from the JWT token.",
+	"override_subject_claim":   "Whether to add a custom subject claim to the JWT. A default new `dsub` claim will be added with the user Id",
+	"add_jti_claim":            "Whether to add a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.",
 }
 
 var docsJWTTemplates = map[string]string{
