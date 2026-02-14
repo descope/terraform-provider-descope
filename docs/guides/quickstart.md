@@ -30,8 +30,8 @@ Create `main.tf` with the provider declaration:
 terraform {
   required_providers {
     descope = {
-      source  = "descope/descope"
-      version = "~> 0.9"
+      source = "descope/descope"
+      version = "0.3.4"
     }
   }
 }
