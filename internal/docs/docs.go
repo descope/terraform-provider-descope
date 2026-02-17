@@ -362,8 +362,8 @@ var docsSSO = map[string]string{
 	"groups_priority": "Whether to enable groups priority.",
 	"mandatory_user_attributes": "Define the required Descope attributes that must be populated when receiving SSO information.",
 	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
-	"sso_domains_required": "When configuring SSO an SSO domain must be specified.",
-	"groups_attribute_name_required": "When configuring SSO the groups attribute name must be specified.",
+	"require_sso_domains": "When configuring SSO an SSO domain must be specified.",
+	"require_groups_attribute_name": "When configuring SSO the groups attribute name must be specified.",
 }
 
 var docsMandatoryUserAttribute = map[string]string{

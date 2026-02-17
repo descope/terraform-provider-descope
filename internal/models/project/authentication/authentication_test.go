@@ -332,8 +332,8 @@ func TestAuthentication(t *testing.T) {
 			Config: p.Config(`
 				authentication = {
 					sso = {
-						sso_domains_required = true
-						groups_attribute_name_required = true
+						require_sso_domains = true
+						require_groups_attribute_name = true
 						mandatory_user_attributes = [
 							{ id = "email", custom = false },
 							{ id = "department", custom = true }
@@ -342,8 +342,8 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso.sso_domains_required":               true,
-				"authentication.sso.groups_attribute_name_required":     true,
+				"authentication.sso.require_sso_domains":                true,
+				"authentication.sso.require_groups_attribute_name":      true,
 				"authentication.sso.mandatory_user_attributes.#":        2,
 				"authentication.sso.mandatory_user_attributes.0.id":     "email",
 				"authentication.sso.mandatory_user_attributes.0.custom": false,

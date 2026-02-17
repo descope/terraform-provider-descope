@@ -21,8 +21,8 @@ var SSOAttributes = map[string]schema.Attribute{
 	"groups_priority":                       boolattr.Default(false),
 	"mandatory_user_attributes":             listattr.Default[MandatoryUserAttributeModel](MandatoryUserAttributeAttributes),
 	"limit_mapping_to_mandatory_attributes": boolattr.Default(false),
-	"sso_domains_required":                  boolattr.Default(false),
-	"groups_attribute_name_required":        boolattr.Default(false),
+	"require_sso_domains":                   boolattr.Default(false),
+	"require_groups_attribute_name":         boolattr.Default(false),
 }
 
 const (
@@ -41,8 +41,8 @@ type SSOModel struct {
 	GroupsPriority                         boolattr.Type                              `tfsdk:"groups_priority"`
 	MandatoryUserAttributes                listattr.Type[MandatoryUserAttributeModel] `tfsdk:"mandatory_user_attributes"`
 	LimitMappingToMandatoryAttributes      boolattr.Type                              `tfsdk:"limit_mapping_to_mandatory_attributes"`
-	SSODomainsRequired                     boolattr.Type                              `tfsdk:"sso_domains_required"`
-	GroupsAttributeNameRequired            boolattr.Type                              `tfsdk:"groups_attribute_name_required"`
+	RequireSSODomains                      boolattr.Type                              `tfsdk:"require_sso_domains"`
+	RequireGroupsAttributeName             boolattr.Type                              `tfsdk:"require_groups_attribute_name"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
@@ -55,7 +55,7 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.AllowOverrideRoles, data, "allowOverrideRoles")
 	boolattr.Get(m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 
-	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.SSODomainsRequired, &m.GroupsAttributeNameRequired, h, data)
+	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
 	return data
@@ -71,7 +71,7 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 	boolattr.Set(&m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 
-	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.SSODomainsRequired, &m.GroupsAttributeNameRequired, h, data)
+	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
 }
