@@ -1752,6 +1752,7 @@ func TestConnectors(t *testing.T) {
 						{
 							name = "Test unibeam Connector"
 							description = "A description for the unibeam connector"
+    						base_url = "https://apigw.us.unibeam.com"
     						customer_id = "2brt4jplly"
     						client_id = "sgetgyvq"
     						client_secret = "tjpxl7uy4wbb"
@@ -1767,6 +1768,7 @@ func TestConnectors(t *testing.T) {
 					"id":              testacc.AttributeHasPrefix("CI"),
 					"name":            "Test unibeam Connector",
 					"description":     "A description for the unibeam connector",
+					"base_url":        "https://apigw.us.unibeam.com",
 					"customer_id":     "2brt4jplly",
 					"client_id":       "sgetgyvq",
 					"client_secret":   "tjpxl7uy4wbb",

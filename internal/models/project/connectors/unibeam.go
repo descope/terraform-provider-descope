@@ -13,6 +13,7 @@ var UnibeamAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
+	"base_url":        stringattr.Required(),
 	"customer_id":     stringattr.Required(),
 	"client_id":       stringattr.Required(),
 	"client_secret":   stringattr.SecretRequired(),
@@ -27,6 +28,7 @@ type UnibeamModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
+	BaseURL        stringattr.Type `tfsdk:"base_url"`
 	CustomerID     stringattr.Type `tfsdk:"customer_id"`
 	ClientID       stringattr.Type `tfsdk:"client_id"`
 	ClientSecret   stringattr.Type `tfsdk:"client_secret"`
@@ -52,6 +54,7 @@ func (m *UnibeamModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *UnibeamModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
+	stringattr.Get(m.BaseURL, c, "baseUrl")
 	stringattr.Get(m.CustomerID, c, "customerId")
 	stringattr.Get(m.ClientID, c, "clientId")
 	stringattr.Get(m.ClientSecret, c, "clientSecret")
@@ -61,6 +64,7 @@ func (m *UnibeamModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 }
 
 func (m *UnibeamModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	stringattr.Set(&m.CustomerID, c, "customerId")
 	stringattr.Set(&m.ClientID, c, "clientId")
 	stringattr.Nil(&m.ClientSecret)
