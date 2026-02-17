@@ -64,7 +64,7 @@ view_permissions
 
 - Type: `set` of `string` 
 
-The permissions user are required to have to view this attribute in the access key management widget.
+The permissions users are required to have to view this attribute in the access key management widget.
 
 
 
@@ -73,4 +73,4 @@ edit_permissions
 
 - Type: `set` of `string` 
 
-The permissions user are required to have to edit this attribute in the access key management widget.
+The permissions users are required to have to edit this attribute in the access key management widget.
