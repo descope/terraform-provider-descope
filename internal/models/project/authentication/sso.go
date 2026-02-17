@@ -178,7 +178,7 @@ func setMandatoryUserAttributesValues(mandatoryUserAttributes *listattr.Type[Man
 	}
 	domainsRequired := false
 	groupsRequired := false
-	mandatoryUserAttributesData := []map[string]any{}
+	mandatoryUserAttributesData := []any{}
 
 	var attrs []string
 	switch v := attributes.(type) {
