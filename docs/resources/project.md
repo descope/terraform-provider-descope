@@ -2210,23 +2210,11 @@ Required:
 Optional:
 
 - `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--http--authentication))
-- `aws_access_key_id` (String, Sensitive) The unique AWS access key ID.
-- `aws_auth_type` (String) Apply AWS signature version 4 authentication to the request.
-- `aws_external_id` (String) The external ID to use when assuming the role.
-- `aws_region` (String) The AWS region, e.g. `us-east-1`.
-- `aws_role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
-- `aws_secret_access_key` (String, Sensitive) The secret AWS access key.
-- `aws_service` (String) The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.
 - `description` (String) A description of what your connector is used for.
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `include_headers_in_context` (Boolean) The connector response context will also include the headers. The context will have a "body" attribute and a "headers" attribute. See more details in the help guide
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
-- `rfc9421_components` (String) HTTP message components to include in the signature (e.g., @method, @target-uri, @authority, content-type, content-digest). Leave empty to use defaults: @method, @target-uri, @authority
-- `rfc9421_key_id` (String) Identifier for the signing key. This will be included in the signature metadata to help the recipient identify which key was used for verification
-- `rfc9421_private_key` (String, Sensitive) Provide a private key in PEM format or an HMAC secret. Algorithms such as ECDSA P-256/P-384, Ed25519, and RSA are supported. You can paste the key with or without newlines; both formats are accepted.
-- `rfc9421_signature_ttl` (Number) How long the signature is valid for, in seconds. Default is 300 seconds (5 minutes). The signature includes automatic replay protection via a randomly generated nonce
-- `rfc9421_signing_enabled` (Boolean) Enable RFC 9421 HTTP Message Signatures for cryptographically signing requests. Supports multiple algorithms including ECDSA, Ed25519, RSA, and HMAC
 - `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 Read-Only:
