@@ -1532,14 +1532,14 @@ Read-Only:
 Required:
 
 - `name` (String) A custom name for your connector.
-- `private_key` (String, Sensitive) The private key that can be copied from the Keys screen in the Arkose portal.
-- `public_key` (String) The public key that's shown in the Keys screen in the Arkose portal.
+- `private_key` (String, Sensitive) The private key that can be copied from the Keys screen in the Arkose Labs portal.
+- `public_key` (String) The public key that's shown in the Keys screen in the Arkose Labs portal.
 
 Optional:
 
-- `client_base_url` (String) A custom base URL to use when loading the Arkose client script. If not provided, the default value of `https://client-api.arkoselabs.com/v2` will be used.
+- `client_base_url` (String) A custom base URL to use when loading the Arkose Labs client script. If not provided, the default value of `https://client-api.arkoselabs.com/v2` will be used.
 - `description` (String) A description of what your connector is used for.
-- `verify_base_url` (String) A custom base URL to use when verifying the session token using the Arkose Verify API. If not provided, the default value of `https://verify-api.arkoselabs.com/api/v4` will be used.
+- `verify_base_url` (String) A custom base URL to use when verifying the session token using the Arkose Labs Verify API. If not provided, the default value of `https://verify-api.arkoselabs.com/api/v4` will be used.
 
 Read-Only:
 
@@ -3150,6 +3150,7 @@ Optional:
 
 Required:
 
+- `base_url` (String) Unibeam API base URL.
 - `client_id` (String) OAuth2 client ID for authentication.
 - `client_secret` (String, Sensitive) OAuth2 client secret for authentication.
 - `customer_id` (String) Your Unibeam customer ID.
