@@ -1,7 +1,10 @@
 package authentication
 
 import (
+	"strings"
+
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -9,23 +12,37 @@ import (
 )
 
 var SSOAttributes = map[string]schema.Attribute{
-	"disabled":                boolattr.Default(false),
-	"merge_users":             boolattr.Default(false),
-	"redirect_url":            stringattr.Default(""),
-	"sso_suite_settings":      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
-	"allow_duplicate_domains": boolattr.Default(false),
-	"allow_override_roles":    boolattr.Default(false),
-	"groups_priority":         boolattr.Default(false),
+	"disabled":                              boolattr.Default(false),
+	"merge_users":                           boolattr.Default(false),
+	"redirect_url":                          stringattr.Default(""),
+	"sso_suite_settings":                    objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
+	"allow_duplicate_domains":               boolattr.Default(false),
+	"allow_override_roles":                  boolattr.Default(false),
+	"groups_priority":                       boolattr.Default(false),
+	"mandatory_user_attributes":             listattr.Default[MandatoryUserAttributeModel](MandatoryUserAttributeAttributes),
+	"limit_mapping_to_mandatory_attributes": boolattr.Default(false),
+	"require_sso_domains":                   boolattr.Default(false),
+	"require_groups_attribute_name":         boolattr.Default(false),
 }
 
+const (
+	customAttributePrefix   = "customAttributes."
+	groupsAttributeName     = "group"
+	ssoDomainsAttributeName = "ssoDomains"
+)
+
 type SSOModel struct {
-	Disabled                               boolattr.Type               `tfsdk:"disabled"`
-	MergeUsers                             boolattr.Type               `tfsdk:"merge_users"`
-	RedirectURL                            stringattr.Type             `tfsdk:"redirect_url"`
-	SSOSuiteSettings                       objattr.Type[SSOSuiteModel] `tfsdk:"sso_suite_settings"`
-	AllowDuplicateSSODomainsInOtherTenants boolattr.Type               `tfsdk:"allow_duplicate_domains"`
-	AllowOverrideRoles                     boolattr.Type               `tfsdk:"allow_override_roles"`
-	GroupsPriority                         boolattr.Type               `tfsdk:"groups_priority"`
+	Disabled                               boolattr.Type                              `tfsdk:"disabled"`
+	MergeUsers                             boolattr.Type                              `tfsdk:"merge_users"`
+	RedirectURL                            stringattr.Type                            `tfsdk:"redirect_url"`
+	SSOSuiteSettings                       objattr.Type[SSOSuiteModel]                `tfsdk:"sso_suite_settings"`
+	AllowDuplicateSSODomainsInOtherTenants boolattr.Type                              `tfsdk:"allow_duplicate_domains"`
+	AllowOverrideRoles                     boolattr.Type                              `tfsdk:"allow_override_roles"`
+	GroupsPriority                         boolattr.Type                              `tfsdk:"groups_priority"`
+	MandatoryUserAttributes                listattr.Type[MandatoryUserAttributeModel] `tfsdk:"mandatory_user_attributes"`
+	LimitMappingToMandatoryAttributes      boolattr.Type                              `tfsdk:"limit_mapping_to_mandatory_attributes"`
+	RequireSSODomains                      boolattr.Type                              `tfsdk:"require_sso_domains"`
+	RequireGroupsAttributeName             boolattr.Type                              `tfsdk:"require_groups_attribute_name"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
@@ -33,10 +50,14 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.GetNot(m.Disabled, data, "enabled")
 	boolattr.Get(m.MergeUsers, data, "mergeUsers")
 	stringattr.Get(m.RedirectURL, data, "redirectUrl")
-	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
 	boolattr.Get(m.AllowDuplicateSSODomainsInOtherTenants, data, "allowDuplicateSSODomainsInOtherTenants")
-	boolattr.Get(m.AllowOverrideRoles, data, "allowOverrideRoles")
 	boolattr.Get(m.GroupsPriority, data, "groupPriorityEnabled")
+	boolattr.Get(m.AllowOverrideRoles, data, "allowOverrideRoles")
+	boolattr.Get(m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
+
+	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
+
+	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
 	return data
 }
 
@@ -44,10 +65,39 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	boolattr.Set(&m.MergeUsers, data, "mergeUsers")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
-	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
 	boolattr.Set(&m.AllowDuplicateSSODomainsInOtherTenants, data, "allowDuplicateSSODomainsInOtherTenants")
-	boolattr.Set(&m.AllowOverrideRoles, data, "allowOverrideRoles")
 	boolattr.Set(&m.GroupsPriority, data, "groupPriorityEnabled")
+	boolattr.Set(&m.AllowOverrideRoles, data, "allowOverrideRoles")
+
+	boolattr.Set(&m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
+
+	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
+
+	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
+}
+
+// User Attribute
+
+type MandatoryUserAttributeModel struct {
+	ID     stringattr.Type `tfsdk:"id"`
+	Custom boolattr.Type   `tfsdk:"custom"`
+}
+
+var MandatoryUserAttributeAttributes = map[string]schema.Attribute{
+	"id":     stringattr.Required(),
+	"custom": boolattr.Default(false),
+}
+
+func (m *MandatoryUserAttributeModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	stringattr.Get(m.ID, data, "value")
+	boolattr.Get(m.Custom, data, "custom")
+	return data
+}
+
+func (m *MandatoryUserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.ID, data, "value")
+	boolattr.Set(&m.Custom, data, "custom")
 }
 
 // SSO Suite Settings
@@ -118,4 +168,96 @@ func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
 	} else if m.HideDomains.ValueBool() && m.ForceDomainVerification.ValueBool() {
 		h.Invalid("The attributes force_domain_verification and hide_domains cannot both be true")
 	}
+}
+
+// mandatoryUserAttributes field includes user attributes as strings, custom attributes are prefixed with "customAttributes." and "ssoDomains" and "group" are special attributes.
+func setMandatoryUserAttributesValues(mandatoryUserAttributes *listattr.Type[MandatoryUserAttributeModel], ssoDomainsRequired *boolattr.Type, groupsAttributeNameRequired *boolattr.Type, h *helpers.Handler, data map[string]any) {
+	attributes, ok := data["mandatoryUserAttributes"]
+	if !ok {
+		return
+	}
+	domainsRequired := false
+	groupsRequired := false
+	mandatoryUserAttributesData := []any{}
+
+	var attrs []string
+	switch v := attributes.(type) {
+	case []any:
+		for _, item := range v {
+			if s, ok := item.(string); ok {
+				attrs = append(attrs, s)
+			}
+		}
+	case []string:
+		attrs = v
+	default:
+		return
+	}
+	for _, attributeStr := range attrs {
+		if attributeStr == ssoDomainsAttributeName {
+			domainsRequired = true
+		} else if attributeStr == groupsAttributeName {
+			groupsRequired = true
+		} else {
+			if strings.HasPrefix(attributeStr, customAttributePrefix) {
+				mandatoryUserAttributesData = append(mandatoryUserAttributesData, map[string]any{
+					"value":  strings.TrimPrefix(attributeStr, customAttributePrefix),
+					"custom": true,
+				})
+			} else {
+				mandatoryUserAttributesData = append(mandatoryUserAttributesData, map[string]any{
+					"value":  attributeStr,
+					"custom": false,
+				})
+			}
+		}
+	}
+
+	tempData := map[string]any{
+		"domainsRequired":         domainsRequired,
+		"groupsRequired":          groupsRequired,
+		"mandatoryUserAttributes": mandatoryUserAttributesData,
+	}
+	listattr.Set(mandatoryUserAttributes, tempData, "mandatoryUserAttributes", h)
+	boolattr.Set(ssoDomainsRequired, tempData, "domainsRequired")
+	boolattr.Set(groupsAttributeNameRequired, tempData, "groupsRequired")
+}
+
+func getMandatoryUserAttributesValues(mandatoryUserAttributes *listattr.Type[MandatoryUserAttributeModel], ssoDomainsRequired *boolattr.Type, groupsAttributeNameRequired *boolattr.Type, h *helpers.Handler, data map[string]any) {
+	tempData := map[string]any{}
+	listattr.Get(*mandatoryUserAttributes, tempData, "mandatoryUserAttributes", h)
+	boolattr.Get(*ssoDomainsRequired, tempData, "domainsRequired")
+	boolattr.Get(*groupsAttributeNameRequired, tempData, "groupsRequired")
+
+	attributes := []string{}
+	mandatoryAttrs, ok := tempData["mandatoryUserAttributes"].([]any)
+	if !ok {
+		mandatoryAttrs = []any{}
+	}
+	for _, attribute := range mandatoryAttrs {
+		attributeData, ok := attribute.(map[string]any)
+		if !ok {
+			continue
+		}
+		custom, _ := attributeData["custom"].(bool)
+		value, ok := attributeData["value"].(string)
+		if !ok {
+			continue
+		}
+		if custom {
+			attributes = append(attributes, customAttributePrefix+value)
+		} else {
+			attributes = append(attributes, value)
+		}
+	}
+	domainsRequired, _ := tempData["domainsRequired"].(bool)
+	if domainsRequired {
+		attributes = append(attributes, ssoDomainsAttributeName)
+	}
+	groupsRequired, _ := tempData["groupsRequired"].(bool)
+	if groupsRequired {
+		attributes = append(attributes, groupsAttributeName)
+	}
+
+	data["mandatoryUserAttributes"] = attributes
 }

@@ -70,6 +70,67 @@ Whether to enable groups priority.
 
 
 
+mandatory_user_attributes
+-------------------------
+
+- Type: `list` of `authentication.MandatoryUserAttribute` 
+
+Define the required Descope attributes that must be populated when receiving SSO information.
+
+
+
+limit_mapping_to_mandatory_attributes
+-------------------------------------
+
+- Type: `bool` 
+
+Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
+
+
+
+require_sso_domains
+-------------------
+
+- Type: `bool` 
+
+When configuring SSO an SSO domain must be specified.
+
+
+
+require_groups_attribute_name
+-----------------------------
+
+- Type: `bool` 
+
+When configuring SSO the groups attribute name must be specified.
+
+
+
+
+
+MandatoryUserAttribute
+======================
+
+
+
+id
+----
+
+- Type: `string` (required)
+
+The identifier for the attribute. This value is called `Machine Name` in the Descope console.
+
+
+
+custom
+------
+
+- Type: `bool` 
+
+Whether the attribute is a custom attribute defined in addition to the default Descope user attributes.
+
+
+
 
 
 SSOSuite

@@ -307,6 +307,65 @@ func TestAuthentication(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				authentication = {
+					sso = {
+						allow_override_roles = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.allow_override_roles": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						allow_override_roles = false
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.allow_override_roles": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						require_sso_domains = true
+						require_groups_attribute_name = true
+						mandatory_user_attributes = [
+							{ id = "email", custom = false },
+							{ id = "department", custom = true }
+						]
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.require_sso_domains":                true,
+				"authentication.sso.require_groups_attribute_name":      true,
+				"authentication.sso.mandatory_user_attributes.#":        2,
+				"authentication.sso.mandatory_user_attributes.0.id":     "email",
+				"authentication.sso.mandatory_user_attributes.0.custom": false,
+				"authentication.sso.mandatory_user_attributes.1.id":     "department",
+				"authentication.sso.mandatory_user_attributes.1.custom": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						limit_mapping_to_mandatory_attributes = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.limit_mapping_to_mandatory_attributes": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
 					password = {
 						disabled = true
 						temporary_lock = true
