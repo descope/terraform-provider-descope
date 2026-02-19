@@ -421,13 +421,15 @@ var docsAmplitude = map[string]string{
 var docsArkose = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"public_key":  "The public key that's shown in the Keys screen in the Arkose portal.",
-	"private_key": "The private key that can be copied from the Keys screen in the Arkose portal.",
-	"client_base_url": "A custom base URL to use when loading the Arkose client script. If not provided, " +
-		"the default value of `https://client-api.arkoselabs.com/v2` will be used.",
-	"verify_base_url": "A custom base URL to use when verifying the session token using the Arkose " +
-		"Verify API. If not provided, the default value of " +
-		"`https://verify-api.arkoselabs.com/api/v4` will be used.",
+	"public_key": "The public key that's shown in the Keys screen in the Arkose Labs portal.",
+	"private_key": "The private key that can be copied from the Keys screen in the Arkose Labs " +
+	               "portal.",
+	"client_base_url": "A custom base URL to use when loading the Arkose Labs client script. If not " +
+	                   "provided, the default value of `https://client-api.arkoselabs.com/v2` will be " +
+	                   "used.",
+	"verify_base_url": "A custom base URL to use when verifying the session token using the Arkose Labs " +
+	                   "Verify API. If not provided, the default value of " +
+	                   "`https://verify-api.arkoselabs.com/api/v4` will be used.",
 }
 
 var docsAuditWebhook = map[string]string{
@@ -1241,12 +1243,13 @@ var docsTwilioVerify = map[string]string{
 }
 
 var docsUnibeam = map[string]string{
-	"name":            "A custom name for your connector.",
-	"description":     "A description of what your connector is used for.",
-	"customer_id":     "Your Unibeam customer ID.",
-	"client_id":       "OAuth2 client ID for authentication.",
-	"client_secret":   "OAuth2 client secret for authentication.",
-	"hmac_secret":     "HMAC secret supplied by Unibeam for securing communications.",
+	"name": "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"base_url": "Unibeam API base URL.",
+	"customer_id": "Your Unibeam customer ID.",
+	"client_id": "OAuth2 client ID for authentication.",
+	"client_secret": "OAuth2 client secret for authentication.",
+	"hmac_secret": "HMAC secret supplied by Unibeam for securing communications.",
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
