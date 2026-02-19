@@ -43,7 +43,7 @@ terraform {
   required_providers {
     descope = {
       source  = "descope/descope"
-      version = "~> 0.9"
+      version = "~> 0.3"
     }
   }
 }
@@ -71,7 +71,7 @@ terraform {
   required_providers {
     descope = {
       source  = "descope/descope"
-      version = "~> 0.9"
+      version = "~> 0.3"
     }
   }
 }
