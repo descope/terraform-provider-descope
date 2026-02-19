@@ -85,7 +85,8 @@ override_subject_claim
 
 - Type: `bool` 
 
-Switching on will allow you to add a custom subject claim to the JWT. A default new `dsub` claim will be added with the user Id
+Switching on will allow you to add a custom subject claim to the JWT. A default new `dsub` claim
+will be added with the user ID.
 
 
 
@@ -95,6 +96,7 @@ add_jti_claim
 - Type: `bool` 
 
 When enabled, a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.
+
 
 
 template

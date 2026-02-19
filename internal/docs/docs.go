@@ -421,15 +421,15 @@ var docsAmplitude = map[string]string{
 var docsArkose = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"public_key": "The public key that's shown in the Keys screen in the Arkose Labs portal.",
+	"public_key":  "The public key that's shown in the Keys screen in the Arkose Labs portal.",
 	"private_key": "The private key that can be copied from the Keys screen in the Arkose Labs " +
-	               "portal.",
+		"portal.",
 	"client_base_url": "A custom base URL to use when loading the Arkose Labs client script. If not " +
-	                   "provided, the default value of `https://client-api.arkoselabs.com/v2` will be " +
-	                   "used.",
+		"provided, the default value of `https://client-api.arkoselabs.com/v2` will be " +
+		"used.",
 	"verify_base_url": "A custom base URL to use when verifying the session token using the Arkose Labs " +
-	                   "Verify API. If not provided, the default value of " +
-	                   "`https://verify-api.arkoselabs.com/api/v4` will be used.",
+		"Verify API. If not provided, the default value of " +
+		"`https://verify-api.arkoselabs.com/api/v4` will be used.",
 }
 
 var docsAuditWebhook = map[string]string{
@@ -1243,13 +1243,13 @@ var docsTwilioVerify = map[string]string{
 }
 
 var docsUnibeam = map[string]string{
-	"name": "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"base_url": "Unibeam API base URL.",
-	"customer_id": "Your Unibeam customer ID.",
-	"client_id": "OAuth2 client ID for authentication.",
-	"client_secret": "OAuth2 client secret for authentication.",
-	"hmac_secret": "HMAC secret supplied by Unibeam for securing communications.",
+	"name":            "A custom name for your connector.",
+	"description":     "A description of what your connector is used for.",
+	"base_url":        "Unibeam API base URL.",
+	"customer_id":     "Your Unibeam customer ID.",
+	"client_id":       "OAuth2 client ID for authentication.",
+	"client_secret":   "OAuth2 client secret for authentication.",
+	"hmac_secret":     "HMAC secret supplied by Unibeam for securing communications.",
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
@@ -1278,13 +1278,14 @@ var docsJWTTemplate = map[string]string{
 	"empty_claim_policy": "Policy for empty claims - `none`, `nil` or `delete`.",
 	"auto_tenant_claim": "When a user is associated with a single tenant, the tenant will be set as the user's " +
 		"active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.",
-	"conformance_issuer": "Whether to use OIDC conformance for the JWT issuer field.",
-	"enforce_issuer":     "Whether to enforce that the JWT issuer matches the project configuration.",
+	"conformance_issuer":       "Whether to use OIDC conformance for the JWT issuer field.",
+	"enforce_issuer":           "Whether to enforce that the JWT issuer matches the project configuration.",
+	"exclude_permission_claim": "When enabled, permissions will not be included in the JWT token.",
+	"override_subject_claim": "Switching on will allow you to add a custom subject claim to the JWT. A default new `dsub` claim " +
+		"will be added with the user ID.",
+	"add_jti_claim": "When enabled, a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.",
 	"template": "The JSON template defining the structure and claims of the JWT token. This is expected " +
 		"to be a valid JSON object given as a `string` value.",
-	"exclude_permission_claim": "Whether to exclude permissions from the JWT token.",
-	"override_subject_claim":   "Whether to add a custom subject claim to the JWT. A default new `dsub` claim will be added with the user Id",
-	"add_jti_claim":            "Whether to add a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.",
 }
 
 var docsJWTTemplates = map[string]string{

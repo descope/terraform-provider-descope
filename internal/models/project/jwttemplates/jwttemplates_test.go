@@ -61,9 +61,9 @@ func TestJWTTemplates(t *testing.T) {
 						auto_tenant_claim = true
 						conformance_issuer = true
 						enforce_issuer = true
-					exclude_permission_claim = true
-					override_subject_claim = true
-					add_jti_claim = true
+						exclude_permission_claim = true
+						override_subject_claim = true
+						add_jti_claim = true
 					}
 				]
 			}
