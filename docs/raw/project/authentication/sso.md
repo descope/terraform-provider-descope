@@ -89,7 +89,7 @@ Mapping to attributes not specified in `mandatory_user_attributes` is not allowe
 
 
 require_sso_domains
---------------------
+-------------------
 
 - Type: `bool` 
 
@@ -98,7 +98,7 @@ When configuring SSO an SSO domain must be specified.
 
 
 require_groups_attribute_name
-------------------------------
+-----------------------------
 
 - Type: `bool` 
 
