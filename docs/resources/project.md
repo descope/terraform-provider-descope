@@ -3038,12 +3038,15 @@ Required:
 
 Optional:
 
+- `add_jti_claim` (Boolean) When enabled, a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.
 - `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `auto_tenant_claim` (Boolean) When a user is associated with a single tenant, the tenant will be set as the user's active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
 - `conformance_issuer` (Boolean) Whether to use OIDC conformance for the JWT issuer field.
 - `description` (String) Description of the JWT Template.
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
 - `enforce_issuer` (Boolean) Whether to enforce that the JWT issuer matches the project configuration.
+- `exclude_permission_claim` (Boolean) When enabled, permissions will not be included in the JWT token.
+- `override_subject_claim` (Boolean) Switching on will allow you to add a custom subject claim to the JWT. A default new `dsub` claim will be added with the user ID.
 
 Read-Only:
 
@@ -3060,12 +3063,15 @@ Required:
 
 Optional:
 
+- `add_jti_claim` (Boolean) When enabled, a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.
 - `auth_schema` (String) The authorization claims format - `default`, `tenantOnly` or `none`. Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).
 - `auto_tenant_claim` (Boolean) When a user is associated with a single tenant, the tenant will be set as the user's active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
 - `conformance_issuer` (Boolean) Whether to use OIDC conformance for the JWT issuer field.
 - `description` (String) Description of the JWT Template.
 - `empty_claim_policy` (String) Policy for empty claims - `none`, `nil` or `delete`.
 - `enforce_issuer` (Boolean) Whether to enforce that the JWT issuer matches the project configuration.
+- `exclude_permission_claim` (Boolean) When enabled, permissions will not be included in the JWT token.
+- `override_subject_claim` (Boolean) Switching on will allow you to add a custom subject claim to the JWT. A default new `dsub` claim will be added with the user ID.
 
 Read-Only:
 

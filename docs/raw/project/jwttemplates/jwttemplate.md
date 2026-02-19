@@ -71,6 +71,34 @@ Whether to enforce that the JWT issuer matches the project configuration.
 
 
 
+exclude_permission_claim
+------------------------
+
+- Type: `bool` 
+
+When enabled, permissions will not be included in the JWT token.
+
+
+
+override_subject_claim
+----------------------
+
+- Type: `bool` 
+
+Switching on will allow you to add a custom subject claim to the JWT. A default new `dsub` claim
+will be added with the user ID.
+
+
+
+add_jti_claim
+-------------
+
+- Type: `bool` 
+
+When enabled, a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.
+
+
+
 template
 --------
 

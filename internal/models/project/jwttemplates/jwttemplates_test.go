@@ -50,32 +50,38 @@ func TestJWTTemplates(t *testing.T) {
 		},
 		resource.TestStep{
 			Config: p.Config(`
-				jwt_templates = {
-					user_templates = [
-						{
-							name = "foo"
-							description = "a"
-							template = "{}"
-							auth_schema = "tenantOnly"
-							empty_claim_policy = "delete"
-							auto_tenant_claim = true
-							conformance_issuer = true
-							enforce_issuer = true
-						}
-					]
-				}
-			`),
+			jwt_templates = {
+				user_templates = [
+					{
+						name = "foo"
+						description = "a"
+						template = "{}"
+						auth_schema = "tenantOnly"
+						empty_claim_policy = "delete"
+						auto_tenant_claim = true
+						conformance_issuer = true
+						enforce_issuer = true
+						exclude_permission_claim = true
+						override_subject_claim = true
+						add_jti_claim = true
+					}
+				]
+			}
+		`),
 			Check: p.Check(map[string]any{
-				"jwt_templates.user_templates.#":                    1,
-				"jwt_templates.user_templates.0.id":                 testacc.AttributeHasPrefix("JT"),
-				"jwt_templates.user_templates.0.name":               "foo",
-				"jwt_templates.user_templates.0.description":        "a",
-				"jwt_templates.user_templates.0.auto_tenant_claim":  true,
-				"jwt_templates.user_templates.0.conformance_issuer": true,
-				"jwt_templates.user_templates.0.enforce_issuer":     true,
-				"jwt_templates.user_templates.0.auth_schema":        "tenantOnly",
-				"jwt_templates.user_templates.0.empty_claim_policy": "delete",
-				"jwt_templates.user_templates.0.template":           "{}",
+				"jwt_templates.user_templates.#":                          1,
+				"jwt_templates.user_templates.0.id":                       testacc.AttributeHasPrefix("JT"),
+				"jwt_templates.user_templates.0.name":                     "foo",
+				"jwt_templates.user_templates.0.description":              "a",
+				"jwt_templates.user_templates.0.auto_tenant_claim":        true,
+				"jwt_templates.user_templates.0.conformance_issuer":       true,
+				"jwt_templates.user_templates.0.enforce_issuer":           true,
+				"jwt_templates.user_templates.0.exclude_permission_claim": true,
+				"jwt_templates.user_templates.0.override_subject_claim":   true,
+				"jwt_templates.user_templates.0.add_jti_claim":            true,
+				"jwt_templates.user_templates.0.auth_schema":              "tenantOnly",
+				"jwt_templates.user_templates.0.empty_claim_policy":       "delete",
+				"jwt_templates.user_templates.0.template":                 "{}",
 			}),
 		},
 		resource.TestStep{
