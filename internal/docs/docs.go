@@ -360,6 +360,15 @@ var docsSSO = map[string]string{
 	"allow_duplicate_domains": "Whether to allow duplicate SSO domains across tenants.",
 	"allow_override_roles": "Whether to allow overriding user's roles with SSO related roles.",
 	"groups_priority": "Whether to enable groups priority.",
+	"mandatory_user_attributes": "Define the required Descope attributes that must be populated when receiving SSO information.",
+	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
+	"require_sso_domains": "When configuring SSO an SSO domain must be specified.",
+	"require_groups_attribute_name": "When configuring SSO the groups attribute name must be specified.",
+}
+
+var docsMandatoryUserAttribute = map[string]string{
+	"id": "The identifier for the attribute. This value is called `Machine Name` in the Descope console.",
+	"custom": "Whether the attribute is a custom attribute defined in addition to the default Descope user attributes.",
 }
 
 var docsSSOSuite = map[string]string{
@@ -1280,6 +1289,10 @@ var docsJWTTemplate = map[string]string{
 	                     "active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.",
 	"conformance_issuer": "Whether to use OIDC conformance for the JWT issuer field.",
 	"enforce_issuer": "Whether to enforce that the JWT issuer matches the project configuration.",
+	"exclude_permission_claim": "When enabled, permissions will not be included in the JWT token.",
+	"override_subject_claim": "Switching on will allow you to add a custom subject claim to the JWT. A default new `dsub` claim " +
+	                          "will be added with the user ID.",
+	"add_jti_claim": "When enabled, a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.",
 	"template": "The JSON template defining the structure and claims of the JWT token. This is expected " +
 	            "to be a valid JSON object given as a `string` value.",
 }
