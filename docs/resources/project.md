@@ -217,17 +217,71 @@ resource "descope_project" "example" {
   jwt_templates = {
     user_templates = [
       {
-        name     = "app-claims"
-        template = jsonencode({
+        name        = "app-claims"
+        description = "Adds subscription tier and org context to user JWTs"
+        template    = jsonencode({
           tier   = "@user.customAttributes.subscriptionTier"
           org_id = "@user.tenants[0].tenantId"
         })
+
+        # Exclude the permissions claim to keep tokens lean
+        exclude_permission_claim = true
+
+        # Add a unique JWT ID for replay attack prevention
+        add_jti_claim = true
+
+        # Move the user ID to a new dsub claim, allowing sub to be customized
+        override_subject_claim = true
       }
     ]
   }
 
   project_settings = {
     user_jwt_template = "app-claims"
+  }
+}
+```
+
+### SSO Settings
+
+Configure global settings for Single Sign-On across tenants:
+
+```hcl
+resource "descope_project" "example" {
+  name = "my-app"
+
+  authentication = {
+    sso = {
+      # Merge SSO users with existing accounts of the same email
+      merge_users = true
+
+      # Allow SSO roles to override a user's existing roles
+      allow_override_roles = true
+
+      # Prioritize group-based role mappings over direct role assignments
+      groups_priority = true
+
+      # Enforce that SSO domains are always specified
+      require_sso_domains = true
+
+      # Require a groups attribute name in SSO configuration
+      require_groups_attribute_name = true
+
+      # Define required Descope attributes when receiving SSO information
+      mandatory_user_attributes = [
+        { id = "email" },
+        { id = "name" },
+        { id = "department", custom = true },
+      ]
+
+      # Configure the SSO Suite portal appearance
+      sso_suite_settings = {
+        style_id    = "my-brand-style"
+        hide_scim   = false
+        hide_saml   = false
+        hide_oidc   = false
+      }
+    }
   }
 }
 ```
@@ -3392,3 +3446,6 @@ Required:
 Required:
 
 - `data` (String) The JSON data defining the widget. This will usually be exported as a `.json` file from the Descope console, and set in the `.tf` file using the `data = file("...")` syntax.
+
+
+

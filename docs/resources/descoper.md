@@ -133,3 +133,7 @@ Required:
 
 - `role` (String) The role the descoper will be granted in the applicable projects. Must be one of: `admin`, `developer`, `support`, `auditor`.
 - `tags` (Set of String) The project tags this role assignment applies to.
+
+
+
+
