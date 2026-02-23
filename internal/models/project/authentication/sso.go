@@ -8,6 +8,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -76,6 +77,10 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
 }
 
+func (m *SSOModel) UpdateReferences(h *helpers.Handler) {
+	objattr.UpdateReferences(&m.SSOSuiteSettings, h)
+}
+
 // User Attribute
 
 type MandatoryUserAttributeModel struct {
@@ -112,16 +117,18 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"hide_saml":                 boolattr.Default(false),
 	"hide_oidc":                 boolattr.Default(false),
 	"force_domain_verification": boolattr.Default(false),
+	"email_service":             objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
 
 type SSOSuiteModel struct {
-	StyleID                 stringattr.Type `tfsdk:"style_id"`
-	HideSCIM                boolattr.Type   `tfsdk:"hide_scim"`
-	HideGroupsMapping       boolattr.Type   `tfsdk:"hide_groups_mapping"`
-	HideDomains             boolattr.Type   `tfsdk:"hide_domains"`
-	HideSAML                boolattr.Type   `tfsdk:"hide_saml"`
-	HideOIDC                boolattr.Type   `tfsdk:"hide_oidc"`
-	ForceDomainVerification boolattr.Type   `tfsdk:"force_domain_verification"`
+	StyleID                 stringattr.Type                           `tfsdk:"style_id"`
+	HideSCIM                boolattr.Type                             `tfsdk:"hide_scim"`
+	HideGroupsMapping       boolattr.Type                             `tfsdk:"hide_groups_mapping"`
+	HideDomains             boolattr.Type                             `tfsdk:"hide_domains"`
+	HideSAML                boolattr.Type                             `tfsdk:"hide_saml"`
+	HideOIDC                boolattr.Type                             `tfsdk:"hide_oidc"`
+	ForceDomainVerification boolattr.Type                             `tfsdk:"force_domain_verification"`
+	EmailService            objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
 }
 
 var SSOSuiteDefault = &SSOSuiteModel{
@@ -143,6 +150,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Get(m.HideOIDC, data, "hideSsoSuiteOidc")
 	boolattr.Get(m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
+	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	return data
 }
 
@@ -154,6 +162,7 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Set(&m.HideOIDC, data, "hideSsoSuiteOidc")
 	boolattr.Set(&m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
+	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
@@ -168,6 +177,10 @@ func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
 	} else if m.HideDomains.ValueBool() && m.ForceDomainVerification.ValueBool() {
 		h.Invalid("The attributes force_domain_verification and hide_domains cannot both be true")
 	}
+}
+
+func (m *SSOSuiteModel) UpdateReferences(h *helpers.Handler) {
+	objattr.UpdateReferences(&m.EmailService, h)
 }
 
 // mandatoryUserAttributes field includes user attributes as strings, custom attributes are prefixed with "customAttributes." and "ssoDomains" and "group" are special attributes.

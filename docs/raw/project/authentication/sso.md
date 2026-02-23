@@ -196,6 +196,15 @@ Setting this to `true` will hide the OIDC configuration option.
 force_domain_verification
 -------------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will allow only verified domains to be used.
+
+
+
+email_service
+-------------
+
+- Type: `object` of `templates.EmailService` (optional)
+
+Configure the email service for SSO Suite invite emails, including the email template and provider settings.
