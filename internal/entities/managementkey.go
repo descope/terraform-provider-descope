@@ -11,7 +11,8 @@ import (
 )
 
 var ManagementKeySchema = schema.Schema{
-	Attributes: managementkey.ManagementKeyAttributes,
+	MarkdownDescription: "Manages a Descope Management Key used to authenticate API and SDK calls for automating user and project management.",
+	Attributes:          managementkey.ManagementKeyAttributes,
 }
 
 type ManagementKeyEntity struct {

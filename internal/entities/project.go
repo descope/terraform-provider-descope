@@ -11,7 +11,8 @@ import (
 )
 
 var ProjectSchema = schema.Schema{
-	Attributes: project.ProjectAttributes,
+	MarkdownDescription: "Manages a Descope project's full configuration: authentication methods, flows, roles, permissions, connectors, applications, JWT templates, and more.",
+	Attributes:          project.ProjectAttributes,
 }
 
 type ProjectEntity struct {
