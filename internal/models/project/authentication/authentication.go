@@ -61,4 +61,5 @@ func (m *AuthenticationModel) UpdateReferences(h *helpers.Handler) {
 	objattr.UpdateReferences(&m.MagicLink, h)
 	objattr.UpdateReferences(&m.EnchantedLink, h)
 	objattr.UpdateReferences(&m.Password, h)
+	objattr.UpdateReferences(&m.SSO, h)
 }

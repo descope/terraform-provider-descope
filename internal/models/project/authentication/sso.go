@@ -8,6 +8,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -23,6 +24,7 @@ var SSOAttributes = map[string]schema.Attribute{
 	"limit_mapping_to_mandatory_attributes": boolattr.Default(false),
 	"require_sso_domains":                   boolattr.Default(false),
 	"require_groups_attribute_name":         boolattr.Default(false),
+	"email_service":                         objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
 
 const (
@@ -43,6 +45,7 @@ type SSOModel struct {
 	LimitMappingToMandatoryAttributes      boolattr.Type                              `tfsdk:"limit_mapping_to_mandatory_attributes"`
 	RequireSSODomains                      boolattr.Type                              `tfsdk:"require_sso_domains"`
 	RequireGroupsAttributeName             boolattr.Type                              `tfsdk:"require_groups_attribute_name"`
+	EmailService                           objattr.Type[templates.EmailServiceModel]  `tfsdk:"email_service"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
@@ -58,6 +61,7 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
+	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	return data
 }
 
@@ -74,6 +78,11 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
+	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
+}
+
+func (m *SSOModel) UpdateReferences(h *helpers.Handler) {
+	objattr.UpdateReferences(&m.EmailService, h)
 }
 
 // User Attribute
