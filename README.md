@@ -1,27 +1,57 @@
 
-<div align="center">
-  <a href="https://github.com/descope/terraform-provider-descope">
-    <img src=".github/images/descope-logo.png" alt="Descope Logo" width="160" height="160">
-  </a>
+> **Community Fork** — This is an independently maintained fork of [descope/terraform-provider-descope](https://github.com/descope/terraform-provider-descope).
+> It is **not** an official Descope product. For the official provider, see the [upstream repository](https://github.com/descope/terraform-provider-descope).
 
-  <h3 align="center">Descope Terraform Provider</h3>
+<div align="center">
+  <h3 align="center">Descope Terraform Provider (Community Fork)</h3>
 
   <p align="center">
-    The official Terraform provider for managing Descope projects
+    A community-maintained Terraform provider for managing Descope projects with extended resource coverage
   </p>
 </div>
 
 <br />
 
+## Why This Fork?
+
+The official Descope Terraform provider supports project-level configuration through the `descope_project` resource. However, the Descope Management API exposes many additional entities that are not yet available as Terraform resources.
+
+This fork aims to close that gap by adding standalone resources for the full Management API surface:
+
+| Resource | Upstream | This Fork |
+|----------|:--------:|:---------:|
+| Project settings, auth methods, connectors, flows | Yes | Yes |
+| Roles & permissions (nested in project) | Yes | Yes |
+| Applications (nested in project) | Yes | Yes |
+| **Tenants** (standalone CRUD) | No | Planned |
+| **Users** (standalone CRUD) | No | Planned |
+| **Access Keys** (M2M) | No | Planned |
+| **SSO Configuration** (per-tenant) | No | Planned |
+| **SSO Applications** (standalone) | No | Planned |
+| **Groups** (SCIM) | No | Planned |
+| **Fine-Grained Authorization** (FGA) | No | Planned |
+| **Third-Party Applications** | No | Planned |
+| **Outbound Applications** | No | Planned |
+| **Audit** (data source) | No | Planned |
+| **Analytics** (data source) | No | Planned |
+| **Password Settings** (standalone) | No | Planned |
+| **Standalone Roles & Permissions** | No | Planned |
+| **Standalone Flows** | No | Planned |
+| **Project Export/Import** | No | Planned |
+
+See the [open issues](https://github.com/jamescrowley321/terraform-provider-descope/issues) for the full roadmap.
+
+<br/>
+
 ## About
 
-Use the Descope Terraform Provider to manage your [Descope](https://www.descope.com) project
-using Terraform configuration files.
+Use this Terraform provider to manage your [Descope](https://www.descope.com) project using Terraform configuration files.
 
 * Modify project settings and authentication methods.
 * Create connectors, roles, permissions, applications and other entities.
 * Use custom themes and flows created in the Descope console.
 * Ensure dependencies between entities are satisfied.
+* **Manage tenants, users, access keys, SSO, and more as standalone resources** (coming soon).
 
 <br/>
 
@@ -36,20 +66,10 @@ using Terraform configuration files.
 
 ### Usage
 
-Declare the provider in your configuration and `terraform init` will automatically fetch and install the provider
-for you from the [Terraform Registry](https://registry.terraform.io):
+> **Note:** Until this fork is published to a Terraform registry, you must build and install the provider locally.
+> See [Development](#development) below.
 
-```hcl
-terraform {
-  required_providers {
-    descope = {
-      source = "descope/descope"
-    }
-  }
-}
-```
-
-Configure the Descope provider with the management key as explained above and declare
+Configure the Descope provider with the management key and declare
 a `descope_project` resource to create a new project for use with Terraform:
 
 ```hcl
@@ -143,7 +163,7 @@ resource "descope_project" "my_project" {
   }
 
   connectors = {
-    "http": [
+    "http" = [
       {
         name = "User Check"
         description = "A connector for checking if a new user is allowed to sign up"
@@ -164,13 +184,13 @@ process, architecture, and tools.
 
 ### Setup
 
-Clone the repository and run `make dev` to prepare your local environment for development. This will ensure
+Clone this repository and run `make dev` to prepare your local environment for development. This will ensure
 you have the requisite `go` compiler, build and install the Descope Terraform Provider binary to `$GOPATH/bin`,
 and create a `~/.terraformrc` override file to instruct `terraform` to use the local provider binary instead
 of loading it from the Terraform registry.
 
 ```bash
-git clone https://github.com/descope/terraform-provider-descope
+git clone https://github.com/jamescrowley321/terraform-provider-descope
 cd terraform-provider-descope
 make dev
 ```
@@ -193,16 +213,32 @@ make install
 
 <br/>
 
+## Contributing
+
+Contributions are welcome, including AI-assisted submissions. See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
+<br/>
+
+## Relationship to Upstream
+
+This fork tracks the upstream [descope/terraform-provider-descope](https://github.com/descope/terraform-provider-descope) repository. Upstream changes will be merged periodically to stay current. New resources developed here may be proposed back to the upstream project via pull requests.
+
+### Attribution
+
+This project is based on the work of [Descope](https://www.descope.com) and the original provider authors. The original source code is licensed under the [MIT License](LICENSE).
+
+<br/>
+
 ## Support
-
-#### Contributing
-
-If anything is missing or not working correctly please open an issue or pull request.
 
 #### Learn more
 
 To learn more please see the [Descope documentation](https://docs.descope.com).
 
-#### Contact us
+#### Issues
 
-If you need help you can hop on our [Slack community](https://www.descope.com/community) or send an email to [Descope support](mailto:support@descope.com).
+If anything is missing or not working correctly please [open an issue](https://github.com/jamescrowley321/terraform-provider-descope/issues).
+
+#### Descope Community
+
+For general Descope questions (not specific to this fork) you can use the [Slack community](https://www.descope.com/community) or contact [Descope support](mailto:support@descope.com).
