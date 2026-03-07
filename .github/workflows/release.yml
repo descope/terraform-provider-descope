@@ -6,13 +6,17 @@ on:
       - "v*"
 
 permissions:
-  contents: write
-  id-token: write
+  contents: read
 
 jobs:
   goreleaser:
     name: Run GoReleaser
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    outputs:
+      hashes: ${{ steps.hash.outputs.hashes }}
     steps:
       - name: Checkout Code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
@@ -21,16 +25,56 @@ jobs:
       - name: Setup Repo
         uses: ./.github/actions/ci/setup
 
+      - name: Install Syft
+        shell: bash
+        run: curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin
+
+      - name: Install Cosign
+        uses: sigstore/cosign-installer@faadad0cce49287aee09b3a48701e75088a2c6ad # v4.0.0
+
       - name: Import GPG key
         uses: crazy-max/ghaction-import-gpg@e89d40939c28e39f97cf32126055eeae86ba74ec # v6.3.0
         id: import_gpg
         with:
           gpg_private_key: ${{ secrets.MAVEN_GPG_KEY }}
           passphrase: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
       - name: Run GoReleaser
+        id: goreleaser
         uses: goreleaser/goreleaser-action@ec59f474b9834571250b370d4735c50f8e2d1e29 # v7.0.0
         with:
           args: release --clean
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GPG_FINGERPRINT: ${{ steps.import_gpg.outputs.fingerprint }}
+
+      - name: Sign Checksums with Cosign
+        run: cosign sign-blob --yes dist/*_SHA256SUMS --output-signature dist/*_SHA256SUMS.sig --output-certificate dist/*_SHA256SUMS.pem
+        env:
+          COSIGN_EXPERIMENTAL: "true"
+
+      - name: Upload Cosign Artifacts
+        run: |
+          tag="${GITHUB_REF#refs/tags/}"
+          gh release upload "$tag" dist/*_SHA256SUMS.sig dist/*_SHA256SUMS.pem --clobber
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate SLSA Subject Hashes
+        id: hash
+        run: |
+          cd dist
+          sha256sum *.zip *.json > checksums.txt
+          echo "hashes=$(base64 -w0 checksums.txt)" >> "$GITHUB_OUTPUT"
+
+  provenance:
+    name: Generate SLSA Provenance
+    needs: goreleaser
+    permissions:
+      actions: read
+      contents: write
+      id-token: write
+    uses: slsa-framework/slsa-github-generator/.github/workflows/generator_generic_slsa3.yml@v2.1.0
+    with:
+      base64-subjects: "${{ needs.goreleaser.outputs.hashes }}"
+      upload-assets: true

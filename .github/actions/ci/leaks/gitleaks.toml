@@ -1,6 +1,12 @@
 title = "gitleaks config"
 
 [[rules]]
+id = "descope-management-key"
+description = "Descope Management Key"
+regex = '''K[A-Za-z0-9]{200,}'''
+keywords = ["management_key", "DESCOPE_MANAGEMENT_KEY"]
+
+[[rules]]
 id = "gitlab-pat"
 description = "GitLab Personal Access Token"
 regex = '''glpat-[0-9a-zA-Z\-\_]{20}'''

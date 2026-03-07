@@ -8,6 +8,10 @@
   <p align="center">
     A community-maintained Terraform provider for managing Descope projects with extended resource coverage
   </p>
+
+  <p align="center">
+    <a href="https://securityscorecards.dev/viewer/?uri=github.com/jamescrowley321/terraform-provider-descope"><img src="https://api.securityscorecards.dev/projects/github.com/jamescrowley321/terraform-provider-descope/badge" alt="OpenSSF Scorecard"></a>
+  </p>
 </div>
 
 <br />

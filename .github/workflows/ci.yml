@@ -30,13 +30,14 @@ jobs:
         shell: bash
         env:
           DESCOPE_MANAGEMENT_KEY: ${{ secrets.DESCOPE_MANAGEMENT_KEY }}
+          DESCOPE_PROJECT_ID: ${{ secrets.DESCOPE_PROJECT_ID }}
           DESCOPE_BASE_URL: https://api.descope.com
           DESCOPE_USER_AGENT: ${{ secrets.DESCOPE_USER_AGENT }}
           TF_ACC: 1
         run: |
           echo "Running acceptance tests"
           set +e
-          go test -v ./...
+          go test -v -p 1 ./...
           result=$?
           descope project list | grep '"name":"testacc-.*' | sed -e 's/.*"id":"\([^"]*\)".*/\1/' | xargs -I {} descope project delete {} --force
           exit $result
