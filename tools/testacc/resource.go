@@ -25,6 +25,10 @@ func ManagementKey(t *testing.T) *Resource {
 	return newResource(t, "management_key", "test")
 }
 
+func AccessKey(t *testing.T) *Resource {
+	return newResource(t, "access_key", "test")
+}
+
 func newResource(t *testing.T, typ, id string) *Resource {
 	return &Resource{
 		Type: typ,
