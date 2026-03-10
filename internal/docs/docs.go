@@ -364,6 +364,7 @@ var docsSSO = map[string]string{
 	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
 	"require_sso_domains": "When configuring SSO an SSO domain must be specified.",
 	"require_groups_attribute_name": "When configuring SSO the groups attribute name must be specified.",
+	"email_service": "Settings related to sending SSO invite emails as part of the SSO feature.",
 }
 
 var docsMandatoryUserAttribute = map[string]string{

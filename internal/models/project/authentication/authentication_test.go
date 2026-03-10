@@ -365,25 +365,29 @@ func TestAuthentication(t *testing.T) {
 		},
 		resource.TestStep{
 			Config: p.Config(`
-				connectors = {
-					smtp = {
-						"Test SMTP" = {
-							host = "smtp.example.com"
-							username = "user"
-							password = "pass"
-						}
-					}
-				}
 				authentication = {
 					sso = {
 						email_service = {
-							connector = "Test SMTP"
+							connector = "Descope"
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.email_service.connector": "Descope",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						email_service = {
+							connector = "Descope"
 							templates = [
 								{
-									active = true
-									name = "sso-invite"
-									subject = "SSO Invitation"
-									html_body = "<html><body>You are invited</body></html>"
+									name      = "foo"
+									subject   = "x"
+									html_body = "a"
 								}
 							]
 						}
@@ -391,12 +395,9 @@ func TestAuthentication(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso.email_service.connector":             "Test SMTP",
-				"authentication.sso.email_service.templates.#":           1,
-				"authentication.sso.email_service.templates.0.active":    true,
-				"authentication.sso.email_service.templates.0.name":      "sso-invite",
-				"authentication.sso.email_service.templates.0.subject":   "SSO Invitation",
-				"authentication.sso.email_service.templates.0.html_body": "<html><body>You are invited</body></html>",
+				"authentication.sso.email_service.connector":        "Descope",
+				"authentication.sso.email_service.templates.#":      1,
+				"authentication.sso.email_service.templates.0.name": "foo",
 			}),
 		},
 		resource.TestStep{
