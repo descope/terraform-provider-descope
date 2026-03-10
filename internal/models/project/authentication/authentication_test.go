@@ -365,6 +365,42 @@ func TestAuthentication(t *testing.T) {
 		},
 		resource.TestStep{
 			Config: p.Config(`
+				connectors = {
+					smtp = {
+						"Test SMTP" = {
+							host = "smtp.example.com"
+							username = "user"
+							password = "pass"
+						}
+					}
+				}
+				authentication = {
+					sso = {
+						email_service = {
+							connector = "Test SMTP"
+							templates = [
+								{
+									active = true
+									name = "sso-invite"
+									subject = "SSO Invitation"
+									html_body = "<html><body>You are invited</body></html>"
+								}
+							]
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.email_service.connector":             "Test SMTP",
+				"authentication.sso.email_service.templates.#":           1,
+				"authentication.sso.email_service.templates.0.active":    true,
+				"authentication.sso.email_service.templates.0.name":      "sso-invite",
+				"authentication.sso.email_service.templates.0.subject":   "SSO Invitation",
+				"authentication.sso.email_service.templates.0.html_body": "<html><body>You are invited</body></html>",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
 				authentication = {
 					password = {
 						disabled = true
