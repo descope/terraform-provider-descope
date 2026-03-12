@@ -111,6 +111,7 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"hide_domains":              boolattr.Default(false),
 	"hide_saml":                 boolattr.Default(false),
 	"hide_oidc":                 boolattr.Default(false),
+	"hide_jit":                  boolattr.Default(false),
 	"force_domain_verification": boolattr.Default(false),
 }
 
@@ -121,6 +122,7 @@ type SSOSuiteModel struct {
 	HideDomains             boolattr.Type   `tfsdk:"hide_domains"`
 	HideSAML                boolattr.Type   `tfsdk:"hide_saml"`
 	HideOIDC                boolattr.Type   `tfsdk:"hide_oidc"`
+	HideJIT                 boolattr.Type   `tfsdk:"hide_jit"`
 	ForceDomainVerification boolattr.Type   `tfsdk:"force_domain_verification"`
 }
 
@@ -131,6 +133,7 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	HideDomains:             boolattr.Value(false),
 	HideSAML:                boolattr.Value(false),
 	HideOIDC:                boolattr.Value(false),
+	HideJIT:                 boolattr.Value(false),
 	ForceDomainVerification: boolattr.Value(false),
 }
 
@@ -142,6 +145,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Get(m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Get(m.HideOIDC, data, "hideSsoSuiteOidc")
+	boolattr.Get(m.HideJIT, data, "hideSsoSuiteJit")
 	boolattr.Get(m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
 	return data
 }
@@ -153,6 +157,7 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Set(&m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Set(&m.HideOIDC, data, "hideSsoSuiteOidc")
+	boolattr.Set(&m.HideJIT, data, "hideSsoSuiteJit")
 	boolattr.Set(&m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
 }
 

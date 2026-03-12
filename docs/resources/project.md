@@ -1153,6 +1153,7 @@ Optional:
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
+- `hide_jit` (Boolean) Setting this to `true` will hide the JIT provisioning configuration in the SSO Suite interface.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.

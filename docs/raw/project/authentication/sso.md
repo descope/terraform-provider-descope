@@ -193,6 +193,15 @@ Setting this to `true` will hide the OIDC configuration option.
 
 
 
+hide_jit
+--------
+
+- Type: `bool` 
+
+Setting this to `true` will hide the JIT provisioning configuration in the SSO Suite interface.
+
+
+
 force_domain_verification
 -------------------------
 
