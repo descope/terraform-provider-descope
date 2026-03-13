@@ -11,7 +11,8 @@ import (
 )
 
 var DescoperSchema = schema.Schema{
-	Attributes: descoper.DescoperAttributes,
+	MarkdownDescription: "Manages a Descope console user (a \"Descoper\") and their access control settings across your company's projects.",
+	Attributes:          descoper.DescoperAttributes,
 }
 
 type DescoperEntity struct {
