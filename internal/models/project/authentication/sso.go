@@ -23,6 +23,8 @@ var SSOAttributes = map[string]schema.Attribute{
 	"limit_mapping_to_mandatory_attributes": boolattr.Default(false),
 	"require_sso_domains":                   boolattr.Default(false),
 	"require_groups_attribute_name":         boolattr.Default(false),
+	"block_if_email_domain_mismatch":        boolattr.Default(false),
+	"mark_email_as_unverified":              boolattr.Default(false),
 }
 
 const (
@@ -43,6 +45,8 @@ type SSOModel struct {
 	LimitMappingToMandatoryAttributes      boolattr.Type                              `tfsdk:"limit_mapping_to_mandatory_attributes"`
 	RequireSSODomains                      boolattr.Type                              `tfsdk:"require_sso_domains"`
 	RequireGroupsAttributeName             boolattr.Type                              `tfsdk:"require_groups_attribute_name"`
+	BlockIfEmailDomainMismatch             boolattr.Type                              `tfsdk:"block_if_email_domain_mismatch"`
+	MarkEmailAsUnverified                  boolattr.Type                              `tfsdk:"mark_email_as_unverified"`
 }
 
 func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
@@ -54,6 +58,8 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.GroupsPriority, data, "groupPriorityEnabled")
 	boolattr.Get(m.AllowOverrideRoles, data, "allowOverrideRoles")
 	boolattr.Get(m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
+	boolattr.Get(m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
+	boolattr.Get(m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
 
 	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
@@ -70,6 +76,8 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.AllowOverrideRoles, data, "allowOverrideRoles")
 
 	boolattr.Set(&m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
+	boolattr.Set(&m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
+	boolattr.Set(&m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
 
 	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
