@@ -366,6 +366,54 @@ func TestAuthentication(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				authentication = {
+					sso = {
+						block_if_email_domain_mismatch = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.block_if_email_domain_mismatch": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						block_if_email_domain_mismatch = false
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.block_if_email_domain_mismatch": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						mark_email_as_unverified = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.mark_email_as_unverified": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						mark_email_as_unverified = false
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.mark_email_as_unverified": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
 					password = {
 						disabled = true
 						temporary_lock = true
