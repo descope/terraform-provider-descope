@@ -364,6 +364,8 @@ var docsSSO = map[string]string{
 	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
 	"require_sso_domains": "When configuring SSO an SSO domain must be specified.",
 	"require_groups_attribute_name": "When configuring SSO the groups attribute name must be specified.",
+	"block_if_email_domain_mismatch": "Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.",
+	"mark_email_as_unverified": "Whether to mark the user's email as unverified when logging in via SSO.",
 }
 
 var docsMandatoryUserAttribute = map[string]string{
