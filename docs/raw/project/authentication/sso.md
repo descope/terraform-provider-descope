@@ -106,6 +106,15 @@ When configuring SSO the groups attribute name must be specified.
 
 
 
+email_service
+-------------
+
+- Type: `object` of `templates.EmailService` 
+
+Settings related to sending SSO invite emails as part of the SSO feature.
+
+
+
 
 
 MandatoryUserAttribute

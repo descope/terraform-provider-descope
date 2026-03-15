@@ -1124,6 +1124,7 @@ Optional:
 - `allow_duplicate_domains` (Boolean) Whether to allow duplicate SSO domains across tenants.
 - `allow_override_roles` (Boolean) Whether to allow overriding user's roles with SSO related roles.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
+- `email_service` (Attributes) Settings related to sending SSO invite emails as part of the SSO feature. (see [below for nested schema](#nestedatt--authentication--sso--email_service))
 - `groups_priority` (Boolean) Whether to enable groups priority.
 - `limit_mapping_to_mandatory_attributes` (Boolean) Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
 - `mandatory_user_attributes` (Attributes List) Define the required Descope attributes that must be populated when receiving SSO information. (see [below for nested schema](#nestedatt--authentication--sso--mandatory_user_attributes))
@@ -1132,6 +1133,38 @@ Optional:
 - `require_groups_attribute_name` (Boolean) When configuring SSO the groups attribute name must be specified.
 - `require_sso_domains` (Boolean) When configuring SSO an SSO domain must be specified.
 - `sso_suite_settings` (Attributes) Configuration block for the SSO Suite. (see [below for nested schema](#nestedatt--authentication--sso--sso_suite_settings))
+
+<a id="nestedatt--authentication--sso--email_service"></a>
+### Nested Schema for `authentication.sso.email_service`
+
+Required:
+
+- `connector` (String) The name of the email connector to use for sending emails.
+
+Optional:
+
+- `templates` (Attributes List) A list of email templates for different authentication flows. (see [below for nested schema](#nestedatt--authentication--sso--email_service--templates))
+
+<a id="nestedatt--authentication--sso--email_service--templates"></a>
+### Nested Schema for `authentication.sso.email_service.templates`
+
+Required:
+
+- `name` (String) Unique name for this email template.
+- `subject` (String) Subject line of the email message.
+
+Optional:
+
+- `active` (Boolean) Whether this email template is currently active and in use.
+- `html_body` (String) HTML content of the email message body, required if `use_plain_text_body` isn't set.
+- `plain_text_body` (String) Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
+- `use_plain_text_body` (Boolean) Whether to use the plain text body instead of HTML for the email.
+
+Read-Only:
+
+- `id` (String)
+
+
 
 <a id="nestedatt--authentication--sso--mandatory_user_attributes"></a>
 ### Nested Schema for `authentication.sso.mandatory_user_attributes`

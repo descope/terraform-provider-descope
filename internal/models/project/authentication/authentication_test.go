@@ -366,6 +366,43 @@ func TestAuthentication(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				authentication = {
+					sso = {
+						email_service = {
+							connector = "Descope"
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.email_service.connector": "Descope",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						email_service = {
+							connector = "Descope"
+							templates = [
+								{
+									name      = "foo"
+									subject   = "x"
+									html_body = "a"
+								}
+							]
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.email_service.connector":        "Descope",
+				"authentication.sso.email_service.templates.#":      1,
+				"authentication.sso.email_service.templates.0.name": "foo",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
 					password = {
 						disabled = true
 						temporary_lock = true
