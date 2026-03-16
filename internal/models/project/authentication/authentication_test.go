@@ -356,23 +356,15 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					sso = {
 						limit_mapping_to_mandatory_attributes = true
+						block_if_email_domain_mismatch = true
+						mark_email_as_unverified = true
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"authentication.sso.limit_mapping_to_mandatory_attributes": true,
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					sso = {
-						block_if_email_domain_mismatch = true
-					}
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"authentication.sso.block_if_email_domain_mismatch": true,
+				"authentication.sso.block_if_email_domain_mismatch":        true,
+				"authentication.sso.mark_email_as_unverified":              true,
 			}),
 		},
 		resource.TestStep{
@@ -380,35 +372,13 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					sso = {
 						block_if_email_domain_mismatch = false
-					}
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"authentication.sso.block_if_email_domain_mismatch": false,
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					sso = {
-						mark_email_as_unverified = true
-					}
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"authentication.sso.mark_email_as_unverified": true,
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					sso = {
 						mark_email_as_unverified = false
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso.mark_email_as_unverified": false,
+				"authentication.sso.block_if_email_domain_mismatch": false,
+				"authentication.sso.mark_email_as_unverified":       false,
 			}),
 		},
 		resource.TestStep{
