@@ -106,9 +106,18 @@ The subject name id format. Choose one of "", "urn:oasis:names:tc:SAML:1.1:namei
 default_relay_state
 -------------------
 
-- Type: `string` 
+- Type: `string`
 
 The default relay state. When using IdP-initiated authentication, this value may be used as a URL to a resource in the Service Provider.
+
+
+
+default_signature_algorithm
+---------------------------
+
+- Type: `string`
+
+The signature algorithm used to sign SAML responses. Choose one of `""` (default, SHA-1) or `"sha256"` (SHA-256). Only applies to IdP-initiated flows — SP-initiated flows use the algorithm specified in the SP's SAML request.
 
 
 
