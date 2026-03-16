@@ -79,6 +79,52 @@ func TestInboundApp(t *testing.T) {
 				"session_settings.key_session_token_expiration": "30 minutes",
 			}),
 		},
+		// Test session settings with a user JWT template
+		resource.TestStep{
+			Config: p.Config(`
+				jwt_templates = {
+					user_templates = [
+						{
+							name = "foo"
+							template = "{}"
+						}
+					]
+				}
+			`) + a.Config(`
+				project_id = `+p.Path()+`.id
+				session_settings = {
+					enabled = true
+					user_template_id = `+p.Path()+`.jwt_templates.user_templates.0.id
+				}
+			`),
+			Check: a.Check(map[string]any{
+				"session_settings.enabled":          "true",
+				"session_settings.user_template_id": testacc.AttributeHasPrefix("JT"),
+			}),
+		},
+		// Test updating the JWT template in the project and reflecting the new ID in the inbound app
+		resource.TestStep{
+			Config: p.Config(`
+				jwt_templates = {
+					user_templates = [
+						{
+							name = "bar"
+							template = "{}"
+						}
+					]
+				}
+			`) + a.Config(`
+				project_id = `+p.Path()+`.id
+				session_settings = {
+					enabled = true
+					user_template_id = `+p.Path()+`.jwt_templates.user_templates.0.id
+				}
+			`),
+			Check: a.Check(map[string]any{
+				"session_settings.enabled":          "true",
+				"session_settings.user_template_id": testacc.AttributeHasPrefix("JT"),
+			}),
+		},
 		// Test import with composite ID
 		resource.TestStep{
 			ResourceName:      a.Path(),

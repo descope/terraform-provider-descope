@@ -7,7 +7,7 @@ Authorization
 roles
 -----
 
-- Type: `list` of `authorization.Role` 
+- Type: `list` of `authorization.Role`
 
 A list of `Role` objects.
 
@@ -16,6 +16,6 @@ A list of `Role` objects.
 permissions
 -----------
 
-- Type: `list` of `authorization.Permission` 
+- Type: `list` of `authorization.Permission`
 
 A list of `Permission` objects.

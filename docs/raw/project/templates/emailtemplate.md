@@ -7,7 +7,7 @@ EmailTemplate
 active
 ------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether this email template is currently active and in use.
 
@@ -34,7 +34,7 @@ Subject line of the email message.
 html_body
 ---------
 
-- Type: `string` 
+- Type: `string`
 
 HTML content of the email message body, required if `use_plain_text_body` isn't set.
 
@@ -43,7 +43,7 @@ HTML content of the email message body, required if `use_plain_text_body` isn't 
 plain_text_body
 ---------------
 
-- Type: `string` 
+- Type: `string`
 
 Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
 
@@ -52,6 +52,6 @@ Plain text version of the email message body, required if `use_plain_text_body` 
 use_plain_text_body
 -------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to use the plain text body instead of HTML for the email.

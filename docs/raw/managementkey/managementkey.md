@@ -16,7 +16,7 @@ A name for the management key.
 description
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 A description for the management key.
 
@@ -25,7 +25,7 @@ A description for the management key.
 status
 ------
 
-- Type: `string` 
+- Type: `string`
 - Default: `"active"`
 
 The status of the management key. Must be either `active` or `inactive`.
@@ -35,7 +35,7 @@ The status of the management key. Must be either `active` or `inactive`.
 expire_time
 -----------
 
-- Type: `int` 
+- Type: `int`
 
 The expiration time of the management key as a Unix timestamp. If not set,
 the key will not expire. Changing this value after creation will require
@@ -46,7 +46,7 @@ the management key to be replaced.
 permitted_ips
 -------------
 
-- Type: `list` of `string` 
+- Type: `list` of `string`
 
 A list of IP addresses or CIDR ranges that are allowed to use this management key.
 If not set, the key can be used from any IP address.
@@ -68,7 +68,7 @@ to be replaced.
 cleartext
 ---------
 
-- Type: `secret` 
+- Type: `secret`
 
 The plaintext value of the management key. This is only available after the key is
 created and cannot be retrieved later. Store this value securely as it is required
