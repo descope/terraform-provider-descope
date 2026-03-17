@@ -94,12 +94,18 @@ func TestInboundApp(t *testing.T) {
 				project_id = `+p.Path()+`.id
 				session_settings = {
 					enabled = true
+					refresh_token_expiration = "4 weeks"
+					session_token_expiration = "10 minutes"
+					key_session_token_expiration = "30 minutes"
 					user_template_id = `+p.Path()+`.jwt_templates.user_templates.0.id
 				}
 			`),
 			Check: a.Check(map[string]any{
-				"session_settings.enabled":          "true",
-				"session_settings.user_template_id": testacc.AttributeHasPrefix("JT"),
+				"session_settings.enabled":                      "true",
+				"session_settings.refresh_token_expiration":     "4 weeks",
+				"session_settings.session_token_expiration":     "10 minutes",
+				"session_settings.key_session_token_expiration": "30 minutes",
+				"session_settings.user_template_id":             testacc.AttributeHasPrefix("JT"),
 			}),
 		},
 		// Test updating the JWT template in the project and reflecting the new ID in the inbound app
@@ -117,12 +123,18 @@ func TestInboundApp(t *testing.T) {
 				project_id = `+p.Path()+`.id
 				session_settings = {
 					enabled = true
+					refresh_token_expiration = "4 weeks"
+					session_token_expiration = "10 minutes"
+					key_session_token_expiration = "30 minutes"
 					user_template_id = `+p.Path()+`.jwt_templates.user_templates.0.id
 				}
 			`),
 			Check: a.Check(map[string]any{
-				"session_settings.enabled":          "true",
-				"session_settings.user_template_id": testacc.AttributeHasPrefix("JT"),
+				"session_settings.enabled":                      "true",
+				"session_settings.refresh_token_expiration":     "4 weeks",
+				"session_settings.session_token_expiration":     "10 minutes",
+				"session_settings.key_session_token_expiration": "30 minutes",
+				"session_settings.user_template_id":             testacc.AttributeHasPrefix("JT"),
 			}),
 		},
 		// Test import with composite ID

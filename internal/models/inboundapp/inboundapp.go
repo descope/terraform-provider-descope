@@ -24,7 +24,7 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"permissions_scopes":               listattr.Default[ApplicationScopeModel](ApplicationScopeAttributes),
 	"attributes_scopes":                listattr.Default[ApplicationScopeModel](ApplicationScopeAttributes),
 	"connections_scopes":               listattr.Default[ApplicationScopeModel](ApplicationScopeAttributes),
-	"session_settings":                 objattr.Optional[SessionSettingsModel](SessionSettingsAttributes),
+	"session_settings":                 objattr.Optional[SessionSettingsModel](SessionSettingsAttributes, SessionSettingsValidator),
 	"audience_whitelist":               strsetattr.Default(),
 	"force_add_all_authorization_info": boolattr.Default(false),
 	"default_audience":                 stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")), // XXX maybe switch to set
