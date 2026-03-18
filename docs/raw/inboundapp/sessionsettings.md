@@ -9,7 +9,7 @@ enabled
 
 - Type: `bool`
 
-Whether custom session settings are enabled for this inbound app.
+Whether to override the project's session settings.
 
 
 

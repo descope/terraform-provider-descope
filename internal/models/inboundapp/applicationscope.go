@@ -10,7 +10,7 @@ import (
 
 var ApplicationScopeAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(),
-	"description": stringattr.Default(""),
+	"description": stringattr.Required(),
 	"optional":    boolattr.Default(false),
 	"values":      strlistattr.Default(),
 }

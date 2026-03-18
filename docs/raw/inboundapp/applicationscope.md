@@ -16,7 +16,7 @@ A name for the scope.
 description
 -----------
 
-- Type: `string`
+- Type: `string` (required)
 
 A description for the scope.
 
@@ -37,5 +37,4 @@ values
 
 - Type: `list` of `string`
 
-The roles, user attributes, or connection scope identifiers associated with this scope, depending
-on whether it is a permissions, attributes, or connections scope.
+The identifiers of the relevant permission, attribute or connection scopes.

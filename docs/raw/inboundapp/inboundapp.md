@@ -85,7 +85,7 @@ connections_scopes
 - Type: `list` of `inboundapp.ApplicationScope`
 
 A list of connection scopes that the inbound app can request. Connection scopes provide the app with
-access to external OAuth connections and integrations.
+the ability to access external tokens based on the mapped scopes.
 
 
 

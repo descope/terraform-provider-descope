@@ -42,6 +42,7 @@ func TestInboundApp(t *testing.T) {
 				permissions_scopes = [
 					{
 						name = "openid"
+						description = "Foo"
 					},
 					{
 						name = "email"

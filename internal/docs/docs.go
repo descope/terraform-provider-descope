@@ -36,7 +36,7 @@ var docsApplicationScope = map[string]string{
 	"description": "A description for the scope.",
 	"optional": "Whether this scope is optional. When `false`, the scope is mandatory and must be granted during " +
 	            "authorization. When `true`, the user may choose to withhold it.",
-	"values": "foo",
+	"values": "The identifiers of the relevant permission, attribute or connection scopes.",
 }
 
 var docsInboundApp = map[string]string{
@@ -51,7 +51,8 @@ var docsInboundApp = map[string]string{
 	                      "the ability to act on behalf of a user based on their roles and permissions.",
 	"attributes_scopes": "A list of user information scopes that the inbound app can request. Attribute scopes provide the app " +
 	                     "with access to user profile data such as email, phone, or custom attributes.",
-	"connections_scopes": "foo",
+	"connections_scopes": "A list of connection scopes that the inbound app can request. Connection scopes provide the app with " +
+	                      "the ability to access external tokens based on the mapped scopes.",
 	"session_settings": "Custom session management settings for this inbound app, overriding the project defaults.",
 	"audience_whitelist": "A set of allowed custom `aud` claim values that the inbound app can request via the `resource` " +
 	                      "parameter, per RFC 8707.",
@@ -67,7 +68,7 @@ var docsInboundApp = map[string]string{
 }
 
 var docsSessionSettings = map[string]string{
-	"enabled": "foo",
+	"enabled": "Whether to override the project's session settings.",
 	"refresh_token_expiration": "The expiration duration for refresh tokens issued to this inbound app.",
 	"session_token_expiration": "The expiration duration for session tokens issued to this inbound app.",
 	"user_template_id": "The ID of the JWT template to use for user JWTs issued to this inbound app.",
