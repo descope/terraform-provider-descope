@@ -16,6 +16,6 @@ A name for the permission.
 description
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 A description for the permission.

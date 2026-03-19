@@ -7,7 +7,7 @@ VoiceTemplate
 active
 ------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether this voice template is currently active and in use.
 

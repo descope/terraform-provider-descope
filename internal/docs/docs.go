@@ -31,6 +31,51 @@ var docsDescoperTagRole = map[string]string{
 	        "Must be one of: `admin`, `developer`, `support`, `auditor`.",
 }
 
+var docsApplicationScope = map[string]string{
+	"name": "A name for the scope.",
+	"description": "A description for the scope.",
+	"optional": "Whether this scope is optional. When `false`, the scope is mandatory and must be granted during " +
+	            "authorization. When `true`, the user may choose to withhold it.",
+	"values": "The identifiers of the relevant permission, attribute or connection scopes.",
+}
+
+var docsInboundApp = map[string]string{
+	"project_id": "The ID of the Descope project this inbound app belongs to. Changing this value will require the " +
+	              "resource to be deleted and recreated.",
+	"name": "A name for the inbound app.",
+	"description": "A description for the inbound app.",
+	"logo_url": "A URL to the inbound app's logo image.",
+	"login_page_url": "The Flow Hosting URL.",
+	"approved_callback_urls": "A set of approved redirect URIs that the inbound app is allowed to redirect to after authorization.",
+	"permissions_scopes": "A list of permission scopes that the inbound app can request. Permission scopes provide the app with " +
+	                      "the ability to act on behalf of a user based on their roles and permissions.",
+	"attributes_scopes": "A list of user information scopes that the inbound app can request. Attribute scopes provide the app " +
+	                     "with access to user profile data such as email, phone, or custom attributes.",
+	"connections_scopes": "A list of connection scopes that the inbound app can request. Connection scopes provide the app with " +
+	                      "the ability to access external tokens based on the mapped scopes.",
+	"session_settings": "Custom session management settings for this inbound app, overriding the project defaults.",
+	"audience_whitelist": "A set of allowed custom `aud` claim values that the inbound app can request via the `resource` " +
+	                      "parameter, per RFC 8707.",
+	"force_add_all_authorization_info": "When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.",
+	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
+	                    "as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
+	"non_confidential_client": "Whether this is a public (non-confidential) client that does not use a client secret. Changing this " +
+	                           "value after creation will require the resource to be replaced.",
+	"client_id": "A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing " +
+	             "this value after creation will require the resource to be replaced.",
+	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +
+	                 "cannot be retrieved after the resource is created. Store this value securely.",
+}
+
+var docsSessionSettings = map[string]string{
+	"enabled": "Whether to override the project's session settings.",
+	"refresh_token_expiration": "The expiration duration for refresh tokens issued to this inbound app.",
+	"session_token_expiration": "The expiration duration for session tokens issued to this inbound app.",
+	"key_session_token_expiration": "The expiration duration for access key session tokens. Must be between 3 minutes and one month.",
+	"user_template_id": "The ID of the JWT template to use for user JWTs issued to this inbound app.",
+	"key_template_id": "The ID of the JWT template to use for access key JWTs issued to this inbound app.",
+}
+
 var docsManagementKey = map[string]string{
 	"name": "A name for the management key.",
 	"description": "A description for the management key.",

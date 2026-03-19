@@ -16,7 +16,7 @@ The name of the Descope project.
 environment
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 This can be set to `production` to mark production projects, otherwise this should be
 left unset for development or staging projects.
@@ -26,7 +26,7 @@ left unset for development or staging projects.
 tags
 ----
 
-- Type: `set` of `string` 
+- Type: `set` of `string`
 
 Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
 
@@ -35,7 +35,7 @@ Descriptive tags for your Descope project. Each tag must be no more than 50 char
 project_settings
 ----------------
 
-- Type: `object` of `settings.Settings` 
+- Type: `object` of `settings.Settings`
 
 General settings for the Descope project.
 
@@ -44,7 +44,7 @@ General settings for the Descope project.
 invite_settings
 ---------------
 
-- Type: `object` of `settings.InviteSettings` 
+- Type: `object` of `settings.InviteSettings`
 
 User invitation settings and behavior.
 
@@ -53,7 +53,7 @@ User invitation settings and behavior.
 authentication
 --------------
 
-- Type: `object` of `authentication.Authentication` 
+- Type: `object` of `authentication.Authentication`
 
 Settings for each authentication method.
 
@@ -62,7 +62,7 @@ Settings for each authentication method.
 authorization
 -------------
 
-- Type: `object` of `authorization.Authorization` 
+- Type: `object` of `authorization.Authorization`
 
 Define Role-Based Access Control (RBAC) for your users by creating roles and permissions.
 
@@ -71,7 +71,7 @@ Define Role-Based Access Control (RBAC) for your users by creating roles and per
 attributes
 ----------
 
-- Type: `object` of `attributes.Attributes` 
+- Type: `object` of `attributes.Attributes`
 
 Custom attributes that can be attached to users and tenants.
 
@@ -80,7 +80,7 @@ Custom attributes that can be attached to users and tenants.
 connectors
 ----------
 
-- Type: `object` of `connectors.Connectors` 
+- Type: `object` of `connectors.Connectors`
 
 Enrich your flows by interacting with third party services.
 
@@ -89,7 +89,7 @@ Enrich your flows by interacting with third party services.
 applications
 ------------
 
-- Type: `object` of `applications.Applications` 
+- Type: `object` of `applications.Applications`
 
 Applications that are registered with the project.
 
@@ -98,7 +98,7 @@ Applications that are registered with the project.
 jwt_templates
 -------------
 
-- Type: `object` of `jwttemplates.JWTTemplates` 
+- Type: `object` of `jwttemplates.JWTTemplates`
 
 Defines templates for JSON Web Tokens (JWT) used for authentication.
 
@@ -107,7 +107,7 @@ Defines templates for JSON Web Tokens (JWT) used for authentication.
 styles
 ------
 
-- Type: `object` of `flows.Styles` 
+- Type: `object` of `flows.Styles`
 
 Custom styles that can be applied to the project's authentication flows.
 
@@ -116,7 +116,7 @@ Custom styles that can be applied to the project's authentication flows.
 flows
 -----
 
-- Type: `map` of `flows.Flow` 
+- Type: `map` of `flows.Flow`
 
 Custom authentication flows to use in this project.
 
@@ -125,7 +125,7 @@ Custom authentication flows to use in this project.
 widgets
 -------
 
-- Type: `map` of `widgets.Widget` 
+- Type: `map` of `widgets.Widget`
 
 Embeddable components designed to facilitate the delegation of operations to
 tenant admins and end users.
@@ -135,7 +135,7 @@ tenant admins and end users.
 lists
 -----
 
-- Type: `list` of `lists.List` 
+- Type: `list` of `lists.List`
 
 Lists that can be used for various purposes in the project, such as IP allowlists,
 text lists, or custom JSON data.
@@ -145,6 +145,6 @@ text lists, or custom JSON data.
 admin_portal
 ------------
 
-- Type: `object` of `adminportal.AdminPortal` 
+- Type: `object` of `adminportal.AdminPortal`
 
 Admin portal configuration - A hosted page for end users to access and use Descope Widgets

@@ -50,7 +50,7 @@ SMS sender configuration using either a phone number or messaging service.
 voice
 -----
 
-- Type: `object` of `connectors.TwilioCoreSendersVoiceField` 
+- Type: `object` of `connectors.TwilioCoreSendersVoiceField`
 
 Voice call sender configuration.
 
@@ -66,7 +66,7 @@ TwilioCoreSendersSMSField
 phone_number
 ------------
 
-- Type: `string` 
+- Type: `string`
 
 Twilio phone number for sending SMS messages.
 
@@ -75,7 +75,7 @@ Twilio phone number for sending SMS messages.
 messaging_service_sid
 ---------------------
 
-- Type: `string` 
+- Type: `string`
 
 Twilio Messaging Service SID for sending SMS messages.
 
@@ -107,7 +107,7 @@ TwilioAuthField
 auth_token
 ----------
 
-- Type: `secret` 
+- Type: `secret`
 
 Twilio Auth Token for authentication.
 
@@ -116,7 +116,7 @@ Twilio Auth Token for authentication.
 api_key
 -------
 
-- Type: `secret` 
+- Type: `secret`
 
 Twilio API Key for authentication (used with API Secret).
 
@@ -125,6 +125,6 @@ Twilio API Key for authentication (used with API Secret).
 api_secret
 ----------
 
-- Type: `secret` 
+- Type: `secret`
 
 Twilio API Secret for authentication (used with API Key).

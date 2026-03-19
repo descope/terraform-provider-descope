@@ -7,7 +7,7 @@ Connectors
 abuseipdb
 ---------
 
-- Type: `list` of `connectors.AbuseIPDB` 
+- Type: `list` of `connectors.AbuseIPDB`
 
 Utilize IP threat intelligence to block malicious login attempts with the
 AbuseIPDB connector.
@@ -17,7 +17,7 @@ AbuseIPDB connector.
 amplitude
 ---------
 
-- Type: `list` of `connectors.Amplitude` 
+- Type: `list` of `connectors.Amplitude`
 
 Track user activity and traits at any point in your user journey with the
 Amplitude connector.
@@ -27,7 +27,7 @@ Amplitude connector.
 arkose
 ------
 
-- Type: `list` of `connectors.Arkose` 
+- Type: `list` of `connectors.Arkose`
 
 Use the Arkose connector to integrate with Arkose's bot and fraud detection.
 
@@ -36,7 +36,7 @@ Use the Arkose connector to integrate with Arkose's bot and fraud detection.
 audit_webhook
 -------------
 
-- Type: `list` of `connectors.AuditWebhook` 
+- Type: `list` of `connectors.AuditWebhook`
 
 Send audit events to a custom webhook.
 
@@ -45,7 +45,7 @@ Send audit events to a custom webhook.
 aws_s3
 ------
 
-- Type: `list` of `connectors.AWSS3` 
+- Type: `list` of `connectors.AWSS3`
 
 Stream authentication audit logs with the Amazon S3 connector.
 
@@ -54,7 +54,7 @@ Stream authentication audit logs with the Amazon S3 connector.
 aws_translate
 -------------
 
-- Type: `list` of `connectors.AWSTranslate` 
+- Type: `list` of `connectors.AWSTranslate`
 
 Localize the language of your login and user journey screens with the Amazon Translate connector.
 
@@ -63,7 +63,7 @@ Localize the language of your login and user journey screens with the Amazon Tra
 bitsight
 --------
 
-- Type: `list` of `connectors.Bitsight` 
+- Type: `list` of `connectors.Bitsight`
 
 Utilize threat intelligence to block malicious login attempts or check leaks
 with the Bitsight Threat Intelligence connector.
@@ -73,7 +73,7 @@ with the Bitsight Threat Intelligence connector.
 coralogix
 ---------
 
-- Type: `list` of `connectors.Coralogix` 
+- Type: `list` of `connectors.Coralogix`
 
 Send audit events and troubleshooting logs to Coralogix.
 
@@ -82,7 +82,7 @@ Send audit events and troubleshooting logs to Coralogix.
 darwinium
 ---------
 
-- Type: `list` of `connectors.Darwinium` 
+- Type: `list` of `connectors.Darwinium`
 
 Connect to Darwinium API for fraud detection and device intelligence.
 
@@ -91,7 +91,7 @@ Connect to Darwinium API for fraud detection and device intelligence.
 datadog
 -------
 
-- Type: `list` of `connectors.Datadog` 
+- Type: `list` of `connectors.Datadog`
 
 Stream authentication audit logs with the Datadog connector.
 
@@ -100,7 +100,7 @@ Stream authentication audit logs with the Datadog connector.
 devrev_grow
 -----------
 
-- Type: `list` of `connectors.DevRevGrow` 
+- Type: `list` of `connectors.DevRevGrow`
 
 DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto
 an AI-native platform to follow the journey of a visitor to a lead, to a contact, and
@@ -111,7 +111,7 @@ then to a user - to create a champion, not a churned user.
 docebo
 ------
 
-- Type: `list` of `connectors.Docebo` 
+- Type: `list` of `connectors.Docebo`
 
 Get user information from Docebo in your Descope user journeys with the Docebo
 connector.
@@ -121,7 +121,7 @@ connector.
 eight_by_eight_viber
 --------------------
 
-- Type: `list` of `connectors.EightByEightViber` 
+- Type: `list` of `connectors.EightByEightViber`
 
 Send Viber messages to the user.
 
@@ -130,7 +130,7 @@ Send Viber messages to the user.
 eight_by_eight_whatsapp
 -----------------------
 
-- Type: `list` of `connectors.EightByEightWhatsapp` 
+- Type: `list` of `connectors.EightByEightWhatsapp`
 
 Send WhatsApp messages to the user.
 
@@ -139,7 +139,7 @@ Send WhatsApp messages to the user.
 elephant
 --------
 
-- Type: `list` of `connectors.Elephant` 
+- Type: `list` of `connectors.Elephant`
 
 Use this connector to obtain an identity trust score.
 
@@ -148,7 +148,7 @@ Use this connector to obtain an identity trust score.
 external_token_http
 -------------------
 
-- Type: `list` of `connectors.ExternalTokenHTTP` 
+- Type: `list` of `connectors.ExternalTokenHTTP`
 
 A generic HTTP token connector.
 
@@ -157,7 +157,7 @@ A generic HTTP token connector.
 fingerprint
 -----------
 
-- Type: `list` of `connectors.Fingerprint` 
+- Type: `list` of `connectors.Fingerprint`
 
 Prevent fraud by adding device intelligence with the Fingerprint connector.
 
@@ -166,7 +166,7 @@ Prevent fraud by adding device intelligence with the Fingerprint connector.
 fingerprint_descope
 -------------------
 
-- Type: `list` of `connectors.FingerprintDescope` 
+- Type: `list` of `connectors.FingerprintDescope`
 
 Descope Fingerprint capabilities for fraud detection and risk assessment.
 
@@ -175,7 +175,7 @@ Descope Fingerprint capabilities for fraud detection and risk assessment.
 firebase_admin
 --------------
 
-- Type: `list` of `connectors.FirebaseAdmin` 
+- Type: `list` of `connectors.FirebaseAdmin`
 
 Firebase connector enables you to utilize Firebase's APIs to generate a Firebase user
 token for a given Descope user.
@@ -185,7 +185,7 @@ token for a given Descope user.
 forter
 ------
 
-- Type: `list` of `connectors.Forter` 
+- Type: `list` of `connectors.Forter`
 
 Leverage ML-based risk scores for fraud prevention with the Forter connector.
 
@@ -194,7 +194,7 @@ Leverage ML-based risk scores for fraud prevention with the Forter connector.
 generic_email_gateway
 ---------------------
 
-- Type: `list` of `connectors.GenericEmailGateway` 
+- Type: `list` of `connectors.GenericEmailGateway`
 
 Send emails using a generic Email gateway.
 
@@ -203,7 +203,7 @@ Send emails using a generic Email gateway.
 generic_sms_gateway
 -------------------
 
-- Type: `list` of `connectors.GenericSMSGateway` 
+- Type: `list` of `connectors.GenericSMSGateway`
 
 Send messages using a generic SMS gateway.
 
@@ -212,7 +212,7 @@ Send messages using a generic SMS gateway.
 google_cloud_translation
 ------------------------
 
-- Type: `list` of `connectors.GoogleCloudTranslation` 
+- Type: `list` of `connectors.GoogleCloudTranslation`
 
 Localize the language of your login and user journey screens with
 the Google Cloud Translation connector.
@@ -222,7 +222,7 @@ the Google Cloud Translation connector.
 google_maps_places
 ------------------
 
-- Type: `list` of `connectors.GoogleMapsPlaces` 
+- Type: `list` of `connectors.GoogleMapsPlaces`
 
 Get address autocompletions from Place Autocomplete Data API.
 
@@ -231,7 +231,7 @@ Get address autocompletions from Place Autocomplete Data API.
 google_cloud_logging
 --------------------
 
-- Type: `list` of `connectors.GoogleCloudLogging` 
+- Type: `list` of `connectors.GoogleCloudLogging`
 
 Stream logs and audit events with the Google Cloud Logging connector.
 
@@ -240,7 +240,7 @@ Stream logs and audit events with the Google Cloud Logging connector.
 hcaptcha
 --------
 
-- Type: `list` of `connectors.HCaptcha` 
+- Type: `list` of `connectors.HCaptcha`
 
 hCaptcha can help protect your applications from bots, spam, and other forms of
 automated abuse.
@@ -250,7 +250,7 @@ automated abuse.
 hibp
 ----
 
-- Type: `list` of `connectors.HIBP` 
+- Type: `list` of `connectors.HIBP`
 
 Check if passwords have been previously exposed in data breaches with the Have I
 Been Pwned connector.
@@ -260,7 +260,7 @@ Been Pwned connector.
 http
 ----
 
-- Type: `list` of `connectors.HTTP` 
+- Type: `list` of `connectors.HTTP`
 
 A general purpose HTTP client
 
@@ -269,7 +269,7 @@ A general purpose HTTP client
 hubspot
 -------
 
-- Type: `list` of `connectors.HubSpot` 
+- Type: `list` of `connectors.HubSpot`
 
 Orchestrate customer identity information from your Descope user journey with
 the HubSpot connector.
@@ -279,7 +279,7 @@ the HubSpot connector.
 incode
 ------
 
-- Type: `list` of `connectors.Incode` 
+- Type: `list` of `connectors.Incode`
 
 Use the Incode connection to run identity verification processes like document
 checks or facial recognition.
@@ -289,7 +289,7 @@ checks or facial recognition.
 intercom
 --------
 
-- Type: `list` of `connectors.Intercom` 
+- Type: `list` of `connectors.Intercom`
 
 Orchestrate customer identity information from your Descope user journey with
 the Intercom connector.
@@ -299,7 +299,7 @@ the Intercom connector.
 ldap
 ----
 
-- Type: `list` of `connectors.LDAP` 
+- Type: `list` of `connectors.LDAP`
 
 Use this connector to authenticate users against an LDAP directory server with
 support for both password and mTLS authentication.
@@ -309,7 +309,7 @@ support for both password and mTLS authentication.
 lokalise
 --------
 
-- Type: `list` of `connectors.Lokalise` 
+- Type: `list` of `connectors.Lokalise`
 
 Localize the language of your login and user journey screens with the Lokalise
 connector.
@@ -319,7 +319,7 @@ connector.
 mixpanel
 --------
 
-- Type: `list` of `connectors.Mixpanel` 
+- Type: `list` of `connectors.Mixpanel`
 
 Stream authentication audit logs and troubleshoot logs to Mixpanel.
 
@@ -328,7 +328,7 @@ Stream authentication audit logs and troubleshoot logs to Mixpanel.
 mparticle
 ---------
 
-- Type: `list` of `connectors.MParticle` 
+- Type: `list` of `connectors.MParticle`
 
 Track and send user event data (e.g. page views, purchases, etc.) across
 connected tools using the mParticle connector.
@@ -338,7 +338,7 @@ connected tools using the mParticle connector.
 newrelic
 --------
 
-- Type: `list` of `connectors.NewRelic` 
+- Type: `list` of `connectors.NewRelic`
 
 Stream authentication audit logs with the New Relic connector.
 
@@ -347,7 +347,7 @@ Stream authentication audit logs with the New Relic connector.
 opentelemetry
 -------------
 
-- Type: `list` of `connectors.OpenTelemetry` 
+- Type: `list` of `connectors.OpenTelemetry`
 
 Send audit events and troubleshooting logs to an OpenTelemetry-compatible
 endpoint using OTLP over HTTP or gRPC.
@@ -357,7 +357,7 @@ endpoint using OTLP over HTTP or gRPC.
 ping_directory
 --------------
 
-- Type: `list` of `connectors.PingDirectory` 
+- Type: `list` of `connectors.PingDirectory`
 
 Authenticate against PingDirectory.
 
@@ -366,7 +366,7 @@ Authenticate against PingDirectory.
 postmark
 --------
 
-- Type: `list` of `connectors.Postmark` 
+- Type: `list` of `connectors.Postmark`
 
 Send emails using Postmark
 
@@ -375,7 +375,7 @@ Send emails using Postmark
 radar
 -----
 
-- Type: `list` of `connectors.Radar` 
+- Type: `list` of `connectors.Radar`
 
 Get address autocompletions from Radar Autocomplete API.
 
@@ -384,7 +384,7 @@ Get address autocompletions from Radar Autocomplete API.
 recaptcha
 ---------
 
-- Type: `list` of `connectors.Recaptcha` 
+- Type: `list` of `connectors.Recaptcha`
 
 Prevent bot attacks on your login pages with the reCAPTCHA v3 connector.
 
@@ -393,7 +393,7 @@ Prevent bot attacks on your login pages with the reCAPTCHA v3 connector.
 recaptcha_enterprise
 --------------------
 
-- Type: `list` of `connectors.RecaptchaEnterprise` 
+- Type: `list` of `connectors.RecaptchaEnterprise`
 
 Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPTCHA Enterprise connector.
 
@@ -402,7 +402,7 @@ Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPT
 rekognition
 -----------
 
-- Type: `list` of `connectors.Rekognition` 
+- Type: `list` of `connectors.Rekognition`
 
 Add image recognition capabilities for identity verification and fraud
 prevention with the Amazon Rekognition connector.
@@ -412,7 +412,7 @@ prevention with the Amazon Rekognition connector.
 salesforce
 ----------
 
-- Type: `list` of `connectors.Salesforce` 
+- Type: `list` of `connectors.Salesforce`
 
 Run SQL queries to retrieve user roles, profiles, account status, and more with
 the Salesforce connector.
@@ -422,7 +422,7 @@ the Salesforce connector.
 salesforce_marketing_cloud
 --------------------------
 
-- Type: `list` of `connectors.SalesforceMarketingCloud` 
+- Type: `list` of `connectors.SalesforceMarketingCloud`
 
 Send transactional messages with the Salesforce Marketing Cloud connector.
 
@@ -431,7 +431,7 @@ Send transactional messages with the Salesforce Marketing Cloud connector.
 sardine
 -------
 
-- Type: `list` of `connectors.Sardine` 
+- Type: `list` of `connectors.Sardine`
 
 Evaluate customer risk using Sardine
 
@@ -440,7 +440,7 @@ Evaluate customer risk using Sardine
 segment
 -------
 
-- Type: `list` of `connectors.Segment` 
+- Type: `list` of `connectors.Segment`
 
 Orchestrate customer identity traits and signals from your Descope user journey
 with the Segment connector.
@@ -450,7 +450,7 @@ with the Segment connector.
 sendgrid
 --------
 
-- Type: `list` of `connectors.SendGrid` 
+- Type: `list` of `connectors.SendGrid`
 
 SendGrid is a cloud-based SMTP provider that allows you to send emails without having
 to maintain email servers.
@@ -460,7 +460,7 @@ to maintain email servers.
 ses
 ----
 
-- Type: `list` of `connectors.SES` 
+- Type: `list` of `connectors.SES`
 
 Amazon Simple Email Service (SES) for sending emails through AWS infrastructure.
 
@@ -469,7 +469,7 @@ Amazon Simple Email Service (SES) for sending emails through AWS infrastructure.
 slack
 -----
 
-- Type: `list` of `connectors.Slack` 
+- Type: `list` of `connectors.Slack`
 
 Send updates to your team on Slack.
 
@@ -478,7 +478,7 @@ Send updates to your team on Slack.
 smartling
 ---------
 
-- Type: `list` of `connectors.Smartling` 
+- Type: `list` of `connectors.Smartling`
 
 Localize the language of your login and user journey screens with the Smartling
 connector.
@@ -488,7 +488,7 @@ connector.
 smtp
 ----
 
-- Type: `list` of `connectors.SMTP` 
+- Type: `list` of `connectors.SMTP`
 
 Simple Mail Transfer Protocol (SMTP) server for sending emails.
 
@@ -497,7 +497,7 @@ Simple Mail Transfer Protocol (SMTP) server for sending emails.
 sns
 ----
 
-- Type: `list` of `connectors.SNS` 
+- Type: `list` of `connectors.SNS`
 
 Amazon Simple Notification Service (SNS) for sending SMS messages through AWS.
 
@@ -506,7 +506,7 @@ Amazon Simple Notification Service (SNS) for sending SMS messages through AWS.
 splunk
 ------
 
-- Type: `list` of `connectors.Splunk` 
+- Type: `list` of `connectors.Splunk`
 
 Stream logs and audit events with the Splunk HTTP Event Collector (HEC).
 
@@ -515,7 +515,7 @@ Stream logs and audit events with the Splunk HTTP Event Collector (HEC).
 sql
 ----
 
-- Type: `list` of `connectors.SQL` 
+- Type: `list` of `connectors.SQL`
 
 SQL connector for relational databases including PostgreSQL, MySQL, MariaDB,
 Microsoft SQL Server (MSSQL), Oracle, CockroachDB, and Amazon Redshift.
@@ -525,7 +525,7 @@ Microsoft SQL Server (MSSQL), Oracle, CockroachDB, and Amazon Redshift.
 sumologic
 ---------
 
-- Type: `list` of `connectors.SumoLogic` 
+- Type: `list` of `connectors.SumoLogic`
 
 Stream logs and audit events with the Sumo Logic connector.
 
@@ -534,7 +534,7 @@ Stream logs and audit events with the Sumo Logic connector.
 supabase
 --------
 
-- Type: `list` of `connectors.Supabase` 
+- Type: `list` of `connectors.Supabase`
 
 Generate external tokens for user authentication in Supabase projects.
 
@@ -543,7 +543,7 @@ Generate external tokens for user authentication in Supabase projects.
 telesign
 --------
 
-- Type: `list` of `connectors.Telesign` 
+- Type: `list` of `connectors.Telesign`
 
 Verify phone numbers and leverage granular risk scores for adaptive MFA with the
 Telesign Intelligence connector.
@@ -553,7 +553,7 @@ Telesign Intelligence connector.
 traceable
 ---------
 
-- Type: `list` of `connectors.Traceable` 
+- Type: `list` of `connectors.Traceable`
 
 Identify and respond to fraudulent login activity with the Traceable Digital
 Fraud Prevention connector.
@@ -563,7 +563,7 @@ Fraud Prevention connector.
 turnstile
 ---------
 
-- Type: `list` of `connectors.Turnstile` 
+- Type: `list` of `connectors.Turnstile`
 
 Prevent bot attacks on your login pages with the Turnstile connector.
 
@@ -572,7 +572,7 @@ Prevent bot attacks on your login pages with the Turnstile connector.
 twilio_core
 -----------
 
-- Type: `list` of `connectors.TwilioCore` 
+- Type: `list` of `connectors.TwilioCore`
 
 Twilio is a cloud-based communication provider of communication tools for making and receiving
 phone calls, sending and receiving text messages, and performing other communication functions.
@@ -582,7 +582,7 @@ phone calls, sending and receiving text messages, and performing other communica
 twilio_verify
 -------------
 
-- Type: `list` of `connectors.TwilioVerify` 
+- Type: `list` of `connectors.TwilioVerify`
 
 Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms,
 voice and e-mail. Choose this connector only if you are a Twilio Verify customer.
@@ -592,7 +592,7 @@ voice and e-mail. Choose this connector only if you are a Twilio Verify customer
 unibeam
 -------
 
-- Type: `list` of `connectors.Unibeam` 
+- Type: `list` of `connectors.Unibeam`
 
 SIM-based authentication and approval using Unibeam's OnSim technology for
 passwordless authentication and transaction approval.
@@ -602,6 +602,6 @@ passwordless authentication and transaction approval.
 zerobounce
 ----------
 
-- Type: `list` of `connectors.ZeroBounce` 
+- Type: `list` of `connectors.ZeroBounce`
 
 Email validation with ZeroBounce

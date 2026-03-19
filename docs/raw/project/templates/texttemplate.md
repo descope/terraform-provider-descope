@@ -7,7 +7,7 @@ TextTemplate
 active
 ------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether this text template is currently active and in use.
 

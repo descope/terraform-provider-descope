@@ -7,7 +7,7 @@ SES
 auth_type
 ---------
 
-- Type: `string` 
+- Type: `string`
 - Default: `"credentials"`
 
 The authentication type to use.
@@ -17,7 +17,7 @@ The authentication type to use.
 access_key_id
 -------------
 
-- Type: `secret` 
+- Type: `secret`
 
 AWS Access key ID.
 
@@ -26,7 +26,7 @@ AWS Access key ID.
 secret
 ------
 
-- Type: `secret` 
+- Type: `secret`
 
 AWS Secret Access Key.
 
@@ -35,7 +35,7 @@ AWS Secret Access Key.
 role_arn
 --------
 
-- Type: `string` 
+- Type: `string`
 
 The Amazon Resource Name (ARN) of the role to assume.
 
@@ -44,7 +44,7 @@ The Amazon Resource Name (ARN) of the role to assume.
 external_id
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 The external ID to use when assuming the role.
 
@@ -62,7 +62,7 @@ AWS region to send requests to (e.g. `us-west-2`).
 endpoint
 --------
 
-- Type: `string` 
+- Type: `string`
 
 An optional endpoint URL (hostname only or fully qualified URI).
 

@@ -16,7 +16,7 @@ The name of the list. Maximum length is 100 characters.
 description
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 An optional description for the list. Defaults to an empty string if not provided.
 

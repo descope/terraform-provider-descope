@@ -7,7 +7,7 @@ SAML
 id
 ----
 
-- Type: `string` 
+- Type: `string`
 
 An optional identifier for the SAML application.
 
@@ -25,7 +25,7 @@ A name for the SAML application.
 description
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 A description for the SAML application.
 
@@ -34,7 +34,7 @@ A description for the SAML application.
 logo
 ----
 
-- Type: `string` 
+- Type: `string`
 
 A logo for the SAML application. Should be a hosted image URL.
 
@@ -43,7 +43,7 @@ A logo for the SAML application. Should be a hosted image URL.
 disabled
 --------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether the application should be enabled or disabled.
 
@@ -52,7 +52,7 @@ Whether the application should be enabled or disabled.
 login_page_url
 --------------
 
-- Type: `string` 
+- Type: `string`
 
 The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 
@@ -61,7 +61,7 @@ The Flow Hosting URL. Read more about using this parameter with custom domain [h
 dynamic_configuration
 ---------------------
 
-- Type: `object` of `applications.DynamicConfiguration` 
+- Type: `object` of `applications.DynamicConfiguration`
 
 The `DynamicConfiguration` object. Read the description below.
 
@@ -70,7 +70,7 @@ The `DynamicConfiguration` object. Read the description below.
 manual_configuration
 --------------------
 
-- Type: `object` of `applications.ManualConfiguration` 
+- Type: `object` of `applications.ManualConfiguration`
 
 The `ManualConfiguration` object. Read the description below.
 
@@ -79,7 +79,7 @@ The `ManualConfiguration` object. Read the description below.
 acs_allowed_callback_urls
 -------------------------
 
-- Type: `set` of `string` 
+- Type: `set` of `string`
 
 A list of allowed ACS callback URLS. This configuration is used when the default ACS URL value is unreachable. Supports wildcards.
 
@@ -88,7 +88,7 @@ A list of allowed ACS callback URLS. This configuration is used when the default
 subject_name_id_type
 --------------------
 
-- Type: `string` 
+- Type: `string`
 
 The subject name id type. Choose one of "", "email", "phone". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 
@@ -97,7 +97,7 @@ The subject name id type. Choose one of "", "email", "phone". Read more about th
 subject_name_id_format
 ----------------------
 
-- Type: `string` 
+- Type: `string`
 
 The subject name id format. Choose one of "", "urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified", "urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress", "urn:oasis:names:tc:SAML:2.0:nameid-format:persistent", "urn:oasis:names:tc:SAML:2.0:nameid-format:transient". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).
 
@@ -106,7 +106,7 @@ The subject name id format. Choose one of "", "urn:oasis:names:tc:SAML:1.1:namei
 default_relay_state
 -------------------
 
-- Type: `string` 
+- Type: `string`
 
 The default relay state. When using IdP-initiated authentication, this value may be used as a URL to a resource in the Service Provider.
 
@@ -115,7 +115,7 @@ The default relay state. When using IdP-initiated authentication, this value may
 attribute_mapping
 -----------------
 
-- Type: `list` of `applications.AttributeMapping` 
+- Type: `list` of `applications.AttributeMapping`
 
 The `AttributeMapping` object. Read the description below.
 
@@ -124,7 +124,7 @@ The `AttributeMapping` object. Read the description below.
 force_authentication
 --------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
 
@@ -199,6 +199,6 @@ Enter the `Entity Id` from the SP.
 certificate
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 Enter the `Certificate` from the SP.

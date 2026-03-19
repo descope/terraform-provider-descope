@@ -16,7 +16,7 @@ The email address of the Descope console user.
 phone
 -----
 
-- Type: `string` 
+- Type: `string`
 
 The phone number of the Descope console user.
 
@@ -25,7 +25,7 @@ The phone number of the Descope console user.
 name
 ----
 
-- Type: `string` 
+- Type: `string`
 
 The display name of the Descope console user.
 
