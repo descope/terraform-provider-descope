@@ -7,7 +7,7 @@ Password
 disabled
 --------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will disallow using this authentication method directly via
 API and SDK calls. Note that this does not affect authentication flows that are
@@ -18,7 +18,7 @@ configured to use this authentication method.
 expiration
 ----------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether users are required to change their password periodically.
 
@@ -27,7 +27,7 @@ Whether users are required to change their password periodically.
 expiration_weeks
 ----------------
 
-- Type: `int` 
+- Type: `int`
 
 The number of weeks after which a user's password expires and they need to replace it.
 
@@ -36,7 +36,7 @@ The number of weeks after which a user's password expires and they need to repla
 lock
 ----
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether the user account should be locked after a specified number of failed login attempts.
 
@@ -45,7 +45,7 @@ Whether the user account should be locked after a specified number of failed log
 lock_attempts
 -------------
 
-- Type: `int` 
+- Type: `int`
 
 The number of failed login attempts allowed before an account is locked.
 
@@ -54,7 +54,7 @@ The number of failed login attempts allowed before an account is locked.
 temporary_lock
 --------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether the user account should be temporarily locked after a specified number of failed login attempts.
 
@@ -63,7 +63,7 @@ Whether the user account should be temporarily locked after a specified number o
 temporary_lock_attempts
 -----------------------
 
-- Type: `int` 
+- Type: `int`
 - Default: `3`
 
 The number of failed login attempts allowed before an account is temporarily locked.
@@ -73,7 +73,7 @@ The number of failed login attempts allowed before an account is temporarily loc
 temporary_lock_duration
 -----------------------
 
-- Type: `duration` 
+- Type: `duration`
 
 The amount of time before the user can sign in again after the account is temporarily locked.
 
@@ -82,7 +82,7 @@ The amount of time before the user can sign in again after the account is tempor
 lowercase
 ---------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether passwords must contain at least one lowercase letter.
 
@@ -91,7 +91,7 @@ Whether passwords must contain at least one lowercase letter.
 min_length
 ----------
 
-- Type: `int` 
+- Type: `int`
 
 The minimum length of the password that users are required to use. The maximum length is always `64`.
 
@@ -100,7 +100,7 @@ The minimum length of the password that users are required to use. The maximum l
 non_alphanumeric
 ----------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).
 
@@ -109,7 +109,7 @@ Whether passwords must contain at least one non-alphanumeric character (e.g. `!`
 number
 ------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether passwords must contain at least one number.
 
@@ -118,7 +118,7 @@ Whether passwords must contain at least one number.
 reuse
 -----
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to forbid password reuse when users change their password.
 
@@ -127,7 +127,7 @@ Whether to forbid password reuse when users change their password.
 reuse_amount
 ------------
 
-- Type: `int` 
+- Type: `int`
 
 The number of previous passwords whose hashes are kept to prevent users from
 reusing old passwords.
@@ -137,7 +137,7 @@ reusing old passwords.
 uppercase
 ---------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether passwords must contain at least one uppercase letter.
 
@@ -146,7 +146,7 @@ Whether passwords must contain at least one uppercase letter.
 mask_errors
 -----------
 
-- Type: `bool` 
+- Type: `bool`
 
 Prevents information about user accounts from being revealed in error messages, e.g.,
 whether a user already exists.
@@ -156,6 +156,6 @@ whether a user already exists.
 email_service
 -------------
 
-- Type: `object` of `templates.EmailService` 
+- Type: `object` of `templates.EmailService`
 
 Settings related to sending password reset emails as part of the password feature.

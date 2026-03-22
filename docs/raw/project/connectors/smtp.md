@@ -34,7 +34,7 @@ SMTP server authentication credentials and method.
 use_static_ips
 --------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether the connector should send all requests from specific static IPs.
 
@@ -68,7 +68,7 @@ Password for SMTP server authentication.
 method
 ------
 
-- Type: `string` 
+- Type: `string`
 - Default: `"plain"`
 
 SMTP authentication method (`plain` or `login`).

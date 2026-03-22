@@ -229,6 +229,7 @@ func TestApplications(t *testing.T) {
 								metadata_url = "https://example.com/metadata"
 							}
 							subject_name_id_type = ""
+							default_signature_algorithm = "sha256"
 						}
 					]
 				}
@@ -236,18 +237,55 @@ func TestApplications(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"applications.saml_applications.#": 1,
 				"applications.saml_applications.0": map[string]any{
-					"id":                        testacc.AttributeHasPrefix("SA"),
-					"name":                      "meh",
-					"description":               "bar",
-					"logo":                      "https://example.com/logo.png",
-					"login_page_url":            "",
-					"dynamic_configuration.%":   1,
-					"manual_configuration.%":    0,
-					"acs_allowed_callback_urls": []string{},
-					"subject_name_id_type":      "",
-					"subject_name_id_format":    "",
-					"default_relay_state":       "",
-					"attribute_mapping.#":       0,
+					"id":                          testacc.AttributeHasPrefix("SA"),
+					"name":                        "meh",
+					"description":                 "bar",
+					"logo":                        "https://example.com/logo.png",
+					"login_page_url":              "",
+					"dynamic_configuration.%":     1,
+					"manual_configuration.%":      0,
+					"acs_allowed_callback_urls":   []string{},
+					"subject_name_id_type":        "",
+					"subject_name_id_format":      "",
+					"default_relay_state":         "",
+					"default_signature_algorithm": "sha256",
+					"attribute_mapping.#":         0,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					saml_applications = [
+						{
+							name = "meh"
+							description = "bar"
+							logo = "https://example.com/logo.png"
+
+							dynamic_configuration = {
+								metadata_url = "https://example.com/metadata"
+							}
+							subject_name_id_type = ""
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.saml_applications.#": 1,
+				"applications.saml_applications.0": map[string]any{
+					"id":                          testacc.AttributeHasPrefix("SA"),
+					"name":                        "meh",
+					"description":                 "bar",
+					"logo":                        "https://example.com/logo.png",
+					"login_page_url":              "",
+					"dynamic_configuration.%":     1,
+					"manual_configuration.%":      0,
+					"acs_allowed_callback_urls":   []string{},
+					"subject_name_id_type":        "",
+					"subject_name_id_format":      "",
+					"default_relay_state":         "",
+					"default_signature_algorithm": "",
+					"attribute_mapping.#":         0,
 				},
 			}),
 		},

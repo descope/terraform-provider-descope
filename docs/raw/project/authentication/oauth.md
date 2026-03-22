@@ -7,7 +7,7 @@ OAuth
 disabled
 --------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will disallow using this authentication method directly via
 API and SDK calls. Note that this does not affect authentication flows that are
@@ -18,7 +18,7 @@ configured to use this authentication method.
 system
 ------
 
-- Type: `object` of `authentication.OAuthSystemProvider` 
+- Type: `object` of `authentication.OAuthSystemProvider`
 
 Custom configurations for builtin OAuth providers such as Apple, Google, GitHub, Facebook, etc.
 
@@ -27,7 +27,7 @@ Custom configurations for builtin OAuth providers such as Apple, Google, GitHub,
 custom
 ------
 
-- Type: `map` of `authentication.OAuthProvider` 
+- Type: `map` of `authentication.OAuthProvider`
 
 Custom OAuth providers configured for this project.
 
@@ -43,7 +43,7 @@ OAuthSystemProvider
 apple
 -----
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 Apple's OAuth provider, allowing users to authenticate with their Apple Account.
 
@@ -52,7 +52,7 @@ Apple's OAuth provider, allowing users to authenticate with their Apple Account.
 discord
 -------
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 Discord's OAuth provider, allowing users to authenticate with their Discord account.
 
@@ -61,7 +61,7 @@ Discord's OAuth provider, allowing users to authenticate with their Discord acco
 facebook
 --------
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 Facebook's OAuth provider, allowing users to authenticate with their Facebook account.
 
@@ -70,7 +70,7 @@ Facebook's OAuth provider, allowing users to authenticate with their Facebook ac
 github
 ------
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 GitHub's OAuth provider, allowing users to authenticate with their GitHub account.
 
@@ -79,7 +79,7 @@ GitHub's OAuth provider, allowing users to authenticate with their GitHub accoun
 gitlab
 ------
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 GitLab's OAuth provider, allowing users to authenticate with their GitLab account.
 
@@ -88,7 +88,7 @@ GitLab's OAuth provider, allowing users to authenticate with their GitLab accoun
 google
 ------
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 Google's OAuth provider, allowing users to authenticate with their Google account.
 
@@ -97,7 +97,7 @@ Google's OAuth provider, allowing users to authenticate with their Google accoun
 linkedin
 --------
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 LinkedIn's OAuth provider, allowing users to authenticate with their LinkedIn account.
 
@@ -106,7 +106,7 @@ LinkedIn's OAuth provider, allowing users to authenticate with their LinkedIn ac
 microsoft
 ---------
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 Microsoft's OAuth provider, allowing users to authenticate with their Microsoft account.
 
@@ -115,7 +115,7 @@ Microsoft's OAuth provider, allowing users to authenticate with their Microsoft 
 slack
 -----
 
-- Type: `object` of `authentication.OAuthProvider` 
+- Type: `object` of `authentication.OAuthProvider`
 
 Slack's OAuth provider, allowing users to authenticate with their Slack account.
 
@@ -131,7 +131,7 @@ OAuthProvider
 disabled
 --------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will disallow using this authentication method directly via
 API and SDK calls. Note that this does not affect authentication flows that are
@@ -142,7 +142,7 @@ configured to use this authentication method.
 client_id
 ---------
 
-- Type: `string` 
+- Type: `string`
 
 The client ID for the OAuth provider, used to identify the application to the provider.
 
@@ -151,7 +151,7 @@ The client ID for the OAuth provider, used to identify the application to the pr
 client_secret
 -------------
 
-- Type: `secret` 
+- Type: `secret`
 
 The client secret for the OAuth provider, used to authenticate the application with the provider.
 
@@ -160,7 +160,7 @@ The client secret for the OAuth provider, used to authenticate the application w
 manage_provider_tokens
 ----------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to enable provider token management for this OAuth provider.
 
@@ -169,7 +169,7 @@ Whether to enable provider token management for this OAuth provider.
 callback_domain
 ---------------
 
-- Type: `string` 
+- Type: `string`
 
 Use a custom domain in your OAuth verification screen.
 
@@ -178,7 +178,7 @@ Use a custom domain in your OAuth verification screen.
 redirect_url
 ------------
 
-- Type: `string` 
+- Type: `string`
 
 Users will be directed to this URL after authentication. If redirect URL is specified in
 the SDK/API call, it will override this value.
@@ -188,7 +188,7 @@ the SDK/API call, it will override this value.
 provider_token_management
 -------------------------
 
-- Type: `object` of `authentication.OAuthProviderTokenManagement` 
+- Type: `object` of `authentication.OAuthProviderTokenManagement`
 
 This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead.
 
@@ -197,7 +197,7 @@ This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain
 prompts
 -------
 
-- Type: `list` of `string` 
+- Type: `list` of `string`
 
 Custom prompts or consent screens that users may see during OAuth authentication.
 
@@ -206,7 +206,7 @@ Custom prompts or consent screens that users may see during OAuth authentication
 allowed_grant_types
 -------------------
 
-- Type: `list` of `string` 
+- Type: `list` of `string`
 
 The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens
 from the OAuth provider.
@@ -216,7 +216,7 @@ from the OAuth provider.
 scopes
 ------
 
-- Type: `list` of `string` 
+- Type: `list` of `string`
 
 Scopes of access that the application requests from the user's account on the OAuth provider.
 
@@ -225,7 +225,7 @@ Scopes of access that the application requests from the user's account on the OA
 merge_user_accounts
 -------------------
 
-- Type: `bool` 
+- Type: `bool`
 - Default: `true`
 
 Whether to merge existing user accounts with new ones created through OAuth authentication.
@@ -235,7 +235,7 @@ Whether to merge existing user accounts with new ones created through OAuth auth
 disable_jit_updates
 -------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 By default the user attribute mapping configuration is used to update the user's
 attributes automatically during sign in. Disable this if you want this to happen
@@ -246,7 +246,7 @@ only during user creation.
 native_client_id
 ----------------
 
-- Type: `string` 
+- Type: `string`
 
 The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.
 
@@ -255,7 +255,7 @@ The client ID for the OAuth provider, used for Sign in with Apple in mobile apps
 native_client_secret
 --------------------
 
-- Type: `secret` 
+- Type: `secret`
 
 The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.
 
@@ -264,7 +264,7 @@ The client secret for the OAuth provider, used for Sign in with Apple in mobile 
 apple_key_generator
 -------------------
 
-- Type: `object` of `authentication.AppleKeyGeneratorModel` 
+- Type: `object` of `authentication.AppleKeyGeneratorModel`
 
 The apple key generator object describing how to create a dynamic apple client secret for applications.
 
@@ -273,7 +273,7 @@ The apple key generator object describing how to create a dynamic apple client s
 native_apple_key_generator
 --------------------------
 
-- Type: `object` of `authentication.AppleKeyGeneratorModel` 
+- Type: `object` of `authentication.AppleKeyGeneratorModel`
 
 The apple key generator object describing how to create a dynamic native apple client secret for mobile apps.
 
@@ -282,7 +282,7 @@ The apple key generator object describing how to create a dynamic native apple c
 description
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 A brief description of the OAuth provider.
 
@@ -291,7 +291,7 @@ A brief description of the OAuth provider.
 logo
 ----
 
-- Type: `string` 
+- Type: `string`
 
 The URL of the logo associated with the OAuth provider.
 
@@ -300,7 +300,7 @@ The URL of the logo associated with the OAuth provider.
 issuer
 ------
 
-- Type: `string` 
+- Type: `string`
 
 The issuer identifier for the OAuth provider.
 
@@ -309,7 +309,7 @@ The issuer identifier for the OAuth provider.
 authorization_endpoint
 ----------------------
 
-- Type: `string` 
+- Type: `string`
 
 The URL that users are redirected to for authorization with the OAuth provider.
 
@@ -318,7 +318,7 @@ The URL that users are redirected to for authorization with the OAuth provider.
 token_endpoint
 --------------
 
-- Type: `string` 
+- Type: `string`
 
 The URL where the application requests an access token from the OAuth provider.
 
@@ -327,7 +327,7 @@ The URL where the application requests an access token from the OAuth provider.
 user_info_endpoint
 ------------------
 
-- Type: `string` 
+- Type: `string`
 
 The URL where the application retrieves user information from the OAuth provider.
 
@@ -336,7 +336,7 @@ The URL where the application retrieves user information from the OAuth provider
 jwks_endpoint
 -------------
 
-- Type: `string` 
+- Type: `string`
 
 The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.
 
@@ -345,7 +345,7 @@ The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAut
 use_client_assertion
 --------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Use private key JWT (client assertion) instead of client secret.
 
@@ -354,7 +354,7 @@ Use private key JWT (client assertion) instead of client secret.
 claim_mapping
 -------------
 
-- Type: `map` of `string` 
+- Type: `map` of `string`
 
 Maps OAuth provider claims to Descope user attributes.
 

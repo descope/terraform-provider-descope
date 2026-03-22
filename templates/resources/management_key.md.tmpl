@@ -1,0 +1,83 @@
+---
+page_title: "descope_management_key Resource - descope"
+subcategory: ""
+description: |-
+  Manages a Descope Management Key used to authenticate API and SDK calls for automating user and project management.
+---
+
+# descope_management_key (Resource)
+
+Manages a Descope Management Key—a credential used to authenticate programmatic access to the Descope Management API and SDKs. Management keys are used for backend operations such as creating users, managing sessions, and building automation pipelines.
+
+~> **Important:** The `cleartext` attribute (the raw key value) is only available immediately after creation and **cannot be retrieved later** through the API. Store it securely using a secrets manager (e.g., AWS Secrets Manager, HashiCorp Vault) immediately after `terraform apply`.
+
+Keys can be scoped to restrict which projects they can access, at the company level or per-project or tag:
+- **Company roles** – Access to all projects in the company
+- **Project roles** – Scoped to specific project IDs
+- **Tag roles** – Scoped to all projects with a given tag
+
+See the [Descope documentation](https://docs.descope.com) for the list of valid role names.
+
+## Example Usage
+
+### Company-Level Key
+
+```hcl
+resource "descope_management_key" "company_key" {
+  name        = "CI/CD Pipeline Key"
+  description = "Used by the deployment pipeline to manage users"
+
+  rebac = {
+    company_roles = ["<role-name>"]
+  }
+}
+
+# Store the cleartext key in your secrets manager
+output "management_key_value" {
+  value     = descope_management_key.company_key.cleartext
+  sensitive = true
+}
+```
+
+### Project-Scoped Key with Expiration
+
+```hcl
+resource "descope_management_key" "project_key" {
+  name        = "Staging Key"
+  description = "Limited access to staging project only"
+
+  # Expires 1 year from a fixed date (Unix timestamp)
+  expire_time = 1893456000
+
+  rebac = {
+    project_roles = [
+      {
+        project_ids = ["<project-id>"]
+        roles       = ["<role-name>"]
+      }
+    ]
+  }
+}
+```
+
+### Tag-Scoped Key with IP Restriction
+
+```hcl
+resource "descope_management_key" "restricted_key" {
+  name = "Office Network Key"
+
+  permitted_ips = ["203.0.113.0/24", "198.51.100.10"]
+
+  rebac = {
+    tag_roles = [
+      {
+        tags  = ["production"]
+        roles = ["<role-name>"]
+      }
+    ]
+  }
+}
+```
+
+
+{{ .SchemaMarkdown }}
