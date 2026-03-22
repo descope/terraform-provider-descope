@@ -373,6 +373,7 @@ Optional:
 - `acs_allowed_callback_urls` (Set of String) A list of allowed ACS callback URLS. This configuration is used when the default ACS URL value is unreachable. Supports wildcards.
 - `attribute_mapping` (Attributes List) The `AttributeMapping` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--attribute_mapping))
 - `default_relay_state` (String) The default relay state. When using IdP-initiated authentication, this value may be used as a URL to a resource in the Service Provider.
+- `default_signature_algorithm` (String) The signature algorithm used to sign SAML responses. Choose one of `""` (default, SHA-1) or `"sha256"` (SHA-256). Only applies to IdP-initiated flows — SP-initiated flows use the algorithm specified in the SP's SAML request.
 - `description` (String) A description for the SAML application.
 - `disabled` (Boolean) Whether the application should be enabled or disabled.
 - `dynamic_configuration` (Attributes) The `DynamicConfiguration` object. Read the description below. (see [below for nested schema](#nestedatt--applications--saml_applications--dynamic_configuration))
@@ -1398,11 +1399,13 @@ Optional:
 
 - `allow_duplicate_domains` (Boolean) Whether to allow duplicate SSO domains across tenants.
 - `allow_override_roles` (Boolean) Whether to allow overriding user's roles with SSO related roles.
+- `block_if_email_domain_mismatch` (Boolean) Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending SSO invite emails as part of the SSO feature. (see [below for nested schema](#nestedatt--authentication--sso--email_service))
 - `groups_priority` (Boolean) Whether to enable groups priority.
 - `limit_mapping_to_mandatory_attributes` (Boolean) Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
 - `mandatory_user_attributes` (Attributes List) Define the required Descope attributes that must be populated when receiving SSO information. (see [below for nested schema](#nestedatt--authentication--sso--mandatory_user_attributes))
+- `mark_email_as_unverified` (Boolean) Whether to mark the user's email as unverified when logging in via SSO.
 - `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 - `require_groups_attribute_name` (Boolean) When configuring SSO the groups attribute name must be specified.
