@@ -34,7 +34,7 @@ AWS region to send requests to (e.g. `us-west-2`).
 endpoint
 --------
 
-- Type: `string` 
+- Type: `string`
 
 An optional endpoint URL (hostname only or fully qualified URI).
 
@@ -43,7 +43,7 @@ An optional endpoint URL (hostname only or fully qualified URI).
 origination_number
 ------------------
 
-- Type: `string` 
+- Type: `string`
 
 An optional phone number from which the text messages are going to be sent. Make sure it
 is registered properly in your server.
@@ -53,7 +53,7 @@ is registered properly in your server.
 sender_id
 ---------
 
-- Type: `string` 
+- Type: `string`
 
 The name of the sender from which the text message is going to be sent (see SNS documentation
 regarding acceptable IDs and supported regions/countries).
@@ -63,7 +63,7 @@ regarding acceptable IDs and supported regions/countries).
 entity_id
 ---------
 
-- Type: `string` 
+- Type: `string`
 
 The entity ID or principal entity (PE) ID for sending text messages to recipients in India.
 
@@ -72,7 +72,7 @@ The entity ID or principal entity (PE) ID for sending text messages to recipient
 template_id
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 The template for sending text messages to recipients in India. The template ID must be
 associated with the sender ID.
@@ -82,6 +82,6 @@ associated with the sender ID.
 organization_number
 -------------------
 
-- Type: `string` 
+- Type: `string`
 
 Use the `origination_number` attribute instead.

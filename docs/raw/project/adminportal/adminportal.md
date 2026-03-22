@@ -32,7 +32,7 @@ AdminPortal
 enabled
 -------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether the Admin Portal is enabled
 
@@ -41,7 +41,7 @@ Whether the Admin Portal is enabled
 style_id
 --------
 
-- Type: `string` 
+- Type: `string`
 
 The style id to use
 
@@ -50,6 +50,6 @@ The style id to use
 widgets
 -------
 
-- Type: `list` of `adminportal.AdminPortalWidget` 
+- Type: `list` of `adminportal.AdminPortalWidget`
 
 The widgets to show in the Admin Portal

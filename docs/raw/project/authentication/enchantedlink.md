@@ -7,7 +7,7 @@ EnchantedLink
 disabled
 --------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will disallow using this authentication method directly via
 API and SDK calls. Note that this does not affect authentication flows that are
@@ -18,7 +18,7 @@ configured to use this authentication method.
 expiration_time
 ---------------
 
-- Type: `duration` 
+- Type: `duration`
 
 How long the enchanted link remains valid before it expires.
 
@@ -27,7 +27,7 @@ How long the enchanted link remains valid before it expires.
 redirect_url
 ------------
 
-- Type: `string` 
+- Type: `string`
 
 The URL to redirect users to after they log in using the enchanted link.
 
@@ -36,6 +36,6 @@ The URL to redirect users to after they log in using the enchanted link.
 email_service
 -------------
 
-- Type: `object` of `templates.EmailService` 
+- Type: `object` of `templates.EmailService`
 
 Settings related to sending emails as part of the enchanted link authentication.

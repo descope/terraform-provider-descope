@@ -7,7 +7,7 @@
 {{.Name}}
 {{ subhead .Name }}
 
-- Type: `{{.Type}}`{{ if .Element }} of `{{.Element}}`{{ end }} {{ if .Required }}(required){{ end }}
+- Type: `{{.Type}}`{{ if .Element }} of `{{.Element}}`{{ end }}{{ if .Required }} (required){{ end }}
 {{- if .Default }}
 - Default: `{{.Default}}`
 {{- end }}

@@ -7,7 +7,7 @@ SSO
 disabled
 --------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will disallow using this authentication method directly via
 API and SDK calls. Note that this does not affect authentication flows that are
@@ -18,7 +18,7 @@ configured to use this authentication method.
 merge_users
 -----------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to merge existing user accounts with new ones created through SSO authentication.
 
@@ -27,7 +27,7 @@ Whether to merge existing user accounts with new ones created through SSO authen
 redirect_url
 ------------
 
-- Type: `string` 
+- Type: `string`
 
 The URL the end user is redirected to after a successful authentication. If one is specified
 in tenant level settings or SDK/API call, they will override this value.
@@ -37,7 +37,7 @@ in tenant level settings or SDK/API call, they will override this value.
 sso_suite_settings
 ------------------
 
-- Type: `object` of `authentication.SSOSuite` 
+- Type: `object` of `authentication.SSOSuite`
 
 Configuration block for the SSO Suite.
 
@@ -46,7 +46,7 @@ Configuration block for the SSO Suite.
 allow_duplicate_domains
 -----------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to allow duplicate SSO domains across tenants.
 
@@ -55,7 +55,7 @@ Whether to allow duplicate SSO domains across tenants.
 allow_override_roles
 --------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to allow overriding user's roles with SSO related roles.
 
@@ -64,7 +64,7 @@ Whether to allow overriding user's roles with SSO related roles.
 groups_priority
 ---------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to enable groups priority.
 
@@ -73,7 +73,7 @@ Whether to enable groups priority.
 mandatory_user_attributes
 -------------------------
 
-- Type: `list` of `authentication.MandatoryUserAttribute` 
+- Type: `list` of `authentication.MandatoryUserAttribute`
 
 Define the required Descope attributes that must be populated when receiving SSO information.
 
@@ -82,7 +82,7 @@ Define the required Descope attributes that must be populated when receiving SSO
 limit_mapping_to_mandatory_attributes
 -------------------------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
 
@@ -91,7 +91,7 @@ Mapping to attributes not specified in `mandatory_user_attributes` is not allowe
 require_sso_domains
 -------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 When configuring SSO an SSO domain must be specified.
 
@@ -100,7 +100,7 @@ When configuring SSO an SSO domain must be specified.
 require_groups_attribute_name
 -----------------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 When configuring SSO the groups attribute name must be specified.
 
@@ -125,7 +125,7 @@ The identifier for the attribute. This value is called `Machine Name` in the Des
 custom
 ------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether the attribute is a custom attribute defined in addition to the default Descope user attributes.
 
@@ -141,7 +141,7 @@ SSOSuite
 style_id
 --------
 
-- Type: `string` 
+- Type: `string`
 
 Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in
 the console for it to be used.
@@ -151,7 +151,7 @@ the console for it to be used.
 hide_scim
 ---------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
 
@@ -160,7 +160,7 @@ Setting this to `true` will hide the SCIM configuration in the SSO Suite interfa
 hide_groups_mapping
 -------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
 
@@ -169,7 +169,7 @@ Setting this to `true` will hide the groups mapping configuration section in the
 hide_domains
 ------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 
@@ -178,7 +178,7 @@ Setting this to `true` will hide the domains configuration section in the SSO Su
 hide_saml
 ---------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will hide the SAML configuration option.
 
@@ -187,7 +187,7 @@ Setting this to `true` will hide the SAML configuration option.
 hide_oidc
 ---------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will hide the OIDC configuration option.
 
@@ -196,6 +196,6 @@ Setting this to `true` will hide the OIDC configuration option.
 force_domain_verification
 -------------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Setting this to `true` will allow only verified domains to be used.

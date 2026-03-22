@@ -25,7 +25,7 @@ Twilio Verify Service SID for verification services.
 sender
 ------
 
-- Type: `string` 
+- Type: `string`
 
 Optional sender identifier for verification messages.
 

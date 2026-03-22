@@ -16,7 +16,7 @@ Name of the JWT Template.
 description
 -----------
 
-- Type: `string` 
+- Type: `string`
 
 Description of the JWT Template.
 
@@ -25,7 +25,7 @@ Description of the JWT Template.
 auth_schema
 -----------
 
-- Type: `string` 
+- Type: `string`
 - Default: `"default"`
 
 The authorization claims format - `default`, `tenantOnly` or `none`.
@@ -36,7 +36,7 @@ Read more about schema types [here](https://docs.descope.com/project-settings/jw
 empty_claim_policy
 ------------------
 
-- Type: `string` 
+- Type: `string`
 - Default: `"none"`
 
 Policy for empty claims - `none`, `nil` or `delete`.
@@ -46,7 +46,7 @@ Policy for empty claims - `none`, `nil` or `delete`.
 auto_tenant_claim
 -----------------
 
-- Type: `bool` 
+- Type: `bool`
 
 When a user is associated with a single tenant, the tenant will be set as the user's
 active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
@@ -56,7 +56,7 @@ active tenant, using the `dct` (Descope Current Tenant) claim in their JWT.
 conformance_issuer
 ------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to use OIDC conformance for the JWT issuer field.
 
@@ -65,7 +65,7 @@ Whether to use OIDC conformance for the JWT issuer field.
 enforce_issuer
 --------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Whether to enforce that the JWT issuer matches the project configuration.
 
@@ -74,7 +74,7 @@ Whether to enforce that the JWT issuer matches the project configuration.
 exclude_permission_claim
 ------------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 When enabled, permissions will not be included in the JWT token.
 
@@ -83,7 +83,7 @@ When enabled, permissions will not be included in the JWT token.
 override_subject_claim
 ----------------------
 
-- Type: `bool` 
+- Type: `bool`
 
 Switching on will allow you to add a custom subject claim to the JWT. A default new `dsub` claim
 will be added with the user ID.
@@ -93,7 +93,7 @@ will be added with the user ID.
 add_jti_claim
 -------------
 
-- Type: `bool` 
+- Type: `bool`
 
 When enabled, a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.
 

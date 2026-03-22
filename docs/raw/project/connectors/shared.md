@@ -16,7 +16,7 @@ The email address that will appear as the sender of the email.
 name
 ----
 
-- Type: `string` 
+- Type: `string`
 
 The display name that will appear as the sender of the email.
 
@@ -41,7 +41,7 @@ The hostname or IP address of the SMTP server.
 port
 ----
 
-- Type: `int` 
+- Type: `int`
 - Default: `25`
 
 The port number to connect to on the SMTP server.
@@ -92,7 +92,7 @@ HTTPAuthField
 bearer_token
 ------------
 
-- Type: `secret` 
+- Type: `secret`
 
 Bearer token for HTTP authentication.
 
@@ -101,7 +101,7 @@ Bearer token for HTTP authentication.
 basic
 -----
 
-- Type: `object` of `connectors.HTTPAuthBasicField` 
+- Type: `object` of `connectors.HTTPAuthBasicField`
 
 Basic authentication credentials (username and password).
 
@@ -110,7 +110,7 @@ Basic authentication credentials (username and password).
 api_key
 -------
 
-- Type: `object` of `connectors.HTTPAuthAPIKeyField` 
+- Type: `object` of `connectors.HTTPAuthAPIKeyField`
 
 API key authentication configuration.
 
