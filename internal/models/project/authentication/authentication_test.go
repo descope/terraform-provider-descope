@@ -427,6 +427,12 @@ func TestAuthentication(t *testing.T) {
 						temporary_lock_attempts = 7
 						temporary_lock_duration = "1 hour"
 					}
+					passkeys = {
+						android_fingerprints = [
+							"AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99",
+							"11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
+						]
+					}
 				}
 			`),
 			Check: p.Check(map[string]any{
@@ -435,6 +441,10 @@ func TestAuthentication(t *testing.T) {
 					"temporary_lock":          true,
 					"temporary_lock_attempts": 7,
 					"temporary_lock_duration": "1 hour",
+				},
+				"authentication.passkeys.android_fingerprints": []string{
+					"AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99",
+					"11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
 				},
 			}),
 		},
