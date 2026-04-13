@@ -1258,6 +1258,7 @@ func TestConnectors(t *testing.T) {
     						site_key = "ikzbbly"
     						api_key = "mhvece"
     						base_url = ""
+    						action = "xwjyy2"
     						override_assessment = true
     						bot_threshold = 12
     						assessment_score = 15
@@ -1275,6 +1276,7 @@ func TestConnectors(t *testing.T) {
 					"site_key":            "ikzbbly",
 					"api_key":             "mhvece",
 					"base_url":            "",
+					"action":              "xwjyy2",
 					"override_assessment": true,
 					"bot_threshold":       12,
 					"assessment_score":    15,

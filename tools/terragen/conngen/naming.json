@@ -336,6 +336,10 @@
       "attribute": "account_uid",
       "struct": "AccountUID"
     },
+    "action": {
+      "attribute": "action",
+      "struct": "Action"
+    },
     "addressTypes": {
       "attribute": "address_types",
       "struct": "AddressTypes"

@@ -2,9 +2,11 @@ package authorization
 
 import (
 	"slices"
+	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -24,23 +26,27 @@ var AuthorizationModifier = objattr.NewModifier[AuthorizationModel]("maintains p
 var AuthorizationAttributes = map[string]schema.Attribute{
 	"roles":       listattr.Default[RoleModel](RoleAttributes),
 	"permissions": listattr.Default[PermissionModel](PermissionAttributes),
+	"fga":         stringattr.Default(""),
 }
 
 type AuthorizationModel struct {
 	Roles       listattr.Type[RoleModel]       `tfsdk:"roles"`
 	Permissions listattr.Type[PermissionModel] `tfsdk:"permissions"`
+	FGA         stringattr.Type                `tfsdk:"fga"`
 }
 
 func (m *AuthorizationModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	listattr.Get(m.Roles, data, "roles", h)
 	listattr.Get(m.Permissions, data, "permissions", h)
+	stringattr.Get(m.FGA, data, "fga")
 	return data
 }
 
 func (m *AuthorizationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.Roles, data, "roles", "name", h)
 	listattr.SetMatchingNames(&m.Permissions, data, "permissions", "name", h)
+	stringattr.Set(&m.FGA, data, "fga", stringattr.SkipIfAlreadySet) // there might be formatting differences and we don't want to trigger inconsistency errors
 }
 
 func (m *AuthorizationModel) CollectReferences(h *helpers.Handler) {
@@ -50,8 +56,12 @@ func (m *AuthorizationModel) CollectReferences(h *helpers.Handler) {
 }
 
 func (m *AuthorizationModel) Validate(h *helpers.Handler) {
-	if helpers.HasUnknownValues(m.Permissions, m.Roles) {
+	if helpers.HasUnknownValues(m.Permissions, m.Roles, m.FGA) {
 		return // skip validation if there are unknown values
+	}
+
+	if fga := m.FGA.ValueString(); fga != "" && !strings.HasPrefix(fga, "model AuthZ") {
+		h.Invalid("The 'fga' attribute must start with 'model AuthZ', make sure you're using the schema from the code view in the FGA tab in the Descope console")
 	}
 
 	permissions := map[string]int{}

@@ -441,6 +441,8 @@ var docsTOTP = map[string]string{
 var docsAuthorization = map[string]string{
 	"roles":       "A list of `Role` objects.",
 	"permissions": "A list of `Permission` objects.",
+	"fga": "The project's FGA schema, configured in the [Descope console](https://app.descope.com/authorization/fga) " +
+		"under the FGA tab. Use the code view to get the schema text and paste it as the value for this attribute.",
 }
 
 var docsPermission = map[string]string{
@@ -1031,6 +1033,7 @@ var docsRecaptchaEnterprise = map[string]string{
 	"api_key": "API key associated with the current project.",
 	"base_url": "Apply a custom url to the reCAPTCHA Enterprise scripts. This is useful when " +
 		"attempting to use reCAPTCHA globally. Defaults to https://www.google.com",
+	"action": "The user-initiated action for this assessment.",
 	"override_assessment": "Override the default assessment model. Note: Overriding assessment is intended " +
 		"for automated testing and should not be utilized in production environments.",
 	"bot_threshold": "The bot threshold is used to determine whether the request is a bot or a human. " +

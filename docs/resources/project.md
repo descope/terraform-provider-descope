@@ -1486,6 +1486,7 @@ Optional:
 
 Optional:
 
+- `fga` (String) The project's FGA schema, configured in the [Descope console](https://app.descope.com/authorization/fga) under the FGA tab. Use the code view to get the schema text and paste it as the value for this attribute.
 - `permissions` (Attributes List) A list of `Permission` objects. (see [below for nested schema](#nestedatt--authorization--permissions))
 - `roles` (Attributes List) A list of `Role` objects. (see [below for nested schema](#nestedatt--authorization--roles))
 
@@ -2700,6 +2701,7 @@ Required:
 
 Optional:
 
+- `action` (String) The user-initiated action for this assessment.
 - `assessment_score` (Number) When configured, the Recaptcha action will return the score without assessing the request. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot.
 - `base_url` (String) Apply a custom url to the reCAPTCHA Enterprise scripts. This is useful when attempting to use reCAPTCHA globally. Defaults to https://www.google.com
 - `bot_threshold` (Number) The bot threshold is used to determine whether the request is a bot or a human. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot. If the score is below this threshold, the request is considered a bot.

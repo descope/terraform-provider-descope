@@ -138,5 +138,27 @@ func TestAuthorization(t *testing.T) {
 				"authorization.permissions.0.description": "Allowed to build and sign applications",
 			}),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				authorization = {
+					fga = "model AuthZ 1.0\n\ntype user\n\n"
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authorization.roles.#":       0,
+				"authorization.permissions.#": 0,
+				"authorization.fga":           "model AuthZ 1.0\n\ntype user\n\n",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authorization = {}
+			`),
+			Check: p.Check(map[string]any{
+				"authorization.fga":           "",
+				"authorization.roles.#":       0,
+				"authorization.permissions.#": 0,
+			}),
+		},
 	)
 }
