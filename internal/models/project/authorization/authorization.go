@@ -60,7 +60,7 @@ func (m *AuthorizationModel) Validate(h *helpers.Handler) {
 		return // skip validation if there are unknown values
 	}
 
-	if fga := m.FGA.ValueString(); fga != "" && !strings.HasPrefix(fga, "model AuthZ") {
+	if fga := strings.TrimSpace(m.FGA.ValueString()); fga != "" && !strings.HasPrefix(fga, "model AuthZ") {
 		h.Invalid("The 'fga' attribute must start with 'model AuthZ', make sure you're using the schema from the code view in the FGA tab in the Descope console")
 	}
 
