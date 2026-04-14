@@ -10,13 +10,15 @@ import (
 var ApplicationsValidator = objattr.NewValidator[ApplicationsModel]("must have a valid SAML configuration")
 
 var ApplicationsAttributes = map[string]schema.Attribute{
-	"oidc_applications": listattr.Default[OIDCModel](OIDCAttributes),
-	"saml_applications": listattr.Default[SAMLModel](SAMLAttributes),
+	"oidc_applications":  listattr.Default[OIDCModel](OIDCAttributes),
+	"saml_applications":  listattr.Default[SAMLModel](SAMLAttributes),
+	"wsfed_applications": listattr.Default[WSFedModel](WSFedAttributes),
 }
 
 type ApplicationsModel struct {
-	OIDCApplications listattr.Type[OIDCModel] `tfsdk:"oidc_applications"`
-	SAMLApplications listattr.Type[SAMLModel] `tfsdk:"saml_applications"`
+	OIDCApplications  listattr.Type[OIDCModel]  `tfsdk:"oidc_applications"`
+	SAMLApplications  listattr.Type[SAMLModel]  `tfsdk:"saml_applications"`
+	WSFedApplications listattr.Type[WSFedModel] `tfsdk:"wsfed_applications"`
 }
 
 func (m *ApplicationsModel) Values(h *helpers.Handler) map[string]any {
@@ -24,12 +26,14 @@ func (m *ApplicationsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	listattr.Get(m.OIDCApplications, data, "oidc", h)
 	listattr.Get(m.SAMLApplications, data, "saml", h)
+	listattr.Get(m.WSFedApplications, data, "wsfed", h)
 	return data
 }
 
 func (m *ApplicationsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.OIDCApplications, data, "oidc", "name", h)
 	listattr.SetMatchingNames(&m.SAMLApplications, data, "saml", "name", h)
+	listattr.SetMatchingNames(&m.WSFedApplications, data, "wsfed", "name", h)
 }
 
 func (m *ApplicationsModel) Check(h *helpers.Handler) {

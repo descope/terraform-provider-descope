@@ -289,13 +289,83 @@ func TestApplications(t *testing.T) {
 				},
 			}),
 		},
+		// WS-Fed
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					wsfed_applications = [
+						{
+							name = "foo"
+							description = "bar"
+							logo = "https://example.com/logo.png"
+							disabled = true
+
+							realm = "https://example.com/realm"
+							reply_url = "https://example.com/reply"
+							login_page_url = "https://example.com/login"
+							subject_name_id_type = "email"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.wsfed_applications.#": 1,
+				"applications.wsfed_applications.0": map[string]any{
+					"id":                   testacc.AttributeHasPrefix("SA"),
+					"name":                 "foo",
+					"description":          "bar",
+					"logo":                 "https://example.com/logo.png",
+					"disabled":             true,
+					"realm":                "https://example.com/realm",
+					"reply_url":            "https://example.com/reply",
+					"login_page_url":       "https://example.com/login",
+					"subject_name_id_type": "email",
+					"force_authentication": false,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					wsfed_applications = [
+						{
+							name = "foo"
+							description = "updated"
+							logo = "https://example.com/logo.png"
+
+							realm = "https://example.com/realm2"
+							reply_url = "https://example.com/reply"
+							login_page_url = "https://example.com/login"
+							force_authentication = true
+							subject_name_id_type = "email"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.wsfed_applications.#": 1,
+				"applications.wsfed_applications.0": map[string]any{
+					"id":                   testacc.AttributeHasPrefix("SA"),
+					"name":                 "foo",
+					"description":          "updated",
+					"logo":                 "https://example.com/logo.png",
+					"disabled":             false,
+					"realm":                "https://example.com/realm2",
+					"reply_url":            "https://example.com/reply",
+					"login_page_url":       "https://example.com/login",
+					"force_authentication": true,
+					"subject_name_id_type": "email",
+				},
+			}),
+		},
 		resource.TestStep{
 			Config: p.Config(`
 				applications = {}
 			`),
 			Check: p.Check(map[string]any{
-				"applications.oidc_applications.#": 0,
-				"applications.saml_applications.#": 0,
+				"applications.oidc_applications.#":  0,
+				"applications.saml_applications.#":  0,
+				"applications.wsfed_applications.#": 0,
 			}),
 		},
 	)
