@@ -39,7 +39,7 @@ func (m *AuthorizationModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	listattr.Get(m.Roles, data, "roles", h)
 	listattr.Get(m.Permissions, data, "permissions", h)
-	stringattr.Get(m.FGA, data, "fga")
+	stringattr.Get(m.FGA, data, "fga", stringattr.TrimSpaces)
 	return data
 }
 
