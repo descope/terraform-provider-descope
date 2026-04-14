@@ -192,15 +192,8 @@ var docsWSFed = map[string]string{
 	"realm":                "The WS-Fed realm identifier for the application.",
 	"reply_url":            "The reply URL where WS-Fed responses are sent.",
 	"login_page_url":       "The Flow Hosting URL.",
-	"certificate":          "The certificate used for the WS-Fed application.",
 	"attribute_mapping":    "The `AttributeMapping` object. Read the description below.",
 	"groups_mapping":       "The `GroupsMapping` object for mapping Descope roles to groups. Read the description below.",
-	"subject_name_id_type": "The subject name id type. Choose one of \"\", \"email\", \"phone\".",
-	"subject_name_id_format": "The subject name id format. Choose one of \"\", " +
-		"\"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\", " +
-		"\"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\", " +
-		"\"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent\", " +
-		"\"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\".",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces " +
 		"the user to authenticate via the Descope flow, regardless of the SP's request.",
 	"logout_redirect_url": "The URL to redirect to after logout.",
