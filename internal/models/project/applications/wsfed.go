@@ -20,9 +20,9 @@ var WSFedAttributes = map[string]schema.Attribute{
 	"login_page_url":       stringattr.Default(""),
 	"attribute_mapping":    listattr.Default[AttributeMappingModel](AttributeMappingAttributes),
 	"groups_mapping":       listattr.Default[GroupsMappingModel](GroupsMappingAttributes),
-	"force_authentication":  boolattr.Default(false),
-	"logout_redirect_url":   stringattr.Default(""),
-	"error_redirect_url":    stringattr.Default(""),
+	"force_authentication": boolattr.Default(false),
+	"logout_redirect_url":  stringattr.Default(""),
+	"error_redirect_url":   stringattr.Default(""),
 }
 
 // Model
@@ -98,11 +98,11 @@ var GroupsMappingAttributes = map[string]schema.Attribute{
 }
 
 type GroupsMappingModel struct {
-	Name       stringattr.Type                       `tfsdk:"name"`
-	Type       stringattr.Type                       `tfsdk:"type"`
-	FilterType stringattr.Type                       `tfsdk:"filter_type"`
-	Value      stringattr.Type                       `tfsdk:"value"`
-	Roles      listattr.Type[RoleGroupMappingModel]  `tfsdk:"roles"`
+	Name       stringattr.Type                      `tfsdk:"name"`
+	Type       stringattr.Type                      `tfsdk:"type"`
+	FilterType stringattr.Type                      `tfsdk:"filter_type"`
+	Value      stringattr.Type                      `tfsdk:"value"`
+	Roles      listattr.Type[RoleGroupMappingModel] `tfsdk:"roles"`
 }
 
 func (m *GroupsMappingModel) Values(h *helpers.Handler) map[string]any {
