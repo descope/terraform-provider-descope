@@ -303,7 +303,8 @@ func TestApplications(t *testing.T) {
 							realm = "https://example.com/realm"
 							reply_url = "https://example.com/reply"
 							login_page_url = "https://example.com/login"
-							subject_name_id_type = "email"
+							logout_redirect_url = "https://example.com/logout"
+							error_redirect_url = "https://example.com/error"
 						}
 					]
 				}
@@ -319,7 +320,8 @@ func TestApplications(t *testing.T) {
 					"realm":                "https://example.com/realm",
 					"reply_url":            "https://example.com/reply",
 					"login_page_url":       "https://example.com/login",
-					"subject_name_id_type": "email",
+					"logout_redirect_url":  "https://example.com/logout",
+					"error_redirect_url":   "https://example.com/error",
 					"force_authentication": false,
 				},
 			}),
@@ -337,7 +339,8 @@ func TestApplications(t *testing.T) {
 							reply_url = "https://example.com/reply"
 							login_page_url = "https://example.com/login"
 							force_authentication = true
-							subject_name_id_type = "email"
+							logout_redirect_url = "https://example.com/logout-updated"
+							error_redirect_url = "https://example.com/error-updated"
 						}
 					]
 				}
@@ -354,7 +357,8 @@ func TestApplications(t *testing.T) {
 					"reply_url":            "https://example.com/reply",
 					"login_page_url":       "https://example.com/login",
 					"force_authentication": true,
-					"subject_name_id_type": "email",
+					"logout_redirect_url":  "https://example.com/logout-updated",
+					"error_redirect_url":   "https://example.com/error-updated",
 				},
 			}),
 		},
