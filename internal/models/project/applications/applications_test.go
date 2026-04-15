@@ -24,7 +24,7 @@ func TestApplications(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"applications.%": 2,
+				"applications.%": 3,
 			}),
 		},
 		resource.TestStep{
