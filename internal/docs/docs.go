@@ -192,8 +192,8 @@ var docsWSFed = map[string]string{
 	"realm":                "The WS-Fed realm identifier for the application.",
 	"reply_url":            "The reply URL where WS-Fed responses are sent.",
 	"login_page_url":       "The Flow Hosting URL.",
-	"attribute_mapping":    "The `AttributeMapping` object. Read the description below.",
-	"groups_mapping":       "The `GroupsMapping` object for mapping Descope roles to groups. Read the description below.",
+	"attribute_mapping":    "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
+	"groups_mapping":       "A list of group mappings from Descope roles to WS-Fed groups.",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces " +
 		"the user to authenticate via the Descope flow, regardless of the SP's request.",
 	"logout_redirect_url": "The URL to redirect to after logout.",

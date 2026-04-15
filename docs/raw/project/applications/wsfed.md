@@ -81,7 +81,7 @@ attribute_mapping
 
 - Type: `list` of `applications.AttributeMapping`
 
-The `AttributeMapping` object. Read the description below.
+A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.
 
 
 
@@ -90,7 +90,7 @@ groups_mapping
 
 - Type: `list` of `applications.GroupsMapping`
 
-The `GroupsMapping` object for mapping Descope roles to groups. Read the description below.
+A list of group mappings from Descope roles to WS-Fed groups.
 
 
 

@@ -7,7 +7,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var ApplicationsValidator = objattr.NewValidator[ApplicationsModel]("must have a valid SAML configuration")
+var ApplicationsValidator = objattr.NewValidator[ApplicationsModel]("must have a valid applications configuration")
 
 var ApplicationsAttributes = map[string]schema.Attribute{
 	"oidc_applications":  listattr.Default[OIDCModel](OIDCAttributes),
