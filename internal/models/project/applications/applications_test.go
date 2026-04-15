@@ -305,6 +305,26 @@ func TestApplications(t *testing.T) {
 							login_page_url = "https://example.com/login"
 							logout_redirect_url = "https://example.com/logout"
 							error_redirect_url = "https://example.com/error"
+							attribute_mapping = [
+								{
+									name = "email"
+									value = "user.email"
+								},
+							]
+							groups_mapping = [
+								{
+									name = "admins"
+									type = "basic"
+									filter_type = "roles"
+									value = "admin"
+									roles = [
+										{
+											id = "r1"
+											name = "Admin"
+										},
+									]
+								},
+							]
 						}
 					]
 				}
@@ -323,6 +343,21 @@ func TestApplications(t *testing.T) {
 					"logout_redirect_url":  "https://example.com/logout",
 					"error_redirect_url":   "https://example.com/error",
 					"force_authentication": false,
+					"attribute_mapping": map[string]any{
+						"#":       1,
+						"0.name":  "email",
+						"0.value": "user.email",
+					},
+					"groups_mapping": map[string]any{
+						"#":               1,
+						"0.name":          "admins",
+						"0.type":          "basic",
+						"0.filter_type":   "roles",
+						"0.value":         "admin",
+						"0.roles.#":       1,
+						"0.roles.0.id":    "r1",
+						"0.roles.0.name":  "Admin",
+					},
 				},
 			}),
 		},

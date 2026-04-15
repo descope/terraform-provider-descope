@@ -19,3 +19,12 @@ saml_applications
 - Type: `list` of `applications.SAML`
 
 Applications using SAML for authentication.
+
+
+
+wsfed_applications
+------------------
+
+- Type: `list` of `applications.WSFed`
+
+Applications using WS-Federation for authentication.
