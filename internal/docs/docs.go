@@ -1401,6 +1401,8 @@ var docsSettings = map[string]string{
 		"for different authentication methods.",
 	"default_no_sso_apps": "Define whether a user created with no federated apps, will have access to all apps, " +
 		"or will not have access to any app.",
+	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same email address " +
+		"in Tenant A and Tenant B will be treated as separate identities with isolated credentials, sessions, and MFA state.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 		"refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
