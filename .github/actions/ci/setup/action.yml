@@ -11,6 +11,12 @@ runs:
         go-version-file: go.mod
         cache: false
 
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
+      with:
+        terraform_version: "1.10.4"
+        terraform_wrapper: false
+
     - name: Enable Cache
       uses: actions/cache@668228422ae6a00e4ad889ee87cd7109ec5666a7 # v5.0.4
       with:
