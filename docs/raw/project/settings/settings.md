@@ -48,7 +48,7 @@ tenant_user_isolation
 
 - Type: `bool`
 
-When enabled, users are completely isolated per tenant. The same email address in
+When enabled, users are completely isolated per tenant. The same login ID in
 Tenant A and Tenant B will be treated as separate identities with isolated credentials,
 sessions, and MFA state.
 
