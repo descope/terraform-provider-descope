@@ -183,19 +183,34 @@ var docsSAML = map[string]string{
 	"force_authentication":        "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
 }
 
+var docsAttributeMapping = map[string]string{
+	"name":  "The name of the attribute.",
+	"value": "The value of the attribute.",
+}
+
+var docsDynamicConfiguration = map[string]string{
+	"metadata_url": "The metadata URL when retrieving the connection details dynamically.",
+}
+
+var docsManualConfiguration = map[string]string{
+	"acs_url":     "Enter the `ACS URL` from the SP.",
+	"entity_id":   "Enter the `Entity Id` from the SP.",
+	"certificate": "Enter the `Certificate` from the SP.",
+}
+
 var docsWSFed = map[string]string{
-	"id":                   "An optional identifier for the WS-Fed application.",
-	"name":                 "A name for the WS-Fed application.",
-	"description":          "A description for the WS-Fed application.",
-	"logo":                 "A logo for the WS-Fed application. Should be a hosted image URL.",
-	"disabled":             "Whether the application should be enabled or disabled.",
-	"realm":                "The WS-Fed realm identifier for the application.",
-	"reply_url":            "The reply URL where WS-Fed responses are sent.",
-	"login_page_url":       "The Flow Hosting URL.",
-	"attribute_mapping":    "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
-	"groups_mapping":       "A list of group mappings from Descope roles to WS-Fed groups.",
-	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces " +
-		"the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"id":                "An optional identifier for the WS-Fed application.",
+	"name":              "A name for the WS-Fed application.",
+	"description":       "A description for the WS-Fed application.",
+	"logo":              "A logo for the WS-Fed application. Should be a hosted image URL.",
+	"disabled":          "Whether the application should be enabled or disabled.",
+	"realm":             "The WS-Fed realm identifier for the application.",
+	"reply_url":         "The reply URL where WS-Fed responses are sent.",
+	"login_page_url":    "The Flow Hosting URL.",
+	"attribute_mapping": "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
+	"groups_mapping":    "A list of group mappings from Descope roles to WS-Fed groups.",
+	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces the user to " +
+		"authenticate via the Descope flow, regardless of the SP's request.",
 	"logout_redirect_url": "The URL to redirect to after logout.",
 	"error_redirect_url":  "The URL to redirect to when an error occurs.",
 }
@@ -211,21 +226,6 @@ var docsGroupsMapping = map[string]string{
 var docsRoleGroupMapping = map[string]string{
 	"id":   "The identifier of the role.",
 	"name": "The name of the role.",
-}
-
-var docsAttributeMapping = map[string]string{
-	"name":  "The name of the attribute.",
-	"value": "The value of the attribute.",
-}
-
-var docsDynamicConfiguration = map[string]string{
-	"metadata_url": "The metadata URL when retrieving the connection details dynamically.",
-}
-
-var docsManualConfiguration = map[string]string{
-	"acs_url":     "Enter the `ACS URL` from the SP.",
-	"entity_id":   "Enter the `Entity Id` from the SP.",
-	"certificate": "Enter the `Certificate` from the SP.",
 }
 
 var docsAccessKeyAttribute = map[string]string{

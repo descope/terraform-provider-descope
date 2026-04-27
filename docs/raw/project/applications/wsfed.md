@@ -1,6 +1,6 @@
 
-WS-Fed
-======
+WSFed
+=====
 
 
 
@@ -99,7 +99,8 @@ force_authentication
 
 - Type: `bool`
 
-This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
+This configuration overrides the default behavior of the SSO application and forces the user to
+authenticate via the Descope flow, regardless of the SP's request.
 
 
 
@@ -118,30 +119,6 @@ error_redirect_url
 - Type: `string`
 
 The URL to redirect to when an error occurs.
-
-
-
-AttributeMapping
-================
-
-
-
-name
-----
-
-- Type: `string` (required)
-
-The name of the attribute.
-
-
-
-value
------
-
-- Type: `string` (required)
-
-The value of the attribute.
-
 
 
 
