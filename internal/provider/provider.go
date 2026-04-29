@@ -126,7 +126,9 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	if msg := detectRegionMismatch(config.Region.ValueString(), managementKey); msg != "" {
+	if msg := detectRegionMismatch(regionInput, managementKey); msg != "" {
+		resp.Diagnostics.AddAttributeWarning(path.Root("region"), "Descope Region Mismatch", msg)
+	}
 		resp.Diagnostics.AddAttributeWarning(path.Root("region"), "Descope Region Mismatch", msg)
 	}
 
