@@ -27,7 +27,8 @@ The provider authenticates with the Descope API using a management key. You can 
 | Variable                | Description                                              |
 |-------------------------|----------------------------------------------------------|
 | `DESCOPE_MANAGEMENT_KEY` | A valid management key for your Descope company         |
-| `DESCOPE_BASE_URL`       | Override the Descope API base URL (optional, for testing) |
+| `DESCOPE_REGION`         | Override the auto-detected region (`us`, `eu`, `ca`, `ap`)                |
+| `DESCOPE_BASE_URL`       | Override the Descope API base URL (for CNAME usage, testing or private deployments)    |
 
 ```shell
 export DESCOPE_MANAGEMENT_KEY="K2..."
@@ -83,6 +84,45 @@ variable "descope_management_key" {
 
 provider "descope" {
   management_key = var.descope_management_key
+}
+```
+
+### Regions
+
+The provider auto-detects the region from the management key, so most setups need no extra configuration. To set the region explicitly, set `region` (one of `us`, `eu`, `ca`, `ap`) or `base_url` directly. When doing so, make sure to _match the region of the management key with region set by these fields_:
+
+```hcl
+provider "descope" {
+  region         = "eu"
+  management_key = var.descope_management_key
+}
+```
+
+If both are set, `base_url` takes precedence.
+
+### Managing Multiple Regions
+
+Each region is isolated with its own management keys. To manage projects across regions from a single configuration, declare an aliased provider block per region:
+
+```hcl
+provider "descope" {
+  alias          = "us"
+  management_key = var.us_management_key
+}
+
+provider "descope" {
+  alias          = "eu"
+  management_key = var.eu_management_key
+}
+
+resource "descope_project" "us_app" {
+  provider = descope.us
+  name     = "my-app"
+}
+
+resource "descope_project" "eu_app" {
+  provider = descope.eu
+  name     = "my-app"
 }
 ```
 
