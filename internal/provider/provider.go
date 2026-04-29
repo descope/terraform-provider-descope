@@ -126,10 +126,12 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 		return
 	}
 
-	if msg := detectRegionMismatch(regionInput, managementKey); msg != "" {
-		resp.Diagnostics.AddAttributeWarning(path.Root("region"), "Descope Region Mismatch", msg)
-	}
-		resp.Diagnostics.AddAttributeWarning(path.Root("region"), "Descope Region Mismatch", msg)
+	// Only warn about region/key mismatch when region actually drove routing —
+	// if base_url is set, region is unused so a mismatch is moot.
+	if baseURLInput == "" {
+		if msg := detectRegionMismatch(regionInput, managementKey); msg != "" {
+			resp.Diagnostics.AddAttributeWarning(path.Root("region"), "Descope Region Mismatch", msg)
+		}
 	}
 
 	client := infra.NewClient(p.version, managementKey, baseURL)

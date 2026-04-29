@@ -89,7 +89,7 @@ provider "descope" {
 
 ### Regions
 
-The provider auto-detects the region from the management key, so most setups need no extra configuration. To set the region explicitly, set `region` (one of `us`, `eu`, `ca`, `ap`) or `base_url` directly. When doing so, make sure to _match the region of the management key with region set by these fields_:
+The provider auto-detects the region from the management key, so most setups need no extra configuration. To set the region explicitly, set `region` (one of `us`, `eu`, `ca`, `ap`) or `base_url` directly. When doing so, make sure to _match the region of the management key with the region set by these fields_:
 
 ```hcl
 provider "descope" {

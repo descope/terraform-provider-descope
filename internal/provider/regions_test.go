@@ -15,7 +15,7 @@ func TestSymbolToURLValues(t *testing.T) {
 		if u.Scheme != "https" {
 			t.Fatalf("symbol %q: expected https scheme, got %q", symbol, u.Scheme)
 		}
-		if !strings.HasSuffix(u.Host, "descope.com") {
+		if u.Host != "descope.com" && !strings.HasSuffix(u.Host, ".descope.com") {
 			t.Fatalf("symbol %q: expected host under descope.com, got %q", symbol, u.Host)
 		}
 	}
