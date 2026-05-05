@@ -432,6 +432,8 @@ var docsSSOSuite = map[string]string{
 	"hide_saml":                 "Setting this to `true` will hide the SAML configuration option.",
 	"hide_oidc":                 "Setting this to `true` will hide the OIDC configuration option.",
 	"force_domain_verification": "Setting this to `true` will allow only verified domains to be used.",
+	"support_email":             "Email address shown to end-users in the SSO Suite UI as a support contact.",
+	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
 }
 
 var docsTOTP = map[string]string{

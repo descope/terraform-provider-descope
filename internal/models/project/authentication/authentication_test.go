@@ -234,16 +234,32 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					sso = {
 						sso_suite_settings = {
-							style_id = "koko"
-							hide_saml = true
+							support_email = "not-an-email"
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("Invalid Email Address"),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							style_id           = "koko"
+							hide_saml          = true
+							support_email      = "help@acme.com"
+							show_help_contact  = true
 						}
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"authentication.sso.sso_suite_settings": map[string]any{
-					"style_id":  "koko",
-					"hide_saml": true,
+					"style_id":          "koko",
+					"hide_saml":         true,
+					"support_email":     "help@acme.com",
+					"show_help_contact": true,
 				},
 			}),
 		},

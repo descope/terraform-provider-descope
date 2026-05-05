@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"net/mail"
 	"regexp"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
@@ -21,6 +22,8 @@ var MachineIDValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[A-Za
 var OTPValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[0-9]{6}$`), "must be a 6 digit code")
 
 var NonEmptyValidator validator.String = &nonEmptyValidator{}
+
+var EmailValidator validator.String = &emailValidator{}
 
 func JSONValidator(required ...string) validator.String {
 	return &jsonValidator{required: required}
@@ -87,5 +90,31 @@ func (v jsonValidator) ValidateString(ctx context.Context, req validator.StringR
 			resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Missing Required Field", fmt.Sprintf("The JSON object at attribute %s must contain a '%s' field", req.Path, field)))
 			return
 		}
+	}
+}
+
+// Email
+
+type emailValidator struct{}
+
+func (v emailValidator) Description(_ context.Context) string {
+	return "must be a valid email address"
+}
+
+func (v emailValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v emailValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	tflog.Trace(ctx, "Validating string", map[string]any{"path": req.Path.String()})
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+	value := req.ConfigValue.ValueString()
+	if len(value) == 0 {
+		return
+	}
+	if _, err := mail.ParseAddress(value); err != nil {
+		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Invalid Email Address", fmt.Sprintf("Attribute %s must be a valid email address", req.Path)))
 	}
 }

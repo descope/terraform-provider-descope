@@ -1468,7 +1468,9 @@ Optional:
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
+- `show_help_contact` (Boolean) Whether to display the help/support contact link in the SSO Suite UI.
 - `style_id` (String) Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in the console for it to be used.
+- `support_email` (String) Email address shown to end-users in the SSO Suite UI as a support contact.
 
 
 
