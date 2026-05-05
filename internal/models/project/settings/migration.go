@@ -8,6 +8,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var SessionMigrationValidator = objattr.NewValidator[SessionMigrationModel]("must have a valid configuration")
@@ -121,7 +122,7 @@ func (m *SessionMigrationModel) SetValues(h *helpers.Handler, data map[string]an
 	if v, ok := data["userSyncType"].(string); ok && v != "" {
 		m.UserSyncType = stringattr.Value(v)
 	} else {
-		stringattr.Nil(&m.UserSyncType)
+		m.UserSyncType = types.StringNull()
 	}
 	listattr.Set(&m.UserMapping, data, "userMapping", h)
 }
