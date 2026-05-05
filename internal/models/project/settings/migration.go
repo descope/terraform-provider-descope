@@ -109,6 +109,8 @@ func (m *SessionMigrationModel) SetValues(h *helpers.Handler, data map[string]an
 		// see: managementservice/common/pkg/common/domain/domain.go ManagementServicePlaceholderValueIndicator
 		if t, ok := v["apiToken"].(string); ok && t != "" && t != "PLACEHOLDER_VALUE" {
 			m.ApiToken = stringattr.Value(t)
+		} else {
+			stringattr.Nil(&m.ApiToken)
 		}
 	} else {
 		m.Vendor = stringattr.Value("")
@@ -128,7 +130,7 @@ func (m *SessionMigrationModel) SetValues(h *helpers.Handler, data map[string]an
 }
 
 func (m *SessionMigrationModel) Validate(h *helpers.Handler) {
-	if helpers.HasUnknownValues(m.Vendor, m.ClientID, m.Domain, m.Audience, m.Issuer, m.ApiToken, m.UserSyncType, m.LoginIDMatchedAttributes) {
+	if helpers.HasUnknownValues(m.Vendor, m.ClientID, m.Domain, m.Audience, m.Issuer, m.ApiToken, m.UserSyncType, m.LoginIDMatchedAttributes, m.UserMapping) {
 		return
 	}
 
