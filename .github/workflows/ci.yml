@@ -25,7 +25,7 @@ jobs:
       - name: Setup Repo
         uses: ./.github/actions/ci/setup
       - name: Install Terraform
-        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269ef065 # v3.1.2
+        uses: hashicorp/setup-terraform@b9cd54a3c349d3f38e8881555d616ced269862dd # v3.1.2
       - name: Install Descope CLI
         uses: descope/descopecli/.github/actions/install@76722efc17408640a42340cbdae1528c363e9dc2 # v0.8.15
       - name: Run Acceptance Tests
