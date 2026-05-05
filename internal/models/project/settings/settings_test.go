@@ -322,10 +322,42 @@ func TestSettings(t *testing.T) {
 			Config: p.Config(`
 				project_settings = {
 					session_migration = {
+						vendor = "okta"
+						client_id = "foo"
+						issuer = "bar"
+						loginid_matched_attributes = [ "username", "email" ]
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`api_token attribute is required`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_migration = {
+						vendor = "auth0"
+						client_id = "foo"
+						domain = "bar"
+						api_token = "secret"
+						loginid_matched_attributes = [ "username", "email" ]
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`api_token attribute should not be set`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_migration = {
 						vendor = "auth0"
 						client_id = "foo"
 						domain = "bar"
 						loginid_matched_attributes = [ "username", "email" ]
+						user_sync_type = "matchOnly"
+						user_mapping = [
+							{ external_key = "email", descope_key = "email" },
+							{ external_key = "name", descope_key = "name" },
+						]
 					}
 				}
 			`),
@@ -337,6 +369,7 @@ func TestSettings(t *testing.T) {
 					"audience":                   "",
 					"issuer":                     "",
 					"loginid_matched_attributes": []string{"username", "email"},
+					"user_sync_type":             "matchOnly",
 				},
 			}),
 		},
