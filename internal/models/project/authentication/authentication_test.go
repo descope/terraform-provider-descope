@@ -248,6 +248,7 @@ func TestAuthentication(t *testing.T) {
 						sso_suite_settings = {
 							style_id           = "koko"
 							hide_saml          = true
+							hide_jit_guide     = true
 							support_email      = "help@acme.com"
 							show_help_contact  = true
 						}
@@ -258,6 +259,7 @@ func TestAuthentication(t *testing.T) {
 				"authentication.sso.sso_suite_settings": map[string]any{
 					"style_id":          "koko",
 					"hide_saml":         true,
+					"hide_jit_guide":    true,
 					"support_email":     "help@acme.com",
 					"show_help_contact": true,
 				},
