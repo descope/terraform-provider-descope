@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/mail"
 	"regexp"
+	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
@@ -114,7 +115,8 @@ func (v emailValidator) ValidateString(ctx context.Context, req validator.String
 	if len(value) == 0 {
 		return
 	}
-	if _, err := mail.ParseAddress(value); err != nil {
+	parsed, err := mail.ParseAddress(value)
+	if err != nil || parsed.Address != strings.TrimSpace(value) || !strings.Contains(strings.SplitN(parsed.Address, "@", 2)[1], ".") {
 		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Invalid Email Address", fmt.Sprintf("Attribute %s must be a valid email address", req.Path)))
 	}
 }
