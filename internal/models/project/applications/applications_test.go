@@ -24,7 +24,7 @@ func TestApplications(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"applications.%": 2,
+				"applications.%": 3,
 			}),
 		},
 		resource.TestStep{
@@ -289,13 +289,122 @@ func TestApplications(t *testing.T) {
 				},
 			}),
 		},
+		// WS-Fed
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					wsfed_applications = [
+						{
+							name = "foo"
+							description = "bar"
+							logo = "https://example.com/logo.png"
+							disabled = true
+
+							realm = "https://example.com/realm"
+							reply_url = "https://example.com/reply"
+							login_page_url = "https://example.com/login"
+							logout_redirect_url = "https://example.com/logout"
+							error_redirect_url = "https://example.com/error"
+							attribute_mapping = [
+								{
+									name = "email"
+									value = "user.email"
+								},
+							]
+							groups_mapping = [
+								{
+									name = "admins"
+									type = "basic"
+									filter_type = "roles"
+									value = "admin"
+									roles = [
+										{
+											id = "r1"
+											name = "Admin"
+										},
+									]
+								},
+							]
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.wsfed_applications.#": 1,
+				"applications.wsfed_applications.0": map[string]any{
+					"id":                   testacc.AttributeHasPrefix("SA"),
+					"name":                 "foo",
+					"description":          "bar",
+					"logo":                 "https://example.com/logo.png",
+					"disabled":             true,
+					"realm":                "https://example.com/realm",
+					"reply_url":            "https://example.com/reply",
+					"login_page_url":       "https://example.com/login",
+					"logout_redirect_url":  "https://example.com/logout",
+					"error_redirect_url":   "https://example.com/error",
+					"force_authentication": false,
+					"attribute_mapping": map[string]any{
+						"#":       1,
+						"0.name":  "email",
+						"0.value": "user.email",
+					},
+					"groups_mapping": map[string]any{
+						"#":              1,
+						"0.name":         "admins",
+						"0.type":         "basic",
+						"0.filter_type":  "roles",
+						"0.value":        "admin",
+						"0.roles.#":      1,
+						"0.roles.0.id":   "r1",
+						"0.roles.0.name": "Admin",
+					},
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					wsfed_applications = [
+						{
+							name = "foo"
+							description = "updated"
+							logo = "https://example.com/logo.png"
+
+							realm = "https://example.com/realm2"
+							reply_url = "https://example.com/reply"
+							login_page_url = "https://example.com/login"
+							force_authentication = true
+							logout_redirect_url = "https://example.com/logout-updated"
+							error_redirect_url = "https://example.com/error-updated"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.wsfed_applications.#": 1,
+				"applications.wsfed_applications.0": map[string]any{
+					"id":                   testacc.AttributeHasPrefix("SA"),
+					"name":                 "foo",
+					"description":          "updated",
+					"logo":                 "https://example.com/logo.png",
+					"disabled":             false,
+					"realm":                "https://example.com/realm2",
+					"reply_url":            "https://example.com/reply",
+					"login_page_url":       "https://example.com/login",
+					"force_authentication": true,
+					"logout_redirect_url":  "https://example.com/logout-updated",
+					"error_redirect_url":   "https://example.com/error-updated",
+				},
+			}),
+		},
 		resource.TestStep{
 			Config: p.Config(`
 				applications = {}
 			`),
 			Check: p.Check(map[string]any{
-				"applications.oidc_applications.#": 0,
-				"applications.saml_applications.#": 0,
+				"applications.oidc_applications.#":  0,
+				"applications.saml_applications.#":  0,
+				"applications.wsfed_applications.#": 0,
 			}),
 		},
 	)
