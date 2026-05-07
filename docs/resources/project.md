@@ -342,6 +342,7 @@ Optional:
 
 - `oidc_applications` (Attributes List) Applications using OpenID Connect (OIDC) for authentication. (see [below for nested schema](#nestedatt--applications--oidc_applications))
 - `saml_applications` (Attributes List) Applications using SAML for authentication. (see [below for nested schema](#nestedatt--applications--saml_applications))
+- `wsfed_applications` (Attributes List) Applications using WS-Federation for authentication. (see [below for nested schema](#nestedatt--applications--wsfed_applications))
 
 <a id="nestedatt--applications--oidc_applications"></a>
 ### Nested Schema for `applications.oidc_applications`
@@ -413,6 +414,62 @@ Required:
 Optional:
 
 - `certificate` (String) Enter the `Certificate` from the SP.
+
+
+
+<a id="nestedatt--applications--wsfed_applications"></a>
+### Nested Schema for `applications.wsfed_applications`
+
+Required:
+
+- `name` (String) A name for the WS-Fed application.
+
+Optional:
+
+- `attribute_mapping` (Attributes List) A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes. (see [below for nested schema](#nestedatt--applications--wsfed_applications--attribute_mapping))
+- `description` (String) A description for the WS-Fed application.
+- `disabled` (Boolean) Whether the application should be enabled or disabled.
+- `error_redirect_url` (String) The URL to redirect to when an error occurs.
+- `force_authentication` (Boolean) This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
+- `groups_mapping` (Attributes List) A list of group mappings from Descope roles to WS-Fed groups. (see [below for nested schema](#nestedatt--applications--wsfed_applications--groups_mapping))
+- `id` (String) An optional identifier for the WS-Fed application.
+- `login_page_url` (String) The Flow Hosting URL.
+- `logo` (String) A logo for the WS-Fed application. Should be a hosted image URL.
+- `logout_redirect_url` (String) The URL to redirect to after logout.
+- `realm` (String) The WS-Fed realm identifier for the application.
+- `reply_url` (String) The reply URL where WS-Fed responses are sent.
+
+<a id="nestedatt--applications--wsfed_applications--attribute_mapping"></a>
+### Nested Schema for `applications.wsfed_applications.attribute_mapping`
+
+Required:
+
+- `name` (String) The name of the attribute.
+- `value` (String) The value of the attribute.
+
+
+<a id="nestedatt--applications--wsfed_applications--groups_mapping"></a>
+### Nested Schema for `applications.wsfed_applications.groups_mapping`
+
+Required:
+
+- `filter_type` (String) The filter type for the groups mapping.
+- `name` (String) The name of the groups mapping.
+- `type` (String) The type of the groups mapping.
+- `value` (String) The value of the groups mapping.
+
+Optional:
+
+- `roles` (Attributes List) The `RoleGroupMapping` object. A list of roles mapped to this group. (see [below for nested schema](#nestedatt--applications--wsfed_applications--groups_mapping--roles))
+
+<a id="nestedatt--applications--wsfed_applications--groups_mapping--roles"></a>
+### Nested Schema for `applications.wsfed_applications.groups_mapping.roles`
+
+Required:
+
+- `id` (String) The identifier of the role.
+- `name` (String) The name of the role.
+
 
 
 
