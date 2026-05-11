@@ -27,6 +27,7 @@ var PasswordAttributes = map[string]schema.Attribute{
 	"reuse":                   boolattr.Optional(),
 	"reuse_amount":            intattr.Optional(int64validator.Between(1, 50)),
 	"uppercase":               boolattr.Optional(),
+	"any_letter":              boolattr.Optional(),
 	"mask_errors":             boolattr.Default(false),
 	"email_service":           objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
@@ -47,6 +48,7 @@ type PasswordModel struct {
 	Reuse                 boolattr.Type                             `tfsdk:"reuse"`
 	ReuseAmount           intattr.Type                              `tfsdk:"reuse_amount"`
 	Uppercase             boolattr.Type                             `tfsdk:"uppercase"`
+	AnyLetter             boolattr.Type                             `tfsdk:"any_letter"`
 	MaskErrors            boolattr.Type                             `tfsdk:"mask_errors"`
 	EmailService          objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
 }
@@ -68,6 +70,7 @@ func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.Reuse, data, "reuse")
 	intattr.Get(m.ReuseAmount, data, "reuseAmount")
 	boolattr.Get(m.Uppercase, data, "uppercase")
+	boolattr.Get(m.AnyLetter, data, "anyLetter")
 	boolattr.Get(m.MaskErrors, data, "maskError")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	return data
@@ -89,6 +92,7 @@ func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.Reuse, data, "reuse")
 	intattr.Set(&m.ReuseAmount, data, "reuseAmount")
 	boolattr.Set(&m.Uppercase, data, "uppercase")
+	boolattr.Set(&m.AnyLetter, data, "anyLetter")
 	boolattr.Set(&m.MaskErrors, data, "maskError")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
 }

@@ -466,5 +466,21 @@ func TestAuthentication(t *testing.T) {
 				},
 			}),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					password = {
+						any_letter = true
+						lowercase = false
+						uppercase = false
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.password.any_letter": true,
+				"authentication.password.lowercase":  false,
+				"authentication.password.uppercase":  false,
+			}),
+		},
 	)
 }

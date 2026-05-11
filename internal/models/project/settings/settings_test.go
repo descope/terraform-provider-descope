@@ -107,6 +107,25 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					tenant_user_isolation = true
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.tenant_user_isolation": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.tenant_user_isolation": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					approved_domains = ["example.com"]
 				}
 			`),
