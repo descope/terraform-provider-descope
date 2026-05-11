@@ -32,6 +32,7 @@ jobs:
           DESCOPE_MANAGEMENT_KEY: ${{ secrets.DESCOPE_MANAGEMENT_KEY }}
           DESCOPE_BASE_URL: ${{ secrets.DESCOPE_BASE_URL }}
           DESCOPE_USER_AGENT: ${{ secrets.DESCOPE_USER_AGENT }}
+          DESCOPE_TESTACC_THROTTLE: ${{ vars.DESCOPE_TESTACC_THROTTLE }}
           TF_ACC: 1
         run: |
           echo "Running acceptance tests"
