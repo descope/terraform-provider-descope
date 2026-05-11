@@ -3495,6 +3495,7 @@ Optional:
 - `approved_domains` (Set of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `custom_domain` (String) A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `default_no_sso_apps` (Boolean) Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app.
+- `tenant_user_isolation` (Boolean) When enabled, users are completely isolated per tenant. The same login ID in Tenant A and Tenant B will be treated as separate identities with isolated credentials, sessions, and MFA state.
 - `enable_inactivity` (Boolean) Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
 - `inactivity_time` (String) The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum value is "10 minutes".
 - `refresh_token_cookie_domain` (String) The domain name for refresh token cookies. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
