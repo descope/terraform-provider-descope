@@ -416,6 +416,7 @@ var docsPassword = map[string]string{
 	"temporary_lock":          "Whether the user account should be temporarily locked after a specified number of failed login attempts.",
 	"temporary_lock_attempts": "The number of failed login attempts allowed before an account is temporarily locked.",
 	"temporary_lock_duration": "The amount of time before the user can sign in again after the account is temporarily locked.",
+	"any_letter":              "Whether passwords must contain at least one letter (uppercase or lowercase).",
 	"lowercase":               "Whether passwords must contain at least one lowercase letter.",
 	"min_length":              "The minimum length of the password that users are required to use. The maximum length is always `64`.",
 	"non_alphanumeric":        "Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).",
