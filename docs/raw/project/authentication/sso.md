@@ -226,3 +226,30 @@ force_domain_verification
 - Type: `bool`
 
 Setting this to `true` will allow only verified domains to be used.
+
+
+
+support_email
+-------------
+
+- Type: `string`
+
+Email address shown to end-users in the SSO Suite UI as a support contact.
+
+
+
+show_help_contact
+-----------------
+
+- Type: `bool`
+
+Whether to display the help/support contact link in the SSO Suite UI.
+
+
+
+hide_jit_guide
+--------------
+
+- Type: `bool`
+
+Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.

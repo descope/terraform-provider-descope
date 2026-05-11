@@ -1522,10 +1522,13 @@ Optional:
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
+- `hide_jit_guide` (Boolean)
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
+- `show_help_contact` (Boolean) Whether to display the help/support contact link in the SSO Suite UI.
 - `style_id` (String) Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in the console for it to be used.
+- `support_email` (String) Email address shown to end-users in the SSO Suite UI as a support contact.
 
 
 
