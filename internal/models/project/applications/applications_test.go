@@ -407,5 +407,82 @@ func TestApplications(t *testing.T) {
 				"applications.wsfed_applications.#": 0,
 			}),
 		},
+		// Permissions and roles on an OIDC app
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					oidc_applications = [
+						{
+							name = "fed-app"
+							description = "with auth"
+
+							permissions = [
+								{ name = "read:data", description = "read data" },
+								{ name = "write:data" },
+							]
+							roles = [
+								{
+									name = "reader"
+									description = "read-only"
+									permissions = ["read:data"]
+								},
+								{
+									name = "writer"
+									permissions = ["read:data", "write:data"]
+								},
+							]
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.oidc_applications.#":               1,
+				"applications.oidc_applications.0.name":          "fed-app",
+				"applications.oidc_applications.0.permissions.#": 2,
+				"applications.oidc_applications.0.roles.#":       2,
+			}),
+		},
+		// Edit roles + permissions; remove writer role and write:data permission
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					oidc_applications = [
+						{
+							name = "fed-app"
+
+							permissions = [
+								{ name = "read:data" },
+							]
+							roles = [
+								{
+									name = "reader"
+									permissions = ["read:data"]
+								},
+							]
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.oidc_applications.0.permissions.#": 1,
+				"applications.oidc_applications.0.roles.#":       1,
+			}),
+		},
+		// Clear roles and permissions
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					oidc_applications = [
+						{
+							name = "fed-app"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.oidc_applications.0.permissions.#": 0,
+				"applications.oidc_applications.0.roles.#":       0,
+			}),
+		},
 	)
 }

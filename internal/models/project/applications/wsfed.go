@@ -23,6 +23,9 @@ var WSFedAttributes = map[string]schema.Attribute{
 	"force_authentication": boolattr.Default(false),
 	"logout_redirect_url":  stringattr.Default(""),
 	"error_redirect_url":   stringattr.Default(""),
+
+	"permissions": listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
+	"roles":       listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
 }
 
 // Model
@@ -41,6 +44,9 @@ type WSFedModel struct {
 	ForceAuthentication boolattr.Type                        `tfsdk:"force_authentication"`
 	LogoutRedirectURL   stringattr.Type                      `tfsdk:"logout_redirect_url"`
 	ErrorRedirectURL    stringattr.Type                      `tfsdk:"error_redirect_url"`
+
+	Permissions listattr.Type[SSOAppPermissionModel] `tfsdk:"permissions"`
+	Roles       listattr.Type[SSOAppRoleModel]       `tfsdk:"roles"`
 }
 
 func (m *WSFedModel) Values(h *helpers.Handler) map[string]any {
@@ -56,6 +62,8 @@ func (m *WSFedModel) Values(h *helpers.Handler) map[string]any {
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["wsfed"] = settings
+	listattr.Get(m.Permissions, data, "permissions", h)
+	listattr.Get(m.Roles, data, "roles", h)
 	return data
 }
 
@@ -71,6 +79,8 @@ func (m *WSFedModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Set(&m.LogoutRedirectURL, settings, "logoutRedirectUrl")
 		stringattr.Set(&m.ErrorRedirectURL, settings, "errorRedirectUrl")
 	}
+	listattr.SetMatchingNames(&m.Permissions, data, "permissions", "name", h)
+	listattr.SetMatchingNames(&m.Roles, data, "roles", "name", h)
 }
 
 // Matching
