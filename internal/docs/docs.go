@@ -416,7 +416,6 @@ var docsPassword = map[string]string{
 	"temporary_lock":          "Whether the user account should be temporarily locked after a specified number of failed login attempts.",
 	"temporary_lock_attempts": "The number of failed login attempts allowed before an account is temporarily locked.",
 	"temporary_lock_duration": "The amount of time before the user can sign in again after the account is temporarily locked.",
-	"any_letter":              "Whether passwords must contain at least one letter (uppercase or lowercase).",
 	"lowercase":               "Whether passwords must contain at least one lowercase letter.",
 	"min_length":              "The minimum length of the password that users are required to use. The maximum length is always `64`.",
 	"non_alphanumeric":        "Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).",
@@ -424,7 +423,9 @@ var docsPassword = map[string]string{
 	"reuse":                   "Whether to forbid password reuse when users change their password.",
 	"reuse_amount": "The number of previous passwords whose hashes are kept to prevent users from " +
 		"reusing old passwords.",
-	"uppercase": "Whether passwords must contain at least one uppercase letter.",
+	"uppercase":        "Whether passwords must contain at least one uppercase letter.",
+	"any_letter":       "Whether passwords must contain at least one letter (uppercase or lowercase).",
+	"enforce_strength": "Use zxcvbn to calculate the strength of a given password. Enforce a minimum level of strength.",
 	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., " +
 		"whether a user already exists.",
 	"email_service": "Settings related to sending password reset emails as part of the password feature.",
@@ -466,6 +467,7 @@ var docsSSOSuite = map[string]string{
 	"force_domain_verification": "Setting this to `true` will allow only verified domains to be used.",
 	"support_email":             "Email address shown to end-users in the SSO Suite UI as a support contact.",
 	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
+	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
 }
 
 var docsTOTP = map[string]string{
@@ -1435,8 +1437,9 @@ var docsSettings = map[string]string{
 		"for different authentication methods.",
 	"default_no_sso_apps": "Define whether a user created with no federated apps, will have access to all apps, " +
 		"or will not have access to any app.",
-	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same login ID " +
-		"in Tenant A and Tenant B will be treated as separate identities with isolated credentials, sessions, and MFA state.",
+	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same login ID in " +
+		"Tenant A and Tenant B will be treated as separate identities with isolated credentials, " +
+		"sessions, and MFA state.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 		"refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +

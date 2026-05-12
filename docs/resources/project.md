@@ -1399,8 +1399,10 @@ Optional:
 
 Optional:
 
+- `any_letter` (Boolean) Whether passwords must contain at least one letter (uppercase or lowercase).
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--authentication--password--email_service))
+- `enforce_strength` (String) Use zxcvbn to calculate the strength of a given password. Enforce a minimum level of strength.
 - `expiration` (Boolean) Whether users are required to change their password periodically.
 - `expiration_weeks` (Number) The number of weeks after which a user's password expires and they need to replace it.
 - `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
@@ -1522,7 +1524,7 @@ Optional:
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
-- `hide_jit_guide` (Boolean)
+- `hide_jit_guide` (Boolean) Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
@@ -3498,7 +3500,6 @@ Optional:
 - `approved_domains` (Set of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `custom_domain` (String) A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `default_no_sso_apps` (Boolean) Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app.
-- `tenant_user_isolation` (Boolean) When enabled, users are completely isolated per tenant. The same login ID in Tenant A and Tenant B will be treated as separate identities with isolated credentials, sessions, and MFA state.
 - `enable_inactivity` (Boolean) Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
 - `inactivity_time` (String) The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum value is "10 minutes".
 - `refresh_token_cookie_domain` (String) The domain name for refresh token cookies. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
@@ -3512,6 +3513,7 @@ Optional:
 - `session_token_expiration` (String) The expiry time of the session token, used for accessing the application's resources. The value needs to be at least 3 minutes and can't be longer than the refresh token expiration.
 - `session_token_response_method` (String) Configure how sessions tokens are managed by the Descope SDKs. Must be either `response_body` or `cookies`. The default value is `response_body`.
 - `step_up_token_expiration` (String) The expiry time for the step up token, after which it will not be valid and the user will automatically go back to the session token.
+- `tenant_user_isolation` (Boolean) When enabled, users are completely isolated per tenant. The same login ID in Tenant A and Tenant B will be treated as separate identities with isolated credentials, sessions, and MFA state.
 - `test_users_loginid_regexp` (String) Define a regular expression so that whenever a user is created with a matching login ID it will automatically be marked as a test user.
 - `test_users_static_otp` (String) A 6 digit static OTP code for use with test users.
 - `test_users_verifier_regexp` (String) The pattern of the verifiers that will be used for testing.

@@ -143,6 +143,25 @@ Whether passwords must contain at least one uppercase letter.
 
 
 
+any_letter
+----------
+
+- Type: `bool`
+
+Whether passwords must contain at least one letter (uppercase or lowercase).
+
+
+
+enforce_strength
+----------------
+
+- Type: `string`
+- Default: `"none"`
+
+Use zxcvbn to calculate the strength of a given password. Enforce a minimum level of strength.
+
+
+
 mask_errors
 -----------
 
