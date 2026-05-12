@@ -3,12 +3,35 @@ package applications
 import (
 	"slices"
 
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+// emitSSOAppRoles only writes permissions/roles into the app payload when at
+// least one is configured. The backend project-update endpoint does not yet
+// accept these keys on every SSO app entry, so an unconditional empty list
+// is rejected with a 400.
+func emitSSOAppRoles(h *helpers.Handler, data map[string]any, permissions listattr.Type[SSOAppPermissionModel], roles listattr.Type[SSOAppRoleModel]) {
+	hasPerms := false
+	for range listattr.Iterator(permissions, h) {
+		hasPerms = true
+		break
+	}
+	hasRoles := false
+	for range listattr.Iterator(roles, h) {
+		hasRoles = true
+		break
+	}
+	if !hasPerms && !hasRoles {
+		return
+	}
+	listattr.Get(permissions, data, "permissions", h)
+	listattr.Get(roles, data, "roles", h)
+}
 
 // Permission
 

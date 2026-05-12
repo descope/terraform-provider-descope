@@ -62,8 +62,7 @@ func (m *WSFedModel) Values(h *helpers.Handler) map[string]any {
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["wsfed"] = settings
-	listattr.Get(m.Permissions, data, "permissions", h)
-	listattr.Get(m.Roles, data, "roles", h)
+	emitSSOAppRoles(h, data, m.Permissions, m.Roles)
 	return data
 }
 
