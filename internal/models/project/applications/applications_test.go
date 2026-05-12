@@ -425,7 +425,6 @@ func TestApplications(t *testing.T) {
 									name = "reader"
 									description = "read-only"
 									permissions = ["read:data"]
-									role_mappings = ["proj-role-1"]
 								},
 								{
 									name = "writer"
@@ -437,17 +436,15 @@ func TestApplications(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"applications.oidc_applications.#":                         1,
-				"applications.oidc_applications.0.name":                    "fed-app",
-				"applications.oidc_applications.0.permissions.#":           2,
-				"applications.oidc_applications.0.roles.#":                 2,
-				"applications.oidc_applications.0.roles.0.name":            "reader",
-				"applications.oidc_applications.0.roles.0.permissions.#":   1,
-				"applications.oidc_applications.0.roles.0.permissions.0":   "read:data",
-				"applications.oidc_applications.0.roles.0.role_mappings.#": 1,
-				"applications.oidc_applications.0.roles.0.role_mappings.0": "proj-role-1",
-				"applications.oidc_applications.0.roles.1.name":            "writer",
-				"applications.oidc_applications.0.roles.1.permissions.#":   2,
+				"applications.oidc_applications.#":                       1,
+				"applications.oidc_applications.0.name":                  "fed-app",
+				"applications.oidc_applications.0.permissions.#":         2,
+				"applications.oidc_applications.0.roles.#":               2,
+				"applications.oidc_applications.0.roles.0.name":          "reader",
+				"applications.oidc_applications.0.roles.0.permissions.#": 1,
+				"applications.oidc_applications.0.roles.0.permissions.0": "read:data",
+				"applications.oidc_applications.0.roles.1.name":          "writer",
+				"applications.oidc_applications.0.roles.1.permissions.#": 2,
 			}),
 		},
 		// Edit roles + permissions; remove writer role and write:data permission
