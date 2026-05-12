@@ -47,6 +47,13 @@ func Default(value int, extras ...any) schema.Int64Attribute {
 	}
 }
 
+func Generated() schema.Int64Attribute {
+	return schema.Int64Attribute{
+		Computed:      true,
+		PlanModifiers: []planmodifier.Int64{helpers.UseValidStateForUnknown()},
+	}
+}
+
 func Get(n types.Int64, data map[string]any, key string) {
 	if !n.IsNull() && !n.IsUnknown() {
 		data[key] = n.ValueInt64()
