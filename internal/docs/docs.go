@@ -464,6 +464,7 @@ var docsPassword = map[string]string{
 	"disallow_email_match": "Whether to reject passwords that match the user's email address or its local-part " +
 		"(the segment before `@`), case-insensitively. The check is skipped if the user's email " +
 		"is not known at validation time.",
+	"enforce_strength": "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.",
 	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., " +
 		"whether a user already exists.",
 	"email_service": "Settings related to sending password reset emails as part of the password feature.",

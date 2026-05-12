@@ -173,6 +173,16 @@ is not known at validation time.
 
 
 
+enforce_strength
+----------------
+
+- Type: `string`
+- Default: `"none"`
+
+Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.
+
+
+
 mask_errors
 -----------
 
