@@ -1,6 +1,8 @@
 package applications
 
 import (
+	"slices"
+
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -73,16 +75,26 @@ func (m *SSOAppRoleModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.Description, data, "description")
 
 	// snapshot stores role.permissions as a list of permission objects keyed by name;
-	// the backend resolves names to ids on import
-	perms := []any{}
+	// the backend resolves names to ids on import. sort for deterministic payload order
+	permNames := []string{}
 	for name := range strsetattr.Iterator(m.Permissions, h) {
+		permNames = append(permNames, name)
+	}
+	slices.Sort(permNames)
+	perms := make([]any, 0, len(permNames))
+	for _, name := range permNames {
 		perms = append(perms, map[string]any{"name": name})
 	}
 	data["permissions"] = perms
 
 	// roleMappings are project role identifiers; pass them through as raw strings
-	mappings := []any{}
+	mappingNames := []string{}
 	for v := range strsetattr.Iterator(m.RoleMappings, h) {
+		mappingNames = append(mappingNames, v)
+	}
+	slices.Sort(mappingNames)
+	mappings := make([]any, 0, len(mappingNames))
+	for _, v := range mappingNames {
 		mappings = append(mappings, v)
 	}
 	data["roleMappings"] = mappings
@@ -96,7 +108,7 @@ func (m *SSOAppRoleModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Description, data, "description")
 
 	if raw, ok := data["permissions"].([]any); ok {
-		names := make([]string, 0, len(raw))
+		names := make([]any, 0, len(raw))
 		for _, item := range raw {
 			if perm, ok := item.(map[string]any); ok {
 				if name, ok := perm["name"].(string); ok && name != "" {
@@ -108,7 +120,7 @@ func (m *SSOAppRoleModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 
 	if raw, ok := data["roleMappings"].([]any); ok {
-		values := make([]string, 0, len(raw))
+		values := make([]any, 0, len(raw))
 		for _, item := range raw {
 			if v, ok := item.(string); ok && v != "" {
 				values = append(values, v)

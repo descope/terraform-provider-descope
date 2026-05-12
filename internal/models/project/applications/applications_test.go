@@ -425,6 +425,7 @@ func TestApplications(t *testing.T) {
 									name = "reader"
 									description = "read-only"
 									permissions = ["read:data"]
+									role_mappings = ["proj-role-1"]
 								},
 								{
 									name = "writer"
@@ -436,10 +437,17 @@ func TestApplications(t *testing.T) {
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"applications.oidc_applications.#":               1,
-				"applications.oidc_applications.0.name":          "fed-app",
-				"applications.oidc_applications.0.permissions.#": 2,
-				"applications.oidc_applications.0.roles.#":       2,
+				"applications.oidc_applications.#":                         1,
+				"applications.oidc_applications.0.name":                    "fed-app",
+				"applications.oidc_applications.0.permissions.#":           2,
+				"applications.oidc_applications.0.roles.#":                 2,
+				"applications.oidc_applications.0.roles.0.name":            "reader",
+				"applications.oidc_applications.0.roles.0.permissions.#":   1,
+				"applications.oidc_applications.0.roles.0.permissions.0":   "read:data",
+				"applications.oidc_applications.0.roles.0.role_mappings.#": 1,
+				"applications.oidc_applications.0.roles.0.role_mappings.0": "proj-role-1",
+				"applications.oidc_applications.0.roles.1.name":            "writer",
+				"applications.oidc_applications.0.roles.1.permissions.#":   2,
 			}),
 		},
 		// Edit roles + permissions; remove writer role and write:data permission
@@ -482,6 +490,65 @@ func TestApplications(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"applications.oidc_applications.0.permissions.#": 0,
 				"applications.oidc_applications.0.roles.#":       0,
+			}),
+		},
+		// Permissions and roles on a SAML app
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					saml_applications = [
+						{
+							name = "saml-fed"
+							dynamic_configuration = {
+								metadata_url = "https://example.com/metadata"
+							}
+
+							permissions = [
+								{ name = "saml:read" },
+							]
+							roles = [
+								{
+									name = "saml-reader"
+									permissions = ["saml:read"]
+								},
+							]
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.saml_applications.0.permissions.#":         1,
+				"applications.saml_applications.0.permissions.0.name":    "saml:read",
+				"applications.saml_applications.0.roles.#":               1,
+				"applications.saml_applications.0.roles.0.permissions.0": "saml:read",
+			}),
+		},
+		// Permissions and roles on a WS-Fed app
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					wsfed_applications = [
+						{
+							name = "wsfed-fed"
+
+							permissions = [
+								{ name = "wsfed:read" },
+							]
+							roles = [
+								{
+									name = "wsfed-reader"
+									permissions = ["wsfed:read"]
+								},
+							]
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.wsfed_applications.0.permissions.#":         1,
+				"applications.wsfed_applications.0.permissions.0.name":    "wsfed:read",
+				"applications.wsfed_applications.0.roles.#":               1,
+				"applications.wsfed_applications.0.roles.0.permissions.0": "wsfed:read",
 			}),
 		},
 	)
