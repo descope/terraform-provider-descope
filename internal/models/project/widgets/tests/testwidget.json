@@ -1883,6 +1883,7 @@
                 "data-errormessage-pattern-mismatch": "Passwords do not match",
                 "data-errormessage-type-mismatch": "Value does not comply with requirements",
                 "data-errormessage-value-missing": "Please fill out this field.",
+                "data-password-policy-message-anyletter": "1 letter (any case)",
                 "data-password-policy-message-lowercase": "1 lowercase letter",
                 "data-password-policy-message-minlength": "Minimum {{value}} characters",
                 "data-password-policy-message-nonalphanumeric": "1 symbol",
