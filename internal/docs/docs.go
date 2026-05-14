@@ -427,9 +427,9 @@ var docsPassword = map[string]string{
 	"uppercase": "Whether passwords must contain at least one uppercase letter.",
 	"disallowed_characters": "Reject passwords containing any of these characters. Each character in the string " +
 		"is treated as a forbidden literal (e.g., `\"'\"` to reject single and double quotes).",
-	"disallow_email_match": "Whether to reject passwords that match the user's email address or its " +
-		"local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email " +
-		"is not known at validation time.",
+	"disallow_email_match": "Whether to reject passwords that contain the user's email address, or its " +
+		"local-part (the segment before `@`), as a substring, case-insensitively. The check is skipped if " +
+		"the user's email is not known at validation time.",
 	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., " +
 		"whether a user already exists.",
 	"email_service": "Settings related to sending password reset emails as part of the password feature.",

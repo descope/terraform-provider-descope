@@ -1400,7 +1400,7 @@ Optional:
 Optional:
 
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
-- `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email is not known at validation time.
+- `disallow_email_match` (Boolean) Whether to reject passwords that contain the user's email address, or its local-part (the segment before `@`), as a substring, case-insensitively. The check is skipped if the user's email is not known at validation time.
 - `disallowed_characters` (String) Reject passwords containing any of these characters. Each character in the string is treated as a forbidden literal (e.g., `"'"` to reject single and double quotes).
 - `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--authentication--password--email_service))
 - `expiration` (Boolean) Whether users are required to change their password periodically.
