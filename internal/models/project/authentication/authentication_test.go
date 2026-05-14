@@ -482,5 +482,19 @@ func TestAuthentication(t *testing.T) {
 				"authentication.password.uppercase":  false,
 			}),
 		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					password = {
+						disallowed_characters = "'\""
+						disallow_email_match  = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.password.disallowed_characters": "'\"",
+				"authentication.password.disallow_email_match":  true,
+			}),
+		},
 	)
 }
