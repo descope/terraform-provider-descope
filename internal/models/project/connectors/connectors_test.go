@@ -24,7 +24,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 64,
+				"connectors.%": 65,
 			}),
 		},
 		resource.TestStep{
@@ -1396,6 +1396,19 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"scim": [
+						{
+							name = "Test scim Connector"
+							description = "A description for the scim connector"
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"segment": [
 						{
 							name = "Test segment Connector"
@@ -1808,7 +1821,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 64,
+				"connectors.%": 65,
 			}),
 		},
 	)
