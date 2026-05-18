@@ -407,5 +407,7 @@ func TestApplications(t *testing.T) {
 				"applications.wsfed_applications.#": 0,
 			}),
 		},
+		// per-app permissions/roles apply-stage coverage will be added once the
+		// backend project update endpoint accepts the new fields (descope/descope#436)
 	)
 }
