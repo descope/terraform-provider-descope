@@ -5,6 +5,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/durationattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/intattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -28,6 +29,8 @@ var PasswordAttributes = map[string]schema.Attribute{
 	"reuse_amount":            intattr.Optional(int64validator.Between(1, 50)),
 	"uppercase":               boolattr.Optional(),
 	"any_letter":              boolattr.Optional(),
+	"disallowed_characters":   stringattr.Optional(),
+	"disallow_email_match":    boolattr.Optional(),
 	"mask_errors":             boolattr.Default(false),
 	"email_service":           objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
@@ -49,6 +52,8 @@ type PasswordModel struct {
 	ReuseAmount           intattr.Type                              `tfsdk:"reuse_amount"`
 	Uppercase             boolattr.Type                             `tfsdk:"uppercase"`
 	AnyLetter             boolattr.Type                             `tfsdk:"any_letter"`
+	DisallowedCharacters  stringattr.Type                           `tfsdk:"disallowed_characters"`
+	DisallowEmailMatch    boolattr.Type                             `tfsdk:"disallow_email_match"`
 	MaskErrors            boolattr.Type                             `tfsdk:"mask_errors"`
 	EmailService          objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
 }
@@ -71,6 +76,8 @@ func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
 	intattr.Get(m.ReuseAmount, data, "reuseAmount")
 	boolattr.Get(m.Uppercase, data, "uppercase")
 	boolattr.Get(m.AnyLetter, data, "anyLetter")
+	stringattr.Get(m.DisallowedCharacters, data, "disallowedCharacters")
+	boolattr.Get(m.DisallowEmailMatch, data, "disallowEmailMatch")
 	boolattr.Get(m.MaskErrors, data, "maskError")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	return data
@@ -93,6 +100,8 @@ func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
 	intattr.Set(&m.ReuseAmount, data, "reuseAmount")
 	boolattr.Set(&m.Uppercase, data, "uppercase")
 	boolattr.Set(&m.AnyLetter, data, "anyLetter")
+	stringattr.Set(&m.DisallowedCharacters, data, "disallowedCharacters")
+	boolattr.Set(&m.DisallowEmailMatch, data, "disallowEmailMatch")
 	boolattr.Set(&m.MaskErrors, data, "maskError")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
 }
