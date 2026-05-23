@@ -30,13 +30,13 @@ type SCIMModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	Disabled        boolattr.Type                    `tfsdk:"disabled"`
-	FederatedAppID  stringattr.Type                  `tfsdk:"federated_app_id"`
-	BaseURL         stringattr.Type                  `tfsdk:"base_url"`
-	Authentication  objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
-	Headers         strmapattr.Type                  `tfsdk:"headers"`
-	HMACSecret      stringattr.Type                  `tfsdk:"hmac_secret"`
-	Insecure        boolattr.Type                    `tfsdk:"insecure"`
+	Disabled       boolattr.Type                    `tfsdk:"disabled"`
+	FederatedAppID stringattr.Type                  `tfsdk:"federated_app_id"`
+	BaseURL        stringattr.Type                  `tfsdk:"base_url"`
+	Authentication objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
+	Headers        strmapattr.Type                  `tfsdk:"headers"`
+	HMACSecret     stringattr.Type                  `tfsdk:"hmac_secret"`
+	Insecure       boolattr.Type                    `tfsdk:"insecure"`
 }
 
 func (m *SCIMModel) Values(h *helpers.Handler) map[string]any {

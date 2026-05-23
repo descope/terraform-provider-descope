@@ -41,7 +41,7 @@ func TestSCIMConnector(t *testing.T) {
 					"base_url":                    "https://example.com/scim",
 					"authentication.bearer_token": "test-bearer-token",
 					"headers.X-Custom-Header":     "header-value",
-					"insecure": true,
+					"insecure":                    true,
 					"disabled":                    false,
 				},
 			}),
