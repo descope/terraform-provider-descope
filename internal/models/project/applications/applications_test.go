@@ -302,6 +302,10 @@ func TestApplications(t *testing.T) {
 
 							realm = "https://example.com/realm"
 							reply_url = "https://example.com/reply"
+							reply_allowed_callback_urls = [
+								"https://qa.example.com/reply",
+								"https://*.staging.example.com/reply",
+							]
 							login_page_url = "https://example.com/login"
 							logout_redirect_url = "https://example.com/logout"
 							error_redirect_url = "https://example.com/error"
@@ -339,6 +343,7 @@ func TestApplications(t *testing.T) {
 					"disabled":             true,
 					"realm":                "https://example.com/realm",
 					"reply_url":            "https://example.com/reply",
+					"reply_allowed_callback_urls.#": 2,
 					"login_page_url":       "https://example.com/login",
 					"logout_redirect_url":  "https://example.com/logout",
 					"error_redirect_url":   "https://example.com/error",
