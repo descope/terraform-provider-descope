@@ -437,6 +437,16 @@ Evaluate customer risk using Sardine
 
 
 
+scim
+----
+
+- Type: `list` of `connectors.SCIM`
+
+Provision and de-provision users to an external SCIM v2 endpoint as part of your
+Descope user journey.
+
+
+
 segment
 -------
 
