@@ -42,14 +42,22 @@ type SCIMModel struct {
 func (m *SCIMModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "scim"
-	boolattr.Get(m.Disabled, data, "disabled")
+	// The API rejects an explicit `disabled: false` with E113007 validation
+	// errors, so only include the field when the connector is actually disabled.
+	if m.Disabled.ValueBool() {
+		data["disabled"] = true
+	}
 	data["configuration"] = m.ConfigurationValues(h)
 	return data
 }
 
 func (m *SCIMModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
-	boolattr.Set(&m.Disabled, data, "disabled")
+	if disabled, ok := data["disabled"].(bool); ok {
+		m.Disabled = boolattr.Value(disabled)
+	} else {
+		m.Disabled = boolattr.Value(false)
+	}
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}
