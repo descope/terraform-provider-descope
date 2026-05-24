@@ -2,6 +2,7 @@ package applications
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -15,22 +16,24 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"login_page_url":       stringattr.Default(""),
-	"claims":               strlistattr.Default(),
-	"force_authentication": boolattr.Default(false),
+	"login_page_url":             stringattr.Default(""),
+	"claims":                     strlistattr.Default(),
+	"force_authentication":       boolattr.Default(false),
+	"mtls_client_auth_methods":   objattr.Optional[MTLSClientAuthMethodsModel](MTLSClientAuthMethodsAttributes),
 }
 
 // Model
 
 type OIDCModel struct {
-	ID                  stringattr.Type  `tfsdk:"id"`
-	Name                stringattr.Type  `tfsdk:"name"`
-	Description         stringattr.Type  `tfsdk:"description"`
-	Logo                stringattr.Type  `tfsdk:"logo"`
-	Disabled            boolattr.Type    `tfsdk:"disabled"`
-	LoginPageURL        stringattr.Type  `tfsdk:"login_page_url"`
-	Claims              strlistattr.Type `tfsdk:"claims"`
-	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
+	ID                    stringattr.Type                        `tfsdk:"id"`
+	Name                  stringattr.Type                        `tfsdk:"name"`
+	Description           stringattr.Type                        `tfsdk:"description"`
+	Logo                  stringattr.Type                        `tfsdk:"logo"`
+	Disabled              boolattr.Type                          `tfsdk:"disabled"`
+	LoginPageURL          stringattr.Type                        `tfsdk:"login_page_url"`
+	Claims                strlistattr.Type                       `tfsdk:"claims"`
+	ForceAuthentication   boolattr.Type                          `tfsdk:"force_authentication"`
+	MTLSClientAuthMethods objattr.Type[MTLSClientAuthMethodsModel] `tfsdk:"mtls_client_auth_methods"`
 }
 
 func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
@@ -38,6 +41,7 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
 	strlistattr.Get(m.Claims, settings, "claims", h)
 	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
+	objattr.Get(m.MTLSClientAuthMethods, settings, "mtlsClientAuthMethods", h)
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["oidc"] = settings
@@ -50,6 +54,7 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Nil(&m.LoginPageURL) // XXX reset by the backend on response for now
 		strlistattr.Set(&m.Claims, settings, "claims", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
+		objattr.Set(&m.MTLSClientAuthMethods, settings, "mtlsClientAuthMethods", h)
 	}
 }
 
