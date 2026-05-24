@@ -158,9 +158,13 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	} else {
 		m.TestUsersStaticOTP = stringattr.Value("")
 	}
-	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")     // replaced by template name by UpdateReferences later
-	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId") // replaced by template name by UpdateReferences later
-	if data["externalAuthConfig"] != nil {                         // server returns no object if not set
+	if m.UserJWTTemplate.ValueString() != "" { // don't read backend value into state unless user configured this field
+		stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId") // replaced by template name by UpdateReferences later
+	}
+	if m.AccessKeyJWTTemplate.ValueString() != "" { // don't read backend value into state unless user configured this field
+		stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId") // replaced by template name by UpdateReferences later
+	}
+	if data["externalAuthConfig"] != nil { // server returns no object if not set
 		objattr.Set(&m.SessionMigration, data, "externalAuthConfig", h)
 	}
 }
