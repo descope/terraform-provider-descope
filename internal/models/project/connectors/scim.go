@@ -42,20 +42,14 @@ type SCIMModel struct {
 func (m *SCIMModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "scim"
-	if m.Disabled.ValueBool() {
-		data["disabled"] = true
-	}
+	boolattr.Get(m.Disabled, data, "disabled")
 	data["configuration"] = m.ConfigurationValues(h)
 	return data
 }
 
 func (m *SCIMModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
-	if disabled, ok := data["disabled"].(bool); ok {
-		m.Disabled = boolattr.Value(disabled)
-	} else {
-		m.Disabled = boolattr.Value(false)
-	}
+	boolattr.Set(&m.Disabled, data, "disabled")
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}

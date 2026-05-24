@@ -63,10 +63,10 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"salesforce":                 listattr.Default[SalesforceModel](SalesforceAttributes),
 	"salesforce_marketing_cloud": listattr.Default[SalesforceMarketingCloudModel](SalesforceMarketingCloudAttributes),
 	"sardine":                    listattr.Default[SardineModel](SardineAttributes),
+	"scim":                       listattr.Default[SCIMModel](SCIMAttributes),
 	"segment":                    listattr.Default[SegmentModel](SegmentAttributes),
 	"sendgrid":                   listattr.Default[SendGridModel](SendGridAttributes),
 	"ses":                        listattr.Default[SESModel](SESAttributes, SESValidator),
-	"scim":                       listattr.Default[SCIMModel](SCIMAttributes),
 	"slack":                      listattr.Default[SlackModel](SlackAttributes),
 	"smartling":                  listattr.Default[SmartlingModel](SmartlingAttributes),
 	"smtp":                       listattr.Default[SMTPModel](SMTPAttributes),
@@ -131,10 +131,10 @@ type ConnectorsModel struct {
 	Salesforce               listattr.Type[SalesforceModel]               `tfsdk:"salesforce"`
 	SalesforceMarketingCloud listattr.Type[SalesforceMarketingCloudModel] `tfsdk:"salesforce_marketing_cloud"`
 	Sardine                  listattr.Type[SardineModel]                  `tfsdk:"sardine"`
+	SCIM                     listattr.Type[SCIMModel]                     `tfsdk:"scim"`
 	Segment                  listattr.Type[SegmentModel]                  `tfsdk:"segment"`
 	SendGrid                 listattr.Type[SendGridModel]                 `tfsdk:"sendgrid"`
 	SES                      listattr.Type[SESModel]                      `tfsdk:"ses"`
-	SCIM                     listattr.Type[SCIMModel]                     `tfsdk:"scim"`
 	Slack                    listattr.Type[SlackModel]                    `tfsdk:"slack"`
 	Smartling                listattr.Type[SmartlingModel]                `tfsdk:"smartling"`
 	SMTP                     listattr.Type[SMTPModel]                     `tfsdk:"smtp"`
@@ -200,10 +200,10 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Salesforce, data, "salesforce", h)
 	listattr.Get(m.SalesforceMarketingCloud, data, "salesforce-marketing-cloud", h)
 	listattr.Get(m.Sardine, data, "sardine", h)
+	listattr.Get(m.SCIM, data, "scim", h)
 	listattr.Get(m.Segment, data, "segment", h)
 	listattr.Get(m.SendGrid, data, "sendgrid", h)
 	listattr.Get(m.SES, data, "ses", h)
-	listattr.Get(m.SCIM, data, "scim", h)
 	listattr.Get(m.Slack, data, "slack", h)
 	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
@@ -269,10 +269,10 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.Salesforce, data, "salesforce", "name", h)
 	listattr.SetMatchingNames(&m.SalesforceMarketingCloud, data, "salesforce-marketing-cloud", "name", h)
 	listattr.SetMatchingNames(&m.Sardine, data, "sardine", "name", h)
+	listattr.SetMatchingNames(&m.SCIM, data, "scim", "name", h)
 	listattr.SetMatchingNames(&m.Segment, data, "segment", "name", h)
 	listattr.SetMatchingNames(&m.SendGrid, data, "sendgrid", "name", h)
 	listattr.SetMatchingNames(&m.SES, data, "ses", "name", h)
-	listattr.SetMatchingNames(&m.SCIM, data, "scim", "name", h)
 	listattr.SetMatchingNames(&m.Slack, data, "slack", "name", h)
 	listattr.SetMatchingNames(&m.Smartling, data, "smartling", "name", h)
 	listattr.SetMatchingNames(&m.SMTP, data, "smtp", "name", h)
@@ -337,10 +337,10 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "salesforce", m.Salesforce)
 	addConnectorReferences(h, "salesforce-marketing-cloud", m.SalesforceMarketingCloud)
 	addConnectorReferences(h, "sardine", m.Sardine)
+	addConnectorReferences(h, "scim", m.SCIM)
 	addConnectorReferences(h, "segment", m.Segment)
 	addConnectorReferences(h, "sendgrid", m.SendGrid)
 	addConnectorReferences(h, "ses", m.SES)
-	addConnectorReferences(h, "scim", m.SCIM)
 	addConnectorReferences(h, "slack", m.Slack)
 	addConnectorReferences(h, "smartling", m.Smartling)
 	addConnectorReferences(h, "smtp", m.SMTP)
@@ -406,10 +406,10 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.Salesforce)
 	addConnectorNames(h, names, m.SalesforceMarketingCloud)
 	addConnectorNames(h, names, m.Sardine)
+	addConnectorNames(h, names, m.SCIM)
 	addConnectorNames(h, names, m.Segment)
 	addConnectorNames(h, names, m.SendGrid)
 	addConnectorNames(h, names, m.SES)
-	addConnectorNames(h, names, m.SCIM)
 	addConnectorNames(h, names, m.Slack)
 	addConnectorNames(h, names, m.Smartling)
 	addConnectorNames(h, names, m.SMTP)
@@ -479,10 +479,10 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.Salesforce, state.Salesforce)
 	listattr.ModifyMatchingNames(h, &m.SalesforceMarketingCloud, state.SalesforceMarketingCloud)
 	listattr.ModifyMatchingNames(h, &m.Sardine, state.Sardine)
+	listattr.ModifyMatchingNames(h, &m.SCIM, state.SCIM)
 	listattr.ModifyMatchingNames(h, &m.Segment, state.Segment)
 	listattr.ModifyMatchingNames(h, &m.SendGrid, state.SendGrid)
 	listattr.ModifyMatchingNames(h, &m.SES, state.SES)
-	listattr.ModifyMatchingNames(h, &m.SCIM, state.SCIM)
 	listattr.ModifyMatchingNames(h, &m.Slack, state.Slack)
 	listattr.ModifyMatchingNames(h, &m.Smartling, state.Smartling)
 	listattr.ModifyMatchingNames(h, &m.SMTP, state.SMTP)
