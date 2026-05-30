@@ -120,6 +120,7 @@ func InjectModels() {
 	inject(connectors.SalesforceAttributes, docsSalesforce)
 	inject(connectors.SalesforceMarketingCloudAttributes, docsSalesforceMarketingCloud)
 	inject(connectors.SardineAttributes, docsSardine)
+	inject(connectors.SCIMAttributes, docsSCIM)
 	inject(connectors.SegmentAttributes, docsSegment)
 	inject(connectors.SendGridAttributes, docsSendGrid)
 	inject(connectors.SendGridAuthFieldAttributes, docsSendGridAuthField)

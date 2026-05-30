@@ -651,6 +651,8 @@ var docsConnectors = map[string]string{
 		"the Salesforce connector.",
 	"salesforce_marketing_cloud": "Send transactional messages with the Salesforce Marketing Cloud connector.",
 	"sardine":                    "Evaluate customer risk using Sardine",
+	"scim": "Provision and de-provision users to an external SCIM v2 endpoint as part of your " +
+		"Descope user journey.",
 	"segment": "Orchestrate customer identity traits and signals from your Descope user journey " +
 		"with the Segment connector.",
 	"sendgrid": "SendGrid is a cloud-based SMTP provider that allows you to send emails without having " +
@@ -1121,6 +1123,22 @@ var docsSardine = map[string]string{
 	"client_secret": "The Sardine Client Secret.",
 	"base_url": "The base URL for the Sardine API, e.g.: https://api.sandbox.sardine.ai, " +
 		"https://api.sardine.ai, https://api.eu.sardine.ai.",
+}
+
+var docsSCIM = map[string]string{
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"disabled":         "Whether to disable this SCIM connector. When disabled, provisioning events will not be sent to the configured endpoint.",
+	"federated_app_id": "The ID of the federated SSO application this SCIM connector is associated with.",
+	"base_url":         "The base URL of the SCIM v2 endpoint that user provisioning events will be sent to.",
+	"authentication":   "Authentication credentials used when sending requests to the SCIM endpoint.",
+	"headers":          "Custom HTTP headers to send with each provisioning request.",
+	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
+		"used to sign the base64 encoded payload, and the resulting signature will be " +
+		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
+		"this secret to verify the integrity and authenticity of the payload by checking " +
+		"the provided signature.",
+	"insecure": "Will ignore certificate errors raised by the client.",
 }
 
 var docsSegment = map[string]string{

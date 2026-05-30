@@ -1399,6 +1399,7 @@ Optional:
 
 Optional:
 
+- `any_letter` (Boolean) Whether passwords must contain at least one letter (uppercase or lowercase).
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email is not known at validation time.
 - `disallowed_characters` (String) Reject passwords containing any of these characters. Each character in the string is treated as a forbidden literal (e.g., `"'"` to reject single and double quotes).
@@ -1641,6 +1642,7 @@ Optional:
 - `salesforce` (Attributes List) Run SQL queries to retrieve user roles, profiles, account status, and more with the Salesforce connector. (see [below for nested schema](#nestedatt--connectors--salesforce))
 - `salesforce_marketing_cloud` (Attributes List) Send transactional messages with the Salesforce Marketing Cloud connector. (see [below for nested schema](#nestedatt--connectors--salesforce_marketing_cloud))
 - `sardine` (Attributes List) Evaluate customer risk using Sardine (see [below for nested schema](#nestedatt--connectors--sardine))
+- `scim` (Attributes List) Provision and de-provision users to an external SCIM v2 endpoint as part of your Descope user journey. (see [below for nested schema](#nestedatt--connectors--scim))
 - `segment` (Attributes List) Orchestrate customer identity traits and signals from your Descope user journey with the Segment connector. (see [below for nested schema](#nestedatt--connectors--segment))
 - `sendgrid` (Attributes List) SendGrid is a cloud-based SMTP provider that allows you to send emails without having to maintain email servers. (see [below for nested schema](#nestedatt--connectors--sendgrid))
 - `ses` (Attributes List) Amazon Simple Email Service (SES) for sending emails through AWS infrastructure. (see [below for nested schema](#nestedatt--connectors--ses))
@@ -2855,6 +2857,57 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--scim"></a>
+### Nested Schema for `connectors.scim`
+
+Required:
+
+- `base_url` (String) The base URL of the SCIM v2 endpoint that user provisioning events will be sent to.
+- `federated_app_id` (String) The ID of the federated SSO application this SCIM connector is associated with.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `authentication` (Attributes) Authentication credentials used when sending requests to the SCIM endpoint. (see [below for nested schema](#nestedatt--connectors--scim--authentication))
+- `description` (String) A description of what your connector is used for.
+- `disabled` (Boolean) Whether to disable this SCIM connector. When disabled, provisioning events will not be sent to the configured endpoint.
+- `headers` (Map of String) Custom HTTP headers to send with each provisioning request.
+- `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature.
+- `insecure` (Boolean) Will ignore certificate errors raised by the client.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--scim--authentication"></a>
+### Nested Schema for `connectors.scim.authentication`
+
+Optional:
+
+- `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--scim--authentication--api_key))
+- `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--scim--authentication--basic))
+- `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+
+<a id="nestedatt--connectors--scim--authentication--api_key"></a>
+### Nested Schema for `connectors.scim.authentication.api_key`
+
+Required:
+
+- `key` (String) The API key.
+- `token` (String, Sensitive) The API secret.
+
+
+<a id="nestedatt--connectors--scim--authentication--basic"></a>
+### Nested Schema for `connectors.scim.authentication.basic`
+
+Required:
+
+- `password` (String, Sensitive) Password for basic HTTP authentication.
+- `username` (String) Username for basic HTTP authentication.
+
+
+
+
 <a id="nestedatt--connectors--segment"></a>
 ### Nested Schema for `connectors.segment`
 
@@ -3500,7 +3553,6 @@ Optional:
 - `approved_domains` (Set of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `custom_domain` (String) A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
 - `default_no_sso_apps` (Boolean) Define whether a user created with no federated apps, will have access to all apps, or will not have access to any app.
-- `tenant_user_isolation` (Boolean) When enabled, users are completely isolated per tenant. The same login ID in Tenant A and Tenant B will be treated as separate identities with isolated credentials, sessions, and MFA state.
 - `enable_inactivity` (Boolean) Use `True` to enable session inactivity. To read more about session inactivity click [here](https://docs.descope.com/project-settings#session-inactivity).
 - `inactivity_time` (String) The session inactivity time. Use values such as "15 minutes", "1 hour", etc. The minimum value is "10 minutes".
 - `refresh_token_cookie_domain` (String) The domain name for refresh token cookies. To read more about custom domain and cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).
@@ -3514,6 +3566,7 @@ Optional:
 - `session_token_expiration` (String) The expiry time of the session token, used for accessing the application's resources. The value needs to be at least 3 minutes and can't be longer than the refresh token expiration.
 - `session_token_response_method` (String) Configure how sessions tokens are managed by the Descope SDKs. Must be either `response_body` or `cookies`. The default value is `response_body`.
 - `step_up_token_expiration` (String) The expiry time for the step up token, after which it will not be valid and the user will automatically go back to the session token.
+- `tenant_user_isolation` (Boolean) When enabled, users are completely isolated per tenant. The same login ID in Tenant A and Tenant B will be treated as separate identities with isolated credentials, sessions, and MFA state.
 - `test_users_loginid_regexp` (String) Define a regular expression so that whenever a user is created with a matching login ID it will automatically be marked as a test user.
 - `test_users_static_otp` (String) A 6 digit static OTP code for use with test users.
 - `test_users_verifier_regexp` (String) The pattern of the verifiers that will be used for testing.
