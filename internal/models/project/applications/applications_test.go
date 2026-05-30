@@ -302,6 +302,10 @@ func TestApplications(t *testing.T) {
 
 							realm = "https://example.com/realm"
 							reply_url = "https://example.com/reply"
+							reply_allowed_callback_urls = [
+								"https://qa.example.com/reply",
+								"https://*.staging.example.com/reply",
+							]
 							login_page_url = "https://example.com/login"
 							logout_redirect_url = "https://example.com/logout"
 							error_redirect_url = "https://example.com/error"
@@ -332,13 +336,17 @@ func TestApplications(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"applications.wsfed_applications.#": 1,
 				"applications.wsfed_applications.0": map[string]any{
-					"id":                   testacc.AttributeHasPrefix("SA"),
-					"name":                 "foo",
-					"description":          "bar",
-					"logo":                 "https://example.com/logo.png",
-					"disabled":             true,
-					"realm":                "https://example.com/realm",
-					"reply_url":            "https://example.com/reply",
+					"id":          testacc.AttributeHasPrefix("SA"),
+					"name":        "foo",
+					"description": "bar",
+					"logo":        "https://example.com/logo.png",
+					"disabled":    true,
+					"realm":       "https://example.com/realm",
+					"reply_url":   "https://example.com/reply",
+					"reply_allowed_callback_urls": []string{
+						"https://qa.example.com/reply",
+						"https://*.staging.example.com/reply",
+					},
 					"login_page_url":       "https://example.com/login",
 					"logout_redirect_url":  "https://example.com/logout",
 					"error_redirect_url":   "https://example.com/error",

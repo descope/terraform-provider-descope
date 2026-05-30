@@ -437,7 +437,8 @@ Optional:
 - `logo` (String) A logo for the WS-Fed application. Should be a hosted image URL.
 - `logout_redirect_url` (String) The URL to redirect to after logout.
 - `realm` (String) The WS-Fed realm identifier for the application.
-- `reply_url` (String) The reply URL where WS-Fed responses are sent.
+- `reply_allowed_callback_urls` (Set of String) Additional allowed `wreply` callback URLs beyond `reply_url`. Each entry may include the `*` wildcard. When the RP supplies a `wreply` parameter, it must match either the default `reply_url` or one of these patterns.
+- `reply_url` (String) The default reply URL where WS-Fed responses are sent. Used for IdP-initiated flows and when no `wreply` is supplied by the RP.
 
 <a id="nestedatt--applications--wsfed_applications--attribute_mapping"></a>
 ### Nested Schema for `applications.wsfed_applications.attribute_mapping`
