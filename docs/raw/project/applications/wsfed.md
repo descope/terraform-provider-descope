@@ -63,7 +63,16 @@ reply_url
 
 - Type: `string`
 
-The reply URL where WS-Fed responses are sent.
+The default reply URL where WS-Fed responses are sent. Used for IdP-initiated flows and when no `wreply` is supplied by the RP.
+
+
+
+reply_allowed_callback_urls
+---------------------------
+
+- Type: `set` of `string`
+
+Additional allowed `wreply` callback URLs beyond `reply_url`. Each entry may include the `*` wildcard. When the RP supplies a `wreply` parameter, it must match either the default `reply_url` or one of these patterns.
 
 
 

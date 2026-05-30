@@ -199,16 +199,17 @@ var docsManualConfiguration = map[string]string{
 }
 
 var docsWSFed = map[string]string{
-	"id":                "An optional identifier for the WS-Fed application.",
-	"name":              "A name for the WS-Fed application.",
-	"description":       "A description for the WS-Fed application.",
-	"logo":              "A logo for the WS-Fed application. Should be a hosted image URL.",
-	"disabled":          "Whether the application should be enabled or disabled.",
-	"realm":             "The WS-Fed realm identifier for the application.",
-	"reply_url":         "The reply URL where WS-Fed responses are sent.",
-	"login_page_url":    "The Flow Hosting URL.",
-	"attribute_mapping": "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
-	"groups_mapping":    "A list of group mappings from Descope roles to WS-Fed groups.",
+	"id":                          "An optional identifier for the WS-Fed application.",
+	"name":                        "A name for the WS-Fed application.",
+	"description":                 "A description for the WS-Fed application.",
+	"logo":                        "A logo for the WS-Fed application. Should be a hosted image URL.",
+	"disabled":                    "Whether the application should be enabled or disabled.",
+	"realm":                       "The WS-Fed realm identifier for the application.",
+	"reply_url":                   "The default reply URL where WS-Fed responses are sent. Used for IdP-initiated flows and when no `wreply` is supplied by the RP.",
+	"reply_allowed_callback_urls": "Additional allowed `wreply` callback URLs beyond `reply_url`. Each entry may include the `*` wildcard. When the RP supplies a `wreply` parameter, it must match either the default `reply_url` or one of these patterns.",
+	"login_page_url":              "The Flow Hosting URL.",
+	"attribute_mapping":           "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
+	"groups_mapping":              "A list of group mappings from Descope roles to WS-Fed groups.",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces the user to " +
 		"authenticate via the Descope flow, regardless of the SP's request.",
 	"logout_redirect_url": "The URL to redirect to after logout.",
