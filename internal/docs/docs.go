@@ -199,16 +199,17 @@ var docsManualConfiguration = map[string]string{
 }
 
 var docsWSFed = map[string]string{
-	"id":                "An optional identifier for the WS-Fed application.",
-	"name":              "A name for the WS-Fed application.",
-	"description":       "A description for the WS-Fed application.",
-	"logo":              "A logo for the WS-Fed application. Should be a hosted image URL.",
-	"disabled":          "Whether the application should be enabled or disabled.",
-	"realm":             "The WS-Fed realm identifier for the application.",
-	"reply_url":         "The reply URL where WS-Fed responses are sent.",
-	"login_page_url":    "The Flow Hosting URL.",
-	"attribute_mapping": "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
-	"groups_mapping":    "A list of group mappings from Descope roles to WS-Fed groups.",
+	"id":                          "An optional identifier for the WS-Fed application.",
+	"name":                        "A name for the WS-Fed application.",
+	"description":                 "A description for the WS-Fed application.",
+	"logo":                        "A logo for the WS-Fed application. Should be a hosted image URL.",
+	"disabled":                    "Whether the application should be enabled or disabled.",
+	"realm":                       "The WS-Fed realm identifier for the application.",
+	"reply_url":                   "The default reply URL where WS-Fed responses are sent. Used for IdP-initiated flows and when no `wreply` is supplied by the RP.",
+	"reply_allowed_callback_urls": "Additional allowed `wreply` callback URLs beyond `reply_url`. Each entry may include the `*` wildcard. When the RP supplies a `wreply` parameter, it must match either the default `reply_url` or one of these patterns.",
+	"login_page_url":              "The Flow Hosting URL.",
+	"attribute_mapping":           "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
+	"groups_mapping":              "A list of group mappings from Descope roles to WS-Fed groups.",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces the user to " +
 		"authenticate via the Descope flow, regardless of the SP's request.",
 	"logout_redirect_url": "The URL to redirect to after logout.",
@@ -425,6 +426,11 @@ var docsPassword = map[string]string{
 	"reuse_amount": "The number of previous passwords whose hashes are kept to prevent users from " +
 		"reusing old passwords.",
 	"uppercase": "Whether passwords must contain at least one uppercase letter.",
+	"disallowed_characters": "Reject passwords containing any of these characters. Each character in the string " +
+		"is treated as a forbidden literal (e.g., `\"'\"` to reject single and double quotes).",
+	"disallow_email_match": "Whether to reject passwords that match the user's email address or its " +
+		"local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email " +
+		"is not known at validation time.",
 	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., " +
 		"whether a user already exists.",
 	"email_service": "Settings related to sending password reset emails as part of the password feature.",
@@ -646,6 +652,8 @@ var docsConnectors = map[string]string{
 		"the Salesforce connector.",
 	"salesforce_marketing_cloud": "Send transactional messages with the Salesforce Marketing Cloud connector.",
 	"sardine":                    "Evaluate customer risk using Sardine",
+	"scim": "Provision and de-provision users to an external SCIM v2 endpoint as part of your " +
+		"Descope user journey.",
 	"segment": "Orchestrate customer identity traits and signals from your Descope user journey " +
 		"with the Segment connector.",
 	"sendgrid": "SendGrid is a cloud-based SMTP provider that allows you to send emails without having " +
@@ -1116,6 +1124,22 @@ var docsSardine = map[string]string{
 	"client_secret": "The Sardine Client Secret.",
 	"base_url": "The base URL for the Sardine API, e.g.: https://api.sandbox.sardine.ai, " +
 		"https://api.sardine.ai, https://api.eu.sardine.ai.",
+}
+
+var docsSCIM = map[string]string{
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"disabled":         "Whether to disable this SCIM connector. When disabled, provisioning events will not be sent to the configured endpoint.",
+	"federated_app_id": "The ID of the federated SSO application this SCIM connector is associated with.",
+	"base_url":         "The base URL of the SCIM v2 endpoint that user provisioning events will be sent to.",
+	"authentication":   "Authentication credentials used when sending requests to the SCIM endpoint.",
+	"headers":          "Custom HTTP headers to send with each provisioning request.",
+	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
+		"used to sign the base64 encoded payload, and the resulting signature will be " +
+		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
+		"this secret to verify the integrity and authenticity of the payload by checking " +
+		"the provided signature.",
+	"insecure": "Will ignore certificate errors raised by the client.",
 }
 
 var docsSegment = map[string]string{

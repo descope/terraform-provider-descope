@@ -18,5 +18,8 @@
   {
     "id": "sns",
     "validator": true
+  },
+  {
+    "id": "scim"
   }
 ]

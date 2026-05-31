@@ -4,6 +4,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -15,14 +16,15 @@ var WSFedAttributes = map[string]schema.Attribute{
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"realm":                stringattr.Default(""),
-	"reply_url":            stringattr.Default(""),
-	"login_page_url":       stringattr.Default(""),
-	"attribute_mapping":    listattr.Default[AttributeMappingModel](AttributeMappingAttributes),
-	"groups_mapping":       listattr.Default[GroupsMappingModel](GroupsMappingAttributes),
-	"force_authentication": boolattr.Default(false),
-	"logout_redirect_url":  stringattr.Default(""),
-	"error_redirect_url":   stringattr.Default(""),
+	"realm":                       stringattr.Default(""),
+	"reply_url":                   stringattr.Default(""),
+	"reply_allowed_callback_urls": strsetattr.Default(),
+	"login_page_url":              stringattr.Default(""),
+	"attribute_mapping":           listattr.Default[AttributeMappingModel](AttributeMappingAttributes),
+	"groups_mapping":              listattr.Default[GroupsMappingModel](GroupsMappingAttributes),
+	"force_authentication":        boolattr.Default(false),
+	"logout_redirect_url":         stringattr.Default(""),
+	"error_redirect_url":          stringattr.Default(""),
 
 	"permissions": listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
 	"roles":       listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
@@ -31,19 +33,20 @@ var WSFedAttributes = map[string]schema.Attribute{
 // Model
 
 type WSFedModel struct {
-	ID                  stringattr.Type                      `tfsdk:"id"`
-	Name                stringattr.Type                      `tfsdk:"name"`
-	Description         stringattr.Type                      `tfsdk:"description"`
-	Logo                stringattr.Type                      `tfsdk:"logo"`
-	Disabled            boolattr.Type                        `tfsdk:"disabled"`
-	Realm               stringattr.Type                      `tfsdk:"realm"`
-	ReplyURL            stringattr.Type                      `tfsdk:"reply_url"`
-	LoginPageURL        stringattr.Type                      `tfsdk:"login_page_url"`
-	AttributeMapping    listattr.Type[AttributeMappingModel] `tfsdk:"attribute_mapping"`
-	GroupsMapping       listattr.Type[GroupsMappingModel]    `tfsdk:"groups_mapping"`
-	ForceAuthentication boolattr.Type                        `tfsdk:"force_authentication"`
-	LogoutRedirectURL   stringattr.Type                      `tfsdk:"logout_redirect_url"`
-	ErrorRedirectURL    stringattr.Type                      `tfsdk:"error_redirect_url"`
+	ID                       stringattr.Type                      `tfsdk:"id"`
+	Name                     stringattr.Type                      `tfsdk:"name"`
+	Description              stringattr.Type                      `tfsdk:"description"`
+	Logo                     stringattr.Type                      `tfsdk:"logo"`
+	Disabled                 boolattr.Type                        `tfsdk:"disabled"`
+	Realm                    stringattr.Type                      `tfsdk:"realm"`
+	ReplyURL                 stringattr.Type                      `tfsdk:"reply_url"`
+	ReplyAllowedCallbackURLs strsetattr.Type                      `tfsdk:"reply_allowed_callback_urls"`
+	LoginPageURL             stringattr.Type                      `tfsdk:"login_page_url"`
+	AttributeMapping         listattr.Type[AttributeMappingModel] `tfsdk:"attribute_mapping"`
+	GroupsMapping            listattr.Type[GroupsMappingModel]    `tfsdk:"groups_mapping"`
+	ForceAuthentication      boolattr.Type                        `tfsdk:"force_authentication"`
+	LogoutRedirectURL        stringattr.Type                      `tfsdk:"logout_redirect_url"`
+	ErrorRedirectURL         stringattr.Type                      `tfsdk:"error_redirect_url"`
 
 	Permissions listattr.Type[SSOAppPermissionModel] `tfsdk:"permissions"`
 	Roles       listattr.Type[SSOAppRoleModel]       `tfsdk:"roles"`
@@ -53,6 +56,7 @@ func (m *WSFedModel) Values(h *helpers.Handler) map[string]any {
 	settings := map[string]any{}
 	stringattr.Get(m.Realm, settings, "realm")
 	stringattr.Get(m.ReplyURL, settings, "replyUrl")
+	strsetattr.Get(m.ReplyAllowedCallbackURLs, settings, "replyAllowedCallbacks", h)
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
 	listattr.Get(m.AttributeMapping, settings, "attributeMapping", h)
 	listattr.Get(m.GroupsMapping, settings, "groupsMapping", h)
@@ -71,6 +75,7 @@ func (m *WSFedModel) SetValues(h *helpers.Handler, data map[string]any) {
 	if settings, ok := data["wsfed"].(map[string]any); ok {
 		stringattr.Set(&m.Realm, settings, "realm")
 		stringattr.Set(&m.ReplyURL, settings, "replyUrl")
+		strsetattr.Set(&m.ReplyAllowedCallbackURLs, settings, "replyAllowedCallbacks", h)
 		stringattr.Nil(&m.LoginPageURL) // XXX reset by the backend on response for now
 		listattr.Set(&m.AttributeMapping, settings, "attributeMapping", h)
 		listattr.Set(&m.GroupsMapping, settings, "groupsMapping", h)
