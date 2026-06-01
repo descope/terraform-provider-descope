@@ -21,6 +21,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"custom_domain":                       stringattr.Default(""),
 	"approved_domains":                    strsetattr.Default(strsetattr.CommaSeparatedValidator),
 	"default_no_sso_apps":                 boolattr.Default(false),
+	"tenant_user_isolation":               boolattr.Default(false),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"refresh_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
@@ -48,6 +49,7 @@ type SettingsModel struct {
 	CustomDomain                    stringattr.Type                     `tfsdk:"custom_domain"`
 	ApprovedDomain                  strsetattr.Type                     `tfsdk:"approved_domains"`
 	DefaultNoSSOApps                boolattr.Type                       `tfsdk:"default_no_sso_apps"`
+	TenantUserIsolation             boolattr.Type                       `tfsdk:"tenant_user_isolation"`
 	RefreshTokenRotation            boolattr.Type                       `tfsdk:"refresh_token_rotation"`
 	RefreshTokenExpiration          stringattr.Type                     `tfsdk:"refresh_token_expiration"`
 	RefreshTokenResponseMethod      stringattr.Type                     `tfsdk:"refresh_token_response_method"`
@@ -77,6 +79,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	strsetattr.GetCommaSeparated(m.ApprovedDomain, data, "trustedDomains", h)
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
 	boolattr.Get(m.DefaultNoSSOApps, data, "defaultNoSSOApps")
+	boolattr.Get(m.TenantUserIsolation, data, "tenantUserIsolation")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if s := m.RefreshTokenResponseMethod.ValueString(); s == "cookies" {
 		data["tokenResponseMethod"] = "cookie"
@@ -122,6 +125,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	strsetattr.SetCommaSeparated(&m.ApprovedDomain, data, "trustedDomains", h)
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	boolattr.Set(&m.DefaultNoSSOApps, data, "defaultNoSSOApps")
+	boolattr.Set(&m.TenantUserIsolation, data, "tenantUserIsolation")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if s := data["tokenResponseMethod"]; s == "cookie" {
 		m.RefreshTokenResponseMethod = stringattr.Value("cookies")
@@ -154,9 +158,13 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	} else {
 		m.TestUsersStaticOTP = stringattr.Value("")
 	}
-	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")     // replaced by template name by UpdateReferences later
-	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId") // replaced by template name by UpdateReferences later
-	if data["externalAuthConfig"] != nil {                         // server returns no object if not set
+	if m.UserJWTTemplate.ValueString() != "" { // don't read backend value into state unless user configured this field
+		stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId") // replaced by template name by UpdateReferences later
+	}
+	if m.AccessKeyJWTTemplate.ValueString() != "" { // don't read backend value into state unless user configured this field
+		stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId") // replaced by template name by UpdateReferences later
+	}
+	if data["externalAuthConfig"] != nil { // server returns no object if not set
 		objattr.Set(&m.SessionMigration, data, "externalAuthConfig", h)
 	}
 }

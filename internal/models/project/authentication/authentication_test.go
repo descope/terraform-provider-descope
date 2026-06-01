@@ -234,16 +234,34 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					sso = {
 						sso_suite_settings = {
-							style_id = "koko"
-							hide_saml = true
+							support_email = "not-an-email"
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("Invalid Email Address"),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							style_id           = "koko"
+							hide_saml          = true
+							hide_jit_guide     = true
+							support_email      = "help@acme.com"
+							show_help_contact  = true
 						}
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"authentication.sso.sso_suite_settings": map[string]any{
-					"style_id":  "koko",
-					"hide_saml": true,
+					"style_id":          "koko",
+					"hide_saml":         true,
+					"hide_jit_guide":    true,
+					"support_email":     "help@acme.com",
+					"show_help_contact": true,
 				},
 			}),
 		},
@@ -446,6 +464,36 @@ func TestAuthentication(t *testing.T) {
 					"AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99",
 					"11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
 				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					password = {
+						any_letter = true
+						lowercase = false
+						uppercase = false
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.password.any_letter": true,
+				"authentication.password.lowercase":  false,
+				"authentication.password.uppercase":  false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					password = {
+						disallowed_characters = "'\""
+						disallow_email_match  = true
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.password.disallowed_characters": "'\"",
+				"authentication.password.disallow_email_match":  true,
 			}),
 		},
 	)
