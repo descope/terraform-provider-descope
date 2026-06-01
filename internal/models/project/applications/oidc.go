@@ -5,6 +5,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -20,7 +21,7 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"force_authentication": boolattr.Default(false),
 
 	// Dedicated client credentials and per-app policy (config-driven; defaults preserve legacy behavior).
-	"client_type":            stringattr.Default(""), // "", "confidential", or "public"
+	"client_type":            stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")), // "", "confidential", or "public"
 	"approved_redirect_urls": strlistattr.Default(),
 	// Per-app modular grant types (disabled-polarity; all false = all grant types enabled = legacy).
 	"authorization_code_disabled": boolattr.Default(false),
