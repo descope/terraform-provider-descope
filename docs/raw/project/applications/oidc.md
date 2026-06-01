@@ -75,3 +75,69 @@ force_authentication
 
 This configuration overrides the default behavior of the SSO application and forces
 the user to authenticate via the Descope flow, regardless of the SP's request.
+
+
+
+client_type
+-----------
+
+- Type: `string`
+
+OAuth client confidentiality. One of `""` (default — legacy access-key authentication),
+`"confidential"` (a dedicated client secret is generated for the app), or `"public"`.
+
+
+
+approved_redirect_urls
+----------------------
+
+- Type: `list` of `string`
+
+A list of approved redirect URLs for this application (supports `*` wildcards). When set,
+redirect URIs are validated against this per-app list; when empty, validation falls back to
+the project's approved/trusted domains.
+
+
+
+authorization_code_disabled
+---------------------------
+
+- Type: `bool`
+
+Disables the `authorization_code` grant type for this application.
+
+
+
+client_credentials_disabled
+---------------------------
+
+- Type: `bool`
+
+Disables the `client_credentials` grant type for this application.
+
+
+
+refresh_token_disabled
+----------------------
+
+- Type: `bool`
+
+Disables the `refresh_token` grant type for this application.
+
+
+
+jwt_bearer_disabled
+-------------------
+
+- Type: `bool`
+
+Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this application.
+
+
+
+device_code_disabled
+--------------------
+
+- Type: `bool`
+
+Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this application.
