@@ -4,6 +4,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -21,8 +22,10 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"force_authentication": boolattr.Default(false),
 
 	// Dedicated client credentials and per-app policy (config-driven; defaults preserve legacy behavior).
-	"client_type":            stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")), // "", "confidential", or "public"
-	"approved_redirect_urls": strlistattr.Default(),
+	"client_type": stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")), // "", "confidential", or "public"
+	// Set (not list): the backend may reorder the URLs, and a list would show perpetual plan diffs -
+	// matching approved_callback_urls (inbound) and acs_allowed_callback_urls (SAML).
+	"approved_redirect_urls": strsetattr.Default(),
 	// Per-app modular grant types (disabled-polarity; all false = all grant types enabled = legacy).
 	"authorization_code_disabled": boolattr.Default(false),
 	"client_credentials_disabled": boolattr.Default(false),
@@ -44,14 +47,14 @@ type OIDCModel struct {
 	Claims              strlistattr.Type `tfsdk:"claims"`
 	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
 
-	ClientType                stringattr.Type  `tfsdk:"client_type"`
-	ApprovedRedirectURLs      strlistattr.Type `tfsdk:"approved_redirect_urls"`
-	AuthorizationCodeDisabled boolattr.Type    `tfsdk:"authorization_code_disabled"`
-	ClientCredentialsDisabled boolattr.Type    `tfsdk:"client_credentials_disabled"`
-	RefreshTokenDisabled      boolattr.Type    `tfsdk:"refresh_token_disabled"`
-	JWTBearerDisabled         boolattr.Type    `tfsdk:"jwt_bearer_disabled"`
-	DeviceCodeDisabled        boolattr.Type    `tfsdk:"device_code_disabled"`
-	ForcePkce                 boolattr.Type    `tfsdk:"force_pkce"`
+	ClientType                stringattr.Type `tfsdk:"client_type"`
+	ApprovedRedirectURLs      strsetattr.Type `tfsdk:"approved_redirect_urls"`
+	AuthorizationCodeDisabled boolattr.Type   `tfsdk:"authorization_code_disabled"`
+	ClientCredentialsDisabled boolattr.Type   `tfsdk:"client_credentials_disabled"`
+	RefreshTokenDisabled      boolattr.Type   `tfsdk:"refresh_token_disabled"`
+	JWTBearerDisabled         boolattr.Type   `tfsdk:"jwt_bearer_disabled"`
+	DeviceCodeDisabled        boolattr.Type   `tfsdk:"device_code_disabled"`
+	ForcePkce                 boolattr.Type   `tfsdk:"force_pkce"`
 }
 
 func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
@@ -61,7 +64,7 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
 
 	stringattr.Get(m.ClientType, settings, "clientType")
-	strlistattr.Get(m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
+	strsetattr.Get(m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
 	boolattr.Get(m.AuthorizationCodeDisabled, settings, "authorizationCodeDisabled")
 	boolattr.Get(m.ClientCredentialsDisabled, settings, "clientCredentialsDisabled")
 	boolattr.Get(m.RefreshTokenDisabled, settings, "refreshTokenDisabled")
@@ -82,7 +85,7 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 
 		stringattr.Set(&m.ClientType, settings, "clientType")
-		strlistattr.Set(&m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
+		strsetattr.Set(&m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
 		boolattr.Set(&m.AuthorizationCodeDisabled, settings, "authorizationCodeDisabled")
 		boolattr.Set(&m.ClientCredentialsDisabled, settings, "clientCredentialsDisabled")
 		boolattr.Set(&m.RefreshTokenDisabled, settings, "refreshTokenDisabled")

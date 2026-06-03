@@ -60,6 +60,7 @@ func TestApplications(t *testing.T) {
 							refresh_token_disabled = false
 							jwt_bearer_disabled = true
 							device_code_disabled = true
+							force_pkce = true
 						}
 					]
 				}
@@ -85,6 +86,7 @@ func TestApplications(t *testing.T) {
 					"refresh_token_disabled":      false,
 					"jwt_bearer_disabled":         true,
 					"device_code_disabled":        true,
+					"force_pkce":                  true,
 				},
 			}),
 		},
