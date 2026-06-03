@@ -29,6 +29,7 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"refresh_token_disabled":      boolattr.Default(false),
 	"jwt_bearer_disabled":         boolattr.Default(false),
 	"device_code_disabled":        boolattr.Default(false),
+	"force_pkce":                  boolattr.Default(false),
 }
 
 // Model
@@ -50,6 +51,7 @@ type OIDCModel struct {
 	RefreshTokenDisabled      boolattr.Type    `tfsdk:"refresh_token_disabled"`
 	JWTBearerDisabled         boolattr.Type    `tfsdk:"jwt_bearer_disabled"`
 	DeviceCodeDisabled        boolattr.Type    `tfsdk:"device_code_disabled"`
+	ForcePkce                 boolattr.Type    `tfsdk:"force_pkce"`
 }
 
 func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
@@ -65,6 +67,7 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.RefreshTokenDisabled, settings, "refreshTokenDisabled")
 	boolattr.Get(m.JWTBearerDisabled, settings, "jwtBearerDisabled")
 	boolattr.Get(m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
+	boolattr.Get(m.ForcePkce, settings, "forcePkce")
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["oidc"] = settings
@@ -85,6 +88,7 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		boolattr.Set(&m.RefreshTokenDisabled, settings, "refreshTokenDisabled")
 		boolattr.Set(&m.JWTBearerDisabled, settings, "jwtBearerDisabled")
 		boolattr.Set(&m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
+		boolattr.Set(&m.ForcePkce, settings, "forcePkce")
 	}
 }
 

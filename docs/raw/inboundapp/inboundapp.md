@@ -154,3 +154,12 @@ client_secret
 
 The client secret for authenticating this inbound app. This value is generated automatically and
 cannot be retrieved after the resource is created. Store this value securely.
+
+
+
+force_pkce
+----------
+
+- Type: `bool`
+
+When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.

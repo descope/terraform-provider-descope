@@ -141,3 +141,12 @@ device_code_disabled
 - Type: `bool`
 
 Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this application.
+
+
+
+force_pkce
+----------
+
+- Type: `bool`
+
+When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.
