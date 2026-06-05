@@ -8,6 +8,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
 
 var OIDCAttributes = map[string]schema.Attribute{
@@ -22,7 +23,11 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"force_authentication": boolattr.Default(false),
 
 	// Dedicated client credentials and per-app policy (config-driven; defaults preserve legacy behavior).
-	"client_type": stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")), // "", "confidential", or "public"
+	// client_id/client_secret may import an existing OIDC client; set on create only (RequiresReplace),
+	// computed/generated server-side when omitted. Mirrors the inbound third-party app attributes.
+	"client_id":     stringattr.Optional(stringplanmodifier.RequiresReplace()),
+	"client_secret": stringattr.SecretGenerated(true),
+	"client_type":   stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")), // "", "confidential", or "public"
 	// Set (not list): the backend may reorder the URLs, and a list would show perpetual plan diffs -
 	// matching approved_callback_urls (inbound) and acs_allowed_callback_urls (SAML).
 	"approved_redirect_urls": strsetattr.Default(),
@@ -47,6 +52,8 @@ type OIDCModel struct {
 	Claims              strlistattr.Type `tfsdk:"claims"`
 	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
 
+	ClientID                  stringattr.Type `tfsdk:"client_id"`
+	ClientSecret              stringattr.Type `tfsdk:"client_secret"`
 	ClientType                stringattr.Type `tfsdk:"client_type"`
 	ApprovedRedirectURLs      strsetattr.Type `tfsdk:"approved_redirect_urls"`
 	AuthorizationCodeDisabled boolattr.Type   `tfsdk:"authorization_code_disabled"`
@@ -63,6 +70,8 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	strlistattr.Get(m.Claims, settings, "claims", h)
 	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
 
+	stringattr.Get(m.ClientID, settings, "clientId")
+	stringattr.Get(m.ClientSecret, settings, "clientSecret")
 	stringattr.Get(m.ClientType, settings, "clientType")
 	strsetattr.Get(m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
 	boolattr.Get(m.AuthorizationCodeDisabled, settings, "authorizationCodeDisabled")
@@ -84,6 +93,8 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		strlistattr.Set(&m.Claims, settings, "claims", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 
+		stringattr.Set(&m.ClientID, settings, "clientId")
+		stringattr.Set(&m.ClientSecret, settings, "clientSecret")
 		stringattr.Set(&m.ClientType, settings, "clientType")
 		strsetattr.Set(&m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
 		boolattr.Set(&m.AuthorizationCodeDisabled, settings, "authorizationCodeDisabled")

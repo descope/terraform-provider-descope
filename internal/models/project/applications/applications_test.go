@@ -53,6 +53,8 @@ func TestApplications(t *testing.T) {
 							claims = ["email", "name"]
 							force_authentication = true
 
+							client_id = "my-custom-oidc-client"
+							client_secret = "my-custom-oidc-secret-0123456789"
 							client_type = "confidential"
 							approved_redirect_urls = ["https://example.com/cb", "https://example.com/cb2"]
 							authorization_code_disabled = false
@@ -76,6 +78,8 @@ func TestApplications(t *testing.T) {
 					"login_page_url":       "https://example.com/login",
 					"claims":               []string{"email", "name"},
 					"force_authentication": true,
+					"client_id":            "my-custom-oidc-client",
+					"client_secret":        testacc.AttributeIsSet,
 					"client_type":          "confidential",
 					"approved_redirect_urls": []string{
 						"https://example.com/cb",
