@@ -653,4 +653,5 @@ paths = [
 	"vendor/",
 	".vscode/targets.log",
 	"connectors_test.go",
+	"applications_test.go",
 ]
