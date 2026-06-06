@@ -38,6 +38,9 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"jwt_bearer_disabled":         boolattr.Default(false),
 	"device_code_disabled":        boolattr.Default(false),
 	"force_pkce":                  boolattr.Default(false),
+	// Default audience policy for issued tokens (modern apps only): "projectId", "clientId", or "" (both).
+	// Legacy apps (empty client_type) always use the project ID; the empty default preserves that.
+	"default_audience": stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")),
 }
 
 // Model
@@ -62,6 +65,7 @@ type OIDCModel struct {
 	JWTBearerDisabled         boolattr.Type   `tfsdk:"jwt_bearer_disabled"`
 	DeviceCodeDisabled        boolattr.Type   `tfsdk:"device_code_disabled"`
 	ForcePkce                 boolattr.Type   `tfsdk:"force_pkce"`
+	DefaultAudience           stringattr.Type `tfsdk:"default_audience"`
 }
 
 func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
@@ -80,6 +84,7 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.JWTBearerDisabled, settings, "jwtBearerDisabled")
 	boolattr.Get(m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
 	boolattr.Get(m.ForcePkce, settings, "forcePkce")
+	stringattr.Get(m.DefaultAudience, settings, "defaultAudience")
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["oidc"] = settings
@@ -103,6 +108,7 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		boolattr.Set(&m.JWTBearerDisabled, settings, "jwtBearerDisabled")
 		boolattr.Set(&m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
 		boolattr.Set(&m.ForcePkce, settings, "forcePkce")
+		stringattr.Set(&m.DefaultAudience, settings, "defaultAudience")
 	}
 }
 

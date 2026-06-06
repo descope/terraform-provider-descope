@@ -63,6 +63,7 @@ func TestApplications(t *testing.T) {
 							jwt_bearer_disabled = true
 							device_code_disabled = true
 							force_pkce = true
+							default_audience = "clientId"
 						}
 					]
 				}
@@ -91,6 +92,7 @@ func TestApplications(t *testing.T) {
 					"jwt_bearer_disabled":         true,
 					"device_code_disabled":        true,
 					"force_pkce":                  true,
+					"default_audience":            "clientId",
 				},
 			}),
 		},
