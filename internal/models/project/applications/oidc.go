@@ -2,6 +2,7 @@ package applications
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -18,6 +19,9 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"login_page_url":       stringattr.Default(""),
 	"claims":               strlistattr.Default(),
 	"force_authentication": boolattr.Default(false),
+
+	"permissions": listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
+	"roles":       listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
 }
 
 // Model
@@ -31,6 +35,9 @@ type OIDCModel struct {
 	LoginPageURL        stringattr.Type  `tfsdk:"login_page_url"`
 	Claims              strlistattr.Type `tfsdk:"claims"`
 	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
+
+	Permissions listattr.Type[SSOAppPermissionModel] `tfsdk:"permissions"`
+	Roles       listattr.Type[SSOAppRoleModel]       `tfsdk:"roles"`
 }
 
 func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
@@ -41,6 +48,7 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["oidc"] = settings
+	emitSSOAppRoles(h, data, m.Permissions, m.Roles)
 	return data
 }
 
@@ -51,6 +59,8 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		strlistattr.Set(&m.Claims, settings, "claims", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 	}
+	listattr.SetMatchingNames(&m.Permissions, data, "permissions", "name", h)
+	listattr.SetMatchingNames(&m.Roles, data, "roles", "name", h)
 }
 
 // Matching

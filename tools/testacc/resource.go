@@ -26,6 +26,10 @@ func ManagementKey(t *testing.T) *Resource {
 	return newResource(t, "management_key")
 }
 
+func AccessKey(t *testing.T) *Resource {
+	return newResource(t, "access_key")
+}
+
 func InboundApp(t *testing.T) *Resource {
 	return newResource(t, "inbound_app")
 }

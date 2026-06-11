@@ -8,7 +8,6 @@ disabled
 --------
 
 - Type: `bool`
-- Default: `false`
 
 Whether to disable this SCIM connector. When disabled, provisioning events will not be
 sent to the configured endpoint.
@@ -68,6 +67,5 @@ insecure
 --------
 
 - Type: `bool`
-- Default: `false`
 
 Will ignore certificate errors raised by the client.
