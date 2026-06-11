@@ -1400,7 +1400,7 @@ Optional:
 
 Optional:
 
-- `any_letter` (Boolean) Whether passwords must contain at least one letter (uppercase or lowercase).
+- `any_letter` (Boolean) Whether passwords must contain at least one letter, either uppercase or lowercase.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email is not known at validation time.
 - `disallowed_characters` (String) Reject passwords containing any of these characters. Each character in the string is treated as a forbidden literal (e.g., `"'"` to reject single and double quotes).
@@ -1526,7 +1526,7 @@ Optional:
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
-- `hide_jit_guide` (Boolean)
+- `hide_jit_guide` (Boolean) Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
