@@ -28,6 +28,9 @@ var SAMLAttributes = map[string]schema.Attribute{
 	"default_signature_algorithm": stringattr.Default("", stringvalidator.OneOf("", "sha256")),
 	"attribute_mapping":           listattr.Default[AttributeMappingModel](AttributeMappingAttributes),
 	"force_authentication":        boolattr.Default(false),
+
+	"permissions": listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
+	"roles":       listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
 }
 
 // Model
@@ -48,6 +51,9 @@ type SAMLModel struct {
 	DefaultSignatureAlgorithm stringattr.Type                         `tfsdk:"default_signature_algorithm"`
 	AttributeMapping          listattr.Type[AttributeMappingModel]    `tfsdk:"attribute_mapping"`
 	ForceAuthentication       boolattr.Type                           `tfsdk:"force_authentication"`
+
+	Permissions listattr.Type[SSOAppPermissionModel] `tfsdk:"permissions"`
+	Roles       listattr.Type[SSOAppRoleModel]       `tfsdk:"roles"`
 }
 
 func (m *SAMLModel) Values(h *helpers.Handler) map[string]any {
@@ -70,6 +76,7 @@ func (m *SAMLModel) Values(h *helpers.Handler) map[string]any {
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["saml"] = settings
+	emitSSOAppRoles(h, data, m.Permissions, m.Roles)
 	return data
 }
 
@@ -90,6 +97,8 @@ func (m *SAMLModel) SetValues(h *helpers.Handler, data map[string]any) {
 		strsetattr.Set(&m.ACSAllowedCallbackURLs, settings, "acsAllowedCallbacks", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 	}
+	listattr.SetMatchingNames(&m.Permissions, data, "permissions", "name", h)
+	listattr.SetMatchingNames(&m.Roles, data, "roles", "name", h)
 }
 
 // Matching

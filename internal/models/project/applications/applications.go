@@ -3,6 +3,8 @@ package applications
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
@@ -48,4 +50,30 @@ func (m *ApplicationsModel) Check(h *helpers.Handler) {
 
 func (m *ApplicationsModel) Validate(h *helpers.Handler) {
 	// XXX move Check here eventually
+	for app := range listattr.Iterator(m.OIDCApplications, h) {
+		validateSSOAppRoles(h, app.Name, app.Permissions, app.Roles)
+	}
+	for app := range listattr.Iterator(m.SAMLApplications, h) {
+		validateSSOAppRoles(h, app.Name, app.Permissions, app.Roles)
+	}
+	for app := range listattr.Iterator(m.WSFedApplications, h) {
+		validateSSOAppRoles(h, app.Name, app.Permissions, app.Roles)
+	}
+}
+
+func validateSSOAppRoles(h *helpers.Handler, appName stringattr.Type, perms listattr.Type[SSOAppPermissionModel], roles listattr.Type[SSOAppRoleModel]) {
+	if helpers.HasUnknownValues(perms, roles) {
+		return
+	}
+	defined := map[string]bool{}
+	for p := range listattr.Iterator(perms, h) {
+		defined[p.Name.ValueString()] = true
+	}
+	for r := range listattr.Iterator(roles, h) {
+		for name := range strsetattr.Iterator(r.Permissions, h) {
+			if !defined[name] {
+				h.Error("Missing SSO App Permission", "The role '%s' in app '%s' references a permission '%s' that doesn't exist on the same app", r.Name.ValueString(), appName.ValueString(), name)
+			}
+		}
+	}
 }
