@@ -1405,6 +1405,7 @@ Optional:
 - `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email is not known at validation time.
 - `disallowed_characters` (String) Reject passwords containing any of these characters. Each character in the string is treated as a forbidden literal (e.g., `"'"` to reject single and double quotes).
 - `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--authentication--password--email_service))
+- `enforce_strength` (String) Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.
 - `expiration` (Boolean) Whether users are required to change their password periodically.
 - `expiration_weeks` (Number) The number of weeks after which a user's password expires and they need to replace it.
 - `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
