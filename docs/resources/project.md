@@ -1392,6 +1392,7 @@ Optional:
 
 - `android_fingerprints` (Set of String) A list of SHA-256 APK key hash fingerprints (colon-separated hex, e.g. `AB:CD:EF:...`) that are allowed as passkey origins for Android apps. When set, only Android apps with a matching fingerprint will be permitted to use passkey authentication.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
+- `display_name` (String) The human-friendly name shown to users when they create or use a passkey. Some password managers display this name, while others display the top level domain instead. When left empty, the project name is used.
 - `top_level_domain` (String) Passkeys will be usable in the following domain and all its subdomains.
 
 
@@ -1400,11 +1401,12 @@ Optional:
 
 Optional:
 
-- `any_letter` (Boolean) Whether passwords must contain at least one letter (uppercase or lowercase).
+- `any_letter` (Boolean) Whether passwords must contain at least one letter, either uppercase or lowercase.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email is not known at validation time.
 - `disallowed_characters` (String) Reject passwords containing any of these characters. Each character in the string is treated as a forbidden literal (e.g., `"'"` to reject single and double quotes).
 - `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--authentication--password--email_service))
+- `enforce_strength` (String) Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.
 - `expiration` (Boolean) Whether users are required to change their password periodically.
 - `expiration_weeks` (Number) The number of weeks after which a user's password expires and they need to replace it.
 - `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
@@ -1526,7 +1528,7 @@ Optional:
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
-- `hide_jit_guide` (Boolean)
+- `hide_jit_guide` (Boolean) Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.

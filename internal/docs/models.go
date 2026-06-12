@@ -5,6 +5,7 @@ package docs
 import (
 	"fmt"
 
+	"github.com/descope/terraform-provider-descope/internal/models/accesskey"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
 	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
 	"github.com/descope/terraform-provider-descope/internal/models/managementkey"
@@ -25,6 +26,8 @@ import (
 )
 
 func InjectModels() {
+	inject(accesskey.AccessKeyAttributes, docsAccessKey)
+	inject(accesskey.AccessKeyTenantAttributes, docsAccessKeyTenant)
 	inject(descoper.DescoperAttributes, docsDescoper)
 	inject(descoper.DescoperProjectRoleAttributes, docsDescoperProjectRole)
 	inject(descoper.RBacAttributes, docsRBac)

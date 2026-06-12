@@ -21,10 +21,7 @@ func Value(value string) Type {
 }
 
 func Identifier() schema.StringAttribute {
-	return schema.StringAttribute{
-		Computed:      true,
-		PlanModifiers: []planmodifier.String{helpers.UseValidStateForUnknown()},
-	}
+	return Generated() // same attribute structure but we mark it as an identifier semantically
 }
 
 func IdentifierMatched() schema.StringAttribute {
@@ -39,6 +36,34 @@ func Required(extras ...any) schema.StringAttribute {
 		Required:      true,
 		Validators:    append([]validator.String{NonEmptyValidator}, validators...),
 		PlanModifiers: modifiers,
+	}
+}
+
+func Optional(extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
+	return schema.StringAttribute{
+		Optional:      true,
+		Computed:      true,
+		Validators:    validators,
+		PlanModifiers: append([]planmodifier.String{helpers.UseValidStateForUnknown()}, modifiers...),
+	}
+}
+
+func Default(value string, extras ...any) schema.StringAttribute {
+	validators, modifiers := parseExtras(extras)
+	return schema.StringAttribute{
+		Optional:      true,
+		Computed:      true,
+		Validators:    validators,
+		PlanModifiers: modifiers,
+		Default:       stringdefault.StaticString(value),
+	}
+}
+
+func Generated() schema.StringAttribute {
+	return schema.StringAttribute{
+		Computed:      true,
+		PlanModifiers: []planmodifier.String{helpers.UseValidStateForUnknown()},
 	}
 }
 
@@ -72,27 +97,6 @@ func SecretGenerated(optional bool, extras ...any) schema.StringAttribute {
 		Sensitive:     true,
 		Validators:    validators,
 		PlanModifiers: append([]planmodifier.String{stringplanmodifier.UseStateForUnknown()}, modifiers...),
-	}
-}
-
-func Optional(extras ...any) schema.StringAttribute {
-	validators, modifiers := parseExtras(extras)
-	return schema.StringAttribute{
-		Optional:      true,
-		Computed:      true,
-		Validators:    validators,
-		PlanModifiers: append([]planmodifier.String{helpers.UseValidStateForUnknown()}, modifiers...),
-	}
-}
-
-func Default(value string, extras ...any) schema.StringAttribute {
-	validators, modifiers := parseExtras(extras)
-	return schema.StringAttribute{
-		Optional:      true,
-		Computed:      true,
-		Validators:    validators,
-		PlanModifiers: modifiers,
-		Default:       stringdefault.StaticString(value),
 	}
 }
 
