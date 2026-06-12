@@ -17,12 +17,14 @@ var androidFingerprintValidator = stringvalidator.RegexMatches(
 
 var PasskeysAttributes = map[string]schema.Attribute{
 	"disabled":             boolattr.Default(false),
+	"display_name":         stringattr.Optional(),
 	"top_level_domain":     stringattr.Optional(),
 	"android_fingerprints": strsetattr.Default(androidFingerprintValidator),
 }
 
 type PasskeysModel struct {
 	Disabled            boolattr.Type   `tfsdk:"disabled"`
+	DisplayName         stringattr.Type `tfsdk:"display_name"`
 	TopLevelDomain      stringattr.Type `tfsdk:"top_level_domain"`
 	AndroidFingerprints strsetattr.Type `tfsdk:"android_fingerprints"`
 }
@@ -30,6 +32,7 @@ type PasskeysModel struct {
 func (m *PasskeysModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	boolattr.GetNot(m.Disabled, data, "enabled")
+	stringattr.Get(m.DisplayName, data, "name")
 	stringattr.Get(m.TopLevelDomain, data, "relyingPartyId")
 	strsetattr.Get(m.AndroidFingerprints, data, "androidFingerprints", h)
 	return data
@@ -37,6 +40,7 @@ func (m *PasskeysModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *PasskeysModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
+	stringattr.Set(&m.DisplayName, data, "name")
 	stringattr.Set(&m.TopLevelDomain, data, "relyingPartyId")
 	strsetattr.Set(&m.AndroidFingerprints, data, "androidFingerprints", h)
 }
