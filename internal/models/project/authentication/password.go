@@ -9,6 +9,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -31,6 +32,7 @@ var PasswordAttributes = map[string]schema.Attribute{
 	"any_letter":              boolattr.Optional(),
 	"disallowed_characters":   stringattr.Optional(),
 	"disallow_email_match":    boolattr.Optional(),
+	"enforce_strength":        stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
 	"mask_errors":             boolattr.Default(false),
 	"email_service":           objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
@@ -54,6 +56,7 @@ type PasswordModel struct {
 	AnyLetter             boolattr.Type                             `tfsdk:"any_letter"`
 	DisallowedCharacters  stringattr.Type                           `tfsdk:"disallowed_characters"`
 	DisallowEmailMatch    boolattr.Type                             `tfsdk:"disallow_email_match"`
+	EnforceStrength       stringattr.Type                           `tfsdk:"enforce_strength"`
 	MaskErrors            boolattr.Type                             `tfsdk:"mask_errors"`
 	EmailService          objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
 }
@@ -78,6 +81,13 @@ func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.AnyLetter, data, "anyLetter")
 	stringattr.Get(m.DisallowedCharacters, data, "disallowedCharacters")
 	boolattr.Get(m.DisallowEmailMatch, data, "disallowEmailMatch")
+	if m.EnforceStrength.ValueString() == "none" {
+		data["enablePasswordStrength"] = false
+		data["passwordStrengthScore"] = 0
+	} else {
+		data["enablePasswordStrength"] = true
+		data["passwordStrengthScore"] = strengthScoreFromString(m.EnforceStrength.ValueString())
+	}
 	boolattr.Get(m.MaskErrors, data, "maskError")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	return data
@@ -102,10 +112,37 @@ func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.AnyLetter, data, "anyLetter")
 	stringattr.Set(&m.DisallowedCharacters, data, "disallowedCharacters")
 	boolattr.Set(&m.DisallowEmailMatch, data, "disallowEmailMatch")
+	if enabled, _ := data["enablePasswordStrength"].(bool); !enabled {
+		m.EnforceStrength = stringattr.Value("none")
+	} else {
+		score, _ := data["passwordStrengthScore"].(float64)
+		m.EnforceStrength = stringattr.Value(strengthStringFromScore(int(score)))
+	}
 	boolattr.Set(&m.MaskErrors, data, "maskError")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
 }
 
 func (m *PasswordModel) UpdateReferences(h *helpers.Handler) {
 	objattr.UpdateReferences(&m.EmailService, h)
+}
+
+var strengthLevels = map[string]int{
+	"very_weak":   0,
+	"weak":        1,
+	"average":     2,
+	"strong":      3,
+	"very_strong": 4,
+}
+
+func strengthScoreFromString(s string) int {
+	return strengthLevels[s]
+}
+
+func strengthStringFromScore(n int) string {
+	for name, score := range strengthLevels {
+		if score == n {
+			return name
+		}
+	}
+	return "none"
 }
