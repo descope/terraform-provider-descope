@@ -10,7 +10,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
-func TestConnectors(t *testing.T) {
+func TestConnectorsBatch1(t *testing.T) {
 	p := testacc.Project(t)
 	testacc.Run(t,
 		resource.TestStep{
@@ -24,7 +24,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 64,
+				"connectors.%": 65,
 			}),
 		},
 		resource.TestStep{
@@ -531,6 +531,20 @@ func TestConnectors(t *testing.T) {
 				},
 			}),
 		},
+	)
+}
+
+func TestConnectorsBatch2(t *testing.T) {
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.%": 65,
+			}),
+		},
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
@@ -1035,6 +1049,20 @@ func TestConnectors(t *testing.T) {
 				},
 			}),
 		},
+	)
+}
+
+func TestConnectorsBatch3(t *testing.T) {
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.%": 65,
+			}),
+		},
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
@@ -1396,6 +1424,19 @@ func TestConnectors(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {
+					"scim": [
+						{
+							name = "Test scim Connector"
+							description = "A description for the scim connector"
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Incorrect attribute value type`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
 					"segment": [
 						{
 							name = "Test segment Connector"
@@ -1463,6 +1504,20 @@ func TestConnectors(t *testing.T) {
 					"description": "A description for the slack connector",
 					"token":       "hrdj5",
 				},
+			}),
+		},
+	)
+}
+
+func TestConnectorsBatch4(t *testing.T) {
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.%": 65,
 			}),
 		},
 		resource.TestStep{
@@ -1808,7 +1863,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 64,
+				"connectors.%": 65,
 			}),
 		},
 	)

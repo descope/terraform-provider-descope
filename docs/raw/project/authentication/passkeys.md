@@ -15,6 +15,17 @@ configured to use this authentication method.
 
 
 
+display_name
+------------
+
+- Type: `string`
+
+The human-friendly name shown to users when they create or use a passkey. Some password
+managers display this name, while others display the top level domain instead. When left
+empty, the project name is used.
+
+
+
 top_level_domain
 ----------------
 

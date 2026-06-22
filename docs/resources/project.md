@@ -342,6 +342,7 @@ Optional:
 
 - `oidc_applications` (Attributes List) Applications using OpenID Connect (OIDC) for authentication. (see [below for nested schema](#nestedatt--applications--oidc_applications))
 - `saml_applications` (Attributes List) Applications using SAML for authentication. (see [below for nested schema](#nestedatt--applications--saml_applications))
+- `wsfed_applications` (Attributes List) Applications using WS-Federation for authentication. (see [below for nested schema](#nestedatt--applications--wsfed_applications))
 
 <a id="nestedatt--applications--oidc_applications"></a>
 ### Nested Schema for `applications.oidc_applications`
@@ -413,6 +414,63 @@ Required:
 Optional:
 
 - `certificate` (String) Enter the `Certificate` from the SP.
+
+
+
+<a id="nestedatt--applications--wsfed_applications"></a>
+### Nested Schema for `applications.wsfed_applications`
+
+Required:
+
+- `name` (String) A name for the WS-Fed application.
+
+Optional:
+
+- `attribute_mapping` (Attributes List) A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes. (see [below for nested schema](#nestedatt--applications--wsfed_applications--attribute_mapping))
+- `description` (String) A description for the WS-Fed application.
+- `disabled` (Boolean) Whether the application should be enabled or disabled.
+- `error_redirect_url` (String) The URL to redirect to when an error occurs.
+- `force_authentication` (Boolean) This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.
+- `groups_mapping` (Attributes List) A list of group mappings from Descope roles to WS-Fed groups. (see [below for nested schema](#nestedatt--applications--wsfed_applications--groups_mapping))
+- `id` (String) An optional identifier for the WS-Fed application.
+- `login_page_url` (String) The Flow Hosting URL.
+- `logo` (String) A logo for the WS-Fed application. Should be a hosted image URL.
+- `logout_redirect_url` (String) The URL to redirect to after logout.
+- `realm` (String) The WS-Fed realm identifier for the application.
+- `reply_allowed_callback_urls` (Set of String) Additional allowed `wreply` callback URLs beyond `reply_url`. Each entry may include the `*` wildcard. When the RP supplies a `wreply` parameter, it must match either the default `reply_url` or one of these patterns.
+- `reply_url` (String) The default reply URL where WS-Fed responses are sent. Used for IdP-initiated flows and when no `wreply` is supplied by the RP.
+
+<a id="nestedatt--applications--wsfed_applications--attribute_mapping"></a>
+### Nested Schema for `applications.wsfed_applications.attribute_mapping`
+
+Required:
+
+- `name` (String) The name of the attribute.
+- `value` (String) The value of the attribute.
+
+
+<a id="nestedatt--applications--wsfed_applications--groups_mapping"></a>
+### Nested Schema for `applications.wsfed_applications.groups_mapping`
+
+Required:
+
+- `filter_type` (String) The filter type for the groups mapping.
+- `name` (String) The name of the groups mapping.
+- `type` (String) The type of the groups mapping.
+- `value` (String) The value of the groups mapping.
+
+Optional:
+
+- `roles` (Attributes List) The `RoleGroupMapping` object. A list of roles mapped to this group. (see [below for nested schema](#nestedatt--applications--wsfed_applications--groups_mapping--roles))
+
+<a id="nestedatt--applications--wsfed_applications--groups_mapping--roles"></a>
+### Nested Schema for `applications.wsfed_applications.groups_mapping.roles`
+
+Required:
+
+- `id` (String) The identifier of the role.
+- `name` (String) The name of the role.
+
 
 
 
@@ -1334,6 +1392,7 @@ Optional:
 
 - `android_fingerprints` (Set of String) A list of SHA-256 APK key hash fingerprints (colon-separated hex, e.g. `AB:CD:EF:...`) that are allowed as passkey origins for Android apps. When set, only Android apps with a matching fingerprint will be permitted to use passkey authentication.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
+- `display_name` (String) The human-friendly name shown to users when they create or use a passkey. Some password managers display this name, while others display the top level domain instead. When left empty, the project name is used.
 - `top_level_domain` (String) Passkeys will be usable in the following domain and all its subdomains.
 
 
@@ -1342,8 +1401,12 @@ Optional:
 
 Optional:
 
+- `any_letter` (Boolean) Whether passwords must contain at least one letter, either uppercase or lowercase.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
+- `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email is not known at validation time.
+- `disallowed_characters` (String) Reject passwords containing any of these characters. Each character in the string is treated as a forbidden literal (e.g., `"'"` to reject single and double quotes).
 - `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--authentication--password--email_service))
+- `enforce_strength` (String) Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.
 - `expiration` (Boolean) Whether users are required to change their password periodically.
 - `expiration_weeks` (Number) The number of weeks after which a user's password expires and they need to replace it.
 - `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
@@ -1465,10 +1528,13 @@ Optional:
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
+- `hide_jit_guide` (Boolean) Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
+- `show_help_contact` (Boolean) Whether to display the help/support contact link in the SSO Suite UI.
 - `style_id` (String) Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in the console for it to be used.
+- `support_email` (String) Email address shown to end-users in the SSO Suite UI as a support contact.
 
 
 
@@ -1579,6 +1645,7 @@ Optional:
 - `salesforce` (Attributes List) Run SQL queries to retrieve user roles, profiles, account status, and more with the Salesforce connector. (see [below for nested schema](#nestedatt--connectors--salesforce))
 - `salesforce_marketing_cloud` (Attributes List) Send transactional messages with the Salesforce Marketing Cloud connector. (see [below for nested schema](#nestedatt--connectors--salesforce_marketing_cloud))
 - `sardine` (Attributes List) Evaluate customer risk using Sardine (see [below for nested schema](#nestedatt--connectors--sardine))
+- `scim` (Attributes List) Provision and de-provision users to an external SCIM v2 endpoint as part of your Descope user journey. (see [below for nested schema](#nestedatt--connectors--scim))
 - `segment` (Attributes List) Orchestrate customer identity traits and signals from your Descope user journey with the Segment connector. (see [below for nested schema](#nestedatt--connectors--segment))
 - `sendgrid` (Attributes List) SendGrid is a cloud-based SMTP provider that allows you to send emails without having to maintain email servers. (see [below for nested schema](#nestedatt--connectors--sendgrid))
 - `ses` (Attributes List) Amazon Simple Email Service (SES) for sending emails through AWS infrastructure. (see [below for nested schema](#nestedatt--connectors--ses))
@@ -2793,6 +2860,57 @@ Read-Only:
 - `id` (String)
 
 
+<a id="nestedatt--connectors--scim"></a>
+### Nested Schema for `connectors.scim`
+
+Required:
+
+- `base_url` (String) The base URL of the SCIM v2 endpoint that user provisioning events will be sent to.
+- `federated_app_id` (String) The ID of the federated SSO application this SCIM connector is associated with.
+- `name` (String) A custom name for your connector.
+
+Optional:
+
+- `authentication` (Attributes) Authentication credentials used when sending requests to the SCIM endpoint. (see [below for nested schema](#nestedatt--connectors--scim--authentication))
+- `description` (String) A description of what your connector is used for.
+- `disabled` (Boolean) Whether to disable this SCIM connector. When disabled, provisioning events will not be sent to the configured endpoint.
+- `headers` (Map of String) Custom HTTP headers to send with each provisioning request.
+- `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature.
+- `insecure` (Boolean) Will ignore certificate errors raised by the client.
+
+Read-Only:
+
+- `id` (String)
+
+<a id="nestedatt--connectors--scim--authentication"></a>
+### Nested Schema for `connectors.scim.authentication`
+
+Optional:
+
+- `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--scim--authentication--api_key))
+- `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--scim--authentication--basic))
+- `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+
+<a id="nestedatt--connectors--scim--authentication--api_key"></a>
+### Nested Schema for `connectors.scim.authentication.api_key`
+
+Required:
+
+- `key` (String) The API key.
+- `token` (String, Sensitive) The API secret.
+
+
+<a id="nestedatt--connectors--scim--authentication--basic"></a>
+### Nested Schema for `connectors.scim.authentication.basic`
+
+Required:
+
+- `password` (String, Sensitive) Password for basic HTTP authentication.
+- `username` (String) Username for basic HTTP authentication.
+
+
+
+
 <a id="nestedatt--connectors--segment"></a>
 ### Nested Schema for `connectors.segment`
 
@@ -3451,6 +3569,7 @@ Optional:
 - `session_token_expiration` (String) The expiry time of the session token, used for accessing the application's resources. The value needs to be at least 3 minutes and can't be longer than the refresh token expiration.
 - `session_token_response_method` (String) Configure how sessions tokens are managed by the Descope SDKs. Must be either `response_body` or `cookies`. The default value is `response_body`.
 - `step_up_token_expiration` (String) The expiry time for the step up token, after which it will not be valid and the user will automatically go back to the session token.
+- `tenant_user_isolation` (Boolean) When enabled, users are completely isolated per tenant. The same login ID in Tenant A and Tenant B will be treated as separate identities with isolated credentials, sessions, and MFA state.
 - `test_users_loginid_regexp` (String) Define a regular expression so that whenever a user is created with a matching login ID it will automatically be marked as a test user.
 - `test_users_static_otp` (String) A 6 digit static OTP code for use with test users.
 - `test_users_verifier_regexp` (String) The pattern of the verifiers that will be used for testing.

@@ -7,6 +7,78 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+func TestSCIMConnector(t *testing.T) {
+	t.Skip("Temporarily skipping SCIM test because of backend problems")
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"scim": [
+						{
+							name             = "My SCIM Connector"
+							description      = "A SCIM connector for provisioning"
+							federated_app_id = "fake-app-id"
+							base_url         = "https://example.com/scim"
+							authentication   = {
+								bearer_token = "test-bearer-token"
+							}
+							headers = {
+								"X-Custom-Header" = "header-value"
+							}
+							hmac_secret = "test-hmac-secret"
+							insecure    = true
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.scim.#": 1,
+				"connectors.scim.0": map[string]any{
+					"id":                          testacc.AttributeHasPrefix("CI"),
+					"name":                        "My SCIM Connector",
+					"description":                 "A SCIM connector for provisioning",
+					"federated_app_id":            "fake-app-id",
+					"base_url":                    "https://example.com/scim",
+					"authentication.bearer_token": "test-bearer-token",
+					"headers.X-Custom-Header":     "header-value",
+					"insecure":                    true,
+					"disabled":                    false,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"scim": [
+						{
+							name             = "My SCIM Connector"
+							description      = "Updated description"
+							federated_app_id = "fake-app-id"
+							base_url         = "https://updated.example.com/scim/v2"
+							insecure         = false
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.scim.#": 1,
+				"connectors.scim.0": map[string]any{
+					"id":                          testacc.AttributeHasPrefix("CI"),
+					"name":                        "My SCIM Connector",
+					"description":                 "Updated description",
+					"federated_app_id":            "fake-app-id",
+					"base_url":                    "https://updated.example.com/scim/v2",
+					"authentication.bearer_token": "",
+					"headers.%":                   0,
+					"insecure":                    false,
+					"disabled":                    false,
+				},
+			}),
+		},
+	)
+}
+
 func TestConnectorsShared(t *testing.T) {
 	p := testacc.Project(t)
 	testacc.Run(t,

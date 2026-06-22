@@ -24,6 +24,7 @@ func TestInboundApp(t *testing.T) {
 				"non_confidential_client":          "false",
 				"client_id":                        testacc.AttributeIsSet,
 				"client_secret":                    testacc.AttributeIsSet,
+				"force_pkce":                       "false",
 				"approved_callback_urls.#":         "0",
 				"permissions_scopes.#":             "0",
 				"attributes_scopes.#":              "0",
@@ -38,6 +39,7 @@ func TestInboundApp(t *testing.T) {
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
 				description = "Updated description"
+				force_pkce = true
 				approved_callback_urls = ["https://example.com/callback"]
 				permissions_scopes = [
 					{
@@ -53,6 +55,7 @@ func TestInboundApp(t *testing.T) {
 			`),
 			Check: a.Check(map[string]any{
 				"description":                      "Updated description",
+				"force_pkce":                       "true",
 				"approved_callback_urls.#":         "1",
 				"approved_callback_urls.0":         "https://example.com/callback",
 				"permissions_scopes.#":             "2",

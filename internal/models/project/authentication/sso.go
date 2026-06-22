@@ -129,6 +129,9 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"hide_saml":                 boolattr.Default(false),
 	"hide_oidc":                 boolattr.Default(false),
 	"force_domain_verification": boolattr.Default(false),
+	"support_email":             stringattr.Default("", stringattr.EmailValidator),
+	"show_help_contact":         boolattr.Default(false),
+	"hide_jit_guide":            boolattr.Default(false),
 }
 
 type SSOSuiteModel struct {
@@ -139,6 +142,9 @@ type SSOSuiteModel struct {
 	HideSAML                boolattr.Type   `tfsdk:"hide_saml"`
 	HideOIDC                boolattr.Type   `tfsdk:"hide_oidc"`
 	ForceDomainVerification boolattr.Type   `tfsdk:"force_domain_verification"`
+	SupportEmail            stringattr.Type `tfsdk:"support_email"`
+	ShowHelpContact         boolattr.Type   `tfsdk:"show_help_contact"`
+	HideJitGuide            boolattr.Type   `tfsdk:"hide_jit_guide"`
 }
 
 var SSOSuiteDefault = &SSOSuiteModel{
@@ -149,6 +155,9 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	HideSAML:                boolattr.Value(false),
 	HideOIDC:                boolattr.Value(false),
 	ForceDomainVerification: boolattr.Value(false),
+	SupportEmail:            stringattr.Value(""),
+	ShowHelpContact:         boolattr.Value(false),
+	HideJitGuide:            boolattr.Value(false),
 }
 
 func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
@@ -160,6 +169,9 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Get(m.HideOIDC, data, "hideSsoSuiteOidc")
 	boolattr.Get(m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
+	stringattr.Get(m.SupportEmail, data, "ssoSuiteSupportEmail")
+	boolattr.Get(m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
+	boolattr.Get(m.HideJitGuide, data, "hideSsoSuiteJitGuide")
 	return data
 }
 
@@ -171,6 +183,9 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Set(&m.HideOIDC, data, "hideSsoSuiteOidc")
 	boolattr.Set(&m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
+	stringattr.Set(&m.SupportEmail, data, "ssoSuiteSupportEmail")
+	boolattr.Set(&m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
+	boolattr.Set(&m.HideJitGuide, data, "hideSsoSuiteJitGuide")
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {

@@ -5,6 +5,7 @@ package docs
 import (
 	"fmt"
 
+	"github.com/descope/terraform-provider-descope/internal/models/accesskey"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
 	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
 	"github.com/descope/terraform-provider-descope/internal/models/managementkey"
@@ -25,6 +26,8 @@ import (
 )
 
 func InjectModels() {
+	inject(accesskey.AccessKeyAttributes, docsAccessKey)
+	inject(accesskey.AccessKeyTenantAttributes, docsAccessKeyTenant)
 	inject(descoper.DescoperAttributes, docsDescoper)
 	inject(descoper.DescoperProjectRoleAttributes, docsDescoperProjectRole)
 	inject(descoper.RBacAttributes, docsRBac)
@@ -45,6 +48,9 @@ func InjectModels() {
 	inject(applications.AttributeMappingAttributes, docsAttributeMapping)
 	inject(applications.DynamicConfigurationAttributes, docsDynamicConfiguration)
 	inject(applications.ManualConfigurationAttributes, docsManualConfiguration)
+	inject(applications.WSFedAttributes, docsWSFed)
+	inject(applications.GroupsMappingAttributes, docsGroupsMapping)
+	inject(applications.RoleGroupMappingAttributes, docsRoleGroupMapping)
 	inject(attributes.AccessKeyAttributeAttributes, docsAccessKeyAttribute)
 	inject(attributes.AccessKeyAttributeWidgetAuthorizationAttributes, docsAccessKeyAttributeWidgetAuthorization)
 	inject(attributes.AttributesAttributes, docsAttributes)
@@ -117,6 +123,7 @@ func InjectModels() {
 	inject(connectors.SalesforceAttributes, docsSalesforce)
 	inject(connectors.SalesforceMarketingCloudAttributes, docsSalesforceMarketingCloud)
 	inject(connectors.SardineAttributes, docsSardine)
+	inject(connectors.SCIMAttributes, docsSCIM)
 	inject(connectors.SegmentAttributes, docsSegment)
 	inject(connectors.SendGridAttributes, docsSendGrid)
 	inject(connectors.SendGridAuthFieldAttributes, docsSendGridAuthField)

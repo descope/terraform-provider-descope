@@ -2,6 +2,39 @@
 
 package docs
 
+var docsAccessKey = map[string]string{
+	"project_id": "The ID of the Descope project this access key belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name":        "A name for the access key.",
+	"description": "A description for the access key.",
+	"status": "The status of the access key. Must be either `active` or `inactive`. A new access key cannot be " +
+		"created with an `inactive` status.",
+	"expire_time": "The expiration time of the access key as a Unix timestamp. If not set, the key will not expire. " +
+		"Changing this value after creation will require the access key to be replaced.",
+	"bound_user_id": "The ID of a user to bind this access key to. When the key is exchanged for a session JWT, the " +
+		"session acts on behalf of the bound user. Changing this value after creation will require the " +
+		"access key to be replaced.",
+	"roles": "A list of project-level roles to grant to the access key. Cannot be used together with `tenants`.",
+	"tenants": "A list of tenants to associate with the access key, each with its own set of roles. Cannot be " +
+		"used together with `roles`.",
+	"custom_claims": "A JSON-encoded object of custom claims to add to the JWT created when the access key is exchanged.",
+	"custom_attributes": "A JSON-encoded object of custom attribute values for the access key. The attributes must be defined " +
+		"in the project's access key custom attribute schema.",
+	"permitted_ips": "A list of IP addresses or CIDR ranges that are allowed to use this access key. If not set, the key " +
+		"can be used from any IP address.",
+	"created_time": "The time the access key was created, as a Unix timestamp. This value is set by the server and is " +
+		"read-only.",
+	"created_by": "The ID of the user or management key that created the access key. This value is set by the server " +
+		"and is read-only.",
+	"cleartext": "The plaintext value of the access key. This is only available after the key is created and cannot " +
+		"be retrieved later. Store this value securely as it is required to exchange the key for a JWT.",
+}
+
+var docsAccessKeyTenant = map[string]string{
+	"tenant_id": "The ID of the tenant to associate with the access key.",
+	"roles":     "The roles the access key will be granted within the tenant.",
+}
+
 var docsDescoper = map[string]string{
 	"email": "The email address of the Descope console user.",
 	"phone": "The phone number of the Descope console user.",
@@ -147,8 +180,9 @@ var docsAdminPortal = map[string]string{
 }
 
 var docsApplications = map[string]string{
-	"oidc_applications": "Applications using OpenID Connect (OIDC) for authentication.",
-	"saml_applications": "Applications using SAML for authentication.",
+	"oidc_applications":  "Applications using OpenID Connect (OIDC) for authentication.",
+	"saml_applications":  "Applications using SAML for authentication.",
+	"wsfed_applications": "Applications using WS-Federation for authentication.",
 }
 
 var docsOIDC = map[string]string{
@@ -195,6 +229,37 @@ var docsManualConfiguration = map[string]string{
 	"acs_url":     "Enter the `ACS URL` from the SP.",
 	"entity_id":   "Enter the `Entity Id` from the SP.",
 	"certificate": "Enter the `Certificate` from the SP.",
+}
+
+var docsWSFed = map[string]string{
+	"id":                          "An optional identifier for the WS-Fed application.",
+	"name":                        "A name for the WS-Fed application.",
+	"description":                 "A description for the WS-Fed application.",
+	"logo":                        "A logo for the WS-Fed application. Should be a hosted image URL.",
+	"disabled":                    "Whether the application should be enabled or disabled.",
+	"realm":                       "The WS-Fed realm identifier for the application.",
+	"reply_url":                   "The default reply URL where WS-Fed responses are sent. Used for IdP-initiated flows and when no `wreply` is supplied by the RP.",
+	"reply_allowed_callback_urls": "Additional allowed `wreply` callback URLs beyond `reply_url`. Each entry may include the `*` wildcard. When the RP supplies a `wreply` parameter, it must match either the default `reply_url` or one of these patterns.",
+	"login_page_url":              "The Flow Hosting URL.",
+	"attribute_mapping":           "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
+	"groups_mapping":              "A list of group mappings from Descope roles to WS-Fed groups.",
+	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces the user to " +
+		"authenticate via the Descope flow, regardless of the SP's request.",
+	"logout_redirect_url": "The URL to redirect to after logout.",
+	"error_redirect_url":  "The URL to redirect to when an error occurs.",
+}
+
+var docsGroupsMapping = map[string]string{
+	"name":        "The name of the groups mapping.",
+	"type":        "The type of the groups mapping.",
+	"filter_type": "The filter type for the groups mapping.",
+	"value":       "The value of the groups mapping.",
+	"roles":       "The `RoleGroupMapping` object. A list of roles mapped to this group.",
+}
+
+var docsRoleGroupMapping = map[string]string{
+	"id":   "The identifier of the role.",
+	"name": "The name of the role.",
 }
 
 var docsAccessKeyAttribute = map[string]string{
@@ -368,6 +433,9 @@ var docsPasskeys = map[string]string{
 	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
 		"API and SDK calls. Note that this does not affect authentication flows that are " +
 		"configured to use this authentication method.",
+	"display_name": "The human-friendly name shown to users when they create or use a passkey. Some password " +
+		"managers display this name, while others display the top level domain instead. When left " +
+		"empty, the project name is used.",
 	"top_level_domain": "Passkeys will be usable in the following domain and all its subdomains.",
 	"android_fingerprints": "A list of SHA-256 APK key hash fingerprints (colon-separated hex, e.g. `AB:CD:EF:...`) that are " +
 		"allowed as passkey origins for Android apps. When set, only Android apps with a matching fingerprint " +
@@ -392,7 +460,14 @@ var docsPassword = map[string]string{
 	"reuse":                   "Whether to forbid password reuse when users change their password.",
 	"reuse_amount": "The number of previous passwords whose hashes are kept to prevent users from " +
 		"reusing old passwords.",
-	"uppercase": "Whether passwords must contain at least one uppercase letter.",
+	"uppercase":  "Whether passwords must contain at least one uppercase letter.",
+	"any_letter": "Whether passwords must contain at least one letter, either uppercase or lowercase.",
+	"disallowed_characters": "Reject passwords containing any of these characters. Each character in the string is " +
+		"treated as a forbidden literal (e.g., `\"'\"` to reject single and double quotes).",
+	"disallow_email_match": "Whether to reject passwords that match the user's email address or its local-part " +
+		"(the segment before `@`), case-insensitively. The check is skipped if the user's email " +
+		"is not known at validation time.",
+	"enforce_strength": "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.",
 	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., " +
 		"whether a user already exists.",
 	"email_service": "Settings related to sending password reset emails as part of the password feature.",
@@ -432,6 +507,9 @@ var docsSSOSuite = map[string]string{
 	"hide_saml":                 "Setting this to `true` will hide the SAML configuration option.",
 	"hide_oidc":                 "Setting this to `true` will hide the OIDC configuration option.",
 	"force_domain_verification": "Setting this to `true` will allow only verified domains to be used.",
+	"support_email":             "Email address shown to end-users in the SSO Suite UI as a support contact.",
+	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
+	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
 }
 
 var docsTOTP = map[string]string{
@@ -612,6 +690,8 @@ var docsConnectors = map[string]string{
 		"the Salesforce connector.",
 	"salesforce_marketing_cloud": "Send transactional messages with the Salesforce Marketing Cloud connector.",
 	"sardine":                    "Evaluate customer risk using Sardine",
+	"scim": "Provision and de-provision users to an external SCIM v2 endpoint as part of your " +
+		"Descope user journey.",
 	"segment": "Orchestrate customer identity traits and signals from your Descope user journey " +
 		"with the Segment connector.",
 	"sendgrid": "SendGrid is a cloud-based SMTP provider that allows you to send emails without having " +
@@ -1084,6 +1164,23 @@ var docsSardine = map[string]string{
 		"https://api.sardine.ai, https://api.eu.sardine.ai.",
 }
 
+var docsSCIM = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled": "Whether to disable this SCIM connector. When disabled, provisioning events will not be " +
+		"sent to the configured endpoint.",
+	"federated_app_id": "The ID of the federated SSO application this SCIM connector is associated with.",
+	"base_url":         "The base URL of the SCIM v2 endpoint that user provisioning events will be sent to.",
+	"authentication":   "Authentication credentials used when sending requests to the SCIM endpoint.",
+	"headers":          "Custom HTTP headers to send with each provisioning request.",
+	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
+		"used to sign the base64 encoded payload, and the resulting signature will be sent " +
+		"in the `x-descope-webhook-s256` header. The receiving service should use this " +
+		"secret to verify the integrity and authenticity of the payload by checking the " +
+		"provided signature.",
+	"insecure": "Will ignore certificate errors raised by the client.",
+}
+
 var docsSegment = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -1401,6 +1498,9 @@ var docsSettings = map[string]string{
 		"for different authentication methods.",
 	"default_no_sso_apps": "Define whether a user created with no federated apps, will have access to all apps, " +
 		"or will not have access to any app.",
+	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same login ID in " +
+		"Tenant A and Tenant B will be treated as separate identities with isolated credentials, " +
+		"sessions, and MFA state.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 		"refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +

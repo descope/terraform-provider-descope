@@ -230,6 +230,11 @@
       "file": "sardine",
       "struct": "Sardine"
     },
+    "scim": {
+      "attribute": "scim",
+      "file": "scim",
+      "struct": "SCIM"
+    },
     "segment": {
       "attribute": "segment",
       "file": "segment",
@@ -804,6 +809,10 @@
       "attribute": "site_key",
       "struct": "SiteKey"
     },
+    "source": {
+      "attribute": "source",
+      "struct": "Source"
+    },
     "subAccountId": {
       "attribute": "sub_account_id",
       "struct": "SubAccountID"
@@ -819,6 +828,10 @@
     "supabaseUrl": {
       "attribute": "project_base_url",
       "struct": "ProjectBaseURL"
+    },
+    "tags": {
+      "attribute": "tags",
+      "struct": "Tags"
     },
     "teamId": {
       "attribute": "team_id",
