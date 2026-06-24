@@ -6,11 +6,13 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/internal/resources"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/datasource"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/provider"
 	"github.com/hashicorp/terraform-plugin-framework/provider/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
@@ -35,6 +37,7 @@ type descopeProviderConfig struct {
 	ProjectID     types.String `tfsdk:"project_id"`
 	ManagementKey types.String `tfsdk:"management_key"`
 	BaseURL       types.String `tfsdk:"base_url"`
+	Region        types.String `tfsdk:"region"`
 }
 
 func (p *descopeProvider) Metadata(_ context.Context, _ provider.MetadataRequest, resp *provider.MetadataResponse) {
@@ -59,6 +62,13 @@ func (p *descopeProvider) Schema(_ context.Context, _ provider.SchemaRequest, re
 				Optional:    true,
 				Description: "An optional base URL for the Descope API",
 			},
+			"region": schema.StringAttribute{
+				Optional:    true,
+				Description: "An optional Descope region for this provider, auto-detected from the management key when not set",
+				Validators: []validator.String{
+					stringvalidator.OneOf(supportedRegionIDs()...),
+				},
+			},
 		},
 	}
 }
@@ -78,6 +88,9 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 	if config.BaseURL.IsUnknown() {
 		resp.Diagnostics.AddAttributeError(path.Root("base_url"), "Unknown Descope Base URL", "The provider cannot create the Descope client as there is an unknown configuration value for the Descope base URL. Either target apply the source of the value first, set the value statically in the configuration, or use the DESCOPE_BASE_URL environment variable.")
 	}
+	if config.Region.IsUnknown() {
+		resp.Diagnostics.AddAttributeError(path.Root("region"), "Unknown Descope Region", "The provider cannot create the Descope client as there is an unknown configuration value for the Descope region. Either target apply the source of the value first, set the value statically in the configuration, or use the DESCOPE_REGION environment variable.")
+	}
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -91,16 +104,34 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 		managementKey = config.ManagementKey.ValueString()
 	}
 
-	baseURL := os.Getenv("DESCOPE_BASE_URL")
-	if !config.BaseURL.IsNull() {
-		baseURL = config.BaseURL.ValueString()
-	}
-
 	if managementKey == "" {
 		resp.Diagnostics.AddAttributeError(path.Root("management_key"), "Missing Descope Management Key", "The provider cannot create the Descope client as there is a missing or empty value for the Descope management key. Set the management_key value in the configuration or use the DESCOPE_MANAGEMENT_KEY environment variable. If either is already set, ensure the value is not empty.")
 	}
 	if resp.Diagnostics.HasError() {
 		return
+	}
+
+	baseURLInput := config.BaseURL.ValueString()
+	if baseURLInput == "" {
+		baseURLInput = os.Getenv("DESCOPE_BASE_URL")
+	}
+	regionInput := config.Region.ValueString()
+	if regionInput == "" {
+		regionInput = os.Getenv("DESCOPE_REGION")
+	}
+
+	baseURL, buerr := resolveBaseURL(baseURLInput, regionInput, managementKey)
+	if buerr != "" {
+		resp.Diagnostics.AddError("Invalid Descope Region", buerr)
+		return
+	}
+
+	// Only warn about region/key mismatch when region actually drove routing —
+	// if base_url is set, region is unused so a mismatch is moot.
+	if baseURLInput == "" {
+		if msg := detectRegionMismatch(regionInput, managementKey); msg != "" {
+			resp.Diagnostics.AddAttributeWarning(path.Root("region"), "Descope Region Mismatch", msg)
+		}
 	}
 
 	client := infra.NewClient(p.version, managementKey, baseURL)
