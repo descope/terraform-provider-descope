@@ -8,7 +8,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var SessionMigrationValidator = objattr.NewValidator[SessionMigrationModel]("must have a valid configuration")
@@ -21,7 +20,7 @@ var SessionMigrationAttributes = map[string]schema.Attribute{
 	"issuer":                     stringattr.Default("", stringattr.StandardLenValidator),
 	"api_token":                  stringattr.SecretOptional(),
 	"loginid_matched_attributes": strsetattr.Default(stringattr.StandardLenValidator),
-	"user_sync_type":             stringattr.Optional(stringvalidator.OneOf("matchOnly", "jit")),
+	"user_sync_type":             stringattr.Default("", stringvalidator.OneOf("", "matchOnly", "jit")),
 	"user_mapping":               listattr.Default[ExternalAuthUserMappingItemModel](ExternalAuthUserMappingItemAttributes),
 }
 
@@ -105,13 +104,7 @@ func (m *SessionMigrationModel) SetValues(h *helpers.Handler, data map[string]an
 		stringattr.Nil(&m.Domain)
 		stringattr.Nil(&m.Audience)
 		stringattr.Set(&m.Issuer, v, "issuer")
-		// server masks the api_token with a placeholder on export; preserve prior state value
-		// see: managementservice/common/pkg/common/domain/domain.go ManagementServicePlaceholderValueIndicator
-		if t, ok := v["apiToken"].(string); ok && t != "" && t != "PLACEHOLDER_VALUE" {
-			m.ApiToken = stringattr.Value(t)
-		} else {
-			stringattr.Nil(&m.ApiToken)
-		}
+		stringattr.Nil(&m.ApiToken)
 	} else {
 		m.Vendor = stringattr.Value("")
 		stringattr.Nil(&m.ClientID)
@@ -121,11 +114,7 @@ func (m *SessionMigrationModel) SetValues(h *helpers.Handler, data map[string]an
 		stringattr.Nil(&m.ApiToken)
 	}
 	strsetattr.Set(&m.LoginIDMatchedAttributes, data, "loginIdExternalUserSources", h)
-	if v, ok := data["userSyncType"].(string); ok && v != "" {
-		m.UserSyncType = stringattr.Value(v)
-	} else {
-		m.UserSyncType = types.StringNull()
-	}
+	stringattr.Set(&m.UserSyncType, data, "userSyncType")
 	listattr.Set(&m.UserMapping, data, "userMapping", h)
 }
 
