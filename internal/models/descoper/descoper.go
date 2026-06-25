@@ -15,6 +15,11 @@ var DescoperAttributes = map[string]schema.Attribute{
 	"rbac":  objattr.Required[RBacModel](RBacAttributes, RBacValidator),
 }
 
+var Schema = schema.Schema{
+	MarkdownDescription: "Manages a Descope console user (a \"Descoper\") and their access control settings across your company's projects.",
+	Attributes:          DescoperAttributes,
+}
+
 type DescoperModel struct {
 	ID    stringattr.Type         `tfsdk:"id"`
 	Email stringattr.Type         `tfsdk:"email"`
@@ -37,4 +42,16 @@ func (m *DescoperModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Phone, data, "phone", stringattr.SkipIfAlreadySet)
 	stringattr.Set(&m.Name, data, "name", stringattr.SkipIfAlreadySet)
 	objattr.Set(&m.RBac, data, "rbac", h)
+}
+
+func (m *DescoperModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *DescoperModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
+
+func (m *DescoperModel) GetProjectID() stringattr.Type {
+	return stringattr.Value("")
 }
