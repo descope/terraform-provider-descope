@@ -34,6 +34,10 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"force_pkce":                       boolattr.Default(false),
 }
 
+var Schema = schema.Schema{
+	Attributes: InboundAppAttributes,
+}
+
 type InboundAppModel struct {
 	ID                           stringattr.Type                      `tfsdk:"id"`
 	ProjectID                    stringattr.Type                      `tfsdk:"project_id"`
@@ -93,4 +97,16 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.ClientId, data, "clientId")
 	stringattr.Set(&m.ClientSecret, data, "clientSecret")
 	boolattr.Set(&m.ForcePkce, data, "forcePkce")
+}
+
+func (m *InboundAppModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *InboundAppModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
+
+func (m *InboundAppModel) GetProjectID() stringattr.Type {
+	return m.ProjectID
 }
