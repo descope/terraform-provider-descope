@@ -64,6 +64,15 @@ var docsDescoperTagRole = map[string]string{
 		"Must be one of: `admin`, `developer`, `support`, `auditor`.",
 }
 
+var docsEngine = map[string]string{
+	"project_id": "The ID of the Descope project this engine belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name":         "A name for the engine.",
+	"created_time": "The creation time of the engine as a Unix timestamp.",
+	"secret": "The plaintext secret for the engine. This is only available after the engine is created and " +
+		"cannot be retrieved later. Store this value securely as it is used to authenticate the engine.",
+}
+
 var docsApplicationScope = map[string]string{
 	"name":        "A name for the scope.",
 	"description": "A description for the scope.",
