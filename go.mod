@@ -3,7 +3,7 @@ module github.com/descope/terraform-provider-descope
 go 1.25.0
 
 require (
-	github.com/descope/go-sdk v1.24.0
+	github.com/descope/go-sdk v1.26.0
 	github.com/hashicorp/go-uuid v1.0.3
 	github.com/hashicorp/terraform-plugin-framework v1.18.0
 	github.com/hashicorp/terraform-plugin-framework-validators v0.19.0
