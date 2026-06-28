@@ -161,6 +161,7 @@ func InjectModels() {
 	inject(lists.ListAttributes, docsList)
 	inject(settings.InviteSettingsAttributes, docsInviteSettings)
 	inject(settings.SessionMigrationAttributes, docsSessionMigration)
+	inject(settings.ExternalAuthUserMappingItemAttributes, docsExternalAuthUserMappingItem)
 	inject(settings.SettingsAttributes, docsSettings)
 	inject(templates.EmailServiceAttributes, docsEmailService)
 	inject(templates.EmailTemplateAttributes, docsEmailTemplate)

@@ -1486,8 +1486,16 @@ var docsSessionMigration = map[string]string{
 	"domain":    "The domain value if needed by the vendor.",
 	"audience":  "The audience value if needed by the vendor.",
 	"issuer":    "An issuer URL if needed by the vendor.",
+	"api_token": "An API token for the vendor, required when `vendor` is set to `okta`.",
 	"loginid_matched_attributes": "A set of attributes from the vendor's user that should be used to match with " +
 		"the Descope user's login ID.",
+	"user_sync_type": "The type of user synchronization to perform. Valid values are `matchOnly` (match existing users only) and `jit` (just-in-time provisioning).",
+	"user_mapping":   "A list of attribute mappings from the external vendor's user to Descope user attributes.",
+}
+
+var docsExternalAuthUserMappingItem = map[string]string{
+	"external_key": "The attribute key in the external vendor's user object.",
+	"descope_key":  "The Descope user attribute to map the external key to.",
 }
 
 var docsSettings = map[string]string{

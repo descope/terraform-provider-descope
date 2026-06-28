@@ -3581,12 +3581,24 @@ Optional:
 
 Optional:
 
+- `api_token` (String, Sensitive) An API token for the vendor, required when `vendor` is set to `okta`.
 - `audience` (String) The audience value if needed by the vendor.
 - `client_id` (String) The unique client ID for the vendor.
 - `domain` (String) The domain value if needed by the vendor.
 - `issuer` (String) An issuer URL if needed by the vendor.
 - `loginid_matched_attributes` (Set of String) A set of attributes from the vendor's user that should be used to match with the Descope user's login ID.
+- `user_mapping` (Attributes List) A list of attribute mappings from the external vendor's user to Descope user attributes. (see [below for nested schema](#nestedatt--project_settings--session_migration--user_mapping))
+- `user_sync_type` (String) The type of user synchronization to perform. Valid values are `matchOnly` (match existing users only) and `jit` (just-in-time provisioning).
 - `vendor` (String) The name of the vendor the sessions are migrated from, in all lowercase.
+
+<a id="nestedatt--project_settings--session_migration--user_mapping"></a>
+### Nested Schema for `project_settings.session_migration.user_mapping`
+
+Required:
+
+- `descope_key` (String) The Descope user attribute to map the external key to.
+- `external_key` (String) The attribute key in the external vendor's user object.
+
 
 
 
