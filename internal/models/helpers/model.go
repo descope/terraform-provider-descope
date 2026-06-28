@@ -14,6 +14,14 @@ type Model[T any] interface {
 	*T
 }
 
+// A model that backs a resource, exposing the ids needed for CRUD operations.
+type ResourceModel[T any] interface {
+	Model[T]
+	GetID() types.String
+	SetID(id types.String)
+	GetProjectID() types.String
+}
+
 // A model that can be matched by name, primarily for making more friendly diffs in lists.
 type NamedModel[T any] interface {
 	Model[T]

@@ -23,6 +23,11 @@ var ManagementKeyAttributes = map[string]schema.Attribute{
 	"cleartext":     stringattr.SecretGenerated(false),
 }
 
+var Schema = schema.Schema{
+	MarkdownDescription: "Manages a Descope Management Key used to authenticate API and SDK calls for automating user and project management.",
+	Attributes:          ManagementKeyAttributes,
+}
+
 type ManagementKeyModel struct {
 	ID           stringattr.Type          `tfsdk:"id"`
 	Name         stringattr.Type          `tfsdk:"name"`
@@ -56,4 +61,16 @@ func (m *ManagementKeyModel) SetValues(h *helpers.Handler, data map[string]any) 
 	strlistattr.Set(&m.PermittedIPs, data, "permittedIps", h)
 	objattr.Set(&m.ReBac, data, "reBac", h)
 	stringattr.Set(&m.Cleartext, data, "cleartext")
+}
+
+func (m *ManagementKeyModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *ManagementKeyModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
+
+func (m *ManagementKeyModel) GetProjectID() stringattr.Type {
+	return stringattr.Value("")
 }
