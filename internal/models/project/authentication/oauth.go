@@ -306,6 +306,7 @@ var OAuthProviderAttributes = map[string]schema.Attribute{
 	"user_info_endpoint":     stringattr.Optional(),
 	"jwks_endpoint":          stringattr.Optional(),
 	"use_client_assertion":   boolattr.Default(false),
+	"client_auth_method":     stringattr.Default("", stringvalidator.OneOf("", "client_secret_basic", "client_secret_post")),
 	"claim_mapping":          strmapattr.Optional(),
 }
 
@@ -356,6 +357,7 @@ type OAuthProviderModel struct {
 	UserInfoEndpoint        stringattr.Type                                 `tfsdk:"user_info_endpoint"`
 	JWKsEndpoint            stringattr.Type                                 `tfsdk:"jwks_endpoint"`
 	UseClientAssertion      boolattr.Type                                   `tfsdk:"use_client_assertion"`
+	ClientAuthMethod        stringattr.Type                                 `tfsdk:"client_auth_method"`
 	ClaimMapping            strmapattr.Type                                 `tfsdk:"claim_mapping"`
 	NativeClientID          stringattr.Type                                 `tfsdk:"native_client_id"`
 	NativeClientSecret      stringattr.Type                                 `tfsdk:"native_client_secret"`
@@ -391,6 +393,7 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Get(m.JWKsEndpoint, data, "jwksUrl")
 	boolattr.Get(m.UseClientAssertion, data, "useClientAssertion")
+	stringattr.Get(m.ClientAuthMethod, data, "clientAuthMethod")
 	claimMapping := map[string]any{}
 	customAttributes := map[string]string{}
 	for k, v := range strmapattr.Iterator(m.ClaimMapping, h) {
@@ -430,6 +433,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	stringattr.Set(&m.UserInfoEndpoint, data, "userDataUrl")
 	stringattr.Set(&m.JWKsEndpoint, data, "jwksUrl")
 	boolattr.Set(&m.UseClientAssertion, data, "useClientAssertion")
+	stringattr.Set(&m.ClientAuthMethod, data, "clientAuthMethod")
 	stringattr.Set(&m.NativeClientID, data, "nativeClientId")
 	stringattr.Nil(&m.NativeClientSecret)
 
