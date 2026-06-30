@@ -131,6 +131,24 @@ The URL to redirect to when an error occurs.
 
 
 
+permissions
+-----------
+
+- Type: `list` of `applications.SSOAppPermission`
+
+// description for permissions
+
+
+
+roles
+-----
+
+- Type: `list` of `applications.SSOAppRole`
+
+// description for roles
+
+
+
 
 
 GroupsMapping

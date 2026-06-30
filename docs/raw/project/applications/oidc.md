@@ -180,3 +180,21 @@ default_audience
 - Type: `string`
 
 Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), or `""` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.
+
+
+
+permissions
+-----------
+
+- Type: `list` of `applications.SSOAppPermission`
+
+// description for permissions
+
+
+
+roles
+-----
+
+- Type: `list` of `applications.SSOAppRole`
+
+// description for roles

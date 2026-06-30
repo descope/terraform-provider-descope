@@ -50,6 +50,8 @@ func InjectModels() {
 	inject(applications.AttributeMappingAttributes, docsAttributeMapping)
 	inject(applications.DynamicConfigurationAttributes, docsDynamicConfiguration)
 	inject(applications.ManualConfigurationAttributes, docsManualConfiguration)
+	inject(applications.SSOAppPermissionAttributes, docsSSOAppPermission)
+	inject(applications.SSOAppRoleAttributes, docsSSOAppRole)
 	inject(applications.WSFedAttributes, docsWSFed)
 	inject(applications.GroupsMappingAttributes, docsGroupsMapping)
 	inject(applications.RoleGroupMappingAttributes, docsRoleGroupMapping)

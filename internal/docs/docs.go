@@ -223,6 +223,8 @@ var docsOIDC = map[string]string{
 	"device_code_disabled":        "Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this application.",
 	"force_pkce":                  "When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.",
 	"default_audience":            "Controls the default `aud` claim of tokens issued for this application. One of `\"projectId\"` (the project ID only), `\"clientId\"` (the dedicated client ID only), or `\"\"` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.",
+	"permissions":                 "",
+	"roles":                       "",
 }
 
 var docsSAML = map[string]string{
@@ -241,6 +243,8 @@ var docsSAML = map[string]string{
 	"default_signature_algorithm": "The signature algorithm used to sign SAML responses. Choose one of `\"\"` (default, SHA-1) or `\"sha256\"` (SHA-256). Only applies to IdP-initiated flows — SP-initiated flows use the algorithm specified in the SP's SAML request.",
 	"attribute_mapping":           "The `AttributeMapping` object. Read the description below.",
 	"force_authentication":        "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"permissions":                 "",
+	"roles":                       "",
 }
 
 var docsAttributeMapping = map[string]string{
@@ -256,6 +260,18 @@ var docsManualConfiguration = map[string]string{
 	"acs_url":     "Enter the `ACS URL` from the SP.",
 	"entity_id":   "Enter the `Entity Id` from the SP.",
 	"certificate": "Enter the `Certificate` from the SP.",
+}
+
+var docsSSOAppPermission = map[string]string{
+	"name":        "",
+	"description": "",
+}
+
+var docsSSOAppRole = map[string]string{
+	"name":          "",
+	"description":   "",
+	"permissions":   "",
+	"role_mappings": "",
 }
 
 var docsWSFed = map[string]string{
@@ -274,6 +290,8 @@ var docsWSFed = map[string]string{
 		"authenticate via the Descope flow, regardless of the SP's request.",
 	"logout_redirect_url": "The URL to redirect to after logout.",
 	"error_redirect_url":  "The URL to redirect to when an error occurs.",
+	"permissions":         "",
+	"roles":               "",
 }
 
 var docsGroupsMapping = map[string]string{
