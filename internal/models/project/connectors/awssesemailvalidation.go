@@ -3,8 +3,6 @@
 package connectors
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -12,61 +10,53 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var AWSS3Validator = objattr.NewValidator[AWSS3Model]("must have a valid configuration")
+var AWSSESEmailValidationValidator = objattr.NewValidator[AWSSESEmailValidationModel]("must have a valid configuration")
 
-var AWSS3Attributes = map[string]schema.Attribute{
+var AWSSESEmailValidationAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"auth_type":                stringattr.Default("credentials", stringvalidator.OneOf("credentials", "assumeRole")),
-	"access_key_id":            stringattr.SecretOptional(),
-	"secret_access_key":        stringattr.SecretOptional(),
-	"role_arn":                 stringattr.Default(""),
-	"external_id":              stringattr.Default(""),
-	"region":                   stringattr.Required(),
-	"bucket":                   stringattr.Required(),
-	"audit_enabled":            boolattr.Default(true),
-	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
-	"troubleshoot_log_enabled": boolattr.Default(false),
-	"mask_pii":                 boolattr.Default(false),
+	"auth_type":         stringattr.Default("credentials", stringvalidator.OneOf("credentials", "assumeRole")),
+	"access_key_id":     stringattr.Default(""),
+	"secret_access_key": stringattr.SecretOptional(),
+	"session_token":     stringattr.SecretOptional(),
+	"role_arn":          stringattr.Default(""),
+	"external_id":       stringattr.Default(""),
+	"region":            stringattr.Required(),
 }
 
 // Model
 
-type AWSS3Model struct {
+type AWSSESEmailValidationModel struct {
 	ID          stringattr.Type `tfsdk:"id"`
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	AuthType               stringattr.Type                      `tfsdk:"auth_type"`
-	AccessKeyID            stringattr.Type                      `tfsdk:"access_key_id"`
-	SecretAccessKey        stringattr.Type                      `tfsdk:"secret_access_key"`
-	RoleARN                stringattr.Type                      `tfsdk:"role_arn"`
-	ExternalID             stringattr.Type                      `tfsdk:"external_id"`
-	Region                 stringattr.Type                      `tfsdk:"region"`
-	Bucket                 stringattr.Type                      `tfsdk:"bucket"`
-	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
-	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
-	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
-	MaskPII                boolattr.Type                        `tfsdk:"mask_pii"`
+	AuthType        stringattr.Type `tfsdk:"auth_type"`
+	AccessKeyID     stringattr.Type `tfsdk:"access_key_id"`
+	SecretAccessKey stringattr.Type `tfsdk:"secret_access_key"`
+	SessionToken    stringattr.Type `tfsdk:"session_token"`
+	RoleARN         stringattr.Type `tfsdk:"role_arn"`
+	ExternalID      stringattr.Type `tfsdk:"external_id"`
+	Region          stringattr.Type `tfsdk:"region"`
 }
 
-func (m *AWSS3Model) Values(h *helpers.Handler) map[string]any {
+func (m *AWSSESEmailValidationModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
-	data["type"] = "aws-s3"
+	data["type"] = "aws-ses-email-validation"
 	data["configuration"] = m.ConfigurationValues(h)
 	return data
 }
 
-func (m *AWSS3Model) SetValues(h *helpers.Handler, data map[string]any) {
+func (m *AWSSESEmailValidationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}
 }
 
-func (m *AWSS3Model) Validate(h *helpers.Handler) {
+func (m *AWSSESEmailValidationModel) Validate(h *helpers.Handler) {
 	if m.AccessKeyID.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "credentials" {
 		h.Conflict("The access_key_id field can only be used when auth_type is set to 'credentials'")
 	}
@@ -78,6 +68,9 @@ func (m *AWSS3Model) Validate(h *helpers.Handler) {
 	}
 	if m.SecretAccessKey.ValueString() == "" && !m.SecretAccessKey.IsUnknown() && m.AuthType.ValueString() == "credentials" {
 		h.Conflict("The secret_access_key field is required when auth_type is set to 'credentials'")
+	}
+	if m.SessionToken.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "credentials" {
+		h.Conflict("The session_token field can only be used when auth_type is set to 'credentials'")
 	}
 	if m.RoleARN.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "assumeRole" {
 		h.Conflict("The role_arn field can only be used when auth_type is set to 'assumeRole'")
@@ -91,53 +84,42 @@ func (m *AWSS3Model) Validate(h *helpers.Handler) {
 	if m.ExternalID.ValueString() == "" && !m.ExternalID.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
 		h.Conflict("The external_id field is required when auth_type is set to 'assumeRole'")
 	}
-	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
-		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
-	}
 }
 
 // Configuration
 
-func (m *AWSS3Model) ConfigurationValues(h *helpers.Handler) map[string]any {
+func (m *AWSSESEmailValidationModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.AuthType, c, "authType")
 	stringattr.Get(m.AccessKeyID, c, "accessKeyId")
 	stringattr.Get(m.SecretAccessKey, c, "secretAccessKey")
+	stringattr.Get(m.SessionToken, c, "sessionToken")
 	stringattr.Get(m.RoleARN, c, "roleArn")
 	stringattr.Get(m.ExternalID, c, "externalId")
 	stringattr.Get(m.Region, c, "region")
-	stringattr.Get(m.Bucket, c, "bucket")
-	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	listattr.Get(m.AuditFilters, c, "auditFilters", h)
-	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
-	boolattr.Get(m.MaskPII, c, "maskPII")
 	return c
 }
 
-func (m *AWSS3Model) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+func (m *AWSSESEmailValidationModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.AuthType, c, "authType")
-	stringattr.Nil(&m.AccessKeyID)
+	stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
 	stringattr.Nil(&m.SecretAccessKey)
+	stringattr.Nil(&m.SessionToken)
 	stringattr.Set(&m.RoleARN, c, "roleArn")
 	stringattr.Set(&m.ExternalID, c, "externalId")
 	stringattr.Set(&m.Region, c, "region")
-	stringattr.Set(&m.Bucket, c, "bucket")
-	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
-	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
-	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
-	boolattr.Set(&m.MaskPII, c, "maskPII")
 }
 
 // Matching
 
-func (m *AWSS3Model) GetName() stringattr.Type {
+func (m *AWSSESEmailValidationModel) GetName() stringattr.Type {
 	return m.Name
 }
 
-func (m *AWSS3Model) GetID() stringattr.Type {
+func (m *AWSSESEmailValidationModel) GetID() stringattr.Type {
 	return m.ID
 }
 
-func (m *AWSS3Model) SetID(id stringattr.Type) {
+func (m *AWSSESEmailValidationModel) SetID(id stringattr.Type) {
 	m.ID = id
 }

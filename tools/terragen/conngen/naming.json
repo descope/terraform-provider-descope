@@ -5,6 +5,11 @@
       "file": "abuseipdb",
       "struct": "AbuseIPDB"
     },
+    "alloy": {
+      "attribute": "alloy",
+      "file": "alloy",
+      "struct": "Alloy"
+    },
     "amplitude": {
       "attribute": "amplitude",
       "file": "amplitude",
@@ -25,6 +30,11 @@
       "file": "awss3",
       "struct": "AWSS3"
     },
+    "aws-ses-email-validation": {
+      "attribute": "aws_ses_email_validation",
+      "file": "awssesemailvalidation",
+      "struct": "AWSSESEmailValidation"
+    },
     "aws-translate": {
       "attribute": "aws_translate",
       "file": "awstranslate",
@@ -39,6 +49,11 @@
       "attribute": "coralogix",
       "file": "coralogix",
       "struct": "Coralogix"
+    },
+    "cribl": {
+      "attribute": "cribl",
+      "file": "cribl",
+      "struct": "Cribl"
     },
     "darwinium": {
       "attribute": "darwinium",
@@ -125,6 +140,11 @@
       "file": "googlecloudlogging",
       "struct": "GoogleCloudLogging"
     },
+    "groundcover": {
+      "attribute": "groundcover",
+      "file": "groundcover",
+      "struct": "Groundcover"
+    },
     "hcaptcha": {
       "attribute": "hcaptcha",
       "file": "hcaptcha",
@@ -185,6 +205,11 @@
       "file": "opentelemetry",
       "struct": "OpenTelemetry"
     },
+    "pendo": {
+      "attribute": "pendo",
+      "file": "pendo",
+      "struct": "Pendo"
+    },
     "ping-directory": {
       "attribute": "ping_directory",
       "file": "pingdirectory",
@@ -210,10 +235,20 @@
       "file": "recaptchaenterprise",
       "struct": "RecaptchaEnterprise"
     },
+    "recaptcha-v2": {
+      "attribute": "recaptcha_v2",
+      "file": "recaptchav2",
+      "struct": "RecaptchaV2"
+    },
     "rekognition": {
       "attribute": "rekognition",
       "file": "rekognition",
       "struct": "Rekognition"
+    },
+    "rnd-reassigned": {
+      "attribute": "rnd_reassigned",
+      "file": "rndreassigned",
+      "struct": "RNDReassigned"
     },
     "salesforce": {
       "attribute": "salesforce",
@@ -261,6 +296,11 @@
     "smtp": {
       "attribute": "smtp",
       "struct": "SMTP"
+    },
+    "snowflake": {
+      "attribute": "snowflake",
+      "file": "snowflake",
+      "struct": "Snowflake"
     },
     "sns": {
       "attribute": "sns",
@@ -381,6 +421,14 @@
       "attribute": "audit_filters",
       "struct": "AuditFilters"
     },
+    "auditTable": {
+      "attribute": "audit_table",
+      "struct": "AuditTable"
+    },
+    "authToken": {
+      "attribute": "auth_token",
+      "struct": "AuthToken"
+    },
     "authType": {
       "attribute": "auth_type",
       "struct": "AuthType"
@@ -416,6 +464,10 @@
     "awsService": {
       "attribute": "aws_service",
       "struct": "AWSService"
+    },
+    "baseURL": {
+      "attribute": "base_url",
+      "struct": "BaseURL"
     },
     "baseUrl": {
       "attribute": "base_url",
@@ -481,6 +533,10 @@
       "attribute": "collection_id",
       "struct": "CollectionID"
     },
+    "companyId": {
+      "attribute": "company_id",
+      "struct": "CompanyID"
+    },
     "country": {
       "attribute": "country",
       "struct": "Country"
@@ -508,6 +564,10 @@
     "dataCenter": {
       "attribute": "data_center",
       "struct": "DataCenter"
+    },
+    "database": {
+      "attribute": "database",
+      "struct": "Database"
     },
     "databaseName": {
       "attribute": "database_name",
@@ -593,9 +653,17 @@
       "attribute": "index",
       "struct": "Index"
     },
+    "ingestionKey": {
+      "attribute": "ingestion_key",
+      "struct": "IngestionKey"
+    },
     "insecure": {
       "attribute": "insecure",
       "struct": "Insecure"
+    },
+    "integrationKey": {
+      "attribute": "integration_key",
+      "struct": "IntegrationKey"
     },
     "journeyName": {
       "attribute": "journey_name",
@@ -620,6 +688,10 @@
     "messageStreamId": {
       "attribute": "message_stream_id",
       "struct": "MessageStreamID"
+    },
+    "minFlushIntervalMinutes": {
+      "attribute": "min_flush_interval_minutes",
+      "struct": "MinFlushIntervalMinutes"
     },
     "nativeApiName": {
       "attribute": "native_api_name",
@@ -701,6 +773,10 @@
       "attribute": "public_key",
       "struct": "PublicKey"
     },
+    "refreshToken": {
+      "attribute": "refresh_token",
+      "struct": "RefreshToken"
+    },
     "region": {
       "attribute": "region",
       "struct": "Region"
@@ -740,6 +816,10 @@
     "saUsername": {
       "attribute": "service_account_username",
       "struct": "ServiceAccountUsername"
+    },
+    "schema": {
+      "attribute": "schema",
+      "struct": "Schema"
     },
     "scope": {
       "attribute": "scope",
@@ -884,6 +964,10 @@
     "version": {
       "attribute": "version",
       "struct": "Version"
+    },
+    "warehouse": {
+      "attribute": "warehouse",
+      "struct": "Warehouse"
     },
     "webApiName": {
       "attribute": "web_api_name",
