@@ -8,6 +8,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -21,7 +22,7 @@ var RecaptchaEnterpriseAttributes = map[string]schema.Attribute{
 	"project_id":          stringattr.Required(),
 	"site_key":            stringattr.Required(),
 	"api_key":             stringattr.SecretRequired(),
-	"base_url":            stringattr.Default(""),
+	"base_url":            stringattr.Default("https://www.google.com", stringvalidator.OneOf("", "https://www.google.com", "https://www.recaptcha.net")),
 	"action":              stringattr.Default(""),
 	"override_assessment": boolattr.Default(false),
 	"bot_threshold":       floatattr.Default(0.5),

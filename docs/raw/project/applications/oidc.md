@@ -92,7 +92,7 @@ set, it must be unique within the project. Mirrors the inbound third-party appli
 client_secret
 -------------
 
-- Type: `string` (sensitive)
+- Type: `secret`
 
 A dedicated OIDC `client_secret` to import for this application, applied on creation only. When omitted,
 a secret is generated server-side. The value is sensitive and is not returned on subsequent reads.
@@ -112,7 +112,7 @@ OAuth client confidentiality. One of `""` (default — legacy access-key authent
 approved_redirect_urls
 ----------------------
 
-- Type: `list` of `string`
+- Type: `set` of `string`
 
 A list of approved redirect URLs for this application (supports `*` wildcards). When set,
 redirect URIs are validated against this per-app list; when empty, validation falls back to
