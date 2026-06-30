@@ -34,6 +34,10 @@ func InboundApp(t *testing.T) *Resource {
 	return newResource(t, "inbound_app")
 }
 
+func Engine(t *testing.T) *Resource {
+	return newResource(t, "engine")
+}
+
 func newResource(t *testing.T, typ string) *Resource {
 	return &Resource{
 		Type: typ,
