@@ -9,7 +9,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
 
 var OIDCAttributes = map[string]schema.Attribute{
@@ -24,9 +23,14 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"force_authentication": boolattr.Default(false),
 
 	// Dedicated client credentials and per-app policy (config-driven; defaults preserve legacy behavior).
-	// client_id/client_secret may import an existing OIDC client; set on create only (RequiresReplace),
-	// computed/generated server-side when omitted. Mirrors the inbound third-party app attributes.
-	"client_id":     stringattr.Optional(stringplanmodifier.RequiresReplace()),
+	// client_id/client_secret may import an existing OIDC client; computed/generated server-side when
+	// omitted. Mirrors the inbound third-party app attributes.
+	//
+	// No RequiresReplace here, unlike the standalone descope_inbound_app: oidc_applications is a nested
+	// list inside descope_project and the framework has no element-level replacement, so RequiresReplace
+	// would destroy and recreate the ENTIRE project - every user, tenant and other app in it - just to
+	// add or change one OIDC app. Changes are applied in place via the project update instead.
+	"client_id":     stringattr.Optional(),
 	"client_secret": stringattr.SecretGenerated(true),
 	"client_type":   stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")), // "", "confidential", or "public"
 	// Set (not list): the backend may reorder the URLs, and a list would show perpetual plan diffs -
