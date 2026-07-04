@@ -92,7 +92,7 @@ set, it must be unique within the project. Mirrors the inbound third-party appli
 client_secret
 -------------
 
-- Type: `string` (sensitive)
+- Type: `secret`
 
 A dedicated OIDC `client_secret` to import for this application, applied on creation only. When omitted,
 a secret is generated server-side. The value is sensitive and is not returned on subsequent reads.
@@ -112,7 +112,7 @@ OAuth client confidentiality. One of `""` (default — legacy access-key authent
 approved_redirect_urls
 ----------------------
 
-- Type: `list` of `string`
+- Type: `set` of `string`
 
 A list of approved redirect URLs for this application (supports `*` wildcards). When set,
 redirect URIs are validated against this per-app list; when empty, validation falls back to
@@ -180,3 +180,21 @@ default_audience
 - Type: `string`
 
 Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), or `""` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.
+
+
+
+permissions
+-----------
+
+- Type: `list` of `applications.SSOAppPermission`
+
+// description for permissions
+
+
+
+roles
+-----
+
+- Type: `list` of `applications.SSOAppRole`
+
+// description for roles
