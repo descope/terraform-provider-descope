@@ -18,34 +18,20 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"login_page_url":       stringattr.Default(""),
-	"claims":               strlistattr.Default(),
-	"force_authentication": boolattr.Default(false),
-
-	// Dedicated client credentials and per-app policy (config-driven; defaults preserve legacy behavior).
-	// client_id/client_secret may import an existing OIDC client; computed/generated server-side when
-	// omitted. Mirrors the inbound third-party app attributes.
-	//
-	// No RequiresReplace here, unlike the standalone descope_inbound_app: oidc_applications is a nested
-	// list inside descope_project and the framework has no element-level replacement, so RequiresReplace
-	// would destroy and recreate the ENTIRE project - every user, tenant and other app in it - just to
-	// add or change one OIDC app. Changes are applied in place via the project update instead.
-	"client_id":     stringattr.Optional(),
-	"client_secret": stringattr.SecretGenerated(true),
-	"client_type":   stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")), // "", "confidential", or "public"
-	// Set (not list): the backend may reorder the URLs, and a list would show perpetual plan diffs -
-	// matching approved_callback_urls (inbound) and acs_allowed_callback_urls (SAML).
-	"approved_redirect_urls": strsetattr.Default(),
-	// Per-app modular grant types (disabled-polarity; all false = all grant types enabled = legacy).
+	"login_page_url":              stringattr.Default(""),
+	"claims":                      strlistattr.Default(),
+	"force_authentication":        boolattr.Default(false),
+	"client_id":                   stringattr.Optional(),
+	"client_secret":               stringattr.SecretGenerated(true),
+	"client_type":                 stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")),
+	"approved_redirect_urls":      strsetattr.Default(),
 	"authorization_code_disabled": boolattr.Default(false),
 	"client_credentials_disabled": boolattr.Default(false),
 	"refresh_token_disabled":      boolattr.Default(false),
 	"jwt_bearer_disabled":         boolattr.Default(false),
 	"device_code_disabled":        boolattr.Default(false),
 	"force_pkce":                  boolattr.Default(false),
-	// Default audience policy for issued tokens (modern apps only): "projectId", "clientId", or "" (both).
-	// Legacy apps (empty client_type) always use the project ID; the empty default preserves that.
-	"default_audience": stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")),
+	"default_audience":            stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")),
 
 	"permissions": listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
 	"roles":       listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
@@ -54,26 +40,26 @@ var OIDCAttributes = map[string]schema.Attribute{
 // Model
 
 type OIDCModel struct {
-	ID                  stringattr.Type  `tfsdk:"id"`
-	Name                stringattr.Type  `tfsdk:"name"`
-	Description         stringattr.Type  `tfsdk:"description"`
-	Logo                stringattr.Type  `tfsdk:"logo"`
-	Disabled            boolattr.Type    `tfsdk:"disabled"`
-	LoginPageURL        stringattr.Type  `tfsdk:"login_page_url"`
-	Claims              strlistattr.Type `tfsdk:"claims"`
-	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
+	ID          stringattr.Type `tfsdk:"id"`
+	Name        stringattr.Type `tfsdk:"name"`
+	Description stringattr.Type `tfsdk:"description"`
+	Logo        stringattr.Type `tfsdk:"logo"`
+	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	ClientID                  stringattr.Type `tfsdk:"client_id"`
-	ClientSecret              stringattr.Type `tfsdk:"client_secret"`
-	ClientType                stringattr.Type `tfsdk:"client_type"`
-	ApprovedRedirectURLs      strsetattr.Type `tfsdk:"approved_redirect_urls"`
-	AuthorizationCodeDisabled boolattr.Type   `tfsdk:"authorization_code_disabled"`
-	ClientCredentialsDisabled boolattr.Type   `tfsdk:"client_credentials_disabled"`
-	RefreshTokenDisabled      boolattr.Type   `tfsdk:"refresh_token_disabled"`
-	JWTBearerDisabled         boolattr.Type   `tfsdk:"jwt_bearer_disabled"`
-	DeviceCodeDisabled        boolattr.Type   `tfsdk:"device_code_disabled"`
-	ForcePkce                 boolattr.Type   `tfsdk:"force_pkce"`
-	DefaultAudience           stringattr.Type `tfsdk:"default_audience"`
+	LoginPageURL              stringattr.Type  `tfsdk:"login_page_url"`
+	Claims                    strlistattr.Type `tfsdk:"claims"`
+	ForceAuthentication       boolattr.Type    `tfsdk:"force_authentication"`
+	ClientID                  stringattr.Type  `tfsdk:"client_id"`
+	ClientSecret              stringattr.Type  `tfsdk:"client_secret"`
+	ClientType                stringattr.Type  `tfsdk:"client_type"`
+	ApprovedRedirectURLs      strsetattr.Type  `tfsdk:"approved_redirect_urls"`
+	AuthorizationCodeDisabled boolattr.Type    `tfsdk:"authorization_code_disabled"`
+	ClientCredentialsDisabled boolattr.Type    `tfsdk:"client_credentials_disabled"`
+	RefreshTokenDisabled      boolattr.Type    `tfsdk:"refresh_token_disabled"`
+	JWTBearerDisabled         boolattr.Type    `tfsdk:"jwt_bearer_disabled"`
+	DeviceCodeDisabled        boolattr.Type    `tfsdk:"device_code_disabled"`
+	ForcePkce                 boolattr.Type    `tfsdk:"force_pkce"`
+	DefaultAudience           stringattr.Type  `tfsdk:"default_audience"`
 
 	Permissions listattr.Type[SSOAppPermissionModel] `tfsdk:"permissions"`
 	Roles       listattr.Type[SSOAppRoleModel]       `tfsdk:"roles"`

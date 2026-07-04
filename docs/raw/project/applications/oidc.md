@@ -83,9 +83,9 @@ client_id
 
 - Type: `string`
 
-A dedicated OIDC `client_id` to import for this application. Optional and **immutable** — changing it
-forces the application to be recreated. When omitted, the `client_id` is computed by the server; when
-set, it must be unique within the project. Mirrors the inbound third-party application `client_id`.
+A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is computed
+by the server; when set, it must be unique within the project. Can only be set when the application is
+created, and attempting to change it on an existing application will fail.
 
 
 
