@@ -51,17 +51,17 @@ func (m *ApplicationsModel) Check(h *helpers.Handler) {
 }
 
 func (m *ApplicationsModel) Modify(h *helpers.Handler, state *ApplicationsModel) {
-	for p := range listattr.Iterator(m.OIDCApplications, h) {
-		for s := range listattr.Iterator(state.OIDCApplications, h) {
-			if p.Name.Equal(s.Name) && !p.ClientID.IsUnknown() && !s.ClientID.IsNull() && s.ClientID.ValueString() != "" && p.ClientID.ValueString() != "" && !p.ClientID.Equal(s.ClientID) {
-				h.Error("Immutable Field Changed", "The 'client_id' of OIDC application '%s' cannot be changed after creation, delete the application first to recreate it", s.Name.ValueString())
-			}
-		}
-	}
-
 	listattr.ModifyMatchingNames(h, &m.OIDCApplications, state.OIDCApplications)
 	listattr.ModifyMatchingNames(h, &m.SAMLApplications, state.SAMLApplications)
 	listattr.ModifyMatchingNames(h, &m.WSFedApplications, state.WSFedApplications)
+
+	for p := range listattr.Iterator(m.OIDCApplications, h) {
+		for s := range listattr.Iterator(state.OIDCApplications, h) {
+			if p.ID.ValueString() != "" && s.ID.Equal(p.ID) && s.ClientID.ValueString() != "" && p.ClientID.ValueString() != "" && !p.ClientID.Equal(s.ClientID) {
+				h.Error("Immutable Field Changed", "The 'client_id' of OIDC application '%s' cannot be changed after creation, delete the application first to recreate it", p.Name.ValueString())
+			}
+		}
+	}
 }
 
 func (m *ApplicationsModel) Validate(h *helpers.Handler) {
