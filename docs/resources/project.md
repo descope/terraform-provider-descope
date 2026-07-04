@@ -357,7 +357,7 @@ Optional:
 - `authorization_code_disabled` (Boolean) Disables the `authorization_code` grant type for this application.
 - `claims` (List of String) A list of supported claims. e.g. `sub`, `email`, `exp`.
 - `client_credentials_disabled` (Boolean) Disables the `client_credentials` grant type for this application.
-- `client_id` (String) A dedicated OIDC `client_id` to import for this application. Optional and **immutable** — changing it forces the application to be recreated. When omitted, the `client_id` is computed by the server; when set, it must be unique within the project. Mirrors the inbound third-party application `client_id`.
+- `client_id` (String) A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is computed by the server; when set, it must be unique within the project. Can only be set when the application is created, and attempting to change it on an existing application will fail.
 - `client_secret` (String, Sensitive) A dedicated OIDC `client_secret` to import for this application, applied on creation only. When omitted, a secret is generated server-side. The value is sensitive and is not returned on subsequent reads.
 - `client_type` (String) OAuth client confidentiality. One of `""` (default — legacy access-key authentication), `"confidential"` (a dedicated client secret is generated for the app), or `"public"`.
 - `default_audience` (String) Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), or `""` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.

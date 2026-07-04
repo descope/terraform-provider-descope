@@ -33,7 +33,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"authorization":    objattr.Default[authorization.AuthorizationModel](nil, authorization.AuthorizationAttributes, authorization.AuthorizationModifier, authorization.AuthorizationValidator),
 	"attributes":       objattr.Default[attributes.AttributesModel](nil, attributes.AttributesAttributes),
 	"connectors":       objattr.Default[connectors.ConnectorsModel](nil, connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
-	"applications":     objattr.Default[applications.ApplicationsModel](nil, applications.ApplicationsAttributes, applications.ApplicationsValidator),
+	"applications":     objattr.Default[applications.ApplicationsModel](nil, applications.ApplicationsAttributes, applications.ApplicationsModifier, applications.ApplicationsValidator),
 	"jwt_templates":    objattr.Optional[jwttemplates.JWTTemplatesModel](jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
 	"styles":           objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
 	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
