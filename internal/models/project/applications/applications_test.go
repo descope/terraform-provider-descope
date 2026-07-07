@@ -98,6 +98,76 @@ func TestApplications(t *testing.T) {
 		},
 		resource.TestStep{
 			Config: p.Config(`
+				applications = {
+					oidc_applications = [
+						{
+							name = "foo"
+							description = "bar"
+							logo = "https://example.com/logo.png"
+							disabled = true
+
+							login_page_url = "https://example.com/login"
+							claims = ["email", "name"]
+							force_authentication = true
+
+							client_id = "my-changed-oidc-client"
+							client_secret = "my-custom-oidc-secret-0123456789"
+							client_type = "confidential"
+							approved_redirect_urls = ["https://example.com/cb", "https://example.com/cb2"]
+							authorization_code_disabled = false
+							client_credentials_disabled = true
+							refresh_token_disabled = false
+							jwt_bearer_disabled = true
+							device_code_disabled = true
+							force_pkce = true
+							default_audience = "clientId"
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`cannot be changed after creation`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					oidc_applications = [
+						{
+							name = "foo"
+							description = "bar2"
+							logo = "https://example.com/logo.png"
+							disabled = true
+
+							login_page_url = "https://example.com/login"
+							claims = ["email", "name"]
+							force_authentication = true
+
+							client_id = "my-custom-oidc-client"
+							client_secret = "my-custom-oidc-secret-0123456789"
+							client_type = "confidential"
+							approved_redirect_urls = ["https://example.com/cb", "https://example.com/cb2"]
+							authorization_code_disabled = false
+							client_credentials_disabled = true
+							refresh_token_disabled = false
+							jwt_bearer_disabled = true
+							device_code_disabled = true
+							force_pkce = true
+							default_audience = "clientId"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"applications.oidc_applications.#": 1,
+				"applications.oidc_applications.0": map[string]any{
+					"id":          testacc.AttributeHasPrefix("SA"),
+					"name":        "foo",
+					"description": "bar2",
+					"client_id":   "my-custom-oidc-client",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
 			`),
 			Check: p.Check(map[string]any{
 				"applications.oidc_applications.#": 0,

@@ -33,6 +33,10 @@ var AccessKeyAttributes = map[string]schema.Attribute{
 	"cleartext":         stringattr.SecretGenerated(false),
 }
 
+var Schema = schema.Schema{
+	Attributes: AccessKeyAttributes,
+}
+
 type AccessKeyModel struct {
 	ID               stringattr.Type                     `tfsdk:"id"`
 	ProjectID        stringattr.Type                     `tfsdk:"project_id"`
@@ -93,6 +97,18 @@ func (m *AccessKeyModel) SetValues(h *helpers.Handler, data map[string]any) {
 	intattr.Set(&m.CreatedTime, data, "createdTime")
 	stringattr.Set(&m.CreatedBy, data, "createdBy")
 	stringattr.Set(&m.Cleartext, data, "cleartext")
+}
+
+func (m *AccessKeyModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *AccessKeyModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
+
+func (m *AccessKeyModel) GetProjectID() stringattr.Type {
+	return m.ProjectID
 }
 
 func getJSONField(s stringattr.Type, data map[string]any, key string) {

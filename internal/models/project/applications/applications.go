@@ -11,6 +11,8 @@ import (
 
 var ApplicationsValidator = objattr.NewValidator[ApplicationsModel]("must have a valid applications configuration")
 
+var ApplicationsModifier = objattr.NewModifier[ApplicationsModel]("rejects changes to immutable application fields and maintains application identifiers between plan changes")
+
 var ApplicationsAttributes = map[string]schema.Attribute{
 	"oidc_applications":  listattr.Default[OIDCModel](OIDCAttributes),
 	"saml_applications":  listattr.Default[SAMLModel](SAMLAttributes),
@@ -44,6 +46,20 @@ func (m *ApplicationsModel) Check(h *helpers.Handler) {
 			h.Missing("Either the dynamic_configuration or manual_configuration attribute must be set in the '%s' saml application", app.Name.ValueString())
 		} else if app.DynamicConfiguration.IsSet() && app.ManualConfiguration.IsSet() {
 			h.Warn("Both dynamic_configuration and manual_configuration supplied - dynamic configuration will take precedence", "dynamic_configuration and manual_configuration are mutually exclusive. If both given - dynamic takes precedence")
+		}
+	}
+}
+
+func (m *ApplicationsModel) Modify(h *helpers.Handler, state *ApplicationsModel) {
+	listattr.ModifyMatchingNames(h, &m.OIDCApplications, state.OIDCApplications)
+	listattr.ModifyMatchingNames(h, &m.SAMLApplications, state.SAMLApplications)
+	listattr.ModifyMatchingNames(h, &m.WSFedApplications, state.WSFedApplications)
+
+	for p := range listattr.Iterator(m.OIDCApplications, h) {
+		for s := range listattr.Iterator(state.OIDCApplications, h) {
+			if p.ID.ValueString() != "" && s.ID.Equal(p.ID) && s.ClientID.ValueString() != "" && p.ClientID.ValueString() != "" && !p.ClientID.Equal(s.ClientID) {
+				h.Error("Immutable Field Changed", "The 'client_id' of OIDC application '%s' cannot be changed after creation, delete the application first to recreate it", p.Name.ValueString())
+			}
 		}
 	}
 }

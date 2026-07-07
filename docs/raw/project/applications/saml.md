@@ -139,6 +139,24 @@ This configuration overrides the default behavior of the SSO application and for
 
 
 
+permissions
+-----------
+
+- Type: `list` of `applications.SSOAppPermission`
+
+// description for permissions
+
+
+
+roles
+-----
+
+- Type: `list` of `applications.SSOAppRole`
+
+// description for roles
+
+
+
 
 
 AttributeMapping

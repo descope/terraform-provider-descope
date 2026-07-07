@@ -64,6 +64,15 @@ var docsDescoperTagRole = map[string]string{
 		"Must be one of: `admin`, `developer`, `support`, `auditor`.",
 }
 
+var docsEngine = map[string]string{
+	"project_id": "The ID of the Descope project this engine belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name":         "A name for the engine.",
+	"created_time": "The creation time of the engine as a Unix timestamp.",
+	"secret": "The plaintext secret for the engine. This is only available after the engine is created and " +
+		"cannot be retrieved later. Store this value securely as it is used to authenticate the engine.",
+}
+
 var docsApplicationScope = map[string]string{
 	"name":        "A name for the scope.",
 	"description": "A description for the scope.",
@@ -98,6 +107,7 @@ var docsInboundApp = map[string]string{
 		"this value after creation will require the resource to be replaced.",
 	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +
 		"cannot be retrieved after the resource is created. Store this value securely.",
+	"force_pkce": "When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.",
 }
 
 var docsSessionSettings = map[string]string{
@@ -196,6 +206,25 @@ var docsOIDC = map[string]string{
 	"claims": "A list of supported claims. e.g. `sub`, `email`, `exp`.",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces " +
 		"the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is computed " +
+		"by the server; when set, it must be unique within the project. Can only be set when the application is " +
+		"created, and attempting to change it on an existing application will fail.",
+	"client_secret": "A dedicated OIDC `client_secret` to import for this application, applied on creation only. When omitted, " +
+		"a secret is generated server-side. The value is sensitive and is not returned on subsequent reads.",
+	"client_type": "OAuth client confidentiality. One of `\"\"` (default — legacy access-key authentication), " +
+		"`\"confidential\"` (a dedicated client secret is generated for the app), or `\"public\"`.",
+	"approved_redirect_urls": "A list of approved redirect URLs for this application (supports `*` wildcards). When set, " +
+		"redirect URIs are validated against this per-app list; when empty, validation falls back to " +
+		"the project's approved/trusted domains.",
+	"authorization_code_disabled": "Disables the `authorization_code` grant type for this application.",
+	"client_credentials_disabled": "Disables the `client_credentials` grant type for this application.",
+	"refresh_token_disabled":      "Disables the `refresh_token` grant type for this application.",
+	"jwt_bearer_disabled":         "Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this application.",
+	"device_code_disabled":        "Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this application.",
+	"force_pkce":                  "When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.",
+	"default_audience":            "Controls the default `aud` claim of tokens issued for this application. One of `\"projectId\"` (the project ID only), `\"clientId\"` (the dedicated client ID only), or `\"\"` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.",
+	"permissions":                 "",
+	"roles":                       "",
 }
 
 var docsSAML = map[string]string{
@@ -214,6 +243,8 @@ var docsSAML = map[string]string{
 	"default_signature_algorithm": "The signature algorithm used to sign SAML responses. Choose one of `\"\"` (default, SHA-1) or `\"sha256\"` (SHA-256). Only applies to IdP-initiated flows — SP-initiated flows use the algorithm specified in the SP's SAML request.",
 	"attribute_mapping":           "The `AttributeMapping` object. Read the description below.",
 	"force_authentication":        "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"permissions":                 "",
+	"roles":                       "",
 }
 
 var docsAttributeMapping = map[string]string{
@@ -229,6 +260,18 @@ var docsManualConfiguration = map[string]string{
 	"acs_url":     "Enter the `ACS URL` from the SP.",
 	"entity_id":   "Enter the `Entity Id` from the SP.",
 	"certificate": "Enter the `Certificate` from the SP.",
+}
+
+var docsSSOAppPermission = map[string]string{
+	"name":        "",
+	"description": "",
+}
+
+var docsSSOAppRole = map[string]string{
+	"name":          "",
+	"description":   "",
+	"permissions":   "",
+	"role_mappings": "",
 }
 
 var docsWSFed = map[string]string{
@@ -247,6 +290,8 @@ var docsWSFed = map[string]string{
 		"authenticate via the Descope flow, regardless of the SP's request.",
 	"logout_redirect_url": "The URL to redirect to after logout.",
 	"error_redirect_url":  "The URL to redirect to when an error occurs.",
+	"permissions":         "",
+	"roles":               "",
 }
 
 var docsGroupsMapping = map[string]string{
@@ -549,6 +594,15 @@ var docsAbuseIPDB = map[string]string{
 	"api_key":     "The unique AbuseIPDB API key.",
 }
 
+var docsAlloy = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_token":   "The Alloy API token.",
+	"api_secret":  "The Alloy API secret.",
+	"base_url": "The base URL for the Alloy API, e.g.: https://sandbox.alloy.co/v1, " +
+		"https://api.alloy.co/v1.",
+}
+
 var docsAmplitude = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -603,6 +657,20 @@ var docsAWSS3 = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
+var docsAWSSESEmailValidation = map[string]string{
+	"name":              "A custom name for your connector.",
+	"description":       "A description of what your connector is used for.",
+	"auth_type":         "The authentication type to use.",
+	"access_key_id":     "AWS access key ID.",
+	"secret_access_key": "AWS secret access key.",
+	"session_token": "(Optional) A security or session token to use with these credentials. Usually " +
+		"present for temporary credentials.",
+	"role_arn":    "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id": "The external ID to use when assuming the role.",
+	"region":      "The AWS region to which this client will send requests. (e.g. us-east-1.)",
 }
 
 var docsAWSTranslate = map[string]string{
@@ -627,15 +695,21 @@ var docsBitsight = map[string]string{
 var docsConnectors = map[string]string{
 	"abuseipdb": "Utilize IP threat intelligence to block malicious login attempts with the " +
 		"AbuseIPDB connector.",
+	"alloy": "Streamline identity verification and fraud monitoring with the Alloy connector.",
 	"amplitude": "Track user activity and traits at any point in your user journey with the " +
 		"Amplitude connector.",
 	"arkose":        "Use the Arkose connector to integrate with Arkose's bot and fraud detection.",
 	"audit_webhook": "Send audit events to a custom webhook.",
 	"aws_s3":        "Stream authentication audit logs with the Amazon S3 connector.",
+	"aws_ses_email_validation": "Validate email addresses using the AWS SES Email Validation API to check syntax, " +
+		"DNS records, mailbox existence, and deliverability.",
 	"aws_translate": "Localize the language of your login and user journey screens with the Amazon Translate connector.",
 	"bitsight": "Utilize threat intelligence to block malicious login attempts or check leaks " +
 		"with the Bitsight Threat Intelligence connector.",
 	"coralogix": "Send audit events and troubleshooting logs to Coralogix.",
+	"cribl": "Stream audit events and troubleshooting logs to Cribl Stream via the HTTP/S Bulk " +
+		"API. Requires an HTTP source configured in your Cribl deployment. See Cribl's " +
+		"HTTP/S source setup guide: https://docs.cribl.io/stream/sources-https/",
 	"darwinium": "Connect to Darwinium API for fraud detection and device intelligence.",
 	"datadog":   "Stream authentication audit logs with the Datadog connector.",
 	"devrev_grow": "DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto " +
@@ -658,6 +732,7 @@ var docsConnectors = map[string]string{
 		"the Google Cloud Translation connector.",
 	"google_maps_places":   "Get address autocompletions from Place Autocomplete Data API.",
 	"google_cloud_logging": "Stream logs and audit events with the Google Cloud Logging connector.",
+	"groundcover":          "Send audit events and troubleshooting logs to groundcover.",
 	"hcaptcha": "hCaptcha can help protect your applications from bots, spam, and other forms of " +
 		"automated abuse.",
 	"hibp": "Check if passwords have been previously exposed in data breaches with the Have I " +
@@ -679,13 +754,19 @@ var docsConnectors = map[string]string{
 	"newrelic": "Stream authentication audit logs with the New Relic connector.",
 	"opentelemetry": "Send audit events and troubleshooting logs to an OpenTelemetry-compatible " +
 		"endpoint using OTLP over HTTP or gRPC.",
+	"pendo":                "Stream authentication audit logs with the Pendo connector.",
 	"ping_directory":       "Authenticate against PingDirectory.",
 	"postmark":             "Send emails using Postmark",
 	"radar":                "Get address autocompletions from Radar Autocomplete API.",
 	"recaptcha":            "Prevent bot attacks on your login pages with the reCAPTCHA v3 connector.",
 	"recaptcha_enterprise": "Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPTCHA Enterprise connector.",
+	"recaptcha_v2":         "Use the reCAPTCHA v2 \"I'm not a robot\" checkbox widget with your flows.",
 	"rekognition": "Add image recognition capabilities for identity verification and fraud " +
 		"prevention with the Amazon Rekognition connector.",
+	"rnd_reassigned": "Query the FCC Reassigned Numbers Database (RND) to validate whether telephone " +
+		"numbers have been permanently disconnected (reassigned) since a specific date. " +
+		"Helps obtain Safe Harbor from TCPA liability by checking the most recent " +
+		"database update.",
 	"salesforce": "Run SQL queries to retrieve user roles, profiles, account status, and more with " +
 		"the Salesforce connector.",
 	"salesforce_marketing_cloud": "Send transactional messages with the Salesforce Marketing Cloud connector.",
@@ -700,7 +781,9 @@ var docsConnectors = map[string]string{
 	"slack": "Send updates to your team on Slack.",
 	"smartling": "Localize the language of your login and user journey screens with the Smartling " +
 		"connector.",
-	"smtp":   "Simple Mail Transfer Protocol (SMTP) server for sending emails.",
+	"smtp": "Simple Mail Transfer Protocol (SMTP) server for sending emails.",
+	"snowflake": "Stream authentication audit logs to your Snowflake data warehouse with the " +
+		"Snowflake connector.",
 	"sns":    "Amazon Simple Notification Service (SNS) for sending SMS messages through AWS.",
 	"splunk": "Stream logs and audit events with the Splunk HTTP Event Collector (HEC).",
 	"sql": "SQL connector for relational databases including PostgreSQL, MySQL, MariaDB, " +
@@ -730,6 +813,26 @@ var docsCoralogix = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
+var docsCribl = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"endpoint": "The base URL of your Cribl Stream HTTP source. For Cribl Cloud, the default http " +
+		"source looks something like " +
+		"https://<worker-group>.main.<organization-id>.cribl.cloud:10080. You can also " +
+		"define a custom source (find this in your Cribl Cloud portal under Data " +
+		"Sources). For self-hosted deployments, use https://<your-cribl-host>:10080 or " +
+		"however you have it configured.",
+	"auth_token": "A shared secret token for authenticating with the Cribl HTTP source. This token " +
+		"is defined on the source and is strongly recommended for security reasons.",
+	"source":        "An optional source identifier for events in Cribl (defaults to 'descope').",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
 }
 
 var docsDarwinium = map[string]string{
@@ -755,6 +858,12 @@ var docsDatadog = map[string]string{
 	"api_key":     "The unique Datadog organization key.",
 	"site": "The Datadog site to send logs to. Default is `datadoghq.com`. European, free " +
 		"tier and other customers should set their site accordingly.",
+	"source": "An optional custom source to use for log entries sent to Datadog. This can be " +
+		"used to differentiate between environments (e.g. `production`, `staging`). If " +
+		"left empty, the default Descope source will be used.",
+	"tags": "An optional comma-separated list of tags to append to all log entries sent to " +
+		"Datadog (e.g. `env:production,team:auth`). These are added in addition to any " +
+		"default tags. If left empty, only the default Descope tags will be used.",
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
@@ -918,6 +1027,20 @@ var docsGoogleMapsPlaces = map[string]string{
 	"region":         "The region code, specified as a CLDR two-character region code.",
 }
 
+var docsGroundcover = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"endpoint": "The gRPC OTLP backend endpoint URL. Found in the groundcover console under " +
+		"Settings → Ingestion Keys → Backend Endpoints.",
+	"ingestion_key": "Third Party ingestion key for authenticating with groundcover. Create one in the " +
+		"groundcover console under Settings → Ingestion Keys (type: thirdParty).",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
 var docsHCaptcha = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -951,10 +1074,30 @@ var docsHTTP = map[string]string{
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
 		"this secret to verify the integrity and authenticity of the payload by checking " +
 		"the provided signature",
+	"aws_auth_type":         "Apply AWS signature version 4 authentication to the request.",
+	"aws_access_key_id":     "The unique AWS access key ID.",
+	"aws_secret_access_key": "The secret AWS access key.",
+	"aws_role_arn":          "The Amazon Resource Name (ARN) of the role to assume.",
+	"aws_external_id":       "The external ID to use when assuming the role.",
+	"aws_region":            "The AWS region, e.g. `us-east-1`.",
+	"aws_service":           "The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.",
+	"rfc9421_signing_enabled": "Enable RFC 9421 HTTP Message Signatures for cryptographically signing requests. " +
+		"Supports multiple algorithms including ECDSA, Ed25519, RSA, and HMAC",
+	"rfc9421_private_key": "Provide a private key in PEM format or an HMAC secret. Algorithms such as ECDSA " +
+		"P-256/P-384, Ed25519, and RSA are supported. You can paste the key with or " +
+		"without newlines; both formats are accepted.",
+	"rfc9421_key_id": "Identifier for the signing key. This will be included in the signature metadata " +
+		"to help the recipient identify which key was used for verification",
+	"rfc9421_components": "HTTP message components to include in the signature (e.g., @method, @target-uri, " +
+		"@authority, content-type, content-digest). Leave empty to use defaults: @method, " +
+		"@target-uri, @authority",
+	"rfc9421_signature_ttl": "How long the signature is valid for, in seconds. Default is 300 seconds (5 " +
+		"minutes). The signature includes automatic replay protection via a randomly " +
+		"generated nonce",
 	"insecure": "Will ignore certificate errors raised by the client",
-	"include_headers_in_context": "The connector response context will also include the headers. The context will " +
-		"have a \"body\" attribute and a \"headers\" attribute. See more details in the help " +
-		"guide",
+	"include_headers_in_context": "The connector response context will also include the headers and status code. " +
+		"The context will have a \"body\" attribute, a \"headers\" attribute, and a " +
+		"\"statusCode\" attribute. See more details in the help guide",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
@@ -1068,6 +1211,19 @@ var docsOpenTelemetry = map[string]string{
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
+var docsPendo = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"base_url": "The Pendo regional domain to send logs to. Default is the US region, " +
+		"`https://data.pendo.io`. Customers in other regions must set this accordingly.",
+	"integration_key": "The secret Pendo integration key Descope should use.",
+	"audit_enabled":   "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
 var docsPingDirectory = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -1114,8 +1270,9 @@ var docsRecaptchaEnterprise = map[string]string{
 	"site_key": "The site key is used to invoke reCAPTCHA Enterprise service on your site or " +
 		"mobile application.",
 	"api_key": "API key associated with the current project.",
-	"base_url": "Apply a custom url to the reCAPTCHA Enterprise scripts. This is useful when " +
-		"attempting to use reCAPTCHA globally. Defaults to https://www.google.com",
+	"base_url": "The base URL used to load the reCAPTCHA Enterprise scripts. Select recaptcha.net " +
+		"when google.com is unavailable in your users' region. Restricting this to the " +
+		"official Google domains prevents loading scripts from untrusted hosts.",
 	"action": "The user-initiated action for this assessment.",
 	"override_assessment": "Override the default assessment model. Note: Overriding assessment is intended " +
 		"for automated testing and should not be utilized in production environments.",
@@ -1127,6 +1284,18 @@ var docsRecaptchaEnterprise = map[string]string{
 		"and 0 is a bot.",
 }
 
+var docsRecaptchaV2 = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"site_key": "The reCAPTCHA v2 site key from the Google reCAPTCHA admin console (checkbox / " +
+		"\"I'm not a robot\" type).",
+	"secret_key": "The secret key used to verify the user's response with Google siteverify.",
+	"bot_threshold": "For v2 verification, success maps to risk score 1 and failure to 0. Bot is " +
+		"detected when risk score is below this threshold (default 0.5).",
+	"override_assessment": "Override the default assessment model. Intended for automated testing only.",
+	"assessment_score":    "When override is enabled, return this score instead of calling Google.",
+}
+
 var docsRekognition = map[string]string{
 	"name":              "A custom name for your connector.",
 	"description":       "A description of what your connector is used for.",
@@ -1134,6 +1303,15 @@ var docsRekognition = map[string]string{
 	"secret_access_key": "The AWS secret access key",
 	"collection_id": "The collection to store registered users in. Should match `[a-zA-Z0-9_.-]+` " +
 		"pattern. Changing this will cause losing existing users.",
+}
+
+var docsRNDReassigned = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"company_id": "Your RND company ID (e.g., C038612852). Retrieve this from your RND account " +
+		"under Account → Company → Company ID.",
+	"refresh_token": "Your RND refresh token for authentication. Retrieve this from your RND account " +
+		"under Account → API Credentials.",
 }
 
 var docsSalesforce = map[string]string{
@@ -1271,6 +1449,28 @@ var docsSMTPAuthField = map[string]string{
 	"username": "Username for SMTP server authentication.",
 	"password": "Password for SMTP server authentication.",
 	"method":   "SMTP authentication method (`plain` or `login`).",
+}
+
+var docsSnowflake = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_key": "A Snowflake Programmatic Access Token (PAT). The token's user must have CREATE " +
+		"DATABASE privileges.",
+	"site": "Your Snowflake account URL, e.g. " +
+		"`https://<org>-<account>.snowflakecomputing.com`.",
+	"warehouse":     "The Snowflake warehouse to use. Defaults to `COMPUTE_WH`.",
+	"database":      "The Snowflake database to use. Defaults to `DESCOPE_EXPORT_DB`.",
+	"schema":        "The schema within the database. Defaults to `PUBLIC`.",
+	"audit_table":   "The table to write audit events to. Defaults to `DESCOPE_AUDIT_LOGS`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"min_flush_interval_minutes": "The minimum time between writes to Snowflake, in minutes. When set, events are " +
+		"accumulated and written in a single batch at most once per interval, which lets " +
+		"the warehouse auto-suspend between writes and reduces cost. Set to 0 (or leave " +
+		"empty) to write events according to the default Descope cycle.",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
 }
 
 var docsSNS = map[string]string{
@@ -1486,8 +1686,16 @@ var docsSessionMigration = map[string]string{
 	"domain":    "The domain value if needed by the vendor.",
 	"audience":  "The audience value if needed by the vendor.",
 	"issuer":    "An issuer URL if needed by the vendor.",
+	"api_token": "An API token for the vendor, required when `vendor` is set to `okta`.",
 	"loginid_matched_attributes": "A set of attributes from the vendor's user that should be used to match with " +
 		"the Descope user's login ID.",
+	"user_sync_type": "The type of user synchronization to perform. Valid values are `matchOnly` (match existing users only) and `jit` (just-in-time provisioning).",
+	"user_mapping":   "A list of attribute mappings from the external vendor's user to Descope user attributes.",
+}
+
+var docsExternalAuthUserMappingItem = map[string]string{
+	"external_key": "The attribute key in the external vendor's user object.",
+	"descope_key":  "The Descope user attribute to map the external key to.",
 }
 
 var docsSettings = map[string]string{
