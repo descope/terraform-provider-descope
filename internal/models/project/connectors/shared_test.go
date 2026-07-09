@@ -8,7 +8,6 @@ import (
 )
 
 func TestSCIMConnector(t *testing.T) {
-	t.Skip("Temporarily skipping SCIM test because of backend problems")
 	p := testacc.Project(t)
 	testacc.Run(t,
 		resource.TestStep{
