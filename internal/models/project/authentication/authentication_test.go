@@ -376,13 +376,15 @@ func TestAuthentication(t *testing.T) {
 						limit_mapping_to_mandatory_attributes = true
 						block_if_email_domain_mismatch = true
 						mark_email_as_unverified = true
+						allow_merge_users_with_multiple_tenants = true
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso.limit_mapping_to_mandatory_attributes": true,
-				"authentication.sso.block_if_email_domain_mismatch":        true,
-				"authentication.sso.mark_email_as_unverified":              true,
+				"authentication.sso.limit_mapping_to_mandatory_attributes":   true,
+				"authentication.sso.block_if_email_domain_mismatch":          true,
+				"authentication.sso.mark_email_as_unverified":                true,
+				"authentication.sso.allow_merge_users_with_multiple_tenants": true,
 			}),
 		},
 		resource.TestStep{
@@ -391,12 +393,14 @@ func TestAuthentication(t *testing.T) {
 					sso = {
 						block_if_email_domain_mismatch = false
 						mark_email_as_unverified = false
+						allow_merge_users_with_multiple_tenants = false
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso.block_if_email_domain_mismatch": false,
-				"authentication.sso.mark_email_as_unverified":       false,
+				"authentication.sso.block_if_email_domain_mismatch":          false,
+				"authentication.sso.mark_email_as_unverified":                false,
+				"authentication.sso.allow_merge_users_with_multiple_tenants": false,
 			}),
 		},
 		resource.TestStep{
