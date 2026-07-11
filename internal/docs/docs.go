@@ -535,7 +535,7 @@ var docsSSO = map[string]string{
 	"require_groups_attribute_name":           "When configuring SSO the groups attribute name must be specified.",
 	"block_if_email_domain_mismatch":          "Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.",
 	"mark_email_as_unverified":                "Whether to mark the user's email as unverified when logging in via SSO.",
-	"allow_merge_users_with_multiple_tenants": "Whether to allow merging an existing user into this SSO connection even when the user belongs to more than one tenant. Disabled by default because it increases the risk of cross-tenant account takeover.",
+	"allow_merge_users_with_multiple_tenants": "Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.",
 	"email_service":                           "Settings related to sending SSO invite emails as part of the SSO feature.",
 }
 
