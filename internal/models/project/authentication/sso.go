@@ -124,9 +124,9 @@ var SSOSuiteValidator = objattr.NewValidator[SSOSuiteModel]("must have a valid c
 var SSOSuiteAttributes = map[string]schema.Attribute{
 	"style_id":                  stringattr.Default(""),
 	"hide_scim":                 boolattr.Default(false),
-	"hide_groups_mapping":       boolattr.Deprecated("The hide_groups_mapping attribute has been split into hide_role_mapping and hide_fga_mapping; setting it disables both."),
-	"hide_role_mapping":         boolattr.Optional(helpers.TrueWhenSiblingTrue("hide_groups_mapping")),
-	"hide_fga_mapping":          boolattr.Optional(helpers.TrueWhenSiblingTrue("hide_groups_mapping")),
+	"hide_groups_mapping":       boolattr.Default(false),
+	"hide_role_mapping":         boolattr.Default(false),
+	"hide_fga_mapping":          boolattr.Default(false),
 	"hide_domains":              boolattr.Default(false),
 	"hide_saml":                 boolattr.Default(false),
 	"hide_oidc":                 boolattr.Default(false),
@@ -170,13 +170,11 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.StyleID, data, "ssoSuiteStyleId")
 	boolattr.Get(m.HideSCIM, data, "hideSsoSuiteScim")
-	// The deprecated hide_groups_mapping disables both role and FGA mapping, so
-	// fold it into the two explicit flags. It is still sent as-is for backends
-	// that read the legacy key.
-	groupMapping := m.HideGroupsMapping.ValueBool()
-	data["hideSsoSuiteRoleMapping"] = m.HideRoleMapping.ValueBool() || groupMapping
-	data["hideSsoSuiteFgaMapping"] = m.HideFgaMapping.ValueBool() || groupMapping
+	// hide_groups_mapping, hide_role_mapping and hide_fga_mapping are independent
+	// flags sent and read back as-is.
 	boolattr.Get(m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
+	boolattr.Get(m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
+	boolattr.Get(m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
 	boolattr.Get(m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Get(m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Get(m.HideOIDC, data, "hideSsoSuiteOidc")
@@ -190,9 +188,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.StyleID, data, "ssoSuiteStyleId")
 	boolattr.Set(&m.HideSCIM, data, "hideSsoSuiteScim")
-	// hide_role_mapping / hide_fga_mapping are the source of truth on read. The
-	// deprecated hide_groups_mapping is a write-only input and is intentionally
-	// not refreshed here, so removing it from the config retires it cleanly.
+	boolattr.Set(&m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
 	boolattr.Set(&m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
 	boolattr.Set(&m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
 	boolattr.Set(&m.HideDomains, data, "hideSsoSuiteDomains")
@@ -205,9 +201,9 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
-	if !helpers.HasUnknownValues(m.HideGroupsMapping) && m.HideGroupsMapping.ValueBool() &&
-		(!m.HideRoleMapping.IsNull() || !m.HideFgaMapping.IsNull()) {
-		h.Conflict("The deprecated hide_groups_mapping attribute cannot be combined with hide_role_mapping or hide_fga_mapping, use the new attributes instead")
+	if !helpers.HasUnknownValues(m.HideGroupsMapping, m.HideRoleMapping, m.HideFgaMapping) &&
+		!m.HideGroupsMapping.IsNull() && (!m.HideRoleMapping.IsNull() || !m.HideFgaMapping.IsNull()) {
+		h.Conflict("The hide_groups_mapping attribute cannot be combined with hide_role_mapping or hide_fga_mapping, use either hide_groups_mapping or the hide_role_mapping and hide_fga_mapping pair")
 	}
 
 	if helpers.HasUnknownValues(m.HideSAML, m.HideOIDC) {
