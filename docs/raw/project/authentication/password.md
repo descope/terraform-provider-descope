@@ -143,6 +143,46 @@ Whether passwords must contain at least one uppercase letter.
 
 
 
+any_letter
+----------
+
+- Type: `bool`
+
+Whether passwords must contain at least one letter, either uppercase or lowercase.
+
+
+
+disallowed_characters
+---------------------
+
+- Type: `string`
+
+Reject passwords containing any of these characters. Each character in the string is
+treated as a forbidden literal (e.g., `"'"` to reject single and double quotes).
+
+
+
+disallow_email_match
+--------------------
+
+- Type: `bool`
+
+Whether to reject passwords that match the user's email address or its local-part
+(the segment before `@`), case-insensitively. The check is skipped if the user's email
+is not known at validation time.
+
+
+
+enforce_strength
+----------------
+
+- Type: `string`
+- Default: `"none"`
+
+Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.
+
+
+
 mask_errors
 -----------
 

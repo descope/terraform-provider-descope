@@ -493,8 +493,10 @@ func TestAuthentication(t *testing.T) {
 						temporary_lock = true
 						temporary_lock_attempts = 7
 						temporary_lock_duration = "1 hour"
+						enforce_strength = "strong"
 					}
 					passkeys = {
+						display_name = "Acme Login"
 						android_fingerprints = [
 							"AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99",
 							"11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
@@ -508,11 +510,46 @@ func TestAuthentication(t *testing.T) {
 					"temporary_lock":          true,
 					"temporary_lock_attempts": 7,
 					"temporary_lock_duration": "1 hour",
+					"enforce_strength":        "strong",
 				},
+				"authentication.passkeys.display_name": "Acme Login",
 				"authentication.passkeys.android_fingerprints": []string{
 					"AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99",
 					"11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00",
 				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					password = {
+						any_letter = true
+						lowercase = false
+						uppercase = false
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.password.any_letter":       true,
+				"authentication.password.lowercase":        false,
+				"authentication.password.uppercase":        false,
+				"authentication.password.enforce_strength": "none",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					password = {
+						disallowed_characters = "'\""
+						disallow_email_match = true
+						enforce_strength = "none"
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.password.disallowed_characters": "'\"",
+				"authentication.password.disallow_email_match":  true,
+				"authentication.password.enforce_strength":      "none",
 			}),
 		},
 	)

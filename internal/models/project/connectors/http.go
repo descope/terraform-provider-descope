@@ -3,13 +3,19 @@
 package connectors
 
 import (
+	"slices"
+
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/floatattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
+
+var HTTPValidator = objattr.NewValidator[HTTPModel]("must have a valid configuration")
 
 var HTTPAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
@@ -20,9 +26,22 @@ var HTTPAttributes = map[string]schema.Attribute{
 	"authentication":             objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
 	"headers":                    strmapattr.Default(),
 	"hmac_secret":                stringattr.SecretOptional(),
+	"aws_auth_type":              stringattr.Default("none", stringvalidator.OneOf("", "none", "credentials", "assumeRole")),
+	"aws_access_key_id":          stringattr.SecretOptional(),
+	"aws_secret_access_key":      stringattr.SecretOptional(),
+	"aws_role_arn":               stringattr.Default(""),
+	"aws_external_id":            stringattr.Default(""),
+	"aws_region":                 stringattr.Default(""),
+	"aws_service":                stringattr.Default(""),
+	"rfc9421_signing_enabled":    boolattr.Default(false),
+	"rfc9421_private_key":        stringattr.SecretOptional(),
+	"rfc9421_key_id":             stringattr.Default(""),
+	"rfc9421_components":         stringattr.Default(""),
+	"rfc9421_signature_ttl":      floatattr.Default(300),
 	"insecure":                   boolattr.Default(false),
 	"include_headers_in_context": boolattr.Default(false),
 	"use_static_ips":             boolattr.Default(false),
+	"engine_id":                  stringattr.Default(""),
 }
 
 // Model
@@ -36,22 +55,88 @@ type HTTPModel struct {
 	Authentication          objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
 	Headers                 strmapattr.Type                  `tfsdk:"headers"`
 	HMACSecret              stringattr.Type                  `tfsdk:"hmac_secret"`
+	AWSAuthType             stringattr.Type                  `tfsdk:"aws_auth_type"`
+	AWSAccessKeyID          stringattr.Type                  `tfsdk:"aws_access_key_id"`
+	AWSSecretAccessKey      stringattr.Type                  `tfsdk:"aws_secret_access_key"`
+	AWSRoleARN              stringattr.Type                  `tfsdk:"aws_role_arn"`
+	AWSExternalID           stringattr.Type                  `tfsdk:"aws_external_id"`
+	AWSRegion               stringattr.Type                  `tfsdk:"aws_region"`
+	AWSService              stringattr.Type                  `tfsdk:"aws_service"`
+	RFC9421SigningEnabled   boolattr.Type                    `tfsdk:"rfc9421_signing_enabled"`
+	RFC9421PrivateKey       stringattr.Type                  `tfsdk:"rfc9421_private_key"`
+	RFC9421KeyID            stringattr.Type                  `tfsdk:"rfc9421_key_id"`
+	RFC9421Components       stringattr.Type                  `tfsdk:"rfc9421_components"`
+	RFC9421SignatureTTL     floatattr.Type                   `tfsdk:"rfc9421_signature_ttl"`
 	Insecure                boolattr.Type                    `tfsdk:"insecure"`
 	IncludeHeadersInContext boolattr.Type                    `tfsdk:"include_headers_in_context"`
 	UseStaticIPs            boolattr.Type                    `tfsdk:"use_static_ips"`
+	EngineID                stringattr.Type                  `tfsdk:"engine_id"`
 }
 
 func (m *HTTPModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "http"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *HTTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
+	}
+}
+
+func (m *HTTPModel) Validate(h *helpers.Handler) {
+	if m.AWSAccessKeyID.ValueString() != "" && m.AWSAuthType.ValueString() != "" && m.AWSAuthType.ValueString() != "credentials" {
+		h.Conflict("The aws_access_key_id field can only be used when aws_auth_type is set to 'credentials'")
+	}
+	if m.AWSAccessKeyID.ValueString() == "" && !m.AWSAccessKeyID.IsUnknown() && m.AWSAuthType.ValueString() == "credentials" {
+		h.Conflict("The aws_access_key_id field is required when aws_auth_type is set to 'credentials'")
+	}
+	if m.AWSSecretAccessKey.ValueString() != "" && m.AWSAuthType.ValueString() != "" && m.AWSAuthType.ValueString() != "credentials" {
+		h.Conflict("The aws_secret_access_key field can only be used when aws_auth_type is set to 'credentials'")
+	}
+	if m.AWSSecretAccessKey.ValueString() == "" && !m.AWSSecretAccessKey.IsUnknown() && m.AWSAuthType.ValueString() == "credentials" {
+		h.Conflict("The aws_secret_access_key field is required when aws_auth_type is set to 'credentials'")
+	}
+	if m.AWSRoleARN.ValueString() != "" && m.AWSAuthType.ValueString() != "" && m.AWSAuthType.ValueString() != "assumeRole" {
+		h.Conflict("The aws_role_arn field can only be used when aws_auth_type is set to 'assumeRole'")
+	}
+	if m.AWSRoleARN.ValueString() == "" && !m.AWSRoleARN.IsUnknown() && m.AWSAuthType.ValueString() == "assumeRole" {
+		h.Conflict("The aws_role_arn field is required when aws_auth_type is set to 'assumeRole'")
+	}
+	if m.AWSExternalID.ValueString() != "" && m.AWSAuthType.ValueString() != "" && m.AWSAuthType.ValueString() != "assumeRole" {
+		h.Conflict("The aws_external_id field can only be used when aws_auth_type is set to 'assumeRole'")
+	}
+	if m.AWSExternalID.ValueString() == "" && !m.AWSExternalID.IsUnknown() && m.AWSAuthType.ValueString() == "assumeRole" {
+		h.Conflict("The aws_external_id field is required when aws_auth_type is set to 'assumeRole'")
+	}
+	if m.AWSRegion.ValueString() != "" && m.AWSAuthType.ValueString() != "" && !slices.Contains([]string{"credentials", "assumeRole"}, m.AWSAuthType.ValueString()) {
+		h.Conflict("The aws_region field can only be used when aws_auth_type is one of [credentials assumeRole]")
+	}
+	if m.AWSRegion.ValueString() == "" && !m.AWSRegion.IsUnknown() && slices.Contains([]string{"credentials", "assumeRole"}, m.AWSAuthType.ValueString()) {
+		h.Conflict("The aws_region field is required when aws_auth_type is one of [credentials assumeRole]")
+	}
+	if m.AWSService.ValueString() != "" && m.AWSAuthType.ValueString() != "" && !slices.Contains([]string{"credentials", "assumeRole"}, m.AWSAuthType.ValueString()) {
+		h.Conflict("The aws_service field can only be used when aws_auth_type is one of [credentials assumeRole]")
+	}
+	if m.AWSService.ValueString() == "" && !m.AWSService.IsUnknown() && slices.Contains([]string{"credentials", "assumeRole"}, m.AWSAuthType.ValueString()) {
+		h.Conflict("The aws_service field is required when aws_auth_type is one of [credentials assumeRole]")
+	}
+	if !m.RFC9421PrivateKey.IsNull() && !m.RFC9421SigningEnabled.ValueBool() {
+		h.Conflict("The rfc9421_private_key field cannot be used unless rfc9421_signing_enabled is set to true")
+	}
+	if !m.RFC9421KeyID.IsNull() && !m.RFC9421SigningEnabled.ValueBool() {
+		h.Conflict("The rfc9421_key_id field cannot be used unless rfc9421_signing_enabled is set to true")
+	}
+	if !m.RFC9421Components.IsNull() && !m.RFC9421SigningEnabled.ValueBool() {
+		h.Conflict("The rfc9421_components field cannot be used unless rfc9421_signing_enabled is set to true")
+	}
+	if !m.RFC9421SignatureTTL.IsNull() && !m.RFC9421SigningEnabled.ValueBool() {
+		h.Conflict("The rfc9421_signature_ttl field cannot be used unless rfc9421_signing_enabled is set to true")
 	}
 }
 
@@ -63,6 +148,18 @@ func (m *HTTPModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	objattr.Get(m.Authentication, c, "authentication", h)
 	getHeaders(m.Headers, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
+	stringattr.Get(m.AWSAuthType, c, "awsAuthType")
+	stringattr.Get(m.AWSAccessKeyID, c, "awsAccessKeyId")
+	stringattr.Get(m.AWSSecretAccessKey, c, "awsSecretAccessKey")
+	stringattr.Get(m.AWSRoleARN, c, "awsRoleArn")
+	stringattr.Get(m.AWSExternalID, c, "awsExternalId")
+	stringattr.Get(m.AWSRegion, c, "awsRegion")
+	stringattr.Get(m.AWSService, c, "awsService")
+	boolattr.Get(m.RFC9421SigningEnabled, c, "rfc9421SigningEnabled")
+	stringattr.Get(m.RFC9421PrivateKey, c, "rfc9421PrivateKey")
+	stringattr.Get(m.RFC9421KeyID, c, "rfc9421KeyId")
+	stringattr.Get(m.RFC9421Components, c, "rfc9421Components")
+	floatattr.Get(m.RFC9421SignatureTTL, c, "rfc9421SignatureTTL")
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.IncludeHeadersInContext, c, "includeHeadersInContext")
 	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
@@ -74,6 +171,18 @@ func (m *HTTPModel) SetConfigurationValues(c map[string]any, h *helpers.Handler)
 	objattr.Set(&m.Authentication, c, "authentication", h)
 	setHeaders(&m.Headers, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
+	stringattr.Set(&m.AWSAuthType, c, "awsAuthType")
+	stringattr.Nil(&m.AWSAccessKeyID)
+	stringattr.Nil(&m.AWSSecretAccessKey)
+	stringattr.Set(&m.AWSRoleARN, c, "awsRoleArn")
+	stringattr.Set(&m.AWSExternalID, c, "awsExternalId")
+	stringattr.Set(&m.AWSRegion, c, "awsRegion")
+	stringattr.Set(&m.AWSService, c, "awsService")
+	boolattr.Set(&m.RFC9421SigningEnabled, c, "rfc9421SigningEnabled")
+	stringattr.Nil(&m.RFC9421PrivateKey)
+	stringattr.Set(&m.RFC9421KeyID, c, "rfc9421KeyId")
+	stringattr.Set(&m.RFC9421Components, c, "rfc9421Components")
+	floatattr.Set(&m.RFC9421SignatureTTL, c, "rfc9421SignatureTTL")
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.IncludeHeadersInContext, c, "includeHeadersInContext")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")

@@ -18,13 +18,16 @@ var ConnectorsModifier = objattr.NewModifier[ConnectorsModel]("maintains connect
 
 var ConnectorsAttributes = map[string]schema.Attribute{
 	"abuseipdb":                  listattr.Default[AbuseIPDBModel](AbuseIPDBAttributes),
+	"alloy":                      listattr.Default[AlloyModel](AlloyAttributes),
 	"amplitude":                  listattr.Default[AmplitudeModel](AmplitudeAttributes),
 	"arkose":                     listattr.Default[ArkoseModel](ArkoseAttributes),
 	"audit_webhook":              listattr.Default[AuditWebhookModel](AuditWebhookAttributes),
 	"aws_s3":                     listattr.Default[AWSS3Model](AWSS3Attributes, AWSS3Validator),
+	"aws_ses_email_validation":   listattr.Default[AWSSESEmailValidationModel](AWSSESEmailValidationAttributes, AWSSESEmailValidationValidator),
 	"aws_translate":              listattr.Default[AWSTranslateModel](AWSTranslateAttributes),
 	"bitsight":                   listattr.Default[BitsightModel](BitsightAttributes),
 	"coralogix":                  listattr.Default[CoralogixModel](CoralogixAttributes, CoralogixValidator),
+	"cribl":                      listattr.Default[CriblModel](CriblAttributes, CriblValidator),
 	"darwinium":                  listattr.Default[DarwiniumModel](DarwiniumAttributes),
 	"datadog":                    listattr.Default[DatadogModel](DatadogAttributes, DatadogValidator),
 	"devrev_grow":                listattr.Default[DevRevGrowModel](DevRevGrowAttributes),
@@ -42,9 +45,10 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"google_cloud_translation":   listattr.Default[GoogleCloudTranslationModel](GoogleCloudTranslationAttributes),
 	"google_maps_places":         listattr.Default[GoogleMapsPlacesModel](GoogleMapsPlacesAttributes),
 	"google_cloud_logging":       listattr.Default[GoogleCloudLoggingModel](GoogleCloudLoggingAttributes, GoogleCloudLoggingValidator),
+	"groundcover":                listattr.Default[GroundcoverModel](GroundcoverAttributes, GroundcoverValidator),
 	"hcaptcha":                   listattr.Default[HCaptchaModel](HCaptchaAttributes, HCaptchaValidator),
 	"hibp":                       listattr.Default[HIBPModel](HIBPAttributes),
-	"http":                       listattr.Default[HTTPModel](HTTPAttributes),
+	"http":                       listattr.Default[HTTPModel](HTTPAttributes, HTTPValidator),
 	"hubspot":                    listattr.Default[HubSpotModel](HubSpotAttributes),
 	"incode":                     listattr.Default[IncodeModel](IncodeAttributes),
 	"intercom":                   listattr.Default[IntercomModel](IntercomAttributes),
@@ -54,21 +58,26 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"mparticle":                  listattr.Default[MParticleModel](MParticleAttributes),
 	"newrelic":                   listattr.Default[NewRelicModel](NewRelicAttributes, NewRelicValidator),
 	"opentelemetry":              listattr.Default[OpenTelemetryModel](OpenTelemetryAttributes, OpenTelemetryValidator),
+	"pendo":                      listattr.Default[PendoModel](PendoAttributes, PendoValidator),
 	"ping_directory":             listattr.Default[PingDirectoryModel](PingDirectoryAttributes),
 	"postmark":                   listattr.Default[PostmarkModel](PostmarkAttributes),
 	"radar":                      listattr.Default[RadarModel](RadarAttributes),
 	"recaptcha":                  listattr.Default[RecaptchaModel](RecaptchaAttributes, RecaptchaValidator),
 	"recaptcha_enterprise":       listattr.Default[RecaptchaEnterpriseModel](RecaptchaEnterpriseAttributes, RecaptchaEnterpriseValidator),
+	"recaptcha_v2":               listattr.Default[RecaptchaV2Model](RecaptchaV2Attributes, RecaptchaV2Validator),
 	"rekognition":                listattr.Default[RekognitionModel](RekognitionAttributes),
+	"rnd_reassigned":             listattr.Default[RNDReassignedModel](RNDReassignedAttributes),
 	"salesforce":                 listattr.Default[SalesforceModel](SalesforceAttributes),
 	"salesforce_marketing_cloud": listattr.Default[SalesforceMarketingCloudModel](SalesforceMarketingCloudAttributes),
 	"sardine":                    listattr.Default[SardineModel](SardineAttributes),
+	"scim":                       listattr.Default[SCIMModel](SCIMAttributes),
 	"segment":                    listattr.Default[SegmentModel](SegmentAttributes),
 	"sendgrid":                   listattr.Default[SendGridModel](SendGridAttributes),
 	"ses":                        listattr.Default[SESModel](SESAttributes, SESValidator),
 	"slack":                      listattr.Default[SlackModel](SlackAttributes),
 	"smartling":                  listattr.Default[SmartlingModel](SmartlingAttributes),
 	"smtp":                       listattr.Default[SMTPModel](SMTPAttributes),
+	"snowflake":                  listattr.Default[SnowflakeModel](SnowflakeAttributes, SnowflakeValidator),
 	"sns":                        listattr.Default[SNSModel](SNSAttributes, SNSValidator),
 	"splunk":                     listattr.Default[SplunkModel](SplunkAttributes, SplunkValidator),
 	"sql":                        listattr.Default[SQLModel](SQLAttributes, SQLValidator),
@@ -85,13 +94,16 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 
 type ConnectorsModel struct {
 	AbuseIPDB                listattr.Type[AbuseIPDBModel]                `tfsdk:"abuseipdb"`
+	Alloy                    listattr.Type[AlloyModel]                    `tfsdk:"alloy"`
 	Amplitude                listattr.Type[AmplitudeModel]                `tfsdk:"amplitude"`
 	Arkose                   listattr.Type[ArkoseModel]                   `tfsdk:"arkose"`
 	AuditWebhook             listattr.Type[AuditWebhookModel]             `tfsdk:"audit_webhook"`
 	AWSS3                    listattr.Type[AWSS3Model]                    `tfsdk:"aws_s3"`
+	AWSSESEmailValidation    listattr.Type[AWSSESEmailValidationModel]    `tfsdk:"aws_ses_email_validation"`
 	AWSTranslate             listattr.Type[AWSTranslateModel]             `tfsdk:"aws_translate"`
 	Bitsight                 listattr.Type[BitsightModel]                 `tfsdk:"bitsight"`
 	Coralogix                listattr.Type[CoralogixModel]                `tfsdk:"coralogix"`
+	Cribl                    listattr.Type[CriblModel]                    `tfsdk:"cribl"`
 	Darwinium                listattr.Type[DarwiniumModel]                `tfsdk:"darwinium"`
 	Datadog                  listattr.Type[DatadogModel]                  `tfsdk:"datadog"`
 	DevRevGrow               listattr.Type[DevRevGrowModel]               `tfsdk:"devrev_grow"`
@@ -109,6 +121,7 @@ type ConnectorsModel struct {
 	GoogleCloudTranslation   listattr.Type[GoogleCloudTranslationModel]   `tfsdk:"google_cloud_translation"`
 	GoogleMapsPlaces         listattr.Type[GoogleMapsPlacesModel]         `tfsdk:"google_maps_places"`
 	GoogleCloudLogging       listattr.Type[GoogleCloudLoggingModel]       `tfsdk:"google_cloud_logging"`
+	Groundcover              listattr.Type[GroundcoverModel]              `tfsdk:"groundcover"`
 	HCaptcha                 listattr.Type[HCaptchaModel]                 `tfsdk:"hcaptcha"`
 	HIBP                     listattr.Type[HIBPModel]                     `tfsdk:"hibp"`
 	HTTP                     listattr.Type[HTTPModel]                     `tfsdk:"http"`
@@ -121,21 +134,26 @@ type ConnectorsModel struct {
 	MParticle                listattr.Type[MParticleModel]                `tfsdk:"mparticle"`
 	NewRelic                 listattr.Type[NewRelicModel]                 `tfsdk:"newrelic"`
 	OpenTelemetry            listattr.Type[OpenTelemetryModel]            `tfsdk:"opentelemetry"`
+	Pendo                    listattr.Type[PendoModel]                    `tfsdk:"pendo"`
 	PingDirectory            listattr.Type[PingDirectoryModel]            `tfsdk:"ping_directory"`
 	Postmark                 listattr.Type[PostmarkModel]                 `tfsdk:"postmark"`
 	Radar                    listattr.Type[RadarModel]                    `tfsdk:"radar"`
 	Recaptcha                listattr.Type[RecaptchaModel]                `tfsdk:"recaptcha"`
 	RecaptchaEnterprise      listattr.Type[RecaptchaEnterpriseModel]      `tfsdk:"recaptcha_enterprise"`
+	RecaptchaV2              listattr.Type[RecaptchaV2Model]              `tfsdk:"recaptcha_v2"`
 	Rekognition              listattr.Type[RekognitionModel]              `tfsdk:"rekognition"`
+	RNDReassigned            listattr.Type[RNDReassignedModel]            `tfsdk:"rnd_reassigned"`
 	Salesforce               listattr.Type[SalesforceModel]               `tfsdk:"salesforce"`
 	SalesforceMarketingCloud listattr.Type[SalesforceMarketingCloudModel] `tfsdk:"salesforce_marketing_cloud"`
 	Sardine                  listattr.Type[SardineModel]                  `tfsdk:"sardine"`
+	SCIM                     listattr.Type[SCIMModel]                     `tfsdk:"scim"`
 	Segment                  listattr.Type[SegmentModel]                  `tfsdk:"segment"`
 	SendGrid                 listattr.Type[SendGridModel]                 `tfsdk:"sendgrid"`
 	SES                      listattr.Type[SESModel]                      `tfsdk:"ses"`
 	Slack                    listattr.Type[SlackModel]                    `tfsdk:"slack"`
 	Smartling                listattr.Type[SmartlingModel]                `tfsdk:"smartling"`
 	SMTP                     listattr.Type[SMTPModel]                     `tfsdk:"smtp"`
+	Snowflake                listattr.Type[SnowflakeModel]                `tfsdk:"snowflake"`
 	SNS                      listattr.Type[SNSModel]                      `tfsdk:"sns"`
 	Splunk                   listattr.Type[SplunkModel]                   `tfsdk:"splunk"`
 	SQL                      listattr.Type[SQLModel]                      `tfsdk:"sql"`
@@ -153,13 +171,16 @@ type ConnectorsModel struct {
 func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	listattr.Get(m.AbuseIPDB, data, "abuseipdb", h)
+	listattr.Get(m.Alloy, data, "alloy", h)
 	listattr.Get(m.Amplitude, data, "amplitude", h)
 	listattr.Get(m.Arkose, data, "arkose", h)
 	listattr.Get(m.AuditWebhook, data, "audit-webhook", h)
 	listattr.Get(m.AWSS3, data, "aws-s3", h)
+	listattr.Get(m.AWSSESEmailValidation, data, "aws-ses-email-validation", h)
 	listattr.Get(m.AWSTranslate, data, "aws-translate", h)
 	listattr.Get(m.Bitsight, data, "bitsight", h)
 	listattr.Get(m.Coralogix, data, "coralogix", h)
+	listattr.Get(m.Cribl, data, "cribl", h)
 	listattr.Get(m.Darwinium, data, "darwinium", h)
 	listattr.Get(m.Datadog, data, "datadog", h)
 	listattr.Get(m.DevRevGrow, data, "devrev-grow", h)
@@ -177,6 +198,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.GoogleCloudTranslation, data, "google-cloud-translation", h)
 	listattr.Get(m.GoogleMapsPlaces, data, "google-maps-places", h)
 	listattr.Get(m.GoogleCloudLogging, data, "googlecloudlogging", h)
+	listattr.Get(m.Groundcover, data, "groundcover", h)
 	listattr.Get(m.HCaptcha, data, "hcaptcha", h)
 	listattr.Get(m.HIBP, data, "hibp", h)
 	listattr.Get(m.HTTP, data, "http", h)
@@ -189,21 +211,26 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.MParticle, data, "mparticle", h)
 	listattr.Get(m.NewRelic, data, "newrelic", h)
 	listattr.Get(m.OpenTelemetry, data, "opentelemetry", h)
+	listattr.Get(m.Pendo, data, "pendo", h)
 	listattr.Get(m.PingDirectory, data, "ping-directory", h)
 	listattr.Get(m.Postmark, data, "post-mark", h)
 	listattr.Get(m.Radar, data, "radar", h)
 	listattr.Get(m.Recaptcha, data, "recaptcha", h)
 	listattr.Get(m.RecaptchaEnterprise, data, "recaptcha-enterprise", h)
+	listattr.Get(m.RecaptchaV2, data, "recaptcha-v2", h)
 	listattr.Get(m.Rekognition, data, "rekognition", h)
+	listattr.Get(m.RNDReassigned, data, "rnd-reassigned", h)
 	listattr.Get(m.Salesforce, data, "salesforce", h)
 	listattr.Get(m.SalesforceMarketingCloud, data, "salesforce-marketing-cloud", h)
 	listattr.Get(m.Sardine, data, "sardine", h)
+	listattr.Get(m.SCIM, data, "scim", h)
 	listattr.Get(m.Segment, data, "segment", h)
 	listattr.Get(m.SendGrid, data, "sendgrid", h)
 	listattr.Get(m.SES, data, "ses", h)
 	listattr.Get(m.Slack, data, "slack", h)
 	listattr.Get(m.Smartling, data, "smartling", h)
 	listattr.Get(m.SMTP, data, "smtp", h)
+	listattr.Get(m.Snowflake, data, "snowflake", h)
 	listattr.Get(m.SNS, data, "sns", h)
 	listattr.Get(m.Splunk, data, "splunk", h)
 	listattr.Get(m.SQL, data, "sql", h)
@@ -221,13 +248,16 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.AbuseIPDB, data, "abuseipdb", "name", h)
+	listattr.SetMatchingNames(&m.Alloy, data, "alloy", "name", h)
 	listattr.SetMatchingNames(&m.Amplitude, data, "amplitude", "name", h)
 	listattr.SetMatchingNames(&m.Arkose, data, "arkose", "name", h)
 	listattr.SetMatchingNames(&m.AuditWebhook, data, "audit-webhook", "name", h)
 	listattr.SetMatchingNames(&m.AWSS3, data, "aws-s3", "name", h)
+	listattr.SetMatchingNames(&m.AWSSESEmailValidation, data, "aws-ses-email-validation", "name", h)
 	listattr.SetMatchingNames(&m.AWSTranslate, data, "aws-translate", "name", h)
 	listattr.SetMatchingNames(&m.Bitsight, data, "bitsight", "name", h)
 	listattr.SetMatchingNames(&m.Coralogix, data, "coralogix", "name", h)
+	listattr.SetMatchingNames(&m.Cribl, data, "cribl", "name", h)
 	listattr.SetMatchingNames(&m.Darwinium, data, "darwinium", "name", h)
 	listattr.SetMatchingNames(&m.Datadog, data, "datadog", "name", h)
 	listattr.SetMatchingNames(&m.DevRevGrow, data, "devrev-grow", "name", h)
@@ -245,6 +275,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.GoogleCloudTranslation, data, "google-cloud-translation", "name", h)
 	listattr.SetMatchingNames(&m.GoogleMapsPlaces, data, "google-maps-places", "name", h)
 	listattr.SetMatchingNames(&m.GoogleCloudLogging, data, "googlecloudlogging", "name", h)
+	listattr.SetMatchingNames(&m.Groundcover, data, "groundcover", "name", h)
 	listattr.SetMatchingNames(&m.HCaptcha, data, "hcaptcha", "name", h)
 	listattr.SetMatchingNames(&m.HIBP, data, "hibp", "name", h)
 	listattr.SetMatchingNames(&m.HTTP, data, "http", "name", h)
@@ -257,21 +288,26 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.MParticle, data, "mparticle", "name", h)
 	listattr.SetMatchingNames(&m.NewRelic, data, "newrelic", "name", h)
 	listattr.SetMatchingNames(&m.OpenTelemetry, data, "opentelemetry", "name", h)
+	listattr.SetMatchingNames(&m.Pendo, data, "pendo", "name", h)
 	listattr.SetMatchingNames(&m.PingDirectory, data, "ping-directory", "name", h)
 	listattr.SetMatchingNames(&m.Postmark, data, "post-mark", "name", h)
 	listattr.SetMatchingNames(&m.Radar, data, "radar", "name", h)
 	listattr.SetMatchingNames(&m.Recaptcha, data, "recaptcha", "name", h)
 	listattr.SetMatchingNames(&m.RecaptchaEnterprise, data, "recaptcha-enterprise", "name", h)
+	listattr.SetMatchingNames(&m.RecaptchaV2, data, "recaptcha-v2", "name", h)
 	listattr.SetMatchingNames(&m.Rekognition, data, "rekognition", "name", h)
+	listattr.SetMatchingNames(&m.RNDReassigned, data, "rnd-reassigned", "name", h)
 	listattr.SetMatchingNames(&m.Salesforce, data, "salesforce", "name", h)
 	listattr.SetMatchingNames(&m.SalesforceMarketingCloud, data, "salesforce-marketing-cloud", "name", h)
 	listattr.SetMatchingNames(&m.Sardine, data, "sardine", "name", h)
+	listattr.SetMatchingNames(&m.SCIM, data, "scim", "name", h)
 	listattr.SetMatchingNames(&m.Segment, data, "segment", "name", h)
 	listattr.SetMatchingNames(&m.SendGrid, data, "sendgrid", "name", h)
 	listattr.SetMatchingNames(&m.SES, data, "ses", "name", h)
 	listattr.SetMatchingNames(&m.Slack, data, "slack", "name", h)
 	listattr.SetMatchingNames(&m.Smartling, data, "smartling", "name", h)
 	listattr.SetMatchingNames(&m.SMTP, data, "smtp", "name", h)
+	listattr.SetMatchingNames(&m.Snowflake, data, "snowflake", "name", h)
 	listattr.SetMatchingNames(&m.SNS, data, "sns", "name", h)
 	listattr.SetMatchingNames(&m.Splunk, data, "splunk", "name", h)
 	listattr.SetMatchingNames(&m.SQL, data, "sql", "name", h)
@@ -288,13 +324,16 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "abuseipdb", m.AbuseIPDB)
+	addConnectorReferences(h, "alloy", m.Alloy)
 	addConnectorReferences(h, "amplitude", m.Amplitude)
 	addConnectorReferences(h, "arkose", m.Arkose)
 	addConnectorReferences(h, "audit-webhook", m.AuditWebhook)
 	addConnectorReferences(h, "aws-s3", m.AWSS3)
+	addConnectorReferences(h, "aws-ses-email-validation", m.AWSSESEmailValidation)
 	addConnectorReferences(h, "aws-translate", m.AWSTranslate)
 	addConnectorReferences(h, "bitsight", m.Bitsight)
 	addConnectorReferences(h, "coralogix", m.Coralogix)
+	addConnectorReferences(h, "cribl", m.Cribl)
 	addConnectorReferences(h, "darwinium", m.Darwinium)
 	addConnectorReferences(h, "datadog", m.Datadog)
 	addConnectorReferences(h, "devrev-grow", m.DevRevGrow)
@@ -312,6 +351,7 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "google-cloud-translation", m.GoogleCloudTranslation)
 	addConnectorReferences(h, "google-maps-places", m.GoogleMapsPlaces)
 	addConnectorReferences(h, "googlecloudlogging", m.GoogleCloudLogging)
+	addConnectorReferences(h, "groundcover", m.Groundcover)
 	addConnectorReferences(h, "hcaptcha", m.HCaptcha)
 	addConnectorReferences(h, "hibp", m.HIBP)
 	addConnectorReferences(h, "http", m.HTTP)
@@ -324,21 +364,26 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "mparticle", m.MParticle)
 	addConnectorReferences(h, "newrelic", m.NewRelic)
 	addConnectorReferences(h, "opentelemetry", m.OpenTelemetry)
+	addConnectorReferences(h, "pendo", m.Pendo)
 	addConnectorReferences(h, "ping-directory", m.PingDirectory)
 	addConnectorReferences(h, "post-mark", m.Postmark)
 	addConnectorReferences(h, "radar", m.Radar)
 	addConnectorReferences(h, "recaptcha", m.Recaptcha)
 	addConnectorReferences(h, "recaptcha-enterprise", m.RecaptchaEnterprise)
+	addConnectorReferences(h, "recaptcha-v2", m.RecaptchaV2)
 	addConnectorReferences(h, "rekognition", m.Rekognition)
+	addConnectorReferences(h, "rnd-reassigned", m.RNDReassigned)
 	addConnectorReferences(h, "salesforce", m.Salesforce)
 	addConnectorReferences(h, "salesforce-marketing-cloud", m.SalesforceMarketingCloud)
 	addConnectorReferences(h, "sardine", m.Sardine)
+	addConnectorReferences(h, "scim", m.SCIM)
 	addConnectorReferences(h, "segment", m.Segment)
 	addConnectorReferences(h, "sendgrid", m.SendGrid)
 	addConnectorReferences(h, "ses", m.SES)
 	addConnectorReferences(h, "slack", m.Slack)
 	addConnectorReferences(h, "smartling", m.Smartling)
 	addConnectorReferences(h, "smtp", m.SMTP)
+	addConnectorReferences(h, "snowflake", m.Snowflake)
 	addConnectorReferences(h, "sns", m.SNS)
 	addConnectorReferences(h, "splunk", m.Splunk)
 	addConnectorReferences(h, "sql", m.SQL)
@@ -356,13 +401,16 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	names := map[string]int{}
 	addConnectorNames(h, names, m.AbuseIPDB)
+	addConnectorNames(h, names, m.Alloy)
 	addConnectorNames(h, names, m.Amplitude)
 	addConnectorNames(h, names, m.Arkose)
 	addConnectorNames(h, names, m.AuditWebhook)
 	addConnectorNames(h, names, m.AWSS3)
+	addConnectorNames(h, names, m.AWSSESEmailValidation)
 	addConnectorNames(h, names, m.AWSTranslate)
 	addConnectorNames(h, names, m.Bitsight)
 	addConnectorNames(h, names, m.Coralogix)
+	addConnectorNames(h, names, m.Cribl)
 	addConnectorNames(h, names, m.Darwinium)
 	addConnectorNames(h, names, m.Datadog)
 	addConnectorNames(h, names, m.DevRevGrow)
@@ -380,6 +428,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.GoogleCloudTranslation)
 	addConnectorNames(h, names, m.GoogleMapsPlaces)
 	addConnectorNames(h, names, m.GoogleCloudLogging)
+	addConnectorNames(h, names, m.Groundcover)
 	addConnectorNames(h, names, m.HCaptcha)
 	addConnectorNames(h, names, m.HIBP)
 	addConnectorNames(h, names, m.HTTP)
@@ -392,21 +441,26 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.MParticle)
 	addConnectorNames(h, names, m.NewRelic)
 	addConnectorNames(h, names, m.OpenTelemetry)
+	addConnectorNames(h, names, m.Pendo)
 	addConnectorNames(h, names, m.PingDirectory)
 	addConnectorNames(h, names, m.Postmark)
 	addConnectorNames(h, names, m.Radar)
 	addConnectorNames(h, names, m.Recaptcha)
 	addConnectorNames(h, names, m.RecaptchaEnterprise)
+	addConnectorNames(h, names, m.RecaptchaV2)
 	addConnectorNames(h, names, m.Rekognition)
+	addConnectorNames(h, names, m.RNDReassigned)
 	addConnectorNames(h, names, m.Salesforce)
 	addConnectorNames(h, names, m.SalesforceMarketingCloud)
 	addConnectorNames(h, names, m.Sardine)
+	addConnectorNames(h, names, m.SCIM)
 	addConnectorNames(h, names, m.Segment)
 	addConnectorNames(h, names, m.SendGrid)
 	addConnectorNames(h, names, m.SES)
 	addConnectorNames(h, names, m.Slack)
 	addConnectorNames(h, names, m.Smartling)
 	addConnectorNames(h, names, m.SMTP)
+	addConnectorNames(h, names, m.Snowflake)
 	addConnectorNames(h, names, m.SNS)
 	addConnectorNames(h, names, m.Splunk)
 	addConnectorNames(h, names, m.SQL)
@@ -428,13 +482,16 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 
 func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.AbuseIPDB, state.AbuseIPDB)
+	listattr.ModifyMatchingNames(h, &m.Alloy, state.Alloy)
 	listattr.ModifyMatchingNames(h, &m.Amplitude, state.Amplitude)
 	listattr.ModifyMatchingNames(h, &m.Arkose, state.Arkose)
 	listattr.ModifyMatchingNames(h, &m.AuditWebhook, state.AuditWebhook)
 	listattr.ModifyMatchingNames(h, &m.AWSS3, state.AWSS3)
+	listattr.ModifyMatchingNames(h, &m.AWSSESEmailValidation, state.AWSSESEmailValidation)
 	listattr.ModifyMatchingNames(h, &m.AWSTranslate, state.AWSTranslate)
 	listattr.ModifyMatchingNames(h, &m.Bitsight, state.Bitsight)
 	listattr.ModifyMatchingNames(h, &m.Coralogix, state.Coralogix)
+	listattr.ModifyMatchingNames(h, &m.Cribl, state.Cribl)
 	listattr.ModifyMatchingNames(h, &m.Darwinium, state.Darwinium)
 	listattr.ModifyMatchingNames(h, &m.Datadog, state.Datadog)
 	listattr.ModifyMatchingNames(h, &m.DevRevGrow, state.DevRevGrow)
@@ -452,6 +509,7 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.GoogleCloudTranslation, state.GoogleCloudTranslation)
 	listattr.ModifyMatchingNames(h, &m.GoogleMapsPlaces, state.GoogleMapsPlaces)
 	listattr.ModifyMatchingNames(h, &m.GoogleCloudLogging, state.GoogleCloudLogging)
+	listattr.ModifyMatchingNames(h, &m.Groundcover, state.Groundcover)
 	listattr.ModifyMatchingNames(h, &m.HCaptcha, state.HCaptcha)
 	listattr.ModifyMatchingNames(h, &m.HIBP, state.HIBP)
 	listattr.ModifyMatchingNames(h, &m.HTTP, state.HTTP)
@@ -464,21 +522,26 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.MParticle, state.MParticle)
 	listattr.ModifyMatchingNames(h, &m.NewRelic, state.NewRelic)
 	listattr.ModifyMatchingNames(h, &m.OpenTelemetry, state.OpenTelemetry)
+	listattr.ModifyMatchingNames(h, &m.Pendo, state.Pendo)
 	listattr.ModifyMatchingNames(h, &m.PingDirectory, state.PingDirectory)
 	listattr.ModifyMatchingNames(h, &m.Postmark, state.Postmark)
 	listattr.ModifyMatchingNames(h, &m.Radar, state.Radar)
 	listattr.ModifyMatchingNames(h, &m.Recaptcha, state.Recaptcha)
 	listattr.ModifyMatchingNames(h, &m.RecaptchaEnterprise, state.RecaptchaEnterprise)
+	listattr.ModifyMatchingNames(h, &m.RecaptchaV2, state.RecaptchaV2)
 	listattr.ModifyMatchingNames(h, &m.Rekognition, state.Rekognition)
+	listattr.ModifyMatchingNames(h, &m.RNDReassigned, state.RNDReassigned)
 	listattr.ModifyMatchingNames(h, &m.Salesforce, state.Salesforce)
 	listattr.ModifyMatchingNames(h, &m.SalesforceMarketingCloud, state.SalesforceMarketingCloud)
 	listattr.ModifyMatchingNames(h, &m.Sardine, state.Sardine)
+	listattr.ModifyMatchingNames(h, &m.SCIM, state.SCIM)
 	listattr.ModifyMatchingNames(h, &m.Segment, state.Segment)
 	listattr.ModifyMatchingNames(h, &m.SendGrid, state.SendGrid)
 	listattr.ModifyMatchingNames(h, &m.SES, state.SES)
 	listattr.ModifyMatchingNames(h, &m.Slack, state.Slack)
 	listattr.ModifyMatchingNames(h, &m.Smartling, state.Smartling)
 	listattr.ModifyMatchingNames(h, &m.SMTP, state.SMTP)
+	listattr.ModifyMatchingNames(h, &m.Snowflake, state.Snowflake)
 	listattr.ModifyMatchingNames(h, &m.SNS, state.SNS)
 	listattr.ModifyMatchingNames(h, &m.Splunk, state.Splunk)
 	listattr.ModifyMatchingNames(h, &m.SQL, state.SQL)

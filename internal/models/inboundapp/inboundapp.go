@@ -31,6 +31,11 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"non_confidential_client":          boolattr.Default(false, boolplanmodifier.RequiresReplace()),
 	"client_id":                        stringattr.Optional(stringplanmodifier.RequiresReplace()),
 	"client_secret":                    stringattr.SecretGenerated(true),
+	"force_pkce":                       boolattr.Default(false),
+}
+
+var Schema = schema.Schema{
+	Attributes: InboundAppAttributes,
 }
 
 type InboundAppModel struct {
@@ -51,6 +56,7 @@ type InboundAppModel struct {
 	NonConfidentialClient        boolattr.Type                        `tfsdk:"non_confidential_client"`
 	ClientId                     stringattr.Type                      `tfsdk:"client_id"`
 	ClientSecret                 stringattr.Type                      `tfsdk:"client_secret"`
+	ForcePkce                    boolattr.Type                        `tfsdk:"force_pkce"`
 }
 
 func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
@@ -70,6 +76,7 @@ func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.NonConfidentialClient, data, "nonConfidentialClient")
 	stringattr.Get(m.ClientId, data, "clientId")
 	stringattr.Get(m.ClientSecret, data, "clientSecret")
+	boolattr.Get(m.ForcePkce, data, "forcePkce")
 	return data
 }
 
@@ -89,4 +96,17 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.NonConfidentialClient, data, "nonConfidentialClient")
 	stringattr.Set(&m.ClientId, data, "clientId")
 	stringattr.Set(&m.ClientSecret, data, "clientSecret")
+	boolattr.Set(&m.ForcePkce, data, "forcePkce")
+}
+
+func (m *InboundAppModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *InboundAppModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
+
+func (m *InboundAppModel) GetProjectID() stringattr.Type {
+	return m.ProjectID
 }

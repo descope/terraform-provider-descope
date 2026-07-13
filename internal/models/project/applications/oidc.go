@@ -2,9 +2,12 @@ package applications
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -15,22 +18,51 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"login_page_url":       stringattr.Default(""),
-	"claims":               strlistattr.Default(),
-	"force_authentication": boolattr.Default(false),
+	"login_page_url":              stringattr.Default(""),
+	"claims":                      strlistattr.Default(),
+	"force_authentication":        boolattr.Default(false),
+	"client_id":                   stringattr.Optional(),
+	"client_secret":               stringattr.SecretGenerated(true),
+	"client_type":                 stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")),
+	"approved_redirect_urls":      strsetattr.Default(),
+	"authorization_code_disabled": boolattr.Default(false),
+	"client_credentials_disabled": boolattr.Default(false),
+	"refresh_token_disabled":      boolattr.Default(false),
+	"jwt_bearer_disabled":         boolattr.Default(false),
+	"device_code_disabled":        boolattr.Default(false),
+	"force_pkce":                  boolattr.Default(false),
+	"default_audience":            stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")),
+
+	"permissions": listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
+	"roles":       listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
 }
 
 // Model
 
 type OIDCModel struct {
-	ID                  stringattr.Type  `tfsdk:"id"`
-	Name                stringattr.Type  `tfsdk:"name"`
-	Description         stringattr.Type  `tfsdk:"description"`
-	Logo                stringattr.Type  `tfsdk:"logo"`
-	Disabled            boolattr.Type    `tfsdk:"disabled"`
-	LoginPageURL        stringattr.Type  `tfsdk:"login_page_url"`
-	Claims              strlistattr.Type `tfsdk:"claims"`
-	ForceAuthentication boolattr.Type    `tfsdk:"force_authentication"`
+	ID          stringattr.Type `tfsdk:"id"`
+	Name        stringattr.Type `tfsdk:"name"`
+	Description stringattr.Type `tfsdk:"description"`
+	Logo        stringattr.Type `tfsdk:"logo"`
+	Disabled    boolattr.Type   `tfsdk:"disabled"`
+
+	LoginPageURL              stringattr.Type  `tfsdk:"login_page_url"`
+	Claims                    strlistattr.Type `tfsdk:"claims"`
+	ForceAuthentication       boolattr.Type    `tfsdk:"force_authentication"`
+	ClientID                  stringattr.Type  `tfsdk:"client_id"`
+	ClientSecret              stringattr.Type  `tfsdk:"client_secret"`
+	ClientType                stringattr.Type  `tfsdk:"client_type"`
+	ApprovedRedirectURLs      strsetattr.Type  `tfsdk:"approved_redirect_urls"`
+	AuthorizationCodeDisabled boolattr.Type    `tfsdk:"authorization_code_disabled"`
+	ClientCredentialsDisabled boolattr.Type    `tfsdk:"client_credentials_disabled"`
+	RefreshTokenDisabled      boolattr.Type    `tfsdk:"refresh_token_disabled"`
+	JWTBearerDisabled         boolattr.Type    `tfsdk:"jwt_bearer_disabled"`
+	DeviceCodeDisabled        boolattr.Type    `tfsdk:"device_code_disabled"`
+	ForcePkce                 boolattr.Type    `tfsdk:"force_pkce"`
+	DefaultAudience           stringattr.Type  `tfsdk:"default_audience"`
+
+	Permissions listattr.Type[SSOAppPermissionModel] `tfsdk:"permissions"`
+	Roles       listattr.Type[SSOAppRoleModel]       `tfsdk:"roles"`
 }
 
 func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
@@ -39,8 +71,21 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	strlistattr.Get(m.Claims, settings, "claims", h)
 	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
 
+	stringattr.Get(m.ClientID, settings, "clientId")
+	stringattr.Get(m.ClientSecret, settings, "clientSecret")
+	stringattr.Get(m.ClientType, settings, "clientType")
+	strsetattr.Get(m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
+	boolattr.Get(m.AuthorizationCodeDisabled, settings, "authorizationCodeDisabled")
+	boolattr.Get(m.ClientCredentialsDisabled, settings, "clientCredentialsDisabled")
+	boolattr.Get(m.RefreshTokenDisabled, settings, "refreshTokenDisabled")
+	boolattr.Get(m.JWTBearerDisabled, settings, "jwtBearerDisabled")
+	boolattr.Get(m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
+	boolattr.Get(m.ForcePkce, settings, "forcePkce")
+	stringattr.Get(m.DefaultAudience, settings, "defaultAudience")
+
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["oidc"] = settings
+	emitSSOAppRoles(h, data, m.Permissions, m.Roles)
 	return data
 }
 
@@ -50,7 +95,21 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Nil(&m.LoginPageURL) // XXX reset by the backend on response for now
 		strlistattr.Set(&m.Claims, settings, "claims", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
+
+		stringattr.Set(&m.ClientID, settings, "clientId")
+		stringattr.Set(&m.ClientSecret, settings, "clientSecret")
+		stringattr.Set(&m.ClientType, settings, "clientType")
+		strsetattr.Set(&m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
+		boolattr.Set(&m.AuthorizationCodeDisabled, settings, "authorizationCodeDisabled")
+		boolattr.Set(&m.ClientCredentialsDisabled, settings, "clientCredentialsDisabled")
+		boolattr.Set(&m.RefreshTokenDisabled, settings, "refreshTokenDisabled")
+		boolattr.Set(&m.JWTBearerDisabled, settings, "jwtBearerDisabled")
+		boolattr.Set(&m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
+		boolattr.Set(&m.ForcePkce, settings, "forcePkce")
+		stringattr.Set(&m.DefaultAudience, settings, "defaultAudience")
 	}
+	listattr.SetMatchingNames(&m.Permissions, data, "permissions", "name", h)
+	listattr.SetMatchingNames(&m.Roles, data, "roles", "name", h)
 }
 
 // Matching

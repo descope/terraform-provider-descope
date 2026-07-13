@@ -5,7 +5,9 @@ package docs
 import (
 	"fmt"
 
+	"github.com/descope/terraform-provider-descope/internal/models/accesskey"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
+	"github.com/descope/terraform-provider-descope/internal/models/engine"
 	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
 	"github.com/descope/terraform-provider-descope/internal/models/managementkey"
 	"github.com/descope/terraform-provider-descope/internal/models/project"
@@ -25,10 +27,13 @@ import (
 )
 
 func InjectModels() {
+	inject(accesskey.AccessKeyAttributes, docsAccessKey)
+	inject(accesskey.AccessKeyTenantAttributes, docsAccessKeyTenant)
 	inject(descoper.DescoperAttributes, docsDescoper)
 	inject(descoper.DescoperProjectRoleAttributes, docsDescoperProjectRole)
 	inject(descoper.RBacAttributes, docsRBac)
 	inject(descoper.DescoperTagRoleAttributes, docsDescoperTagRole)
+	inject(engine.EngineAttributes, docsEngine)
 	inject(inboundapp.ApplicationScopeAttributes, docsApplicationScope)
 	inject(inboundapp.InboundAppAttributes, docsInboundApp)
 	inject(inboundapp.SessionSettingsAttributes, docsSessionSettings)
@@ -45,6 +50,11 @@ func InjectModels() {
 	inject(applications.AttributeMappingAttributes, docsAttributeMapping)
 	inject(applications.DynamicConfigurationAttributes, docsDynamicConfiguration)
 	inject(applications.ManualConfigurationAttributes, docsManualConfiguration)
+	inject(applications.SSOAppPermissionAttributes, docsSSOAppPermission)
+	inject(applications.SSOAppRoleAttributes, docsSSOAppRole)
+	inject(applications.WSFedAttributes, docsWSFed)
+	inject(applications.GroupsMappingAttributes, docsGroupsMapping)
+	inject(applications.RoleGroupMappingAttributes, docsRoleGroupMapping)
 	inject(attributes.AccessKeyAttributeAttributes, docsAccessKeyAttribute)
 	inject(attributes.AccessKeyAttributeWidgetAuthorizationAttributes, docsAccessKeyAttributeWidgetAuthorization)
 	inject(attributes.AttributesAttributes, docsAttributes)
@@ -71,14 +81,17 @@ func InjectModels() {
 	inject(authorization.PermissionAttributes, docsPermission)
 	inject(authorization.RoleAttributes, docsRole)
 	inject(connectors.AbuseIPDBAttributes, docsAbuseIPDB)
+	inject(connectors.AlloyAttributes, docsAlloy)
 	inject(connectors.AmplitudeAttributes, docsAmplitude)
 	inject(connectors.ArkoseAttributes, docsArkose)
 	inject(connectors.AuditWebhookAttributes, docsAuditWebhook)
 	inject(connectors.AWSS3Attributes, docsAWSS3)
+	inject(connectors.AWSSESEmailValidationAttributes, docsAWSSESEmailValidation)
 	inject(connectors.AWSTranslateAttributes, docsAWSTranslate)
 	inject(connectors.BitsightAttributes, docsBitsight)
 	inject(connectors.ConnectorsAttributes, docsConnectors)
 	inject(connectors.CoralogixAttributes, docsCoralogix)
+	inject(connectors.CriblAttributes, docsCribl)
 	inject(connectors.DarwiniumAttributes, docsDarwinium)
 	inject(connectors.DatadogAttributes, docsDatadog)
 	inject(connectors.DevRevGrowAttributes, docsDevRevGrow)
@@ -96,6 +109,7 @@ func InjectModels() {
 	inject(connectors.GoogleCloudLoggingAttributes, docsGoogleCloudLogging)
 	inject(connectors.GoogleCloudTranslationAttributes, docsGoogleCloudTranslation)
 	inject(connectors.GoogleMapsPlacesAttributes, docsGoogleMapsPlaces)
+	inject(connectors.GroundcoverAttributes, docsGroundcover)
 	inject(connectors.HCaptchaAttributes, docsHCaptcha)
 	inject(connectors.HIBPAttributes, docsHIBP)
 	inject(connectors.HTTPAttributes, docsHTTP)
@@ -108,15 +122,19 @@ func InjectModels() {
 	inject(connectors.MParticleAttributes, docsMParticle)
 	inject(connectors.NewRelicAttributes, docsNewRelic)
 	inject(connectors.OpenTelemetryAttributes, docsOpenTelemetry)
+	inject(connectors.PendoAttributes, docsPendo)
 	inject(connectors.PingDirectoryAttributes, docsPingDirectory)
 	inject(connectors.PostmarkAttributes, docsPostmark)
 	inject(connectors.RadarAttributes, docsRadar)
 	inject(connectors.RecaptchaAttributes, docsRecaptcha)
 	inject(connectors.RecaptchaEnterpriseAttributes, docsRecaptchaEnterprise)
+	inject(connectors.RecaptchaV2Attributes, docsRecaptchaV2)
 	inject(connectors.RekognitionAttributes, docsRekognition)
+	inject(connectors.RNDReassignedAttributes, docsRNDReassigned)
 	inject(connectors.SalesforceAttributes, docsSalesforce)
 	inject(connectors.SalesforceMarketingCloudAttributes, docsSalesforceMarketingCloud)
 	inject(connectors.SardineAttributes, docsSardine)
+	inject(connectors.SCIMAttributes, docsSCIM)
 	inject(connectors.SegmentAttributes, docsSegment)
 	inject(connectors.SendGridAttributes, docsSendGrid)
 	inject(connectors.SendGridAuthFieldAttributes, docsSendGridAuthField)
@@ -131,6 +149,7 @@ func InjectModels() {
 	inject(connectors.SmartlingAttributes, docsSmartling)
 	inject(connectors.SMTPAttributes, docsSMTP)
 	inject(connectors.SMTPAuthFieldAttributes, docsSMTPAuthField)
+	inject(connectors.SnowflakeAttributes, docsSnowflake)
 	inject(connectors.SNSAttributes, docsSNS)
 	inject(connectors.SplunkAttributes, docsSplunk)
 	inject(connectors.SQLAttributes, docsSQL)
@@ -154,6 +173,7 @@ func InjectModels() {
 	inject(lists.ListAttributes, docsList)
 	inject(settings.InviteSettingsAttributes, docsInviteSettings)
 	inject(settings.SessionMigrationAttributes, docsSessionMigration)
+	inject(settings.ExternalAuthUserMappingItemAttributes, docsExternalAuthUserMappingItem)
 	inject(settings.SettingsAttributes, docsSettings)
 	inject(templates.EmailServiceAttributes, docsEmailService)
 	inject(templates.EmailTemplateAttributes, docsEmailTemplate)

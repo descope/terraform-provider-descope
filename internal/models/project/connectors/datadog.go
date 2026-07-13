@@ -20,6 +20,8 @@ var DatadogAttributes = map[string]schema.Attribute{
 
 	"api_key":                  stringattr.SecretRequired(),
 	"site":                     stringattr.Default(""),
+	"source":                   stringattr.Default(""),
+	"tags":                     stringattr.Default(""),
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
@@ -35,6 +37,8 @@ type DatadogModel struct {
 
 	APIKey                 stringattr.Type                      `tfsdk:"api_key"`
 	Site                   stringattr.Type                      `tfsdk:"site"`
+	Source                 stringattr.Type                      `tfsdk:"source"`
+	Tags                   stringattr.Type                      `tfsdk:"tags"`
 	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
 	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
 	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
@@ -67,6 +71,8 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.Site, c, "site")
+	stringattr.Get(m.Source, c, "source")
+	stringattr.Get(m.Tags, c, "tags")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
@@ -77,6 +83,8 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 func (m *DatadogModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Nil(&m.APIKey)
 	stringattr.Set(&m.Site, c, "site")
+	stringattr.Set(&m.Source, c, "source")
+	stringattr.Set(&m.Tags, c, "tags")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
