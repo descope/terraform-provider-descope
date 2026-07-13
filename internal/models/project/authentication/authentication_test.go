@@ -314,6 +314,55 @@ func TestAuthentication(t *testing.T) {
 			Config: p.Config(`
 				authentication = {
 					sso = {
+						sso_suite_settings = {
+							hide_role_mapping = true
+							hide_fga_mapping  = false
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_role_mapping": true,
+					"hide_fga_mapping":  false,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_groups_mapping = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_groups_mapping": true,
+					"hide_role_mapping":   true,
+					"hide_fga_mapping":    true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_groups_mapping = true
+							hide_role_mapping   = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("hide_groups_mapping attribute cannot be combined"),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
 						groups_priority = true
 					}
 				}

@@ -47,6 +47,18 @@ func Default(value bool, extras ...any) schema.BoolAttribute {
 	}
 }
 
+func Deprecated(message string, extras ...any) schema.BoolAttribute {
+	validators, modifiers := parseExtras(extras)
+	return schema.BoolAttribute{
+		Optional:           true,
+		Computed:           true,
+		DeprecationMessage: message + " This attribute will be removed in a future version of the provider.",
+		Validators:         validators,
+		PlanModifiers:      modifiers,
+		Default:            &nullDefault{},
+	}
+}
+
 func Get(b types.Bool, data map[string]any, key string) {
 	if !b.IsNull() && !b.IsUnknown() {
 		data[key] = b.ValueBool()

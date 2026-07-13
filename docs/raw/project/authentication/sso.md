@@ -188,8 +188,27 @@ hide_groups_mapping
 -------------------
 
 - Type: `bool`
+- Deprecated: split into `hide_role_mapping` and `hide_fga_mapping`; setting it disables both.
 
 Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
+
+
+
+hide_role_mapping
+-----------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.
+
+
+
+hide_fga_mapping
+----------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.
 
 
 
