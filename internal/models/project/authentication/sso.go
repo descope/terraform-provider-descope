@@ -170,8 +170,6 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.StyleID, data, "ssoSuiteStyleId")
 	boolattr.Get(m.HideSCIM, data, "hideSsoSuiteScim")
-	// hide_groups_mapping, hide_role_mapping and hide_fga_mapping are independent
-	// flags sent and read back as-is.
 	boolattr.Get(m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
 	boolattr.Get(m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
 	boolattr.Get(m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
