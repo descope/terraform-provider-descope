@@ -25,7 +25,8 @@ type ScopeClaimMappingModel struct {
 }
 
 func (m *ScopeClaimMappingModel) Values(h *helpers.Handler) map[string]any {
-	validateScopeClaimMapping(h, m.Scope, m.Claims, m.UseProjectMapping)
+	claims := helpers.Require(m.Claims.ToMap(h.Ctx))
+	helpers.ValidateScopeClaimMapping(h, m.Scope.ValueString(), m.UseProjectMapping.ValueBool(), len(claims))
 	data := map[string]any{}
 	stringattr.Get(m.Scope, data, "scope")
 	strmapattr.Get(m.Claims, data, "claims", h)
@@ -33,21 +34,6 @@ func (m *ScopeClaimMappingModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.UseProjectMapping, data, "useProjectMapping")
 	boolattr.Get(m.Mandatory, data, "mandatory")
 	return data
-}
-
-// validateScopeClaimMapping enforces that a scope inheriting the project-wide mapping
-// (use_project_mapping = true) does not also define its own claims — the project-wide mapping's
-// claims are used instead, so per-app claims would be silently ignored. Shared by the inbound and
-// federated scope-claim-mapping models.
-func validateScopeClaimMapping(h *helpers.Handler, scope stringattr.Type, claims strmapattr.Type, useProjectMapping boolattr.Type) {
-	if !useProjectMapping.ValueBool() {
-		return
-	}
-	if claimsMap := helpers.Require(claims.ToMap(h.Ctx)); len(claimsMap) > 0 {
-		h.Error("Invalid scope claim mapping",
-			"Scope %q sets use_project_mapping = true and therefore cannot define its own claims; the project-wide scope claim mapping is used instead.",
-			scope.ValueString())
-	}
 }
 
 func (m *ScopeClaimMappingModel) SetValues(h *helpers.Handler, data map[string]any) {

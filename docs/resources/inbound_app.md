@@ -36,27 +36,12 @@ description: |-
 - `logo_url` (String) A URL to the inbound app's logo image.
 - `non_confidential_client` (Boolean) Whether this is a public (non-confidential) client that does not use a client secret. Changing this value after creation will require the resource to be replaced.
 - `permissions_scopes` (Attributes List) A list of permission scopes that the inbound app can request. Permission scopes provide the app with the ability to act on behalf of a user based on their roles and permissions. (see [below for nested schema](#nestedatt--permissions_scopes))
-- `scope_claim_mapping` (Attributes List) A list of scope-to-claim mappings that the inbound app can request. Each entry maps a requested OAuth scope to the JWT claims it produces, superseding the legacy attribute scopes. (see [below for nested schema](#nestedatt--scope_claim_mapping))
+- `scope_claim_mapping` (Attributes List) A list of scope-to-claim mappings that the application can request. Each entry maps a requested OAuth scope to the JWT claims it produces. For inbound apps this supersedes the legacy attribute scopes. (see [below for nested schema](#nestedatt--scope_claim_mapping))
 - `session_settings` (Attributes) Custom session management settings for this inbound app, overriding the project defaults. (see [below for nested schema](#nestedatt--session_settings))
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-<a id="nestedatt--scope_claim_mapping"></a>
-### Nested Schema for `scope_claim_mapping`
-
-Required:
-
-- `scope` (String) A name for the scope.
-
-Optional:
-
-- `claims` (Map of String) A map of claim name to value template, produced when this scope is granted. Consulted only when `use_project_mapping` is false.
-- `description` (String) A description for the scope.
-- `mandatory` (Boolean) When true, the scope is always granted and cannot be deselected by the user on the consent screen.
-- `use_project_mapping` (Boolean) When true, reuse the project-wide scope-to-claims mapping for this scope (the `claims` field is ignored).
-
 
 <a id="nestedatt--attributes_scopes"></a>
 ### Nested Schema for `attributes_scopes`
@@ -98,6 +83,21 @@ Optional:
 
 - `optional` (Boolean) Whether this scope is optional. When `false`, the scope is mandatory and must be granted during authorization. When `true`, the user may choose to withhold it.
 - `values` (List of String) The identifiers of the relevant permission, attribute or connection scopes.
+
+
+<a id="nestedatt--scope_claim_mapping"></a>
+### Nested Schema for `scope_claim_mapping`
+
+Required:
+
+- `scope` (String) The requested OAuth scope name.
+
+Optional:
+
+- `claims` (Map of String) A map of claim name to value template, produced when this scope is granted. Consulted only when `use_project_mapping` is false.
+- `description` (String) A description for the scope, shown on the consent screen.
+- `mandatory` (Boolean) When true, the scope is always granted and cannot be deselected by the user on the consent screen.
+- `use_project_mapping` (Boolean) When true, reuse the project-wide scope-to-claims mapping for this scope (the `claims` field is ignored).
 
 
 <a id="nestedatt--session_settings"></a>

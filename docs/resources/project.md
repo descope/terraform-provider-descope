@@ -308,6 +308,7 @@ resource "descope_project" "example" {
 - `jwt_templates` (Attributes) Defines templates for JSON Web Tokens (JWT) used for authentication. (see [below for nested schema](#nestedatt--jwt_templates))
 - `lists` (Attributes List) Lists that can be used for various purposes in the project, such as IP allowlists, text lists, or custom JSON data. (see [below for nested schema](#nestedatt--lists))
 - `project_settings` (Attributes) General settings for the Descope project. (see [below for nested schema](#nestedatt--project_settings))
+- `scope_claim_mapping` (Attributes List) The project-wide OIDC scope-to-claims mapping. Each entry maps a scope to the JWT claims it produces; applications can inherit these entries via `use_project_mapping`. (see [below for nested schema](#nestedatt--scope_claim_mapping))
 - `styles` (Attributes) Custom styles that can be applied to the project's authentication flows. (see [below for nested schema](#nestedatt--styles))
 - `tags` (Set of String) Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
 - `widgets` (Attributes Map) Embeddable components designed to facilitate the delegation of operations to tenant admins and end users. (see [below for nested schema](#nestedatt--widgets))
@@ -373,6 +374,7 @@ Optional:
 - `permissions` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc_applications--permissions))
 - `refresh_token_disabled` (Boolean) Disables the `refresh_token` grant type for this application.
 - `roles` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc_applications--roles))
+- `scope_claim_mapping` (Attributes List) The scope-to-claims mapping for this federated application. (see [below for nested schema](#nestedatt--applications--oidc_applications--scope_claim_mapping))
 
 <a id="nestedatt--applications--oidc_applications--permissions"></a>
 ### Nested Schema for `applications.oidc_applications.permissions`
@@ -406,6 +408,20 @@ Optional:
 Read-Only:
 
 - `id` (String)
+
+
+<a id="nestedatt--applications--oidc_applications--scope_claim_mapping"></a>
+### Nested Schema for `applications.oidc_applications.scope_claim_mapping`
+
+Required:
+
+- `scope` (String) The requested OAuth scope name.
+
+Optional:
+
+- `claims` (Map of String) A map of claim name to value template, produced when this scope is granted. Consulted only when `use_project_mapping` is false.
+- `description` (String) A description for the scope, shown on the consent screen.
+- `use_project_mapping` (Boolean) When true, reuse the project-wide scope-to-claims mapping for this scope (the `claims` field is ignored).
 
 
 
@@ -2631,7 +2647,7 @@ Optional:
 - `aws_secret_access_key` (String, Sensitive) The secret AWS access key.
 - `aws_service` (String) The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.
 - `description` (String) A description of what your connector is used for.
-- `engine_id` (String) The identifier of the Descope engine that should run this connector. Leave empty to run the connector locally.
+- `engine_id` (String)
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `include_headers_in_context` (Boolean) The connector response context will also include the headers and status code. The context will have a "body" attribute, a "headers" attribute, and a "statusCode" attribute. See more details in the help guide
@@ -3959,6 +3975,19 @@ Required:
 - `external_key` (String) The attribute key in the external vendor's user object.
 
 
+
+
+<a id="nestedatt--scope_claim_mapping"></a>
+### Nested Schema for `scope_claim_mapping`
+
+Required:
+
+- `scope` (String) The requested OAuth scope name.
+
+Optional:
+
+- `claims` (Map of String) A map of claim name to value template, produced when this scope is granted. Consulted only when `use_project_mapping` is false.
+- `description` (String) A description for the scope, shown on the consent screen.
 
 
 <a id="nestedatt--styles"></a>

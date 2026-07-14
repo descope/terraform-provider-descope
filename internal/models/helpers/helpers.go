@@ -18,6 +18,18 @@ func Require[T any](v T, diags diag.Diagnostics) T {
 	return v
 }
 
+// ValidateScopeClaimMapping enforces that a scope inheriting the project-wide mapping
+// (use_project_mapping = true) does not also define its own claims — the project-wide mapping's
+// claims are used instead, so per-app claims would be silently ignored. Shared by the inbound and
+// federated scope-claim-mapping models so the rule and message stay identical across both.
+func ValidateScopeClaimMapping(h *Handler, scope string, useProjectMapping bool, claimCount int) {
+	if useProjectMapping && claimCount > 0 {
+		h.Error("Invalid scope claim mapping",
+			"Scope %q sets use_project_mapping = true and therefore cannot define its own claims; the project-wide scope claim mapping is used instead.",
+			scope)
+	}
+}
+
 // Checks if any of the provided values are in an Unknown state.
 func HasUnknownValues(values ...any) bool {
 	for _, v := range values {
