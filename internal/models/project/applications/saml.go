@@ -36,11 +36,12 @@ var SAMLAttributes = map[string]schema.Attribute{
 // Model
 
 type SAMLModel struct {
-	ID                        stringattr.Type                         `tfsdk:"id"`
-	Name                      stringattr.Type                         `tfsdk:"name"`
-	Description               stringattr.Type                         `tfsdk:"description"`
-	Logo                      stringattr.Type                         `tfsdk:"logo"`
-	Disabled                  boolattr.Type                           `tfsdk:"disabled"`
+	ID          stringattr.Type `tfsdk:"id"`
+	Name        stringattr.Type `tfsdk:"name"`
+	Description stringattr.Type `tfsdk:"description"`
+	Logo        stringattr.Type `tfsdk:"logo"`
+	Disabled    boolattr.Type   `tfsdk:"disabled"`
+
 	LoginPageURL              stringattr.Type                         `tfsdk:"login_page_url"`
 	DynamicConfiguration      objattr.Type[DynamicConfigurationModel] `tfsdk:"dynamic_configuration"`
 	ManualConfiguration       objattr.Type[ManualConfigurationModel]  `tfsdk:"manual_configuration"`

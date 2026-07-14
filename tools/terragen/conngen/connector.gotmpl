@@ -42,6 +42,9 @@ var {{.StructName}}Attributes = map[string]schema.Attribute{
     {{ range .Fields }}
     "{{.AttributeName}}": {{.AttributeType}},
     {{- end }}
+    {{- if .SupportsEngine }}
+    "engine_id": stringattr.Default(""),
+    {{- end }}
 }
 
 // Model
@@ -54,21 +57,30 @@ type {{.StructName}}Model struct {
     {{ range .Fields }}
     {{.StructName}} {{.StructType}} `tfsdk:"{{.AttributeName}}"`
     {{- end }}
+    {{- if .SupportsEngine }}
+    EngineID stringattr.Type `tfsdk:"engine_id"`
+    {{- end }}
 }
 
 func (m *{{.StructName}}Model) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "{{.ID}}"
 	data["configuration"] = m.ConfigurationValues(h)
+	{{- if .SupportsEngine }}
+	setConnectorEngine(data, m.EngineID)
+	{{- end }}
 	return data
 }
 
 func (m *{{.StructName}}Model) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	{{- if .SupportsEngine }}
+	getConnectorEngine(data, &m.EngineID)
+	{{- end }}
 	{{- if gt (len .Fields) 0 }}
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
-	}	
+	}
 	{{- end }}
 }
 

@@ -11,17 +11,15 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-var DatadogValidator = objattr.NewValidator[DatadogModel]("must have a valid configuration")
+var GroundcoverValidator = objattr.NewValidator[GroundcoverModel]("must have a valid configuration")
 
-var DatadogAttributes = map[string]schema.Attribute{
+var GroundcoverAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"api_key":                  stringattr.SecretRequired(),
-	"site":                     stringattr.Default(""),
-	"source":                   stringattr.Default(""),
-	"tags":                     stringattr.Default(""),
+	"endpoint":                 stringattr.Required(),
+	"ingestion_key":            stringattr.SecretRequired(),
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
@@ -30,36 +28,34 @@ var DatadogAttributes = map[string]schema.Attribute{
 
 // Model
 
-type DatadogModel struct {
+type GroundcoverModel struct {
 	ID          stringattr.Type `tfsdk:"id"`
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	APIKey                 stringattr.Type                      `tfsdk:"api_key"`
-	Site                   stringattr.Type                      `tfsdk:"site"`
-	Source                 stringattr.Type                      `tfsdk:"source"`
-	Tags                   stringattr.Type                      `tfsdk:"tags"`
+	Endpoint               stringattr.Type                      `tfsdk:"endpoint"`
+	IngestionKey           stringattr.Type                      `tfsdk:"ingestion_key"`
 	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
 	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
 	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
 	MaskPII                boolattr.Type                        `tfsdk:"mask_pii"`
 }
 
-func (m *DatadogModel) Values(h *helpers.Handler) map[string]any {
+func (m *GroundcoverModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
-	data["type"] = "datadog"
+	data["type"] = "groundcover"
 	data["configuration"] = m.ConfigurationValues(h)
 	return data
 }
 
-func (m *DatadogModel) SetValues(h *helpers.Handler, data map[string]any) {
+func (m *GroundcoverModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}
 }
 
-func (m *DatadogModel) Validate(h *helpers.Handler) {
+func (m *GroundcoverModel) Validate(h *helpers.Handler) {
 	if !m.AuditFilters.IsNull() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
@@ -67,12 +63,10 @@ func (m *DatadogModel) Validate(h *helpers.Handler) {
 
 // Configuration
 
-func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
+func (m *GroundcoverModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
-	stringattr.Get(m.APIKey, c, "apiKey")
-	stringattr.Get(m.Site, c, "site")
-	stringattr.Get(m.Source, c, "source")
-	stringattr.Get(m.Tags, c, "tags")
+	stringattr.Get(m.Endpoint, c, "endpoint")
+	stringattr.Get(m.IngestionKey, c, "ingestionKey")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
@@ -80,11 +74,9 @@ func (m *DatadogModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	return c
 }
 
-func (m *DatadogModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIKey)
-	stringattr.Set(&m.Site, c, "site")
-	stringattr.Set(&m.Source, c, "source")
-	stringattr.Set(&m.Tags, c, "tags")
+func (m *GroundcoverModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.Endpoint, c, "endpoint")
+	stringattr.Nil(&m.IngestionKey)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
@@ -93,14 +85,14 @@ func (m *DatadogModel) SetConfigurationValues(c map[string]any, h *helpers.Handl
 
 // Matching
 
-func (m *DatadogModel) GetName() stringattr.Type {
+func (m *GroundcoverModel) GetName() stringattr.Type {
 	return m.Name
 }
 
-func (m *DatadogModel) GetID() stringattr.Type {
+func (m *GroundcoverModel) GetID() stringattr.Type {
 	return m.ID
 }
 
-func (m *DatadogModel) SetID(id stringattr.Type) {
+func (m *GroundcoverModel) SetID(id stringattr.Type) {
 	m.ID = id
 }

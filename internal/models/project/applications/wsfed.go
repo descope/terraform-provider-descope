@@ -33,11 +33,12 @@ var WSFedAttributes = map[string]schema.Attribute{
 // Model
 
 type WSFedModel struct {
-	ID                       stringattr.Type                      `tfsdk:"id"`
-	Name                     stringattr.Type                      `tfsdk:"name"`
-	Description              stringattr.Type                      `tfsdk:"description"`
-	Logo                     stringattr.Type                      `tfsdk:"logo"`
-	Disabled                 boolattr.Type                        `tfsdk:"disabled"`
+	ID          stringattr.Type `tfsdk:"id"`
+	Name        stringattr.Type `tfsdk:"name"`
+	Description stringattr.Type `tfsdk:"description"`
+	Logo        stringattr.Type `tfsdk:"logo"`
+	Disabled    boolattr.Type   `tfsdk:"disabled"`
+
 	Realm                    stringattr.Type                      `tfsdk:"realm"`
 	ReplyURL                 stringattr.Type                      `tfsdk:"reply_url"`
 	ReplyAllowedCallbackURLs strsetattr.Type                      `tfsdk:"reply_allowed_callback_urls"`

@@ -23,6 +23,7 @@ var CoralogixAttributes = map[string]schema.Attribute{
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
 	"troubleshoot_log_enabled": boolattr.Default(false),
+	"mask_pii":                 boolattr.Default(false),
 }
 
 // Model
@@ -37,6 +38,7 @@ type CoralogixModel struct {
 	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
 	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
 	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
+	MaskPII                boolattr.Type                        `tfsdk:"mask_pii"`
 }
 
 func (m *CoralogixModel) Values(h *helpers.Handler) map[string]any {
@@ -68,6 +70,7 @@ func (m *CoralogixModel) ConfigurationValues(h *helpers.Handler) map[string]any 
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	boolattr.Get(m.MaskPII, c, "maskPII")
 	return c
 }
 
@@ -77,6 +80,7 @@ func (m *CoralogixModel) SetConfigurationValues(c map[string]any, h *helpers.Han
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	boolattr.Set(&m.MaskPII, c, "maskPII")
 }
 
 // Matching

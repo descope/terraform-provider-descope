@@ -14,6 +14,15 @@ AbuseIPDB connector.
 
 
 
+alloy
+-----
+
+- Type: `list` of `connectors.Alloy`
+
+Streamline identity verification and fraud monitoring with the Alloy connector.
+
+
+
 amplitude
 ---------
 
@@ -51,6 +60,16 @@ Stream authentication audit logs with the Amazon S3 connector.
 
 
 
+aws_ses_email_validation
+------------------------
+
+- Type: `list` of `connectors.AWSSESEmailValidation`
+
+Validate email addresses using the AWS SES Email Validation API to check syntax,
+DNS records, mailbox existence, and deliverability.
+
+
+
 aws_translate
 -------------
 
@@ -76,6 +95,17 @@ coralogix
 - Type: `list` of `connectors.Coralogix`
 
 Send audit events and troubleshooting logs to Coralogix.
+
+
+
+cribl
+-----
+
+- Type: `list` of `connectors.Cribl`
+
+Stream audit events and troubleshooting logs to Cribl Stream via the HTTP/S Bulk
+API. Requires an HTTP source configured in your Cribl deployment. See Cribl's
+HTTP/S source setup guide: https://docs.cribl.io/stream/sources-https/
 
 
 
@@ -237,6 +267,15 @@ Stream logs and audit events with the Google Cloud Logging connector.
 
 
 
+groundcover
+-----------
+
+- Type: `list` of `connectors.Groundcover`
+
+Send audit events and troubleshooting logs to groundcover.
+
+
+
 hcaptcha
 --------
 
@@ -354,6 +393,15 @@ endpoint using OTLP over HTTP or gRPC.
 
 
 
+pendo
+-----
+
+- Type: `list` of `connectors.Pendo`
+
+Stream authentication audit logs with the Pendo connector.
+
+
+
 ping_directory
 --------------
 
@@ -399,6 +447,15 @@ Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPT
 
 
 
+recaptcha_v2
+------------
+
+- Type: `list` of `connectors.RecaptchaV2`
+
+Use the reCAPTCHA v2 "I'm not a robot" checkbox widget with your flows.
+
+
+
 rekognition
 -----------
 
@@ -406,6 +463,18 @@ rekognition
 
 Add image recognition capabilities for identity verification and fraud
 prevention with the Amazon Rekognition connector.
+
+
+
+rnd_reassigned
+--------------
+
+- Type: `list` of `connectors.RNDReassigned`
+
+Query the FCC Reassigned Numbers Database (RND) to validate whether telephone
+numbers have been permanently disconnected (reassigned) since a specific date.
+Helps obtain Safe Harbor from TCPA liability by checking the most recent
+database update.
 
 
 
@@ -501,6 +570,16 @@ smtp
 - Type: `list` of `connectors.SMTP`
 
 Simple Mail Transfer Protocol (SMTP) server for sending emails.
+
+
+
+snowflake
+---------
+
+- Type: `list` of `connectors.Snowflake`
+
+Stream authentication audit logs to your Snowflake data warehouse with the
+Snowflake connector.
 
 
 
