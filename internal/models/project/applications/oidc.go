@@ -33,8 +33,9 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"force_pkce":                  boolattr.Default(false),
 	"default_audience":            stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")),
 
-	"permissions": listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
-	"roles":       listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
+	"permissions":         listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
+	"roles":               listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
+	"scope_claim_mapping": listattr.Default[ScopeClaimMappingModel](ScopeClaimMappingAttributes),
 }
 
 // Model
@@ -61,8 +62,9 @@ type OIDCModel struct {
 	ForcePkce                 boolattr.Type    `tfsdk:"force_pkce"`
 	DefaultAudience           stringattr.Type  `tfsdk:"default_audience"`
 
-	Permissions listattr.Type[SSOAppPermissionModel] `tfsdk:"permissions"`
-	Roles       listattr.Type[SSOAppRoleModel]       `tfsdk:"roles"`
+	Permissions       listattr.Type[SSOAppPermissionModel]  `tfsdk:"permissions"`
+	Roles             listattr.Type[SSOAppRoleModel]        `tfsdk:"roles"`
+	ScopeClaimMapping listattr.Type[ScopeClaimMappingModel] `tfsdk:"scope_claim_mapping"`
 }
 
 func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
@@ -82,6 +84,7 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
 	boolattr.Get(m.ForcePkce, settings, "forcePkce")
 	stringattr.Get(m.DefaultAudience, settings, "defaultAudience")
+	listattr.Get(m.ScopeClaimMapping, settings, "scopeClaimMapping", h)
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["oidc"] = settings
@@ -107,6 +110,7 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		boolattr.Set(&m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
 		boolattr.Set(&m.ForcePkce, settings, "forcePkce")
 		stringattr.Set(&m.DefaultAudience, settings, "defaultAudience")
+		listattr.Set(&m.ScopeClaimMapping, settings, "scopeClaimMapping", h)
 	}
 	listattr.SetMatchingNames(&m.Permissions, data, "permissions", "name", h)
 	listattr.SetMatchingNames(&m.Roles, data, "roles", "name", h)

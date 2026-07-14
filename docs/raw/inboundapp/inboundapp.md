@@ -69,13 +69,23 @@ the ability to act on behalf of a user based on their roles and permissions.
 
 
 
+scope_claim_mapping
+-------------------
+
+- Type: `list` of `inboundapp.ScopeClaimMapping`
+
+A list of scope-to-claim mappings that the inbound app can request. Each entry maps a requested
+OAuth scope to the JWT claims it produces, superseding the legacy attribute scopes.
+
+
+
 attributes_scopes
 -----------------
 
 - Type: `list` of `inboundapp.ApplicationScope`
 
-A list of user information scopes that the inbound app can request. Attribute scopes provide the app
-with access to user profile data such as email, phone, or custom attributes.
+Deprecated: use `scope_claim_mapping` instead. A list of user information scopes that the inbound
+app can request, providing access to user profile data such as email, phone, or custom attributes.
 
 
 

@@ -64,6 +64,17 @@ func TestApplications(t *testing.T) {
 							device_code_disabled = true
 							force_pkce = true
 							default_audience = "clientId"
+							scope_claim_mapping = [
+								{
+									scope = "profile"
+									description = "Profile info"
+									claims = { name = "{{user.name}}" }
+								},
+								{
+									scope = "address"
+									use_project_mapping = true
+								},
+							]
 						}
 					]
 				}
@@ -93,8 +104,42 @@ func TestApplications(t *testing.T) {
 					"device_code_disabled":        true,
 					"force_pkce":                  true,
 					"default_audience":            "clientId",
+					"scope_claim_mapping.#":       2,
+					"scope_claim_mapping.0": map[string]any{
+						"scope":               "profile",
+						"description":         "Profile info",
+						"claims":              map[string]any{"name": "{{user.name}}"},
+						"use_project_mapping": false,
+					},
+					"scope_claim_mapping.1": map[string]any{
+						"scope":               "address",
+						"use_project_mapping": true,
+					},
 				},
 			}),
+		},
+		// Federated scope claim mapping validation: use_project_mapping = true forbids own claims
+		resource.TestStep{
+			Config: p.Config(`
+				applications = {
+					oidc_applications = [
+						{
+							name = "foo"
+							login_page_url = "https://example.com/login"
+							client_id = "my-custom-oidc-client"
+							client_secret = "my-custom-oidc-secret-0123456789"
+							scope_claim_mapping = [
+								{
+									scope = "profile"
+									use_project_mapping = true
+									claims = { name = "{{user.name}}" }
+								},
+							]
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`cannot define its own claims`),
 		},
 		resource.TestStep{
 			Config: p.Config(`

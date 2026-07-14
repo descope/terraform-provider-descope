@@ -53,5 +53,33 @@ func TestProject(t *testing.T) {
 				"environment": "",
 			}),
 		},
+		// Project-wide scope claim mapping (no use_project_mapping / mandatory at this level)
+		resource.TestStep{
+			Config: p.Config(`
+				scope_claim_mapping = [
+					{
+						scope = "profile"
+						description = "Profile info"
+						claims = { name = "{{user.name}}" }
+					},
+					{
+						scope = "address"
+						description = "Address info"
+					},
+				]
+			`),
+			Check: p.Check(map[string]any{
+				"scope_claim_mapping.#": 2,
+				"scope_claim_mapping.0": map[string]any{
+					"scope":       "profile",
+					"description": "Profile info",
+					"claims":      map[string]any{"name": "{{user.name}}"},
+				},
+				"scope_claim_mapping.1": map[string]any{
+					"scope":       "address",
+					"description": "Address info",
+				},
+			}),
+		},
 	)
 }

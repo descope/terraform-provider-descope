@@ -23,43 +23,45 @@ import (
 )
 
 var ProjectAttributes = map[string]schema.Attribute{
-	"id":               stringattr.Identifier(),
-	"name":             stringattr.Required(),
-	"environment":      stringattr.Optional(stringvalidator.OneOf("", "production")),
-	"tags":             strsetattr.Optional(stringvalidator.LengthBetween(1, 50)),
-	"project_settings": objattr.Optional[settings.SettingsModel](settings.SettingsAttributes, settings.SettingsValidator),
-	"invite_settings":  objattr.Default(settings.InviteSettingsDefault, settings.InviteSettingsAttributes),
-	"authentication":   objattr.Default[authentication.AuthenticationModel](nil, authentication.AuthenticationAttributes),
-	"authorization":    objattr.Default[authorization.AuthorizationModel](nil, authorization.AuthorizationAttributes, authorization.AuthorizationModifier, authorization.AuthorizationValidator),
-	"attributes":       objattr.Default[attributes.AttributesModel](nil, attributes.AttributesAttributes),
-	"connectors":       objattr.Default[connectors.ConnectorsModel](nil, connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
-	"applications":     objattr.Default[applications.ApplicationsModel](nil, applications.ApplicationsAttributes, applications.ApplicationsModifier, applications.ApplicationsValidator),
-	"jwt_templates":    objattr.Optional[jwttemplates.JWTTemplatesModel](jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
-	"styles":           objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
-	"flows":            mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
-	"widgets":          mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
-	"lists":            listattr.Default[lists.ListModel](lists.ListAttributes, lists.ListValidator, lists.ListsModifier),
-	"admin_portal":     objattr.Default[adminportal.AdminPortalModel](nil, adminportal.AdminPortalAttributes, adminportal.AdminPortalValidator),
+	"id":                  stringattr.Identifier(),
+	"name":                stringattr.Required(),
+	"environment":         stringattr.Optional(stringvalidator.OneOf("", "production")),
+	"tags":                strsetattr.Optional(stringvalidator.LengthBetween(1, 50)),
+	"project_settings":    objattr.Optional[settings.SettingsModel](settings.SettingsAttributes, settings.SettingsValidator),
+	"invite_settings":     objattr.Default(settings.InviteSettingsDefault, settings.InviteSettingsAttributes),
+	"authentication":      objattr.Default[authentication.AuthenticationModel](nil, authentication.AuthenticationAttributes),
+	"authorization":       objattr.Default[authorization.AuthorizationModel](nil, authorization.AuthorizationAttributes, authorization.AuthorizationModifier, authorization.AuthorizationValidator),
+	"attributes":          objattr.Default[attributes.AttributesModel](nil, attributes.AttributesAttributes),
+	"connectors":          objattr.Default[connectors.ConnectorsModel](nil, connectors.ConnectorsAttributes, connectors.ConnectorsModifier, connectors.ConnectorsValidator),
+	"applications":        objattr.Default[applications.ApplicationsModel](nil, applications.ApplicationsAttributes, applications.ApplicationsModifier, applications.ApplicationsValidator),
+	"jwt_templates":       objattr.Optional[jwttemplates.JWTTemplatesModel](jwttemplates.JWTTemplatesAttributes, jwttemplates.JWTTemplatesValidator),
+	"styles":              objattr.Default[flows.StylesModel](nil, flows.StylesAttributes),
+	"flows":               mapattr.Default[flows.FlowModel](nil, flows.FlowAttributes, flows.FlowIDValidator),
+	"widgets":             mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
+	"lists":               listattr.Default[lists.ListModel](lists.ListAttributes, lists.ListValidator, lists.ListsModifier),
+	"admin_portal":        objattr.Default[adminportal.AdminPortalModel](nil, adminportal.AdminPortalAttributes, adminportal.AdminPortalValidator),
+	"scope_claim_mapping": listattr.Default[ScopeClaimMappingModel](ScopeClaimMappingAttributes),
 }
 
 type ProjectModel struct {
-	ID             stringattr.Type                                  `tfsdk:"id"`
-	Name           stringattr.Type                                  `tfsdk:"name"`
-	Environment    stringattr.Type                                  `tfsdk:"environment"`
-	Tags           strsetattr.Type                                  `tfsdk:"tags"`
-	Settings       objattr.Type[settings.SettingsModel]             `tfsdk:"project_settings"`
-	Invite         objattr.Type[settings.InviteSettingsModel]       `tfsdk:"invite_settings"`
-	Authentication objattr.Type[authentication.AuthenticationModel] `tfsdk:"authentication"`
-	Authorization  objattr.Type[authorization.AuthorizationModel]   `tfsdk:"authorization"`
-	Attributes     objattr.Type[attributes.AttributesModel]         `tfsdk:"attributes"`
-	Connectors     objattr.Type[connectors.ConnectorsModel]         `tfsdk:"connectors"`
-	Applications   objattr.Type[applications.ApplicationsModel]     `tfsdk:"applications"`
-	JWTTemplates   objattr.Type[jwttemplates.JWTTemplatesModel]     `tfsdk:"jwt_templates"`
-	Styles         objattr.Type[flows.StylesModel]                  `tfsdk:"styles"`
-	Flows          mapattr.Type[flows.FlowModel]                    `tfsdk:"flows"`
-	Widgets        mapattr.Type[widgets.WidgetModel]                `tfsdk:"widgets"`
-	Lists          listattr.Type[lists.ListModel]                   `tfsdk:"lists"`
-	AdminPortal    objattr.Type[adminportal.AdminPortalModel]       `tfsdk:"admin_portal"`
+	ID                stringattr.Type                                  `tfsdk:"id"`
+	Name              stringattr.Type                                  `tfsdk:"name"`
+	Environment       stringattr.Type                                  `tfsdk:"environment"`
+	Tags              strsetattr.Type                                  `tfsdk:"tags"`
+	Settings          objattr.Type[settings.SettingsModel]             `tfsdk:"project_settings"`
+	Invite            objattr.Type[settings.InviteSettingsModel]       `tfsdk:"invite_settings"`
+	Authentication    objattr.Type[authentication.AuthenticationModel] `tfsdk:"authentication"`
+	Authorization     objattr.Type[authorization.AuthorizationModel]   `tfsdk:"authorization"`
+	Attributes        objattr.Type[attributes.AttributesModel]         `tfsdk:"attributes"`
+	Connectors        objattr.Type[connectors.ConnectorsModel]         `tfsdk:"connectors"`
+	Applications      objattr.Type[applications.ApplicationsModel]     `tfsdk:"applications"`
+	JWTTemplates      objattr.Type[jwttemplates.JWTTemplatesModel]     `tfsdk:"jwt_templates"`
+	Styles            objattr.Type[flows.StylesModel]                  `tfsdk:"styles"`
+	Flows             mapattr.Type[flows.FlowModel]                    `tfsdk:"flows"`
+	Widgets           mapattr.Type[widgets.WidgetModel]                `tfsdk:"widgets"`
+	Lists             listattr.Type[lists.ListModel]                   `tfsdk:"lists"`
+	AdminPortal       objattr.Type[adminportal.AdminPortalModel]       `tfsdk:"admin_portal"`
+	ScopeClaimMapping listattr.Type[ScopeClaimMappingModel]            `tfsdk:"scope_claim_mapping"`
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -83,6 +85,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	widgets.EnsureWidgetIDs(m.Widgets, data, "widgets", h)
 	listattr.Get(m.Lists, data, "lists", h)
 	objattr.Get(m.AdminPortal, data, "adminportal", h)
+	listattr.Get(m.ScopeClaimMapping, data, "scopeClaimMapping", h)
 	return data
 }
 
@@ -115,6 +118,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 	listattr.SetMatchingNames(&m.Lists, data, "lists", "name", h)
 	objattr.Set(&m.AdminPortal, data, "adminportal", h)
+	listattr.Set(&m.ScopeClaimMapping, data, "scopeClaimMapping", h)
 }
 
 func (m *ProjectModel) CollectReferences(h *helpers.Handler) {

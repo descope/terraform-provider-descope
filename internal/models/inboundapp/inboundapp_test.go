@@ -1,6 +1,7 @@
 package inboundapp_test
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/tools/testacc"
@@ -27,6 +28,7 @@ func TestInboundApp(t *testing.T) {
 				"force_pkce":                       "false",
 				"approved_callback_urls.#":         "0",
 				"permissions_scopes.#":             "0",
+				"scope_claim_mapping.#":            "0",
 				"attributes_scopes.#":              "0",
 				"connections_scopes.#":             "0",
 				"audience_whitelist.#":             "0",
@@ -52,17 +54,35 @@ func TestInboundApp(t *testing.T) {
 						optional = true
 					},
 				]
+				scope_claim_mapping = [
+					{
+						scope = "profile"
+						description = "Profile info"
+						claims = { name = "{{user.name}}" }
+						mandatory = true
+					},
+					{
+						scope = "address"
+						use_project_mapping = true
+					},
+				]
 			`),
 			Check: a.Check(map[string]any{
-				"description":                      "Updated description",
-				"force_pkce":                       "true",
-				"approved_callback_urls.#":         "1",
-				"approved_callback_urls.0":         "https://example.com/callback",
-				"permissions_scopes.#":             "2",
-				"permissions_scopes.0.name":        "openid",
-				"permissions_scopes.1.name":        "email",
-				"permissions_scopes.1.description": "Access email",
-				"permissions_scopes.1.optional":    "true",
+				"description":                               "Updated description",
+				"force_pkce":                                "true",
+				"approved_callback_urls.#":                  "1",
+				"approved_callback_urls.0":                  "https://example.com/callback",
+				"permissions_scopes.#":                      "2",
+				"permissions_scopes.0.name":                 "openid",
+				"permissions_scopes.1.name":                 "email",
+				"permissions_scopes.1.description":          "Access email",
+				"permissions_scopes.1.optional":             "true",
+				"scope_claim_mapping.#":                     "2",
+				"scope_claim_mapping.0.scope":               "profile",
+				"scope_claim_mapping.0.claims.name":         "{{user.name}}",
+				"scope_claim_mapping.0.mandatory":           "true",
+				"scope_claim_mapping.1.scope":               "address",
+				"scope_claim_mapping.1.use_project_mapping": "true",
 			}),
 		},
 		// Test update with session settings
@@ -140,6 +160,20 @@ func TestInboundApp(t *testing.T) {
 				"session_settings.key_session_token_expiration": "30 minutes",
 				"session_settings.user_template_id":             testacc.AttributeHasPrefix("JT"),
 			}),
+		},
+		// Scope claim mapping validation: use_project_mapping = true forbids own claims
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				scope_claim_mapping = [
+					{
+						scope = "profile"
+						use_project_mapping = true
+						claims = { name = "{{user.name}}" }
+					},
+				]
+			`),
+			ExpectError: regexp.MustCompile(`cannot define its own claims`),
 		},
 		// Test import with composite ID
 		resource.TestStep{

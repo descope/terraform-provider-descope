@@ -79,6 +79,12 @@ func Default[T any](attributes map[string]schema.Attribute, extras ...any) schem
 	}
 }
 
+func Deprecated[T any](message string, attributes map[string]schema.Attribute, extras ...any) schema.ListNestedAttribute {
+	a := Default[T](attributes, extras...)
+	a.DeprecationMessage = message + " This attribute will be removed in a future version of the provider."
+	return a
+}
+
 func Get[T any, M helpers.Model[T]](l Type[T], data map[string]any, key string, h *helpers.Handler) {
 	if l.IsNull() || l.IsUnknown() {
 		return

@@ -81,6 +81,36 @@ var docsApplicationScope = map[string]string{
 	"values": "The identifiers of the relevant permission, attribute or connection scopes.",
 }
 
+// Nested docs for the scope-claim-mapping entry, per level. Inbound apps expose `mandatory`
+// (enforced); federated apps expose `use_project_mapping` but not `mandatory`; the project-wide
+// mapping exposes neither (it is itself the project mapping).
+const scopeDoc = "The requested OAuth scope name."
+const scopeDescriptionDoc = "A description for the scope, shown on the consent screen."
+const scopeClaimsDoc = "A map of claim name to value template, produced when this scope is granted. Consulted only when `use_project_mapping` is false."
+const scopeUseProjectMappingDoc = "When true, reuse the project-wide scope-to-claims mapping for this scope (the `claims` field is ignored)."
+const scopeMandatoryDoc = "When true, the scope is always granted and cannot be deselected by the user on the consent screen."
+
+var docsInboundScopeClaimMapping = map[string]string{
+	"scope":               scopeDoc,
+	"description":         scopeDescriptionDoc,
+	"claims":              scopeClaimsDoc,
+	"use_project_mapping": scopeUseProjectMappingDoc,
+	"mandatory":           scopeMandatoryDoc,
+}
+
+var docsFederatedScopeClaimMapping = map[string]string{
+	"scope":               scopeDoc,
+	"description":         scopeDescriptionDoc,
+	"claims":              scopeClaimsDoc,
+	"use_project_mapping": scopeUseProjectMappingDoc,
+}
+
+var docsProjectScopeClaimMapping = map[string]string{
+	"scope":       scopeDoc,
+	"description": scopeDescriptionDoc,
+	"claims":      scopeClaimsDoc,
+}
+
 var docsInboundApp = map[string]string{
 	"project_id": "The ID of the Descope project this inbound app belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
@@ -91,8 +121,10 @@ var docsInboundApp = map[string]string{
 	"approved_callback_urls": "A set of approved redirect URIs that the inbound app is allowed to redirect to after authorization.",
 	"permissions_scopes": "A list of permission scopes that the inbound app can request. Permission scopes provide the app with " +
 		"the ability to act on behalf of a user based on their roles and permissions.",
-	"attributes_scopes": "A list of user information scopes that the inbound app can request. Attribute scopes provide the app " +
-		"with access to user profile data such as email, phone, or custom attributes.",
+	"scope_claim_mapping": "A list of scope-to-claim mappings that the application can request. Each entry maps a requested " +
+		"OAuth scope to the JWT claims it produces. For inbound apps this supersedes the legacy attribute scopes.",
+	"attributes_scopes": "Deprecated: use `scope_claim_mapping` instead. A list of user information scopes that the inbound " +
+		"app can request, providing access to user profile data such as email, phone, or custom attributes.",
 	"connections_scopes": "A list of connection scopes that the inbound app can request. Connection scopes provide the app with " +
 		"the ability to access external tokens based on the mapped scopes.",
 	"session_settings": "Custom session management settings for this inbound app, overriding the project defaults.",
@@ -176,6 +208,8 @@ var docsProject = map[string]string{
 	"lists": "Lists that can be used for various purposes in the project, such as IP allowlists, " +
 		"text lists, or custom JSON data.",
 	"admin_portal": "Admin portal configuration - A hosted page for end users to access and use Descope Widgets",
+	"scope_claim_mapping": "The project-wide OIDC scope-to-claims mapping. Each entry maps a scope to the JWT claims it " +
+		"produces; applications can inherit these entries via `use_project_mapping`.",
 }
 
 var docsAdminPortalWidget = map[string]string{
@@ -225,6 +259,7 @@ var docsOIDC = map[string]string{
 	"default_audience":            "Controls the default `aud` claim of tokens issued for this application. One of `\"projectId\"` (the project ID only), `\"clientId\"` (the dedicated client ID only), or `\"\"` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.",
 	"permissions":                 "",
 	"roles":                       "",
+	"scope_claim_mapping":         "The scope-to-claims mapping for this federated application.",
 }
 
 var docsSAML = map[string]string{
