@@ -124,6 +124,15 @@ Whether to mark the user's email as unverified when logging in via SSO.
 
 
 
+allow_merge_users_with_multiple_tenants
+---------------------------------------
+
+- Type: `bool`
+
+Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.
+
+
+
 email_service
 -------------
 
