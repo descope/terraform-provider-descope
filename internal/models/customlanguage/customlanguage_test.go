@@ -43,9 +43,13 @@ func TestCustomLanguage(t *testing.T) {
 			ImportState:       true,
 			ImportStateIdFunc: testacc.GenerateImportStateID(c.Path(), "project_id", "id"),
 		},
-		// Destroy resource
+		// Destroy resource (config must carry the required language + match the final state)
 		resource.TestStep{
-			Config:  p.Config() + c.Config(`project_id = `+p.Path()+`.id`),
+			Config: p.Config() + c.Config(`
+				project_id = `+p.Path()+`.id
+				language   = "phl"
+				region     = "PH"
+			`),
 			Destroy: true,
 		},
 	)
