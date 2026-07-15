@@ -38,6 +38,10 @@ func Engine(t *testing.T) *Resource {
 	return newResource(t, "engine")
 }
 
+func CustomLanguage(t *testing.T) *Resource {
+	return newResource(t, "custom_language")
+}
+
 func newResource(t *testing.T, typ string) *Resource {
 	return &Resource{
 		Type: typ,
