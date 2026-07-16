@@ -15,9 +15,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-var (
-	_ provider.Provider = &descopeProvider{}
-)
+var _ provider.Provider = &descopeProvider{}
 
 func NewDescopeProvider(version string) func() provider.Provider {
 	return func() provider.Provider {
@@ -122,5 +120,6 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewAccessKeyResource,
 		resources.NewInboundAppResource,
 		resources.NewEngineResource,
+		resources.NewResourcePolicyResource,
 	}
 }
