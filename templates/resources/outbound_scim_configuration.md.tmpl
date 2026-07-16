@@ -1,0 +1,50 @@
+---
+page_title: "descope_outbound_scim_configuration Resource - descope"
+subcategory: ""
+description: |-
+  Manages outbound SCIM provisioning from a federated application to an external SCIM 2.0 service provider.
+---
+
+# descope_outbound_scim_configuration (Resource)
+
+Manages one outbound SCIM configuration identified by its federated SAML or OIDC application ID.
+
+The backend accepts a JSON configuration object so connector-template fields can evolve without requiring a provider release. Keep all non-secret values in `configuration`. Put bearer tokens, passwords, client secrets, and similar values in the write-only `secrets` JSON object; it is deep-merged into `configuration` for create and update requests and is never stored in Terraform state.
+
+## Example Usage
+
+```hcl
+variable "scim_bearer_token" {
+  type      = string
+  sensitive = true
+}
+
+resource "descope_outbound_scim_configuration" "example" {
+  project_id = "<project-id>"
+  app_id     = "<federated-application-id>"
+  enabled    = true
+
+  configuration = jsonencode({
+    host = "https://scim.example.com/v2"
+    authentication = {
+      method = "bearerToken"
+    }
+    ignoreUnverifiedEmails = false
+    ignoreUnverifiedPhones = false
+  })
+
+  secrets = jsonencode({
+    authentication = {
+      bearerToken = var.scim_bearer_token
+    }
+  })
+}
+```
+
+Import using `project_id/app_id`:
+
+```shell
+terraform import descope_outbound_scim_configuration.example <project-id>/<federated-application-id>
+```
+
+{{ .SchemaMarkdown }}
