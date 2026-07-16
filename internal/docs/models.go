@@ -28,6 +28,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/role"
 	"github.com/descope/terraform-provider-descope/internal/models/settings"
 	"github.com/descope/terraform-provider-descope/internal/models/styles"
+	"github.com/descope/terraform-provider-descope/internal/models/tenant"
 	"github.com/descope/terraform-provider-descope/internal/models/texttemplate"
 	"github.com/descope/terraform-provider-descope/internal/models/voicetemplate"
 	"github.com/descope/terraform-provider-descope/internal/models/widget"
@@ -192,6 +193,7 @@ func InjectModels() {
 	inject(settings.WellKnownRemovedValuesAttributes, docsWellKnownRemovedValues)
 	inject(settings.WellKnownValueDeltaAttributes, docsWellKnownValueDelta)
 	inject(styles.StylesAttributes, docsStyles)
+	inject(tenant.TenantAttributes, docsTenant)
 	inject(texttemplate.TextTemplateAttributes, docsTextTemplate)
 	inject(voicetemplate.VoiceTemplateAttributes, docsVoiceTemplate)
 	inject(widget.WidgetAttributes, docsWidget)
