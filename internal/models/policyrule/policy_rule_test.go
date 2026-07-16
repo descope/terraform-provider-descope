@@ -114,6 +114,13 @@ func TestPolicyRuleModel_SetPolicyRule_maps_server_state(t *testing.T) {
 	require.Equal(t, `["trusted"]`, conditions[0].ValueJSON.ValueString())
 }
 
+func TestCompactJSON_normalizes_whitespace(t *testing.T) {
+	compact, err := compactJSON(json.RawMessage(` [ "trusted" ] `))
+
+	require.NoError(t, err)
+	require.Equal(t, `["trusted"]`, compact)
+}
+
 func validPolicyRuleModel() PolicyRuleModel {
 	return PolicyRuleModel{
 		ProjectID:         stringattr.Value("P1"),

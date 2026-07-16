@@ -14,8 +14,10 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var ResourceTargetAttributes = map[string]schema.Attribute{
@@ -33,7 +35,7 @@ var GrantAttributes = map[string]schema.Attribute{
 var ConditionAttributes = map[string]schema.Attribute{
 	"key":        stringattr.Required(),
 	"operator":   stringattr.Required(stringvalidator.OneOf("equal", "notEqual", "contains", "notContains", "in", "notIn")),
-	"value_json": stringattr.Required(jsonValueValidator{}),
+	"value_json": stringattr.Required(jsonValueValidator{}, compactJSONPlanModifier{}),
 }
 
 var PolicyRuleAttributes = map[string]schema.Attribute{
@@ -81,5 +83,25 @@ func (jsonValueValidator) ValidateString(_ context.Context, req validator.String
 			"Invalid JSON Value",
 			fmt.Sprintf("Attribute %s must contain a valid JSON value", req.Path),
 		))
+	}
+}
+
+type compactJSONPlanModifier struct{}
+
+func (compactJSONPlanModifier) Description(context.Context) string {
+	return "normalizes equivalent JSON representations before apply"
+}
+
+func (m compactJSONPlanModifier) MarkdownDescription(ctx context.Context) string {
+	return m.Description(ctx)
+}
+
+func (compactJSONPlanModifier) PlanModifyString(_ context.Context, req planmodifier.StringRequest, resp *planmodifier.StringResponse) {
+	if req.PlanValue.IsNull() || req.PlanValue.IsUnknown() {
+		return
+	}
+	compact, err := compactJSON(json.RawMessage(req.PlanValue.ValueString()))
+	if err == nil {
+		resp.PlanValue = types.StringValue(compact)
 	}
 }
