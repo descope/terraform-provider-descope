@@ -46,6 +46,20 @@ func TestNormalizeConfigurationForState_removes_internal_and_masked_values(t *te
 	require.JSONEq(t, `{"authentication":{"method":"bearerToken"},"host":"https://scim.example.com"}`, normalized)
 }
 
+func TestNormalizeConfigurationForState_removes_unmasked_secret_keys(t *testing.T) {
+	configuration := map[string]any{
+		"host":         "https://scim.example.com",
+		"apiKey":       "must-not-enter-state",
+		"access_token": "must-not-enter-state",
+		"token_type":   "bearer",
+	}
+
+	normalized, err := NormalizeConfigurationForState(configuration)
+
+	require.NoError(t, err)
+	require.JSONEq(t, `{"host":"https://scim.example.com","token_type":"bearer"}`, normalized)
+}
+
 func TestDecodeConfiguration_rejects_non_object_JSON(t *testing.T) {
 	// Given
 	raw := `["not", "an", "object"]`
@@ -91,6 +105,16 @@ func TestConfigurationForWrite_rejects_secret_fields_inside_lists(t *testing.T) 
 	_, err := model.ConfigurationForWrite()
 
 	// Then
+	require.Error(t, err)
+}
+
+func TestConfigurationForWrite_rejects_common_secret_field_names(t *testing.T) {
+	model := OutboundSCIMConfigurationModel{
+		Configuration: types.StringValue(`{"apiKey":"must-not-enter-state"}`),
+	}
+
+	_, err := model.ConfigurationForWrite()
+
 	require.Error(t, err)
 }
 

@@ -2,8 +2,6 @@ package resources
 
 import (
 	"context"
-	"fmt"
-	"net/http"
 	"strings"
 
 	"github.com/descope/go-sdk/descope"
@@ -46,6 +44,7 @@ func (r *outboundSCIMConfigurationResource) Schema(_ context.Context, _ resource
 func (r *outboundSCIMConfigurationResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
 	var model outboundscim.OutboundSCIMConfigurationModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &model)...)
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("secrets"), &model.Secrets)...)
 	if resp.Diagnostics.HasError() {
 		return
 	}
@@ -103,6 +102,7 @@ func (r *outboundSCIMConfigurationResource) Read(ctx context.Context, req resour
 func (r *outboundSCIMConfigurationResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
 	var plan outboundscim.OutboundSCIMConfigurationModel
 	resp.Diagnostics.Append(req.Plan.Get(ctx, &plan)...)
+	resp.Diagnostics.Append(req.Config.GetAttribute(ctx, path.Root("secrets"), &plan.Secrets)...)
 	var state outboundscim.OutboundSCIMConfigurationModel
 	resp.Diagnostics.Append(req.State.Get(ctx, &state)...)
 	if resp.Diagnostics.HasError() {
@@ -181,13 +181,5 @@ func setOutboundSCIMState(model *outboundscim.OutboundSCIMConfigurationModel, co
 }
 
 func isNotFound(err error) bool {
-	if err == nil {
-		return false
-	}
-	descopeError := descope.AsError(err)
-	if descopeError == nil {
-		return false
-	}
-	status, ok := descopeError.Info[descope.ErrorInfoKeys.HTTPResponseStatusCode]
-	return ok && fmt.Sprint(status) == fmt.Sprint(http.StatusNotFound)
+	return descope.IsNotFoundError(err)
 }

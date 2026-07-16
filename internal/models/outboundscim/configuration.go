@@ -124,7 +124,7 @@ func removeMaskedValues(configuration map[string]any) {
 	for key, value := range configuration {
 		switch typed := value.(type) {
 		case string:
-			if typed == maskedValue || typed == "REMOVE_MASKED_VALUE" {
+			if typed == maskedValue || typed == "REMOVE_MASKED_VALUE" || isSecretKey(key) {
 				delete(configuration, key)
 			}
 		case map[string]any:
@@ -139,10 +139,19 @@ func removeMaskedValues(configuration map[string]any) {
 	}
 }
 
+func isSecretKey(key string) bool {
+	normalized := strings.ToLower(strings.ReplaceAll(key, "_", ""))
+	for _, fragment := range []string{"secret", "password", "privatekey", "apikey", "accesstoken", "refreshtoken", "passphrase", "credential", "bearertoken"} {
+		if strings.Contains(normalized, fragment) {
+			return true
+		}
+	}
+	return normalized == "token"
+}
+
 func secretFieldPath(configuration map[string]any) string {
 	for key, value := range configuration {
-		switch strings.ToLower(key) {
-		case "bearertoken", "clientsecret", "password", "privatekey", "secret", "token":
+		if isSecretKey(key) {
 			return key
 		}
 		switch typed := value.(type) {
