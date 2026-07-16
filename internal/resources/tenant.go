@@ -124,6 +124,10 @@ func (r *tenantResource) Update(ctx context.Context, req resource.UpdateRequest,
 	}
 
 	current, err := r.client.ReadTenant(ctx, values.ProjectID, values.ID)
+	if infra.IsTenantNotFound(err) {
+		resp.State.RemoveResource(ctx)
+		return
+	}
 	if err != nil {
 		resp.Diagnostics.AddError("Error reading tenant before update", err.Error())
 		return

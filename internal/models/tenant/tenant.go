@@ -79,7 +79,9 @@ func (m *Model) SetTenant(ctx context.Context, value *infra.Tenant) {
 	m.EnforceSSO = boolattr.Value(value.EnforceSSO)
 	m.EnforceSSOExclusions = strlistattr.ValueContext(ctx, value.EnforceSSOExclusions)
 	m.FederatedApplicationIDs = strlistattr.ValueContext(ctx, value.FederatedApplicationIDs)
-	m.Parent = stringattr.Value(value.Parent)
+	if value.Parent != "" || m.Parent.IsNull() || m.Parent.IsUnknown() {
+		m.Parent = stringattr.Value(value.Parent)
+	}
 	m.RoleInheritance = stringattr.Value(value.RoleInheritance)
 }
 
