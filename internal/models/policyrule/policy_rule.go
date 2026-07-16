@@ -41,7 +41,7 @@ var ConditionAttributes = map[string]schema.Attribute{
 var PolicyRuleAttributes = map[string]schema.Attribute{
 	"id":                 stringattr.Identifier(),
 	"project_id":         stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"version":            intattr.Generated(),
+	"version":            schema.Int64Attribute{Computed: true},
 	"name":               stringattr.Required(),
 	"description":        stringattr.Default(""),
 	"enabled":            boolattr.Required(),
@@ -53,9 +53,9 @@ var PolicyRuleAttributes = map[string]schema.Attribute{
 	"resource_targets":   listattr.Default[ResourceTargetModel](ResourceTargetAttributes),
 	"grants":             listattr.Default[GrantModel](GrantAttributes),
 	"conditions":         listattr.Default[ConditionModel](ConditionAttributes),
-	"cedar_text":         stringattr.Generated(),
+	"cedar_text":         schema.StringAttribute{Computed: true},
 	"created_time":       intattr.Generated(),
-	"modified_time":      intattr.Generated(),
+	"modified_time":      schema.Int64Attribute{Computed: true},
 }
 
 var Schema = schema.Schema{
