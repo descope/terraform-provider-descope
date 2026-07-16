@@ -70,6 +70,7 @@ func (r *resourcePolicyResource) Create(ctx context.Context, req resource.Create
 
 func (r *resourcePolicyResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
 	tflog.Info(ctx, "Reading resource policy")
+	ctx = helpers.ContextWithImportState(ctx, req, resp)
 	model := &resourcepolicy.Model{}
 	resp.Diagnostics.Append(req.State.Get(ctx, model)...)
 	if resp.Diagnostics.HasError() {
