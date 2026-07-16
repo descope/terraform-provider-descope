@@ -21,14 +21,14 @@ var tenantIDValidators = []validator.String{
 
 var TenantAttributes = map[string]schema.Attribute{
 	"project_id":                stringattr.ReplaceRequired(),
-	"id":                        stringattr.ReplaceOptional(tenantIDValidators...),
+	"id":                        stringattr.ReplaceOptional(tenantIDValidators[0]),
 	"name":                      stringattr.Required(stringattr.StandardLenValidator),
 	"self_provisioning_domains": strlistattr.Default(stringattr.StandardLenValidator),
 	"disabled":                  boolattr.Default(false),
 	"enforce_sso":               boolattr.Default(false),
 	"enforce_sso_exclusions":    strlistattr.Default(stringattr.StandardLenValidator),
 	"federated_application_ids": strlistattr.Default(stringattr.MachineIDValidator, stringattr.StandardLenValidator),
-	"parent":                    stringattr.ReplaceOptional(tenantIDValidators...),
+	"parent":                    stringattr.ReplaceOptional(tenantIDValidators[0]),
 	"role_inheritance":          stringattr.Optional(stringvalidator.OneOf("none", "userOnly")),
 }
 
@@ -82,7 +82,9 @@ func (m *Model) SetTenant(ctx context.Context, value *infra.Tenant) {
 	m.EnforceSSO = boolattr.Value(value.EnforceSSO)
 	m.EnforceSSOExclusions = strlistattr.ValueContext(ctx, value.EnforceSSOExclusions)
 	m.FederatedApplicationIDs = strlistattr.ValueContext(ctx, value.FederatedApplicationIDs)
-	m.Parent = stringattr.Value(value.Parent)
+	if value.Parent != "" || m.Parent.IsNull() || m.Parent.IsUnknown() {
+		m.Parent = stringattr.Value(value.Parent)
+	}
 	m.RoleInheritance = stringattr.Value(value.RoleInheritance)
 }
 
