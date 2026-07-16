@@ -23,6 +23,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
 	"github.com/descope/terraform-provider-descope/internal/models/project/templates"
 	"github.com/descope/terraform-provider-descope/internal/models/project/widgets"
+	"github.com/descope/terraform-provider-descope/internal/models/tenant"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -182,6 +183,7 @@ func InjectModels() {
 	inject(templates.VoiceServiceAttributes, docsVoiceService)
 	inject(templates.VoiceTemplateAttributes, docsVoiceTemplate)
 	inject(widgets.WidgetAttributes, docsWidget)
+	inject(tenant.TenantAttributes, docsTenant)
 }
 
 func inject(model map[string]schema.Attribute, docs map[string]string) {
