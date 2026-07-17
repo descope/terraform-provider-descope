@@ -116,6 +116,15 @@ API key authentication configuration.
 
 
 
+oauth2_client_credentials
+-------------------------
+
+- Type: `object` of `connectors.HTTPAuthOAuth2ClientCredentialsField`
+
+OAuth 2.0 client credentials configuration used to fetch an access token before making requests.
+
+
+
 
 
 HTTPAuthBasicField
@@ -163,3 +172,66 @@ token
 - Type: `secret` (required)
 
 The API secret.
+
+
+
+
+
+HTTPAuthOAuth2ClientCredentialsField
+====================================
+
+
+
+client_id
+---------
+
+- Type: `string` (required)
+
+The OAuth 2.0 client ID used to authenticate against the token endpoint.
+
+
+
+client_secret
+-------------
+
+- Type: `secret` (required)
+
+The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+
+
+auth_url
+--------
+
+- Type: `string` (required)
+
+The token endpoint URL used to request an access token.
+
+
+
+auth_style
+----------
+
+- Type: `string`
+- Default: `"header"`
+
+How the client credentials are sent to the token endpoint. Either `header` to send them in the
+`Authorization` header, or `params` to send them in the request body.
+
+
+
+scopes
+------
+
+- Type: `string`
+
+A space-separated list of OAuth scopes to request when fetching the access token.
+
+
+
+token_request_headers
+---------------------
+
+- Type: `map` of `string`
+
+Additional headers to include in the token request sent to the token endpoint.
