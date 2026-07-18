@@ -3460,18 +3460,21 @@ Required:
 
 Required:
 
-- `access_key_id` (String, Sensitive) AWS Access key ID.
 - `name` (String) A custom name for your connector.
 - `region` (String) AWS region to send requests to (e.g. `us-west-2`).
-- `secret` (String, Sensitive) AWS Secret Access Key.
 
 Optional:
 
+- `access_key_id` (String, Sensitive) AWS Access key ID.
+- `auth_type` (String)
 - `description` (String) A description of what your connector is used for.
 - `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
 - `entity_id` (String) The entity ID or principal entity (PE) ID for sending text messages to recipients in India.
+- `external_id` (String)
 - `organization_number` (String, Deprecated) Use the `origination_number` attribute instead.
 - `origination_number` (String) An optional phone number from which the text messages are going to be sent. Make sure it is registered properly in your server.
+- `role_arn` (String)
+- `secret` (String, Sensitive) AWS Secret Access Key.
 - `sender_id` (String) The name of the sender from which the text message is going to be sent (see SNS documentation regarding acceptable IDs and supported regions/countries).
 - `template_id` (String) The template for sending text messages to recipients in India. The template ID must be associated with the sender ID.
 
