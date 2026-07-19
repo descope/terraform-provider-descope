@@ -1937,7 +1937,7 @@ Required:
 
 Optional:
 
-- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `params` to send them in the request body.
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
@@ -2323,7 +2323,7 @@ Required:
 
 Optional:
 
-- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `params` to send them in the request body.
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
@@ -2468,7 +2468,7 @@ Required:
 
 Optional:
 
-- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `params` to send them in the request body.
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
@@ -2536,7 +2536,7 @@ Required:
 
 Optional:
 
-- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `params` to send them in the request body.
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
@@ -2754,7 +2754,7 @@ Required:
 
 Optional:
 
-- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `params` to send them in the request body.
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
@@ -3025,7 +3025,7 @@ Required:
 
 Optional:
 
-- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `params` to send them in the request body.
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
@@ -3345,7 +3345,7 @@ Required:
 
 Optional:
 
-- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `params` to send them in the request body.
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 

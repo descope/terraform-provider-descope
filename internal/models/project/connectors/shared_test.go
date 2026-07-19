@@ -207,7 +207,7 @@ func TestHTTPConnectorOAuth2ClientCredentialsValidation(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`Cannot specify more than one connector authentication method`),
 		},
-		// auth_style only accepts "header" or "params".
+		// auth_style only accepts "header" or "body".
 		resource.TestStep{
 			Config: p.Config(`
 				connectors = {

@@ -331,7 +331,7 @@ var HTTPAuthOAuth2ClientCredentialsFieldAttributes = map[string]schema.Attribute
 	"client_id":             stringattr.Required(),
 	"client_secret":         stringattr.SecretRequired(),
 	"auth_url":              stringattr.Required(),
-	"auth_style":            stringattr.Default("header", stringvalidator.OneOf("header", "params")),
+	"auth_style":            stringattr.Default("header", stringvalidator.OneOf("header", "body")),
 	"scopes":                stringattr.Default(""),
 	"token_request_headers": strmapattr.Default(),
 }

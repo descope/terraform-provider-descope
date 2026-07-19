@@ -216,7 +216,7 @@ auth_style
 - Default: `"header"`
 
 How the client credentials are sent to the token endpoint. Either `header` to send them in the
-`Authorization` header, or `params` to send them in the request body.
+`Authorization` header, or `body` to send them in the request body.
 
 
 
