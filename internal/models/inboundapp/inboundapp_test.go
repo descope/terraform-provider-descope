@@ -31,6 +31,7 @@ func TestInboundApp(t *testing.T) {
 				"connections_scopes.#":             "0",
 				"audience_whitelist.#":             "0",
 				"force_add_all_authorization_info": "false",
+				"force_dpop":                       "false",
 				"default_audience":                 "",
 			}),
 		},
