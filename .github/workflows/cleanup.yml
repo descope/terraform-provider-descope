@@ -1,0 +1,30 @@
+name: Cleanup
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # 01:00 UTC, middle of the night in Israel (03:00 IST / 04:00 IDT)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  testacc_cleanup:
+    name: Delete Leftover Acceptance Projects
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Descope CLI
+        uses: descope/descopecli/.github/actions/install@76722efc17408640a42340cbdae1528c363e9dc2 # v0.8.15
+      - name: Delete Leftover Acceptance Projects
+        shell: bash
+        env:
+          DESCOPE_MANAGEMENT_KEY: ${{ secrets.DESCOPE_MANAGEMENT_KEY }}
+          DESCOPE_BASE_URL: ${{ secrets.DESCOPE_BASE_URL }}
+        run: |
+          # CI runs only delete projects with their own run-scoped prefix, so projects
+          # from cancelled or crashed runs are left behind. This sweep deletes ALL
+          # testacc-* projects, so it's scheduled for a time when no acceptance tests
+          # are expected to be running.
+          descope project list --json |
+            jq -r '.projects[]? | select(.name | startswith("testacc-")) | .id' |
+            xargs -r -I {} descope project delete {} --force
