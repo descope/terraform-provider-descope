@@ -2,6 +2,7 @@ package resources
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/accesskey"
+	"github.com/descope/terraform-provider-descope/internal/models/customlanguage"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
 	"github.com/descope/terraform-provider-descope/internal/models/engine"
 	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
@@ -27,4 +28,10 @@ func NewInboundAppResource() resource.Resource {
 
 func NewEngineResource() resource.Resource {
 	return newResource[engine.EngineModel]("engine", engine.Schema)
+}
+
+func NewCustomLanguageResource() resource.Resource {
+	// user-facing resource stays descope_custom_language (product vocabulary); the backend infra
+	// entity is custom_locale (consistent with projectservice).
+	return newResourceWithEntity[customlanguage.CustomLanguageModel]("custom_language", "custom_locale", customlanguage.Schema)
 }

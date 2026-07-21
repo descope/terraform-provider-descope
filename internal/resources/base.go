@@ -19,7 +19,13 @@ import (
 // the resource will be assumed to be a project-level resource (like a connector or flow), otherwise
 // it'll be assumed to be a company-level resource.
 func newResource[T any, M helpers.ResourceModel[T]](name string, sc schema.Schema) resource.Resource {
-	return &baseResource[T, M]{name: name, schema: sc}
+	return &baseResource[T, M]{name: name, entity: name, schema: sc}
+}
+
+// Like newResource but with a distinct API entity name, for when the user-facing resource name
+// differs from the infra entity the backend expects (e.g. descope_custom_language -> custom_locale).
+func newResourceWithEntity[T any, M helpers.ResourceModel[T]](name, entity string, sc schema.Schema) resource.Resource {
+	return &baseResource[T, M]{name: name, entity: entity, schema: sc}
 }
 
 // Use a random model to ensure interface conformance
@@ -30,7 +36,8 @@ var (
 )
 
 type baseResource[T any, M helpers.ResourceModel[T]] struct {
-	name   string
+	name   string // user-facing resource name (descope_<name>)
+	entity string // infra entity name sent to the backend; defaults to name
 	schema schema.Schema
 	client *infra.Client
 }
@@ -64,7 +71,7 @@ func (r *baseResource[T, M]) Create(ctx context.Context, req resource.CreateRequ
 		return
 	}
 
-	res, err := r.client.Create(ctx, model.GetProjectID().ValueString(), r.name, values)
+	res, err := r.client.Create(ctx, model.GetProjectID().ValueString(), r.entity, values)
 	if failure, ok := infra.AsValidationError(err); ok {
 		resp.Diagnostics.AddError("Invalid "+r.name+" configuration", failure)
 		return
@@ -91,7 +98,7 @@ func (r *baseResource[T, M]) Read(ctx context.Context, req resource.ReadRequest,
 		return
 	}
 
-	res, err := r.client.Read(ctx, model.GetProjectID().ValueString(), r.name, model.GetID().ValueString())
+	res, err := r.client.Read(ctx, model.GetProjectID().ValueString(), r.entity, model.GetID().ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error reading "+r.name, err.Error())
 		return
@@ -119,7 +126,7 @@ func (r *baseResource[T, M]) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
-	res, err := r.client.Update(ctx, model.GetProjectID().ValueString(), r.name, model.GetID().ValueString(), values)
+	res, err := r.client.Update(ctx, model.GetProjectID().ValueString(), r.entity, model.GetID().ValueString(), values)
 	if failure, ok := infra.AsValidationError(err); ok {
 		resp.Diagnostics.AddError("Invalid "+r.name+" configuration", failure)
 		return
@@ -144,7 +151,7 @@ func (r *baseResource[T, M]) Delete(ctx context.Context, req resource.DeleteRequ
 		return
 	}
 
-	err := r.client.Delete(ctx, model.GetProjectID().ValueString(), r.name, model.GetID().ValueString())
+	err := r.client.Delete(ctx, model.GetProjectID().ValueString(), r.entity, model.GetID().ValueString())
 	if err != nil {
 		resp.Diagnostics.AddError("Error deleting "+r.name, err.Error())
 		return
