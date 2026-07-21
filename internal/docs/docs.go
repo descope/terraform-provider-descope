@@ -131,6 +131,7 @@ var docsInboundApp = map[string]string{
 	"audience_whitelist": "A set of allowed custom `aud` claim values that the inbound app can request via the `resource` " +
 		"parameter, per RFC 8707.",
 	"force_add_all_authorization_info": "When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.",
+	"force_dpop":                       "Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.",
 	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
 		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
 	"non_confidential_client": "Whether this is a public (non-confidential) client that does not use a client secret. Changing this " +
@@ -1134,6 +1135,7 @@ var docsHTTP = map[string]string{
 		"The context will have a \"body\" attribute, a \"headers\" attribute, and a " +
 		"\"statusCode\" attribute. See more details in the help guide",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+	"engine_id":      "",
 }
 
 var docsHubSpot = map[string]string{
@@ -1442,9 +1444,10 @@ var docsAuditFilterField = map[string]string{
 }
 
 var docsHTTPAuthField = map[string]string{
-	"bearer_token": "Bearer token for HTTP authentication.",
-	"basic":        "Basic authentication credentials (username and password).",
-	"api_key":      "API key authentication configuration.",
+	"bearer_token":              "Bearer token for HTTP authentication.",
+	"basic":                     "Basic authentication credentials (username and password).",
+	"api_key":                   "API key authentication configuration.",
+	"oauth2_client_credentials": "OAuth 2.0 client credentials configuration used to fetch an access token before making requests.",
 }
 
 var docsHTTPAuthBasicField = map[string]string{
@@ -1455,6 +1458,16 @@ var docsHTTPAuthBasicField = map[string]string{
 var docsHTTPAuthAPIKeyField = map[string]string{
 	"key":   "The API key.",
 	"token": "The API secret.",
+}
+
+var docsHTTPAuthOAuth2ClientCredentialsField = map[string]string{
+	"client_id":     "The OAuth 2.0 client ID used to authenticate against the token endpoint.",
+	"client_secret": "The OAuth 2.0 client secret used to authenticate against the token endpoint.",
+	"auth_url":      "The token endpoint URL used to request an access token.",
+	"auth_style": "How the client credentials are sent to the token endpoint. Either `header` to send them in the " +
+		"`Authorization` header, or `params` to send them in the request body.",
+	"scopes":                "A space-separated list of OAuth scopes to request when fetching the access token.",
+	"token_request_headers": "Additional headers to include in the token request sent to the token endpoint.",
 }
 
 var docsSlack = map[string]string{
@@ -1744,6 +1757,8 @@ var docsSettings = map[string]string{
 	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same login ID in " +
 		"Tenant A and Tenant B will be treated as separate identities with isolated credentials, " +
 		"sessions, and MFA state.",
+	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
+		"your website. This modifies the security headers that typically prevent the page from being embedded.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 		"refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +

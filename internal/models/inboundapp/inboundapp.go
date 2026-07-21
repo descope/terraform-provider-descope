@@ -28,6 +28,7 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"session_settings":                 objattr.Optional[SessionSettingsModel](SessionSettingsAttributes, SessionSettingsValidator),
 	"audience_whitelist":               strsetattr.Default(),
 	"force_add_all_authorization_info": boolattr.Default(false),
+	"force_dpop":                       boolattr.Default(false),
 	"default_audience":                 stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")), // XXX maybe switch to set
 	"non_confidential_client":          boolattr.Default(false, boolplanmodifier.RequiresReplace()),
 	"client_id":                        stringattr.Optional(stringplanmodifier.RequiresReplace()),
@@ -40,25 +41,26 @@ var Schema = schema.Schema{
 }
 
 type InboundAppModel struct {
-	ID                           stringattr.Type                       `tfsdk:"id"`
-	ProjectID                    stringattr.Type                       `tfsdk:"project_id"`
-	Name                         stringattr.Type                       `tfsdk:"name"`
-	Description                  stringattr.Type                       `tfsdk:"description"`
-	LogoUrl                      stringattr.Type                       `tfsdk:"logo_url"`
-	LoginPageUrl                 stringattr.Type                       `tfsdk:"login_page_url"`
-	ApprovedCallbackUrls         strsetattr.Type                       `tfsdk:"approved_callback_urls"`
-	PermissionsScopes            listattr.Type[ApplicationScopeModel]  `tfsdk:"permissions_scopes"`
+	ID                           stringattr.Type                      `tfsdk:"id"`
+	ProjectID                    stringattr.Type                      `tfsdk:"project_id"`
+	Name                         stringattr.Type                      `tfsdk:"name"`
+	Description                  stringattr.Type                      `tfsdk:"description"`
+	LogoUrl                      stringattr.Type                      `tfsdk:"logo_url"`
+	LoginPageUrl                 stringattr.Type                      `tfsdk:"login_page_url"`
+	ApprovedCallbackUrls         strsetattr.Type                      `tfsdk:"approved_callback_urls"`
+	PermissionsScopes            listattr.Type[ApplicationScopeModel] `tfsdk:"permissions_scopes"`
+	AttributesScopes             listattr.Type[ApplicationScopeModel] `tfsdk:"attributes_scopes"`
 	ScopeClaimMapping            listattr.Type[ScopeClaimMappingModel] `tfsdk:"scope_claim_mapping"`
-	AttributesScopes             listattr.Type[ApplicationScopeModel]  `tfsdk:"attributes_scopes"`
-	ConnectionsScopes            listattr.Type[ApplicationScopeModel]  `tfsdk:"connections_scopes"`
-	SessionSettings              objattr.Type[SessionSettingsModel]    `tfsdk:"session_settings"`
-	AudienceWhitelist            strsetattr.Type                       `tfsdk:"audience_whitelist"`
-	ForceAddAllAuthorizationInfo boolattr.Type                         `tfsdk:"force_add_all_authorization_info"`
-	DefaultAudience              stringattr.Type                       `tfsdk:"default_audience"`
-	NonConfidentialClient        boolattr.Type                         `tfsdk:"non_confidential_client"`
-	ClientId                     stringattr.Type                       `tfsdk:"client_id"`
-	ClientSecret                 stringattr.Type                       `tfsdk:"client_secret"`
-	ForcePkce                    boolattr.Type                         `tfsdk:"force_pkce"`
+	ConnectionsScopes            listattr.Type[ApplicationScopeModel] `tfsdk:"connections_scopes"`
+	SessionSettings              objattr.Type[SessionSettingsModel]   `tfsdk:"session_settings"`
+	AudienceWhitelist            strsetattr.Type                      `tfsdk:"audience_whitelist"`
+	ForceAddAllAuthorizationInfo boolattr.Type                        `tfsdk:"force_add_all_authorization_info"`
+	ForceDpop                    boolattr.Type                        `tfsdk:"force_dpop"`
+	DefaultAudience              stringattr.Type                      `tfsdk:"default_audience"`
+	NonConfidentialClient        boolattr.Type                        `tfsdk:"non_confidential_client"`
+	ClientId                     stringattr.Type                      `tfsdk:"client_id"`
+	ClientSecret                 stringattr.Type                      `tfsdk:"client_secret"`
+	ForcePkce                    boolattr.Type                        `tfsdk:"force_pkce"`
 }
 
 func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
@@ -75,6 +77,7 @@ func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.SessionSettings, data, "sessionSettings", h)
 	strsetattr.Get(m.AudienceWhitelist, data, "audienceWhitelist", h)
 	boolattr.Get(m.ForceAddAllAuthorizationInfo, data, "forceAddAllAuthorizationInfo")
+	boolattr.Get(m.ForceDpop, data, "forceDpop")
 	stringattr.Get(m.DefaultAudience, data, "defaultAudience")
 	boolattr.Get(m.NonConfidentialClient, data, "nonConfidentialClient")
 	stringattr.Get(m.ClientId, data, "clientId")
@@ -96,6 +99,7 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.SessionSettings, data, "sessionSettings", h)
 	strsetattr.Set(&m.AudienceWhitelist, data, "audienceWhitelist", h)
 	boolattr.Set(&m.ForceAddAllAuthorizationInfo, data, "forceAddAllAuthorizationInfo")
+	boolattr.Set(&m.ForceDpop, data, "forceDpop")
 	stringattr.Set(&m.DefaultAudience, data, "defaultAudience")
 	boolattr.Set(&m.NonConfidentialClient, data, "nonConfidentialClient")
 	stringattr.Set(&m.ClientId, data, "clientId")

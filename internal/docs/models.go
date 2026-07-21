@@ -148,6 +148,7 @@ func InjectModels() {
 	inject(connectors.HTTPAuthFieldAttributes, docsHTTPAuthField)
 	inject(connectors.HTTPAuthBasicFieldAttributes, docsHTTPAuthBasicField)
 	inject(connectors.HTTPAuthAPIKeyFieldAttributes, docsHTTPAuthAPIKeyField)
+	inject(connectors.HTTPAuthOAuth2ClientCredentialsFieldAttributes, docsHTTPAuthOAuth2ClientCredentialsField)
 	inject(connectors.SlackAttributes, docsSlack)
 	inject(connectors.SmartlingAttributes, docsSmartling)
 	inject(connectors.SMTPAttributes, docsSMTP)
