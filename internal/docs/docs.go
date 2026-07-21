@@ -99,6 +99,7 @@ var docsInboundApp = map[string]string{
 	"audience_whitelist": "A set of allowed custom `aud` claim values that the inbound app can request via the `resource` " +
 		"parameter, per RFC 8707.",
 	"force_add_all_authorization_info": "When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.",
+	"force_dpop":                       "Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.",
 	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
 		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
 	"non_confidential_client": "Whether this is a public (non-confidential) client that does not use a client secret. Changing this " +
