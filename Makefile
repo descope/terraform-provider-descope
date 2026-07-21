@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
-.PHONY:  help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-brew ensure-go
-.SILENT: help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-courtney ensure-brew ensure-go
+.PHONY:  help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-jq ensure-courtney ensure-brew ensure-go
+.SILENT: help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-jq ensure-courtney ensure-brew ensure-go
 
 ifneq ($(tests),)
   flags := $(flags) -count 1 -run '$(tests)'
@@ -21,10 +21,6 @@ ifneq ($(wildcard $(env)),)
   ifeq ($(DESCOPE_TESTACC_PREFIX),)
     export DESCOPE_TESTACC_PREFIX = $(shell cat $(env) | grep DESCOPE_TESTACC_PREFIX | sed 's/^.*=//')
   endif
-endif
-
-ifeq ($(strip $(DESCOPE_TESTACC_PREFIX)),)
-  export DESCOPE_TESTACC_PREFIX = testacc-local
 endif
 
 help: Makefile ## this help message
@@ -51,8 +47,8 @@ testcoverage: ensure-go ensure-courtney ## runs all tests and computes test cove
 	go tool cover -func coverage.out | grep total | awk '{print $$3}'
 	go tool cover -html=coverage.out -o coverage.html
 
-testcleanup: ensure-descope ## cleans up redundant projects after running tests
-	descope project list --json | go run ./tools/testacc/projectcleanup "$${DESCOPE_TESTACC_PREFIX}-" | xargs -r -I {} descope project delete {} --force
+testcleanup: ensure-descope ensure-jq ## cleans up redundant projects after running tests
+	descope project list --json | jq -r --arg prefix "$${DESCOPE_TESTACC_PREFIX:-testacc-local}-" '.projects[]? | select(.name | startswith($$prefix)) | .id' | xargs -r -I {} descope project delete {} --force
 
 terragen: ensure-go ## runs the terragen tool to generate code and model documentation
 	go run tools/terragen/main.go $(flags)
@@ -97,6 +93,12 @@ ensure-descope: ensure-brew
 	if ! command -v descope &> /dev/null; then \
 	    echo Installing the $$'\e[33m'descope$$'\e[0m' CLI tool... ;\
 	    brew install descope ;\
+	fi
+
+ensure-jq: ensure-brew
+	if ! command -v jq &> /dev/null; then \
+	    echo Installing the $$'\e[33m'jq$$'\e[0m' tool... ;\
+	    brew install jq ;\
 	fi
 
 ensure-courtney: ensure-go

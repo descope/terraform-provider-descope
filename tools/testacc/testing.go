@@ -3,7 +3,6 @@ package testacc
 import (
 	"os"
 	"strconv"
-	"strings"
 	"testing"
 	"time"
 
@@ -19,24 +18,6 @@ func Run(t *testing.T, steps ...resource.TestStep) {
 
 func RunIsolated(t *testing.T, steps ...resource.TestStep) {
 	resource.Test(t, TestCase(t, steps...))
-}
-
-func RequireEnv(t *testing.T, names ...string) map[string]string {
-	t.Helper()
-	values := make(map[string]string, len(names))
-	missing := make([]string, 0, len(names))
-	for _, name := range names {
-		value := os.Getenv(name)
-		if strings.TrimSpace(value) == "" {
-			missing = append(missing, name)
-			continue
-		}
-		values[name] = value
-	}
-	if len(missing) > 0 {
-		t.Skipf("set %s to run this optional acceptance test", strings.Join(missing, ", "))
-	}
-	return values
 }
 
 func TestCase(t *testing.T, steps ...resource.TestStep) resource.TestCase {

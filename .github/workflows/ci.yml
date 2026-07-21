@@ -41,7 +41,7 @@ jobs:
           go test -v ./...
           result=$?
           descope project list --json |
-            go run ./tools/testacc/projectcleanup "${DESCOPE_TESTACC_PREFIX}-" |
+            jq -r --arg prefix "${DESCOPE_TESTACC_PREFIX}-" '.projects[]? | select(.name | startswith($prefix)) | .id' |
             xargs -r -I {} descope project delete {} --force
           cleanup_result=$?
           if [ "$result" -ne 0 ]; then

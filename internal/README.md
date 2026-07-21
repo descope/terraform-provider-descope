@@ -119,12 +119,8 @@ Some makefile commands require these environment variables or a config file at `
 ```bash
 DESCOPE_MANAGEMENT_KEY=K...               # required for testacc
 DESCOPE_BASE_URL=https://api.descope.com  # optional for testacc
-DESCOPE_TESTACC_PREFIX=testacc-local      # optional project prefix; defaults to testacc-local
 DESCOPE_TEMPLATES_PATH=...                # required for terragen
 ```
-
-Acceptance tests that depend on optional pre-existing fixture IDs should call `testacc.RequireEnv` so an
-unconfigured fixture skips only that test instead of failing the complete acceptance job.
 
 ## Sources
 
