@@ -1646,9 +1646,11 @@ Optional:
 
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
+- `hide_fga_mapping` (Boolean) Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
 - `hide_jit_guide` (Boolean) Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
+- `hide_role_mapping` (Boolean) Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
 - `show_help_contact` (Boolean) Whether to display the help/support contact link in the SSO Suite UI.
@@ -4033,6 +4035,7 @@ Optional:
 
 - `access_key_jwt_template` (String) Name of the access key JWT Template.
 - `access_key_session_token_expiration` (String) The expiry time for access key session tokens. Use values such as "10 minutes", "4 hours", etc. The value needs to be at least 3 minutes and can't be longer than 4 weeks.
+- `allow_auth_hosting_iframe_embedding` (Boolean) When enabled, Descope-hosted flows can be displayed within an iframe on your website. This modifies the security headers that typically prevent the page from being embedded.
 - `app_url` (String) The URL which your application resides on.
 - `approved_domains` (Set of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `custom_domain` (String) A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).

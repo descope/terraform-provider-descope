@@ -549,6 +549,8 @@ var docsSSOSuite = map[string]string{
 		"the console for it to be used.",
 	"hide_scim":                 "Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.",
 	"hide_groups_mapping":       "Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.",
+	"hide_role_mapping":         "Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.",
+	"hide_fga_mapping":          "Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.",
 	"hide_domains":              "Setting this to `true` will hide the domains configuration section in the SSO Suite interface.",
 	"hide_saml":                 "Setting this to `true` will hide the SAML configuration option.",
 	"hide_oidc":                 "Setting this to `true` will hide the OIDC configuration option.",
@@ -1722,6 +1724,8 @@ var docsSettings = map[string]string{
 	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same login ID in " +
 		"Tenant A and Tenant B will be treated as separate identities with isolated credentials, " +
 		"sessions, and MFA state.",
+	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
+		"your website. This modifies the security headers that typically prevent the page from being embedded.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 		"refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
