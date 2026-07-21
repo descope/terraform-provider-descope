@@ -137,6 +137,50 @@ func TestConnectorsShared(t *testing.T) {
 	)
 }
 
+func TestHTTPConnectorOAuth2ClientCredentials(t *testing.T) {
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"http": [
+						{
+							name     = "My HTTP Connector"
+							base_url = "https://example.com"
+							authentication = {
+								oauth2_client_credentials = {
+									client_id     = "test-client-id"
+									client_secret = "test-client-secret"
+									auth_url      = "https://example.com/oauth/token"
+									auth_style    = "header"
+									scopes        = "read write"
+									token_request_headers = {
+										"X-Custom" = "value"
+									}
+								}
+							}
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.http.#": 1,
+				"connectors.http.0": map[string]any{
+					"id":       testacc.AttributeMatchesPattern(`^(CI|MP)`),
+					"name":     "My HTTP Connector",
+					"base_url": "https://example.com",
+					"authentication.oauth2_client_credentials.client_id":                      "test-client-id",
+					"authentication.oauth2_client_credentials.client_secret":                  "test-client-secret",
+					"authentication.oauth2_client_credentials.auth_url":                       "https://example.com/oauth/token",
+					"authentication.oauth2_client_credentials.auth_style":                     "header",
+					"authentication.oauth2_client_credentials.scopes":                         "read write",
+					"authentication.oauth2_client_credentials.token_request_headers.X-Custom": "value",
+				},
+			}),
+		},
+	)
+}
+
 func TestHTTPConnectorEngine(t *testing.T) {
 	// Assigning a connector to an engine requires a running engineservice to resolve the
 	// engine, which is not deployed in the acceptance-test environment. The engine_id

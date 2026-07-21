@@ -1906,6 +1906,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--audit_webhook--authentication--api_key"></a>
 ### Nested Schema for `connectors.audit_webhook.authentication.api_key`
@@ -1923,6 +1924,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--audit_webhook--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.audit_webhook.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2275,6 +2292,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--external_token_http--authentication--api_key"></a>
 ### Nested Schema for `connectors.external_token_http.authentication.api_key`
@@ -2292,6 +2310,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--external_token_http--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.external_token_http.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2403,6 +2437,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--generic_email_gateway--authentication--api_key"></a>
 ### Nested Schema for `connectors.generic_email_gateway.authentication.api_key`
@@ -2420,6 +2455,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--generic_email_gateway--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.generic_email_gateway.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2454,6 +2505,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--generic_sms_gateway--authentication--api_key"></a>
 ### Nested Schema for `connectors.generic_sms_gateway.authentication.api_key`
@@ -2471,6 +2523,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--generic_sms_gateway--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.generic_sms_gateway.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2631,7 +2699,7 @@ Optional:
 - `aws_secret_access_key` (String, Sensitive) The secret AWS access key.
 - `aws_service` (String) The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.
 - `description` (String) A description of what your connector is used for.
-- `engine_id` (String) The identifier of the Descope engine that should run this connector. Leave empty to run the connector locally.
+- `engine_id` (String)
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `include_headers_in_context` (Boolean) The connector response context will also include the headers and status code. The context will have a "body" attribute, a "headers" attribute, and a "statusCode" attribute. See more details in the help guide
@@ -2655,6 +2723,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--http--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--http--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--http--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--http--authentication--api_key"></a>
 ### Nested Schema for `connectors.http.authentication.api_key`
@@ -2672,6 +2741,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--http--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.http.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2909,6 +2994,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--opentelemetry--authentication--api_key"></a>
 ### Nested Schema for `connectors.opentelemetry.authentication.api_key`
@@ -2926,6 +3012,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--opentelemetry--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.opentelemetry.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -3212,6 +3314,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--scim--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--scim--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--scim--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--scim--authentication--api_key"></a>
 ### Nested Schema for `connectors.scim.authentication.api_key`
@@ -3229,6 +3332,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--scim--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.scim.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -3460,18 +3579,21 @@ Required:
 
 Required:
 
-- `access_key_id` (String, Sensitive) AWS Access key ID.
 - `name` (String) A custom name for your connector.
 - `region` (String) AWS region to send requests to (e.g. `us-west-2`).
-- `secret` (String, Sensitive) AWS Secret Access Key.
 
 Optional:
 
+- `access_key_id` (String, Sensitive) AWS Access key ID.
+- `auth_type` (String)
 - `description` (String) A description of what your connector is used for.
 - `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
 - `entity_id` (String) The entity ID or principal entity (PE) ID for sending text messages to recipients in India.
+- `external_id` (String)
 - `organization_number` (String, Deprecated) Use the `origination_number` attribute instead.
 - `origination_number` (String) An optional phone number from which the text messages are going to be sent. Make sure it is registered properly in your server.
+- `role_arn` (String)
+- `secret` (String, Sensitive) AWS Secret Access Key.
 - `sender_id` (String) The name of the sender from which the text message is going to be sent (see SNS documentation regarding acceptable IDs and supported regions/countries).
 - `template_id` (String) The template for sending text messages to recipients in India. The template ID must be associated with the sender ID.
 
