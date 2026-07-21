@@ -125,6 +125,8 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"style_id":                  stringattr.Default(""),
 	"hide_scim":                 boolattr.Default(false),
 	"hide_groups_mapping":       boolattr.Default(false),
+	"hide_role_mapping":         boolattr.Default(false),
+	"hide_fga_mapping":          boolattr.Default(false),
 	"hide_domains":              boolattr.Default(false),
 	"hide_saml":                 boolattr.Default(false),
 	"hide_oidc":                 boolattr.Default(false),
@@ -138,6 +140,8 @@ type SSOSuiteModel struct {
 	StyleID                 stringattr.Type `tfsdk:"style_id"`
 	HideSCIM                boolattr.Type   `tfsdk:"hide_scim"`
 	HideGroupsMapping       boolattr.Type   `tfsdk:"hide_groups_mapping"`
+	HideRoleMapping         boolattr.Type   `tfsdk:"hide_role_mapping"`
+	HideFgaMapping          boolattr.Type   `tfsdk:"hide_fga_mapping"`
 	HideDomains             boolattr.Type   `tfsdk:"hide_domains"`
 	HideSAML                boolattr.Type   `tfsdk:"hide_saml"`
 	HideOIDC                boolattr.Type   `tfsdk:"hide_oidc"`
@@ -151,6 +155,8 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	StyleID:                 stringattr.Value(""),
 	HideSCIM:                boolattr.Value(false),
 	HideGroupsMapping:       boolattr.Value(false),
+	HideRoleMapping:         boolattr.Value(false),
+	HideFgaMapping:          boolattr.Value(false),
 	HideDomains:             boolattr.Value(false),
 	HideSAML:                boolattr.Value(false),
 	HideOIDC:                boolattr.Value(false),
@@ -165,6 +171,8 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.StyleID, data, "ssoSuiteStyleId")
 	boolattr.Get(m.HideSCIM, data, "hideSsoSuiteScim")
 	boolattr.Get(m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
+	boolattr.Get(m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
+	boolattr.Get(m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
 	boolattr.Get(m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Get(m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Get(m.HideOIDC, data, "hideSsoSuiteOidc")
@@ -179,6 +187,8 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.StyleID, data, "ssoSuiteStyleId")
 	boolattr.Set(&m.HideSCIM, data, "hideSsoSuiteScim")
 	boolattr.Set(&m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
+	boolattr.Set(&m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
+	boolattr.Set(&m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
 	boolattr.Set(&m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Set(&m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Set(&m.HideOIDC, data, "hideSsoSuiteOidc")
@@ -189,6 +199,11 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
+	if !helpers.HasUnknownValues(m.HideGroupsMapping, m.HideRoleMapping, m.HideFgaMapping) &&
+		!m.HideGroupsMapping.IsNull() && (!m.HideRoleMapping.IsNull() || !m.HideFgaMapping.IsNull()) {
+		h.Conflict("The hide_groups_mapping attribute cannot be combined with hide_role_mapping or hide_fga_mapping, use either hide_groups_mapping or the hide_role_mapping and hide_fga_mapping pair")
+	}
+
 	if helpers.HasUnknownValues(m.HideSAML, m.HideOIDC) {
 		return
 	} else if m.HideSAML.ValueBool() && m.HideOIDC.ValueBool() {
