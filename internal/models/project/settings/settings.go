@@ -22,6 +22,7 @@ var SettingsAttributes = map[string]schema.Attribute{
 	"approved_domains":                    strsetattr.Default(strsetattr.CommaSeparatedValidator),
 	"default_no_sso_apps":                 boolattr.Default(false),
 	"tenant_user_isolation":               boolattr.Default(false),
+	"allow_auth_hosting_iframe_embedding": boolattr.Default(false),
 	"refresh_token_rotation":              boolattr.Default(false),
 	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
 	"refresh_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
@@ -50,6 +51,7 @@ type SettingsModel struct {
 	ApprovedDomain                  strsetattr.Type                     `tfsdk:"approved_domains"`
 	DefaultNoSSOApps                boolattr.Type                       `tfsdk:"default_no_sso_apps"`
 	TenantUserIsolation             boolattr.Type                       `tfsdk:"tenant_user_isolation"`
+	AllowAuthHostingIframeEmbedding boolattr.Type                       `tfsdk:"allow_auth_hosting_iframe_embedding"`
 	RefreshTokenRotation            boolattr.Type                       `tfsdk:"refresh_token_rotation"`
 	RefreshTokenExpiration          stringattr.Type                     `tfsdk:"refresh_token_expiration"`
 	RefreshTokenResponseMethod      stringattr.Type                     `tfsdk:"refresh_token_response_method"`
@@ -80,6 +82,7 @@ func (m *SettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.RefreshTokenRotation, data, "rotateJwt")
 	boolattr.Get(m.DefaultNoSSOApps, data, "defaultNoSSOApps")
 	boolattr.Get(m.TenantUserIsolation, data, "tenantUserIsolation")
+	boolattr.Get(m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
 	durationattr.Get(m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if s := m.RefreshTokenResponseMethod.ValueString(); s == "cookies" {
 		data["tokenResponseMethod"] = "cookie"
@@ -126,6 +129,7 @@ func (m *SettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	boolattr.Set(&m.DefaultNoSSOApps, data, "defaultNoSSOApps")
 	boolattr.Set(&m.TenantUserIsolation, data, "tenantUserIsolation")
+	boolattr.Set(&m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
 	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
 	if s := data["tokenResponseMethod"]; s == "cookie" {
 		m.RefreshTokenResponseMethod = stringattr.Value("cookies")
