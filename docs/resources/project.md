@@ -4035,6 +4035,7 @@ Optional:
 
 - `access_key_jwt_template` (String) Name of the access key JWT Template.
 - `access_key_session_token_expiration` (String) The expiry time for access key session tokens. Use values such as "10 minutes", "4 hours", etc. The value needs to be at least 3 minutes and can't be longer than 4 weeks.
+- `allow_auth_hosting_iframe_embedding` (Boolean) When enabled, Descope-hosted flows can be displayed within an iframe on your website. This modifies the security headers that typically prevent the page from being embedded.
 - `app_url` (String) The URL which your application resides on.
 - `approved_domains` (Set of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `custom_domain` (String) A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).

@@ -1724,6 +1724,8 @@ var docsSettings = map[string]string{
 	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same login ID in " +
 		"Tenant A and Tenant B will be treated as separate identities with isolated credentials, " +
 		"sessions, and MFA state.",
+	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
+		"your website. This modifies the security headers that typically prevent the page from being embedded.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 		"refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
