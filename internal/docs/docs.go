@@ -584,6 +584,8 @@ var docsSSOSuite = map[string]string{
 		"the console for it to be used.",
 	"hide_scim":                 "Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.",
 	"hide_groups_mapping":       "Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.",
+	"hide_role_mapping":         "Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.",
+	"hide_fga_mapping":          "Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.",
 	"hide_domains":              "Setting this to `true` will hide the domains configuration section in the SSO Suite interface.",
 	"hide_saml":                 "Setting this to `true` will hide the SAML configuration option.",
 	"hide_oidc":                 "Setting this to `true` will hide the OIDC configuration option.",
