@@ -1100,6 +1100,7 @@ var docsHTTP = map[string]string{
 		"The context will have a \"body\" attribute, a \"headers\" attribute, and a " +
 		"\"statusCode\" attribute. See more details in the help guide",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+	"engine_id":      "",
 }
 
 var docsHubSpot = map[string]string{
@@ -1408,9 +1409,10 @@ var docsAuditFilterField = map[string]string{
 }
 
 var docsHTTPAuthField = map[string]string{
-	"bearer_token": "Bearer token for HTTP authentication.",
-	"basic":        "Basic authentication credentials (username and password).",
-	"api_key":      "API key authentication configuration.",
+	"bearer_token":              "Bearer token for HTTP authentication.",
+	"basic":                     "Basic authentication credentials (username and password).",
+	"api_key":                   "API key authentication configuration.",
+	"oauth2_client_credentials": "OAuth 2.0 client credentials configuration used to fetch an access token before making requests.",
 }
 
 var docsHTTPAuthBasicField = map[string]string{
@@ -1421,6 +1423,16 @@ var docsHTTPAuthBasicField = map[string]string{
 var docsHTTPAuthAPIKeyField = map[string]string{
 	"key":   "The API key.",
 	"token": "The API secret.",
+}
+
+var docsHTTPAuthOAuth2ClientCredentialsField = map[string]string{
+	"client_id":     "The OAuth 2.0 client ID used to authenticate against the token endpoint.",
+	"client_secret": "The OAuth 2.0 client secret used to authenticate against the token endpoint.",
+	"auth_url":      "The token endpoint URL used to request an access token.",
+	"auth_style": "How the client credentials are sent to the token endpoint. Either `header` to send them in the " +
+		"`Authorization` header, or `params` to send them in the request body.",
+	"scopes":                "A space-separated list of OAuth scopes to request when fetching the access token.",
+	"token_request_headers": "Additional headers to include in the token request sent to the token endpoint.",
 }
 
 var docsSlack = map[string]string{

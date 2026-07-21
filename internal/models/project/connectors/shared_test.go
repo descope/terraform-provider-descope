@@ -1,6 +1,7 @@
 package connectors_test
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/tools/testacc"
@@ -133,6 +134,100 @@ func TestConnectorsShared(t *testing.T) {
 					"organization_number": "123456789012",
 				},
 			}),
+		},
+	)
+}
+
+func TestHTTPConnectorOAuth2ClientCredentials(t *testing.T) {
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"http": [
+						{
+							name     = "My HTTP Connector"
+							base_url = "https://example.com"
+							authentication = {
+								oauth2_client_credentials = {
+									client_id     = "test-client-id"
+									client_secret = "test-client-secret"
+									auth_url      = "https://example.com/oauth/token"
+									auth_style    = "header"
+									scopes        = "read write"
+									token_request_headers = {
+										"X-Custom" = "value"
+									}
+								}
+							}
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.http.#": 1,
+				"connectors.http.0": map[string]any{
+					"id":       testacc.AttributeMatchesPattern(`^(CI|MP)`),
+					"name":     "My HTTP Connector",
+					"base_url": "https://example.com",
+					"authentication.oauth2_client_credentials.client_id":                      "test-client-id",
+					"authentication.oauth2_client_credentials.client_secret":                  "test-client-secret",
+					"authentication.oauth2_client_credentials.auth_url":                       "https://example.com/oauth/token",
+					"authentication.oauth2_client_credentials.auth_style":                     "header",
+					"authentication.oauth2_client_credentials.scopes":                         "read write",
+					"authentication.oauth2_client_credentials.token_request_headers.X-Custom": "value",
+				},
+			}),
+		},
+	)
+}
+
+func TestHTTPConnectorOAuth2ClientCredentialsValidation(t *testing.T) {
+	p := testacc.Project(t)
+	testacc.Run(t,
+		// A single connector cannot declare more than one authentication method.
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"http": [
+						{
+							name     = "invalid-two-auth"
+							base_url = "https://example.com"
+							authentication = {
+								bearer_token = "some-bearer-token"
+								oauth2_client_credentials = {
+									client_id     = "test"
+									client_secret = "test"
+									auth_url      = "https://example.com/oauth/token"
+								}
+							}
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Cannot specify more than one connector authentication method`),
+		},
+		// auth_style only accepts "header" or "body".
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"http": [
+						{
+							name     = "invalid-auth-style"
+							base_url = "https://example.com"
+							authentication = {
+								oauth2_client_credentials = {
+									client_id     = "test"
+									client_secret = "test"
+									auth_url      = "https://example.com/oauth/token"
+									auth_style    = "invalid"
+								}
+							}
+						}
+					]
+				}
+			`),
+			ExpectError: regexp.MustCompile(`value must be one of`),
 		},
 	)
 }
