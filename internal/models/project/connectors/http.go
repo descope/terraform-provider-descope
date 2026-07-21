@@ -41,6 +41,7 @@ var HTTPAttributes = map[string]schema.Attribute{
 	"insecure":                   boolattr.Default(false),
 	"include_headers_in_context": boolattr.Default(false),
 	"use_static_ips":             boolattr.Default(false),
+	"engine_id":                  stringattr.Default(""),
 }
 
 // Model
@@ -69,17 +70,20 @@ type HTTPModel struct {
 	Insecure                boolattr.Type                    `tfsdk:"insecure"`
 	IncludeHeadersInContext boolattr.Type                    `tfsdk:"include_headers_in_context"`
 	UseStaticIPs            boolattr.Type                    `tfsdk:"use_static_ips"`
+	EngineID                stringattr.Type                  `tfsdk:"engine_id"`
 }
 
 func (m *HTTPModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "http"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *HTTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}

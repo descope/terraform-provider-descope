@@ -3,6 +3,7 @@ package testacc
 import (
 	"fmt"
 	"maps"
+	"os"
 	"strconv"
 	"strings"
 	"testing"
@@ -114,7 +115,11 @@ func GenerateAlias(t *testing.T) string {
 	rand, err := uuid.GenerateUUID()
 	require.NoError(t, err)
 	suffix := rand[len(rand)-8:]
-	return fmt.Sprintf("testacc-%s-%s-%s", test, ts, suffix)
+	prefix := strings.TrimSpace(os.Getenv("DESCOPE_TESTACC_PREFIX"))
+	if prefix == "" {
+		prefix = "testacc-local"
+	}
+	return fmt.Sprintf("%s-%s-%s-%s", prefix, test, ts, suffix)
 }
 
 func GenerateImportStateID(path string, attrs ...string) resource.ImportStateIdFunc {
