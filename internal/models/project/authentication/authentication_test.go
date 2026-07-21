@@ -251,6 +251,8 @@ func TestAuthentication(t *testing.T) {
 							hide_jit_guide     = true
 							support_email      = "help@acme.com"
 							show_help_contact  = true
+							hide_role_mapping  = true
+							hide_fga_mapping   = true
 						}
 					}
 				}
@@ -262,6 +264,8 @@ func TestAuthentication(t *testing.T) {
 					"hide_jit_guide":    true,
 					"support_email":     "help@acme.com",
 					"show_help_contact": true,
+					"hide_role_mapping": true,
+					"hide_fga_mapping":  true,
 				},
 			}),
 		},
@@ -311,62 +315,8 @@ func TestAuthentication(t *testing.T) {
 			}),
 		},
 		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					sso = {
-						sso_suite_settings = {
-							hide_role_mapping = true
-							hide_fga_mapping  = false
-						}
-					}
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"authentication.sso.sso_suite_settings": map[string]any{
-					"hide_role_mapping": true,
-					"hide_fga_mapping":  false,
-				},
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					sso = {
-						sso_suite_settings = {
-							hide_role_mapping = false
-							hide_fga_mapping  = true
-						}
-					}
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"authentication.sso.sso_suite_settings": map[string]any{
-					"hide_role_mapping": false,
-					"hide_fga_mapping":  true,
-				},
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					sso = {
-						sso_suite_settings = {
-							hide_role_mapping = true
-							hide_fga_mapping  = true
-						}
-					}
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"authentication.sso.sso_suite_settings": map[string]any{
-					"hide_role_mapping": true,
-					"hide_fga_mapping":  true,
-				},
-			}),
-		},
-		resource.TestStep{
-			// The group flag is independent: it does not fold into role/FGA mapping,
-			// which reset to their own (default false) values here.
+			// The mapping flags are independent: setting the group flag does not
+			// force role/FGA mapping, which keep their own (default false) values.
 			Config: p.Config(`
 				authentication = {
 					sso = {
@@ -379,24 +329,6 @@ func TestAuthentication(t *testing.T) {
 			Check: p.Check(map[string]any{
 				"authentication.sso.sso_suite_settings": map[string]any{
 					"hide_groups_mapping": true,
-					"hide_role_mapping":   false,
-					"hide_fga_mapping":    false,
-				},
-			}),
-		},
-		resource.TestStep{
-			Config: p.Config(`
-				authentication = {
-					sso = {
-						sso_suite_settings = {
-							hide_groups_mapping = false
-						}
-					}
-				}
-			`),
-			Check: p.Check(map[string]any{
-				"authentication.sso.sso_suite_settings": map[string]any{
-					"hide_groups_mapping": false,
 					"hide_role_mapping":   false,
 					"hide_fga_mapping":    false,
 				},
