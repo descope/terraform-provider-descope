@@ -27,11 +27,16 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"session_settings":                 objattr.Optional[SessionSettingsModel](SessionSettingsAttributes, SessionSettingsValidator),
 	"audience_whitelist":               strsetattr.Default(),
 	"force_add_all_authorization_info": boolattr.Default(false),
+	"force_dpop":                       boolattr.Default(false),
 	"default_audience":                 stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")), // XXX maybe switch to set
 	"non_confidential_client":          boolattr.Default(false, boolplanmodifier.RequiresReplace()),
 	"client_id":                        stringattr.Optional(stringplanmodifier.RequiresReplace()),
 	"client_secret":                    stringattr.SecretGenerated(true),
 	"force_pkce":                       boolattr.Default(false),
+}
+
+var Schema = schema.Schema{
+	Attributes: InboundAppAttributes,
 }
 
 type InboundAppModel struct {
@@ -48,6 +53,7 @@ type InboundAppModel struct {
 	SessionSettings              objattr.Type[SessionSettingsModel]   `tfsdk:"session_settings"`
 	AudienceWhitelist            strsetattr.Type                      `tfsdk:"audience_whitelist"`
 	ForceAddAllAuthorizationInfo boolattr.Type                        `tfsdk:"force_add_all_authorization_info"`
+	ForceDpop                    boolattr.Type                        `tfsdk:"force_dpop"`
 	DefaultAudience              stringattr.Type                      `tfsdk:"default_audience"`
 	NonConfidentialClient        boolattr.Type                        `tfsdk:"non_confidential_client"`
 	ClientId                     stringattr.Type                      `tfsdk:"client_id"`
@@ -68,6 +74,7 @@ func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.SessionSettings, data, "sessionSettings", h)
 	strsetattr.Get(m.AudienceWhitelist, data, "audienceWhitelist", h)
 	boolattr.Get(m.ForceAddAllAuthorizationInfo, data, "forceAddAllAuthorizationInfo")
+	boolattr.Get(m.ForceDpop, data, "forceDpop")
 	stringattr.Get(m.DefaultAudience, data, "defaultAudience")
 	boolattr.Get(m.NonConfidentialClient, data, "nonConfidentialClient")
 	stringattr.Get(m.ClientId, data, "clientId")
@@ -88,9 +95,22 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.SessionSettings, data, "sessionSettings", h)
 	strsetattr.Set(&m.AudienceWhitelist, data, "audienceWhitelist", h)
 	boolattr.Set(&m.ForceAddAllAuthorizationInfo, data, "forceAddAllAuthorizationInfo")
+	boolattr.Set(&m.ForceDpop, data, "forceDpop")
 	stringattr.Set(&m.DefaultAudience, data, "defaultAudience")
 	boolattr.Set(&m.NonConfidentialClient, data, "nonConfidentialClient")
 	stringattr.Set(&m.ClientId, data, "clientId")
 	stringattr.Set(&m.ClientSecret, data, "clientSecret")
 	boolattr.Set(&m.ForcePkce, data, "forcePkce")
+}
+
+func (m *InboundAppModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *InboundAppModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
+
+func (m *InboundAppModel) GetProjectID() stringattr.Type {
+	return m.ProjectID
 }

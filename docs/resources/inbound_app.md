@@ -31,6 +31,8 @@ description: |-
 - `default_audience` (String) The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID as the audience, `clientId` to set the app's client ID, or leave empty to include both.
 - `description` (String) A description for the inbound app.
 - `force_add_all_authorization_info` (Boolean) When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.
+- `force_dpop` (Boolean) Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.
+- `force_pkce` (Boolean) When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.
 - `login_page_url` (String) The Flow Hosting URL.
 - `logo_url` (String) A URL to the inbound app's logo image.
 - `non_confidential_client` (Boolean) Whether this is a public (non-confidential) client that does not use a client secret. Changing this value after creation will require the resource to be replaced.

@@ -126,6 +126,25 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					allow_auth_hosting_iframe_embedding = true
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.allow_auth_hosting_iframe_embedding": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.allow_auth_hosting_iframe_embedding": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					approved_domains = ["example.com"]
 				}
 			`),
@@ -341,21 +360,59 @@ func TestSettings(t *testing.T) {
 			Config: p.Config(`
 				project_settings = {
 					session_migration = {
+						vendor = "okta"
+						client_id = "foo"
+						issuer = "bar"
+						loginid_matched_attributes = [ "username", "email" ]
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`api_token attribute is required`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_migration = {
+						vendor = "auth0"
+						client_id = "foo"
+						domain = "bar"
+						api_token = "secret"
+						loginid_matched_attributes = [ "username", "email" ]
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`api_token attribute should not be set`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+					session_migration = {
 						vendor = "auth0"
 						client_id = "foo"
 						domain = "bar"
 						loginid_matched_attributes = [ "username", "email" ]
+						user_sync_type = "matchOnly"
+						user_mapping = [
+							{ external_key = "email", descope_key = "email" },
+							{ external_key = "name", descope_key = "name" },
+						]
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"project_settings.session_migration": map[string]any{
-					"vendor":                     "auth0",
-					"client_id":                  "foo",
-					"domain":                     "bar",
-					"audience":                   "",
-					"issuer":                     "",
-					"loginid_matched_attributes": []string{"username", "email"},
+					"vendor":                      "auth0",
+					"client_id":                   "foo",
+					"domain":                      "bar",
+					"audience":                    "",
+					"issuer":                      "",
+					"loginid_matched_attributes":  []string{"username", "email"},
+					"user_sync_type":              "matchOnly",
+					"user_mapping.#":              "2",
+					"user_mapping.0.external_key": "email",
+					"user_mapping.0.descope_key":  "email",
+					"user_mapping.1.external_key": "name",
+					"user_mapping.1.descope_key":  "name",
 				},
 			}),
 		},

@@ -152,5 +152,6 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewManagementKeyResource,
 		resources.NewAccessKeyResource,
 		resources.NewInboundAppResource,
+		resources.NewEngineResource,
 	}
 }
