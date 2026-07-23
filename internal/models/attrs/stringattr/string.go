@@ -39,6 +39,12 @@ func Required(extras ...any) schema.StringAttribute {
 	}
 }
 
+func ReplaceRequired(extras ...any) schema.StringAttribute {
+	attribute := Required(extras...)
+	attribute.PlanModifiers = append(attribute.PlanModifiers, stringplanmodifier.RequiresReplace())
+	return attribute
+}
+
 func Optional(extras ...any) schema.StringAttribute {
 	validators, modifiers := parseExtras(extras)
 	return schema.StringAttribute{
@@ -47,6 +53,12 @@ func Optional(extras ...any) schema.StringAttribute {
 		Validators:    validators,
 		PlanModifiers: append([]planmodifier.String{helpers.UseValidStateForUnknown()}, modifiers...),
 	}
+}
+
+func ReplaceOptional(extras ...any) schema.StringAttribute {
+	attribute := Optional(extras...)
+	attribute.PlanModifiers = append(attribute.PlanModifiers, stringplanmodifier.RequiresReplace())
+	return attribute
 }
 
 func Default(value string, extras ...any) schema.StringAttribute {

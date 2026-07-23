@@ -23,6 +23,10 @@ func Value(value []string) Type {
 	return valueOf(context.Background(), value)
 }
 
+func ValueContext(ctx context.Context, value []string) Type {
+	return valueOf(ctx, value)
+}
+
 func Empty() Type {
 	return valueOf(context.Background(), []string{})
 }

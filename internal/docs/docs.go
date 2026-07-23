@@ -1802,3 +1802,16 @@ var docsWidget = map[string]string{
 	"data": "The JSON data defining the widget. This will usually be exported as a `.json` file from the Descope console, " +
 		"and set in the `.tf` file using the `data = file(\"...\")` syntax.",
 }
+
+var docsTenant = map[string]string{
+	"project_id": "The Descope project that owns the tenant. Changing this value requires replacing the tenant resource.",
+	"id": "An optional tenant identifier. If omitted, Descope generates an identifier. Changing this value requires replacing the tenant resource.",
+	"name": "The tenant name.",
+	"self_provisioning_domains": "Domains whose users may self-provision into the tenant.",
+	"disabled": "Whether the tenant is disabled.",
+	"enforce_sso": "Whether SSO is enforced for the tenant.",
+	"enforce_sso_exclusions": "Login IDs excluded from tenant SSO enforcement.",
+	"federated_application_ids": "Federated application identifiers associated with the tenant.",
+	"parent": "The parent tenant identifier. Changing this value requires replacing the tenant resource.",
+	"role_inheritance": "Role inheritance from the parent tenant. Valid values are `none` and `userOnly`.",
+}
