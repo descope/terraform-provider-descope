@@ -10,6 +10,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/engine"
 	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
 	"github.com/descope/terraform-provider-descope/internal/models/managementkey"
+	"github.com/descope/terraform-provider-descope/internal/models/policyrule"
 	"github.com/descope/terraform-provider-descope/internal/models/project"
 	"github.com/descope/terraform-provider-descope/internal/models/project/adminportal"
 	"github.com/descope/terraform-provider-descope/internal/models/project/applications"
@@ -41,6 +42,10 @@ func InjectModels() {
 	inject(managementkey.ProjectRoleAttributes, docsProjectRole)
 	inject(managementkey.ReBacAttributes, docsReBac)
 	inject(managementkey.TagRoleAttributes, docsTagRole)
+	inject(policyrule.ResourceTargetAttributes, docsResourceTarget)
+	inject(policyrule.GrantAttributes, docsGrant)
+	inject(policyrule.ConditionAttributes, docsCondition)
+	inject(policyrule.PolicyRuleAttributes, docsPolicyRule)
 	inject(project.ProjectAttributes, docsProject)
 	inject(adminportal.AdminPortalWidgetAttributes, docsAdminPortalWidget)
 	inject(adminportal.AdminPortalAttributes, docsAdminPortal)

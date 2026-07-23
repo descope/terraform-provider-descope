@@ -28,3 +28,7 @@ func NewInboundAppResource() resource.Resource {
 func NewEngineResource() resource.Resource {
 	return newResource[engine.EngineModel]("engine", engine.Schema)
 }
+
+func NewPolicyRuleResource() resource.Resource {
+	return &policyRuleResource{}
+}

@@ -157,6 +157,45 @@ var docsTagRole = map[string]string{
 	"roles": "The roles the management key will be granted in the applicable projects.",
 }
 
+var docsResourceTarget = map[string]string{
+	"type":        "The resource type matched by this target. Must be `api`, `mcp`, `outbound_app`, or `any`.",
+	"all_of_type": "Whether this target matches every resource of the selected type. This capability may require a project feature flag.",
+	"ids":         "The specific resource IDs matched by this target when `all_of_type` is false.",
+}
+
+var docsGrant = map[string]string{
+	"scopes":            "The scopes granted when this rule permits a request.",
+	"allowed_audiences": "The audiences allowed by this grant.",
+	"all_scopes":        "Whether this grant includes all scopes.",
+}
+
+var docsCondition = map[string]string{
+	"key":      "The policy context key evaluated by this condition.",
+	"operator": "The comparison operator. Must be `equal`, `notEqual`, `contains`, `notContains`, `in`, or `notIn`.",
+	"value_json": "A JSON-encoded condition value. The `in` and `notIn` operators require a JSON array; the other " +
+		"operators require a scalar JSON value.",
+}
+
+var docsPolicyRule = map[string]string{
+	"project_id":  "The ID of the Descope project this policy rule belongs to. Changing this value requires replacement.",
+	"version":     "The server-managed policy rule version used for optimistic concurrency. This value is read-only.",
+	"name":        "A name for the policy rule.",
+	"description": "A description for the policy rule.",
+	"enabled":     "Whether the policy rule participates in authorization decisions.",
+	"rule_family": "The policy rule family. Must be `resource_access`, `outbound_access`, or `token_exchange`.",
+	"action_kinds": "The action kinds matched by the rule. Supported values are `user_access`, `client_access`, " +
+		"`exchange_token`, and `fetch_outbound_token`.",
+	"effect":             "The rule effect. Must be `permit` or `forbid`; `forbid` may require a project feature flag.",
+	"principal_type":     "The principal type matched by the rule. Must be `any`, `user`, or `client`; `user` may require a project feature flag.",
+	"principal_selector": "Optional principal IDs matched by the rule. An empty list matches any principal of the selected type.",
+	"resource_targets":   "The resource targets matched by the rule.",
+	"grants":             "The scopes and audiences granted by a permit rule. Token-exchange permit rules require at least one grant.",
+	"conditions":         "Structured conditions that are combined with logical AND.",
+	"cedar_text":         "The Cedar policy source generated and validated by Descope. This value is read-only.",
+	"created_time":       "The rule creation time as a Unix timestamp. This value is read-only.",
+	"modified_time":      "The rule modification time as a Unix timestamp. This value is read-only.",
+}
+
 var docsProject = map[string]string{
 	"name": "The name of the Descope project.",
 	"environment": "This can be set to `production` to mark production projects, otherwise this should be " +
