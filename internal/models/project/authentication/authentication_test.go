@@ -168,6 +168,7 @@ func TestAuthentication(t *testing.T) {
 								authorization_endpoint = "https://auth.com"
 								token_endpoint = "https://token.com"
 								user_info_endpoint = "https://user.com"
+								client_auth_method = "client_secret_basic"
 							}
 						}
 					}
@@ -183,6 +184,7 @@ func TestAuthentication(t *testing.T) {
 					"token_endpoint":         "https://token.com",
 					"user_info_endpoint":     "https://user.com",
 					"use_client_assertion":   false,
+					"client_auth_method":     "client_secret_basic",
 				},
 			}),
 		},
