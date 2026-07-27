@@ -1,9 +1,12 @@
 package connectors
 
 import (
+	"context"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -38,4 +41,27 @@ func TestConnectorEngine(t *testing.T) {
 	var missingEngineID stringattr.Type
 	getConnectorEngine(map[string]any{}, &missingEngineID)
 	assert.Equal(t, "", missingEngineID.ValueString())
+}
+
+// TestHIBPConnectorEngine verifies that the generated HIBP model wires the engine_id
+// attribute through the top-level executor fields, like the HTTP connector does.
+func TestHIBPConnectorEngine(t *testing.T) {
+	diags := diag.Diagnostics{}
+	h := helpers.NewHandler(context.Background(), &diags)
+	h.Refs.Add(helpers.ConnectorReferenceKey, "hibp", "CIHIBPExample", "My HIBP Connector")
+
+	m := &HIBPModel{
+		ID:       stringattr.Value("CIHIBPExample"),
+		Name:     stringattr.Value("My HIBP Connector"),
+		EngineID: stringattr.Value("CIEngineExample"),
+	}
+	data := m.Values(h)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, "engine", data["executorType"])
+	assert.Equal(t, "CIEngineExample", data["executorId"])
+
+	var round HIBPModel
+	round.SetValues(h, data)
+	assert.False(t, diags.HasError())
+	assert.Equal(t, "CIEngineExample", round.EngineID.ValueString())
 }

@@ -24,6 +24,7 @@ var AWSSESEmailValidationAttributes = map[string]schema.Attribute{
 	"role_arn":          stringattr.Default(""),
 	"external_id":       stringattr.Default(""),
 	"region":            stringattr.Required(),
+	"engine_id":         stringattr.Default(""),
 }
 
 // Model
@@ -40,17 +41,20 @@ type AWSSESEmailValidationModel struct {
 	RoleARN         stringattr.Type `tfsdk:"role_arn"`
 	ExternalID      stringattr.Type `tfsdk:"external_id"`
 	Region          stringattr.Type `tfsdk:"region"`
+	EngineID        stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *AWSSESEmailValidationModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "aws-ses-email-validation"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *AWSSESEmailValidationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}

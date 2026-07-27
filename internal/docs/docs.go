@@ -644,6 +644,8 @@ var docsAuditWebhook = map[string]string{
 	"insecure": "Will ignore certificate errors raised by the client",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsAWSS3 = map[string]string{
@@ -661,6 +663,8 @@ var docsAWSS3 = map[string]string{
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsAWSSESEmailValidation = map[string]string{
@@ -674,6 +678,8 @@ var docsAWSSESEmailValidation = map[string]string{
 	"role_arn":    "The Amazon Resource Name (ARN) of the role to assume.",
 	"external_id": "The external ID to use when assuming the role.",
 	"region":      "The AWS region to which this client will send requests. (e.g. us-east-1.)",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsAWSTranslate = map[string]string{
@@ -684,6 +690,8 @@ var docsAWSTranslate = map[string]string{
 	"session_token": "(Optional) A security or session token to use with these credentials. Usually " +
 		"present for temporary credentials.",
 	"region": "The AWS region to which this client will send requests. (e.g. us-east-1.)",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsBitsight = map[string]string{
@@ -872,6 +880,8 @@ var docsDatadog = map[string]string{
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsDevRevGrow = map[string]string{
@@ -953,6 +963,8 @@ var docsFirebaseAdmin = map[string]string{
 	"name":            "A custom name for your connector.",
 	"description":     "A description of what your connector is used for.",
 	"service_account": "The Firebase service account JSON.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsForter = map[string]string{
@@ -1012,6 +1024,8 @@ var docsGoogleCloudLogging = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsGoogleCloudTranslation = map[string]string{
@@ -1019,6 +1033,8 @@ var docsGoogleCloudTranslation = map[string]string{
 	"description":          "A description of what your connector is used for.",
 	"project_id":           "The Google Cloud project ID where the Google Cloud Translation is managed.",
 	"service_account_json": "Service Account JSON associated with the current project.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsGoogleMapsPlaces = map[string]string{
@@ -1064,6 +1080,8 @@ var docsHCaptcha = map[string]string{
 var docsHIBP = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsHTTP = map[string]string{
@@ -1102,7 +1120,8 @@ var docsHTTP = map[string]string{
 		"The context will have a \"body\" attribute, a \"headers\" attribute, and a " +
 		"\"statusCode\" attribute. See more details in the help guide",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
-	"engine_id":      "",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsHubSpot = map[string]string{
@@ -1233,6 +1252,8 @@ var docsPingDirectory = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"host":        "PingDirectory's REST API host.",
 	"port":        "PingDirectory's REST API port.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsPostmark = map[string]string{
@@ -1286,6 +1307,8 @@ var docsRecaptchaEnterprise = map[string]string{
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 		"the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 		"and 0 is a bot.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsRecaptchaV2 = map[string]string{
@@ -1307,6 +1330,8 @@ var docsRekognition = map[string]string{
 	"secret_access_key": "The AWS secret access key",
 	"collection_id": "The collection to store registered users in. Should match `[a-zA-Z0-9_.-]+` " +
 		"pattern. Changing this will cause losing existing users.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsRNDReassigned = map[string]string{
@@ -1325,6 +1350,8 @@ var docsSalesforce = map[string]string{
 	"client_id":     "The consumer key of the connected app.",
 	"client_secret": "The consumer secret of the connected app.",
 	"version":       "REST API Version.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSalesforceMarketingCloud = map[string]string{
@@ -1335,6 +1362,8 @@ var docsSalesforceMarketingCloud = map[string]string{
 	"client_secret": "Client secret issued when you create the API integration in Installed Packages.",
 	"scope":         "Space-separated list of data-access permissions for your connector.",
 	"account_id":    "Account identifier, or MID, of the target business unit.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSardine = map[string]string{
@@ -1432,7 +1461,7 @@ var docsHTTPAuthOAuth2ClientCredentialsField = map[string]string{
 	"client_secret": "The OAuth 2.0 client secret used to authenticate against the token endpoint.",
 	"auth_url":      "The token endpoint URL used to request an access token.",
 	"auth_style": "How the client credentials are sent to the token endpoint. Either `header` to send them in the " +
-		"`Authorization` header, or `params` to send them in the request body.",
+		"`Authorization` header, or `body` to send them in the request body.",
 	"scopes":                "A space-separated list of OAuth scopes to request when fetching the access token.",
 	"token_request_headers": "Additional headers to include in the token request sent to the token endpoint.",
 }
@@ -1441,6 +1470,8 @@ var docsSlack = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
 	"token":       "The OAuth token for Slack's Bot User, used to authenticate API requests.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSmartling = map[string]string{
@@ -1486,13 +1517,18 @@ var docsSnowflake = map[string]string{
 		"empty) to write events according to the default Descope cycle.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSNS = map[string]string{
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"auth_type":     "The authentication type to use.",
 	"access_key_id": "AWS Access key ID.",
 	"secret":        "AWS Secret Access Key.",
+	"role_arn":      "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id":   "The external ID to use when assuming the role.",
 	"region":        "AWS region to send requests to (e.g. `us-west-2`).",
 	"endpoint":      "An optional endpoint URL (hostname only or fully qualified URI).",
 	"origination_number": "An optional phone number from which the text messages are going to be sent. Make sure it " +
@@ -1515,6 +1551,8 @@ var docsSplunk = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSQL = map[string]string{
@@ -1725,7 +1763,8 @@ var docsSettings = map[string]string{
 		"Tenant A and Tenant B will be treated as separate identities with isolated credentials, " +
 		"sessions, and MFA state.",
 	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
-		"your website. This modifies the security headers that typically prevent the page from being embedded.",
+		"your website. This modifies the security headers that typically prevent the page from " +
+		"being embedded.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 		"refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
