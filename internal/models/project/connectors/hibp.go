@@ -12,6 +12,8 @@ var HIBPAttributes = map[string]schema.Attribute{
 	"id":          stringattr.IdentifierMatched(),
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
+
+	"engine_id": stringattr.Default(""),
 }
 
 // Model
@@ -20,17 +22,21 @@ type HIBPModel struct {
 	ID          stringattr.Type `tfsdk:"id"`
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
+
+	EngineID stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *HIBPModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "hibp"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *HIBPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 }
 
 // Configuration

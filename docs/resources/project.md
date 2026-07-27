@@ -1882,6 +1882,7 @@ Optional:
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--audit_webhook--audit_filters))
 - `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication))
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
@@ -1962,6 +1963,7 @@ Optional:
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--aws_s3--audit_filters))
 - `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `external_id` (String) The external ID to use when assuming the role.
 - `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
@@ -1996,6 +1998,7 @@ Optional:
 - `access_key_id` (String) AWS access key ID.
 - `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `external_id` (String) The external ID to use when assuming the role.
 - `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
 - `secret_access_key` (String, Sensitive) AWS secret access key.
@@ -2019,6 +2022,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `session_token` (String, Sensitive) (Optional) A security or session token to use with these credentials. Usually present for temporary credentials.
 
 Read-Only:
@@ -2148,6 +2152,7 @@ Optional:
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--datadog--audit_filters))
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `site` (String) The Datadog site to send logs to. Default is `datadoghq.com`. European, free tier and other customers should set their site accordingly.
 - `source` (String) An optional custom source to use for log entries sent to Datadog. This can be used to differentiate between environments (e.g. `production`, `staging`). If left empty, the default Descope source will be used.
@@ -2381,6 +2386,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -2558,6 +2564,7 @@ Optional:
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--google_cloud_logging--audit_filters))
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
 Read-Only:
@@ -2587,6 +2594,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -2676,6 +2684,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -2701,7 +2710,7 @@ Optional:
 - `aws_secret_access_key` (String, Sensitive) The secret AWS access key.
 - `aws_service` (String) The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.
 - `description` (String) A description of what your connector is used for.
-- `engine_id` (String)
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `include_headers_in_context` (Boolean) The connector response context will also include the headers and status code. The context will have a "body" attribute, a "headers" attribute, and a "statusCode" attribute. See more details in the help guide
@@ -3078,6 +3087,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -3161,6 +3171,7 @@ Optional:
 - `base_url` (String) The base URL used to load the reCAPTCHA Enterprise scripts. Select recaptcha.net when google.com is unavailable in your users' region. Restricting this to the official Google domains prevents loading scripts from untrusted hosts.
 - `bot_threshold` (Number) The bot threshold is used to determine whether the request is a bot or a human. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot. If the score is below this threshold, the request is considered a bot.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
 Read-Only:
@@ -3202,6 +3213,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -3240,6 +3252,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -3260,6 +3273,7 @@ Optional:
 
 - `account_id` (String) Account identifier, or MID, of the target business unit.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `scope` (String) Space-separated list of data-access permissions for your connector.
 
 Read-Only:
@@ -3457,6 +3471,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -3555,6 +3570,7 @@ Optional:
 - `audit_table` (String) The table to write audit events to. Defaults to `DESCOPE_AUDIT_LOGS`.
 - `database` (String) The Snowflake database to use. Defaults to `DESCOPE_EXPORT_DB`.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `min_flush_interval_minutes` (Number) The minimum time between writes to Snowflake, in minutes. When set, events are accumulated and written in a single batch at most once per interval, which lets the warehouse auto-suspend between writes and reduces cost. Set to 0 (or leave empty) to write events according to the default Descope cycle.
 - `schema` (String) The schema within the database. Defaults to `PUBLIC`.
@@ -3587,14 +3603,14 @@ Required:
 Optional:
 
 - `access_key_id` (String, Sensitive) AWS Access key ID.
-- `auth_type` (String)
+- `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
 - `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
 - `entity_id` (String) The entity ID or principal entity (PE) ID for sending text messages to recipients in India.
-- `external_id` (String)
+- `external_id` (String) The external ID to use when assuming the role.
 - `organization_number` (String, Deprecated) Use the `origination_number` attribute instead.
 - `origination_number` (String) An optional phone number from which the text messages are going to be sent. Make sure it is registered properly in your server.
-- `role_arn` (String)
+- `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
 - `secret` (String, Sensitive) AWS Secret Access Key.
 - `sender_id` (String) The name of the sender from which the text message is going to be sent (see SNS documentation regarding acceptable IDs and supported regions/countries).
 - `template_id` (String) The template for sending text messages to recipients in India. The template ID must be associated with the sender ID.
@@ -3618,6 +3634,7 @@ Optional:
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--splunk--audit_filters))
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `index` (String) An optional index to use for all sent events
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
