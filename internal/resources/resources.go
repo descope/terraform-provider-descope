@@ -31,7 +31,5 @@ func NewEngineResource() resource.Resource {
 }
 
 func NewCustomLanguageResource() resource.Resource {
-	// user-facing resource stays descope_custom_language (product vocabulary); the backend infra
-	// entity is custom_locale (consistent with projectservice).
-	return newResourceWithEntity[customlanguage.CustomLanguageModel]("custom_language", "custom_locale", customlanguage.Schema)
+	return newResource[customlanguage.CustomLanguageModel]("custom_language", customlanguage.Schema)
 }
