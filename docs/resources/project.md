@@ -355,12 +355,14 @@ Optional:
 
 - `approved_redirect_urls` (Set of String) A list of approved redirect URLs for this application (supports `*` wildcards). When set, redirect URIs are validated against this per-app list; when empty, validation falls back to the project's approved/trusted domains.
 - `authorization_code_disabled` (Boolean) Disables the `authorization_code` grant type for this application.
+- `backchannel_logout_url` (String) The URL that Descope notifies with a logout token when the user's session ends, as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) specification. Leave empty to disable back-channel logout notifications for this application.
 - `claims` (List of String) A list of supported claims. e.g. `sub`, `email`, `exp`.
 - `client_credentials_disabled` (Boolean) Disables the `client_credentials` grant type for this application.
 - `client_id` (String) A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is computed by the server; when set, it must be unique within the project. Can only be set when the application is created, and attempting to change it on an existing application will fail.
 - `client_secret` (String, Sensitive) A dedicated OIDC `client_secret` to import for this application, applied on creation only. When omitted, a secret is generated server-side. The value is sensitive and is not returned on subsequent reads.
 - `client_type` (String) OAuth client confidentiality. One of `""` (default — legacy access-key authentication), `"confidential"` (a dedicated client secret is generated for the app), or `"public"`.
-- `default_audience` (String) Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), or `""` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.
+- `custom_idp_initiated_login_page_url` (String) A custom login page URL to redirect users to on IdP-initiated login flows, instead of the default login page.
+- `default_audience` (String) Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), `"appId"` (the application ID only), `"empty"` (no `aud` claim at all), or `""` (default — both the project ID and the client ID). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.
 - `description` (String) A description for the OIDC application.
 - `device_code_disabled` (Boolean) Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this application.
 - `disabled` (Boolean) Whether the application should be enabled or disabled.
@@ -373,6 +375,7 @@ Optional:
 - `permissions` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc_applications--permissions))
 - `refresh_token_disabled` (Boolean) Disables the `refresh_token` grant type for this application.
 - `roles` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc_applications--roles))
+- `trusted_apps_audience` (String) Controls the audience values appended to the issued token's `aud` claim for trusted sibling applications. One of `"projectId"`, `"clientId"`, `"appId"`, `"empty"` (add none), or `""` (default — both the project ID and the client ID). Independent of `default_audience`.
 
 <a id="nestedatt--applications--oidc_applications--permissions"></a>
 ### Nested Schema for `applications.oidc_applications.permissions`

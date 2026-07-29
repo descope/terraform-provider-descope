@@ -78,6 +78,27 @@ the user to authenticate via the Descope flow, regardless of the SP's request.
 
 
 
+backchannel_logout_url
+----------------------
+
+- Type: `string`
+
+The URL that Descope notifies with a logout token when the user's session ends,
+as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html)
+specification. Leave empty to disable back-channel logout notifications for this application.
+
+
+
+custom_idp_initiated_login_page_url
+-----------------------------------
+
+- Type: `string`
+
+A custom login page URL to redirect users to on IdP-initiated login flows,
+instead of the default login page.
+
+
+
 client_id
 ---------
 
@@ -179,7 +200,18 @@ default_audience
 
 - Type: `string`
 
-Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), or `""` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.
+Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), `"appId"` (the application ID only), `"empty"` (no `aud` claim at all), or `""` (default — both the project ID and the client ID). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.
+
+
+
+trusted_apps_audience
+---------------------
+
+- Type: `string`
+
+Controls the audience values appended to the issued token's `aud` claim for trusted sibling
+applications. One of `"projectId"`, `"clientId"`, `"appId"`, `"empty"` (add none), or `""`
+(default — both the project ID and the client ID). Independent of `default_audience`.
 
 
 
