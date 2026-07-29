@@ -159,7 +159,7 @@ func TestApplications(t *testing.T) {
 							jwt_bearer_disabled = true
 							device_code_disabled = true
 							force_pkce = true
-							default_audience = "clientId"
+							default_audience = "appId"
 							trusted_apps_audience = "empty"
 						}
 					]
@@ -174,6 +174,7 @@ func TestApplications(t *testing.T) {
 					"backchannel_logout_url":              "https://example.com/backchannel-logout2",
 					"custom_idp_initiated_login_page_url": "https://example.com/idp-login2",
 					"client_id":                           "my-custom-oidc-client",
+					"default_audience":                    "appId",
 					"trusted_apps_audience":               "empty",
 				},
 			}),
