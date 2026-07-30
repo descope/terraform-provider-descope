@@ -207,6 +207,11 @@ var docsOIDC = map[string]string{
 	"claims": "A list of supported claims. e.g. `sub`, `email`, `exp`.",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces " +
 		"the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"backchannel_logout_url": "The URL that Descope notifies with a logout token when the user's session ends, " +
+		"as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) " +
+		"specification. Leave empty to disable back-channel logout notifications for this application.",
+	"custom_idp_initiated_login_page_url": "A custom login page URL to redirect users to on IdP-initiated login flows, " +
+		"instead of the default login page.",
 	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is computed " +
 		"by the server; when set, it must be unique within the project. Can only be set when the application is " +
 		"created, and attempting to change it on an existing application will fail.",
@@ -223,9 +228,12 @@ var docsOIDC = map[string]string{
 	"jwt_bearer_disabled":         "Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this application.",
 	"device_code_disabled":        "Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this application.",
 	"force_pkce":                  "When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.",
-	"default_audience":            "Controls the default `aud` claim of tokens issued for this application. One of `\"projectId\"` (the project ID only), `\"clientId\"` (the dedicated client ID only), or `\"\"` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.",
-	"permissions":                 "",
-	"roles":                       "",
+	"default_audience":            "Controls the default `aud` claim of tokens issued for this application. One of `\"projectId\"` (the project ID only), `\"clientId\"` (the dedicated client ID only), `\"appId\"` (the application ID only), `\"empty\"` (no `aud` claim at all), or `\"\"` (default — both the project ID and the client ID). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.",
+	"trusted_apps_audience": "Controls the audience values appended to the issued token's `aud` claim for trusted sibling " +
+		"applications. One of `\"projectId\"`, `\"clientId\"`, `\"appId\"`, `\"empty\"` (add none), or `\"\"` " +
+		"(default — both the project ID and the client ID). Independent of `default_audience`.",
+	"permissions": "",
+	"roles":       "",
 }
 
 var docsSAML = map[string]string{
