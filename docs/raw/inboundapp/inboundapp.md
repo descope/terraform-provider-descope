@@ -117,6 +117,15 @@ When enabled, all of the user's tenants, roles, and permissions will always be i
 
 
 
+force_dpop
+----------
+
+- Type: `bool`
+
+Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.
+
+
+
 default_audience
 ----------------
 

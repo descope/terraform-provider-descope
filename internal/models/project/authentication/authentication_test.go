@@ -251,6 +251,8 @@ func TestAuthentication(t *testing.T) {
 							hide_jit_guide     = true
 							support_email      = "help@acme.com"
 							show_help_contact  = true
+							hide_role_mapping  = true
+							hide_fga_mapping   = true
 						}
 					}
 				}
@@ -262,6 +264,8 @@ func TestAuthentication(t *testing.T) {
 					"hide_jit_guide":    true,
 					"support_email":     "help@acme.com",
 					"show_help_contact": true,
+					"hide_role_mapping": true,
+					"hide_fga_mapping":  true,
 				},
 			}),
 		},
@@ -309,6 +313,39 @@ func TestAuthentication(t *testing.T) {
 					"force_domain_verification": false,
 				},
 			}),
+		},
+		resource.TestStep{
+			// The mapping flags are independent: setting the group flag does not
+			// force role/FGA mapping, which keep their own (default false) values.
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_groups_mapping = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_groups_mapping": true,
+					"hide_role_mapping":   false,
+					"hide_fga_mapping":    false,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_groups_mapping = true
+							hide_role_mapping   = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("hide_groups_mapping attribute cannot be combined"),
 		},
 		resource.TestStep{
 			Config: p.Config(`
