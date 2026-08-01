@@ -18,20 +18,23 @@ var OIDCAttributes = map[string]schema.Attribute{
 	"logo":        stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"login_page_url":              stringattr.Default(""),
-	"claims":                      strlistattr.Default(),
-	"force_authentication":        boolattr.Default(false),
-	"client_id":                   stringattr.Optional(),
-	"client_secret":               stringattr.SecretGenerated(true),
-	"client_type":                 stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")),
-	"approved_redirect_urls":      strsetattr.Default(),
-	"authorization_code_disabled": boolattr.Default(false),
-	"client_credentials_disabled": boolattr.Default(false),
-	"refresh_token_disabled":      boolattr.Default(false),
-	"jwt_bearer_disabled":         boolattr.Default(false),
-	"device_code_disabled":        boolattr.Default(false),
-	"force_pkce":                  boolattr.Default(false),
-	"default_audience":            stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")),
+	"login_page_url":                      stringattr.Default(""),
+	"claims":                              strlistattr.Default(),
+	"force_authentication":                boolattr.Default(false),
+	"backchannel_logout_url":              stringattr.Default(""),
+	"custom_idp_initiated_login_page_url": stringattr.Default(""),
+	"client_id":                           stringattr.Optional(),
+	"client_secret":                       stringattr.SecretGenerated(true),
+	"client_type":                         stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")),
+	"approved_redirect_urls":              strsetattr.Default(),
+	"authorization_code_disabled":         boolattr.Default(false),
+	"client_credentials_disabled":         boolattr.Default(false),
+	"refresh_token_disabled":              boolattr.Default(false),
+	"jwt_bearer_disabled":                 boolattr.Default(false),
+	"device_code_disabled":                boolattr.Default(false),
+	"force_pkce":                          boolattr.Default(false),
+	"default_audience":                    stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId", "appId", "empty")),
+	"trusted_apps_audience":               stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId", "appId", "empty")),
 
 	"permissions": listattr.Default[SSOAppPermissionModel](SSOAppPermissionAttributes),
 	"roles":       listattr.Default[SSOAppRoleModel](SSOAppRoleAttributes),
@@ -46,20 +49,23 @@ type OIDCModel struct {
 	Logo        stringattr.Type `tfsdk:"logo"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	LoginPageURL              stringattr.Type  `tfsdk:"login_page_url"`
-	Claims                    strlistattr.Type `tfsdk:"claims"`
-	ForceAuthentication       boolattr.Type    `tfsdk:"force_authentication"`
-	ClientID                  stringattr.Type  `tfsdk:"client_id"`
-	ClientSecret              stringattr.Type  `tfsdk:"client_secret"`
-	ClientType                stringattr.Type  `tfsdk:"client_type"`
-	ApprovedRedirectURLs      strsetattr.Type  `tfsdk:"approved_redirect_urls"`
-	AuthorizationCodeDisabled boolattr.Type    `tfsdk:"authorization_code_disabled"`
-	ClientCredentialsDisabled boolattr.Type    `tfsdk:"client_credentials_disabled"`
-	RefreshTokenDisabled      boolattr.Type    `tfsdk:"refresh_token_disabled"`
-	JWTBearerDisabled         boolattr.Type    `tfsdk:"jwt_bearer_disabled"`
-	DeviceCodeDisabled        boolattr.Type    `tfsdk:"device_code_disabled"`
-	ForcePkce                 boolattr.Type    `tfsdk:"force_pkce"`
-	DefaultAudience           stringattr.Type  `tfsdk:"default_audience"`
+	LoginPageURL                   stringattr.Type  `tfsdk:"login_page_url"`
+	Claims                         strlistattr.Type `tfsdk:"claims"`
+	ForceAuthentication            boolattr.Type    `tfsdk:"force_authentication"`
+	BackchannelLogoutURL           stringattr.Type  `tfsdk:"backchannel_logout_url"`
+	CustomIDPInitiatedLoginPageURL stringattr.Type  `tfsdk:"custom_idp_initiated_login_page_url"`
+	ClientID                       stringattr.Type  `tfsdk:"client_id"`
+	ClientSecret                   stringattr.Type  `tfsdk:"client_secret"`
+	ClientType                     stringattr.Type  `tfsdk:"client_type"`
+	ApprovedRedirectURLs           strsetattr.Type  `tfsdk:"approved_redirect_urls"`
+	AuthorizationCodeDisabled      boolattr.Type    `tfsdk:"authorization_code_disabled"`
+	ClientCredentialsDisabled      boolattr.Type    `tfsdk:"client_credentials_disabled"`
+	RefreshTokenDisabled           boolattr.Type    `tfsdk:"refresh_token_disabled"`
+	JWTBearerDisabled              boolattr.Type    `tfsdk:"jwt_bearer_disabled"`
+	DeviceCodeDisabled             boolattr.Type    `tfsdk:"device_code_disabled"`
+	ForcePkce                      boolattr.Type    `tfsdk:"force_pkce"`
+	DefaultAudience                stringattr.Type  `tfsdk:"default_audience"`
+	TrustedAppsAudience            stringattr.Type  `tfsdk:"trusted_apps_audience"`
 
 	Permissions listattr.Type[SSOAppPermissionModel] `tfsdk:"permissions"`
 	Roles       listattr.Type[SSOAppRoleModel]       `tfsdk:"roles"`
@@ -70,6 +76,8 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.LoginPageURL, settings, "loginPageUrl")
 	strlistattr.Get(m.Claims, settings, "claims", h)
 	boolattr.Get(m.ForceAuthentication, settings, "forceAuthentication")
+	stringattr.Get(m.BackchannelLogoutURL, settings, "backChannelLogoutUrl")
+	stringattr.Get(m.CustomIDPInitiatedLoginPageURL, settings, "customIdpInitiatedLoginPageUrl")
 
 	stringattr.Get(m.ClientID, settings, "clientId")
 	stringattr.Get(m.ClientSecret, settings, "clientSecret")
@@ -82,6 +90,7 @@ func (m *OIDCModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
 	boolattr.Get(m.ForcePkce, settings, "forcePkce")
 	stringattr.Get(m.DefaultAudience, settings, "defaultAudience")
+	stringattr.Get(m.TrustedAppsAudience, settings, "trustedAppsAudience")
 
 	data := sharedApplicationData(h, m.ID, m.Name, m.Description, m.Logo, m.Disabled)
 	data["oidc"] = settings
@@ -95,6 +104,8 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Nil(&m.LoginPageURL) // XXX reset by the backend on response for now
 		strlistattr.Set(&m.Claims, settings, "claims", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
+		stringattr.Set(&m.BackchannelLogoutURL, settings, "backChannelLogoutUrl")
+		stringattr.Set(&m.CustomIDPInitiatedLoginPageURL, settings, "customIdpInitiatedLoginPageUrl")
 
 		stringattr.Set(&m.ClientID, settings, "clientId")
 		stringattr.Set(&m.ClientSecret, settings, "clientSecret")
@@ -107,6 +118,7 @@ func (m *OIDCModel) SetValues(h *helpers.Handler, data map[string]any) {
 		boolattr.Set(&m.DeviceCodeDisabled, settings, "deviceCodeDisabled")
 		boolattr.Set(&m.ForcePkce, settings, "forcePkce")
 		stringattr.Set(&m.DefaultAudience, settings, "defaultAudience")
+		stringattr.Set(&m.TrustedAppsAudience, settings, "trustedAppsAudience")
 	}
 	listattr.SetMatchingNames(&m.Permissions, data, "permissions", "name", h)
 	listattr.SetMatchingNames(&m.Roles, data, "roles", "name", h)

@@ -126,6 +126,25 @@ func TestSettings(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config(`
 				project_settings = {
+					allow_auth_hosting_iframe_embedding = true
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.allow_auth_hosting_iframe_embedding": true,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"project_settings.allow_auth_hosting_iframe_embedding": false,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				project_settings = {
 					approved_domains = ["example.com"]
 				}
 			`),
