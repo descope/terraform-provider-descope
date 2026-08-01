@@ -18,6 +18,7 @@ var SalesforceMarketingCloudAttributes = map[string]schema.Attribute{
 	"client_secret": stringattr.SecretRequired(),
 	"scope":         stringattr.Default(""),
 	"account_id":    stringattr.Default(""),
+	"engine_id":     stringattr.Default(""),
 }
 
 // Model
@@ -32,17 +33,20 @@ type SalesforceMarketingCloudModel struct {
 	ClientSecret stringattr.Type `tfsdk:"client_secret"`
 	Scope        stringattr.Type `tfsdk:"scope"`
 	AccountID    stringattr.Type `tfsdk:"account_id"`
+	EngineID     stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *SalesforceMarketingCloudModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "salesforce-marketing-cloud"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *SalesforceMarketingCloudModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}

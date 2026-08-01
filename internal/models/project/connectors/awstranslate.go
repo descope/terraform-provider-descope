@@ -17,6 +17,7 @@ var AWSTranslateAttributes = map[string]schema.Attribute{
 	"secret_access_key": stringattr.SecretRequired(),
 	"session_token":     stringattr.SecretOptional(),
 	"region":            stringattr.Required(),
+	"engine_id":         stringattr.Default(""),
 }
 
 // Model
@@ -30,17 +31,20 @@ type AWSTranslateModel struct {
 	SecretAccessKey stringattr.Type `tfsdk:"secret_access_key"`
 	SessionToken    stringattr.Type `tfsdk:"session_token"`
 	Region          stringattr.Type `tfsdk:"region"`
+	EngineID        stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *AWSTranslateModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "aws-translate"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *AWSTranslateModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}
