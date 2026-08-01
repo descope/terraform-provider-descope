@@ -43,6 +43,10 @@ func MergeDocs(conns *Connectors, sc *schema.Schema) {
 func mergeConnectorDocs(c *Connector, sc *schema.Schema) {
 	model := findConnectorModel(sc, c.StructName())
 	for _, field := range model.Fields {
+		if field.Name == "engine_id" && c.SupportsEngine() {
+			field.Description = wordwrap.WrapString(utils.DefaultConnectorEngineIDText, 80)
+			continue
+		}
 		for _, f := range c.Fields {
 			if field.Name == f.AttributeName() {
 				if f.Description != "" {
