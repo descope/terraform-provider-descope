@@ -15,6 +15,7 @@ var GoogleCloudTranslationAttributes = map[string]schema.Attribute{
 
 	"project_id":           stringattr.Required(),
 	"service_account_json": stringattr.SecretRequired(),
+	"engine_id":            stringattr.Default(""),
 }
 
 // Model
@@ -26,17 +27,20 @@ type GoogleCloudTranslationModel struct {
 
 	ProjectID          stringattr.Type `tfsdk:"project_id"`
 	ServiceAccountJSON stringattr.Type `tfsdk:"service_account_json"`
+	EngineID           stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *GoogleCloudTranslationModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "google-cloud-translation"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *GoogleCloudTranslationModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}
