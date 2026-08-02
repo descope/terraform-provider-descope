@@ -1,6 +1,9 @@
 package settings
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/durationattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
@@ -45,7 +48,13 @@ var InviteSettingsDefault = &InviteSettingsModel{
 
 func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	boolattr.GetNot(m.RequireInvitation, data, "projectSelfProvisioning")
+	// require_invitation is the logical inverse of the server's "projectSelfProvisioning"
+	// flag, which controls whether users may self sign-up. The value is always emitted: the
+	// server treats an absent projectSelfProvisioning as false (self sign-up disabled), so
+	// dropping it would silently require invitations even though the default is to allow
+	// self sign-up. A null/unknown require_invitation therefore maps to self-provisioning
+	// enabled, matching the server default.
+	data["projectSelfProvisioning"] = !requireInvitationValue(m.RequireInvitation)
 	stringattr.Get(m.InviteURL, data, "inviteUrl")
 	boolattr.Get(m.AddMagicLinkToken, data, "inviteMagicLink")
 	boolattr.Get(m.ExpireInvitedUsers, data, "inviteExpireUser")
@@ -59,7 +68,10 @@ func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *InviteSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	convertKeysToService(data)
-	boolattr.SetNot(&m.RequireInvitation, data, "projectSelfProvisioning")
+	// Read projectSelfProvisioning tolerantly (the server may encode it as a bool or as a
+	// "true"/"false" string) and store its inverse. An absent value mirrors the server
+	// default of self sign-up being enabled, i.e. require_invitation = false.
+	m.RequireInvitation = boolattr.Value(!selfProvisioningValue(data))
 	stringattr.Set(&m.InviteURL, data, "inviteUrl")
 	boolattr.Set(&m.AddMagicLinkToken, data, "inviteMagicLink")
 	boolattr.Set(&m.ExpireInvitedUsers, data, "inviteExpireUser")
@@ -71,6 +83,32 @@ func (m *InviteSettingsModel) SetValues(h *helpers.Handler, data map[string]any)
 
 func (m *InviteSettingsModel) UpdateReferences(h *helpers.Handler) {
 	objattr.UpdateReferences(&m.EmailService, h)
+}
+
+// requireInvitationValue resolves require_invitation to a concrete boolean, treating a null
+// or unknown value as false: by default invitations are not required and self sign-up is
+// enabled.
+func requireInvitationValue(b boolattr.Type) bool {
+	if b.IsNull() || b.IsUnknown() {
+		return false
+	}
+	return b.ValueBool()
+}
+
+// selfProvisioningValue extracts the server's projectSelfProvisioning flag, accepting either
+// a native boolean or a string encoding ("true"/"false"). A missing or unrecognized value
+// falls back to true, matching the server default of self sign-up being enabled, so the flag
+// is never silently interpreted as disabled.
+func selfProvisioningValue(data map[string]any) bool {
+	switch v := data["projectSelfProvisioning"].(type) {
+	case bool:
+		return v
+	case string:
+		if parsed, err := strconv.ParseBool(strings.TrimSpace(v)); err == nil {
+			return parsed
+		}
+	}
+	return true
 }
 
 func convertKeysFromService(data map[string]any) {
