@@ -143,10 +143,16 @@ func ensureRequiredCustomProviderField(h *helpers.Handler, field attr.Value, fie
 
 func ensureSystemProvider(h *helpers.Handler, provider objattr.Type[OAuthProviderModel], name string) {
 	m, _ := provider.ToObject(h.Ctx)
-	if m == nil || helpers.HasUnknownValues(m.ClientID, m.ClientSecret) {
-		return // skip validation if there are unknown values
+	if m == nil {
+		return
 	}
 
+	// this runs at apply time, where a client_id or client_secret that's still unknown can only
+	// mean the attribute wasn't set in the configuration and has no prior state value (initial
+	// create), so treat unknowns as empty rather than skipping the checks below — otherwise a
+	// configuration with own-account-only attributes but no credentials passes through to the
+	// backend, which silently ignores those attributes and causes Terraform to abort with an
+	// opaque "inconsistent result after apply" error when the applied state doesn't match the plan
 	ownAccount := m.ClientID.ValueString() != ""
 	if ownAccount {
 		if name != "apple" {
