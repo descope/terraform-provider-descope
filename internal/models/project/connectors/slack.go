@@ -13,7 +13,8 @@ var SlackAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"token": stringattr.SecretRequired(),
+	"token":     stringattr.SecretRequired(),
+	"engine_id": stringattr.Default(""),
 }
 
 // Model
@@ -23,18 +24,21 @@ type SlackModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	Token stringattr.Type `tfsdk:"token"`
+	Token    stringattr.Type `tfsdk:"token"`
+	EngineID stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *SlackModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "slack"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *SlackModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}
