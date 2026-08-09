@@ -16,6 +16,7 @@ var RekognitionAttributes = map[string]schema.Attribute{
 	"access_key_id":     stringattr.Required(),
 	"secret_access_key": stringattr.SecretRequired(),
 	"collection_id":     stringattr.Required(),
+	"engine_id":         stringattr.Default(""),
 }
 
 // Model
@@ -28,17 +29,20 @@ type RekognitionModel struct {
 	AccessKeyID     stringattr.Type `tfsdk:"access_key_id"`
 	SecretAccessKey stringattr.Type `tfsdk:"secret_access_key"`
 	CollectionID    stringattr.Type `tfsdk:"collection_id"`
+	EngineID        stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *RekognitionModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "rekognition"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *RekognitionModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}

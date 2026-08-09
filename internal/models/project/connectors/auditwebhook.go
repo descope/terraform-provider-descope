@@ -23,6 +23,7 @@ var AuditWebhookAttributes = map[string]schema.Attribute{
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
 	"audit_filters":  listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"engine_id":      stringattr.Default(""),
 }
 
 // Model
@@ -38,17 +39,20 @@ type AuditWebhookModel struct {
 	HMACSecret     stringattr.Type                      `tfsdk:"hmac_secret"`
 	Insecure       boolattr.Type                        `tfsdk:"insecure"`
 	AuditFilters   listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	EngineID       stringattr.Type                      `tfsdk:"engine_id"`
 }
 
 func (m *AuditWebhookModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "audit-webhook"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *AuditWebhookModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}

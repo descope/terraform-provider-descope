@@ -17,6 +17,7 @@ var SalesforceAttributes = map[string]schema.Attribute{
 	"client_id":     stringattr.Required(),
 	"client_secret": stringattr.SecretRequired(),
 	"version":       stringattr.Required(),
+	"engine_id":     stringattr.Default(""),
 }
 
 // Model
@@ -30,17 +31,20 @@ type SalesforceModel struct {
 	ClientID     stringattr.Type `tfsdk:"client_id"`
 	ClientSecret stringattr.Type `tfsdk:"client_secret"`
 	Version      stringattr.Type `tfsdk:"version"`
+	EngineID     stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *SalesforceModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "salesforce"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *SalesforceModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}
