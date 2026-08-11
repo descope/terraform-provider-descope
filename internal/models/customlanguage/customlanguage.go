@@ -10,10 +10,9 @@ import (
 var CustomLanguageAttributes = map[string]schema.Attribute{
 	"id":         stringattr.Identifier(),
 	"project_id": stringattr.Required(stringplanmodifier.RequiresReplace()),
-	// The locale code (language + optional region) is immutable; changing it replaces the resource.
-	"language": stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"region":   stringattr.Optional(stringplanmodifier.RequiresReplace()),
-	"name":     stringattr.Required(),
+	"language":   stringattr.Required(stringplanmodifier.RequiresReplace()),
+	"region":     stringattr.Default("", stringplanmodifier.RequiresReplace()),
+	"name":       stringattr.Required(),
 }
 
 var Schema = schema.Schema{
