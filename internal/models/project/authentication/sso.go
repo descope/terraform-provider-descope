@@ -209,6 +209,13 @@ func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
 		h.Conflict("The hide_groups_mapping attribute cannot be combined with hide_role_mapping or hide_fga_mapping, use either hide_groups_mapping or the hide_role_mapping and hide_fga_mapping pair")
 	}
 
+	// Placed before the hide_saml/hide_oidc block below, whose early return on unknown values would
+	// otherwise skip this check. Descope rejects the pair server-side, so catching it at plan time
+	// turns an opaque 400 during apply into a normal conflict.
+	if !helpers.HasUnknownValues(m.HideSSO, m.HideSCIM) && m.HideSSO.ValueBool() && m.HideSCIM.ValueBool() {
+		h.Invalid("The attributes hide_sso and hide_scim cannot both be true, the SSO Suite must offer either SSO or SCIM configuration")
+	}
+
 	if helpers.HasUnknownValues(m.HideSAML, m.HideOIDC) {
 		return
 	} else if m.HideSAML.ValueBool() && m.HideOIDC.ValueBool() {
