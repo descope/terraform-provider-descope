@@ -274,6 +274,23 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					sso = {
 						sso_suite_settings = {
+							hide_sso = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_sso":  true,
+					"hide_scim": false,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
 							hide_domains = true
 							force_domain_verification = true
 						}

@@ -175,6 +175,16 @@ the console for it to be used.
 
 
 
+hide_sso
+--------
+
+- Type: `bool`
+
+Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for
+tenants that only need to set up SCIM provisioning.
+
+
+
 hide_scim
 ---------
 
