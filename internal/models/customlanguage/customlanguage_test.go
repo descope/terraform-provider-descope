@@ -10,6 +10,7 @@ import (
 func TestCustomLanguage(t *testing.T) {
 	p := testacc.Project(t)
 	c := testacc.CustomLanguage(t)
+	renamed := testacc.CustomLanguage(t) // same address (descope_custom_language.test), different name → exercises update
 	testacc.Run(t,
 		// Create with a language code only (no region)
 		resource.TestStep{
@@ -35,6 +36,19 @@ func TestCustomLanguage(t *testing.T) {
 				"language": "phl",
 				"region":   "PH",
 				"name":     c.Name,
+			}),
+		},
+		// Update the name in place (language/region are immutable and unchanged)
+		resource.TestStep{
+			Config: p.Config() + renamed.Config(`
+				project_id = `+p.Path()+`.id
+				language   = "phl"
+				region     = "PH"
+			`),
+			Check: renamed.Check(map[string]any{
+				"language": "phl",
+				"region":   "PH",
+				"name":     renamed.Name,
 			}),
 		},
 		// Import with composite ID
