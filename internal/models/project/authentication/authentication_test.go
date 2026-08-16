@@ -249,6 +249,7 @@ func TestAuthentication(t *testing.T) {
 							style_id           = "koko"
 							hide_saml          = true
 							hide_jit_guide     = true
+							hide_xaa           = true
 							support_email      = "help@acme.com"
 							show_help_contact  = true
 						}
@@ -260,6 +261,7 @@ func TestAuthentication(t *testing.T) {
 					"style_id":          "koko",
 					"hide_saml":         true,
 					"hide_jit_guide":    true,
+					"hide_xaa":          true,
 					"support_email":     "help@acme.com",
 					"show_help_contact": true,
 				},
