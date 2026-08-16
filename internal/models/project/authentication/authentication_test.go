@@ -234,6 +234,19 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					sso = {
 						sso_suite_settings = {
+							hide_sso  = true
+							hide_scim = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("The attributes hide_sso and hide_scim cannot both be true"),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
 							support_email = "not-an-email"
 						}
 					}
@@ -266,6 +279,23 @@ func TestAuthentication(t *testing.T) {
 					"show_help_contact": true,
 					"hide_role_mapping": true,
 					"hide_fga_mapping":  true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_sso = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_sso":  true,
+					"hide_scim": false,
 				},
 			}),
 		},

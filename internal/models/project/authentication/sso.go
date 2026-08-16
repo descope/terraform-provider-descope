@@ -123,6 +123,7 @@ var SSOSuiteValidator = objattr.NewValidator[SSOSuiteModel]("must have a valid c
 
 var SSOSuiteAttributes = map[string]schema.Attribute{
 	"style_id":                  stringattr.Default(""),
+	"hide_sso":                  boolattr.Default(false),
 	"hide_scim":                 boolattr.Default(false),
 	"hide_groups_mapping":       boolattr.Default(false),
 	"hide_role_mapping":         boolattr.Default(false),
@@ -138,6 +139,7 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 
 type SSOSuiteModel struct {
 	StyleID                 stringattr.Type `tfsdk:"style_id"`
+	HideSSO                 boolattr.Type   `tfsdk:"hide_sso"`
 	HideSCIM                boolattr.Type   `tfsdk:"hide_scim"`
 	HideGroupsMapping       boolattr.Type   `tfsdk:"hide_groups_mapping"`
 	HideRoleMapping         boolattr.Type   `tfsdk:"hide_role_mapping"`
@@ -153,6 +155,7 @@ type SSOSuiteModel struct {
 
 var SSOSuiteDefault = &SSOSuiteModel{
 	StyleID:                 stringattr.Value(""),
+	HideSSO:                 boolattr.Value(false),
 	HideSCIM:                boolattr.Value(false),
 	HideGroupsMapping:       boolattr.Value(false),
 	HideRoleMapping:         boolattr.Value(false),
@@ -169,6 +172,7 @@ var SSOSuiteDefault = &SSOSuiteModel{
 func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.StyleID, data, "ssoSuiteStyleId")
+	boolattr.Get(m.HideSSO, data, "hideSsoSuiteSso")
 	boolattr.Get(m.HideSCIM, data, "hideSsoSuiteScim")
 	boolattr.Get(m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
 	boolattr.Get(m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
@@ -185,6 +189,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.StyleID, data, "ssoSuiteStyleId")
+	boolattr.Set(&m.HideSSO, data, "hideSsoSuiteSso")
 	boolattr.Set(&m.HideSCIM, data, "hideSsoSuiteScim")
 	boolattr.Set(&m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
 	boolattr.Set(&m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
@@ -202,6 +207,13 @@ func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
 	if !helpers.HasUnknownValues(m.HideGroupsMapping, m.HideRoleMapping, m.HideFgaMapping) &&
 		!m.HideGroupsMapping.IsNull() && (!m.HideRoleMapping.IsNull() || !m.HideFgaMapping.IsNull()) {
 		h.Conflict("The hide_groups_mapping attribute cannot be combined with hide_role_mapping or hide_fga_mapping, use either hide_groups_mapping or the hide_role_mapping and hide_fga_mapping pair")
+	}
+
+	// Placed before the hide_saml/hide_oidc block below, whose early return on unknown values would
+	// otherwise skip this check. Descope rejects the pair server-side, so catching it at plan time
+	// turns an opaque 400 during apply into a normal conflict.
+	if !helpers.HasUnknownValues(m.HideSSO, m.HideSCIM) && m.HideSSO.ValueBool() && m.HideSCIM.ValueBool() {
+		h.Invalid("The attributes hide_sso and hide_scim cannot both be true, the SSO Suite must offer either SSO or SCIM configuration")
 	}
 
 	if helpers.HasUnknownValues(m.HideSAML, m.HideOIDC) {
