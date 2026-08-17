@@ -30,6 +30,7 @@ var SnowflakeAttributes = map[string]schema.Attribute{
 	"min_flush_interval_minutes": floatattr.Default(15),
 	"troubleshoot_log_enabled":   boolattr.Default(false),
 	"mask_pii":                   boolattr.Default(false),
+	"engine_id":                  stringattr.Default(""),
 }
 
 // Model
@@ -50,17 +51,20 @@ type SnowflakeModel struct {
 	MinFlushIntervalMinutes floatattr.Type                       `tfsdk:"min_flush_interval_minutes"`
 	TroubleshootLogEnabled  boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
 	MaskPII                 boolattr.Type                        `tfsdk:"mask_pii"`
+	EngineID                stringattr.Type                      `tfsdk:"engine_id"`
 }
 
 func (m *SnowflakeModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "snowflake"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *SnowflakeModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}

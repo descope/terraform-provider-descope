@@ -175,6 +175,16 @@ the console for it to be used.
 
 
 
+hide_sso
+--------
+
+- Type: `bool`
+
+Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for
+tenants that only need to set up SCIM provisioning.
+
+
+
 hide_scim
 ---------
 
@@ -190,6 +200,24 @@ hide_groups_mapping
 - Type: `bool`
 
 Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
+
+
+
+hide_role_mapping
+-----------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.
+
+
+
+hide_fga_mapping
+----------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.
 
 
 

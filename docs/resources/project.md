@@ -355,12 +355,14 @@ Optional:
 
 - `approved_redirect_urls` (Set of String) A list of approved redirect URLs for this application (supports `*` wildcards). When set, redirect URIs are validated against this per-app list; when empty, validation falls back to the project's approved/trusted domains.
 - `authorization_code_disabled` (Boolean) Disables the `authorization_code` grant type for this application.
+- `backchannel_logout_url` (String) The URL that Descope notifies with a logout token when the user's session ends, as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) specification. Leave empty to disable back-channel logout notifications for this application.
 - `claims` (List of String) A list of supported claims. e.g. `sub`, `email`, `exp`.
 - `client_credentials_disabled` (Boolean) Disables the `client_credentials` grant type for this application.
 - `client_id` (String) A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is computed by the server; when set, it must be unique within the project. Can only be set when the application is created, and attempting to change it on an existing application will fail.
 - `client_secret` (String, Sensitive) A dedicated OIDC `client_secret` to import for this application, applied on creation only. When omitted, a secret is generated server-side. The value is sensitive and is not returned on subsequent reads.
 - `client_type` (String) OAuth client confidentiality. One of `""` (default — legacy access-key authentication), `"confidential"` (a dedicated client secret is generated for the app), or `"public"`.
-- `default_audience` (String) Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), or `""` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.
+- `custom_idp_initiated_login_page_url` (String) A custom login page URL to redirect users to on IdP-initiated login flows, instead of the default login page.
+- `default_audience` (String) Controls the default `aud` claim of tokens issued for this application. One of `"projectId"` (the project ID only), `"clientId"` (the dedicated client ID only), `"appId"` (the application ID only), `"empty"` (no `aud` claim at all), or `""` (default — both the project ID and the client ID). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.
 - `description` (String) A description for the OIDC application.
 - `device_code_disabled` (Boolean) Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this application.
 - `disabled` (Boolean) Whether the application should be enabled or disabled.
@@ -373,6 +375,7 @@ Optional:
 - `permissions` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc_applications--permissions))
 - `refresh_token_disabled` (Boolean) Disables the `refresh_token` grant type for this application.
 - `roles` (Attributes List) (see [below for nested schema](#nestedatt--applications--oidc_applications--roles))
+- `trusted_apps_audience` (String) Controls the audience values appended to the issued token's `aud` claim for trusted sibling applications. One of `"projectId"`, `"clientId"`, `"appId"`, `"empty"` (add none), or `""` (default — both the project ID and the client ID). Independent of `default_audience`.
 
 <a id="nestedatt--applications--oidc_applications--permissions"></a>
 ### Nested Schema for `applications.oidc_applications.permissions`
@@ -1646,11 +1649,14 @@ Optional:
 
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
+- `hide_fga_mapping` (Boolean) Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
 - `hide_jit_guide` (Boolean) Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
 - `hide_oidc` (Boolean) Setting this to `true` will hide the OIDC configuration option.
+- `hide_role_mapping` (Boolean) Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
+- `hide_sso` (Boolean) Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for tenants that only need to set up SCIM provisioning.
 - `hide_xaa` (Boolean) Whether to hide the Cross-App Access (XAA) section in the SSO Suite hosted UI.
 - `show_help_contact` (Boolean) Whether to display the help/support contact link in the SSO Suite UI.
 - `style_id` (String) Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in the console for it to be used.
@@ -1881,6 +1887,7 @@ Optional:
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--audit_webhook--audit_filters))
 - `authentication` (Attributes) Authentication Information (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication))
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
@@ -1907,6 +1914,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--audit_webhook--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--audit_webhook--authentication--api_key"></a>
 ### Nested Schema for `connectors.audit_webhook.authentication.api_key`
@@ -1924,6 +1932,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--audit_webhook--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.audit_webhook.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -1944,6 +1968,7 @@ Optional:
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--aws_s3--audit_filters))
 - `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `external_id` (String) The external ID to use when assuming the role.
 - `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
@@ -1978,6 +2003,7 @@ Optional:
 - `access_key_id` (String) AWS access key ID.
 - `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `external_id` (String) The external ID to use when assuming the role.
 - `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
 - `secret_access_key` (String, Sensitive) AWS secret access key.
@@ -2001,6 +2027,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `session_token` (String, Sensitive) (Optional) A security or session token to use with these credentials. Usually present for temporary credentials.
 
 Read-Only:
@@ -2130,6 +2157,7 @@ Optional:
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--datadog--audit_filters))
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `site` (String) The Datadog site to send logs to. Default is `datadoghq.com`. European, free tier and other customers should set their site accordingly.
 - `source` (String) An optional custom source to use for log entries sent to Datadog. This can be used to differentiate between environments (e.g. `production`, `staging`). If left empty, the default Descope source will be used.
@@ -2276,6 +2304,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--external_token_http--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--external_token_http--authentication--api_key"></a>
 ### Nested Schema for `connectors.external_token_http.authentication.api_key`
@@ -2293,6 +2322,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--external_token_http--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.external_token_http.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2346,6 +2391,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -2404,6 +2450,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--generic_email_gateway--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--generic_email_gateway--authentication--api_key"></a>
 ### Nested Schema for `connectors.generic_email_gateway.authentication.api_key`
@@ -2421,6 +2468,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--generic_email_gateway--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.generic_email_gateway.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2455,6 +2518,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--generic_sms_gateway--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--generic_sms_gateway--authentication--api_key"></a>
 ### Nested Schema for `connectors.generic_sms_gateway.authentication.api_key`
@@ -2474,6 +2538,22 @@ Required:
 - `username` (String) Username for basic HTTP authentication.
 
 
+<a id="nestedatt--connectors--generic_sms_gateway--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.generic_sms_gateway.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
+
+
 
 
 <a id="nestedatt--connectors--google_cloud_logging"></a>
@@ -2489,6 +2569,7 @@ Optional:
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--google_cloud_logging--audit_filters))
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
 Read-Only:
@@ -2518,6 +2599,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -2607,6 +2689,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -2632,7 +2715,7 @@ Optional:
 - `aws_secret_access_key` (String, Sensitive) The secret AWS access key.
 - `aws_service` (String) The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.
 - `description` (String) A description of what your connector is used for.
-- `engine_id` (String) The identifier of the Descope engine that should run this connector. Leave empty to run the connector locally.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `include_headers_in_context` (Boolean) The connector response context will also include the headers and status code. The context will have a "body" attribute, a "headers" attribute, and a "statusCode" attribute. See more details in the help guide
@@ -2656,6 +2739,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--http--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--http--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--http--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--http--authentication--api_key"></a>
 ### Nested Schema for `connectors.http.authentication.api_key`
@@ -2673,6 +2757,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--http--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.http.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2910,6 +3010,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--opentelemetry--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--opentelemetry--authentication--api_key"></a>
 ### Nested Schema for `connectors.opentelemetry.authentication.api_key`
@@ -2927,6 +3028,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--opentelemetry--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.opentelemetry.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -2975,6 +3092,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -3058,6 +3176,7 @@ Optional:
 - `base_url` (String) The base URL used to load the reCAPTCHA Enterprise scripts. Select recaptcha.net when google.com is unavailable in your users' region. Restricting this to the official Google domains prevents loading scripts from untrusted hosts.
 - `bot_threshold` (Number) The bot threshold is used to determine whether the request is a bot or a human. The score ranges between 0 and 1, where 1 is a human interaction and 0 is a bot. If the score is below this threshold, the request is considered a bot.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
 
 Read-Only:
@@ -3099,6 +3218,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -3137,6 +3257,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -3157,6 +3278,7 @@ Optional:
 
 - `account_id` (String) Account identifier, or MID, of the target business unit.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `scope` (String) Space-separated list of data-access permissions for your connector.
 
 Read-Only:
@@ -3213,6 +3335,7 @@ Optional:
 - `api_key` (Attributes) API key authentication configuration. (see [below for nested schema](#nestedatt--connectors--scim--authentication--api_key))
 - `basic` (Attributes) Basic authentication credentials (username and password). (see [below for nested schema](#nestedatt--connectors--scim--authentication--basic))
 - `bearer_token` (String, Sensitive) Bearer token for HTTP authentication.
+- `oauth2_client_credentials` (Attributes) OAuth 2.0 client credentials configuration used to fetch an access token before making requests. (see [below for nested schema](#nestedatt--connectors--scim--authentication--oauth2_client_credentials))
 
 <a id="nestedatt--connectors--scim--authentication--api_key"></a>
 ### Nested Schema for `connectors.scim.authentication.api_key`
@@ -3230,6 +3353,22 @@ Required:
 
 - `password` (String, Sensitive) Password for basic HTTP authentication.
 - `username` (String) Username for basic HTTP authentication.
+
+
+<a id="nestedatt--connectors--scim--authentication--oauth2_client_credentials"></a>
+### Nested Schema for `connectors.scim.authentication.oauth2_client_credentials`
+
+Required:
+
+- `auth_url` (String) The token endpoint URL used to request an access token.
+- `client_id` (String) The OAuth 2.0 client ID used to authenticate against the token endpoint.
+- `client_secret` (String, Sensitive) The OAuth 2.0 client secret used to authenticate against the token endpoint.
+
+Optional:
+
+- `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
+- `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
+- `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
 
 
 
@@ -3337,6 +3476,7 @@ Required:
 Optional:
 
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 
 Read-Only:
 
@@ -3435,6 +3575,7 @@ Optional:
 - `audit_table` (String) The table to write audit events to. Defaults to `DESCOPE_AUDIT_LOGS`.
 - `database` (String) The Snowflake database to use. Defaults to `DESCOPE_EXPORT_DB`.
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `min_flush_interval_minutes` (Number) The minimum time between writes to Snowflake, in minutes. When set, events are accumulated and written in a single batch at most once per interval, which lets the warehouse auto-suspend between writes and reduces cost. Set to 0 (or leave empty) to write events according to the default Descope cycle.
 - `schema` (String) The schema within the database. Defaults to `PUBLIC`.
@@ -3461,18 +3602,21 @@ Required:
 
 Required:
 
-- `access_key_id` (String, Sensitive) AWS Access key ID.
 - `name` (String) A custom name for your connector.
 - `region` (String) AWS region to send requests to (e.g. `us-west-2`).
-- `secret` (String, Sensitive) AWS Secret Access Key.
 
 Optional:
 
+- `access_key_id` (String, Sensitive) AWS Access key ID.
+- `auth_type` (String) The authentication type to use.
 - `description` (String) A description of what your connector is used for.
 - `endpoint` (String) An optional endpoint URL (hostname only or fully qualified URI).
 - `entity_id` (String) The entity ID or principal entity (PE) ID for sending text messages to recipients in India.
+- `external_id` (String) The external ID to use when assuming the role.
 - `organization_number` (String, Deprecated) Use the `origination_number` attribute instead.
 - `origination_number` (String) An optional phone number from which the text messages are going to be sent. Make sure it is registered properly in your server.
+- `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
+- `secret` (String, Sensitive) AWS Secret Access Key.
 - `sender_id` (String) The name of the sender from which the text message is going to be sent (see SNS documentation regarding acceptable IDs and supported regions/countries).
 - `template_id` (String) The template for sending text messages to recipients in India. The template ID must be associated with the sender ID.
 
@@ -3495,6 +3639,7 @@ Optional:
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--connectors--splunk--audit_filters))
 - `description` (String) A description of what your connector is used for.
+- `engine_id` (String) The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.
 - `index` (String) An optional index to use for all sent events
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
@@ -3912,6 +4057,7 @@ Optional:
 
 - `access_key_jwt_template` (String) Name of the access key JWT Template.
 - `access_key_session_token_expiration` (String) The expiry time for access key session tokens. Use values such as "10 minutes", "4 hours", etc. The value needs to be at least 3 minutes and can't be longer than 4 weeks.
+- `allow_auth_hosting_iframe_embedding` (Boolean) When enabled, Descope-hosted flows can be displayed within an iframe on your website. This modifies the security headers that typically prevent the page from being embedded.
 - `app_url` (String) The URL which your application resides on.
 - `approved_domains` (Set of String) The list of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `custom_domain` (String) A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).

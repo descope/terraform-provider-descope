@@ -54,6 +54,17 @@ sessions, and MFA state.
 
 
 
+allow_auth_hosting_iframe_embedding
+-----------------------------------
+
+- Type: `bool`
+
+When enabled, Descope-hosted flows can be displayed within an iframe on
+your website. This modifies the security headers that typically prevent the page from
+being embedded.
+
+
+
 refresh_token_rotation
 ----------------------
 

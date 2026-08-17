@@ -234,6 +234,19 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					sso = {
 						sso_suite_settings = {
+							hide_sso  = true
+							hide_scim = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("The attributes hide_sso and hide_scim cannot both be true"),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
 							support_email = "not-an-email"
 						}
 					}
@@ -252,6 +265,8 @@ func TestAuthentication(t *testing.T) {
 							hide_xaa           = true
 							support_email      = "help@acme.com"
 							show_help_contact  = true
+							hide_role_mapping  = true
+							hide_fga_mapping   = true
 						}
 					}
 				}
@@ -264,6 +279,25 @@ func TestAuthentication(t *testing.T) {
 					"hide_xaa":          true,
 					"support_email":     "help@acme.com",
 					"show_help_contact": true,
+					"hide_role_mapping": true,
+					"hide_fga_mapping":  true,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_sso = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_sso":  true,
+					"hide_scim": false,
 				},
 			}),
 		},
@@ -311,6 +345,39 @@ func TestAuthentication(t *testing.T) {
 					"force_domain_verification": false,
 				},
 			}),
+		},
+		resource.TestStep{
+			// The mapping flags are independent: setting the group flag does not
+			// force role/FGA mapping, which keep their own (default false) values.
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_groups_mapping = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_groups_mapping": true,
+					"hide_role_mapping":   false,
+					"hide_fga_mapping":    false,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_groups_mapping = true
+							hide_role_mapping   = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("hide_groups_mapping attribute cannot be combined"),
 		},
 		resource.TestStep{
 			Config: p.Config(`
