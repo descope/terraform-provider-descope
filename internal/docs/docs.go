@@ -1100,6 +1100,7 @@ var docsHTTP = map[string]string{
 		"The context will have a \"body\" attribute, a \"headers\" attribute, and a " +
 		"\"statusCode\" attribute. See more details in the help guide",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+	"engine_id":      "The identifier of the Descope engine that should run this connector. Leave empty to run the connector locally.",
 }
 
 var docsHubSpot = map[string]string{
