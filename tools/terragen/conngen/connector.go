@@ -41,6 +41,33 @@ func (c *Connector) SupportsStaticIPs() bool {
 	return c.Extra["supportStaticIps"] == true
 }
 
+// SupportsEngine reports whether the connector can be assigned to a Descope engine via the
+// engine_id attribute. Engine execution is currently limited to the connectors that the
+// engine runtime ships with, so the gate is keyed on the connector id rather than external
+// template metadata.
+func (c *Connector) SupportsEngine() bool {
+	return slices.Contains([]string{
+		"audit-webhook",
+		"aws-s3",
+		"aws-ses-email-validation",
+		"aws-translate",
+		"datadog",
+		"firebase-admin",
+		"google-cloud-translation",
+		"googlecloudlogging",
+		"hibp",
+		"http",
+		"ping-directory",
+		"recaptcha-enterprise",
+		"rekognition",
+		"salesforce",
+		"salesforce-marketing-cloud",
+		"slack",
+		"snowflake",
+		"splunk",
+	}, c.ID)
+}
+
 func (c *Connector) StructName() string {
 	return c.naming.GetName("connector", c.ID, "struct", c.defaultStructName())
 }

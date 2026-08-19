@@ -14,6 +14,7 @@ var FirebaseAdminAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 
 	"service_account": stringattr.SecretRequired(),
+	"engine_id":       stringattr.Default(""),
 }
 
 // Model
@@ -24,17 +25,20 @@ type FirebaseAdminModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 
 	ServiceAccount stringattr.Type `tfsdk:"service_account"`
+	EngineID       stringattr.Type `tfsdk:"engine_id"`
 }
 
 func (m *FirebaseAdminModel) Values(h *helpers.Handler) map[string]any {
 	data := connectorValues(m.ID, m.Name, m.Description, h)
 	data["type"] = "firebase-admin"
 	data["configuration"] = m.ConfigurationValues(h)
+	setConnectorEngine(data, m.EngineID)
 	return data
 }
 
 func (m *FirebaseAdminModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setConnectorValues(&m.ID, &m.Name, &m.Description, data, h)
+	getConnectorEngine(data, &m.EngineID)
 	if c, ok := data["configuration"].(map[string]any); ok {
 		m.SetConfigurationValues(c, h)
 	}

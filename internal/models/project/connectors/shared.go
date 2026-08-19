@@ -41,6 +41,34 @@ func setConnectorValues(id, name, description *stringattr.Type, data map[string]
 	stringattr.Set(description, data, "description")
 }
 
+// Engine assignment
+
+// executorTypeEngine marks a connector as running on a specific engine rather than locally.
+// The backend keeps the assignment in the top-level executorType/executorId fields of the
+// connector and defaults to a local executor when they are unset, so an empty engine id
+// simply leaves the connector running locally.
+const executorTypeEngine = "engine"
+
+// setConnectorEngine writes the engine assignment onto the connector object as the top-level
+// executor fields the backend expects. An empty engine id emits nothing, so the connector
+// keeps running locally.
+func setConnectorEngine(data map[string]any, engineID stringattr.Type) {
+	if id := engineID.ValueString(); id != "" {
+		data["executorType"] = executorTypeEngine
+		data["executorId"] = id
+	}
+}
+
+// getConnectorEngine reads the top-level executor fields back into the engine_id attribute,
+// leaving it empty for connectors that run locally.
+func getConnectorEngine(data map[string]any, engineID *stringattr.Type) {
+	if data["executorType"] == executorTypeEngine {
+		stringattr.Set(engineID, data, "executorId")
+	} else {
+		*engineID = stringattr.Value("")
+	}
+}
+
 // Connector Utils
 
 func addConnectorReferences[T any, M helpers.NamedModel[T]](h *helpers.Handler, key string, connectors listattr.Type[T]) {
@@ -164,21 +192,24 @@ func setHeaders(s *strmapattr.Type, data map[string]any, key string, _ *helpers.
 var HTTPAuthFieldValidator = objattr.NewValidator[HTTPAuthFieldModel]("must specify exactly one authentication method")
 
 var HTTPAuthFieldAttributes = map[string]schema.Attribute{
-	"bearer_token": stringattr.SecretOptional(),
-	"basic":        objattr.Default[HTTPAuthBasicFieldModel](nil, HTTPAuthBasicFieldAttributes),
-	"api_key":      objattr.Default[HTTPAuthAPIKeyFieldModel](nil, HTTPAuthAPIKeyFieldAttributes),
+	"bearer_token":              stringattr.SecretOptional(),
+	"basic":                     objattr.Default[HTTPAuthBasicFieldModel](nil, HTTPAuthBasicFieldAttributes),
+	"api_key":                   objattr.Default[HTTPAuthAPIKeyFieldModel](nil, HTTPAuthAPIKeyFieldAttributes),
+	"oauth2_client_credentials": objattr.Default[HTTPAuthOAuth2ClientCredentialsFieldModel](nil, HTTPAuthOAuth2ClientCredentialsFieldAttributes),
 }
 
 var HTTPAuthFieldDefault = &HTTPAuthFieldModel{
-	BearerToken: stringattr.Value(""),
-	Basic:       objattr.Value[HTTPAuthBasicFieldModel](nil),
-	ApiKey:      objattr.Value[HTTPAuthAPIKeyFieldModel](nil),
+	BearerToken:             stringattr.Value(""),
+	Basic:                   objattr.Value[HTTPAuthBasicFieldModel](nil),
+	ApiKey:                  objattr.Value[HTTPAuthAPIKeyFieldModel](nil),
+	OAuth2ClientCredentials: objattr.Value[HTTPAuthOAuth2ClientCredentialsFieldModel](nil),
 }
 
 type HTTPAuthFieldModel struct {
-	BearerToken stringattr.Type                        `tfsdk:"bearer_token"`
-	Basic       objattr.Type[HTTPAuthBasicFieldModel]  `tfsdk:"basic"`
-	ApiKey      objattr.Type[HTTPAuthAPIKeyFieldModel] `tfsdk:"api_key"`
+	BearerToken             stringattr.Type                                         `tfsdk:"bearer_token"`
+	Basic                   objattr.Type[HTTPAuthBasicFieldModel]                   `tfsdk:"basic"`
+	ApiKey                  objattr.Type[HTTPAuthAPIKeyFieldModel]                  `tfsdk:"api_key"`
+	OAuth2ClientCredentials objattr.Type[HTTPAuthOAuth2ClientCredentialsFieldModel] `tfsdk:"oauth2_client_credentials"`
 }
 
 func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
@@ -196,6 +227,10 @@ func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 		data["method"] = "apiKey"
 		objattr.Get(m.ApiKey, data, "apiKey", h)
 	}
+	if m.OAuth2ClientCredentials.IsSet() {
+		data["method"] = "oauth2ClientCredentials"
+		objattr.Get(m.OAuth2ClientCredentials, data, "oauth2ClientCredentials", h)
+	}
 	return data
 }
 
@@ -210,6 +245,11 @@ func (m *HTTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) 
 		objattr.Set(&m.ApiKey, data, "apiKey", h)
 	} else {
 		objattr.Nil(&m.ApiKey)
+	}
+	if data["method"] == "oauth2ClientCredentials" {
+		objattr.Set(&m.OAuth2ClientCredentials, data, "oauth2ClientCredentials", h)
+	} else {
+		objattr.Nil(&m.OAuth2ClientCredentials)
 	}
 }
 
@@ -226,6 +266,9 @@ func (m *HTTPAuthFieldModel) Validate(h *helpers.Handler) {
 		count += 1
 	}
 	if m.ApiKey.IsSet() {
+		count += 1
+	}
+	if m.OAuth2ClientCredentials.IsSet() {
 		count += 1
 	}
 
@@ -280,4 +323,44 @@ func (m *HTTPAuthAPIKeyFieldModel) Values(h *helpers.Handler) map[string]any {
 func (m *HTTPAuthAPIKeyFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Key, data, "key")
 	stringattr.Nil(&m.Token)
+}
+
+// HTTP Auth OAuth2 Client Credentials Field
+
+var HTTPAuthOAuth2ClientCredentialsFieldAttributes = map[string]schema.Attribute{
+	"client_id":             stringattr.Required(),
+	"client_secret":         stringattr.SecretRequired(),
+	"auth_url":              stringattr.Required(),
+	"auth_style":            stringattr.Default("header", stringvalidator.OneOf("header", "body")),
+	"scopes":                stringattr.Default(""),
+	"token_request_headers": strmapattr.Default(),
+}
+
+type HTTPAuthOAuth2ClientCredentialsFieldModel struct {
+	ClientID            stringattr.Type `tfsdk:"client_id"`
+	ClientSecret        stringattr.Type `tfsdk:"client_secret"`
+	AuthURL             stringattr.Type `tfsdk:"auth_url"`
+	AuthStyle           stringattr.Type `tfsdk:"auth_style"`
+	Scopes              stringattr.Type `tfsdk:"scopes"`
+	TokenRequestHeaders strmapattr.Type `tfsdk:"token_request_headers"`
+}
+
+func (m *HTTPAuthOAuth2ClientCredentialsFieldModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	stringattr.Get(m.ClientID, data, "clientId")
+	stringattr.Get(m.ClientSecret, data, "clientSecret")
+	stringattr.Get(m.AuthURL, data, "authUrl")
+	stringattr.Get(m.AuthStyle, data, "authStyle")
+	stringattr.Get(m.Scopes, data, "scopes")
+	getHeaders(m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
+	return data
+}
+
+func (m *HTTPAuthOAuth2ClientCredentialsFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.ClientID, data, "clientId")
+	stringattr.Nil(&m.ClientSecret)
+	stringattr.Set(&m.AuthURL, data, "authUrl")
+	stringattr.Set(&m.AuthStyle, data, "authStyle")
+	stringattr.Set(&m.Scopes, data, "scopes")
+	setHeaders(&m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
 }
