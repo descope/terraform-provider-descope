@@ -13,20 +13,21 @@ import (
 )
 
 var SSOAttributes = map[string]schema.Attribute{
-	"disabled":                              boolattr.Default(false),
-	"merge_users":                           boolattr.Default(false),
-	"redirect_url":                          stringattr.Default(""),
-	"sso_suite_settings":                    objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
-	"allow_duplicate_domains":               boolattr.Default(false),
-	"allow_override_roles":                  boolattr.Default(false),
-	"groups_priority":                       boolattr.Default(false),
-	"mandatory_user_attributes":             listattr.Default[MandatoryUserAttributeModel](MandatoryUserAttributeAttributes),
-	"limit_mapping_to_mandatory_attributes": boolattr.Default(false),
-	"require_sso_domains":                   boolattr.Default(false),
-	"require_groups_attribute_name":         boolattr.Default(false),
-	"block_if_email_domain_mismatch":        boolattr.Default(false),
-	"mark_email_as_unverified":              boolattr.Default(false),
-	"email_service":                         objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
+	"disabled":                                boolattr.Default(false),
+	"merge_users":                             boolattr.Default(false),
+	"redirect_url":                            stringattr.Default(""),
+	"sso_suite_settings":                      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
+	"allow_duplicate_domains":                 boolattr.Default(false),
+	"allow_override_roles":                    boolattr.Default(false),
+	"groups_priority":                         boolattr.Default(false),
+	"mandatory_user_attributes":               listattr.Default[MandatoryUserAttributeModel](MandatoryUserAttributeAttributes),
+	"limit_mapping_to_mandatory_attributes":   boolattr.Default(false),
+	"require_sso_domains":                     boolattr.Default(false),
+	"require_groups_attribute_name":           boolattr.Default(false),
+	"block_if_email_domain_mismatch":          boolattr.Default(false),
+	"mark_email_as_unverified":                boolattr.Default(false),
+	"allow_merge_users_with_multiple_tenants": boolattr.Default(false),
+	"email_service":                           objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
 
 const (
@@ -49,6 +50,7 @@ type SSOModel struct {
 	RequireGroupsAttributeName             boolattr.Type                              `tfsdk:"require_groups_attribute_name"`
 	BlockIfEmailDomainMismatch             boolattr.Type                              `tfsdk:"block_if_email_domain_mismatch"`
 	MarkEmailAsUnverified                  boolattr.Type                              `tfsdk:"mark_email_as_unverified"`
+	AllowMergeUsersWithMultipleTenants     boolattr.Type                              `tfsdk:"allow_merge_users_with_multiple_tenants"`
 	EmailService                           objattr.Type[templates.EmailServiceModel]  `tfsdk:"email_service"`
 }
 
@@ -63,6 +65,7 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 	boolattr.Get(m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
 	boolattr.Get(m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
+	boolattr.Get(m.AllowMergeUsersWithMultipleTenants, data, "allowMergeUsersWithMultipleTenants")
 
 	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
@@ -82,6 +85,7 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 	boolattr.Set(&m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
 	boolattr.Set(&m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
+	boolattr.Set(&m.AllowMergeUsersWithMultipleTenants, data, "allowMergeUsersWithMultipleTenants")
 
 	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
