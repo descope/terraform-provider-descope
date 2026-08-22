@@ -33,6 +33,16 @@ The URL to redirect users to after they log in using the magic link.
 
 
 
+allow_unverified_recipients
+---------------------------
+
+- Type: `bool`
+
+By default, magic links are only sent to verified email addresses or phone numbers. Enabling this
+allows sending them to unverified email addresses or phone numbers as well, which may increase the risk of spam and fraud.
+
+
+
 email_service
 -------------
 

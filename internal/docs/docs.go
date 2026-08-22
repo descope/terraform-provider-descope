@@ -399,7 +399,9 @@ var docsEnchantedLink = map[string]string{
 		"configured to use this authentication method.",
 	"expiration_time": "How long the enchanted link remains valid before it expires.",
 	"redirect_url":    "The URL to redirect users to after they log in using the enchanted link.",
-	"email_service":   "Settings related to sending emails as part of the enchanted link authentication.",
+	"allow_unverified_recipients": "By default, enchanted links are only sent to verified email addresses. Enabling this allows " +
+		"sending them to unverified email addresses as well, which may increase the risk of spam and fraud.",
+	"email_service": "Settings related to sending emails as part of the enchanted link authentication.",
 }
 
 var docsMagicLink = map[string]string{
@@ -408,8 +410,10 @@ var docsMagicLink = map[string]string{
 		"configured to use this authentication method.",
 	"expiration_time": "How long the magic link remains valid before it expires.",
 	"redirect_url":    "The URL to redirect users to after they log in using the magic link.",
-	"email_service":   "Settings related to sending emails as part of the magic link authentication.",
-	"text_service":    "Settings related to sending SMS messages as part of the magic link authentication.",
+	"allow_unverified_recipients": "By default, magic links are only sent to verified email addresses or phone numbers. Enabling this " +
+		"allows sending them to unverified email addresses or phone numbers as well, which may increase the risk of spam and fraud.",
+	"email_service": "Settings related to sending emails as part of the magic link authentication.",
+	"text_service":  "Settings related to sending SMS messages as part of the magic link authentication.",
 }
 
 var docsOAuth = map[string]string{
@@ -478,9 +482,11 @@ var docsOTP = map[string]string{
 		"configured to use this authentication method.",
 	"domain":          "The domain to embed in OTP messages.",
 	"expiration_time": "The amount of time that an OTP code will be valid for.",
-	"email_service":   "Settings related to sending emails with OTP codes.",
-	"text_service":    "Settings related to sending SMS messages with OTP codes.",
-	"voice_service":   "Settings related to voice calls with OTP codes.",
+	"allow_unverified_recipients": "By default, OTP codes are only sent to verified email addresses or phone numbers. Enabling this " +
+		"allows sending them to unverified email addresses or phone numbers as well, which may increase the risk of spam and fraud.",
+	"email_service": "Settings related to sending emails with OTP codes.",
+	"text_service":  "Settings related to sending SMS messages with OTP codes.",
+	"voice_service": "Settings related to voice calls with OTP codes.",
 }
 
 var docsPasskeys = map[string]string{
@@ -524,6 +530,8 @@ var docsPassword = map[string]string{
 	"enforce_strength": "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.",
 	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., " +
 		"whether a user already exists.",
+	"allow_unverified_recipients": "By default, password reset emails are only sent to verified email addresses. Enabling this allows " +
+		"sending them to unverified email addresses as well, which may increase the risk of spam and fraud.",
 	"email_service": "Settings related to sending password reset emails as part of the password feature.",
 }
 

@@ -77,14 +77,16 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					magic_link = {
 						expiration_time = "5 minutes"
+						allow_unverified_recipients = true
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"authentication.magic_link": map[string]any{
-					"disabled":        false,
-					"redirect_url":    "https://example.com",
-					"expiration_time": "5 minutes",
+					"disabled":                    false,
+					"redirect_url":                "https://example.com",
+					"expiration_time":             "5 minutes",
+					"allow_unverified_recipients": true,
 				},
 			}),
 		},
@@ -516,6 +518,7 @@ func TestAuthentication(t *testing.T) {
 						temporary_lock_attempts = 7
 						temporary_lock_duration = "1 hour"
 						enforce_strength = "strong"
+						allow_unverified_recipients = true
 					}
 					passkeys = {
 						display_name = "Acme Login"
@@ -528,11 +531,12 @@ func TestAuthentication(t *testing.T) {
 			`),
 			Check: p.Check(map[string]any{
 				"authentication.password": map[string]any{
-					"disabled":                true,
-					"temporary_lock":          true,
-					"temporary_lock_attempts": 7,
-					"temporary_lock_duration": "1 hour",
-					"enforce_strength":        "strong",
+					"disabled":                    true,
+					"temporary_lock":              true,
+					"temporary_lock_attempts":     7,
+					"temporary_lock_duration":     "1 hour",
+					"enforce_strength":            "strong",
+					"allow_unverified_recipients": true,
 				},
 				"authentication.passkeys.display_name": "Acme Login",
 				"authentication.passkeys.android_fingerprints": []string{

@@ -33,6 +33,16 @@ The amount of time that an OTP code will be valid for.
 
 
 
+allow_unverified_recipients
+---------------------------
+
+- Type: `bool`
+
+By default, OTP codes are only sent to verified email addresses or phone numbers. Enabling this
+allows sending them to unverified email addresses or phone numbers as well, which may increase the risk of spam and fraud.
+
+
+
 email_service
 -------------
 

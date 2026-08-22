@@ -707,6 +707,7 @@ Optional:
 
 Optional:
 
+- `allow_unverified_recipients` (Boolean) By default, enchanted links are only sent to verified email addresses. Enabling this allows sending them to unverified email addresses as well, which may increase the risk of spam and fraud.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending emails as part of the enchanted link authentication. (see [below for nested schema](#nestedatt--authentication--enchanted_link--email_service))
 - `expiration_time` (String) How long the enchanted link remains valid before it expires.
@@ -750,6 +751,7 @@ Read-Only:
 
 Optional:
 
+- `allow_unverified_recipients` (Boolean) By default, magic links are only sent to verified email addresses or phone numbers. Enabling this allows sending them to unverified email addresses or phone numbers as well, which may increase the risk of spam and fraud.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `email_service` (Attributes) Settings related to sending emails as part of the magic link authentication. (see [below for nested schema](#nestedatt--authentication--magic_link--email_service))
 - `expiration_time` (String) How long the magic link remains valid before it expires.
@@ -1409,6 +1411,7 @@ Required:
 
 Optional:
 
+- `allow_unverified_recipients` (Boolean) By default, OTP codes are only sent to verified email addresses or phone numbers. Enabling this allows sending them to unverified email addresses or phone numbers as well, which may increase the risk of spam and fraud.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `domain` (String) The domain to embed in OTP messages.
 - `email_service` (Attributes) Settings related to sending emails with OTP codes. (see [below for nested schema](#nestedatt--authentication--otp--email_service))
@@ -1523,6 +1526,7 @@ Optional:
 
 Optional:
 
+- `allow_unverified_recipients` (Boolean) By default, password reset emails are only sent to verified email addresses. Enabling this allows sending them to unverified email addresses as well, which may increase the risk of spam and fraud.
 - `any_letter` (Boolean) Whether passwords must contain at least one letter, either uppercase or lowercase.
 - `disabled` (Boolean) Setting this to `true` will disallow using this authentication method directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use this authentication method.
 - `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email is not known at validation time.

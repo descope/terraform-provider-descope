@@ -14,51 +14,53 @@ import (
 )
 
 var PasswordAttributes = map[string]schema.Attribute{
-	"disabled":                boolattr.Default(false),
-	"expiration":              boolattr.Optional(),
-	"expiration_weeks":        intattr.Optional(int64validator.Between(1, 999)),
-	"lock":                    boolattr.Optional(),
-	"lock_attempts":           intattr.Optional(int64validator.Between(2, 10)),
-	"temporary_lock":          boolattr.Default(false),
-	"temporary_lock_attempts": intattr.Default(3, int64validator.Between(1, 10)),
-	"temporary_lock_duration": durationattr.Default("5 minutes", durationattr.MinimumValue("1 minute"), durationattr.MaximumValue("24 hours")),
-	"lowercase":               boolattr.Optional(),
-	"min_length":              intattr.Optional(int64validator.Between(4, 64)),
-	"non_alphanumeric":        boolattr.Optional(),
-	"number":                  boolattr.Optional(),
-	"reuse":                   boolattr.Optional(),
-	"reuse_amount":            intattr.Optional(int64validator.Between(1, 50)),
-	"uppercase":               boolattr.Optional(),
-	"any_letter":              boolattr.Optional(),
-	"disallowed_characters":   stringattr.Optional(),
-	"disallow_email_match":    boolattr.Optional(),
-	"enforce_strength":        stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
-	"mask_errors":             boolattr.Default(false),
-	"email_service":           objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
+	"disabled":                    boolattr.Default(false),
+	"expiration":                  boolattr.Optional(),
+	"expiration_weeks":            intattr.Optional(int64validator.Between(1, 999)),
+	"lock":                        boolattr.Optional(),
+	"lock_attempts":               intattr.Optional(int64validator.Between(2, 10)),
+	"temporary_lock":              boolattr.Default(false),
+	"temporary_lock_attempts":     intattr.Default(3, int64validator.Between(1, 10)),
+	"temporary_lock_duration":     durationattr.Default("5 minutes", durationattr.MinimumValue("1 minute"), durationattr.MaximumValue("24 hours")),
+	"lowercase":                   boolattr.Optional(),
+	"min_length":                  intattr.Optional(int64validator.Between(4, 64)),
+	"non_alphanumeric":            boolattr.Optional(),
+	"number":                      boolattr.Optional(),
+	"reuse":                       boolattr.Optional(),
+	"reuse_amount":                intattr.Optional(int64validator.Between(1, 50)),
+	"uppercase":                   boolattr.Optional(),
+	"any_letter":                  boolattr.Optional(),
+	"disallowed_characters":       stringattr.Optional(),
+	"disallow_email_match":        boolattr.Optional(),
+	"enforce_strength":            stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
+	"mask_errors":                 boolattr.Default(false),
+	"allow_unverified_recipients": boolattr.Default(false),
+	"email_service":               objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
 
 type PasswordModel struct {
-	Disabled              boolattr.Type                             `tfsdk:"disabled"`
-	Expiration            boolattr.Type                             `tfsdk:"expiration"`
-	ExpirationWeeks       intattr.Type                              `tfsdk:"expiration_weeks"`
-	Lock                  boolattr.Type                             `tfsdk:"lock"`
-	LockAttempts          intattr.Type                              `tfsdk:"lock_attempts"`
-	TemporaryLock         boolattr.Type                             `tfsdk:"temporary_lock"`
-	TemporaryLockAttempts intattr.Type                              `tfsdk:"temporary_lock_attempts"`
-	TemporaryLockDuration durationattr.Type                         `tfsdk:"temporary_lock_duration"`
-	Lowercase             boolattr.Type                             `tfsdk:"lowercase"`
-	MinLength             intattr.Type                              `tfsdk:"min_length"`
-	NonAlphanumeric       boolattr.Type                             `tfsdk:"non_alphanumeric"`
-	Number                boolattr.Type                             `tfsdk:"number"`
-	Reuse                 boolattr.Type                             `tfsdk:"reuse"`
-	ReuseAmount           intattr.Type                              `tfsdk:"reuse_amount"`
-	Uppercase             boolattr.Type                             `tfsdk:"uppercase"`
-	AnyLetter             boolattr.Type                             `tfsdk:"any_letter"`
-	DisallowedCharacters  stringattr.Type                           `tfsdk:"disallowed_characters"`
-	DisallowEmailMatch    boolattr.Type                             `tfsdk:"disallow_email_match"`
-	EnforceStrength       stringattr.Type                           `tfsdk:"enforce_strength"`
-	MaskErrors            boolattr.Type                             `tfsdk:"mask_errors"`
-	EmailService          objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
+	Disabled                  boolattr.Type                             `tfsdk:"disabled"`
+	Expiration                boolattr.Type                             `tfsdk:"expiration"`
+	ExpirationWeeks           intattr.Type                              `tfsdk:"expiration_weeks"`
+	Lock                      boolattr.Type                             `tfsdk:"lock"`
+	LockAttempts              intattr.Type                              `tfsdk:"lock_attempts"`
+	TemporaryLock             boolattr.Type                             `tfsdk:"temporary_lock"`
+	TemporaryLockAttempts     intattr.Type                              `tfsdk:"temporary_lock_attempts"`
+	TemporaryLockDuration     durationattr.Type                         `tfsdk:"temporary_lock_duration"`
+	Lowercase                 boolattr.Type                             `tfsdk:"lowercase"`
+	MinLength                 intattr.Type                              `tfsdk:"min_length"`
+	NonAlphanumeric           boolattr.Type                             `tfsdk:"non_alphanumeric"`
+	Number                    boolattr.Type                             `tfsdk:"number"`
+	Reuse                     boolattr.Type                             `tfsdk:"reuse"`
+	ReuseAmount               intattr.Type                              `tfsdk:"reuse_amount"`
+	Uppercase                 boolattr.Type                             `tfsdk:"uppercase"`
+	AnyLetter                 boolattr.Type                             `tfsdk:"any_letter"`
+	DisallowedCharacters      stringattr.Type                           `tfsdk:"disallowed_characters"`
+	DisallowEmailMatch        boolattr.Type                             `tfsdk:"disallow_email_match"`
+	EnforceStrength           stringattr.Type                           `tfsdk:"enforce_strength"`
+	MaskErrors                boolattr.Type                             `tfsdk:"mask_errors"`
+	AllowUnverifiedRecipients boolattr.Type                             `tfsdk:"allow_unverified_recipients"`
+	EmailService              objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
 }
 
 func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
@@ -89,6 +91,7 @@ func (m *PasswordModel) Values(h *helpers.Handler) map[string]any {
 		data["passwordStrengthScore"] = strengthScoreFromString(m.EnforceStrength.ValueString())
 	}
 	boolattr.Get(m.MaskErrors, data, "maskError")
+	boolattr.Get(m.AllowUnverifiedRecipients, data, "allowUnverifiedRecipients")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	return data
 }
@@ -119,6 +122,7 @@ func (m *PasswordModel) SetValues(h *helpers.Handler, data map[string]any) {
 		m.EnforceStrength = stringattr.Value(strengthStringFromScore(int(score)))
 	}
 	boolattr.Set(&m.MaskErrors, data, "maskError")
+	boolattr.Set(&m.AllowUnverifiedRecipients, data, "allowUnverifiedRecipients")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
 }
 

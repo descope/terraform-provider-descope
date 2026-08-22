@@ -193,6 +193,16 @@ whether a user already exists.
 
 
 
+allow_unverified_recipients
+---------------------------
+
+- Type: `bool`
+
+By default, password reset emails are only sent to verified email addresses. Enabling this allows
+sending them to unverified email addresses as well, which may increase the risk of spam and fraud.
+
+
+
 email_service
 -------------
 

@@ -11,17 +11,19 @@ import (
 )
 
 var EnchantedLinkAttributes = map[string]schema.Attribute{
-	"disabled":        boolattr.Default(false),
-	"expiration_time": durationattr.Optional(durationattr.MinimumValue("1 minute")),
-	"redirect_url":    stringattr.Optional(),
-	"email_service":   objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
+	"disabled":                    boolattr.Default(false),
+	"expiration_time":             durationattr.Optional(durationattr.MinimumValue("1 minute")),
+	"redirect_url":                stringattr.Optional(),
+	"allow_unverified_recipients": boolattr.Default(false),
+	"email_service":               objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
 
 type EnchantedLinkModel struct {
-	Disabled       boolattr.Type                             `tfsdk:"disabled"`
-	ExpirationTime stringattr.Type                           `tfsdk:"expiration_time"`
-	RedirectURL    stringattr.Type                           `tfsdk:"redirect_url"`
-	EmailService   objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
+	Disabled                  boolattr.Type                             `tfsdk:"disabled"`
+	ExpirationTime            stringattr.Type                           `tfsdk:"expiration_time"`
+	RedirectURL               stringattr.Type                           `tfsdk:"redirect_url"`
+	AllowUnverifiedRecipients boolattr.Type                             `tfsdk:"allow_unverified_recipients"`
+	EmailService              objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
 }
 
 func (m *EnchantedLinkModel) Values(h *helpers.Handler) map[string]any {
@@ -29,6 +31,7 @@ func (m *EnchantedLinkModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.GetNot(m.Disabled, data, "enabled")
 	durationattr.Get(m.ExpirationTime, data, "expirationTime")
 	stringattr.Get(m.RedirectURL, data, "redirectUrl")
+	boolattr.Get(m.AllowUnverifiedRecipients, data, "allowUnverifiedRecipients")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	return data
 }
@@ -37,6 +40,7 @@ func (m *EnchantedLinkModel) SetValues(h *helpers.Handler, data map[string]any) 
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
+	boolattr.Set(&m.AllowUnverifiedRecipients, data, "allowUnverifiedRecipients")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
 }
 

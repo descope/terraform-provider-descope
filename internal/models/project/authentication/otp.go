@@ -11,21 +11,23 @@ import (
 )
 
 var OTPAttributes = map[string]schema.Attribute{
-	"disabled":        boolattr.Default(false),
-	"domain":          stringattr.Optional(),
-	"expiration_time": durationattr.Optional(durationattr.MinimumValue("1 minute")),
-	"email_service":   objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
-	"text_service":    objattr.Optional[templates.TextServiceModel](templates.TextServiceAttributes, templates.TextServiceValidator),
-	"voice_service":   objattr.Optional[templates.VoiceServiceModel](templates.VoiceServiceAttributes, templates.VoiceServiceValidator),
+	"disabled":                    boolattr.Default(false),
+	"domain":                      stringattr.Optional(),
+	"expiration_time":             durationattr.Optional(durationattr.MinimumValue("1 minute")),
+	"allow_unverified_recipients": boolattr.Default(false),
+	"email_service":               objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
+	"text_service":                objattr.Optional[templates.TextServiceModel](templates.TextServiceAttributes, templates.TextServiceValidator),
+	"voice_service":               objattr.Optional[templates.VoiceServiceModel](templates.VoiceServiceAttributes, templates.VoiceServiceValidator),
 }
 
 type OTPModel struct {
-	Disabled       boolattr.Type                             `tfsdk:"disabled"`
-	Domain         stringattr.Type                           `tfsdk:"domain"`
-	ExpirationTime stringattr.Type                           `tfsdk:"expiration_time"`
-	EmailService   objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
-	TextService    objattr.Type[templates.TextServiceModel]  `tfsdk:"text_service"`
-	VoiceService   objattr.Type[templates.VoiceServiceModel] `tfsdk:"voice_service"`
+	Disabled                  boolattr.Type                             `tfsdk:"disabled"`
+	Domain                    stringattr.Type                           `tfsdk:"domain"`
+	ExpirationTime            stringattr.Type                           `tfsdk:"expiration_time"`
+	AllowUnverifiedRecipients boolattr.Type                             `tfsdk:"allow_unverified_recipients"`
+	EmailService              objattr.Type[templates.EmailServiceModel] `tfsdk:"email_service"`
+	TextService               objattr.Type[templates.TextServiceModel]  `tfsdk:"text_service"`
+	VoiceService              objattr.Type[templates.VoiceServiceModel] `tfsdk:"voice_service"`
 }
 
 func (m *OTPModel) Values(h *helpers.Handler) map[string]any {
@@ -33,6 +35,7 @@ func (m *OTPModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.GetNot(m.Disabled, data, "enabled")
 	stringattr.Get(m.Domain, data, "domain")
 	durationattr.Get(m.ExpirationTime, data, "expirationTime")
+	boolattr.Get(m.AllowUnverifiedRecipients, data, "allowUnverifiedRecipients")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
 	objattr.Get(m.TextService, data, helpers.RootKey, h)
 	objattr.Get(m.VoiceService, data, helpers.RootKey, h)
@@ -43,6 +46,7 @@ func (m *OTPModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	stringattr.Set(&m.Domain, data, "domain")
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
+	boolattr.Set(&m.AllowUnverifiedRecipients, data, "allowUnverifiedRecipients")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
 	objattr.Set(&m.TextService, data, helpers.RootKey, h)
 	objattr.Set(&m.VoiceService, data, helpers.RootKey, h)
