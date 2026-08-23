@@ -290,3 +290,11 @@ hide_jit_guide
 - Type: `bool`
 
 Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
+
+
+hide_xaa
+--------
+
+- Type: `bool`
+
+Whether to hide the Cross-App Access (XAA) section in the SSO Suite hosted UI.
