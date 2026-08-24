@@ -8,7 +8,6 @@ import (
 )
 
 func TestSCIMConnector(t *testing.T) {
-	t.Skip("Temporarily skipping SCIM test because of backend problems")
 	p := testacc.Project(t)
 	testacc.Run(t,
 		resource.TestStep{
@@ -132,6 +131,39 @@ func TestConnectorsShared(t *testing.T) {
 					"secret":              "Bar",
 					"region":              "us-west-2",
 					"organization_number": "123456789012",
+				},
+			}),
+		},
+	)
+}
+
+func TestHTTPConnectorEngine(t *testing.T) {
+	// Assigning a connector to an engine requires a running engineservice to resolve the
+	// engine, which is not deployed in the acceptance-test environment. The engine_id
+	// round-trip is covered by the unit test in engine_internal_test.go.
+	t.Skip("Temporarily skipping HTTP connector engine test: engineservice is not deployed in the acceptance-test environment")
+
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"http": [
+						{
+							name      = "My HTTP Connector"
+							base_url  = "https://example.com"
+							engine_id = "CIEngineExample"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.http.#": 1,
+				"connectors.http.0": map[string]any{
+					"id":        testacc.AttributeHasPrefix("CI"),
+					"name":      "My HTTP Connector",
+					"base_url":  "https://example.com",
+					"engine_id": "CIEngineExample",
 				},
 			}),
 		},

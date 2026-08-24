@@ -41,6 +41,34 @@ func setConnectorValues(id, name, description *stringattr.Type, data map[string]
 	stringattr.Set(description, data, "description")
 }
 
+// Engine assignment
+
+// executorTypeEngine marks a connector as running on a specific engine rather than locally.
+// The backend keeps the assignment in the top-level executorType/executorId fields of the
+// connector and defaults to a local executor when they are unset, so an empty engine id
+// simply leaves the connector running locally.
+const executorTypeEngine = "engine"
+
+// setConnectorEngine writes the engine assignment onto the connector object as the top-level
+// executor fields the backend expects. An empty engine id emits nothing, so the connector
+// keeps running locally.
+func setConnectorEngine(data map[string]any, engineID stringattr.Type) {
+	if id := engineID.ValueString(); id != "" {
+		data["executorType"] = executorTypeEngine
+		data["executorId"] = id
+	}
+}
+
+// getConnectorEngine reads the top-level executor fields back into the engine_id attribute,
+// leaving it empty for connectors that run locally.
+func getConnectorEngine(data map[string]any, engineID *stringattr.Type) {
+	if data["executorType"] == executorTypeEngine {
+		stringattr.Set(engineID, data, "executorId")
+	} else {
+		*engineID = stringattr.Value("")
+	}
+}
+
 // Connector Utils
 
 func addConnectorReferences[T any, M helpers.NamedModel[T]](h *helpers.Handler, key string, connectors listattr.Type[T]) {
