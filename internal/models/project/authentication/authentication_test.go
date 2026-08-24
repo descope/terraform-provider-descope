@@ -251,17 +251,19 @@ func TestAuthentication(t *testing.T) {
 							hide_jit_guide     = true
 							support_email      = "help@acme.com"
 							show_help_contact  = true
+							login_id_attribute = "email"
 						}
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"authentication.sso.sso_suite_settings": map[string]any{
-					"style_id":          "koko",
-					"hide_saml":         true,
-					"hide_jit_guide":    true,
-					"support_email":     "help@acme.com",
-					"show_help_contact": true,
+					"style_id":           "koko",
+					"hide_saml":          true,
+					"hide_jit_guide":     true,
+					"support_email":      "help@acme.com",
+					"show_help_contact":  true,
+					"login_id_attribute": "email",
 				},
 			}),
 		},
