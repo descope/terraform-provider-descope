@@ -292,9 +292,9 @@ hide_jit_guide
 Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
 
 
-hide_xaa
+show_xaa
 --------
 
 - Type: `bool`
 
-Whether to hide the Cross-App Access (XAA) section in the SSO Suite hosted UI.
+Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.
