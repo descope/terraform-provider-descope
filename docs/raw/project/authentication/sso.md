@@ -256,10 +256,10 @@ Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
 
 
 
-login_id_attribute
-------------------
+oidc_login_id_attribute
+-----------------------
 
 - Type: `string`
 
-The identity provider attribute the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty
-to keep the default, which suggests the `sub` claim.
+The identity provider claim the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty
+to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.
