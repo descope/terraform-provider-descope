@@ -234,6 +234,19 @@ func TestAuthentication(t *testing.T) {
 				authentication = {
 					sso = {
 						sso_suite_settings = {
+							hide_sso  = true
+							hide_scim = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("The attributes hide_sso and hide_scim cannot both be true"),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
 							support_email = "not-an-email"
 						}
 					}
@@ -249,8 +262,11 @@ func TestAuthentication(t *testing.T) {
 							style_id           = "koko"
 							hide_saml          = true
 							hide_jit_guide     = true
+							hide_xaa           = true
 							support_email      = "help@acme.com"
 							show_help_contact  = true
+							hide_role_mapping  = true
+							hide_fga_mapping   = true
 							oidc_login_id_attribute = "email"
 						}
 					}
@@ -261,9 +277,29 @@ func TestAuthentication(t *testing.T) {
 					"style_id":                "koko",
 					"hide_saml":               true,
 					"hide_jit_guide":          true,
+					"hide_xaa":                true,
 					"support_email":           "help@acme.com",
 					"show_help_contact":       true,
+					"hide_role_mapping":       true,
+					"hide_fga_mapping":        true,
 					"oidc_login_id_attribute": "email",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_sso = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_sso":  true,
+					"hide_scim": false,
 				},
 			}),
 		},
@@ -311,6 +347,39 @@ func TestAuthentication(t *testing.T) {
 					"force_domain_verification": false,
 				},
 			}),
+		},
+		resource.TestStep{
+			// The mapping flags are independent: setting the group flag does not
+			// force role/FGA mapping, which keep their own (default false) values.
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_groups_mapping = true
+						}
+					}
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"authentication.sso.sso_suite_settings": map[string]any{
+					"hide_groups_mapping": true,
+					"hide_role_mapping":   false,
+					"hide_fga_mapping":    false,
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					sso = {
+						sso_suite_settings = {
+							hide_groups_mapping = true
+							hide_role_mapping   = true
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile("hide_groups_mapping attribute cannot be combined"),
 		},
 		resource.TestStep{
 			Config: p.Config(`
@@ -378,13 +447,15 @@ func TestAuthentication(t *testing.T) {
 						limit_mapping_to_mandatory_attributes = true
 						block_if_email_domain_mismatch = true
 						mark_email_as_unverified = true
+						allow_merge_users_with_multiple_tenants = true
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso.limit_mapping_to_mandatory_attributes": true,
-				"authentication.sso.block_if_email_domain_mismatch":        true,
-				"authentication.sso.mark_email_as_unverified":              true,
+				"authentication.sso.limit_mapping_to_mandatory_attributes":   true,
+				"authentication.sso.block_if_email_domain_mismatch":          true,
+				"authentication.sso.mark_email_as_unverified":                true,
+				"authentication.sso.allow_merge_users_with_multiple_tenants": true,
 			}),
 		},
 		resource.TestStep{
@@ -393,12 +464,14 @@ func TestAuthentication(t *testing.T) {
 					sso = {
 						block_if_email_domain_mismatch = false
 						mark_email_as_unverified = false
+						allow_merge_users_with_multiple_tenants = false
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
-				"authentication.sso.block_if_email_domain_mismatch": false,
-				"authentication.sso.mark_email_as_unverified":       false,
+				"authentication.sso.block_if_email_domain_mismatch":          false,
+				"authentication.sso.mark_email_as_unverified":                false,
+				"authentication.sso.allow_merge_users_with_multiple_tenants": false,
 			}),
 		},
 		resource.TestStep{

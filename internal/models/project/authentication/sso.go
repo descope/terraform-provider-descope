@@ -13,20 +13,21 @@ import (
 )
 
 var SSOAttributes = map[string]schema.Attribute{
-	"disabled":                              boolattr.Default(false),
-	"merge_users":                           boolattr.Default(false),
-	"redirect_url":                          stringattr.Default(""),
-	"sso_suite_settings":                    objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
-	"allow_duplicate_domains":               boolattr.Default(false),
-	"allow_override_roles":                  boolattr.Default(false),
-	"groups_priority":                       boolattr.Default(false),
-	"mandatory_user_attributes":             listattr.Default[MandatoryUserAttributeModel](MandatoryUserAttributeAttributes),
-	"limit_mapping_to_mandatory_attributes": boolattr.Default(false),
-	"require_sso_domains":                   boolattr.Default(false),
-	"require_groups_attribute_name":         boolattr.Default(false),
-	"block_if_email_domain_mismatch":        boolattr.Default(false),
-	"mark_email_as_unverified":              boolattr.Default(false),
-	"email_service":                         objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
+	"disabled":                                boolattr.Default(false),
+	"merge_users":                             boolattr.Default(false),
+	"redirect_url":                            stringattr.Default(""),
+	"sso_suite_settings":                      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
+	"allow_duplicate_domains":                 boolattr.Default(false),
+	"allow_override_roles":                    boolattr.Default(false),
+	"groups_priority":                         boolattr.Default(false),
+	"mandatory_user_attributes":               listattr.Default[MandatoryUserAttributeModel](MandatoryUserAttributeAttributes),
+	"limit_mapping_to_mandatory_attributes":   boolattr.Default(false),
+	"require_sso_domains":                     boolattr.Default(false),
+	"require_groups_attribute_name":           boolattr.Default(false),
+	"block_if_email_domain_mismatch":          boolattr.Default(false),
+	"mark_email_as_unverified":                boolattr.Default(false),
+	"allow_merge_users_with_multiple_tenants": boolattr.Default(false),
+	"email_service":                           objattr.Optional[templates.EmailServiceModel](templates.EmailServiceAttributes, templates.EmailServiceValidator),
 }
 
 const (
@@ -49,6 +50,7 @@ type SSOModel struct {
 	RequireGroupsAttributeName             boolattr.Type                              `tfsdk:"require_groups_attribute_name"`
 	BlockIfEmailDomainMismatch             boolattr.Type                              `tfsdk:"block_if_email_domain_mismatch"`
 	MarkEmailAsUnverified                  boolattr.Type                              `tfsdk:"mark_email_as_unverified"`
+	AllowMergeUsersWithMultipleTenants     boolattr.Type                              `tfsdk:"allow_merge_users_with_multiple_tenants"`
 	EmailService                           objattr.Type[templates.EmailServiceModel]  `tfsdk:"email_service"`
 }
 
@@ -63,6 +65,7 @@ func (m *SSOModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 	boolattr.Get(m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
 	boolattr.Get(m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
+	boolattr.Get(m.AllowMergeUsersWithMultipleTenants, data, "allowMergeUsersWithMultipleTenants")
 
 	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
@@ -82,6 +85,7 @@ func (m *SSOModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 	boolattr.Set(&m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
 	boolattr.Set(&m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
+	boolattr.Set(&m.AllowMergeUsersWithMultipleTenants, data, "allowMergeUsersWithMultipleTenants")
 
 	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
@@ -123,8 +127,11 @@ var SSOSuiteValidator = objattr.NewValidator[SSOSuiteModel]("must have a valid c
 
 var SSOSuiteAttributes = map[string]schema.Attribute{
 	"style_id":                  stringattr.Default(""),
+	"hide_sso":                  boolattr.Default(false),
 	"hide_scim":                 boolattr.Default(false),
 	"hide_groups_mapping":       boolattr.Default(false),
+	"hide_role_mapping":         boolattr.Default(false),
+	"hide_fga_mapping":          boolattr.Default(false),
 	"hide_domains":              boolattr.Default(false),
 	"hide_saml":                 boolattr.Default(false),
 	"hide_oidc":                 boolattr.Default(false),
@@ -132,13 +139,17 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"support_email":             stringattr.Default("", stringattr.EmailValidator),
 	"show_help_contact":         boolattr.Default(false),
 	"hide_jit_guide":            boolattr.Default(false),
+	"hide_xaa":                  boolattr.Default(false),
 	"oidc_login_id_attribute":   stringattr.Default(""),
 }
 
 type SSOSuiteModel struct {
 	StyleID                 stringattr.Type `tfsdk:"style_id"`
+	HideSSO                 boolattr.Type   `tfsdk:"hide_sso"`
 	HideSCIM                boolattr.Type   `tfsdk:"hide_scim"`
 	HideGroupsMapping       boolattr.Type   `tfsdk:"hide_groups_mapping"`
+	HideRoleMapping         boolattr.Type   `tfsdk:"hide_role_mapping"`
+	HideFgaMapping          boolattr.Type   `tfsdk:"hide_fga_mapping"`
 	HideDomains             boolattr.Type   `tfsdk:"hide_domains"`
 	HideSAML                boolattr.Type   `tfsdk:"hide_saml"`
 	HideOIDC                boolattr.Type   `tfsdk:"hide_oidc"`
@@ -146,13 +157,17 @@ type SSOSuiteModel struct {
 	SupportEmail            stringattr.Type `tfsdk:"support_email"`
 	ShowHelpContact         boolattr.Type   `tfsdk:"show_help_contact"`
 	HideJitGuide            boolattr.Type   `tfsdk:"hide_jit_guide"`
+	HideXAA                 boolattr.Type   `tfsdk:"hide_xaa"`
 	OIDCLoginIDAttribute    stringattr.Type `tfsdk:"oidc_login_id_attribute"`
 }
 
 var SSOSuiteDefault = &SSOSuiteModel{
 	StyleID:                 stringattr.Value(""),
+	HideSSO:                 boolattr.Value(false),
 	HideSCIM:                boolattr.Value(false),
 	HideGroupsMapping:       boolattr.Value(false),
+	HideRoleMapping:         boolattr.Value(false),
+	HideFgaMapping:          boolattr.Value(false),
 	HideDomains:             boolattr.Value(false),
 	HideSAML:                boolattr.Value(false),
 	HideOIDC:                boolattr.Value(false),
@@ -160,14 +175,18 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	SupportEmail:            stringattr.Value(""),
 	ShowHelpContact:         boolattr.Value(false),
 	HideJitGuide:            boolattr.Value(false),
+	HideXAA:                 boolattr.Value(false),
 	OIDCLoginIDAttribute:    stringattr.Value(""),
 }
 
 func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.StyleID, data, "ssoSuiteStyleId")
+	boolattr.Get(m.HideSSO, data, "hideSsoSuiteSso")
 	boolattr.Get(m.HideSCIM, data, "hideSsoSuiteScim")
 	boolattr.Get(m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
+	boolattr.Get(m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
+	boolattr.Get(m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
 	boolattr.Get(m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Get(m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Get(m.HideOIDC, data, "hideSsoSuiteOidc")
@@ -175,14 +194,18 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.SupportEmail, data, "ssoSuiteSupportEmail")
 	boolattr.Get(m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Get(m.HideJitGuide, data, "hideSsoSuiteJitGuide")
+	boolattr.Get(m.HideXAA, data, "hideSsoSuiteXaa")
 	stringattr.Get(m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
 	return data
 }
 
 func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.StyleID, data, "ssoSuiteStyleId")
+	boolattr.Set(&m.HideSSO, data, "hideSsoSuiteSso")
 	boolattr.Set(&m.HideSCIM, data, "hideSsoSuiteScim")
 	boolattr.Set(&m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
+	boolattr.Set(&m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
+	boolattr.Set(&m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
 	boolattr.Set(&m.HideDomains, data, "hideSsoSuiteDomains")
 	boolattr.Set(&m.HideSAML, data, "hideSsoSuiteSaml")
 	boolattr.Set(&m.HideOIDC, data, "hideSsoSuiteOidc")
@@ -190,10 +213,23 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.SupportEmail, data, "ssoSuiteSupportEmail")
 	boolattr.Set(&m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Set(&m.HideJitGuide, data, "hideSsoSuiteJitGuide")
+	boolattr.Set(&m.HideXAA, data, "hideSsoSuiteXaa")
 	stringattr.Set(&m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
+	if !helpers.HasUnknownValues(m.HideGroupsMapping, m.HideRoleMapping, m.HideFgaMapping) &&
+		!m.HideGroupsMapping.IsNull() && (!m.HideRoleMapping.IsNull() || !m.HideFgaMapping.IsNull()) {
+		h.Conflict("The hide_groups_mapping attribute cannot be combined with hide_role_mapping or hide_fga_mapping, use either hide_groups_mapping or the hide_role_mapping and hide_fga_mapping pair")
+	}
+
+	// Placed before the hide_saml/hide_oidc block below, whose early return on unknown values would
+	// otherwise skip this check. Descope rejects the pair server-side, so catching it at plan time
+	// turns an opaque 400 during apply into a normal conflict.
+	if !helpers.HasUnknownValues(m.HideSSO, m.HideSCIM) && m.HideSSO.ValueBool() && m.HideSCIM.ValueBool() {
+		h.Invalid("The attributes hide_sso and hide_scim cannot both be true, the SSO Suite must offer either SSO or SCIM configuration")
+	}
+
 	if helpers.HasUnknownValues(m.HideSAML, m.HideOIDC) {
 		return
 	} else if m.HideSAML.ValueBool() && m.HideOIDC.ValueBool() {

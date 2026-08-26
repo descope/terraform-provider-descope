@@ -124,6 +124,15 @@ Whether to mark the user's email as unverified when logging in via SSO.
 
 
 
+allow_merge_users_with_multiple_tenants
+---------------------------------------
+
+- Type: `bool`
+
+Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.
+
+
+
 email_service
 -------------
 
@@ -175,6 +184,16 @@ the console for it to be used.
 
 
 
+hide_sso
+--------
+
+- Type: `bool`
+
+Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for
+tenants that only need to set up SCIM provisioning.
+
+
+
 hide_scim
 ---------
 
@@ -190,6 +209,24 @@ hide_groups_mapping
 - Type: `bool`
 
 Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
+
+
+
+hide_role_mapping
+-----------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.
+
+
+
+hide_fga_mapping
+----------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.
 
 
 
@@ -253,6 +290,14 @@ hide_jit_guide
 - Type: `bool`
 
 Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
+
+
+hide_xaa
+--------
+
+- Type: `bool`
+
+Whether to hide the Cross-App Access (XAA) section in the SSO Suite hosted UI.
 
 
 

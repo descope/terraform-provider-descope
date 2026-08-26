@@ -99,6 +99,7 @@ var docsInboundApp = map[string]string{
 	"audience_whitelist": "A set of allowed custom `aud` claim values that the inbound app can request via the `resource` " +
 		"parameter, per RFC 8707.",
 	"force_add_all_authorization_info": "When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.",
+	"force_dpop":                       "Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.",
 	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
 		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
 	"non_confidential_client": "Whether this is a public (non-confidential) client that does not use a client secret. Changing this " +
@@ -206,6 +207,11 @@ var docsOIDC = map[string]string{
 	"claims": "A list of supported claims. e.g. `sub`, `email`, `exp`.",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces " +
 		"the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"backchannel_logout_url": "The URL that Descope notifies with a logout token when the user's session ends, " +
+		"as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) " +
+		"specification. Leave empty to disable back-channel logout notifications for this application.",
+	"custom_idp_initiated_login_page_url": "A custom login page URL to redirect users to on IdP-initiated login flows, " +
+		"instead of the default login page.",
 	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is computed " +
 		"by the server; when set, it must be unique within the project. Can only be set when the application is " +
 		"created, and attempting to change it on an existing application will fail.",
@@ -222,9 +228,12 @@ var docsOIDC = map[string]string{
 	"jwt_bearer_disabled":         "Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this application.",
 	"device_code_disabled":        "Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this application.",
 	"force_pkce":                  "When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.",
-	"default_audience":            "Controls the default `aud` claim of tokens issued for this application. One of `\"projectId\"` (the project ID only), `\"clientId\"` (the dedicated client ID only), or `\"\"` (default — both). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.",
-	"permissions":                 "",
-	"roles":                       "",
+	"default_audience":            "Controls the default `aud` claim of tokens issued for this application. One of `\"projectId\"` (the project ID only), `\"clientId\"` (the dedicated client ID only), `\"appId\"` (the application ID only), `\"empty\"` (no `aud` claim at all), or `\"\"` (default — both the project ID and the client ID). Only applies to modern apps that set a `client_type`; legacy apps always use the project ID, so the empty default leaves their behavior unchanged.",
+	"trusted_apps_audience": "Controls the audience values appended to the issued token's `aud` claim for trusted sibling " +
+		"applications. One of `\"projectId\"`, `\"clientId\"`, `\"appId\"`, `\"empty\"` (add none), or `\"\"` " +
+		"(default — both the project ID and the client ID). Independent of `default_audience`.",
+	"permissions": "",
+	"roles":       "",
 }
 
 var docsSAML = map[string]string{
@@ -525,17 +534,18 @@ var docsSSO = map[string]string{
 	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
 	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
 		"in tenant level settings or SDK/API call, they will override this value.",
-	"sso_suite_settings":                    "Configuration block for the SSO Suite.",
-	"allow_duplicate_domains":               "Whether to allow duplicate SSO domains across tenants.",
-	"allow_override_roles":                  "Whether to allow overriding user's roles with SSO related roles.",
-	"groups_priority":                       "Whether to enable groups priority.",
-	"mandatory_user_attributes":             "Define the required Descope attributes that must be populated when receiving SSO information.",
-	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
-	"require_sso_domains":                   "When configuring SSO an SSO domain must be specified.",
-	"require_groups_attribute_name":         "When configuring SSO the groups attribute name must be specified.",
-	"block_if_email_domain_mismatch":        "Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.",
-	"mark_email_as_unverified":              "Whether to mark the user's email as unverified when logging in via SSO.",
-	"email_service":                         "Settings related to sending SSO invite emails as part of the SSO feature.",
+	"sso_suite_settings":                      "Configuration block for the SSO Suite.",
+	"allow_duplicate_domains":                 "Whether to allow duplicate SSO domains across tenants.",
+	"allow_override_roles":                    "Whether to allow overriding user's roles with SSO related roles.",
+	"groups_priority":                         "Whether to enable groups priority.",
+	"mandatory_user_attributes":               "Define the required Descope attributes that must be populated when receiving SSO information.",
+	"limit_mapping_to_mandatory_attributes":   "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
+	"require_sso_domains":                     "When configuring SSO an SSO domain must be specified.",
+	"require_groups_attribute_name":           "When configuring SSO the groups attribute name must be specified.",
+	"block_if_email_domain_mismatch":          "Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.",
+	"mark_email_as_unverified":                "Whether to mark the user's email as unverified when logging in via SSO.",
+	"allow_merge_users_with_multiple_tenants": "Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.",
+	"email_service":                           "Settings related to sending SSO invite emails as part of the SSO feature.",
 }
 
 var docsMandatoryUserAttribute = map[string]string{
@@ -546,8 +556,12 @@ var docsMandatoryUserAttribute = map[string]string{
 var docsSSOSuite = map[string]string{
 	"style_id": "Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in " +
 		"the console for it to be used.",
+	"hide_sso": "Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for " +
+		"tenants that only need to set up SCIM provisioning.",
 	"hide_scim":                 "Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.",
 	"hide_groups_mapping":       "Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.",
+	"hide_role_mapping":         "Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.",
+	"hide_fga_mapping":          "Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.",
 	"hide_domains":              "Setting this to `true` will hide the domains configuration section in the SSO Suite interface.",
 	"hide_saml":                 "Setting this to `true` will hide the SAML configuration option.",
 	"hide_oidc":                 "Setting this to `true` will hide the OIDC configuration option.",
@@ -555,6 +569,7 @@ var docsSSOSuite = map[string]string{
 	"support_email":             "Email address shown to end-users in the SSO Suite UI as a support contact.",
 	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
 	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
+	"hide_xaa":                  "Whether to hide the Cross-App Access (XAA) section in the SSO Suite hosted UI.",
 	"oidc_login_id_attribute": "The identity provider claim the SSO Suite suggests as the Login ID when a tenant " +
 		"configures OIDC. Leave empty to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.",
 }
@@ -643,6 +658,8 @@ var docsAuditWebhook = map[string]string{
 	"insecure": "Will ignore certificate errors raised by the client",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsAWSS3 = map[string]string{
@@ -660,6 +677,8 @@ var docsAWSS3 = map[string]string{
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsAWSSESEmailValidation = map[string]string{
@@ -673,6 +692,8 @@ var docsAWSSESEmailValidation = map[string]string{
 	"role_arn":    "The Amazon Resource Name (ARN) of the role to assume.",
 	"external_id": "The external ID to use when assuming the role.",
 	"region":      "The AWS region to which this client will send requests. (e.g. us-east-1.)",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsAWSTranslate = map[string]string{
@@ -683,6 +704,8 @@ var docsAWSTranslate = map[string]string{
 	"session_token": "(Optional) A security or session token to use with these credentials. Usually " +
 		"present for temporary credentials.",
 	"region": "The AWS region to which this client will send requests. (e.g. us-east-1.)",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsBitsight = map[string]string{
@@ -871,6 +894,8 @@ var docsDatadog = map[string]string{
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsDevRevGrow = map[string]string{
@@ -952,6 +977,8 @@ var docsFirebaseAdmin = map[string]string{
 	"name":            "A custom name for your connector.",
 	"description":     "A description of what your connector is used for.",
 	"service_account": "The Firebase service account JSON.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsForter = map[string]string{
@@ -1011,6 +1038,8 @@ var docsGoogleCloudLogging = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsGoogleCloudTranslation = map[string]string{
@@ -1018,6 +1047,8 @@ var docsGoogleCloudTranslation = map[string]string{
 	"description":          "A description of what your connector is used for.",
 	"project_id":           "The Google Cloud project ID where the Google Cloud Translation is managed.",
 	"service_account_json": "Service Account JSON associated with the current project.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsGoogleMapsPlaces = map[string]string{
@@ -1063,6 +1094,8 @@ var docsHCaptcha = map[string]string{
 var docsHIBP = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsHTTP = map[string]string{
@@ -1101,6 +1134,8 @@ var docsHTTP = map[string]string{
 		"The context will have a \"body\" attribute, a \"headers\" attribute, and a " +
 		"\"statusCode\" attribute. See more details in the help guide",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsHubSpot = map[string]string{
@@ -1231,6 +1266,8 @@ var docsPingDirectory = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"host":        "PingDirectory's REST API host.",
 	"port":        "PingDirectory's REST API port.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsPostmark = map[string]string{
@@ -1284,6 +1321,8 @@ var docsRecaptchaEnterprise = map[string]string{
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 		"the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 		"and 0 is a bot.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsRecaptchaV2 = map[string]string{
@@ -1305,6 +1344,8 @@ var docsRekognition = map[string]string{
 	"secret_access_key": "The AWS secret access key",
 	"collection_id": "The collection to store registered users in. Should match `[a-zA-Z0-9_.-]+` " +
 		"pattern. Changing this will cause losing existing users.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsRNDReassigned = map[string]string{
@@ -1323,6 +1364,8 @@ var docsSalesforce = map[string]string{
 	"client_id":     "The consumer key of the connected app.",
 	"client_secret": "The consumer secret of the connected app.",
 	"version":       "REST API Version.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSalesforceMarketingCloud = map[string]string{
@@ -1333,6 +1376,8 @@ var docsSalesforceMarketingCloud = map[string]string{
 	"client_secret": "Client secret issued when you create the API integration in Installed Packages.",
 	"scope":         "Space-separated list of data-access permissions for your connector.",
 	"account_id":    "Account identifier, or MID, of the target business unit.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSardine = map[string]string{
@@ -1409,9 +1454,10 @@ var docsAuditFilterField = map[string]string{
 }
 
 var docsHTTPAuthField = map[string]string{
-	"bearer_token": "Bearer token for HTTP authentication.",
-	"basic":        "Basic authentication credentials (username and password).",
-	"api_key":      "API key authentication configuration.",
+	"bearer_token":              "Bearer token for HTTP authentication.",
+	"basic":                     "Basic authentication credentials (username and password).",
+	"api_key":                   "API key authentication configuration.",
+	"oauth2_client_credentials": "OAuth 2.0 client credentials configuration used to fetch an access token before making requests.",
 }
 
 var docsHTTPAuthBasicField = map[string]string{
@@ -1424,10 +1470,22 @@ var docsHTTPAuthAPIKeyField = map[string]string{
 	"token": "The API secret.",
 }
 
+var docsHTTPAuthOAuth2ClientCredentialsField = map[string]string{
+	"client_id":     "The OAuth 2.0 client ID used to authenticate against the token endpoint.",
+	"client_secret": "The OAuth 2.0 client secret used to authenticate against the token endpoint.",
+	"auth_url":      "The token endpoint URL used to request an access token.",
+	"auth_style": "How the client credentials are sent to the token endpoint. Either `header` to send them in the " +
+		"`Authorization` header, or `body` to send them in the request body.",
+	"scopes":                "A space-separated list of OAuth scopes to request when fetching the access token.",
+	"token_request_headers": "Additional headers to include in the token request sent to the token endpoint.",
+}
+
 var docsSlack = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
 	"token":       "The OAuth token for Slack's Bot User, used to authenticate API requests.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSmartling = map[string]string{
@@ -1473,13 +1531,18 @@ var docsSnowflake = map[string]string{
 		"empty) to write events according to the default Descope cycle.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSNS = map[string]string{
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"auth_type":     "The authentication type to use.",
 	"access_key_id": "AWS Access key ID.",
 	"secret":        "AWS Secret Access Key.",
+	"role_arn":      "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id":   "The external ID to use when assuming the role.",
 	"region":        "AWS region to send requests to (e.g. `us-west-2`).",
 	"endpoint":      "An optional endpoint URL (hostname only or fully qualified URI).",
 	"origination_number": "An optional phone number from which the text messages are going to be sent. Make sure it " +
@@ -1502,6 +1565,8 @@ var docsSplunk = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
 var docsSQL = map[string]string{
@@ -1711,6 +1776,9 @@ var docsSettings = map[string]string{
 	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same login ID in " +
 		"Tenant A and Tenant B will be treated as separate identities with isolated credentials, " +
 		"sessions, and MFA state.",
+	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
+		"your website. This modifies the security headers that typically prevent the page from " +
+		"being embedded.",
 	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
 		"refresh token itself is also updated to a new one.",
 	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
