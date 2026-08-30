@@ -569,7 +569,7 @@ var docsSSOSuite = map[string]string{
 	"support_email":             "Email address shown to end-users in the SSO Suite UI as a support contact.",
 	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
 	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
-	"hide_xaa":                  "Whether to hide the Cross-App Access (XAA) section in the SSO Suite hosted UI.",
+	"show_xaa":                  "Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.",
 }
 
 var docsTOTP = map[string]string{

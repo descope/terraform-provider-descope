@@ -1658,8 +1658,8 @@ Optional:
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
 - `hide_sso` (Boolean) Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for tenants that only need to set up SCIM provisioning.
-- `hide_xaa` (Boolean) Whether to hide the Cross-App Access (XAA) section in the SSO Suite hosted UI.
 - `show_help_contact` (Boolean) Whether to display the help/support contact link in the SSO Suite UI.
+- `show_xaa` (Boolean) Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.
 - `style_id` (String) Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in the console for it to be used.
 - `support_email` (String) Email address shown to end-users in the SSO Suite UI as a support contact.
 

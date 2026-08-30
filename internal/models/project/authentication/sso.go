@@ -139,7 +139,7 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"support_email":             stringattr.Default("", stringattr.EmailValidator),
 	"show_help_contact":         boolattr.Default(false),
 	"hide_jit_guide":            boolattr.Default(false),
-	"hide_xaa":                  boolattr.Default(false),
+	"show_xaa":                  boolattr.Default(false),
 }
 
 type SSOSuiteModel struct {
@@ -156,7 +156,7 @@ type SSOSuiteModel struct {
 	SupportEmail            stringattr.Type `tfsdk:"support_email"`
 	ShowHelpContact         boolattr.Type   `tfsdk:"show_help_contact"`
 	HideJitGuide            boolattr.Type   `tfsdk:"hide_jit_guide"`
-	HideXAA                 boolattr.Type   `tfsdk:"hide_xaa"`
+	ShowXAA                 boolattr.Type   `tfsdk:"show_xaa"`
 }
 
 var SSOSuiteDefault = &SSOSuiteModel{
@@ -173,7 +173,7 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	SupportEmail:            stringattr.Value(""),
 	ShowHelpContact:         boolattr.Value(false),
 	HideJitGuide:            boolattr.Value(false),
-	HideXAA:                 boolattr.Value(false),
+	ShowXAA:                 boolattr.Value(false),
 }
 
 func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
@@ -191,7 +191,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.SupportEmail, data, "ssoSuiteSupportEmail")
 	boolattr.Get(m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Get(m.HideJitGuide, data, "hideSsoSuiteJitGuide")
-	boolattr.Get(m.HideXAA, data, "hideSsoSuiteXaa")
+	boolattr.Get(m.ShowXAA, data, "showSsoSuiteXaa")
 	return data
 }
 
@@ -209,7 +209,7 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.SupportEmail, data, "ssoSuiteSupportEmail")
 	boolattr.Set(&m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Set(&m.HideJitGuide, data, "hideSsoSuiteJitGuide")
-	boolattr.Set(&m.HideXAA, data, "hideSsoSuiteXaa")
+	boolattr.Set(&m.ShowXAA, data, "showSsoSuiteXaa")
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
