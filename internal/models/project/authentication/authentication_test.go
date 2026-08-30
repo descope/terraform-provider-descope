@@ -160,6 +160,21 @@ func TestAuthentication(t *testing.T) {
 			Config: p.Config(`
 				authentication = {
 					oauth = {
+						system = {
+							google = {
+								allowed_grant_types = ["authorization_code"]
+								scopes = ["openid", "email", "profile"]
+							}
+						}
+					}
+				}
+			`),
+			ExpectError: regexp.MustCompile(`Set a client_id and client_secret`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				authentication = {
+					oauth = {
 						custom = {
 							mobile_ios = {
 								allowed_grant_types = ["authorization_code", "implicit"]
