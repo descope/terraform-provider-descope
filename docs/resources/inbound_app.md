@@ -29,6 +29,7 @@ description: |-
 - `client_secret` (String, Sensitive) The client secret for authenticating this inbound app. This value is generated automatically and cannot be retrieved after the resource is created. Store this value securely.
 - `connections_scopes` (Attributes List) A list of connection scopes that the inbound app can request. Connection scopes provide the app with the ability to access external tokens based on the mapped scopes. (see [below for nested schema](#nestedatt--connections_scopes))
 - `default_audience` (String) The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID as the audience, `clientId` to set the app's client ID, or leave empty to include both.
+- `deletion_protection` (Boolean) Protects the inbound app from being accidentally destroyed or replaced. Destroying or replacing an inbound app issues a new client ID and client secret, breaking any integrations that rely on the existing ones, so inbound apps are protected by default. To allow the resource to be destroyed or replaced, for example in ephemeral test environments, set this attribute to `false` and apply the change first.
 - `description` (String) A description for the inbound app.
 - `force_add_all_authorization_info` (Boolean) When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.
 - `force_dpop` (Boolean) Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.

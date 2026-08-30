@@ -5,4 +5,5 @@ type Model struct {
 	Package   string
 	Fields    []*Field
 	Generated bool
+	DocsVar   string
 }

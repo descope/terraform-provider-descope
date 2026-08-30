@@ -1,0 +1,47 @@
+{
+  "id": "twilio-verify",
+  "name": "Twilio Verify",
+  "extProvider": true,
+  "description": "Send verification codes through the Twilio Verify service.",
+  "fields": [
+    {
+      "name": "accountSid",
+      "description": "The Twilio account SID.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "verifyServiceSid",
+      "description": "The Twilio Verify service SID used to send verification codes.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "from",
+      "description": "The sender shown as the origin of the verification messages, where supported.",
+      "type": "string"
+    },
+    {
+      "name": "authToken",
+      "description": "The Twilio auth token. Set either this or an API key and secret pair.",
+      "type": "secret"
+    },
+    {
+      "name": "apiKey",
+      "description": "The Twilio API key. Set together with an API secret instead of an auth token.",
+      "type": "secret"
+    },
+    {
+      "name": "apiSecret",
+      "description": "The Twilio API secret. Set together with an API key instead of an auth token.",
+      "type": "secret"
+    }
+  ],
+  "extDiscriminators": [
+    {
+      "name": "selectedAuthProp",
+      "cases": [{ "field": "authToken", "value": "methodAuthToken" }],
+      "default": "methodApiSecret"
+    }
+  ]
+}

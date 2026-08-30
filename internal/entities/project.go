@@ -11,7 +11,7 @@ import (
 )
 
 var ProjectSchema = schema.Schema{
-	MarkdownDescription: "Manages a Descope project's full configuration: authentication methods, flows, roles, permissions, connectors, applications, JWT templates, and more.",
+	MarkdownDescription: "Manages a Descope project and its core attributes. The project's configuration is managed with the standalone descope resources that reference it by ID.",
 	Attributes:          project.ProjectAttributes,
 }
 
@@ -35,8 +35,6 @@ func (e *ProjectEntity) Save(ctx context.Context, target entityTarget) {
 // Returns a representation of the project entity data for sending in an infra API request.
 func (e *ProjectEntity) Values(ctx context.Context) map[string]any {
 	handler := helpers.NewHandler(ctx, e.Diagnostics)
-	// collect all existing references from the plan
-	e.Model.CollectReferences(handler)
 	// convert the model to a backend request format
 	values := e.Model.Values(handler)
 	return values
@@ -45,14 +43,8 @@ func (e *ProjectEntity) Values(ctx context.Context) map[string]any {
 // Updates the project entity with the data received in an infra API response.
 func (e *ProjectEntity) SetValues(ctx context.Context, data map[string]any) {
 	handler := helpers.NewHandler(ctx, e.Diagnostics)
-	// collect all existing references from the plan or state
-	e.Model.CollectReferences(handler)
 	// update the model with the new values from the backend response
 	e.Model.SetValues(handler, data)
-	// collect the references again after the model has been updated
-	e.Model.CollectReferences(handler)
-	// apply the references to replace any server IDs
-	e.Model.UpdateReferences(handler)
 }
 
 // Returns the projectID value from the model.

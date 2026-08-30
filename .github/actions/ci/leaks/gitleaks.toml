@@ -650,8 +650,12 @@ paths = [
     '''gitleaks.toml''',
     '''(.*?)(jpg|gif|doc|pdf|bin|svg|socket)$''',
     '''(go.mod|go.sum)$''',
+	"plans/",
 	"vendor/",
 	".vscode/targets.log",
 	"connectors_test.go",
 	"applications_test.go",
+	"oauthprovider_test.go",
+	"sessionmigration_test.go",
+	'''internal/models/connectors/.*_test\.go''',
 ]
