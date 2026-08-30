@@ -17,7 +17,8 @@ var EngineAttributes = map[string]schema.Attribute{
 }
 
 var Schema = schema.Schema{
-	Attributes: EngineAttributes,
+	MarkdownDescription: "Manages a Descope Engine, a self-hosted agent that runs connector actions inside your own network.",
+	Attributes:          EngineAttributes,
 }
 
 type EngineModel struct {

@@ -21,6 +21,9 @@ ifneq ($(wildcard $(env)),)
   ifeq ($(DESCOPE_TESTACC_PREFIX),)
     export DESCOPE_TESTACC_PREFIX = $(shell cat $(env) | grep DESCOPE_TESTACC_PREFIX | sed 's/^.*=//')
   endif
+  ifeq ($(DESCOPE_TESTACC_PROJECT_ID),)
+    export DESCOPE_TESTACC_PROJECT_ID = $(shell cat $(env) | grep DESCOPE_TESTACC_PROJECT_ID | sed 's/^.*=//')
+  endif
 endif
 
 help: Makefile ## this help message
@@ -37,7 +40,7 @@ test: ensure-go ## runs unit tests
 	go test -v -timeout 30m $(flags) ./...
 
 testacc: ensure-go ## runs acceptance and unit tests
-	TF_ACC=1 go test -v -timeout 120m $(flags) ./...
+	TF_ACC=1 go test -v -p 4 -timeout 120m $(flags) ./...
 
 testcoverage: ensure-go ensure-courtney ## runs all tests and computes test coverage
 	TF_ACC=1 go test -v -race -timeout 120m -coverpkg=./... -coverprofile=coverage.raw -covermode=atomic ./...
@@ -50,8 +53,14 @@ testcoverage: ensure-go ensure-courtney ## runs all tests and computes test cove
 testcleanup: ensure-descope ensure-jq ## cleans up redundant projects after running tests
 	descope project list --json | jq -r --arg prefix "$${DESCOPE_TESTACC_PREFIX:-testacc-local}-" '.projects[]? | select(.name | startswith($$prefix)) | .id' | xargs -r -I {} descope project delete {} --force
 
+sweep: ensure-go ## removes leftover testacc- entities from the shared test project
+	go test ./tools/testacc -v -timeout 10m -sweep=all
+
 terragen: ensure-go ## runs the terragen tool to generate code and model documentation
 	go run tools/terragen/main.go $(flags)
+
+tfexport: ensure-go ## runs the tfexport tool to export a project's configuration as Terraform files
+	go run ./tools/tfexport $(flags)
 
 docs: ensure-go ## runs tfplugindocs to generate documentation for the registry 
 	go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@v0.19.4 generate -provider-name descope

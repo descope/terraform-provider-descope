@@ -122,6 +122,9 @@ DESCOPE_BASE_URL=https://api.descope.com  # optional for testacc
 DESCOPE_TEMPLATES_PATH=...                # required for terragen
 ```
 
+Set `TF_UNSAFE_LOGS` to any non-empty value to log request and response payloads when debugging.
+The payloads may contain secrets, so this is deliberately separate from the `TF_LOG` variables.
+
 ## Sources
 
 ### Project Structure
@@ -140,8 +143,6 @@ Key interfaces reside in `internal/models/helpers/model.go` and are used by the 
 - `Model[T]`: Basic model with Values/SetValues methods for API serialization
 - `NamedModel[T]`: Models with name/ID matching for friendly diffs
 - `KeyedModel[T]`: Models with key matching for preserving IDs
-- `CollectReferencesModel[T]`: Models that reference other models
-- `UpdateReferencesModel[T]`: Models needing post-creation reference updates
 
 ### Model Implementation
 
@@ -151,15 +152,6 @@ Model implementations follow a consistent pattern. For example, for a model `Foo
 - `FooModel`: A Go struct that's instantiated by Terraform according to the schema
 - `Values`: A function on `FooModel` that returns a `map[string]any` representation of the model
 - `SetValues`: A function on `FooModel` that updates its attributes with the server response
-
-### Reference Resolution System
-
-The provider tracks references between models:
-
-1. `CollectReferences()` - Gathers existing model references
-2. `Values()` - Converts model to API format using collected references  
-3. `SetValues()` - Updates model from API response
-4. `UpdateReferences()` - Resolves server IDs back to local references
 
 ### Connector System
 

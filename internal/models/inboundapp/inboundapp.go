@@ -1,6 +1,8 @@
 package inboundapp
 
 import (
+	"context"
+
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
@@ -16,6 +18,7 @@ import (
 var InboundAppAttributes = map[string]schema.Attribute{
 	"id":                               stringattr.Identifier(),
 	"project_id":                       stringattr.Required(stringplanmodifier.RequiresReplace()),
+	"deletion_protection":              boolattr.Tristate(),
 	"name":                             stringattr.Required(),
 	"description":                      stringattr.Default(""),
 	"logo_url":                         stringattr.Optional(),
@@ -24,7 +27,7 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"permissions_scopes":               listattr.Default[ApplicationScopeModel](ApplicationScopeAttributes),
 	"attributes_scopes":                listattr.Default[ApplicationScopeModel](ApplicationScopeAttributes),
 	"connections_scopes":               listattr.Default[ApplicationScopeModel](ApplicationScopeAttributes),
-	"session_settings":                 objattr.Optional[SessionSettingsModel](SessionSettingsAttributes, SessionSettingsValidator),
+	"session_settings":                 objattr.Optional[SessionSettingsModel](SessionSettingsAttributes),
 	"audience_whitelist":               strsetattr.Default(),
 	"force_add_all_authorization_info": boolattr.Default(false),
 	"force_dpop":                       boolattr.Default(false),
@@ -42,6 +45,7 @@ var Schema = schema.Schema{
 type InboundAppModel struct {
 	ID                           stringattr.Type                      `tfsdk:"id"`
 	ProjectID                    stringattr.Type                      `tfsdk:"project_id"`
+	DeletionProtection           boolattr.Type                        `tfsdk:"deletion_protection"`
 	Name                         stringattr.Type                      `tfsdk:"name"`
 	Description                  stringattr.Type                      `tfsdk:"description"`
 	LogoUrl                      stringattr.Type                      `tfsdk:"logo_url"`
@@ -101,6 +105,18 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.ClientId, data, "clientId")
 	stringattr.Set(&m.ClientSecret, data, "clientSecret")
 	boolattr.Set(&m.ForcePkce, data, "forcePkce")
+}
+
+// The backend silently discards a client_secret given for a public client, so without this the apply would fail with an inconsistent-result error.
+func (m *InboundAppModel) Validate(h *helpers.Handler) {
+	if m.ClientSecret.ValueString() != "" && m.NonConfidentialClient.ValueBool() {
+		h.Conflict("The client_secret field cannot be used when non_confidential_client is set to true, as public clients do not have a secret")
+	}
+}
+
+// Protected by default because replacing an inbound app issues a new client ID and secret.
+func (m *InboundAppModel) DeletionProtectionDefault(_ context.Context) bool {
+	return true
 }
 
 func (m *InboundAppModel) GetID() stringattr.Type {

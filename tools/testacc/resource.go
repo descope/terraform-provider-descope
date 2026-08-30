@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"maps"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"testing"
@@ -14,6 +15,14 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 	"github.com/stretchr/testify/require"
 )
+
+func ProjectID(t *testing.T) string {
+	projectID := os.Getenv("DESCOPE_TESTACC_PROJECT_ID")
+	if projectID == "" && os.Getenv("TF_ACC") != "" {
+		t.Fatal("Expected the DESCOPE_TESTACC_PROJECT_ID environment variable to be set to the ID of an existing project for running acceptance tests")
+	}
+	return projectID
+}
 
 func Project(t *testing.T) *Resource {
 	return newResource(t, "project")
@@ -37,6 +46,146 @@ func InboundApp(t *testing.T) *Resource {
 
 func Engine(t *testing.T) *Resource {
 	return newResource(t, "engine")
+}
+
+func OAuthSettings(t *testing.T) *Resource {
+	return newResource(t, "oauth_settings")
+}
+
+func OAuthProvider(t *testing.T) *Resource {
+	return newResource(t, "oauth_provider")
+}
+
+func UserAttribute(t *testing.T) *Resource {
+	return newResource(t, "user_attribute")
+}
+
+func TenantAttribute(t *testing.T) *Resource {
+	return newResource(t, "tenant_attribute")
+}
+
+func AccessKeyAttribute(t *testing.T) *Resource {
+	return newResource(t, "access_key_attribute")
+}
+
+func PasskeySettings(t *testing.T) *Resource {
+	return newResource(t, "passkey_settings")
+}
+
+func TOTPSettings(t *testing.T) *Resource {
+	return newResource(t, "totp_settings")
+}
+
+func AdminPortal(t *testing.T) *Resource {
+	return newResource(t, "admin_portal")
+}
+
+func MagicLinkSettings(t *testing.T) *Resource {
+	return newResource(t, "magiclink_settings")
+}
+
+func InviteSettings(t *testing.T) *Resource {
+	return newResource(t, "invite_settings")
+}
+
+func ProjectSettings(t *testing.T) *Resource {
+	return newResource(t, "project_settings")
+}
+
+func SessionSettings(t *testing.T) *Resource {
+	return newResource(t, "session_settings")
+}
+
+func SessionMigration(t *testing.T) *Resource {
+	return newResource(t, "session_migration")
+}
+
+func OTPSettings(t *testing.T) *Resource {
+	return newResource(t, "otp_settings")
+}
+
+func EnchantedLinkSettings(t *testing.T) *Resource {
+	return newResource(t, "enchantedlink_settings")
+}
+
+func EmbeddedLinkSettings(t *testing.T) *Resource {
+	return newResource(t, "embeddedlink_settings")
+}
+
+func PasswordSettings(t *testing.T) *Resource {
+	return newResource(t, "password_settings")
+}
+
+func SSOSettings(t *testing.T) *Resource {
+	return newResource(t, "sso_settings")
+}
+
+func Flow(t *testing.T) *Resource {
+	return newResource(t, "flow")
+}
+
+func Role(t *testing.T) *Resource {
+	return newResource(t, "role")
+}
+
+func Permission(t *testing.T) *Resource {
+	return newResource(t, "permission")
+}
+
+func OIDCApp(t *testing.T) *Resource {
+	return newResource(t, "oidc_app")
+}
+
+func SAMLApp(t *testing.T) *Resource {
+	return newResource(t, "saml_app")
+}
+
+func WSFedApp(t *testing.T) *Resource {
+	return newResource(t, "wsfed_app")
+}
+
+func AppRole(t *testing.T) *Resource {
+	return newResource(t, "app_role")
+}
+
+func AppPermission(t *testing.T) *Resource {
+	return newResource(t, "app_permission")
+}
+
+func List(t *testing.T) *Resource {
+	return newResource(t, "list")
+}
+
+func JWTTemplate(t *testing.T) *Resource {
+	return newResource(t, "jwt_template")
+}
+
+func EmailTemplate(t *testing.T) *Resource {
+	return newResource(t, "email_template")
+}
+
+func TextTemplate(t *testing.T) *Resource {
+	return newResource(t, "text_template")
+}
+
+func VoiceTemplate(t *testing.T) *Resource {
+	return newResource(t, "voice_template")
+}
+
+func Styles(t *testing.T) *Resource {
+	return newResource(t, "styles")
+}
+
+func FGASchema(t *testing.T) *Resource {
+	return newResource(t, "fga_schema")
+}
+
+func Widget(t *testing.T) *Resource {
+	return newResource(t, "widget")
+}
+
+func NewResource(t *testing.T, typ string) *Resource {
+	return newResource(t, typ)
 }
 
 func newResource(t *testing.T, typ string) *Resource {
@@ -64,6 +213,11 @@ func (r *Resource) Variables(s ...string) string {
 func (r *Resource) Config(s ...string) string {
 	n := fmt.Sprintf(`name = %q`, r.Name)
 	s = append([]string{n}, s...)
+	return fmt.Sprintf(resourceFormat, r.Type, r.ID, strings.Join(s, "\n	"))
+}
+
+// Block builds a resource block with only the provided fields, with no auto-injected name, for resources that have no name attribute.
+func (r *Resource) Block(s ...string) string {
 	return fmt.Sprintf(resourceFormat, r.Type, r.ID, strings.Join(s, "\n	"))
 }
 
@@ -109,16 +263,23 @@ resource "descope_%s" "%s" {
 }
 `
 
+const aliasPrefix = "testacc-"
+
+var aliasStampPattern = regexp.MustCompile(`-(\d{8})-[0-9a-f]{8}$`)
+
 func GenerateAlias(t *testing.T) string {
+	prefix := strings.TrimSpace(os.Getenv("DESCOPE_TESTACC_PREFIX"))
+	if prefix == "" {
+		prefix = "testacc-local"
+	}
+	if !strings.HasPrefix(prefix, aliasPrefix) {
+		prefix = aliasPrefix + prefix
+	}
 	test := strings.TrimPrefix(t.Name(), "Test")
 	ts := time.Now().Format("01021504") // MMddHHmm
 	rand, err := uuid.GenerateUUID()
 	require.NoError(t, err)
 	suffix := rand[len(rand)-8:]
-	prefix := strings.TrimSpace(os.Getenv("DESCOPE_TESTACC_PREFIX"))
-	if prefix == "" {
-		prefix = "testacc-local"
-	}
 	return fmt.Sprintf("%s-%s-%s-%s", prefix, test, ts, suffix)
 }
 

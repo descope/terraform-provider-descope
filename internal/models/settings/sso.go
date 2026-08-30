@@ -1,0 +1,352 @@
+package settings
+
+import (
+	"strings"
+
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+)
+
+// descope_sso_settings is the project-level SSO settings singleton (id = project_id).
+
+var SSOSettingsSchema = schema.Schema{
+	MarkdownDescription: "Manages the project-level SSO authentication settings. This is a singleton resource, and its id is always the project ID.",
+	Attributes:          SSOSettingsAttributes,
+}
+
+var SSOSettingsAttributes = map[string]schema.Attribute{
+	"id":                                      stringattr.Identifier(),
+	"project_id":                              stringattr.Required(stringplanmodifier.RequiresReplace()),
+	"disabled":                                boolattr.Default(false),
+	"merge_users":                             boolattr.Default(false),
+	"redirect_url":                            stringattr.Default("", stringattr.URLValidator),
+	"allow_duplicate_domains":                 boolattr.Default(false),
+	"allow_override_roles":                    boolattr.Default(false),
+	"groups_priority":                         boolattr.Default(false),
+	"mandatory_user_attributes":               listattr.Default[MandatoryUserAttributeModel](MandatoryUserAttributeAttributes),
+	"limit_mapping_to_mandatory_attributes":   boolattr.Default(false),
+	"require_sso_domains":                     boolattr.Default(false),
+	"require_groups_attribute_name":           boolattr.Default(false),
+	"block_if_email_domain_mismatch":          boolattr.Default(false),
+	"mark_email_as_unverified":                boolattr.Default(false),
+	"allow_merge_users_with_multiple_tenants": boolattr.Default(false),
+	"sso_suite_settings":                      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
+	"email_service":                           objattr.Default[EmailServiceRefModel](nil, EmailServiceRefAttributes),
+	"email_template_id":                       stringattr.Default(""),
+}
+
+type SSOSettingsModel struct {
+	ID                                 stringattr.Type                            `tfsdk:"id"`
+	ProjectID                          stringattr.Type                            `tfsdk:"project_id"`
+	Disabled                           boolattr.Type                              `tfsdk:"disabled"`
+	MergeUsers                         boolattr.Type                              `tfsdk:"merge_users"`
+	RedirectURL                        stringattr.Type                            `tfsdk:"redirect_url"`
+	AllowDuplicateDomains              boolattr.Type                              `tfsdk:"allow_duplicate_domains"`
+	AllowOverrideRoles                 boolattr.Type                              `tfsdk:"allow_override_roles"`
+	GroupsPriority                     boolattr.Type                              `tfsdk:"groups_priority"`
+	MandatoryUserAttributes            listattr.Type[MandatoryUserAttributeModel] `tfsdk:"mandatory_user_attributes"`
+	LimitMappingToMandatoryAttributes  boolattr.Type                              `tfsdk:"limit_mapping_to_mandatory_attributes"`
+	RequireSSODomains                  boolattr.Type                              `tfsdk:"require_sso_domains"`
+	RequireGroupsAttributeName         boolattr.Type                              `tfsdk:"require_groups_attribute_name"`
+	BlockIfEmailDomainMismatch         boolattr.Type                              `tfsdk:"block_if_email_domain_mismatch"`
+	MarkEmailAsUnverified              boolattr.Type                              `tfsdk:"mark_email_as_unverified"`
+	AllowMergeUsersWithMultipleTenants boolattr.Type                              `tfsdk:"allow_merge_users_with_multiple_tenants"`
+	SSOSuiteSettings                   objattr.Type[SSOSuiteModel]                `tfsdk:"sso_suite_settings"`
+	EmailService                       objattr.Type[EmailServiceRefModel]         `tfsdk:"email_service"`
+	EmailTemplateID                    stringattr.Type                            `tfsdk:"email_template_id"`
+}
+
+func (m *SSOSettingsModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	boolattr.GetNot(m.Disabled, data, "enabled")
+	boolattr.Get(m.MergeUsers, data, "mergeUsers")
+	stringattr.Get(m.RedirectURL, data, "redirectUrl")
+	boolattr.Get(m.AllowDuplicateDomains, data, "allowDuplicateSSODomainsInOtherTenants")
+	boolattr.Get(m.AllowOverrideRoles, data, "allowOverrideRoles")
+	boolattr.Get(m.GroupsPriority, data, "groupPriorityEnabled")
+	boolattr.Get(m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
+	boolattr.Get(m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
+	boolattr.Get(m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
+	boolattr.Get(m.AllowMergeUsersWithMultipleTenants, data, "allowMergeUsersWithMultipleTenants")
+
+	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
+
+	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
+	objattr.Get(m.EmailService, data, helpers.RootKey, h)
+	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
+
+	useDescopeService(m.EmailService, data, "emailServiceProvider")
+
+	return data
+}
+
+func (m *SSOSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
+	boolattr.SetNot(&m.Disabled, data, "enabled")
+	boolattr.Set(&m.MergeUsers, data, "mergeUsers")
+	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
+	boolattr.Set(&m.AllowDuplicateDomains, data, "allowDuplicateSSODomainsInOtherTenants")
+	boolattr.Set(&m.AllowOverrideRoles, data, "allowOverrideRoles")
+	boolattr.Set(&m.GroupsPriority, data, "groupPriorityEnabled")
+	boolattr.Set(&m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
+	boolattr.Set(&m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
+	boolattr.Set(&m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
+	boolattr.Set(&m.AllowMergeUsersWithMultipleTenants, data, "allowMergeUsersWithMultipleTenants")
+
+	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
+
+	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
+	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
+	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
+}
+
+func (m *SSOSettingsModel) GetID() stringattr.Type        { return m.ID }
+func (m *SSOSettingsModel) SetID(id stringattr.Type)      { m.ID = id }
+func (m *SSOSettingsModel) GetProjectID() stringattr.Type { return m.ProjectID }
+
+// User Attribute
+
+type MandatoryUserAttributeModel struct {
+	ID     stringattr.Type `tfsdk:"id"`
+	Custom boolattr.Type   `tfsdk:"custom"`
+}
+
+var MandatoryUserAttributeAttributes = map[string]schema.Attribute{
+	"id":     stringattr.Required(),
+	"custom": boolattr.Default(false),
+}
+
+func (m *MandatoryUserAttributeModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	stringattr.Get(m.ID, data, "value")
+	boolattr.Get(m.Custom, data, "custom")
+	return data
+}
+
+func (m *MandatoryUserAttributeModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.ID, data, "value")
+	boolattr.Set(&m.Custom, data, "custom")
+}
+
+// SSO Suite Settings
+
+var SSOSuiteValidator = objattr.NewValidator[SSOSuiteModel]("must have a valid configuration")
+
+var SSOSuiteAttributes = map[string]schema.Attribute{
+	"style_id":                  stringattr.Default(""),
+	"hide_sso":                  boolattr.Default(false),
+	"hide_scim":                 boolattr.Default(false),
+	"hide_groups_mapping":       boolattr.Default(false),
+	"hide_role_mapping":         boolattr.Default(false),
+	"hide_fga_mapping":          boolattr.Default(false),
+	"hide_domains":              boolattr.Default(false),
+	"hide_saml":                 boolattr.Default(false),
+	"hide_oidc":                 boolattr.Default(false),
+	"force_domain_verification": boolattr.Default(false),
+	"support_email":             stringattr.Default("", stringattr.EmailValidator),
+	"show_help_contact":         boolattr.Default(false),
+	"hide_jit_guide":            boolattr.Default(false),
+	"show_xaa":                  boolattr.Default(false),
+	"oidc_login_id_attribute":   stringattr.Default(""),
+}
+
+type SSOSuiteModel struct {
+	StyleID                 stringattr.Type `tfsdk:"style_id"`
+	HideSSO                 boolattr.Type   `tfsdk:"hide_sso"`
+	HideSCIM                boolattr.Type   `tfsdk:"hide_scim"`
+	HideGroupsMapping       boolattr.Type   `tfsdk:"hide_groups_mapping"`
+	HideRoleMapping         boolattr.Type   `tfsdk:"hide_role_mapping"`
+	HideFgaMapping          boolattr.Type   `tfsdk:"hide_fga_mapping"`
+	HideDomains             boolattr.Type   `tfsdk:"hide_domains"`
+	HideSAML                boolattr.Type   `tfsdk:"hide_saml"`
+	HideOIDC                boolattr.Type   `tfsdk:"hide_oidc"`
+	ForceDomainVerification boolattr.Type   `tfsdk:"force_domain_verification"`
+	SupportEmail            stringattr.Type `tfsdk:"support_email"`
+	ShowHelpContact         boolattr.Type   `tfsdk:"show_help_contact"`
+	HideJitGuide            boolattr.Type   `tfsdk:"hide_jit_guide"`
+	ShowXAA                 boolattr.Type   `tfsdk:"show_xaa"`
+	OIDCLoginIDAttribute    stringattr.Type `tfsdk:"oidc_login_id_attribute"`
+}
+
+var SSOSuiteDefault = &SSOSuiteModel{
+	StyleID:                 stringattr.Value(""),
+	HideSSO:                 boolattr.Value(false),
+	HideSCIM:                boolattr.Value(false),
+	HideGroupsMapping:       boolattr.Value(false),
+	HideRoleMapping:         boolattr.Value(false),
+	HideFgaMapping:          boolattr.Value(false),
+	HideDomains:             boolattr.Value(false),
+	HideSAML:                boolattr.Value(false),
+	HideOIDC:                boolattr.Value(false),
+	ForceDomainVerification: boolattr.Value(false),
+	SupportEmail:            stringattr.Value(""),
+	ShowHelpContact:         boolattr.Value(false),
+	HideJitGuide:            boolattr.Value(false),
+	ShowXAA:                 boolattr.Value(false),
+	OIDCLoginIDAttribute:    stringattr.Value(""),
+}
+
+func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	stringattr.Get(m.StyleID, data, "ssoSuiteStyleId")
+	boolattr.Get(m.HideSSO, data, "hideSsoSuiteSso")
+	boolattr.Get(m.HideSCIM, data, "hideSsoSuiteScim")
+	boolattr.Get(m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
+	boolattr.Get(m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
+	boolattr.Get(m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
+	boolattr.Get(m.HideDomains, data, "hideSsoSuiteDomains")
+	boolattr.Get(m.HideSAML, data, "hideSsoSuiteSaml")
+	boolattr.Get(m.HideOIDC, data, "hideSsoSuiteOidc")
+	boolattr.Get(m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
+	stringattr.Get(m.SupportEmail, data, "ssoSuiteSupportEmail")
+	boolattr.Get(m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
+	boolattr.Get(m.HideJitGuide, data, "hideSsoSuiteJitGuide")
+	boolattr.Get(m.ShowXAA, data, "showSsoSuiteXaa")
+	stringattr.Get(m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
+	return data
+}
+
+func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.StyleID, data, "ssoSuiteStyleId")
+	boolattr.Set(&m.HideSSO, data, "hideSsoSuiteSso")
+	boolattr.Set(&m.HideSCIM, data, "hideSsoSuiteScim")
+	boolattr.Set(&m.HideGroupsMapping, data, "hideSsoSuiteGroupsMapping")
+	boolattr.Set(&m.HideRoleMapping, data, "hideSsoSuiteRoleMapping")
+	boolattr.Set(&m.HideFgaMapping, data, "hideSsoSuiteFgaMapping")
+	boolattr.Set(&m.HideDomains, data, "hideSsoSuiteDomains")
+	boolattr.Set(&m.HideSAML, data, "hideSsoSuiteSaml")
+	boolattr.Set(&m.HideOIDC, data, "hideSsoSuiteOidc")
+	boolattr.Set(&m.ForceDomainVerification, data, "ssoSuiteForceDomainVerification")
+	stringattr.Set(&m.SupportEmail, data, "ssoSuiteSupportEmail")
+	boolattr.Set(&m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
+	boolattr.Set(&m.HideJitGuide, data, "hideSsoSuiteJitGuide")
+	boolattr.Set(&m.ShowXAA, data, "showSsoSuiteXaa")
+	stringattr.Set(&m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
+}
+
+func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
+	if !helpers.HasUnknownValues(m.HideGroupsMapping, m.HideRoleMapping, m.HideFgaMapping) &&
+		!m.HideGroupsMapping.IsNull() && (!m.HideRoleMapping.IsNull() || !m.HideFgaMapping.IsNull()) {
+		h.Conflict("The hide_groups_mapping attribute cannot be combined with hide_role_mapping or hide_fga_mapping, use either hide_groups_mapping or the hide_role_mapping and hide_fga_mapping pair")
+	}
+
+	// Placed before the hide_saml/hide_oidc early return, which would otherwise skip this check; Descope also rejects the pair server-side.
+	if !helpers.HasUnknownValues(m.HideSSO, m.HideSCIM) && m.HideSSO.ValueBool() && m.HideSCIM.ValueBool() {
+		h.Invalid("The attributes hide_sso and hide_scim cannot both be true, the SSO Suite must offer either SSO or SCIM configuration")
+	}
+
+	if helpers.HasUnknownValues(m.HideSAML, m.HideOIDC) {
+		return
+	} else if m.HideSAML.ValueBool() && m.HideOIDC.ValueBool() {
+		h.Invalid("The attributes hide_oidc and hide_saml cannot both be true")
+	}
+
+	if helpers.HasUnknownValues(m.HideDomains, m.ForceDomainVerification) {
+		return
+	} else if m.HideDomains.ValueBool() && m.ForceDomainVerification.ValueBool() {
+		h.Invalid("The attributes force_domain_verification and hide_domains cannot both be true")
+	}
+}
+
+// The mandatoryUserAttributes wire field is a flat list of strings that encodes both the user attributes and the two special flags below.
+
+const (
+	customAttributePrefix   = "customAttributes."
+	groupsAttributeName     = "group"
+	ssoDomainsAttributeName = "ssoDomains"
+)
+
+func setMandatoryUserAttributesValues(mandatoryUserAttributes *listattr.Type[MandatoryUserAttributeModel], ssoDomainsRequired *boolattr.Type, groupsAttributeNameRequired *boolattr.Type, h *helpers.Handler, data map[string]any) {
+	attributes, ok := data["mandatoryUserAttributes"]
+	if !ok {
+		return
+	}
+	domainsRequired := false
+	groupsRequired := false
+	mandatoryUserAttributesData := []any{}
+
+	var attrs []string
+	switch v := attributes.(type) {
+	case []any:
+		for _, item := range v {
+			if s, ok := item.(string); ok {
+				attrs = append(attrs, s)
+			}
+		}
+	case []string:
+		attrs = v
+	default:
+		return
+	}
+	for _, attributeStr := range attrs {
+		if attributeStr == ssoDomainsAttributeName {
+			domainsRequired = true
+		} else if attributeStr == groupsAttributeName {
+			groupsRequired = true
+		} else {
+			if strings.HasPrefix(attributeStr, customAttributePrefix) {
+				mandatoryUserAttributesData = append(mandatoryUserAttributesData, map[string]any{
+					"value":  strings.TrimPrefix(attributeStr, customAttributePrefix),
+					"custom": true,
+				})
+			} else {
+				mandatoryUserAttributesData = append(mandatoryUserAttributesData, map[string]any{
+					"value":  attributeStr,
+					"custom": false,
+				})
+			}
+		}
+	}
+
+	tempData := map[string]any{
+		"domainsRequired":         domainsRequired,
+		"groupsRequired":          groupsRequired,
+		"mandatoryUserAttributes": mandatoryUserAttributesData,
+	}
+	listattr.Set(mandatoryUserAttributes, tempData, "mandatoryUserAttributes", h)
+	boolattr.Set(ssoDomainsRequired, tempData, "domainsRequired")
+	boolattr.Set(groupsAttributeNameRequired, tempData, "groupsRequired")
+}
+
+func getMandatoryUserAttributesValues(mandatoryUserAttributes *listattr.Type[MandatoryUserAttributeModel], ssoDomainsRequired *boolattr.Type, groupsAttributeNameRequired *boolattr.Type, h *helpers.Handler, data map[string]any) {
+	tempData := map[string]any{}
+	listattr.Get(*mandatoryUserAttributes, tempData, "mandatoryUserAttributes", h)
+	boolattr.Get(*ssoDomainsRequired, tempData, "domainsRequired")
+	boolattr.Get(*groupsAttributeNameRequired, tempData, "groupsRequired")
+
+	attributes := []string{}
+	mandatoryAttrs, ok := tempData["mandatoryUserAttributes"].([]any)
+	if !ok {
+		mandatoryAttrs = []any{}
+	}
+	for _, attribute := range mandatoryAttrs {
+		attributeData, ok := attribute.(map[string]any)
+		if !ok {
+			continue
+		}
+		custom, _ := attributeData["custom"].(bool)
+		value, ok := attributeData["value"].(string)
+		if !ok {
+			continue
+		}
+		if custom {
+			attributes = append(attributes, customAttributePrefix+value)
+		} else {
+			attributes = append(attributes, value)
+		}
+	}
+	domainsRequired, _ := tempData["domainsRequired"].(bool)
+	if domainsRequired {
+		attributes = append(attributes, ssoDomainsAttributeName)
+	}
+	groupsRequired, _ := tempData["groupsRequired"].(bool)
+	if groupsRequired {
+		attributes = append(attributes, groupsAttributeName)
+	}
+
+	data["mandatoryUserAttributes"] = attributes
+}

@@ -1,0 +1,68 @@
+{
+  "id": "ses",
+  "name": "AWS SES",
+  "extProvider": true,
+  "description": "Send emails through Amazon Simple Email Service (SES).",
+  "fields": [
+    {
+      "name": "authType",
+      "description": "How to authenticate with AWS: using static credentials or by assuming an IAM role.",
+      "type": "string",
+      "initialValue": "credentials",
+      "options": [
+        { "name": "Credentials", "value": "credentials" },
+        { "name": "Assume Role", "value": "assumeRole" }
+      ]
+    },
+    {
+      "name": "accessKeyId",
+      "description": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+      "type": "secret",
+      "required": true,
+      "dependsOn": { "name": "authType", "value": "credentials" }
+    },
+    {
+      "name": "secretAccessKey",
+      "description": "The AWS secret access key. Required when the authentication type is 'credentials'.",
+      "type": "secret",
+      "required": true,
+      "dependsOn": { "name": "authType", "value": "credentials" }
+    },
+    {
+      "name": "roleArn",
+      "description": "The ARN of the IAM role to assume. Required when the authentication type is 'assumeRole'.",
+      "type": "string",
+      "required": true,
+      "dependsOn": { "name": "authType", "value": "assumeRole" }
+    },
+    {
+      "name": "externalId",
+      "description": "The external ID used when assuming the IAM role. Required when the authentication type is 'assumeRole'.",
+      "type": "string",
+      "required": true,
+      "dependsOn": { "name": "authType", "value": "assumeRole" }
+    },
+    {
+      "name": "region",
+      "description": "The AWS region the SES service is configured in.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "endpoint",
+      "description": "A custom endpoint for the SES API. Leave empty to use the default AWS endpoint.",
+      "type": "string"
+    },
+    {
+      "name": "fromEmail",
+      "description": "The email address that emails are sent from. Make sure it is a verified identity in SES.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "fromName",
+      "description": "The name shown as the sender of the emails.",
+      "type": "string"
+    }
+  ]
+}

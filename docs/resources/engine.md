@@ -3,12 +3,12 @@
 page_title: "descope_engine Resource - descope"
 subcategory: ""
 description: |-
-  
+  Manages a Descope Engine, a self-hosted agent that runs connector actions inside your own network.
 ---
 
 # descope_engine (Resource)
 
-
+Manages a Descope Engine, a self-hosted agent that runs connector actions inside your own network.
 
 
 

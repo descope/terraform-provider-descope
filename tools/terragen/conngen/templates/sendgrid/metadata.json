@@ -1,0 +1,25 @@
+{
+  "id": "sendgrid",
+  "name": "SendGrid",
+  "extProvider": true,
+  "description": "Send emails through the SendGrid email delivery service.",
+  "fields": [
+    {
+      "name": "fromEmail",
+      "description": "The email address that emails are sent from. Make sure it is a verified sender in SendGrid.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "fromName",
+      "description": "The name shown as the sender of the emails.",
+      "type": "string"
+    },
+    {
+      "name": "apiKey",
+      "description": "The SendGrid API key used to authenticate requests.",
+      "type": "secret",
+      "required": true
+    }
+  ]
+}

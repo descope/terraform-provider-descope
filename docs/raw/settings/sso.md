@@ -1,0 +1,331 @@
+
+SSOSettings
+===========
+
+
+
+project_id
+----------
+
+- Type: `string` (required)
+
+The ID of the project that these settings belong to. Changing this value will require the resource
+to be deleted and recreated.
+
+
+
+disabled
+--------
+
+- Type: `bool`
+
+Setting this to `true` will disallow using SSO authentication directly via API and SDK calls.
+Note that this does not affect authentication flows that are configured to use SSO.
+
+
+
+merge_users
+-----------
+
+- Type: `bool`
+
+Whether to merge existing user accounts with new ones created through SSO authentication.
+
+
+
+redirect_url
+------------
+
+- Type: `string`
+
+The URL the end user is redirected to after a successful authentication. If one is specified
+in tenant level settings or SDK/API call, they will override this value.
+
+
+
+allow_duplicate_domains
+-----------------------
+
+- Type: `bool`
+
+Whether to allow duplicate SSO domains across tenants.
+
+
+
+allow_override_roles
+--------------------
+
+- Type: `bool`
+
+Whether to allow overriding user's roles with SSO related roles.
+
+
+
+groups_priority
+---------------
+
+- Type: `bool`
+
+Whether to enable groups priority.
+
+
+
+mandatory_user_attributes
+-------------------------
+
+- Type: `list` of `settings.MandatoryUserAttribute`
+
+Define the required Descope attributes that must be populated when receiving SSO information.
+
+
+
+limit_mapping_to_mandatory_attributes
+-------------------------------------
+
+- Type: `bool`
+
+Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
+
+
+
+require_sso_domains
+-------------------
+
+- Type: `bool`
+
+When configuring SSO an SSO domain must be specified.
+
+
+
+require_groups_attribute_name
+-----------------------------
+
+- Type: `bool`
+
+When configuring SSO the groups attribute name must be specified.
+
+
+
+block_if_email_domain_mismatch
+------------------------------
+
+- Type: `bool`
+
+Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.
+
+
+
+mark_email_as_unverified
+------------------------
+
+- Type: `bool`
+
+Whether to mark the user's email as unverified when logging in via SSO.
+
+
+
+allow_merge_users_with_multiple_tenants
+---------------------------------------
+
+- Type: `bool`
+
+Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.
+
+
+
+sso_suite_settings
+------------------
+
+- Type: `object` of `settings.SSOSuite`
+
+Configuration block for the SSO Suite.
+
+
+
+email_service
+-------------
+
+- Type: `object` of `settings.EmailServiceRef`
+
+Settings related to sending SSO invite emails as part of the SSO feature.
+
+
+
+email_template_id
+-----------------
+
+- Type: `string`
+
+The ID of the email template for SSO configuration invitation emails, taken from a
+`descope_email_template` resource with its `method` set to `sso`. An empty value (the default)
+selects the built-in System template.
+
+
+
+
+
+MandatoryUserAttribute
+======================
+
+
+
+id
+----
+
+- Type: `string` (required)
+
+The identifier for the attribute. This value is called `Machine Name` in the Descope console.
+
+
+
+custom
+------
+
+- Type: `bool`
+
+Whether the attribute is a custom attribute defined in addition to the default Descope user attributes.
+
+
+
+
+
+SSOSuite
+========
+
+
+
+style_id
+--------
+
+- Type: `string`
+
+Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in
+the console for it to be used.
+
+
+
+hide_sso
+--------
+
+- Type: `bool`
+
+Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for
+tenants that only need to set up SCIM provisioning.
+
+
+
+hide_scim
+---------
+
+- Type: `bool`
+
+Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
+
+
+
+hide_groups_mapping
+-------------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
+
+
+
+hide_role_mapping
+-----------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.
+
+
+
+hide_fga_mapping
+----------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.
+
+
+
+hide_domains
+------------
+
+- Type: `bool`
+
+Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
+
+
+
+hide_saml
+---------
+
+- Type: `bool`
+
+Setting this to `true` will hide the SAML configuration option.
+
+
+
+hide_oidc
+---------
+
+- Type: `bool`
+
+Setting this to `true` will hide the OIDC configuration option.
+
+
+
+force_domain_verification
+-------------------------
+
+- Type: `bool`
+
+Setting this to `true` will allow only verified domains to be used.
+
+
+
+support_email
+-------------
+
+- Type: `string`
+
+Email address shown to end-users in the SSO Suite UI as a support contact.
+
+
+
+show_help_contact
+-----------------
+
+- Type: `bool`
+
+Whether to display the help/support contact link in the SSO Suite UI.
+
+
+
+hide_jit_guide
+--------------
+
+- Type: `bool`
+
+Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.
+
+
+
+show_xaa
+--------
+
+- Type: `bool`
+
+Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.
+
+
+
+oidc_login_id_attribute
+-----------------------
+
+- Type: `string`
+
+The identity provider claim the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty
+to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.

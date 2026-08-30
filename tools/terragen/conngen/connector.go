@@ -11,18 +11,48 @@ import (
 )
 
 // Connector
-
+//
+// The template metadata also carries console and runtime keys that have no Terraform meaning and are knowingly ignored: types,
+// content_version, lambda, timeout, categories, logos, commands, clientScripts, sdkConfig, details and tags.
 type Connector struct {
-	ID           string         `json:"id"`
-	Name         string         `json:"name"`
-	Description  string         `json:"description"`
-	BuiltIn      bool           `json:"builtin"`
-	Validator    bool           `json:"validator"`
-	Extra        map[string]any `json:"extra"`
-	Fields       []*Field       `json:"fields"`
-	HiddenFields []*Field       `json:"allFields"`
+	ID                string           `json:"id"`
+	Name              string           `json:"name"`
+	Description       string           `json:"description"`
+	Validator         bool             `json:"validator"`
+	Extra             map[string]any   `json:"extra"`
+	Fields            []*Field         `json:"fields"`
+	HiddenFields      []*Field         `json:"allFields"`
+	ExtDiscriminators []*Discriminator `json:"extDiscriminators"`
+	ExtProvider       bool             `json:"extProvider"`
 
 	naming *Naming
+}
+
+// Template fields the provider deliberately doesn't model, by connector id. Segment's auto-trigger cluster needs a nested list type
+// (autoTriggerGroups) whose shape lives only in the backend, not the template metadata, so the whole cluster is excluded.
+var excludedFields = map[string][]string{
+	"segment": {
+		"autoTrigger",
+		"autoTriggerStepTypes",
+		"autoTriggerAnonymousId",
+		"autoTriggerIncludeStepData",
+		"autoTriggerProperties",
+		"autoTriggerTraits",
+		"autoTriggerContext",
+		"autoTriggerIntegrations",
+		"autoTriggerAdditionalGroups",
+	},
+}
+
+// The field types the generator models. A new template type must get support here and in the field attribute helpers, or be excluded.
+var supportedFieldTypes = []string{
+	FieldTypeString,
+	FieldTypeSecret,
+	FieldTypeBool,
+	FieldTypeNumber,
+	FieldTypeHTTPAuth,
+	FieldTypeObject,
+	FieldTypeAuditFilters,
 }
 
 func (c *Connector) IsExperimental() bool {
@@ -41,31 +71,10 @@ func (c *Connector) SupportsStaticIPs() bool {
 	return c.Extra["supportStaticIps"] == true
 }
 
-// SupportsEngine reports whether the connector can be assigned to a Descope engine via the
-// engine_id attribute. Engine execution is currently limited to the connectors that the
-// engine runtime ships with, so the gate is keyed on the connector id rather than external
-// template metadata.
-func (c *Connector) SupportsEngine() bool {
-	return slices.Contains([]string{
-		"audit-webhook",
-		"aws-s3",
-		"aws-ses-email-validation",
-		"aws-translate",
-		"datadog",
-		"firebase-admin",
-		"google-cloud-translation",
-		"googlecloudlogging",
-		"hibp",
-		"http",
-		"ping-directory",
-		"recaptcha-enterprise",
-		"rekognition",
-		"salesforce",
-		"salesforce-marketing-cloud",
-		"slack",
-		"snowflake",
-		"splunk",
-	}, c.ID)
+// RequiredLicense returns the license key that gates creating this connector, if any.
+func (c *Connector) RequiredLicense() string {
+	s, _ := c.Extra["requiredLicense"].(string)
+	return s
 }
 
 func (c *Connector) StructName() string {
@@ -100,8 +109,26 @@ func (c *Connector) defaultAttributeName() string {
 	return utils.SnakeCase(c.ID)
 }
 
-func (c *Connector) DataName() string {
-	return c.ID
+// The prefix for the standalone resource model and attributes, e.g. `SMTPConnector`.
+func (c *Connector) ResourceStructName() string {
+	return c.StructName() + "Connector"
+}
+
+// The resource type name without the provider prefix, e.g. `smtp_connector`.
+func (c *Connector) ResourceName() string {
+	return c.AttributeName() + "_connector"
+}
+
+// The schema description for the standalone resource, shown in the registry documentation.
+func (c *Connector) ResourceDocText() string {
+	text := "Manages a " + c.Name + " connector and its configuration in a Descope project."
+	if desc := strings.TrimSpace(c.Description); desc != "" {
+		text += " " + desc
+		if !strings.HasSuffix(text, ".") {
+			text += "."
+		}
+	}
+	return text
 }
 
 func (c *Connector) HasField(typ string) bool {
@@ -131,13 +158,19 @@ func (c *Connector) HasValuesDependency() bool {
 	return false
 }
 
+func (c *Connector) SupportsEngine() bool {
+	return c.Extra["supportRemoteEngine"] == true
+}
+
 func (c *Connector) HasValidator() bool {
 	return c.Validator || slices.ContainsFunc(c.Fields, func(f *Field) bool {
-		return f.Dependency != nil
+		return f.HasDependencyChecks()
 	})
 }
 
 func (c *Connector) Prepare() {
+	excluded := c.excludeFields()
+
 	// remove any fields that are not actually for configuration
 	c.Fields = slices.DeleteFunc(c.Fields, func(f *Field) bool {
 		return f.Type == "cloudformation-link"
@@ -162,6 +195,11 @@ func (c *Connector) Prepare() {
 		c.Fields = append(c.Fields, UseStaticIPsField)
 	}
 
+	// add the engine assignment field as expected by the management API, which converts it to the executor fields the connector stores
+	if c.SupportsEngine() {
+		c.Fields = append(c.Fields, EngineIDField)
+	}
+
 	for _, f := range c.Fields {
 		// treat these types as regular string fields for now
 		if f.Type == "readonly-string" {
@@ -178,22 +216,35 @@ func (c *Connector) Prepare() {
 			f.Type = FieldTypeObject
 		}
 
+		if !slices.Contains(supportedFieldTypes, f.Type) {
+			log.Fatalf("Field %s in connector %s has unsupported type %s: add support for it or list the field in excludedFields", f.Name, c.ID, f.Type)
+		}
+
+		// object attributes are generated with an empty default, so an initial value would be dropped
+		if f.Type == FieldTypeObject && f.Initial != nil {
+			log.Fatalf("Field %s in connector %s has an initial value which object fields don't support", f.Name, c.ID)
+		}
+
 		if d := f.Dependency; d != nil {
 			// link dependencies and fields together
 			if d.Field == nil {
 				for _, curr := range c.Fields {
 					if d.Name == curr.Name {
 						d.Field = curr
+						curr.hasDependents = true
 					}
 				}
 			}
 
 			// a few sanity checks to make sure we support what's expected
 			if d.Field == nil {
+				if slices.Contains(excluded, d.Name) {
+					log.Fatalf("Field %s in connector %s depends on the excluded field %s, so it must be excluded too", f.Name, c.ID, d.Name)
+				}
 				log.Fatalf("Failed to find matching field for dependency %s in connector %s", d.Name, c.ID)
 			}
 			if d.Field.Type != FieldTypeBool && d.Field.Type != FieldTypeString {
-				log.Fatalf("Field %s has a dependency on %s of type %s which is not supported", f.Name, d.Name, d.Field.Type)
+				log.Fatalf("Field %s in connector %s has a dependency on %s of type %s which is not supported", f.Name, c.ID, d.Name, d.Field.Type)
 			}
 
 			// ensure some assumptions about boolean dependencies
@@ -228,8 +279,31 @@ func (c *Connector) Prepare() {
 					log.Fatalf("Field %s of type %s has a non-zero initial value which is not supported", f.Name, f.Type)
 				}
 			default:
-				log.Fatalf("Field %s has a dependency but is of type %s which is not supported", f.Name, f.Type)
+				log.Fatalf("Field %s in connector %s has a dependency but is of type %s which is not supported: add support for it or list the field in excludedFields", f.Name, c.ID, f.Type)
 			}
 		}
 	}
+
+	// link each discriminator's cases to the connector fields they select on
+	for _, d := range c.ExtDiscriminators {
+		d.link(c)
+	}
+}
+
+// excludeFields drops this connector's excludedFields entries and returns their names, aborting on entries the template no longer has.
+func (c *Connector) excludeFields() []string {
+	names := excludedFields[c.ID]
+	for _, name := range names {
+		if !slices.ContainsFunc(c.Fields, func(f *Field) bool { return f.Name == name }) {
+			log.Fatalf("Excluded field %s no longer exists in connector %s, remove it from excludedFields", name, c.ID)
+		}
+	}
+	c.Fields = slices.DeleteFunc(c.Fields, func(f *Field) bool {
+		if !slices.Contains(names, f.Name) {
+			return false
+		}
+		utils.Debug(1, "- %s: excluded field %s", c.ID, f.Name)
+		return true
+	})
+	return names
 }

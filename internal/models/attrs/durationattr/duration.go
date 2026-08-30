@@ -56,8 +56,8 @@ func Get(s Type, data map[string]any, key string) {
 func Set(s *Type, data map[string]any, key string) {
 	num, hasNum := getNumber(data, key)
 	unit, hasUnit := data[key+"Unit"].(string)
-	if !hasNum || !hasUnit {
-		return
+	if !hasNum || !hasUnit || unit == "" {
+		return // an empty unit means the value was never set, e.g. in a fresh project
 	}
 	value := composeString(num, unit)
 	if value != s.ValueString()+"s" { // don't overwrite singular with plural
@@ -89,6 +89,27 @@ func SetMinutes(s *Type, data map[string]any, key string) {
 	if s.IsUnknown() {
 		*s = Value("")
 	}
+}
+
+// GetSeconds returns the duration in seconds, for comparing two values that may use different units. Not ok when null, unknown or unparseable.
+func GetSeconds(s Type) (int64, bool) {
+	if s.IsNull() || s.IsUnknown() {
+		return 0, false
+	}
+	return getSeconds(s.ValueString())
+}
+
+// IsAttribute reports whether an attribute holds a duration, so callers comparing against a schema default compare lengths of time, not
+// strings: "1 week" and "1 weeks" are the same duration written two ways.
+func IsAttribute(attribute schema.Attribute) bool {
+	s, ok := attribute.(schema.StringAttribute)
+	if !ok {
+		return false
+	}
+	return slices.ContainsFunc(s.Validators, func(v validator.String) bool {
+		_, ok := v.(*durationValidator)
+		return ok
+	})
 }
 
 // Utils

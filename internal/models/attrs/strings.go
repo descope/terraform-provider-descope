@@ -31,8 +31,10 @@ func GetStringMap(data map[string]any, key string) map[string]string {
 }
 
 // Converts a slice of Terraform strings to a slice of Go strings.
+// The result is never nil so an empty slice marshals as [] rather than null, as
+// for Value-typed backend fields null means keep, [] means clear.
 func ConvertTerraformSliceToStringSlice(strs []types.String) []string {
-	var result []string
+	result := []string{}
 	for i := range strs {
 		result = append(result, strs[i].ValueString())
 	}
