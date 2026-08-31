@@ -140,6 +140,7 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"show_help_contact":         boolattr.Default(false),
 	"hide_jit_guide":            boolattr.Default(false),
 	"show_xaa":                  boolattr.Default(false),
+	"oidc_login_id_attribute":   stringattr.Default(""),
 }
 
 type SSOSuiteModel struct {
@@ -157,6 +158,7 @@ type SSOSuiteModel struct {
 	ShowHelpContact         boolattr.Type   `tfsdk:"show_help_contact"`
 	HideJitGuide            boolattr.Type   `tfsdk:"hide_jit_guide"`
 	ShowXAA                 boolattr.Type   `tfsdk:"show_xaa"`
+	OIDCLoginIDAttribute    stringattr.Type `tfsdk:"oidc_login_id_attribute"`
 }
 
 var SSOSuiteDefault = &SSOSuiteModel{
@@ -174,6 +176,7 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	ShowHelpContact:         boolattr.Value(false),
 	HideJitGuide:            boolattr.Value(false),
 	ShowXAA:                 boolattr.Value(false),
+	OIDCLoginIDAttribute:    stringattr.Value(""),
 }
 
 func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
@@ -192,6 +195,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Get(m.HideJitGuide, data, "hideSsoSuiteJitGuide")
 	boolattr.Get(m.ShowXAA, data, "showSsoSuiteXaa")
+	stringattr.Get(m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
 	return data
 }
 
@@ -210,6 +214,7 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Set(&m.HideJitGuide, data, "hideSsoSuiteJitGuide")
 	boolattr.Set(&m.ShowXAA, data, "showSsoSuiteXaa")
+	stringattr.Set(&m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {

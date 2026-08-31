@@ -298,3 +298,13 @@ show_xaa
 - Type: `bool`
 
 Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.
+
+
+
+oidc_login_id_attribute
+-----------------------
+
+- Type: `string`
+
+The identity provider claim the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty
+to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.

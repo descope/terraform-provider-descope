@@ -282,20 +282,22 @@ func TestAuthentication(t *testing.T) {
 							show_help_contact  = true
 							hide_role_mapping  = true
 							hide_fga_mapping   = true
+							oidc_login_id_attribute = "email"
 						}
 					}
 				}
 			`),
 			Check: p.Check(map[string]any{
 				"authentication.sso.sso_suite_settings": map[string]any{
-					"style_id":          "koko",
-					"hide_saml":         true,
-					"hide_jit_guide":    true,
-					"show_xaa":          true,
-					"support_email":     "help@acme.com",
-					"show_help_contact": true,
-					"hide_role_mapping": true,
-					"hide_fga_mapping":  true,
+					"style_id":                "koko",
+					"hide_saml":               true,
+					"hide_jit_guide":          true,
+					"show_xaa":                true,
+					"support_email":           "help@acme.com",
+					"show_help_contact":       true,
+					"hide_role_mapping":       true,
+					"hide_fga_mapping":        true,
+					"oidc_login_id_attribute": "email",
 				},
 			}),
 		},

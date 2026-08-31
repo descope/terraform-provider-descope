@@ -570,6 +570,8 @@ var docsSSOSuite = map[string]string{
 	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
 	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
 	"show_xaa":                  "Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.",
+	"oidc_login_id_attribute": "The identity provider claim the SSO Suite suggests as the Login ID when a tenant " +
+		"configures OIDC. Leave empty to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.",
 }
 
 var docsTOTP = map[string]string{
