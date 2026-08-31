@@ -14,6 +14,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/project/authorization"
 	"github.com/descope/terraform-provider-descope/internal/models/project/connectors"
 	"github.com/descope/terraform-provider-descope/internal/models/project/flows"
+	"github.com/descope/terraform-provider-descope/internal/models/project/governance"
 	"github.com/descope/terraform-provider-descope/internal/models/project/jwttemplates"
 	"github.com/descope/terraform-provider-descope/internal/models/project/lists"
 	"github.com/descope/terraform-provider-descope/internal/models/project/settings"
@@ -40,6 +41,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"widgets":          mapattr.Optional[widgets.WidgetModel](widgets.WidgetAttributes, widgets.WidgetIDValidator),
 	"lists":            listattr.Default[lists.ListModel](lists.ListAttributes, lists.ListValidator, lists.ListsModifier),
 	"admin_portal":     objattr.Default[adminportal.AdminPortalModel](nil, adminportal.AdminPortalAttributes, adminportal.AdminPortalValidator),
+	"governance":       objattr.Default[governance.GovernanceModel](nil, governance.GovernanceAttributes),
 }
 
 type ProjectModel struct {
@@ -60,6 +62,7 @@ type ProjectModel struct {
 	Widgets        mapattr.Type[widgets.WidgetModel]                `tfsdk:"widgets"`
 	Lists          listattr.Type[lists.ListModel]                   `tfsdk:"lists"`
 	AdminPortal    objattr.Type[adminportal.AdminPortalModel]       `tfsdk:"admin_portal"`
+	Governance     objattr.Type[governance.GovernanceModel]         `tfsdk:"governance"`
 }
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
@@ -83,6 +86,7 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	widgets.EnsureWidgetIDs(m.Widgets, data, "widgets", h)
 	listattr.Get(m.Lists, data, "lists", h)
 	objattr.Get(m.AdminPortal, data, "adminportal", h)
+	objattr.Get(m.Governance, data, "governance", h)
 	return data
 }
 
@@ -115,6 +119,7 @@ func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 	listattr.SetMatchingNames(&m.Lists, data, "lists", "name", h)
 	objattr.Set(&m.AdminPortal, data, "adminportal", h)
+	objattr.Set(&m.Governance, data, "governance", h)
 }
 
 func (m *ProjectModel) CollectReferences(h *helpers.Handler) {
