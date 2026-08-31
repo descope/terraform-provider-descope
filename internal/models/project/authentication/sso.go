@@ -139,7 +139,7 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"support_email":             stringattr.Default("", stringattr.EmailValidator),
 	"show_help_contact":         boolattr.Default(false),
 	"hide_jit_guide":            boolattr.Default(false),
-	"hide_xaa":                  boolattr.Default(false),
+	"show_xaa":                  boolattr.Default(false),
 	"oidc_login_id_attribute":   stringattr.Default(""),
 }
 
@@ -157,7 +157,7 @@ type SSOSuiteModel struct {
 	SupportEmail            stringattr.Type `tfsdk:"support_email"`
 	ShowHelpContact         boolattr.Type   `tfsdk:"show_help_contact"`
 	HideJitGuide            boolattr.Type   `tfsdk:"hide_jit_guide"`
-	HideXAA                 boolattr.Type   `tfsdk:"hide_xaa"`
+	ShowXAA                 boolattr.Type   `tfsdk:"show_xaa"`
 	OIDCLoginIDAttribute    stringattr.Type `tfsdk:"oidc_login_id_attribute"`
 }
 
@@ -175,7 +175,7 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	SupportEmail:            stringattr.Value(""),
 	ShowHelpContact:         boolattr.Value(false),
 	HideJitGuide:            boolattr.Value(false),
-	HideXAA:                 boolattr.Value(false),
+	ShowXAA:                 boolattr.Value(false),
 	OIDCLoginIDAttribute:    stringattr.Value(""),
 }
 
@@ -194,7 +194,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.SupportEmail, data, "ssoSuiteSupportEmail")
 	boolattr.Get(m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Get(m.HideJitGuide, data, "hideSsoSuiteJitGuide")
-	boolattr.Get(m.HideXAA, data, "hideSsoSuiteXaa")
+	boolattr.Get(m.ShowXAA, data, "showSsoSuiteXaa")
 	stringattr.Get(m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
 	return data
 }
@@ -213,7 +213,7 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.SupportEmail, data, "ssoSuiteSupportEmail")
 	boolattr.Set(&m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Set(&m.HideJitGuide, data, "hideSsoSuiteJitGuide")
-	boolattr.Set(&m.HideXAA, data, "hideSsoSuiteXaa")
+	boolattr.Set(&m.ShowXAA, data, "showSsoSuiteXaa")
 	stringattr.Set(&m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
 }
 
