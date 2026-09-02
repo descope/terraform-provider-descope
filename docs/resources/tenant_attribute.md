@@ -3,12 +3,12 @@
 page_title: "descope_tenant_attribute Resource - descope"
 subcategory: ""
 description: |-
-  Manages a single tenant custom attribute definition in a Descope project. Tenant attributes are view-only and do not support edit permissions. Applying this resource to a custom attribute that was previously defined in the Descope Console takes over the existing definition declaratively, though a default value configured for the attribute is preserved.
+  Manages a single tenant custom attribute definition in a Descope project.
 ---
 
 # descope_tenant_attribute (Resource)
 
-Manages a single tenant custom attribute definition in a Descope project. Tenant attributes are view-only and do not support edit permissions. Applying this resource to a custom attribute that was previously defined in the Descope Console takes over the existing definition declaratively, though a default value configured for the attribute is preserved.
+Manages a single tenant custom attribute definition in a Descope project.
 
 
 

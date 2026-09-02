@@ -3,12 +3,12 @@
 page_title: "descope_voice_template Resource - descope"
 subcategory: ""
 description: |-
-  Manages a single voice call message template for an authentication method in a Descope project. The active template is selected on the method's settings resource, e.g. the voice_template_id attribute of descope_otp_settings. Template bodies are Go templates, so variables use dot-prefixed syntax such as {{.code}} and {{.URL}}; a bare {{URL}} is parsed as a function call and rejected.
+  Manages a single voice call message template for an authentication method in a Descope project. The active template is selected on the method's settings resource, e.g. the voice_template_id attribute of descope_otp_settings.
 ---
 
 # descope_voice_template (Resource)
 
-Manages a single voice call message template for an authentication method in a Descope project. The active template is selected on the method's settings resource, e.g. the `voice_template_id` attribute of `descope_otp_settings`. Template bodies are Go templates, so variables use dot-prefixed syntax such as `{{.code}}` and `{{.URL}}`; a bare `{{URL}}` is parsed as a function call and rejected.
+Manages a single voice call message template for an authentication method in a Descope project. The active template is selected on the method's settings resource, e.g. the `voice_template_id` attribute of `descope_otp_settings`.
 
 
 

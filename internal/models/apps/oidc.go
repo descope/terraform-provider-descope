@@ -128,8 +128,11 @@ func (m *OIDCAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 }
 
-// The backend materializes a client_secret when an app without one is switched to the confidential client type.
+// The backend materializes a client_secret and a client_id when an app without them is switched to a modern client type.
 func (m *OIDCAppModel) ModifyPlan(_ *helpers.Handler, config, state *OIDCAppModel) {
+	if config.ClientID.IsNull() && state.ClientID.ValueString() == "" && (m.ClientType.IsUnknown() || m.ClientType.ValueString() != "") {
+		m.ClientID = types.StringUnknown()
+	}
 	if !config.ClientSecret.IsNull() || state.ClientSecret.ValueString() != "" {
 		return // existing secrets never change on update
 	}

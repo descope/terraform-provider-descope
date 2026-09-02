@@ -11,7 +11,7 @@ import (
 func ConnectorResources() []func() resource.Resource {
 	return []func() resource.Resource{
 		{{- range .Registered }}
-		newConnectorResource[connectors.{{.ResourceStructName}}Model]("{{.ResourceName}}", connectors.{{.ResourceStructName}}Schema),
+		newConnectorResource[connectors.{{.ResourceStructName}}Model]("{{.ResourceName}}", "{{.ID}}", connectors.{{.ResourceStructName}}Schema),
 		{{- end }}
 	}
 }

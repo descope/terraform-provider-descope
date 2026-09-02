@@ -82,7 +82,7 @@ func (v jsonValidator) ValidateString(ctx context.Context, req validator.StringR
 	}
 
 	m := map[string]any{}
-	if err := json.Unmarshal([]byte(value), &m); err != nil {
+	if err := json.Unmarshal([]byte(value), &m); err != nil || m == nil {
 		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Invalid Attribute Value", fmt.Sprintf("Attribute %s must be valid JSON", req.Path)))
 		return
 	}

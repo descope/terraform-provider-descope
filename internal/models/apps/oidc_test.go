@@ -40,6 +40,33 @@ func TestOIDCAppClientSecretPlan(t *testing.T) {
 	}
 }
 
+func TestOIDCAppClientIDPlan(t *testing.T) {
+	testCases := []struct {
+		name       string
+		clientType types.String
+		config     types.String
+		state      types.String
+		plan       types.String
+		expected   types.String
+	}{
+		{"config id is kept", types.StringValue("confidential"), types.StringValue("pinned"), types.StringNull(), types.StringValue("pinned"), types.StringValue("pinned")},
+		{"existing id is kept", types.StringValue("confidential"), types.StringNull(), types.StringValue("client-x"), types.StringValue("client-x"), types.StringValue("client-x")},
+		{"switch to confidential expects a new id", types.StringValue("confidential"), types.StringNull(), types.StringValue(""), types.StringValue(""), types.StringUnknown()},
+		{"switch to public expects a new id", types.StringValue("public"), types.StringNull(), types.StringValue(""), types.StringValue(""), types.StringUnknown()},
+		{"unknown type expects a new id", types.StringUnknown(), types.StringNull(), types.StringValue(""), types.StringValue(""), types.StringUnknown()},
+		{"legacy type has no id", types.StringValue(""), types.StringNull(), types.StringValue(""), types.StringValue(""), types.StringValue("")},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			plan := &apps.OIDCAppModel{ClientType: tc.clientType, ClientID: tc.plan}
+			plan.ModifyPlan(nil, &apps.OIDCAppModel{ClientID: tc.config}, &apps.OIDCAppModel{ClientID: tc.state})
+			if !plan.ClientID.Equal(tc.expected) {
+				t.Errorf("expected planned client_id to be %s, got %s", tc.expected, plan.ClientID)
+			}
+		})
+	}
+}
+
 func TestOIDCApp(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	a := testacc.OIDCApp(t)
@@ -119,6 +146,7 @@ func TestOIDCApp(t *testing.T) {
 			"name":                                a.Name,
 			"description":                         "updated",
 			"claims":                              []string{"sub", "email"},
+			"client_id":                           testacc.AttributeIsSet,
 			"client_secret":                       confidentialSecret,
 			"client_type":                         "confidential",
 			"approved_redirect_urls":              []string{"https://sp.example.com/callback"},
@@ -131,13 +159,12 @@ func TestOIDCApp(t *testing.T) {
 		}),
 	}
 
-	// client_id differs after import: the state kept the empty value from before client_type was set, while an import adopts the computed value.
 	importStep := resource.TestStep{
 		ResourceName:            a.Path(),
 		ImportState:             true,
 		ImportStateVerify:       true,
 		ImportStateIdFunc:       testacc.GenerateImportStateID(a.Path(), "project_id", "id"),
-		ImportStateVerifyIgnore: []string{"deletion_protection", "client_id"},
+		ImportStateVerifyIgnore: []string{"deletion_protection"},
 	}
 
 	testacc.Run(t, createStep, updateStep, importStep)

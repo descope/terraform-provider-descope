@@ -41,15 +41,26 @@ func TestSessionMigration(t *testing.T) {
 				issuer = "https://dev-123456.okta.com/oauth2/default"
 				api_token = "00aBcDeFgHiJkLmNoPqRsTuVwXyZ"
 				loginid_matched_attributes = ["email"]
+				user_sync_type = "jit"
+				user_mapping = [
+					{ external_key = "email", descope_key = "email" },
+					{ external_key = "given_name", descope_key = "givenName" },
+				]
 			`),
 			Check: m.Check(map[string]any{
-				"vendor":                     "okta",
-				"client_id":                  "0oa1b2c3d4e5f6g7h8i9",
-				"issuer":                     "https://dev-123456.okta.com/oauth2/default",
-				"loginid_matched_attributes": []string{"email"},
+				"vendor":                      "okta",
+				"client_id":                   "0oa1b2c3d4e5f6g7h8i9",
+				"issuer":                      "https://dev-123456.okta.com/oauth2/default",
+				"loginid_matched_attributes":  []string{"email"},
+				"user_sync_type":              "jit",
+				"user_mapping.#":              "2",
+				"user_mapping.0.external_key": "email",
+				"user_mapping.0.descope_key":  "email",
+				"user_mapping.1.external_key": "given_name",
+				"user_mapping.1.descope_key":  "givenName",
 			}),
 		},
-		// switch to auth0
+		// switch to auth0, clearing the sync config by omitting it
 		resource.TestStep{
 			Config: m.Block(`
 				project_id = "` + projectID + `"
@@ -59,10 +70,12 @@ func TestSessionMigration(t *testing.T) {
 				loginid_matched_attributes = ["email"]
 			`),
 			Check: m.Check(map[string]any{
-				"vendor":    "auth0",
-				"client_id": "abcdefghij",
-				"domain":    "dev-123456.auth0.com",
-				"issuer":    "",
+				"vendor":         "auth0",
+				"client_id":      "abcdefghij",
+				"domain":         "dev-123456.auth0.com",
+				"issuer":         "",
+				"user_sync_type": "",
+				"user_mapping.#": "0",
 			}),
 		},
 		// removing all attributes disables migration

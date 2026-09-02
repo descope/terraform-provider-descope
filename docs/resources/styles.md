@@ -3,12 +3,12 @@
 page_title: "descope_styles Resource - descope"
 subcategory: ""
 description: |-
-  Manages the styles (theme) of the project's flow pages via the exported theme JSON representation. This is a singleton resource, and its id is always the project ID.
+  Manages the styles (theme) of the project's flow pages via the exported theme JSON representation.
 ---
 
 # descope_styles (Resource)
 
-Manages the styles (theme) of the project's flow pages via the exported theme JSON representation. This is a singleton resource, and its id is always the project ID.
+Manages the styles (theme) of the project's flow pages via the exported theme JSON representation.
 
 
 

@@ -3,12 +3,12 @@
 page_title: "descope_user_attribute Resource - descope"
 subcategory: ""
 description: |-
-  Manages a single user custom attribute definition in a Descope project. Applying this resource to a custom attribute that was previously defined in the Descope Console takes over the existing definition declaratively, though a default value configured for the attribute is preserved.
+  Manages a single user custom attribute definition in a Descope project.
 ---
 
 # descope_user_attribute (Resource)
 
-Manages a single user custom attribute definition in a Descope project. Applying this resource to a custom attribute that was previously defined in the Descope Console takes over the existing definition declaratively, though a default value configured for the attribute is preserved.
+Manages a single user custom attribute definition in a Descope project.
 
 
 

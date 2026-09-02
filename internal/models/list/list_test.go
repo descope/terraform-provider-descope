@@ -138,6 +138,10 @@ func TestListValidation(t *testing.T) {
 			Config:      l.Config(project, `json = jsonencode(["array-not-object"])`),
 			ExpectError: regexp.MustCompile(`must be valid JSON`),
 		},
+		resource.TestStep{
+			Config:      l.Config(project, `json = jsonencode(null)`),
+			ExpectError: regexp.MustCompile(`must be valid JSON`),
+		},
 	)
 }
 

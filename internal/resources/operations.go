@@ -51,6 +51,14 @@ func noDelete(_ context.Context, _ *infra.Client, _, _ string) error {
 	return nil
 }
 
+// Rejects an import whose id names an entity of another type: the load and delete endpoints are shared, so it would be adopted and later deleted.
+func checkImportedType(ctx context.Context, body map[string]any, key, expected, kind, id string) error {
+	if actual, _ := body[key].(string); helpers.IsImportState(ctx) && actual != expected {
+		return fmt.Errorf("the %s with id %s is of type %q, not %q", kind, id, actual, expected)
+	}
+	return nil
+}
+
 // Creates a resource driven through the legacy generic `/v1/mgmt/infra` entity endpoint (frozen): only for
 // resources already shipped on it. A schema with a `project_id` attribute makes it a project-level resource,
 // otherwise it's assumed to be a company-level resource.
@@ -103,7 +111,7 @@ func newSettingsResource[T any, M helpers.ResourceModel[T]](name string, sc sche
 
 // Returns a constructor for a standalone connector resource, used by the generated connectors.go registration
 // file. Connectors live on dedicated CRUD endpoints and are identified by a server-assigned id.
-func newConnectorResource[T any, M helpers.ResourceModel[T]](name string, sc schema.Schema) func() resource.Resource {
+func newConnectorResource[T any, M helpers.ResourceModel[T]](name, wireType string, sc schema.Schema) func() resource.Resource {
 	const path = "/v1/mgmt/connector"
 	return func() resource.Resource {
 		return newResource[T, M](name, sc, operations{
@@ -116,7 +124,11 @@ func newConnectorResource[T any, M helpers.ResourceModel[T]](name string, sc sch
 				return id, body, nil
 			},
 			Read: func(ctx context.Context, c *infra.Client, projectID, id string) (map[string]any, error) {
-				return c.Get(ctx, projectID, path, map[string]string{"id": id})
+				body, err := c.Get(ctx, projectID, path, map[string]string{"id": id})
+				if err != nil {
+					return nil, err
+				}
+				return body, checkImportedType(ctx, body, "type", wireType, "connector", id)
 			},
 			Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
 				body := maps.Clone(data)

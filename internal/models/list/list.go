@@ -90,7 +90,7 @@ func (m *ListModel) Validate(h *helpers.Handler) {
 		}
 	}
 	if chosen != 1 {
-		h.Invalid("Exactly one of the 'texts', 'ips' or 'json' attributes must be set")
+		h.Invalid("Exactly one of the 'texts', 'ips' or 'json' attributes must be set to a non-empty value")
 	}
 }
 
