@@ -27,8 +27,18 @@ Manages the project-level session migration settings for migrating user sessions
 - `domain` (String) The domain from the vendor's authentication configuration. Only used with the `auth0` vendor.
 - `issuer` (String) The issuer from the vendor's authentication configuration. Only used with the `okta` vendor.
 - `loginid_matched_attributes` (Set of String) Which attributes from the vendor's user should be used to match the Descope user's login ID (e.g. `email`).
+- `user_mapping` (Attributes List) A list of attribute mappings from the external vendor's user to Descope user attributes. (see [below for nested schema](#nestedatt--user_mapping))
+- `user_sync_type` (String) The type of user synchronization to perform, either `matchOnly` to only match existing users or `jit` for just-in-time provisioning.
 - `vendor` (String) The vendor to migrate user sessions from, either `auth0` or `okta`. Session migration is disabled when this isn't set.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedatt--user_mapping"></a>
+### Nested Schema for `user_mapping`
+
+Required:
+
+- `descope_key` (String) The Descope user attribute to map the external key to.
+- `external_key` (String) The attribute key in the external vendor's user object.

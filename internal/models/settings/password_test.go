@@ -1,6 +1,7 @@
 package settings_test
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/tools/testacc"
@@ -96,6 +97,28 @@ func TestPasswordSettings(t *testing.T) {
 			ImportStateVerify:       true,
 			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
 			ImportStateVerifyIgnore: []string{"email_service"},
+		},
+	)
+}
+
+func TestPasswordSettingsInvalid(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	m := testacc.PasswordSettings(t)
+
+	testacc.Run(t,
+		resource.TestStep{
+			Config: m.Block(`
+				project_id = "` + projectID + `"
+				temporary_lock_duration = "90 seconds"
+			`),
+			ExpectError: regexp.MustCompile(`must be a whole number of minutes`),
+		},
+		resource.TestStep{
+			Config: m.Block(`
+				project_id = "` + projectID + `"
+				temporary_lock_duration = "2 minutes"
+			`),
+			Check: m.Check(map[string]any{"temporary_lock_duration": "2 minutes"}),
 		},
 	)
 }

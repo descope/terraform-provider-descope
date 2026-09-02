@@ -41,7 +41,7 @@ var PasswordSettingsAttributes = map[string]schema.Attribute{
 	"lock_attempts":           intattr.Default(5, int64validator.Between(2, 10)),
 	"temporary_lock":          boolattr.Default(false),
 	"temporary_lock_attempts": intattr.Default(3, int64validator.Between(1, 10)),
-	"temporary_lock_duration": durationattr.Default("5 minutes", durationattr.MinimumValue("1 minute"), durationattr.MaximumValue("24 hours")),
+	"temporary_lock_duration": durationattr.Default("5 minutes", durationattr.MinimumValue("1 minute"), durationattr.MaximumValue("24 hours"), durationattr.WholeMinutes()),
 	"enforce_strength":        stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
 	"mask_errors":             boolattr.Default(true),
 	"email_service":           objattr.Default[EmailServiceRefModel](nil, EmailServiceRefAttributes),

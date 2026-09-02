@@ -78,3 +78,47 @@ loginid_matched_attributes
 
 Which attributes from the vendor's user should be used to match the Descope user's login ID
 (e.g. `email`).
+
+
+
+user_sync_type
+--------------
+
+- Type: `string`
+
+The type of user synchronization to perform, either `matchOnly` to only match existing users or
+`jit` for just-in-time provisioning.
+
+
+
+user_mapping
+------------
+
+- Type: `list` of `settings.UserMappingItem`
+
+A list of attribute mappings from the external vendor's user to Descope user attributes.
+
+
+
+
+
+UserMappingItem
+===============
+
+
+
+external_key
+------------
+
+- Type: `string` (required)
+
+The attribute key in the external vendor's user object.
+
+
+
+descope_key
+-----------
+
+- Type: `string` (required)
+
+The Descope user attribute to map the external key to.

@@ -31,7 +31,7 @@ terraform {
   required_providers {
     descope = {
       source = "descope/descope"
-      version = "~> 0.3"
+      version = "~> 1.0"
     }
   }
 }
@@ -134,18 +134,14 @@ If you've designed custom flows in the Descope console, you can export them and 
 3. Reference the file in your configuration:
 
 ```hcl
-resource "descope_project" "myapp" {
-  name = "my-app"
-
-  flows = {
-    "sign-up-or-in" = {
-      data = file("${path.module}/flows/sign-up-or-in.json")
-    }
-  }
+resource "descope_flow" "sign_up_or_in" {
+  project_id = descope_project.myapp.id
+  flow_id    = "sign-up-or-in"
+  data       = file("${path.module}/flows/sign-up-or-in.json")
 }
 ```
 
 ## Next Steps
 
-- Explore all available configuration options in the [`descope_project` resource reference](../resources/project)
+- Explore the resources the provider offers in the [provider reference](../index)
 - Browse the [Descope documentation](https://docs.descope.com) for more on authentication concepts

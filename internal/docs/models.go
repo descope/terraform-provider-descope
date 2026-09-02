@@ -167,6 +167,7 @@ func InjectModels() {
 	inject(settings.VoiceServiceRefAttributes, docsVoiceServiceRef)
 	inject(settings.SessionSettingsAttributes, docsSettingsSessionSettings)
 	inject(settings.SessionMigrationSettingsAttributes, docsSessionMigrationSettings)
+	inject(settings.UserMappingItemAttributes, docsUserMappingItem)
 	inject(settings.SSOSettingsAttributes, docsSSOSettings)
 	inject(settings.MandatoryUserAttributeAttributes, docsMandatoryUserAttribute)
 	inject(settings.SSOSuiteAttributes, docsSSOSuite)

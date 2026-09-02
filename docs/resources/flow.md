@@ -3,12 +3,12 @@
 page_title: "descope_flow Resource - descope"
 subcategory: ""
 description: |-
-  Manages a single flow in a Descope project via its exported JSON representation, the same format produced by exporting a flow in the Descope console. Applying this resource to a flow that was previously created in the Descope Console takes over the existing flow: its contents are replaced with the configured JSON on the first apply.
+  Manages a single flow in a Descope project via its exported JSON representation, the same format produced by exporting a flow in the Descope console.
 ---
 
 # descope_flow (Resource)
 
-Manages a single flow in a Descope project via its exported JSON representation, the same format produced by exporting a flow in the Descope console. Applying this resource to a flow that was previously created in the Descope Console takes over the existing flow: its contents are replaced with the configured JSON on the first apply.
+Manages a single flow in a Descope project via its exported JSON representation, the same format produced by exporting a flow in the Descope console.
 
 
 

@@ -1817,6 +1817,14 @@ var docsSessionMigrationSettings = map[string]string{
 		"write-only and never read back from the server.",
 	"loginid_matched_attributes": "Which attributes from the vendor's user should be used to match the Descope user's login ID " +
 		"(e.g. `email`).",
+	"user_sync_type": "The type of user synchronization to perform, either `matchOnly` to only match existing users or " +
+		"`jit` for just-in-time provisioning.",
+	"user_mapping": "A list of attribute mappings from the external vendor's user to Descope user attributes.",
+}
+
+var docsUserMappingItem = map[string]string{
+	"external_key": "The attribute key in the external vendor's user object.",
+	"descope_key":  "The Descope user attribute to map the external key to.",
 }
 
 var docsSSOSettings = map[string]string{

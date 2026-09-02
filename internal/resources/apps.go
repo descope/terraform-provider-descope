@@ -12,7 +12,7 @@ import (
 )
 
 func NewOIDCAppResource() resource.Resource {
-	read := ssoAppRead(true)
+	read := ssoAppRead("oidc", true)
 	return newResource[apps.OIDCAppModel]("oidc_app", apps.OIDCAppSchema, operations{
 		Create: ssoAppCreate("oidc", read),
 		Read:   read,
@@ -32,7 +32,7 @@ func NewOIDCAppResource() resource.Resource {
 }
 
 func NewSAMLAppResource() resource.Resource {
-	read := ssoAppRead(false)
+	read := ssoAppRead("saml", false)
 	return newResource[apps.SAMLAppModel]("saml_app", apps.SAMLAppSchema, operations{
 		Create: ssoAppCreate("saml", read),
 		Read:   read,
@@ -51,7 +51,7 @@ func NewSAMLAppResource() resource.Resource {
 }
 
 func NewWSFedAppResource() resource.Resource {
-	read := ssoAppRead(false)
+	read := ssoAppRead("wsfed", false)
 	return newResource[apps.WSFedAppModel]("wsfed_app", apps.WSFedAppSchema, operations{
 		Create: ssoAppCreate("wsfed", read),
 		Read:   read,
@@ -84,10 +84,13 @@ func ssoAppCreate(kind string, read readFunc) createFunc {
 
 // ssoAppRead also fetches the OIDC client secret cleartext on every read (including import) because the load endpoint always returns
 // it empty; the model only applies it when the state has no secret already.
-func ssoAppRead(withSecret bool) readFunc {
+func ssoAppRead(kind string, withSecret bool) readFunc {
 	return func(ctx context.Context, c *infra.Client, projectID, id string) (map[string]any, error) {
 		data, err := c.Get(ctx, projectID, "/v1/mgmt/sso/idp/app/load", map[string]string{"id": id})
 		if err != nil {
+			return nil, err
+		}
+		if err := checkImportedType(ctx, data, "appType", kind, "application", id); err != nil {
 			return nil, err
 		}
 		if withSecret {

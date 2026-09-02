@@ -3,12 +3,12 @@
 page_title: "descope_fga_schema Resource - descope"
 subcategory: ""
 description: |-
-  Manages the FGA (fine-grained authorization) schema for a Descope project as a single DSL string. This is a singleton resource, and its id is always the project ID. Setting an empty schema, or destroying the resource, clears the project's FGA schema (which also removes any FGA relations that depend on it).
+  Manages the FGA (fine-grained authorization) schema for a Descope project as a single DSL string. Setting an empty schema, or destroying the resource, clears the project's FGA schema (which also removes any FGA relations that depend on it).
 ---
 
 # descope_fga_schema (Resource)
 
-Manages the FGA (fine-grained authorization) schema for a Descope project as a single DSL string. This is a singleton resource, and its id is always the project ID. Setting an empty schema, or destroying the resource, clears the project's FGA schema (which also removes any FGA relations that depend on it).
+Manages the FGA (fine-grained authorization) schema for a Descope project as a single DSL string. Setting an empty schema, or destroying the resource, clears the project's FGA schema (which also removes any FGA relations that depend on it).
 
 
 

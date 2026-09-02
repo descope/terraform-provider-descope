@@ -3,12 +3,12 @@
 page_title: "descope_widget Resource - descope"
 subcategory: ""
 description: |-
-  Manages a single widget in a Descope project via its exported JSON representation, the same format produced by exporting a widget in the Descope console. Applying this resource to a widget that was previously created in the Descope Console takes over the existing widget: its contents are replaced with the configured JSON on the first apply.
+  Manages a single widget in a Descope project via its exported JSON representation, the same format produced by exporting a widget in the Descope console.
 ---
 
 # descope_widget (Resource)
 
-Manages a single widget in a Descope project via its exported JSON representation, the same format produced by exporting a widget in the Descope console. Applying this resource to a widget that was previously created in the Descope Console takes over the existing widget: its contents are replaced with the configured JSON on the first apply.
+Manages a single widget in a Descope project via its exported JSON representation, the same format produced by exporting a widget in the Descope console.
 
 
 
