@@ -21,9 +21,8 @@ func TestExternalTokenHTTPConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "xhmqmkcfhe4mk6"
     						}
-				headers = {
-    							"key" = "g6htpmp"
-    						}
+				headers = { "X-Plain" = "g6htpmp" }
+				secret_headers = { "X-Secret" = "j57dfuysuuapr" }
 				hmac_secret = "ooxzct5yxz"
 				insecure = false
 				use_static_ips = false
@@ -36,7 +35,8 @@ func TestExternalTokenHTTPConnector(t *testing.T) {
 				"disabled":                    false,
 				"endpoint":                    "w27xxsgz",
 				"authentication.bearer_token": "xhmqmkcfhe4mk6",
-				"headers.key":                 "g6htpmp",
+				"headers.X-Plain":             "g6htpmp",
+				"secret_headers.X-Secret":     "j57dfuysuuapr",
 				"hmac_secret":                 "ooxzct5yxz",
 				"insecure":                    false,
 				"use_static_ips":              false,
@@ -52,9 +52,8 @@ func TestExternalTokenHTTPConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "r6zxhdnnw7dqoq"
     						}
-				headers = {
-    							"key" = "7xiojfk"
-    						}
+				headers = { "X-Plain" = "7xiojfk" }
+				secret_headers = { "X-Secret" = "yh4n7htn6b32r" }
 				hmac_secret = "twukowwuij"
 				insecure = true
 				use_static_ips = true
@@ -64,7 +63,8 @@ func TestExternalTokenHTTPConnector(t *testing.T) {
 				"disabled":                    true,
 				"endpoint":                    "ef4vxrwc",
 				"authentication.bearer_token": "r6zxhdnnw7dqoq",
-				"headers.key":                 "7xiojfk",
+				"headers.X-Plain":             "7xiojfk",
+				"secret_headers.X-Secret":     "yh4n7htn6b32r",
 				"hmac_secret":                 "twukowwuij",
 				"insecure":                    true,
 				"use_static_ips":              true,

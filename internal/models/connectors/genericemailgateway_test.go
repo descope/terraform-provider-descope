@@ -22,9 +22,8 @@ func TestGenericEmailGatewayConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "xhmqmkcfhe4mk6"
     						}
-				headers = {
-    							"key" = "g6htpmp"
-    						}
+				headers = { "X-Plain" = "g6htpmp" }
+				secret_headers = { "X-Secret" = "j57dfuysuuapr" }
 				hmac_secret = "ooxzct5yxz"
 				insecure = false
 				use_static_ips = false
@@ -38,7 +37,8 @@ func TestGenericEmailGatewayConnector(t *testing.T) {
 				"post_url":                    "efnv6ac",
 				"sender":                      "bi3hxe",
 				"authentication.bearer_token": "xhmqmkcfhe4mk6",
-				"headers.key":                 "g6htpmp",
+				"headers.X-Plain":             "g6htpmp",
+				"secret_headers.X-Secret":     "j57dfuysuuapr",
 				"hmac_secret":                 "ooxzct5yxz",
 				"insecure":                    false,
 				"use_static_ips":              false,
@@ -55,9 +55,8 @@ func TestGenericEmailGatewayConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "r6zxhdnnw7dqoq"
     						}
-				headers = {
-    							"key" = "7xiojfk"
-    						}
+				headers = { "X-Plain" = "7xiojfk" }
+				secret_headers = { "X-Secret" = "yh4n7htn6b32r" }
 				hmac_secret = "twukowwuij"
 				insecure = true
 				use_static_ips = true
@@ -68,7 +67,8 @@ func TestGenericEmailGatewayConnector(t *testing.T) {
 				"post_url":                    "a3xdnv2",
 				"sender":                      "pmeruh",
 				"authentication.bearer_token": "r6zxhdnnw7dqoq",
-				"headers.key":                 "7xiojfk",
+				"headers.X-Plain":             "7xiojfk",
+				"secret_headers.X-Secret":     "yh4n7htn6b32r",
 				"hmac_secret":                 "twukowwuij",
 				"insecure":                    true,
 				"use_static_ips":              true,

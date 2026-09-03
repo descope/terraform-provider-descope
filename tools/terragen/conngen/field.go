@@ -11,13 +11,15 @@ import (
 )
 
 const (
-	FieldTypeString       = "string"
-	FieldTypeSecret       = "secret"
-	FieldTypeBool         = "boolean"
-	FieldTypeNumber       = "number"
-	FieldTypeHTTPAuth     = "httpAuth"
-	FieldTypeObject       = "object"
-	FieldTypeAuditFilters = "auditFilters"
+	FieldTypeString              = "string"
+	FieldTypeSecret              = "secret"
+	FieldTypeBool                = "boolean"
+	FieldTypeNumber              = "number"
+	FieldTypeHTTPAuth            = "httpAuth"
+	FieldTypeObject              = "object"
+	FieldTypeSecretObject        = "secret-object"
+	FieldTypeSecretObjectSecrets = "secret-object-secrets"
+	FieldTypeAuditFilters        = "auditFilters"
 )
 
 // Generated
@@ -54,8 +56,21 @@ type Field struct {
 
 	naming *Naming
 
+	// set on a generated twin whose attribute name differs from the configuration key it reads and writes
+	configKey string
+
+	// set on a secret-object field, pointing at the twin holding its secret entries; both are written by one statement
+	secretTwin *Field
+
 	// set on fields that other fields depend on, so test updates don't flip them
 	hasDependents bool
+}
+
+func (f *Field) ConfigKey() string {
+	if f.configKey != "" {
+		return f.configKey
+	}
+	return f.Name
 }
 
 func (f *Field) StructName() string {
@@ -75,6 +90,8 @@ func (f *Field) StructType() string {
 	case FieldTypeNumber:
 		return `floatattr.Type`
 	case FieldTypeObject:
+		return `strmapattr.Type`
+	case FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
 		return `strmapattr.Type`
 	case FieldTypeAuditFilters:
 		return `listattr.Type[AuditFilterFieldModel]`
@@ -174,6 +191,10 @@ func (f *Field) AttributeType() string {
 		return `floatattr.Default(0)`
 	case FieldTypeObject:
 		return `strmapattr.Default()`
+	case FieldTypeSecretObject:
+		return `strmapattr.Default()`
+	case FieldTypeSecretObjectSecrets:
+		return `strmapattr.Secret()`
 	case FieldTypeAuditFilters:
 		return `listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes)`
 	case FieldTypeHTTPAuth:
@@ -207,7 +228,11 @@ func (f *Field) GetValueStatement() string {
 	case FieldTypeNumber:
 		return fmt.Sprintf(`floatattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeObject:
-		return fmt.Sprintf(`getHeaders(%s, c, %q, h)`, accessor, f.Name)
+		return fmt.Sprintf(`getObjectField(%s, c, %q, h)`, accessor, f.Name)
+	case FieldTypeSecretObject:
+		return fmt.Sprintf(`getSecretObject(%s, m.%s, c, %q, h)`, accessor, f.secretTwin.ResourceFieldName(), f.ConfigKey())
+	case FieldTypeSecretObjectSecrets:
+		return ""
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`listattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
@@ -229,7 +254,11 @@ func (f *Field) SetValueStatement() string {
 	case FieldTypeNumber:
 		return fmt.Sprintf(`floatattr.Set(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeObject:
-		return fmt.Sprintf(`setHeaders(%s, c, %q, h)`, accessor, f.Name)
+		return fmt.Sprintf(`setObjectField(%s, c, %q, h)`, accessor, f.Name)
+	case FieldTypeSecretObject:
+		return fmt.Sprintf(`setSecretObject(%s, &m.%s, c, %q, h)`, accessor, f.secretTwin.ResourceFieldName(), f.ConfigKey())
+	case FieldTypeSecretObjectSecrets:
+		return ""
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`listattr.Set(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
@@ -248,7 +277,7 @@ func (f *Field) IsZero() string {
 		return fmt.Sprintf(`!%s.ValueBool()`, accessor)
 	case FieldTypeNumber:
 		return fmt.Sprintf(`%s.ValueFloat64() == 0`, accessor)
-	case FieldTypeObject:
+	case FieldTypeObject, FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
 		return fmt.Sprintf(`%s.IsEmpty()`, accessor)
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`%s.IsEmpty()`, accessor)
@@ -294,7 +323,7 @@ func (f *Field) IsNonZero() string {
 		return fmt.Sprintf(`%s.ValueBool()`, accessor)
 	case FieldTypeNumber:
 		return fmt.Sprintf(`%s.ValueFloat64() != 0`, accessor)
-	case FieldTypeObject:
+	case FieldTypeObject, FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
 		return fmt.Sprintf(`!%s.IsEmpty()`, accessor)
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`!%s.IsEmpty()`, accessor)
@@ -341,6 +370,8 @@ func (f *Field) testAssignment(update bool) string {
 		return fmt.Sprintf(`{
     							"key" = %q
     						}`, f.testString(update))
+	case FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
+		return fmt.Sprintf(`{ %q = %q }`, f.testKey(), f.testString(update))
 	case FieldTypeAuditFilters:
 		if !f.testDependencySatisfied() {
 			return `[]`
@@ -390,6 +421,8 @@ func (f *Field) testCheck(update bool) string {
 		return fmt.Sprintf(`"%s": %d`, attribute, f.testNumber(update))
 	case FieldTypeObject:
 		return fmt.Sprintf(`"%s.key": %q`, attribute, f.testString(update))
+	case FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
+		return fmt.Sprintf(`"%s.%s": %q`, attribute, f.testKey(), f.testString(update))
 	case FieldTypeAuditFilters:
 		if !f.testDependencySatisfied() {
 			return fmt.Sprintf(`"%s.#": 0`, attribute)
@@ -400,6 +433,13 @@ func (f *Field) testCheck(update bool) string {
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
+}
+
+func (f *Field) testKey() string {
+	if f.Type == FieldTypeSecretObjectSecrets {
+		return "X-Secret"
+	}
+	return "X-Plain"
 }
 
 func (f *Field) testBool(update bool) bool {

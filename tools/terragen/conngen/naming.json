@@ -907,6 +907,10 @@
       "attribute": "secret_api_key",
       "struct": "SecretAPIKey"
     },
+    "secretHeaders": {
+      "attribute": "secret_headers",
+      "struct": "SecretHeaders"
+    },
     "secretKey": {
       "attribute": "secret_key",
       "struct": "SecretKey"

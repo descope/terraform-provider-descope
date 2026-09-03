@@ -30,6 +30,7 @@ var AuditWebhookConnectorAttributes = map[string]schema.Attribute{
 	"base_url":       stringattr.Required(),
 	"authentication": objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
 	"headers":        strmapattr.Default(),
+	"secret_headers": strmapattr.Secret(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
 	"audit_filters":  listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
@@ -47,6 +48,7 @@ type AuditWebhookConnectorModel struct {
 	BaseURL        stringattr.Type                      `tfsdk:"base_url"`
 	Authentication objattr.Type[HTTPAuthFieldModel]     `tfsdk:"authentication"`
 	Headers        strmapattr.Type                      `tfsdk:"headers"`
+	SecretHeaders  strmapattr.Type                      `tfsdk:"secret_headers"`
 	HMACSecret     stringattr.Type                      `tfsdk:"hmac_secret"`
 	Insecure       boolattr.Type                        `tfsdk:"insecure"`
 	AuditFilters   listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
@@ -85,7 +87,7 @@ func (m *AuditWebhookConnectorModel) ConfigurationValues(h *helpers.Handler) map
 	c := map[string]any{}
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	getSecretObject(m.Headers, m.SecretHeaders, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
@@ -95,7 +97,7 @@ func (m *AuditWebhookConnectorModel) ConfigurationValues(h *helpers.Handler) map
 func (m *AuditWebhookConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)

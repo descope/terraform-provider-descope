@@ -20,7 +20,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
     {{- end }}
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-    {{- if .HasField "object" }}
+    {{- if or (.HasField "object") (.HasField "secret-object") }}
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
     {{- end }}
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
@@ -165,9 +165,9 @@ func (m *{{.ResourceStructName}}Model) Validate(h *helpers.Handler) {
 func (m *{{.ResourceStructName}}Model) ConfigurationValues(h *helpers.Handler) map[string]any {
 	{{- if or (gt (len .Fields) 0) (gt (len .HiddenFields) 0) (gt (len .ExtDiscriminators) 0) }}
 	c := map[string]any{}
-    {{- range .Fields }}
+    {{- range .Fields }}{{ if .GetValueStatement }}
     {{.GetValueStatement}}
-    {{- end }}
+    {{- end }}{{ end }}
     {{- range .HiddenFields }}
     {{.GetValueStatement}}
     {{- end }}
@@ -182,9 +182,9 @@ func (m *{{.ResourceStructName}}Model) ConfigurationValues(h *helpers.Handler) m
 
 {{ if gt (len .Fields) 0 }}
 func (m *{{.ResourceStructName}}Model) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-    {{- range .Fields }}
+    {{- range .Fields }}{{ if .SetValueStatement }}
     {{.SetValueStatement}}
-    {{- end }}
+    {{- end }}{{ end }}
 }
 {{- end }}
 

@@ -22,9 +22,8 @@ func TestOpenTelemetryConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "xhmqmkcfhe4mk6"
     						}
-				headers = {
-    							"key" = "g6htpmp"
-    						}
+				headers = { "X-Plain" = "g6htpmp" }
+				secret_headers = { "X-Secret" = "j57dfuysuuapr" }
 				insecure = false
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
@@ -39,7 +38,8 @@ func TestOpenTelemetryConnector(t *testing.T) {
 				"endpoint":                    "w27xxsgz",
 				"protocol":                    "http",
 				"authentication.bearer_token": "xhmqmkcfhe4mk6",
-				"headers.key":                 "g6htpmp",
+				"headers.X-Plain":             "g6htpmp",
+				"secret_headers.X-Secret":     "j57dfuysuuapr",
 				"insecure":                    false,
 				"audit_enabled":               true,
 				"audit_filters.0.values":      []string{"kekpon4oj34w"},
@@ -57,9 +57,8 @@ func TestOpenTelemetryConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "r6zxhdnnw7dqoq"
     						}
-				headers = {
-    							"key" = "7xiojfk"
-    						}
+				headers = { "X-Plain" = "7xiojfk" }
+				secret_headers = { "X-Secret" = "yh4n7htn6b32r" }
 				insecure = true
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["po4by43vyqpb"] }]
@@ -71,7 +70,8 @@ func TestOpenTelemetryConnector(t *testing.T) {
 				"endpoint":                    "ef4vxrwc",
 				"protocol":                    "http",
 				"authentication.bearer_token": "r6zxhdnnw7dqoq",
-				"headers.key":                 "7xiojfk",
+				"headers.X-Plain":             "7xiojfk",
+				"secret_headers.X-Secret":     "yh4n7htn6b32r",
 				"insecure":                    true,
 				"audit_enabled":               true,
 				"audit_filters.0.values":      []string{"po4by43vyqpb"},

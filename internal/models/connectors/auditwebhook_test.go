@@ -21,9 +21,8 @@ func TestAuditWebhookConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "xhmqmkcfhe4mk6"
     						}
-				headers = {
-    							"key" = "g6htpmp"
-    						}
+				headers = { "X-Plain" = "g6htpmp" }
+				secret_headers = { "X-Secret" = "j57dfuysuuapr" }
 				hmac_secret = "ooxzct5yxz"
 				insecure = false
 				audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
@@ -36,7 +35,8 @@ func TestAuditWebhookConnector(t *testing.T) {
 				"disabled":                    false,
 				"base_url":                    "bceszn6",
 				"authentication.bearer_token": "xhmqmkcfhe4mk6",
-				"headers.key":                 "g6htpmp",
+				"headers.X-Plain":             "g6htpmp",
+				"secret_headers.X-Secret":     "j57dfuysuuapr",
 				"hmac_secret":                 "ooxzct5yxz",
 				"insecure":                    false,
 				"audit_filters.0.values":      []string{"kekpon4oj34w"},
@@ -52,9 +52,8 @@ func TestAuditWebhookConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "r6zxhdnnw7dqoq"
     						}
-				headers = {
-    							"key" = "7xiojfk"
-    						}
+				headers = { "X-Plain" = "7xiojfk" }
+				secret_headers = { "X-Secret" = "yh4n7htn6b32r" }
 				hmac_secret = "twukowwuij"
 				insecure = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["po4by43vyqpb"] }]
@@ -64,7 +63,8 @@ func TestAuditWebhookConnector(t *testing.T) {
 				"disabled":                    true,
 				"base_url":                    "yruwlv4",
 				"authentication.bearer_token": "r6zxhdnnw7dqoq",
-				"headers.key":                 "7xiojfk",
+				"headers.X-Plain":             "7xiojfk",
+				"secret_headers.X-Secret":     "yh4n7htn6b32r",
 				"hmac_secret":                 "twukowwuij",
 				"insecure":                    true,
 				"audit_filters.0.values":      []string{"po4by43vyqpb"},

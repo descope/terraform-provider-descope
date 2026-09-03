@@ -29,6 +29,7 @@ var ExternalTokenHTTPConnectorAttributes = map[string]schema.Attribute{
 	"endpoint":       stringattr.Required(),
 	"authentication": objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
 	"headers":        strmapattr.Default(),
+	"secret_headers": strmapattr.Secret(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
 	"use_static_ips": boolattr.Default(false),
@@ -46,6 +47,7 @@ type ExternalTokenHTTPConnectorModel struct {
 	Endpoint       stringattr.Type                  `tfsdk:"endpoint"`
 	Authentication objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
 	Headers        strmapattr.Type                  `tfsdk:"headers"`
+	SecretHeaders  strmapattr.Type                  `tfsdk:"secret_headers"`
 	HMACSecret     stringattr.Type                  `tfsdk:"hmac_secret"`
 	Insecure       boolattr.Type                    `tfsdk:"insecure"`
 	UseStaticIPs   boolattr.Type                    `tfsdk:"use_static_ips"`
@@ -84,7 +86,7 @@ func (m *ExternalTokenHTTPConnectorModel) ConfigurationValues(h *helpers.Handler
 	c := map[string]any{}
 	stringattr.Get(m.Endpoint, c, "endpoint")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	getSecretObject(m.Headers, m.SecretHeaders, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
@@ -94,7 +96,7 @@ func (m *ExternalTokenHTTPConnectorModel) ConfigurationValues(h *helpers.Handler
 func (m *ExternalTokenHTTPConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.Endpoint, c, "endpoint")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")

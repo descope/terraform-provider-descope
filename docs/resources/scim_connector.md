@@ -30,6 +30,7 @@ Manages a Outbound SCIM connector and its configuration in a Descope project. Pr
 - `headers` (Map of String) Additional HTTP headers to send with each request to the SCIM server.
 - `hmac_secret` (String, Sensitive) A secret used to sign requests to the SCIM server with an HMAC signature.
 - `insecure` (Boolean) Whether to skip verification of the SCIM server's TLS certificate.
+- `secret_headers` (Map of String, Sensitive) Additional HTTP headers to send with each request to the SCIM server. Values set here are stored encrypted and are never returned by the API, so they are not read back into the Terraform state.
 
 ### Read-Only
 

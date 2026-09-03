@@ -30,6 +30,7 @@ var SCIMConnectorAttributes = map[string]schema.Attribute{
 	"base_url":         stringattr.Required(),
 	"authentication":   objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
 	"headers":          strmapattr.Default(),
+	"secret_headers":   strmapattr.Secret(),
 	"hmac_secret":      stringattr.SecretOptional(),
 	"insecure":         boolattr.Default(false),
 }
@@ -47,6 +48,7 @@ type SCIMConnectorModel struct {
 	BaseURL        stringattr.Type                  `tfsdk:"base_url"`
 	Authentication objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
 	Headers        strmapattr.Type                  `tfsdk:"headers"`
+	SecretHeaders  strmapattr.Type                  `tfsdk:"secret_headers"`
 	HMACSecret     stringattr.Type                  `tfsdk:"hmac_secret"`
 	Insecure       boolattr.Type                    `tfsdk:"insecure"`
 }
@@ -85,7 +87,7 @@ func (m *SCIMConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]
 	stringattr.Get(m.FederatedAppID, c, "federatedAppId")
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	getSecretObject(m.Headers, m.SecretHeaders, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	return c
@@ -95,7 +97,7 @@ func (m *SCIMConnectorModel) SetConfigurationValues(c map[string]any, h *helpers
 	stringattr.Set(&m.FederatedAppID, c, "federatedAppId")
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 }

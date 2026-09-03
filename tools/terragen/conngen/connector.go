@@ -51,6 +51,8 @@ var supportedFieldTypes = []string{
 	FieldTypeBool,
 	FieldTypeNumber,
 	FieldTypeHTTPAuth,
+	FieldTypeSecretObject,
+	FieldTypeSecretObjectSecrets,
 	FieldTypeObject,
 	FieldTypeAuditFilters,
 }
@@ -168,6 +170,29 @@ func (c *Connector) HasValidator() bool {
 	})
 }
 
+// A secret-object field becomes two attributes over one configuration key, so that ordinary values stay visible in plans while the
+// entries written to the secret twin are marked for encryption and never read back.
+func (c *Connector) expandSecretObjectFields() {
+	fields := make([]*Field, 0, len(c.Fields))
+	for _, f := range c.Fields {
+		fields = append(fields, f)
+		if f.Type != FieldTypeSecretObject {
+			continue
+		}
+		desc := strings.TrimRight(strings.TrimSpace(f.Description), ".")
+		twin := &Field{
+			Name:        "secret" + utils.CapitalCase(f.Name),
+			Description: desc + ". Values set here are stored encrypted and are never returned by the API, so they are not read back into the Terraform state.",
+			Type:        FieldTypeSecretObjectSecrets,
+			naming:      f.naming,
+			configKey:   f.ConfigKey(),
+		}
+		f.secretTwin = twin
+		fields = append(fields, twin)
+	}
+	c.Fields = fields
+}
+
 func (c *Connector) Prepare() {
 	excluded := c.excludeFields()
 
@@ -200,6 +225,8 @@ func (c *Connector) Prepare() {
 		c.Fields = append(c.Fields, EngineIDField)
 	}
 
+	c.expandSecretObjectFields()
+
 	for _, f := range c.Fields {
 		// treat these types as regular string fields for now
 		if f.Type == "readonly-string" {
@@ -209,11 +236,6 @@ func (c *Connector) Prepare() {
 		// treat secret file fields as regular secret fields, as they are essentially identical
 		if f.Type == "secret-file" || f.Type == "secret-json-file" {
 			f.Type = FieldTypeSecret
-		}
-
-		// treat secret-object fields are regular object fields until we add support for it
-		if f.Type == "secret-object" {
-			f.Type = FieldTypeObject
 		}
 
 		if !slices.Contains(supportedFieldTypes, f.Type) {

@@ -121,7 +121,7 @@ func (m *SupabaseConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 	boolattr.Get(m.CreateUsers, c, "createSupabaseUser")
 	stringattr.Get(m.ProjectBaseURL, c, "supabaseUrl")
 	stringattr.Get(m.ServiceRoleAPIKey, c, "supabaseServiceRoleKey")
-	getHeaders(m.CustomClaimsMapping, c, "customClaimsMapping", h)
+	getObjectField(m.CustomClaimsMapping, c, "customClaimsMapping", h)
 	floatattr.Get(m.ExpirationTime, c, "expirationTimeMinutes")
 	return c
 }
@@ -133,7 +133,7 @@ func (m *SupabaseConnectorModel) SetConfigurationValues(c map[string]any, h *hel
 	boolattr.Set(&m.CreateUsers, c, "createSupabaseUser")
 	stringattr.Set(&m.ProjectBaseURL, c, "supabaseUrl")
 	stringattr.Nil(&m.ServiceRoleAPIKey)
-	setHeaders(&m.CustomClaimsMapping, c, "customClaimsMapping", h)
+	setObjectField(&m.CustomClaimsMapping, c, "customClaimsMapping", h)
 	floatattr.Set(&m.ExpirationTime, c, "expirationTimeMinutes")
 }
 

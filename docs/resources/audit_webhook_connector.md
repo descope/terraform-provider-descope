@@ -30,6 +30,7 @@ Manages a Audit Webhook connector and its configuration in a Descope project. Se
 - `headers` (Map of String) The headers to send with the request
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
+- `secret_headers` (Map of String, Sensitive) The headers to send with the request. Values set here are stored encrypted and are never returned by the API, so they are not read back into the Terraform state.
 
 ### Read-Only
 

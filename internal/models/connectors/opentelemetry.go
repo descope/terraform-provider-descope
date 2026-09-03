@@ -32,6 +32,7 @@ var OpenTelemetryConnectorAttributes = map[string]schema.Attribute{
 	"protocol":                 stringattr.Default("http", stringvalidator.OneOf("http", "grpc")),
 	"authentication":           objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
 	"headers":                  strmapattr.Default(),
+	"secret_headers":           strmapattr.Secret(),
 	"insecure":                 boolattr.Default(false),
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
@@ -51,6 +52,7 @@ type OpenTelemetryConnectorModel struct {
 	Protocol               stringattr.Type                      `tfsdk:"protocol"`
 	Authentication         objattr.Type[HTTPAuthFieldModel]     `tfsdk:"authentication"`
 	Headers                strmapattr.Type                      `tfsdk:"headers"`
+	SecretHeaders          strmapattr.Type                      `tfsdk:"secret_headers"`
 	Insecure               boolattr.Type                        `tfsdk:"insecure"`
 	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
 	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
@@ -98,7 +100,7 @@ func (m *OpenTelemetryConnectorModel) ConfigurationValues(h *helpers.Handler) ma
 	stringattr.Get(m.Endpoint, c, "endpoint")
 	stringattr.Get(m.Protocol, c, "protocol")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	getSecretObject(m.Headers, m.SecretHeaders, c, "headers", h)
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
@@ -110,7 +112,7 @@ func (m *OpenTelemetryConnectorModel) SetConfigurationValues(c map[string]any, h
 	stringattr.Set(&m.Endpoint, c, "endpoint")
 	stringattr.Set(&m.Protocol, c, "protocol")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)

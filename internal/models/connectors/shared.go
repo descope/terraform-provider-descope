@@ -39,28 +39,69 @@ func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]an
 	strlistattr.Set(&m.Vals, data, "values", h)
 }
 
-// HTTP Headers
+// Object Fields
 
-func getHeaders(s strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
-	headers := []any{}
+func getObjectField(s strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
+	entries := []any{}
 	for k, v := range strmapattr.Iterator(s, h) {
-		headers = append(headers, map[string]any{"key": k, "value": v})
+		entries = append(entries, map[string]any{"key": k, "value": v})
 	}
-	data[key] = headers
+	data[key] = entries
 }
 
-func setHeaders(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) { // nolint:unparam
-	headers := map[string]string{}
+func setObjectField(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) { // nolint:unparam
+	entries := map[string]string{}
 	if v, ok := data[key].([]any); ok {
 		for i := range v {
 			if m, ok := v[i].(map[string]any); ok {
 				key, _ := m["key"].(string)
 				value, _ := m["value"].(string)
-				headers[key] = value
+				entries[key] = value
 			}
 		}
 	}
-	*s = strmapattr.Value(headers)
+	*s = strmapattr.Value(entries)
+}
+
+// Secret Object Field
+//
+// A secret-object field is one wire array of {key, value, secret} entries, split into a plain map and a sensitive one so that
+// ordinary values stay visible in plans. Secret values are masked on read, so only the plain entries are adopted back.
+
+func getSecretObject(plain, secret strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
+	entries := []any{}
+	for k, v := range strmapattr.Iterator(plain, h) {
+		if _, ok := secret.Elements()[k]; ok {
+			h.Conflict("The %s and secret_%s attributes must not both set the %q key", key, key, k)
+		}
+		entries = append(entries, map[string]any{"key": k, "value": v})
+	}
+	for k, v := range strmapattr.Iterator(secret, h) {
+		entries = append(entries, map[string]any{"key": k, "value": v, "secret": true})
+	}
+	data[key] = entries
+}
+
+func setSecretObject(plain, secret *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) { // nolint:unparam
+	entries := map[string]string{}
+	if v, ok := data[key].([]any); ok {
+		for i := range v {
+			m, ok := v[i].(map[string]any)
+			if !ok {
+				continue
+			}
+			if isSecret, _ := m["secret"].(bool); isSecret {
+				continue
+			}
+			name, _ := m["key"].(string)
+			value, _ := m["value"].(string)
+			entries[name] = value
+		}
+	}
+	*plain = strmapattr.Value(entries)
+	if secret.IsNull() || secret.IsUnknown() {
+		*secret = strmapattr.Empty()
+	}
 }
 
 // HTTP Auth Field
@@ -228,7 +269,7 @@ func (m *HTTPAuthOAuth2ClientCredentialsFieldModel) Values(h *helpers.Handler) m
 	stringattr.Get(m.AuthURL, data, "authUrl")
 	stringattr.Get(m.AuthStyle, data, "authStyle")
 	stringattr.Get(m.Scopes, data, "scopes")
-	getHeaders(m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
+	getObjectField(m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
 	return data
 }
 
@@ -238,5 +279,5 @@ func (m *HTTPAuthOAuth2ClientCredentialsFieldModel) SetValues(h *helpers.Handler
 	stringattr.Set(&m.AuthURL, data, "authUrl")
 	stringattr.Set(&m.AuthStyle, data, "authStyle")
 	stringattr.Set(&m.Scopes, data, "scopes")
-	setHeaders(&m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
+	setObjectField(&m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
 }

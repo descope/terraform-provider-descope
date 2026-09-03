@@ -31,6 +31,7 @@ Manages a OpenTelemetry connector and its configuration in a Descope project. Se
 - `headers` (Map of String) The headers to send with the request
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
 - `protocol` (String) Protocol to use for OTLP: http or grpc.
+- `secret_headers` (Map of String, Sensitive) The headers to send with the request. Values set here are stored encrypted and are never returned by the API, so they are not read back into the Terraform state.
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
 ### Read-Only

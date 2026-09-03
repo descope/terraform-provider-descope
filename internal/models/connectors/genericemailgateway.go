@@ -30,6 +30,7 @@ var GenericEmailGatewayConnectorAttributes = map[string]schema.Attribute{
 	"sender":         stringattr.Default(""),
 	"authentication": objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
 	"headers":        strmapattr.Default(),
+	"secret_headers": strmapattr.Secret(),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
 	"use_static_ips": boolattr.Default(false),
@@ -48,6 +49,7 @@ type GenericEmailGatewayConnectorModel struct {
 	Sender         stringattr.Type                  `tfsdk:"sender"`
 	Authentication objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
 	Headers        strmapattr.Type                  `tfsdk:"headers"`
+	SecretHeaders  strmapattr.Type                  `tfsdk:"secret_headers"`
 	HMACSecret     stringattr.Type                  `tfsdk:"hmac_secret"`
 	Insecure       boolattr.Type                    `tfsdk:"insecure"`
 	UseStaticIPs   boolattr.Type                    `tfsdk:"use_static_ips"`
@@ -87,7 +89,7 @@ func (m *GenericEmailGatewayConnectorModel) ConfigurationValues(h *helpers.Handl
 	stringattr.Get(m.PostURL, c, "postUrl")
 	stringattr.Get(m.Sender, c, "sender")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	getSecretObject(m.Headers, m.SecretHeaders, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
@@ -98,7 +100,7 @@ func (m *GenericEmailGatewayConnectorModel) SetConfigurationValues(c map[string]
 	stringattr.Set(&m.PostURL, c, "postUrl")
 	stringattr.Set(&m.Sender, c, "sender")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")

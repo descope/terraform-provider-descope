@@ -33,6 +33,7 @@ var HTTPConnectorAttributes = map[string]schema.Attribute{
 	"base_url":                   stringattr.Required(),
 	"authentication":             objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
 	"headers":                    strmapattr.Default(),
+	"secret_headers":             strmapattr.Secret(),
 	"hmac_secret":                stringattr.SecretOptional(),
 	"aws_auth_type":              stringattr.Default("none", stringvalidator.OneOf("", "none", "credentials", "assumeRole")),
 	"aws_access_key_id":          stringattr.SecretOptional(),
@@ -63,6 +64,7 @@ type HTTPConnectorModel struct {
 	BaseURL                 stringattr.Type                  `tfsdk:"base_url"`
 	Authentication          objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
 	Headers                 strmapattr.Type                  `tfsdk:"headers"`
+	SecretHeaders           strmapattr.Type                  `tfsdk:"secret_headers"`
 	HMACSecret              stringattr.Type                  `tfsdk:"hmac_secret"`
 	AWSAuthType             stringattr.Type                  `tfsdk:"aws_auth_type"`
 	AWSAccessKeyID          stringattr.Type                  `tfsdk:"aws_access_key_id"`
@@ -163,7 +165,7 @@ func (m *HTTPConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]
 	c := map[string]any{}
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	getSecretObject(m.Headers, m.SecretHeaders, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	stringattr.Get(m.AWSAuthType, c, "awsAuthType")
 	stringattr.Get(m.AWSAccessKeyID, c, "awsAccessKeyId")
@@ -186,7 +188,7 @@ func (m *HTTPConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]
 func (m *HTTPConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	stringattr.Set(&m.AWSAuthType, c, "awsAuthType")
 	stringattr.Nil(&m.AWSAccessKeyID)

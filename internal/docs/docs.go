@@ -313,6 +313,9 @@ var docsAuditWebhookConnector = map[string]string{
 	"base_url":       "The base URL to fetch",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the payload, and the resulting signature will be sent in the " +
 		"`x-descope-webhook-s256` header. The receiving service should use this secret to " +
@@ -516,6 +519,9 @@ var docsExternalTokenHTTPConnector = map[string]string{
 		"with a 'token' string field.",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the base64 encoded payload, and the resulting signature will be " +
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
@@ -579,6 +585,9 @@ var docsGenericEmailGatewayConnector = map[string]string{
 	"sender":         "The sender address",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the base64 encoded payload, and the resulting signature will be " +
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
@@ -597,6 +606,9 @@ var docsGenericSMSGatewayConnector = map[string]string{
 	"sender":         "The sender number",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the base64 encoded payload, and the resulting signature will be " +
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
@@ -693,6 +705,9 @@ var docsHTTPConnector = map[string]string{
 	"base_url":       "The base URL to fetch",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the base64 encoded payload, and the resulting signature will be " +
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
@@ -844,8 +859,11 @@ var docsOpenTelemetryConnector = map[string]string{
 	"protocol":       "Protocol to use for OTLP: http or grpc.",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
-	"insecure":       "Will ignore certificate errors raised by the client",
-	"audit_enabled":  "Whether to enable streaming of audit events.",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
+	"insecure":      "Will ignore certificate errors raised by the client",
+	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
@@ -1015,8 +1033,11 @@ var docsSCIMConnector = map[string]string{
 	"base_url":         "The base URL of the SCIM server that users and groups are provisioned to.",
 	"authentication":   "The authentication used when calling the SCIM server.",
 	"headers":          "Additional HTTP headers to send with each request to the SCIM server.",
-	"hmac_secret":      "A secret used to sign requests to the SCIM server with an HMAC signature.",
-	"insecure":         "Whether to skip verification of the SCIM server's TLS certificate.",
+	"secret_headers": "Additional HTTP headers to send with each request to the SCIM server. Values set " +
+		"here are stored encrypted and are never returned by the API, so they are not " +
+		"read back into the Terraform state.",
+	"hmac_secret": "A secret used to sign requests to the SCIM server with an HMAC signature.",
+	"insecure":    "Whether to skip verification of the SCIM server's TLS certificate.",
 }
 
 var docsSegmentConnector = map[string]string{

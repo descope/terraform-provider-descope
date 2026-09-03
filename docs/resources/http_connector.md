@@ -42,6 +42,7 @@ Manages a Generic HTTP connector and its configuration in a Descope project. A g
 - `rfc9421_private_key` (String, Sensitive) Provide a private key in PEM format or an HMAC secret. Algorithms such as ECDSA P-256/P-384, Ed25519, and RSA are supported. You can paste the key with or without newlines; both formats are accepted.
 - `rfc9421_signature_ttl` (Number) How long the signature is valid for, in seconds. Default is 300 seconds (5 minutes). The signature includes automatic replay protection via a randomly generated nonce
 - `rfc9421_signing_enabled` (Boolean) Enable RFC 9421 HTTP Message Signatures for cryptographically signing requests. Supports multiple algorithms including ECDSA, Ed25519, RSA, and HMAC
+- `secret_headers` (Map of String, Sensitive) The headers to send with the request. Values set here are stored encrypted and are never returned by the API, so they are not read back into the Terraform state.
 - `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 ### Read-Only
