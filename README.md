@@ -65,6 +65,9 @@ resource "descope_project" "my_project" {
 Run `terraform plan` to ensure everything works, and then `terraform apply` if you want the project to actually
 be created.
 
+The provider auto-detects the region from the management key. For multi-region setups using aliased provider
+blocks, see the [provider documentation](https://registry.terraform.io/providers/descope/descope/latest/docs).
+
 <br/>
 
 ## Examples
