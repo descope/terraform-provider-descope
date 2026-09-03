@@ -1,0 +1,29 @@
+---
+page_title: "descope_resource_policy Resource - descope"
+subcategory: ""
+description: |-
+  Manages the access policy connecting one Descope inbound application to one API resource.
+---
+
+# descope_resource_policy (Resource)
+
+Manages the access policy connecting one Descope inbound application to one API resource.
+
+```terraform
+resource "descope_resource_policy" "example" {
+  project_id     = descope_project.example.id
+  application_id = descope_inbound_app.example.id
+  resource_id    = "RSxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+  user_access_scopes   = ["read"]
+  client_access_scopes = ["read", "write"]
+}
+```
+
+Import an existing policy with its project, application, and resource IDs:
+
+```shell
+terraform import descope_resource_policy.example Pxxxxxxxxxxxxxxxxxxxxxxxxxxx/APxxxxxxxxxxxxxxxxxxxxxxxxxx/RSxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+{{ .SchemaMarkdown }}
