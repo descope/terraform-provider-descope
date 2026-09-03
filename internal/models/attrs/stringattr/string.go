@@ -24,12 +24,6 @@ func Identifier() schema.StringAttribute {
 	return Generated() // same attribute structure but we mark it as an identifier semantically
 }
 
-func IdentifierMatched() schema.StringAttribute {
-	return schema.StringAttribute{
-		Computed: true,
-	}
-}
-
 func Required(extras ...any) schema.StringAttribute {
 	validators, modifiers := parseExtras(extras)
 	return schema.StringAttribute{
@@ -139,9 +133,17 @@ const (
 )
 
 func Set(s *Type, data map[string]any, key string, options ...SetOption) {
+	SetDefault(s, data, key, "", options...)
+}
+
+func SetDefault(s *Type, data map[string]any, key string, defaultValue string, options ...SetOption) {
 	if v, ok := data[key].(string); ok {
 		if s.ValueString() == "" || !slices.Contains(options, SkipIfAlreadySet) {
-			*s = Value(v)
+			if v != "" {
+				*s = Value(v)
+			} else {
+				*s = Value(defaultValue)
+			}
 		}
 	} else {
 		Nil(s)

@@ -16,7 +16,7 @@ var DescoperAttributes = map[string]schema.Attribute{
 }
 
 var Schema = schema.Schema{
-	MarkdownDescription: "Manages a Descope console user (a \"Descoper\") and their access control settings across your company's projects.",
+	MarkdownDescription: `Manages a Descope console user (a "Descoper") and their access control settings across your company's projects.`,
 	Attributes:          DescoperAttributes,
 }
 

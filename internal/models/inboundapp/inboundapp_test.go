@@ -1,15 +1,66 @@
 package inboundapp_test
 
 import (
+	"regexp"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/tools/testacc"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+func TestInboundAppDeletionProtection(t *testing.T) {
+	p := testacc.Project(t)
+	a := testacc.InboundApp(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+			`),
+			Check: a.Check(map[string]any{
+				"deletion_protection": testacc.AttributeIsNotSet,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+			`),
+			Destroy:     true,
+			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),
+		},
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				non_confidential_client = true
+			`),
+			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),
+		},
+		// The flag change must be applied on its own before the replacement is allowed
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				deletion_protection = false
+			`),
+		},
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				deletion_protection = false
+				non_confidential_client = true
+			`),
+			Check: a.Check(map[string]any{
+				"non_confidential_client": "true",
+				"deletion_protection":     "false",
+			}),
+		},
+	)
+}
+
 func TestInboundApp(t *testing.T) {
 	p := testacc.Project(t)
 	a := testacc.InboundApp(t)
+	j := testacc.JWTTemplate(t)
+	j2 := testacc.JWTTemplate(t)
+	j2.ID = "other"
 	testacc.Run(t,
 		// Test basic creation with required fields only
 		resource.TestStep{
@@ -86,15 +137,10 @@ func TestInboundApp(t *testing.T) {
 		},
 		// Test session settings with a user JWT template
 		resource.TestStep{
-			Config: p.Config(`
-				jwt_templates = {
-					user_templates = [
-						{
-							name = "foo"
-							template = "{}"
-						}
-					]
-				}
+			Config: p.Config() + j.Config(`
+				project_id = `+p.Path()+`.id
+				type = "user"
+				template = "{}"
 			`) + a.Config(`
 				project_id = `+p.Path()+`.id
 				session_settings = {
@@ -102,7 +148,7 @@ func TestInboundApp(t *testing.T) {
 					refresh_token_expiration = "4 weeks"
 					session_token_expiration = "10 minutes"
 					key_session_token_expiration = "30 minutes"
-					user_template_id = `+p.Path()+`.jwt_templates.user_templates.0.id
+					user_template_id = `+j.Path()+`.id
 				}
 			`),
 			Check: a.Check(map[string]any{
@@ -113,17 +159,11 @@ func TestInboundApp(t *testing.T) {
 				"session_settings.user_template_id":             testacc.AttributeHasPrefix("JT"),
 			}),
 		},
-		// Test updating the JWT template in the project and reflecting the new ID in the inbound app
 		resource.TestStep{
-			Config: p.Config(`
-				jwt_templates = {
-					user_templates = [
-						{
-							name = "bar"
-							template = "{}"
-						}
-					]
-				}
+			Config: p.Config() + j2.Config(`
+				project_id = `+p.Path()+`.id
+				type = "user"
+				template = "{}"
 			`) + a.Config(`
 				project_id = `+p.Path()+`.id
 				session_settings = {
@@ -131,7 +171,7 @@ func TestInboundApp(t *testing.T) {
 					refresh_token_expiration = "4 weeks"
 					session_token_expiration = "10 minutes"
 					key_session_token_expiration = "30 minutes"
-					user_template_id = `+p.Path()+`.jwt_templates.user_templates.0.id
+					user_template_id = `+j2.Path()+`.id
 				}
 			`),
 			Check: a.Check(map[string]any{
@@ -148,10 +188,18 @@ func TestInboundApp(t *testing.T) {
 			ImportState:       true,
 			ImportStateIdFunc: testacc.GenerateImportStateID(a.Path(), "project_id", "id"),
 		},
+		// Disable the default deletion protection so the resource can be destroyed
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				deletion_protection = false
+			`),
+		},
 		// Destroy resource
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				deletion_protection = false
 			`),
 			Destroy: true,
 		},

@@ -8,20 +8,16 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-// A wrapper struct for the context, diags and references to pass around to model function calls.
+// A wrapper struct for the context and diags to pass around to model function calls.
 type Handler struct {
 	Ctx         context.Context
 	Diagnostics *diag.Diagnostics
-	Refs        ReferencesMap
 }
 
-// NewHandler creates a new Handler instance that wraps a context, an empty references map, and a
-// reference to the diagnostics collection of a response of an entity object.
 func NewHandler(ctx context.Context, diags *diag.Diagnostics) *Handler {
 	return &Handler{
 		Ctx:         ctx,
 		Diagnostics: diags,
-		Refs:        ReferencesMap{},
 	}
 }
 

@@ -8,6 +8,51 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
+func TestProjectDeletionProtection(t *testing.T) {
+	p := testacc.Project(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(`
+				environment = "production"
+			`),
+			Check: p.Check(map[string]any{
+				"deletion_protection": testacc.AttributeIsNotSet,
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				environment = "production"
+			`),
+			Destroy:     true,
+			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				environment = ""
+				deletion_protection = true
+			`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				environment = ""
+				deletion_protection = true
+			`),
+			Destroy:     true,
+			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				environment = "production"
+				deletion_protection = false
+			`),
+			Check: p.Check(map[string]any{
+				"environment":         "production",
+				"deletion_protection": "false",
+			}),
+		},
+	)
+}
+
 func TestProject(t *testing.T) {
 	p := testacc.Project(t)
 	testacc.Run(t,

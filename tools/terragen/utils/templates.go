@@ -16,7 +16,8 @@ const PlaceholderDescription = `// description for`
 // defaults for common connector fields
 const DefaultConnectorNameText = "A custom name for your connector."
 const DefaultConnectorDescriptionText = "A description of what your connector is used for."
-const DefaultConnectorEngineIDText = "The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend."
+const DefaultConnectorProjectIDText = "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated."
+const DefaultConnectorDisabledText = "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it."
 
 // markdown descriptions with paragraphs will require a custom template to look good
 const preserveParagraphs = false

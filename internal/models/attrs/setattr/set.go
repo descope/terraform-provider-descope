@@ -1,3 +1,5 @@
+// Package setattr models a set of objects. Use it only for elements whose attributes are all required: the framework matches set elements
+// by value, so a Computed attribute (every Optional and Default constructor) leaves an element partly unknown while planning and diffs.
 package setattr
 
 import (
@@ -27,7 +29,6 @@ func valueOf[T any](ctx context.Context, values []*T) Type[T] {
 	return helpers.Require(settype.NewValue(ctx, values))
 }
 
-// Deprecated: The set type is buggy, use a list instead.
 func Required[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
@@ -40,7 +41,6 @@ func Required[T any](attributes map[string]schema.Attribute, validators ...valid
 	}
 }
 
-// Deprecated: The set type is buggy, use a list instead.
 func Optional[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,
@@ -55,7 +55,6 @@ func Optional[T any](attributes map[string]schema.Attribute, validators ...valid
 	}
 }
 
-// Deprecated: The set type is buggy, use a list instead.
 func Default[T any](attributes map[string]schema.Attribute, validators ...validator.Object) schema.SetNestedAttribute {
 	nested := schema.NestedAttributeObject{
 		Attributes: attributes,

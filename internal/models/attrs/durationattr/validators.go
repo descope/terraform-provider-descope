@@ -18,11 +18,16 @@ func MaximumValue(duration string) validator.String {
 	return &durationValidator{maximum: duration}
 }
 
+func WholeMinutes() validator.String {
+	return &durationValidator{wholeMinutes: true}
+}
+
 var formatValidator validator.String = &durationValidator{}
 
 type durationValidator struct {
-	minimum string
-	maximum string
+	minimum      string
+	maximum      string
+	wholeMinutes bool
 }
 
 func (v durationValidator) Description(_ context.Context) string {
@@ -62,6 +67,9 @@ func (v durationValidator) ValidateString(ctx context.Context, request validator
 		if seconds > maxSeconds {
 			response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(request.Path, "must be at most "+v.maximum, request.ConfigValue.String()))
 		}
+	}
+	if v.wholeMinutes && seconds%60 != 0 {
+		response.Diagnostics.Append(validatordiag.InvalidAttributeValueDiagnostic(request.Path, "must be a whole number of minutes", request.ConfigValue.String()))
 	}
 }
 

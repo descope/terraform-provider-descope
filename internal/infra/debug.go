@@ -6,14 +6,23 @@ import (
 	"os"
 )
 
-var isShallow = os.Getenv("TF_LOG") != "DEBUG"
+// payload logging is gated behind a dedicated variable rather than TF_LOG so that request and
+// response payloads, which may carry secrets, can never end up in logs by accident
+var isLogging = os.Getenv("TF_UNSAFE_LOGS") != ""
+
+var isShallow = os.Getenv("TF_LOG") != "DEBUG" && os.Getenv("TF_LOG") != "TRACE"
 
 const (
 	shallowDepth = 5
 	maxLength    = 80
 )
 
+// the debug helpers are evaluated as tflog arguments on every request, so they skip all
+// the marshaling work unless logging was actually enabled for the terraform run
 func debugRequest(v any) string {
+	if !isLogging {
+		return ""
+	}
 	b, _ := json.Marshal(v)
 	var m map[string]any
 	_ = json.Unmarshal(b, &m)
@@ -22,6 +31,9 @@ func debugRequest(v any) string {
 }
 
 func debugResponse(s string) string {
+	if !isLogging {
+		return ""
+	}
 	var m map[string]any
 	_ = json.Unmarshal([]byte(s), &m)
 	b, _ := json.MarshalIndent(trimmedMap(m), "", "  ")
@@ -29,67 +41,35 @@ func debugResponse(s string) string {
 }
 
 func trimmedMap(m map[string]any) map[string]any {
-	result := map[string]any{}
-	copyMapShallow(result, m, 0)
+	result, _ := trimValue(m, 0).(map[string]any)
 	return result
 }
 
-func copyMapShallow(dest, src map[string]any, depth int) {
-	for k, v := range src {
-		value := v
-		if srcmap, ok := v.(map[string]any); ok {
-			if isShallow && depth >= shallowDepth {
-				value = fmt.Sprintf("Map{len: %d}", len(srcmap))
-			} else {
-				destmap := map[string]any{}
-				copyMapShallow(destmap, srcmap, depth+1)
-				value = destmap
-			}
-		} else if srcstr, ok := v.(string); ok {
-			if len(srcstr) > maxLength {
-				value = srcstr[:maxLength] + "..."
-			} else {
-				value = srcstr
-			}
-		} else if srclist, ok := v.([]any); ok {
-			if isShallow && depth >= shallowDepth {
-				value = fmt.Sprintf("List[len: %d]", len(srclist))
-			} else {
-				var destlist []any
-				copySliceShallow(&destlist, &srclist, depth+1)
-				value = destlist
-			}
+func trimValue(v any, depth int) any {
+	switch src := v.(type) {
+	case map[string]any:
+		if isShallow && depth > shallowDepth {
+			return fmt.Sprintf("Map{len: %d}", len(src))
 		}
-		dest[k] = value
-	}
-}
-
-func copySliceShallow(dest, src *[]any, depth int) {
-	for _, v := range *src {
-		value := v
-		if srcmap, ok := v.(map[string]any); ok {
-			if isShallow && depth >= shallowDepth {
-				value = fmt.Sprintf("Map{len: %d}", len(srcmap))
-			} else {
-				destmap := map[string]any{}
-				copyMapShallow(destmap, srcmap, depth+1)
-				value = destmap
-			}
-		} else if srcstr, ok := v.(string); ok {
-			if len(srcstr) > maxLength {
-				value = srcstr[:maxLength] + "..."
-			} else {
-				value = srcstr
-			}
-		} else if srclist, ok := v.([]any); ok {
-			if isShallow && depth >= shallowDepth {
-				value = fmt.Sprintf("List[len: %d]", len(srclist))
-			} else {
-				var destlist []any
-				copySliceShallow(&destlist, &srclist, depth+1)
-				value = destlist
-			}
+		dest := map[string]any{}
+		for k, e := range src {
+			dest[k] = trimValue(e, depth+1)
 		}
-		*dest = append(*dest, value)
+		return dest
+	case string:
+		if len(src) > maxLength {
+			return src[:maxLength] + "..."
+		}
+		return src
+	case []any:
+		if isShallow && depth > shallowDepth {
+			return fmt.Sprintf("List[len: %d]", len(src))
+		}
+		var dest []any
+		for _, e := range src {
+			dest = append(dest, trimValue(e, depth+1))
+		}
+		return dest
 	}
+	return v
 }

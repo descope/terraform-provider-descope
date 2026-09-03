@@ -1,9 +1,8 @@
 package accesskey
 
 import (
-	"encoding/json"
-
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/intattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/jsonattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
@@ -24,8 +23,8 @@ var AccessKeyAttributes = map[string]schema.Attribute{
 	"bound_user_id":     stringattr.Optional(stringplanmodifier.RequiresReplace()),
 	"roles":             strlistattr.Default(stringattr.NonEmptyValidator),
 	"tenants":           listattr.Default[AccessKeyTenantModel](AccessKeyTenantAttributes),
-	"custom_claims":     stringattr.Default("{}", stringattr.JSONValidator()),
-	"custom_attributes": stringattr.Default("{}", stringattr.JSONValidator()),
+	"custom_claims":     jsonattr.Default("{}"),
+	"custom_attributes": jsonattr.Default("{}"),
 	"permitted_ips":     strlistattr.Default(),
 	"client_id":         stringattr.Identifier(),
 	"created_time":      intattr.Generated(),
@@ -47,8 +46,8 @@ type AccessKeyModel struct {
 	BoundUserID      stringattr.Type                     `tfsdk:"bound_user_id"`
 	Roles            strlistattr.Type                    `tfsdk:"roles"`
 	Tenants          listattr.Type[AccessKeyTenantModel] `tfsdk:"tenants"`
-	CustomClaims     stringattr.Type                     `tfsdk:"custom_claims"`
-	CustomAttributes stringattr.Type                     `tfsdk:"custom_attributes"`
+	CustomClaims     jsonattr.Type                       `tfsdk:"custom_claims"`
+	CustomAttributes jsonattr.Type                       `tfsdk:"custom_attributes"`
 	PermittedIPs     strlistattr.Type                    `tfsdk:"permitted_ips"`
 	ClientID         stringattr.Type                     `tfsdk:"client_id"`
 	CreatedTime      intattr.Type                        `tfsdk:"created_time"`
@@ -65,8 +64,8 @@ func (m *AccessKeyModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.BoundUserID, data, "boundUserId")
 	strlistattr.Get(m.Roles, data, "roleNames", h)
 	listattr.Get(m.Tenants, data, "keyTenants", h)
-	getJSONField(m.CustomClaims, data, "customClaims")
-	getJSONField(m.CustomAttributes, data, "customAttributes")
+	jsonattr.Get(m.CustomClaims, data, "customClaims")
+	jsonattr.Get(m.CustomAttributes, data, "customAttributes")
 	strlistattr.Get(m.PermittedIPs, data, "permittedIps", h)
 
 	if m.ID.ValueString() == "" && m.Status.ValueString() == "inactive" {
@@ -90,8 +89,8 @@ func (m *AccessKeyModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.BoundUserID, data, "boundUserId")
 	strlistattr.Set(&m.Roles, data, "roleNames", h)
 	listattr.Set(&m.Tenants, data, "keyTenants", h)
-	setJSONField(&m.CustomClaims, data, "customClaims")
-	setJSONField(&m.CustomAttributes, data, "customAttributes")
+	jsonattr.Set(&m.CustomClaims, data, "customClaims", jsonattr.SkipIfAlreadySet)
+	jsonattr.Set(&m.CustomAttributes, data, "customAttributes", jsonattr.SkipIfAlreadySet)
 	strlistattr.Set(&m.PermittedIPs, data, "permittedIps", h)
 	stringattr.Set(&m.ClientID, data, "clientId")
 	intattr.Set(&m.CreatedTime, data, "createdTime")
@@ -109,25 +108,4 @@ func (m *AccessKeyModel) SetID(id stringattr.Type) {
 
 func (m *AccessKeyModel) GetProjectID() stringattr.Type {
 	return m.ProjectID
-}
-
-func getJSONField(s stringattr.Type, data map[string]any, key string) {
-	m := map[string]any{}
-	if err := json.Unmarshal([]byte(s.ValueString()), &m); err != nil {
-		panic("Invalid JSON data after validation: " + err.Error())
-	}
-	data[key] = m
-}
-
-func setJSONField(s *stringattr.Type, data map[string]any, key string) {
-	// We do not currently update the field data if it's already set because it might be slightly different after apply
-	if s.ValueString() == "" {
-		value := "{}"
-		if v, ok := data[key].(map[string]any); ok {
-			if b, err := json.MarshalIndent(v, "", "  "); err == nil {
-				value = string(b)
-			}
-		}
-		*s = stringattr.Value(value)
-	}
 }

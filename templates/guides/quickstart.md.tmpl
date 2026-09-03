@@ -31,7 +31,7 @@ terraform {
   required_providers {
     descope = {
       source = "descope/descope"
-      version = "~> 0.3"
+      version = "~> 1.0"
     }
   }
 }
@@ -78,22 +78,19 @@ Your new Descope project will appear in the [Descope console](https://app.descop
 
 ## Step 3: Configure Authentication
 
-Extend your project resource with the authentication methods your app will use. This example enables Magic Link and Password:
+Add settings resources for the authentication methods your app will use. This example configures Magic Link and Password:
 
 ```hcl
-resource "descope_project" "myapp" {
-  name = "my-app"
+resource "descope_magiclink_settings" "myapp" {
+  project_id      = descope_project.myapp.id
+  expiration_time = "1 hour"
+}
 
-  authentication = {
-    magic_link = {
-      expiration_time = "1 hour"
-    }
-    password = {
-      min_length    = 10
-      lock          = true
-      lock_attempts = 5
-    }
-  }
+resource "descope_password_settings" "myapp" {
+  project_id    = descope_project.myapp.id
+  min_length    = 10
+  lock          = true
+  lock_attempts = 5
 }
 ```
 
@@ -101,34 +98,30 @@ Run `terraform apply` to push the updated configuration.
 
 ## Step 4: Add Roles and Permissions
 
-Configure RBAC to control what authenticated users can do in your application:
+Configure RBAC to control what authenticated users can do in your application. Roles and
+permissions are standalone resources that reference the project by ID:
 
 ```hcl
-resource "descope_project" "myapp" {
-  name = "my-app"
+resource "descope_permission" "read_data" {
+  project_id = descope_project.myapp.id
+  name       = "read:data"
+}
 
-  authentication = {
-    magic_link = {
-      expiration_time = "1 hour"
-    }
-  }
+resource "descope_permission" "write_data" {
+  project_id = descope_project.myapp.id
+  name       = "write:data"
+}
 
-  authorization = {
-    permissions = [
-      { name = "read:data" },
-      { name = "write:data" },
-    ]
-    roles = [
-      {
-        name        = "viewer"
-        permissions = ["read:data"]
-      },
-      {
-        name        = "editor"
-        permissions = ["read:data", "write:data"]
-      },
-    ]
-  }
+resource "descope_role" "viewer" {
+  project_id  = descope_project.myapp.id
+  name        = "viewer"
+  permissions = [descope_permission.read_data.name]
+}
+
+resource "descope_role" "editor" {
+  project_id  = descope_project.myapp.id
+  name        = "editor"
+  permissions = [descope_permission.read_data.name, descope_permission.write_data.name]
 }
 ```
 
@@ -141,18 +134,14 @@ If you've designed custom flows in the Descope console, you can export them and 
 3. Reference the file in your configuration:
 
 ```hcl
-resource "descope_project" "myapp" {
-  name = "my-app"
-
-  flows = {
-    "sign-up-or-in" = {
-      data = file("${path.module}/flows/sign-up-or-in.json")
-    }
-  }
+resource "descope_flow" "sign_up_or_in" {
+  project_id = descope_project.myapp.id
+  flow_id    = "sign-up-or-in"
+  data       = file("${path.module}/flows/sign-up-or-in.json")
 }
 ```
 
 ## Next Steps
 
-- Explore all available configuration options in the [`descope_project` resource reference](../resources/project)
+- Explore the resources the provider offers in the [provider reference](../index)
 - Browse the [Descope documentation](https://docs.descope.com) for more on authentication concepts
