@@ -351,6 +351,15 @@ Use private key JWT (client assertion) instead of client secret.
 
 
 
+client_auth_method
+------------------
+
+- Type: `string`
+
+The token endpoint client authentication method: `client_secret_basic` (credentials in the HTTP Basic auth header) or `client_secret_post` (credentials in the request body). Empty defaults to `client_secret_post`.
+
+
+
 claim_mapping
 -------------
 
