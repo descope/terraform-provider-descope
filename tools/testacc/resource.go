@@ -27,6 +27,10 @@ func ManagementKey(t *testing.T) *Resource {
 	return newResource(t, "management_key")
 }
 
+func Tenant(t *testing.T) *Resource {
+	return newResource(t, "tenant")
+}
+
 func AccessKey(t *testing.T) *Resource {
 	return newResource(t, "access_key")
 }

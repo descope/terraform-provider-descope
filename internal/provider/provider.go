@@ -117,6 +117,7 @@ func (p *descopeProvider) DataSources(_ context.Context) []func() datasource.Dat
 func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resource {
 	return []func() resource.Resource{
 		resources.NewProjectResource,
+		resources.NewTenantResource,
 		resources.NewDescoperResource,
 		resources.NewManagementKeyResource,
 		resources.NewAccessKeyResource,
