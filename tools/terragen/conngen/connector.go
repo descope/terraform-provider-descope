@@ -51,6 +51,7 @@ var supportedFieldTypes = []string{
 	FieldTypeBool,
 	FieldTypeNumber,
 	FieldTypeHTTPAuth,
+	FieldTypeSecretObject,
 	FieldTypeObject,
 	FieldTypeAuditFilters,
 }
@@ -209,11 +210,6 @@ func (c *Connector) Prepare() {
 		// treat secret file fields as regular secret fields, as they are essentially identical
 		if f.Type == "secret-file" || f.Type == "secret-json-file" {
 			f.Type = FieldTypeSecret
-		}
-
-		// treat secret-object fields are regular object fields until we add support for it
-		if f.Type == "secret-object" {
-			f.Type = FieldTypeObject
 		}
 
 		if !slices.Contains(supportedFieldTypes, f.Type) {

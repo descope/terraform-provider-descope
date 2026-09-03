@@ -1,6 +1,11 @@
 package connectors
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
@@ -8,7 +13,9 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 )
 
 // Audit Filter Field
@@ -39,28 +46,101 @@ func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]an
 	strlistattr.Set(&m.Vals, data, "values", h)
 }
 
-// HTTP Headers
+// Object Fields
 
-func getHeaders(s strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
-	headers := []any{}
+func getObjectField(s strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
+	entries := []any{}
 	for k, v := range strmapattr.Iterator(s, h) {
-		headers = append(headers, map[string]any{"key": k, "value": v})
+		entries = append(entries, map[string]any{"key": k, "value": v})
 	}
-	data[key] = headers
+	data[key] = entries
 }
 
-func setHeaders(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) { // nolint:unparam
-	headers := map[string]string{}
+func setObjectField(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) { // nolint:unparam
+	entries := map[string]string{}
 	if v, ok := data[key].([]any); ok {
 		for i := range v {
 			if m, ok := v[i].(map[string]any); ok {
 				key, _ := m["key"].(string)
 				value, _ := m["value"].(string)
-				headers[key] = value
+				entries[key] = value
 			}
 		}
 	}
-	*s = strmapattr.Value(headers)
+	*s = strmapattr.Value(entries)
+}
+
+// Secret Object Field
+
+var SecretObjectFieldValidator validator.List = secretObjectFieldValidator{}
+
+var SecretObjectFieldAttributes = map[string]schema.Attribute{
+	"key":    stringattr.Required(stringattr.StandardLenValidator),
+	"value":  stringattr.SecretRequired(),
+	"secret": boolattr.Default(false),
+}
+
+type SecretObjectFieldModel struct {
+	Key    stringattr.Type `tfsdk:"key"`
+	Value  stringattr.Type `tfsdk:"value"`
+	Secret boolattr.Type   `tfsdk:"secret"`
+}
+
+func (m *SecretObjectFieldModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	stringattr.Get(m.Key, data, "key")
+	stringattr.Get(m.Value, data, "value")
+	if m.Secret.ValueBool() {
+		boolattr.Get(m.Secret, data, "secret")
+	}
+	return data
+}
+
+func (m *SecretObjectFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
+	stringattr.Set(&m.Key, data, "key")
+	stringattr.Set(&m.Value, data, "value")
+	boolattr.Set(&m.Secret, data, "secret")
+}
+
+// A secret entry is masked on read, so the response is never adopted and the configured values stay authoritative.
+func setSecretObjectField(l *listattr.Type[SecretObjectFieldModel], _ map[string]any, _ string, _ *helpers.Handler) {
+	if l.IsUnknown() {
+		*l = listattr.Empty[SecretObjectFieldModel]()
+	}
+}
+
+type secretObjectFieldValidator struct{}
+
+func (v secretObjectFieldValidator) Description(_ context.Context) string {
+	return "must not use the same key more than once"
+}
+
+func (v secretObjectFieldValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v secretObjectFieldValidator) ValidateList(ctx context.Context, req validator.ListRequest, resp *validator.ListResponse) {
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+
+	var entries []SecretObjectFieldModel
+	if diags := req.ConfigValue.ElementsAs(ctx, &entries, false); diags.HasError() {
+		return
+	}
+
+	seen := map[string]bool{}
+	for _, entry := range entries {
+		if entry.Key.IsNull() || entry.Key.IsUnknown() {
+			continue
+		}
+		key := entry.Key.ValueString()
+		if seen[key] {
+			resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Duplicate Key", fmt.Sprintf("The key %q is used more than once", key)))
+			return
+		}
+		seen[key] = true
+	}
 }
 
 // HTTP Auth Field
@@ -228,7 +308,7 @@ func (m *HTTPAuthOAuth2ClientCredentialsFieldModel) Values(h *helpers.Handler) m
 	stringattr.Get(m.AuthURL, data, "authUrl")
 	stringattr.Get(m.AuthStyle, data, "authStyle")
 	stringattr.Get(m.Scopes, data, "scopes")
-	getHeaders(m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
+	getObjectField(m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
 	return data
 }
 
@@ -238,5 +318,5 @@ func (m *HTTPAuthOAuth2ClientCredentialsFieldModel) SetValues(h *helpers.Handler
 	stringattr.Set(&m.AuthURL, data, "authUrl")
 	stringattr.Set(&m.AuthStyle, data, "authStyle")
 	stringattr.Set(&m.Scopes, data, "scopes")
-	setHeaders(&m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
+	setObjectField(&m.TokenRequestHeaders, data, "tokenRequestHeaders", h)
 }

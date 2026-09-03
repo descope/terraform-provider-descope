@@ -27,7 +27,7 @@ Manages a Outbound SCIM connector and its configuration in a Descope project. Pr
 - `authentication` (Attributes) The authentication used when calling the SCIM server. (see [below for nested schema](#nestedatt--authentication))
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
-- `headers` (Map of String) Additional HTTP headers to send with each request to the SCIM server.
+- `headers` (Attributes List) Additional HTTP headers to send with each request to the SCIM server. (see [below for nested schema](#nestedatt--headers))
 - `hmac_secret` (String, Sensitive) A secret used to sign requests to the SCIM server with an HMAC signature.
 - `insecure` (Boolean) Whether to skip verification of the SCIM server's TLS certificate.
 
@@ -77,3 +77,17 @@ Optional:
 - `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
+
+
+
+<a id="nestedatt--headers"></a>
+### Nested Schema for `headers`
+
+Required:
+
+- `key` (String) The name of the entry, such as the header name when the field carries HTTP headers.
+- `value` (String, Sensitive) The value of the entry.
+
+Optional:
+
+- `secret` (Boolean) Whether the value should be stored encrypted. A secret value is never returned by the API, so it is not read back into the Terraform state and the configured value is authoritative.

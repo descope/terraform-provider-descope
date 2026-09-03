@@ -23,7 +23,7 @@
     {
       "name": "headers",
       "description": "Additional HTTP headers to send with each request to the SCIM server.",
-      "type": "object"
+      "type": "secret-object"
     },
     {
       "name": "hmacSecret",

@@ -4,9 +4,9 @@ package connectors
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -28,7 +28,7 @@ var ExternalTokenHTTPConnectorAttributes = map[string]schema.Attribute{
 
 	"endpoint":       stringattr.Required(),
 	"authentication": objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":        strmapattr.Default(),
+	"headers":        listattr.Default[SecretObjectFieldModel](SecretObjectFieldAttributes, SecretObjectFieldValidator),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
 	"use_static_ips": boolattr.Default(false),
@@ -43,12 +43,12 @@ type ExternalTokenHTTPConnectorModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	Endpoint       stringattr.Type                  `tfsdk:"endpoint"`
-	Authentication objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
-	Headers        strmapattr.Type                  `tfsdk:"headers"`
-	HMACSecret     stringattr.Type                  `tfsdk:"hmac_secret"`
-	Insecure       boolattr.Type                    `tfsdk:"insecure"`
-	UseStaticIPs   boolattr.Type                    `tfsdk:"use_static_ips"`
+	Endpoint       stringattr.Type                       `tfsdk:"endpoint"`
+	Authentication objattr.Type[HTTPAuthFieldModel]      `tfsdk:"authentication"`
+	Headers        listattr.Type[SecretObjectFieldModel] `tfsdk:"headers"`
+	HMACSecret     stringattr.Type                       `tfsdk:"hmac_secret"`
+	Insecure       boolattr.Type                         `tfsdk:"insecure"`
+	UseStaticIPs   boolattr.Type                         `tfsdk:"use_static_ips"`
 }
 
 func (m *ExternalTokenHTTPConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -84,7 +84,7 @@ func (m *ExternalTokenHTTPConnectorModel) ConfigurationValues(h *helpers.Handler
 	c := map[string]any{}
 	stringattr.Get(m.Endpoint, c, "endpoint")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	listattr.Get(m.Headers, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
@@ -94,7 +94,7 @@ func (m *ExternalTokenHTTPConnectorModel) ConfigurationValues(h *helpers.Handler
 func (m *ExternalTokenHTTPConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.Endpoint, c, "endpoint")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObjectField(&m.Headers, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")

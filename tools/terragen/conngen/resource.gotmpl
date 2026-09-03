@@ -13,7 +13,7 @@ import (
     {{- if .HasField "number" }}
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/floatattr"
     {{- end }}
-    {{- if .HasField "auditFilters" }}
+    {{- if or (.HasField "auditFilters") (.HasField "secret-object") }}
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
     {{- end }}
     {{- if .HasField "httpAuth" }}

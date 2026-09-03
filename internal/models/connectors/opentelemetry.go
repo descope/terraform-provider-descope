@@ -7,7 +7,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -31,7 +30,7 @@ var OpenTelemetryConnectorAttributes = map[string]schema.Attribute{
 	"endpoint":                 stringattr.Required(),
 	"protocol":                 stringattr.Default("http", stringvalidator.OneOf("http", "grpc")),
 	"authentication":           objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":                  strmapattr.Default(),
+	"headers":                  listattr.Default[SecretObjectFieldModel](SecretObjectFieldAttributes, SecretObjectFieldValidator),
 	"insecure":                 boolattr.Default(false),
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
@@ -47,14 +46,14 @@ type OpenTelemetryConnectorModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	Endpoint               stringattr.Type                      `tfsdk:"endpoint"`
-	Protocol               stringattr.Type                      `tfsdk:"protocol"`
-	Authentication         objattr.Type[HTTPAuthFieldModel]     `tfsdk:"authentication"`
-	Headers                strmapattr.Type                      `tfsdk:"headers"`
-	Insecure               boolattr.Type                        `tfsdk:"insecure"`
-	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
-	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
-	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
+	Endpoint               stringattr.Type                       `tfsdk:"endpoint"`
+	Protocol               stringattr.Type                       `tfsdk:"protocol"`
+	Authentication         objattr.Type[HTTPAuthFieldModel]      `tfsdk:"authentication"`
+	Headers                listattr.Type[SecretObjectFieldModel] `tfsdk:"headers"`
+	Insecure               boolattr.Type                         `tfsdk:"insecure"`
+	AuditEnabled           boolattr.Type                         `tfsdk:"audit_enabled"`
+	AuditFilters           listattr.Type[AuditFilterFieldModel]  `tfsdk:"audit_filters"`
+	TroubleshootLogEnabled boolattr.Type                         `tfsdk:"troubleshoot_log_enabled"`
 }
 
 func (m *OpenTelemetryConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -98,7 +97,7 @@ func (m *OpenTelemetryConnectorModel) ConfigurationValues(h *helpers.Handler) ma
 	stringattr.Get(m.Endpoint, c, "endpoint")
 	stringattr.Get(m.Protocol, c, "protocol")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	listattr.Get(m.Headers, c, "headers", h)
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
@@ -110,7 +109,7 @@ func (m *OpenTelemetryConnectorModel) SetConfigurationValues(c map[string]any, h
 	stringattr.Set(&m.Endpoint, c, "endpoint")
 	stringattr.Set(&m.Protocol, c, "protocol")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObjectField(&m.Headers, c, "headers", h)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)

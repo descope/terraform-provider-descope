@@ -33,7 +33,7 @@ Manages a Generic HTTP connector and its configuration in a Descope project. A g
 - `aws_service` (String) The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
-- `headers` (Map of String) The headers to send with the request
+- `headers` (Attributes List) The headers to send with the request (see [below for nested schema](#nestedatt--headers))
 - `hmac_secret` (String, Sensitive) HMAC is a method for message signing with a symmetrical key. This secret will be used to sign the base64 encoded payload, and the resulting signature will be sent in the `x-descope-webhook-s256` header. The receiving service should use this secret to verify the integrity and authenticity of the payload by checking the provided signature
 - `include_headers_in_context` (Boolean) The connector response context will also include the headers and status code. The context will have a "body" attribute, a "headers" attribute, and a "statusCode" attribute. See more details in the help guide
 - `insecure` (Boolean) Will ignore certificate errors raised by the client
@@ -90,3 +90,17 @@ Optional:
 - `auth_style` (String) How the client credentials are sent to the token endpoint. Either `header` to send them in the `Authorization` header, or `body` to send them in the request body.
 - `scopes` (String) A space-separated list of OAuth scopes to request when fetching the access token.
 - `token_request_headers` (Map of String) Additional headers to include in the token request sent to the token endpoint.
+
+
+
+<a id="nestedatt--headers"></a>
+### Nested Schema for `headers`
+
+Required:
+
+- `key` (String) The name of the entry, such as the header name when the field carries HTTP headers.
+- `value` (String, Sensitive) The value of the entry.
+
+Optional:
+
+- `secret` (Boolean) Whether the value should be stored encrypted. A secret value is never returned by the API, so it is not read back into the Terraform state and the configured value is authoritative.

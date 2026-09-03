@@ -21,9 +21,10 @@ func TestHTTPConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "xhmqmkcfhe4mk6"
     						}
-				headers = {
-    							"key" = "g6htpmp"
-    						}
+				headers = [
+    							{ key = "X-Plain", value = "g6htpmp" },
+    							{ key = "X-Secret", value = "g6htpmp", secret = true },
+    						]
 				hmac_secret = "ooxzct5yxz"
 				aws_auth_type = "none"
 				aws_access_key_id = null
@@ -49,7 +50,7 @@ func TestHTTPConnector(t *testing.T) {
 				"disabled":                    false,
 				"base_url":                    "bceszn6",
 				"authentication.bearer_token": "xhmqmkcfhe4mk6",
-				"headers.key":                 "g6htpmp",
+				"headers.1.secret":            true,
 				"hmac_secret":                 "ooxzct5yxz",
 				"aws_auth_type":               "none",
 				"aws_access_key_id":           testacc.AttributeIsNotSet,
@@ -78,9 +79,10 @@ func TestHTTPConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "r6zxhdnnw7dqoq"
     						}
-				headers = {
-    							"key" = "7xiojfk"
-    						}
+				headers = [
+    							{ key = "X-Plain", value = "7xiojfk" },
+    							{ key = "X-Secret", value = "7xiojfk", secret = true },
+    						]
 				hmac_secret = "twukowwuij"
 				aws_auth_type = "none"
 				aws_access_key_id = null
@@ -103,7 +105,7 @@ func TestHTTPConnector(t *testing.T) {
 				"disabled":                    true,
 				"base_url":                    "yruwlv4",
 				"authentication.bearer_token": "r6zxhdnnw7dqoq",
-				"headers.key":                 "7xiojfk",
+				"headers.1.secret":            true,
 				"hmac_secret":                 "twukowwuij",
 				"aws_auth_type":               "none",
 				"aws_access_key_id":           testacc.AttributeIsNotSet,

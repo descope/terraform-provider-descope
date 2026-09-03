@@ -7,9 +7,9 @@ import (
 
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/floatattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -32,7 +32,7 @@ var HTTPConnectorAttributes = map[string]schema.Attribute{
 
 	"base_url":                   stringattr.Required(),
 	"authentication":             objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":                    strmapattr.Default(),
+	"headers":                    listattr.Default[SecretObjectFieldModel](SecretObjectFieldAttributes, SecretObjectFieldValidator),
 	"hmac_secret":                stringattr.SecretOptional(),
 	"aws_auth_type":              stringattr.Default("none", stringvalidator.OneOf("", "none", "credentials", "assumeRole")),
 	"aws_access_key_id":          stringattr.SecretOptional(),
@@ -60,25 +60,25 @@ type HTTPConnectorModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	BaseURL                 stringattr.Type                  `tfsdk:"base_url"`
-	Authentication          objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
-	Headers                 strmapattr.Type                  `tfsdk:"headers"`
-	HMACSecret              stringattr.Type                  `tfsdk:"hmac_secret"`
-	AWSAuthType             stringattr.Type                  `tfsdk:"aws_auth_type"`
-	AWSAccessKeyID          stringattr.Type                  `tfsdk:"aws_access_key_id"`
-	AWSSecretAccessKey      stringattr.Type                  `tfsdk:"aws_secret_access_key"`
-	AWSRoleARN              stringattr.Type                  `tfsdk:"aws_role_arn"`
-	AWSExternalID           stringattr.Type                  `tfsdk:"aws_external_id"`
-	AWSRegion               stringattr.Type                  `tfsdk:"aws_region"`
-	AWSService              stringattr.Type                  `tfsdk:"aws_service"`
-	RFC9421SigningEnabled   boolattr.Type                    `tfsdk:"rfc9421_signing_enabled"`
-	RFC9421PrivateKey       stringattr.Type                  `tfsdk:"rfc9421_private_key"`
-	RFC9421KeyID            stringattr.Type                  `tfsdk:"rfc9421_key_id"`
-	RFC9421Components       stringattr.Type                  `tfsdk:"rfc9421_components"`
-	RFC9421SignatureTTL     floatattr.Type                   `tfsdk:"rfc9421_signature_ttl"`
-	Insecure                boolattr.Type                    `tfsdk:"insecure"`
-	IncludeHeadersInContext boolattr.Type                    `tfsdk:"include_headers_in_context"`
-	UseStaticIPs            boolattr.Type                    `tfsdk:"use_static_ips"`
+	BaseURL                 stringattr.Type                       `tfsdk:"base_url"`
+	Authentication          objattr.Type[HTTPAuthFieldModel]      `tfsdk:"authentication"`
+	Headers                 listattr.Type[SecretObjectFieldModel] `tfsdk:"headers"`
+	HMACSecret              stringattr.Type                       `tfsdk:"hmac_secret"`
+	AWSAuthType             stringattr.Type                       `tfsdk:"aws_auth_type"`
+	AWSAccessKeyID          stringattr.Type                       `tfsdk:"aws_access_key_id"`
+	AWSSecretAccessKey      stringattr.Type                       `tfsdk:"aws_secret_access_key"`
+	AWSRoleARN              stringattr.Type                       `tfsdk:"aws_role_arn"`
+	AWSExternalID           stringattr.Type                       `tfsdk:"aws_external_id"`
+	AWSRegion               stringattr.Type                       `tfsdk:"aws_region"`
+	AWSService              stringattr.Type                       `tfsdk:"aws_service"`
+	RFC9421SigningEnabled   boolattr.Type                         `tfsdk:"rfc9421_signing_enabled"`
+	RFC9421PrivateKey       stringattr.Type                       `tfsdk:"rfc9421_private_key"`
+	RFC9421KeyID            stringattr.Type                       `tfsdk:"rfc9421_key_id"`
+	RFC9421Components       stringattr.Type                       `tfsdk:"rfc9421_components"`
+	RFC9421SignatureTTL     floatattr.Type                        `tfsdk:"rfc9421_signature_ttl"`
+	Insecure                boolattr.Type                         `tfsdk:"insecure"`
+	IncludeHeadersInContext boolattr.Type                         `tfsdk:"include_headers_in_context"`
+	UseStaticIPs            boolattr.Type                         `tfsdk:"use_static_ips"`
 }
 
 func (m *HTTPConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -163,7 +163,7 @@ func (m *HTTPConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]
 	c := map[string]any{}
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	listattr.Get(m.Headers, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	stringattr.Get(m.AWSAuthType, c, "awsAuthType")
 	stringattr.Get(m.AWSAccessKeyID, c, "awsAccessKeyId")
@@ -186,7 +186,7 @@ func (m *HTTPConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]
 func (m *HTTPConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObjectField(&m.Headers, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	stringattr.Set(&m.AWSAuthType, c, "awsAuthType")
 	stringattr.Nil(&m.AWSAccessKeyID)

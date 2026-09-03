@@ -1070,6 +1070,13 @@ var docsAuditFilterField = map[string]string{
 	"values":   "The list of values to match against for the filter.",
 }
 
+var docsSecretObjectField = map[string]string{
+	"key":   "The name of the entry, such as the header name when the field carries HTTP headers.",
+	"value": "The value of the entry.",
+	"secret": "Whether the value should be stored encrypted. A secret value is never returned by the API, so it is " +
+		"not read back into the Terraform state and the configured value is authoritative.",
+}
+
 var docsHTTPAuthField = map[string]string{
 	"bearer_token":              "Bearer token for HTTP authentication.",
 	"basic":                     "Basic authentication credentials (username and password).",

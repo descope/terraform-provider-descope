@@ -33,6 +33,41 @@ The list of values to match against for the filter.
 
 
 
+SecretObjectField
+=================
+
+
+
+key
+----
+
+- Type: `string` (required)
+
+The name of the entry, such as the header name when the field carries HTTP headers.
+
+
+
+value
+-----
+
+- Type: `secret` (required)
+
+The value of the entry.
+
+
+
+secret
+------
+
+- Type: `bool`
+
+Whether the value should be stored encrypted. A secret value is never returned by the API, so it is
+not read back into the Terraform state and the configured value is authoritative.
+
+
+
+
+
 HTTPAuthField
 =============
 

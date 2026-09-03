@@ -4,9 +4,9 @@ package connectors
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -29,7 +29,7 @@ var SCIMConnectorAttributes = map[string]schema.Attribute{
 	"federated_app_id": stringattr.Required(),
 	"base_url":         stringattr.Required(),
 	"authentication":   objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":          strmapattr.Default(),
+	"headers":          listattr.Default[SecretObjectFieldModel](SecretObjectFieldAttributes, SecretObjectFieldValidator),
 	"hmac_secret":      stringattr.SecretOptional(),
 	"insecure":         boolattr.Default(false),
 }
@@ -43,12 +43,12 @@ type SCIMConnectorModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	FederatedAppID stringattr.Type                  `tfsdk:"federated_app_id"`
-	BaseURL        stringattr.Type                  `tfsdk:"base_url"`
-	Authentication objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
-	Headers        strmapattr.Type                  `tfsdk:"headers"`
-	HMACSecret     stringattr.Type                  `tfsdk:"hmac_secret"`
-	Insecure       boolattr.Type                    `tfsdk:"insecure"`
+	FederatedAppID stringattr.Type                       `tfsdk:"federated_app_id"`
+	BaseURL        stringattr.Type                       `tfsdk:"base_url"`
+	Authentication objattr.Type[HTTPAuthFieldModel]      `tfsdk:"authentication"`
+	Headers        listattr.Type[SecretObjectFieldModel] `tfsdk:"headers"`
+	HMACSecret     stringattr.Type                       `tfsdk:"hmac_secret"`
+	Insecure       boolattr.Type                         `tfsdk:"insecure"`
 }
 
 func (m *SCIMConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -85,7 +85,7 @@ func (m *SCIMConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]
 	stringattr.Get(m.FederatedAppID, c, "federatedAppId")
 	stringattr.Get(m.BaseURL, c, "baseUrl")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	listattr.Get(m.Headers, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	return c
@@ -95,7 +95,7 @@ func (m *SCIMConnectorModel) SetConfigurationValues(c map[string]any, h *helpers
 	stringattr.Set(&m.FederatedAppID, c, "federatedAppId")
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObjectField(&m.Headers, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 }

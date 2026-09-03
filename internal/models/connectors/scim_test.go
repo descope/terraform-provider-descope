@@ -22,9 +22,10 @@ func TestSCIMConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "xhmqmkcfhe4mk6"
     						}
-				headers = {
-    							"key" = "g6htpmp"
-    						}
+				headers = [
+    							{ key = "X-Plain", value = "g6htpmp" },
+    							{ key = "X-Secret", value = "g6htpmp", secret = true },
+    						]
 				hmac_secret = "ooxzct5yxz"
 				insecure = false
 			`),
@@ -37,7 +38,7 @@ func TestSCIMConnector(t *testing.T) {
 				"federated_app_id":            "hhfe6um5eyv75d",
 				"base_url":                    "bceszn6",
 				"authentication.bearer_token": "xhmqmkcfhe4mk6",
-				"headers.key":                 "g6htpmp",
+				"headers.1.secret":            true,
 				"hmac_secret":                 "ooxzct5yxz",
 				"insecure":                    false,
 			}),
@@ -53,9 +54,10 @@ func TestSCIMConnector(t *testing.T) {
 				authentication = {
     							bearer_token = "r6zxhdnnw7dqoq"
     						}
-				headers = {
-    							"key" = "7xiojfk"
-    						}
+				headers = [
+    							{ key = "X-Plain", value = "7xiojfk" },
+    							{ key = "X-Secret", value = "7xiojfk", secret = true },
+    						]
 				hmac_secret = "twukowwuij"
 				insecure = true
 			`),
@@ -65,7 +67,7 @@ func TestSCIMConnector(t *testing.T) {
 				"federated_app_id":            "d6judjksmykcsd",
 				"base_url":                    "yruwlv4",
 				"authentication.bearer_token": "r6zxhdnnw7dqoq",
-				"headers.key":                 "7xiojfk",
+				"headers.1.secret":            true,
 				"hmac_secret":                 "twukowwuij",
 				"insecure":                    true,
 			}),

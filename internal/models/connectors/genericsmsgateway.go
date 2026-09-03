@@ -4,9 +4,9 @@ package connectors
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -29,7 +29,7 @@ var GenericSMSGatewayConnectorAttributes = map[string]schema.Attribute{
 	"post_url":       stringattr.Required(),
 	"sender":         stringattr.Default(""),
 	"authentication": objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":        strmapattr.Default(),
+	"headers":        listattr.Default[SecretObjectFieldModel](SecretObjectFieldAttributes, SecretObjectFieldValidator),
 	"hmac_secret":    stringattr.SecretOptional(),
 	"insecure":       boolattr.Default(false),
 	"use_static_ips": boolattr.Default(false),
@@ -44,13 +44,13 @@ type GenericSMSGatewayConnectorModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	PostURL        stringattr.Type                  `tfsdk:"post_url"`
-	Sender         stringattr.Type                  `tfsdk:"sender"`
-	Authentication objattr.Type[HTTPAuthFieldModel] `tfsdk:"authentication"`
-	Headers        strmapattr.Type                  `tfsdk:"headers"`
-	HMACSecret     stringattr.Type                  `tfsdk:"hmac_secret"`
-	Insecure       boolattr.Type                    `tfsdk:"insecure"`
-	UseStaticIPs   boolattr.Type                    `tfsdk:"use_static_ips"`
+	PostURL        stringattr.Type                       `tfsdk:"post_url"`
+	Sender         stringattr.Type                       `tfsdk:"sender"`
+	Authentication objattr.Type[HTTPAuthFieldModel]      `tfsdk:"authentication"`
+	Headers        listattr.Type[SecretObjectFieldModel] `tfsdk:"headers"`
+	HMACSecret     stringattr.Type                       `tfsdk:"hmac_secret"`
+	Insecure       boolattr.Type                         `tfsdk:"insecure"`
+	UseStaticIPs   boolattr.Type                         `tfsdk:"use_static_ips"`
 }
 
 func (m *GenericSMSGatewayConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -87,7 +87,7 @@ func (m *GenericSMSGatewayConnectorModel) ConfigurationValues(h *helpers.Handler
 	stringattr.Get(m.PostURL, c, "postUrl")
 	stringattr.Get(m.Sender, c, "sender")
 	objattr.Get(m.Authentication, c, "authentication", h)
-	getHeaders(m.Headers, c, "headers", h)
+	listattr.Get(m.Headers, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
@@ -98,7 +98,7 @@ func (m *GenericSMSGatewayConnectorModel) SetConfigurationValues(c map[string]an
 	stringattr.Set(&m.PostURL, c, "postUrl")
 	stringattr.Set(&m.Sender, c, "sender")
 	objattr.Set(&m.Authentication, c, "authentication", h)
-	setHeaders(&m.Headers, c, "headers", h)
+	setSecretObjectField(&m.Headers, c, "headers", h)
 	stringattr.Nil(&m.HMACSecret)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
