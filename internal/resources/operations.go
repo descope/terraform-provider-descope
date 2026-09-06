@@ -11,8 +11,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-// Create returns the new entity's id along with its data; Read and Update only return the entity data
-// because the caller already knows the id.
+// Create returns the new entity's id along with its data; Read and Update only return the data, since the caller knows the id.
 type createFunc func(ctx context.Context, c *infra.Client, projectID string, data map[string]any) (string, map[string]any, error)
 type readFunc func(ctx context.Context, c *infra.Client, projectID, id string) (map[string]any, error)
 type updateFunc func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error)
@@ -37,8 +36,7 @@ type operations struct {
 	ScopedDelete scopedDeleteFunc
 }
 
-// noDelete is for resources with no delete endpoint: destroy only removes them from state.
-// unwrapEntity treats an empty response envelope as a missing entity, so a read removes the resource from state instead of reporting a clean refresh.
+// Treats an empty response envelope as a missing entity, so a read removes the resource from state instead of reporting a clean refresh.
 func unwrapEntity(body map[string]any, key string) (map[string]any, error) {
 	entity, ok := body[key].(map[string]any)
 	if !ok {
@@ -47,13 +45,14 @@ func unwrapEntity(body map[string]any, key string) (map[string]any, error) {
 	return entity, nil
 }
 
+// For resources with no delete endpoint: destroy only removes them from state.
 func noDelete(_ context.Context, _ *infra.Client, _, _ string) error {
 	return nil
 }
 
-// Rejects an import whose id names an entity of another type: the load and delete endpoints are shared, so it would be adopted and later deleted.
-func checkImportedType(ctx context.Context, body map[string]any, key, expected, kind, id string) error {
-	if actual, _ := body[key].(string); helpers.IsImportState(ctx) && actual != expected {
+// Rejects an id that names an entity of another type: the load and delete endpoints are shared, so it would be adopted and later deleted.
+func checkEntityType(body map[string]any, key, expected, kind, id string) error {
+	if actual, _ := body[key].(string); actual != expected {
 		return fmt.Errorf("the %s with id %s is of type %q, not %q", kind, id, actual, expected)
 	}
 	return nil
@@ -128,7 +127,7 @@ func newConnectorResource[T any, M helpers.ResourceModel[T]](name, wireType stri
 				if err != nil {
 					return nil, err
 				}
-				return body, checkImportedType(ctx, body, "type", wireType, "connector", id)
+				return body, checkEntityType(body, "type", wireType, "connector", id)
 			},
 			Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
 				body := maps.Clone(data)

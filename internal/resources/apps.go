@@ -82,15 +82,14 @@ func ssoAppCreate(kind string, read readFunc) createFunc {
 	}
 }
 
-// ssoAppRead also fetches the OIDC client secret cleartext on every read (including import) because the load endpoint always returns
-// it empty; the model only applies it when the state has no secret already.
+// Also fetches the OIDC client secret cleartext, since the load endpoint returns it empty; the model keeps an existing one.
 func ssoAppRead(kind string, withSecret bool) readFunc {
 	return func(ctx context.Context, c *infra.Client, projectID, id string) (map[string]any, error) {
 		data, err := c.Get(ctx, projectID, "/v1/mgmt/sso/idp/app/load", map[string]string{"id": id})
 		if err != nil {
 			return nil, err
 		}
-		if err := checkImportedType(ctx, data, "appType", kind, "application", id); err != nil {
+		if err := checkEntityType(data, "appType", kind, "application", id); err != nil {
 			return nil, err
 		}
 		if withSecret {
