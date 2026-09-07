@@ -145,7 +145,7 @@ func VerifyPlan(planJSON []byte, manifest *Manifest) (*VerifyResult, error) {
 			})
 			continue
 		}
-		if finding := verifyResourceChange(resource, entry); finding != nil {
+		if finding := verifyResourceChange(resource, entry, manifest.ProjectCore.DeletionProtection); finding != nil {
 			result.Findings = append(result.Findings, *finding)
 		}
 	}
@@ -177,13 +177,13 @@ func VerifyPlan(planJSON []byte, manifest *Manifest) (*VerifyResult, error) {
 	return result, nil
 }
 
-func verifyResourceChange(resource adoptionPlanResource, entry Entry) *Finding {
+func verifyResourceChange(resource adoptionPlanResource, entry Entry, projectDeletionProtection *bool) *Finding {
 	actions := resource.Change.Actions
 	if len(actions) == 1 && actions[0] == "no-op" {
 		return nil
 	}
 	if len(actions) == 1 && actions[0] == "update" {
-		return verifyImportedUpdate(resource, entry)
+		return verifyImportedUpdate(resource, entry, projectDeletionProtection)
 	}
 	if isReplacement(actions) {
 		return newActionFinding(FindingUnexpectedReplace, resource, "replacement is not allowed during adoption")
@@ -211,7 +211,7 @@ func verifyResourceChange(resource adoptionPlanResource, entry Entry) *Finding {
 	return newActionFinding(FindingUnknownAction, resource, "unsupported action sequence")
 }
 
-func verifyImportedUpdate(resource adoptionPlanResource, entry Entry) *Finding {
+func verifyImportedUpdate(resource adoptionPlanResource, entry Entry, projectDeletionProtection *bool) *Finding {
 	if resource.Change.Importing == nil {
 		return newActionFinding(FindingUnexpectedUpdate, resource, "update is not part of an import")
 	}
@@ -226,7 +226,7 @@ func verifyImportedUpdate(resource adoptionPlanResource, entry Entry) *Finding {
 	}
 	offending := make([]string, 0, len(changed))
 	for _, attribute := range changed {
-		if !allowedSecretPath(attribute, allowed) {
+		if !allowedSecretPath(attribute, allowed) && !allowedProjectProtectionUpdate(attribute, resource.Change, entry, projectDeletionProtection) {
 			offending = append(offending, attribute)
 		}
 	}
@@ -252,6 +252,14 @@ func allowedSecretPath(path string, allowed map[string]struct{}) bool {
 	return false
 }
 
+func allowedProjectProtectionUpdate(attribute string, change adoptionPlanChange, entry Entry, expected *bool) bool {
+	if entry.Type != ProjectResourceType || attribute != "deletion_protection" || expected == nil || hasUnknownValue(change.AfterUnknown[attribute]) {
+		return false
+	}
+	actual, ok := change.After[attribute].(bool)
+	return ok && actual == *expected
+}
+
 func changedAttributes(change adoptionPlanChange) []string {
 	keys := make(map[string]struct{}, len(change.Before)+len(change.After)+len(change.AfterUnknown))
 	for key := range change.Before {
@@ -275,6 +283,10 @@ func changedAttributes(change adoptionPlanChange) []string {
 }
 
 func collectChangedPaths(prefix string, before any, beforeExists bool, after any, afterExists bool, unknown any, changed *[]string) {
+	if hasUnknownValue(unknown) {
+		*changed = append(*changed, prefix)
+		return
+	}
 	beforeMap, beforeMapOK := before.(map[string]any)
 	afterMap, afterMapOK := after.(map[string]any)
 	unknownMap, unknownMapOK := unknown.(map[string]any)

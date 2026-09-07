@@ -13,6 +13,7 @@
             "authorization": null,
             "connectors": null,
             "environment": "",
+            "deletion_protection": true,
             "flows": {},
             "id": "P2nested0000000000",
             "invite_settings": null,

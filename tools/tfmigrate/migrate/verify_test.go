@@ -393,6 +393,108 @@ func TestVerifyPlanNestedSecretPaths(t *testing.T) {
 	}
 }
 
+func TestVerifyPlanRejectsWholeCollectionUnknown(t *testing.T) {
+	manifest := &Manifest{
+		Ready:          true,
+		TargetProvider: ProviderPin{Source: ProviderSource},
+		Entries: []Entry{{
+			Address:          "descope_oauth_provider.example",
+			Type:             "descope_oauth_provider",
+			ImportID:         "project/provider",
+			SecretAttributes: []string{"client_secret"},
+		}},
+	}
+	plan, err := json.Marshal(map[string]any{
+		"format_version": "1.2",
+		"complete":       true,
+		"resource_changes": []any{map[string]any{
+			"address":       "descope_oauth_provider.example",
+			"mode":          "managed",
+			"provider_name": officialProviderSource,
+			"change": map[string]any{
+				"actions":       []string{"update"},
+				"importing":     map[string]any{"id": "project/provider"},
+				"before":        map[string]any{"client_secret": nil, "scopes": []any{}},
+				"after":         map[string]any{"client_secret": "secret", "scopes": []any{}},
+				"after_unknown": map[string]any{"scopes": true},
+			},
+		}},
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	result, err := VerifyPlan(plan, manifest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.OK || len(result.Findings) != 1 || !strings.Contains(result.Findings[0].Detail, "scopes") {
+		t.Fatalf("whole-collection unknown was accepted: %#v", result.Findings)
+	}
+}
+
+func TestVerifyPlanProjectDeletionProtectionRestore(t *testing.T) {
+	expected := true
+	manifest := &Manifest{
+		Ready:         true,
+		ProjectID:     "project",
+		LegacyAddress: "descope_project.main",
+		ProjectCore:   ProjectCore{DeletionProtection: &expected},
+		TargetProvider: ProviderPin{
+			Source: ProviderSource,
+		},
+	}
+	plan := func(after any, unknown any) []byte {
+		value := map[string]any{
+			"format_version": "1.2",
+			"complete":       true,
+			"resource_changes": []any{map[string]any{
+				"address":       "descope_project.main",
+				"mode":          "managed",
+				"provider_name": officialProviderSource,
+				"change": map[string]any{
+					"actions":       []string{"update"},
+					"importing":     map[string]any{"id": "project"},
+					"before":        map[string]any{"deletion_protection": nil},
+					"after":         map[string]any{"deletion_protection": after},
+					"after_unknown": map[string]any{"deletion_protection": unknown},
+				},
+			}},
+		}
+		encoded, err := json.Marshal(value)
+		if err != nil {
+			t.Fatal(err)
+		}
+		return encoded
+	}
+
+	accepted, err := VerifyPlan(plan(true, false), manifest)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !accepted.OK {
+		t.Fatalf("exact deletion-protection restoration rejected: %s", accepted.Report())
+	}
+
+	for _, test := range []struct {
+		name    string
+		after   any
+		unknown any
+	}{
+		{name: "wrong value", after: false, unknown: false},
+		{name: "unknown value", after: true, unknown: true},
+	} {
+		t.Run(test.name, func(t *testing.T) {
+			result, err := VerifyPlan(plan(test.after, test.unknown), manifest)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if result.OK || len(result.Findings) != 1 || !strings.Contains(result.Findings[0].Detail, "deletion_protection") {
+				t.Fatalf("unsafe deletion-protection update accepted: %#v", result.Findings)
+			}
+		})
+	}
+}
+
 func testManifest() *Manifest {
 	return &Manifest{
 		Ready:          true,

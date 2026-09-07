@@ -180,6 +180,9 @@ func TestIndexedProjectGeneration(t *testing.T) {
 			imports := string(artifacts.Files[filepath.Join(adoptDir, "imports.tf")])
 			removed := string(artifacts.Files[filepath.Join(detachDir, "removed.tf")])
 			assert.Contains(t, main, tc.mainWant)
+			if tc.name == "for_each" {
+				assert.Contains(t, main, "deletion_protection = each.value.deletion_protection")
+			}
 			assert.Contains(t, imports, "to = "+tc.address)
 			assert.Contains(t, removed, "from = descope_project.main")
 		})

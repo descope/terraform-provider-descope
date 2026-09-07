@@ -229,6 +229,9 @@ func appendProjectResource(body *hclwrite.Body, m *Manifest) {
 		blockBody.SetAttributeRaw("name", rawExpr("each.value.name").tokens())
 		blockBody.SetAttributeRaw("environment", rawExpr("each.value.environment").tokens())
 		blockBody.SetAttributeRaw("tags", rawExpr("each.value.tags").tokens())
+		if m.ProjectCore.DeletionProtection != nil {
+			blockBody.SetAttributeRaw("deletion_protection", rawExpr("each.value.deletion_protection").tokens())
+		}
 	case float64, int, int64, json.Number:
 		blockBody.SetAttributeValue("count", cty.NumberIntVal(1))
 		writeProjectCore(blockBody, m.ProjectCore)
