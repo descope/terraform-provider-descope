@@ -7,6 +7,22 @@ description: Human-checkpointed workflow for safely splitting legacy descope_pro
 
 Terraform cannot fan one resource's state into many destinations through `UpgradeState`, `MoveState`, or `moved` blocks. This migration therefore uses native adoption: capture legacy state -> build an ownership and ID manifest -> detach the legacy `descope_project` from state without deleting anything remotely by using a `removed` block with `lifecycle { destroy = false }` -> adopt every destination with native `import` blocks. The adoption plan must then pass a non-destructive reconciliation check. The `tfmigrate` utility is the single source of migration logic and generated artifacts.
 
+## Install
+
+Install this skill from the public provider repository into any supported agent:
+
+```bash
+npx skills add descope/terraform-provider-descope --skill descope-project-split-migration
+```
+
+The Skills CLI copies this directory into the agent's skill store. A checkout of the provider repository is not required: the workflow runs the migration utility from the exact tagged target-provider release.
+
+For one-time use without installation:
+
+```bash
+npx skills use descope/terraform-provider-descope@descope-project-split-migration
+```
+
 ## Scope
 
 Use this skill only to migrate ownership from a legacy `descope_project` instance to the provider's standalone Descope resources. The workflow inventories existing state, generates Terraform configuration and review material, separates detach from adoption, and validates the saved adoption plan.
@@ -16,7 +32,8 @@ Hard constraints:
 - Terraform must be `>= 1.8.0`. Terraform 1.7 introduced `removed` blocks and `for_each` in import blocks; 1.8 adds the plan `complete` signal that `verify-plan` requires to reject targeted or deferred plans.
 - Keep the source provider version pinned throughout the detach stage.
 - Keep the target provider version pinned throughout the adopt stage.
-- Both exact versions are recorded in `manifest.json` under `source_provider.version` and `target_provider.version`.
+- Run `tfmigrate` from the exact Git tag matching the target provider version. Never use `@latest`, a branch, or an unpinned local checkout for a customer migration.
+- Both exact provider versions are recorded in `manifest.json` under `source_provider.version` and `target_provider.version`.
 - The utility owns all mapping, destination addressing, ID derivation, artifact generation, and plan analysis. Invoke it; never reimplement any of that logic in shell, HCL, or agent reasoning.
 - Resource instance addresses with root-module `count` or `for_each` are supported when the declaration has one live instance. An indexed module address fails closed because child-module HCL applies to every module instance and cannot safely be generated from one instance's state.
 
@@ -26,15 +43,31 @@ Hard constraints:
 - A team needs a "resource split migration" or wants to "split the project resource".
 - Existing nested project configuration must "adopt standalone descope resources" without recreating remote objects.
 
-## Command Reference
+## Prepare the Utility
 
-Run commands from the repository root. The repository uses `go run ./tools/...` for Go utilities.
+Run the utility from the released provider module, not from a provider source checkout. Set the exact versions once. Provider version values omit the `v` prefix; Go module tags include it:
+
+```bash
+SOURCE_PROVIDER_VERSION="<X.Y.Z>"
+TARGET_PROVIDER_VERSION="<A.B.C>"
+TFMIGRATE_PACKAGE="github.com/descope/terraform-provider-descope/tools/tfmigrate@v${TARGET_PROVIDER_VERSION}"
+```
+
+The target release must contain `tools/tfmigrate`. `TFMIGRATE_PACKAGE` must remain unchanged for the entire migration. Before reading state, confirm the pinned utility is available:
+
+```bash
+go run "$TFMIGRATE_PACKAGE" help
+```
+
+Do not substitute `@latest`, a branch name, or a locally modified checkout.
+
+## Command Reference
 
 | Command | Purpose |
 |---------|---------|
-| `go run ./tools/tfmigrate plan -state <state.json> -address <legacy address> -source-provider-version <X.Y.Z> -target-provider-version <A.B.C> -out <dir>` | Inventory the legacy instance and generate the manifest, review documents, detach configuration, and adoption configuration. |
-| `go run ./tools/tfmigrate plan -state <state.json> -address <legacy address> -source-provider-version <X.Y.Z> -target-provider-version <A.B.C> -out <dir> -remote` | Retry only when the tool reports IDs missing from state. Performs GET-only reads and requires `DESCOPE_MANAGEMENT_KEY`; `DESCOPE_BASE_URL` is optional. |
-| `go run ./tools/tfmigrate verify-plan -plan <plan.json> -manifest <dir>/manifest.json` | Verify that the saved adoption plan is complete and non-destructive. |
+| `go run "$TFMIGRATE_PACKAGE" plan -state <state.json> -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out <dir>` | Inventory the legacy instance and generate the manifest, review documents, detach configuration, and adoption configuration. |
+| `go run "$TFMIGRATE_PACKAGE" plan -state <state.json> -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out <dir> -remote` | Retry only when the tool reports IDs missing from state. Performs GET-only reads and requires `DESCOPE_MANAGEMENT_KEY`; `DESCOPE_BASE_URL` is optional. |
+| `go run "$TFMIGRATE_PACKAGE" verify-plan -plan <plan.json> -manifest <dir>/manifest.json` | Verify that the saved adoption plan is complete and non-destructive. |
 
 | Exit code | Meaning |
 |-----------|---------|
@@ -65,7 +98,7 @@ Raw state records the provider configuration address. `terraform show -json` omi
 Run the `plan` subcommand with the exact legacy resource address and the exact source and target provider versions:
 
 ```bash
-go run ./tools/tfmigrate plan -state legacy.tfstate.json -address <legacy address> -source-provider-version <X.Y.Z> -target-provider-version <A.B.C> -out <dir>
+go run "$TFMIGRATE_PACKAGE" plan -state legacy.tfstate.json -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out <dir>
 ```
 
 `<dir>` must not exist. The utility atomically creates it with owner-only permissions and refuses existing paths or symlinks so the protected state copy cannot be redirected or mixed with older output.
@@ -137,7 +170,7 @@ Supply the sensitive variables listed in `SECRETS.md` from the operator's own se
 terraform init -upgrade
 (umask 077; terraform plan -out=adopt.tfplan)
 (umask 077; set -o noclobber; terraform show -json adopt.tfplan > adopt-plan.json)
-go run ./tools/tfmigrate verify-plan -plan adopt-plan.json -manifest <dir>/manifest.json
+go run "$TFMIGRATE_PACKAGE" verify-plan -plan adopt-plan.json -manifest <dir>/manifest.json
 ```
 
 Both `adopt.tfplan` and `adopt-plan.json` contain sensitive values. Never commit or upload them; delete them according to the team's retention policy after verification and apply.
