@@ -3,11 +3,11 @@
 package connectors
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )

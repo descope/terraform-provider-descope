@@ -1,8 +1,8 @@
 package settings
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 )
 
 // Marks the delivery service as the built-in Descope service when its block is absent, which also resets any custom templates the service had.

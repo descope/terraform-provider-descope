@@ -3,10 +3,10 @@ package jwttemplate
 import (
 	"strings"
 
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/jsonattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/jsonattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"

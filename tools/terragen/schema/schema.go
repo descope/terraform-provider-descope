@@ -407,7 +407,7 @@ func (s *Schema) AbortIfNeeded() {
 }
 
 func shouldIgnoreDir(path string) bool {
-	return strings.HasSuffix(path, "/models/attrs") || strings.HasSuffix(path, "/models/helpers") || strings.HasSuffix(path, "/tests") || filepath.Base(path) == "testdata"
+	return strings.HasSuffix(path, "/tests") || filepath.Base(path) == "testdata"
 }
 
 func shouldIgnoreFile(path string) bool {

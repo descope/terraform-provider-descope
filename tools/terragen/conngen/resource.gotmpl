@@ -8,22 +8,22 @@ import (
 
 	{{ end }}
     {{- if or (.HasField "boolean") (not .ExtProvider) }}
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
     {{- end }}
     {{- if .HasField "number" }}
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/floatattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/floatattr"
     {{- end }}
     {{- if .HasField "auditFilters" }}
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/listattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/listattr"
     {{- end }}
     {{- if .HasField "httpAuth" }}
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
     {{- end }}
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
     {{- if or (.HasField "object") (.HasField "secret-object") }}
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strmapattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
     {{- end }}
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
     {{- if .HasEnumFields }}
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
     {{- end }}

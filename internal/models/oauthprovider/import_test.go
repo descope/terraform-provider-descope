@@ -4,9 +4,9 @@ import (
 	"context"
 	"testing"
 
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
