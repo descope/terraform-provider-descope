@@ -132,7 +132,7 @@ func newConnectorResource[T any, M helpers.ResourceModel[T]](name, wireType stri
 			Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
 				body := maps.Clone(data)
 				body["id"] = id
-				return c.PostData(ctx, projectID, path+"/update", body)
+				return c.PutData(ctx, projectID, path, body)
 			},
 			Delete: func(ctx context.Context, c *infra.Client, projectID, id string) error {
 				return c.Del(ctx, projectID, path, map[string]string{"id": id})
