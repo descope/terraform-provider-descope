@@ -82,6 +82,7 @@ func ConnectorResources() []func() resource.Resource {
 		newConnectorResource[connectors.TwilioCoreConnectorModel]("twilio_core_connector", "twilio-core", connectors.TwilioCoreConnectorSchema),
 		newConnectorResource[connectors.TwilioVerifyConnectorModel]("twilio_verify_connector", "twilio-verify", connectors.TwilioVerifyConnectorSchema),
 		newConnectorResource[connectors.UnibeamConnectorModel]("unibeam_connector", "unibeam", connectors.UnibeamConnectorSchema),
+		newConnectorResource[connectors.VonageConnectorModel]("vonage_connector", "vonage", connectors.VonageConnectorSchema),
 		newConnectorResource[connectors.ZeroBounceConnectorModel]("zerobounce_connector", "zerobounce", connectors.ZeroBounceConnectorSchema),
 	}
 }
