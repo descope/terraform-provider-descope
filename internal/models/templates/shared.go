@@ -1,7 +1,7 @@
 package templates
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 )
 
 func requireTemplateID(h *helpers.Handler, data map[string]any, typ string, name string) (string, bool) {

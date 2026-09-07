@@ -138,7 +138,7 @@ The project source files are organized in this manner, though usually changes ar
 
 ### Model Interfaces
 
-Key interfaces reside in `internal/models/helpers/model.go` and are used by the model structs:
+Key interfaces reside in `internal/helpers/model.go` and are used by the model structs:
 
 - `Model[T]`: Basic model with Values/SetValues methods for API serialization
 - `NamedModel[T]`: Models with name/ID matching for friendly diffs
