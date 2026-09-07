@@ -20,6 +20,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 }
 
 var Schema = schema.Schema{
+	Version:             1,
 	MarkdownDescription: "Manages a Descope project and its core attributes. The project's configuration is managed with the standalone descope resources that reference it by ID.",
 	Attributes:          ProjectAttributes,
 }

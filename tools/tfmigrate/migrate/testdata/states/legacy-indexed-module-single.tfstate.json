@@ -1,0 +1,27 @@
+{
+  "lineage": "66666666-6666-6666-6666-666666666666",
+  "outputs": {},
+  "resources": [
+    {
+      "instances": [
+        {
+          "attributes": {
+            "environment": "",
+            "id": "P2indexedmodule000",
+            "name": "Indexed module",
+            "tags": []
+          },
+          "schema_version": 0
+        }
+      ],
+      "mode": "managed",
+      "module": "module.identity[0]",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "type": "descope_project"
+    }
+  ],
+  "serial": 1,
+  "terraform_version": "1.9.5",
+  "version": 4
+}

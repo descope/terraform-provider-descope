@@ -1,0 +1,31 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "errored": true,
+  "resource_changes": [
+    {
+      "address": "descope_access_key.migrated",
+      "mode": "managed",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "importing": {
+          "id": "project/access-key"
+        }
+      },
+      "provider_name": "registry.terraform.io/descope/descope"
+    },
+    {
+      "address": "descope_project_settings.migrated",
+      "mode": "managed",
+      "change": {
+        "actions": [
+          "no-op"
+        ]
+      },
+      "provider_name": "registry.terraform.io/descope/descope"
+    }
+  ],
+  "complete": true
+}
