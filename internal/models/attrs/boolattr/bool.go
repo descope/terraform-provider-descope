@@ -36,6 +36,16 @@ func Optional(extras ...any) schema.BoolAttribute {
 	}
 }
 
+// Tristate returns an Optional but not Computed bool attribute, preserving null so callers can distinguish unset from explicit values.
+func Tristate(extras ...any) schema.BoolAttribute {
+	validators, modifiers := parseExtras(extras)
+	return schema.BoolAttribute{
+		Optional:      true,
+		Validators:    validators,
+		PlanModifiers: modifiers,
+	}
+}
+
 func Default(value bool, extras ...any) schema.BoolAttribute {
 	validators, modifiers := parseExtras(extras)
 	return schema.BoolAttribute{

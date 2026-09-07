@@ -1,6 +1,7 @@
 package schema
 
 import (
+	"bytes"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -8,6 +9,7 @@ import (
 	"io/fs"
 	"log"
 	"os"
+	"path"
 	"path/filepath"
 	"slices"
 	"strings"
@@ -18,8 +20,14 @@ import (
 type Schema struct {
 	Files    []*File
 	Warnings []string
-	Packages []string
+	Imports  []Import
 	Missing  int
+}
+
+// An import of a model package in the generated models.go file, aliased when its base name collides with another import.
+type Import struct {
+	Alias string
+	Path  string
 }
 
 func ParseSources(root string) *Schema {
@@ -44,7 +52,6 @@ func (s *Schema) parseDir(root string, dirs []string) {
 		fullpath := filepath.Join(path, name)
 		if entry.IsDir() && !shouldIgnoreDir(fullpath) {
 			utils.Debug(len(dirs), "+ %s:", name)
-			s.Packages = append(s.Packages, strings.Join(append(dirs, name), "/"))
 			s.parseDir(root, append(dirs, name))
 		} else if !shouldIgnoreFile(fullpath) {
 			s.addFile(root, dirs, name)
@@ -57,6 +64,10 @@ func (s *Schema) addFile(root string, dirs []string, filename string) {
 	source, err := os.ReadFile(path)
 	if err != nil {
 		log.Fatalf("failed to read source file at path %s: %s", path, err.Error())
+	}
+
+	if shouldIgnoreSource(source) {
+		return
 	}
 
 	fileset := token.NewFileSet()
@@ -223,6 +234,8 @@ func (s *Schema) addFile(root string, dirs []string, filename string) {
 					if a.Name != "false" {
 						field.Default = a.Name
 					}
+				case *ast.SelectorExpr:
+					// constant defaults from another package (e.g. `helpers.DescopeConnector`) aren't evaluated, so no default is documented
 				default:
 					log.Fatalf("unexpected default type in %s field %s in %s in %s: %T", field.Type, fieldName, varName, path, a)
 				}
@@ -274,6 +287,83 @@ func (s *Schema) addFile(root string, dirs []string, filename string) {
 	}
 }
 
+// determines the docs variable name for each model: unique names use the plain `docs<Model>` form, while a name appearing in more than
+// one package is qualified with its directory path to avoid collisions in docs.go (settings + project/settings -> docsSettingsSettings)
+func (s *Schema) ComputeDocsVars() {
+	counts := map[string]int{}
+	for _, f := range s.Files {
+		for _, m := range f.Models {
+			counts[m.Name] += 1
+		}
+	}
+	for _, f := range s.Files {
+		for _, m := range f.Models {
+			if counts[m.Name] == 1 {
+				m.DocsVar = "docs" + m.Name
+				continue
+			}
+			qualifier := ""
+			for _, d := range f.Dirs {
+				qualifier += utils.CapitalCase(d)
+			}
+			m.DocsVar = "docs" + qualifier + m.Name
+		}
+	}
+}
+
+// resolves the package identifier each model is accessed with in the generated models.go file: imports whose base name collides with
+// another (e.g. settings and project/settings) get an alias derived from their full path
+func (s *Schema) ResolveModelImports() {
+	paths := s.ModelPackages()
+
+	counts := map[string]int{}
+	for _, p := range paths {
+		counts[path.Base(p)] += 1
+	}
+
+	idents := map[string]string{}
+	s.Imports = []Import{}
+	for _, p := range paths {
+		ident := path.Base(p)
+		alias := ""
+		if joined := strings.ReplaceAll(p, "/", ""); counts[ident] > 1 && joined != ident {
+			ident = joined
+			alias = joined
+		}
+		idents[p] = ident
+		s.Imports = append(s.Imports, Import{Alias: alias, Path: p})
+	}
+
+	for _, f := range s.Files {
+		if len(f.Dirs) == 0 || len(f.Models) == 0 {
+			continue
+		}
+		if ident := idents[strings.Join(f.Dirs, "/")]; ident != "" {
+			for _, m := range f.Models {
+				m.Package = ident
+			}
+		}
+	}
+}
+
+// returns the sorted list of packages with at least one model, used for the import statements of the generated models.go file
+func (s *Schema) ModelPackages() []string {
+	seen := map[string]bool{}
+	packages := []string{}
+	for _, f := range s.Files {
+		if len(f.Dirs) == 0 || len(f.Models) == 0 {
+			continue
+		}
+		pkg := strings.Join(f.Dirs, "/")
+		if !seen[pkg] {
+			seen[pkg] = true
+			packages = append(packages, pkg)
+		}
+	}
+	slices.Sort(packages)
+	return packages
+}
+
 func (s *Schema) ValidateIfNeeded() {
 	utils.Debug(0, "Validation")
 	utils.Debug(0, "==========")
@@ -317,11 +407,16 @@ func (s *Schema) AbortIfNeeded() {
 }
 
 func shouldIgnoreDir(path string) bool {
-	return strings.HasSuffix(path, "/models/attrs") || strings.HasSuffix(path, "/models/helpers") || strings.HasSuffix(path, "/tests")
+	return strings.HasSuffix(path, "/models/attrs") || strings.HasSuffix(path, "/models/helpers") || strings.HasSuffix(path, "/tests") || filepath.Base(path) == "testdata"
 }
 
 func shouldIgnoreFile(path string) bool {
 	return !strings.HasSuffix(path, ".go") || strings.HasSuffix(path, "_test.go") || strings.HasPrefix(filepath.Base(path), ".")
+}
+
+// skips sources excluded from compilation by an ignore build constraint, e.g. the retired builtin connector block models
+func shouldIgnoreSource(source []byte) bool {
+	return bytes.HasPrefix(source, []byte("//go:build ignore\n"))
 }
 
 // converts package path in selector to a field type
@@ -330,6 +425,9 @@ func fieldTypeFromSelector(selector *ast.SelectorExpr) (FieldType, string, bool)
 		typ := FieldType(strings.TrimSuffix(pkg.Name, "attr"))
 		if typ == FieldTypeBool || typ == FieldTypeDuration || typ == FieldTypeFloat || typ == FieldTypeInt || typ == FieldTypeList || typ == FieldTypeSet || typ == FieldTypeMap || typ == FieldTypeString {
 			return typ, "", true
+		}
+		if typ == "json" {
+			return FieldTypeString, "", true // a JSON document is held in a string attribute
 		}
 		if typ == "strlist" {
 			return FieldTypeList, "string", true

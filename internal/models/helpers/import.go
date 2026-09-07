@@ -30,8 +30,14 @@ func ContextWithImportState(ctx context.Context, req resource.ReadRequest, resp 
 	return ctx
 }
 
-// Checks if we're currently reading a source as part of an import operation.
-func isImportState(ctx context.Context) bool {
+// Marks the context as an import-state read without a resource import request, so tools that reuse the read path outside of a provider
+// server (e.g. tfexport) get the same import semantics from ShouldSetAttributeValue and read error handling.
+func MarkImportContext(ctx context.Context) context.Context {
+	return context.WithValue(ctx, importKey, true)
+}
+
+// Checks if we're currently reading a resource as part of an import operation.
+func IsImportState(ctx context.Context) bool {
 	value, _ := ctx.Value(importKey).(bool)
 	return value
 }
@@ -48,7 +54,7 @@ func ShouldSetAttributeValue(ctx context.Context, v attr.Value) bool {
 	if !v.IsNull() {
 		return true
 	}
-	if isImportState(ctx) {
+	if IsImportState(ctx) {
 		return true
 	}
 	return false

@@ -38,7 +38,7 @@ func (m *ReBacModel) SetValues(h *helpers.Handler, data map[string]any) {
 
 func (m *ReBacModel) Validate(h *helpers.Handler) {
 	if helpers.HasUnknownValues(m.CompanyRoles, m.ProjectRoles, m.TagRoles) {
-		return // skip validation if there are unknown values
+		return
 	}
 
 	hasCompanyRoles := !m.CompanyRoles.IsEmpty()

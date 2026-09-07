@@ -14,6 +14,19 @@ resource to be deleted and recreated.
 
 
 
+deletion_protection
+-------------------
+
+- Type: `bool`
+
+Protects the inbound app from being accidentally destroyed or replaced. Destroying or
+replacing an inbound app issues a new client ID and client secret, breaking any
+integrations that rely on the existing ones, so inbound apps are protected by default.
+To allow the resource to be destroyed or replaced, for example in ephemeral test
+environments, set this attribute to `false` and apply the change first.
+
+
+
 name
 ----
 

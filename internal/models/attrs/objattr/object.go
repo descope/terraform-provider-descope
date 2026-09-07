@@ -125,26 +125,6 @@ func Nil[T any, M helpers.Model[T]](o *Type[T]) {
 	}
 }
 
-func CollectReferences[T any, M helpers.CollectReferencesModel[T]](o Type[T], h *helpers.Handler) {
-	if o.IsNull() || o.IsUnknown() {
-		return
-	}
-
-	var value M = helpers.Require(o.ToObject(h.Ctx))
-	value.CollectReferences(h)
-}
-
-func UpdateReferences[T any, M helpers.UpdateReferencesModel[T]](o *Type[T], h *helpers.Handler) {
-	if o.IsNull() || o.IsUnknown() {
-		return
-	}
-
-	var value M = helpers.Require(o.ToObject(h.Ctx))
-	value.UpdateReferences(h)
-
-	*o = valueOf(h.Ctx, value)
-}
-
 func parseExtras(extras []any) (validators []validator.Object, modifiers []planmodifier.Object) {
 	for _, e := range extras {
 		matched := false

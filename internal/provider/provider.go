@@ -83,7 +83,7 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 	}
 
 	if v := os.Getenv("DESCOPE_PROJECT_ID"); v != "" {
-		resp.Diagnostics.AddWarning("Redudant Descope Project ID", "The Descope provider no longer requires the DESCOPE_PROJECT_ID environment variable to be set and the value '"+v+"' will be ignored")
+		resp.Diagnostics.AddWarning("Redundant Descope Project ID", "The Descope provider no longer requires the DESCOPE_PROJECT_ID environment variable to be set and the value '"+v+"' will be ignored")
 	}
 
 	managementKey := os.Getenv("DESCOPE_MANAGEMENT_KEY")
@@ -115,12 +115,47 @@ func (p *descopeProvider) DataSources(_ context.Context) []func() datasource.Dat
 }
 
 func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
+	list := []func() resource.Resource{
 		resources.NewProjectResource,
 		resources.NewDescoperResource,
 		resources.NewManagementKeyResource,
 		resources.NewAccessKeyResource,
 		resources.NewInboundAppResource,
 		resources.NewEngineResource,
+		resources.NewOAuthSettingsResource,
+		resources.NewOAuthProviderResource,
+		resources.NewEmailTemplateResource,
+		resources.NewTextTemplateResource,
+		resources.NewVoiceTemplateResource,
+		resources.NewUserAttributeResource,
+		resources.NewTenantAttributeResource,
+		resources.NewAccessKeyAttributeResource,
+		resources.NewPasskeySettingsResource,
+		resources.NewTOTPSettingsResource,
+		resources.NewAdminPortalResource,
+		resources.NewMagicLinkSettingsResource,
+		resources.NewInviteSettingsResource,
+		resources.NewProjectSettingsResource,
+		resources.NewSessionSettingsResource,
+		resources.NewSessionMigrationResource,
+		resources.NewOTPSettingsResource,
+		resources.NewEnchantedLinkSettingsResource,
+		resources.NewEmbeddedLinkSettingsResource,
+		resources.NewPasswordSettingsResource,
+		resources.NewSSOSettingsResource,
+		resources.NewRoleResource,
+		resources.NewPermissionResource,
+		resources.NewOIDCAppResource,
+		resources.NewSAMLAppResource,
+		resources.NewWSFedAppResource,
+		resources.NewAppRoleResource,
+		resources.NewAppPermissionResource,
+		resources.NewFGASchemaResource,
+		resources.NewListResource,
+		resources.NewJWTTemplateResource,
+		resources.NewFlowResource,
+		resources.NewStylesResource,
+		resources.NewWidgetResource,
 	}
+	return append(list, resources.ConnectorResources()...)
 }

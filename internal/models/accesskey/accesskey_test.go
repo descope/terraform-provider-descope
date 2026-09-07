@@ -10,6 +10,7 @@ import (
 
 func TestAccessKey(t *testing.T) {
 	p := testacc.Project(t)
+	r := testacc.Role(t)
 	a := testacc.AccessKey(t)
 	testacc.Run(t,
 		// Test basic creation with required fields only
@@ -33,24 +34,20 @@ func TestAccessKey(t *testing.T) {
 		},
 		// Test update of mutable fields
 		resource.TestStep{
-			Config: p.Config(`
-				authorization = {
-					roles = [
-						{ name = "Viewer" }
-					]
-				}
-			`) + a.Config(`
+			Config: p.Config() + r.Config(
+				`project_id = `+p.Path()+`.id`,
+			) + a.Config(`
 				project_id = `+p.Path()+`.id
 				description = "Updated description"
 				permitted_ips = ["10.0.0.0/8"]
-				roles = ["Viewer"]
+				roles = [`+r.Path()+`.name]
 			`),
 			Check: a.Check(map[string]any{
 				"description":     "Updated description",
 				"permitted_ips.#": "1",
 				"permitted_ips.0": "10.0.0.0/8",
 				"roles.#":         "1",
-				"roles.0":         "Viewer",
+				"roles.0":         r.Name,
 			}),
 		},
 		// Test tenants attribute with non-existent tenant

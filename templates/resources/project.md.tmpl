@@ -2,12 +2,12 @@
 page_title: "descope_project Resource - descope"
 subcategory: ""
 description: |-
-  Manages a Descope project's full configuration: authentication methods, flows, roles, permissions, connectors, applications, JWT templates, and more.
+  Manages a Descope project and its core attributes. The project's configuration is managed with the standalone descope resources that reference it by ID.
 ---
 
 # descope_project (Resource)
 
-Manages the configuration of a Descope project. A project is the core entity in Descope—it contains all authentication settings, user flows, roles, connectors, and other configuration for your application.
+Manages a Descope project. A project is the core entity in Descope—its authentication settings, user flows, roles, connectors, applications, and other configuration are managed with the standalone `descope_*` resources that reference the project by ID.
 
 This resource manages _project configuration_, not users or tenants. For user management, use the [Descope Management API](https://docs.descope.com/api/openapi) or [SDKs](https://docs.descope.com).
 
@@ -27,261 +27,267 @@ resource "descope_project" "example" {
 
 ### Authentication Methods
 
-Enable and configure the authentication methods your users will use:
+Authentication method settings are managed with their own standalone resources, such as
+[`descope_magiclink_settings`](./magiclink_settings), [`descope_otp_settings`](./otp_settings),
+[`descope_password_settings`](./password_settings), and [`descope_sso_settings`](./sso_settings):
 
 ```hcl
 resource "descope_project" "example" {
   name = "my-app"
+}
 
-  authentication = {
-    # Email magic link (passwordless)
-    magic_link = {
-      expiration_time = "1 hour"
-    }
+resource "descope_magiclink_settings" "example" {
+  project_id      = descope_project.example.id
+  expiration_time = "1 hour"
+}
 
-    # Password-based login with lockout
-    password = {
-      lock          = true
-      lock_attempts = 5
-      min_length    = 12
-    }
-
-    # OTP via email or SMS
-    otp = {
-      expiration_time = "5 minutes"
-    }
-
-    # Passkeys (WebAuthn)
-    passkeys = {
-      disabled = false
-    }
-  }
+resource "descope_password_settings" "example" {
+  project_id    = descope_project.example.id
+  lock          = true
+  lock_attempts = 5
+  min_length    = 12
 }
 ```
 
 ### Roles and Permissions (RBAC)
 
-Define roles and permissions for your users:
+Roles and permissions are managed as standalone resources that reference the project by ID:
 
 ```hcl
 resource "descope_project" "example" {
   name = "my-app"
+}
 
-  authorization = {
-    permissions = [
-      { name = "read:data",   description = "Read access to application data" },
-      { name = "write:data",  description = "Write access to application data" },
-      { name = "admin:panel", description = "Access to the admin panel" },
-    ]
+resource "descope_permission" "read_data" {
+  project_id  = descope_project.example.id
+  name        = "read:data"
+  description = "Read access to application data"
+}
 
-    roles = [
-      {
-        name        = "viewer"
-        description = "Can read data"
-        permissions = ["read:data"]
-      },
-      {
-        name        = "editor"
-        description = "Can read and write data"
-        permissions = ["read:data", "write:data"]
-      },
-      {
-        name        = "admin"
-        description = "Full access"
-        permissions = ["read:data", "write:data", "admin:panel"]
-      },
-    ]
-  }
+resource "descope_permission" "write_data" {
+  project_id  = descope_project.example.id
+  name        = "write:data"
+  description = "Write access to application data"
+}
+
+resource "descope_permission" "admin_panel" {
+  project_id  = descope_project.example.id
+  name        = "admin:panel"
+  description = "Access to the admin panel"
+}
+
+resource "descope_role" "viewer" {
+  project_id  = descope_project.example.id
+  name        = "viewer"
+  description = "Can read data"
+  permissions = [descope_permission.read_data.name]
+}
+
+resource "descope_role" "editor" {
+  project_id  = descope_project.example.id
+  name        = "editor"
+  description = "Can read and write data"
+  permissions = [descope_permission.read_data.name, descope_permission.write_data.name]
+}
+
+resource "descope_role" "admin" {
+  project_id  = descope_project.example.id
+  name        = "admin"
+  description = "Full access"
+  permissions = [descope_permission.read_data.name, descope_permission.write_data.name, descope_permission.admin_panel.name]
 }
 ```
 
 ### Connectors
 
-Integrate with third-party services to enrich flows and send notifications:
+Integrate with third-party services using standalone per-type connector resources:
 
 ```hcl
 resource "descope_project" "example" {
   name = "my-app"
+}
 
-  connectors = {
-    # Generic HTTP webhook with bearer token auth
-    http = [{
-      name        = "User Eligibility Check"
-      description = "Checks if a new user is allowed to register"
-      base_url    = "https://api.example.com"
-      authentication = {
-        bearer_token = var.webhook_secret
-      }
-    }]
-
-    # SendGrid for email delivery
-    sendgrid = [{
-      name = "Transactional Email"
-      sender = {
-        email = "noreply@example.com"
-        name  = "My App"
-      }
-      authentication = {
-        api_key = var.sendgrid_api_key
-      }
-    }]
-
-    # Twilio for SMS OTP
-    twilio_core = [{
-      name        = "SMS OTP"
-      account_sid = var.twilio_account_sid
-      senders = {
-        sms = {
-          phone_number = "+15551234567"
-        }
-      }
-      authentication = {
-        auth_token = var.twilio_auth_token
-      }
-    }]
+# Generic HTTP webhook with bearer token auth
+resource "descope_http_connector" "eligibility" {
+  project_id  = descope_project.example.id
+  name        = "User Eligibility Check"
+  description = "Checks if a new user is allowed to register"
+  base_url    = "https://api.example.com"
+  authentication = {
+    bearer_token = var.webhook_secret
   }
+}
+
+# SendGrid for email delivery
+resource "descope_sendgrid_connector" "email" {
+  project_id   = descope_project.example.id
+  name         = "Transactional Email"
+  sender_email = "noreply@example.com"
+  sender_name  = "My App"
+  api_key      = var.sendgrid_api_key
+}
+
+# Twilio for SMS OTP
+resource "descope_twilio_core_connector" "sms" {
+  project_id  = descope_project.example.id
+  name        = "SMS OTP"
+  account_sid = var.twilio_account_sid
+  from_phone  = "+15551234567"
+  auth_token  = var.twilio_auth_token
 }
 ```
 
 ### Flows and Styles
 
-Load a custom authentication flow from a JSON file (exported from the Descope console):
+Load custom authentication flows and styles from JSON files (exported from the Descope
+console) with the standalone `descope_flow` and `descope_styles` resources:
 
 ```hcl
 resource "descope_project" "example" {
   name = "my-app"
+}
 
-  flows = {
-    "sign-up-or-in" = {
-      data = file("${path.module}/flows/sign-up-or-in.json")
-    }
-    "forgot-password" = {
-      data = file("${path.module}/flows/forgot-password.json")
-    }
-  }
+resource "descope_flow" "sign_up_or_in" {
+  project_id = descope_project.example.id
+  flow_id    = "sign-up-or-in"
+  data       = file("${path.module}/flows/sign-up-or-in.json")
+}
 
-  styles = {
-    data = file("${path.module}/flows/styles.json")
-  }
+resource "descope_styles" "example" {
+  project_id = descope_project.example.id
+  data       = file("${path.module}/flows/styles.json")
 }
 ```
 
-### Session Settings
+### Project and Session Settings
 
-Configure token lifetimes and session behavior:
+General project settings, session behavior, and user invitations are managed with the
+standalone [`descope_project_settings`](./project_settings),
+[`descope_session_settings`](./session_settings), and
+[`descope_invite_settings`](./invite_settings) resources:
 
 ```hcl
 resource "descope_project" "example" {
   name = "my-app"
+}
 
-  project_settings = {
-    refresh_token_expiration     = "3 weeks"
-    session_token_expiration     = "15 minutes"
-    refresh_token_rotation       = true
-    enable_inactivity            = true
-    inactivity_time              = "30 minutes"
-    custom_domain                = "auth.example.com"
-    approved_domains             = ["example.com", "app.example.com"]
-  }
+resource "descope_project_settings" "example" {
+  project_id       = descope_project.example.id
+  app_url          = "https://app.example.com"
+  approved_domains = ["example.com", "app.example.com"]
+}
+
+resource "descope_session_settings" "example" {
+  project_id               = descope_project.example.id
+  refresh_token_expiration = "3 weeks"
+  session_token_expiration = "15 minutes"
+  refresh_token_rotation   = true
+  enable_inactivity        = true
+  inactivity_time          = "30 minutes"
+}
+
+resource "descope_invite_settings" "example" {
+  project_id         = descope_project.example.id
+  require_invitation = true
+  invite_url         = "https://app.example.com/invite"
 }
 ```
 
-### OIDC Applications
+### Federated Applications
 
-Register an OIDC application for SSO:
+Federated (SSO IdP) applications and their app-scoped roles and permissions are managed
+with the standalone `descope_oidc_app`, `descope_saml_app`, `descope_wsfed_app`,
+`descope_app_role`, and `descope_app_permission` resources that reference the project by ID:
 
 ```hcl
 resource "descope_project" "example" {
   name = "my-app"
+}
 
-  applications = {
-    oidc_applications = [
-      {
-        name          = "My Web App"
-        description   = "Primary web application"
-        login_page_url = "https://app.example.com/login"
-      }
-    ]
-  }
+resource "descope_oidc_app" "web" {
+  project_id     = descope_project.example.id
+  name           = "My Web App"
+  description    = "Primary web application"
+  login_page_url = "https://app.example.com/login"
+}
+
+resource "descope_app_permission" "read_reports" {
+  project_id = descope_project.example.id
+  app_id     = descope_oidc_app.web.id
+  name       = "read:reports"
+}
+
+resource "descope_app_role" "analyst" {
+  project_id     = descope_project.example.id
+  app_id         = descope_oidc_app.web.id
+  name           = "analyst"
+  permission_ids = [descope_app_permission.read_reports.id]
 }
 ```
 
 ### JWT Templates
 
-Customize the JWT claims added to session tokens:
+JWT templates are managed with the standalone `descope_jwt_template` resource that
+references the project by ID:
 
 ```hcl
 resource "descope_project" "example" {
   name = "my-app"
+}
 
-  jwt_templates = {
-    user_templates = [
-      {
-        name        = "app-claims"
-        description = "Adds subscription tier and org context to user JWTs"
-        template    = jsonencode({
-          tier   = "@user.customAttributes.subscriptionTier"
-          org_id = "@user.tenants[0].tenantId"
-        })
+resource "descope_jwt_template" "app_claims" {
+  project_id  = descope_project.example.id
+  name        = "app-claims"
+  description = "Adds subscription tier and org context to user JWTs"
+  type        = "user"
+  template    = jsonencode({
+    tier   = "@user.customAttributes.subscriptionTier"
+    org_id = "@user.tenants[0].tenantId"
+  })
 
-        # Exclude the permissions claim to keep tokens lean
-        exclude_permission_claim = true
+  # Exclude the permissions claim to keep tokens lean
+  exclude_permission_claim = true
 
-        # Add a unique JWT ID for replay attack prevention
-        add_jti_claim = true
+  # Add a unique JWT ID for replay attack prevention
+  add_jti_claim = true
 
-        # Move the user ID to a new dsub claim, allowing sub to be customized
-        override_subject_claim = true
-      }
-    ]
-  }
-
-  project_settings = {
-    user_jwt_template = "app-claims"
-  }
+  # Move the user ID to a new dsub claim, allowing sub to be customized
+  override_subject_claim = true
 }
 ```
 
 ### SSO Settings
 
-Configure global settings for Single Sign-On across tenants:
+Global settings for Single Sign-On across tenants are managed with the standalone
+[`descope_sso_settings`](./sso_settings) resource:
 
 ```hcl
 resource "descope_project" "example" {
   name = "my-app"
+}
 
-  authentication = {
-    sso = {
-      # Merge SSO users with existing accounts of the same email
-      merge_users = true
+resource "descope_sso_settings" "example" {
+  project_id = descope_project.example.id
 
-      # Allow SSO roles to override a user's existing roles
-      allow_override_roles = true
+  # Merge SSO users with existing accounts of the same email
+  merge_users = true
 
-      # Prioritize group-based role mappings over direct role assignments
-      groups_priority = true
+  # Allow SSO roles to override a user's existing roles
+  allow_override_roles = true
 
-      # Enforce that SSO domains are always specified
-      require_sso_domains = true
+  # Define required Descope attributes when receiving SSO information
+  mandatory_user_attributes = [
+    { id = "email" },
+    { id = "name" },
+    { id = "department", custom = true },
+  ]
 
-      # Require a groups attribute name in SSO configuration
-      require_groups_attribute_name = true
-
-      # Define required Descope attributes when receiving SSO information
-      mandatory_user_attributes = [
-        { id = "email" },
-        { id = "name" },
-        { id = "department", custom = true },
-      ]
-
-      # Configure the SSO Suite portal appearance
-      sso_suite_settings = {
-        style_id    = "my-brand-style"
-        hide_scim   = false
-        hide_saml   = false
-        hide_oidc   = false
-      }
-    }
+  # Configure the SSO Suite portal appearance
+  sso_suite_settings = {
+    style_id  = "my-brand-style"
+    hide_scim = false
+    hide_saml = false
+    hide_oidc = false
   }
 }
 ```

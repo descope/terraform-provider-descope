@@ -6,6 +6,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/entities"
 	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/project"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -20,6 +21,7 @@ var (
 	_ resource.ResourceWithConfigure      = &projectResource{}
 	_ resource.ResourceWithValidateConfig = &projectResource{}
 	_ resource.ResourceWithImportState    = &projectResource{}
+	_ resource.ResourceWithModifyPlan     = &projectResource{}
 )
 
 func NewProjectResource() resource.Resource {
@@ -53,6 +55,19 @@ func (r *projectResource) ValidateConfig(ctx context.Context, req resource.Valid
 	}
 
 	tflog.Info(ctx, "Project resource validated")
+}
+
+func (r *projectResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
+	if req.State.Raw.IsNull() {
+		return
+	}
+	if req.Plan.Raw.IsNull() {
+		checkDestroyProtection(ctx, req.State, &project.ProjectModel{}, projectEntity, &resp.Diagnostics)
+		return
+	}
+	if isPlannedReplace(ctx, entities.ProjectSchema, req) {
+		checkReplaceProtection(ctx, req.State, &project.ProjectModel{}, projectEntity, &resp.Diagnostics)
+	}
 }
 
 func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
@@ -101,6 +116,17 @@ func (r *projectResource) Read(ctx context.Context, req resource.ReadRequest, re
 
 	res, err := r.client.Read(ctx, projectID, projectEntity, projectID)
 	if err != nil {
+		// a project deleted out-of-band is dropped from state so the next plan re-creates it, unless it's protected;
+		// this only fires on an unambiguous not-found, not on the auth failures a deleted project id in the bearer token might cause
+		if infra.AsNotFoundError(err) && !helpers.IsImportState(ctx) {
+			checkRemovalProtection(ctx, req.State, entity.Model, projectEntity, &resp.Diagnostics)
+			if resp.Diagnostics.HasError() {
+				return
+			}
+			tflog.Info(ctx, "Removing project resource from state")
+			resp.State.RemoveResource(ctx)
+			return
+		}
 		resp.Diagnostics.AddError("Error reading project", err.Error())
 		return
 	}
@@ -146,6 +172,11 @@ func (r *projectResource) Delete(ctx context.Context, req resource.DeleteRequest
 
 	entity := entities.NewProjectEntity(ctx, req.State, &resp.Diagnostics)
 	if entity.Diagnostics.HasError() {
+		return
+	}
+
+	checkDestroyProtection(ctx, req.State, entity.Model, projectEntity, &resp.Diagnostics)
+	if resp.Diagnostics.HasError() {
 		return
 	}
 

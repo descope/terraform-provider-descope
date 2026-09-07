@@ -62,6 +62,18 @@ func Default(extras ...any) schema.MapAttribute {
 	}
 }
 
+func Secret(extras ...any) schema.MapAttribute {
+	return schema.MapAttribute{
+		Optional:    true,
+		Computed:    true,
+		Sensitive:   true,
+		CustomType:  valuemaptype.NewType[types.String](context.Background()),
+		ElementType: types.StringType,
+		Validators:  parseExtras(extras),
+		Default:     mapdefault.StaticValue(Empty().MapValue),
+	}
+}
+
 func Get(s Type, data map[string]any, key string, h *helpers.Handler) {
 	if s.IsUnknown() {
 		return

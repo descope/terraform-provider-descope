@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Build
         uses: ./.github/actions/ci/build
 
@@ -22,6 +24,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Setup Repo
         uses: ./.github/actions/ci/setup
       - name: Install Descope CLI
@@ -33,6 +37,7 @@ jobs:
           DESCOPE_BASE_URL: ${{ secrets.DESCOPE_BASE_URL }}
           DESCOPE_USER_AGENT: ${{ secrets.DESCOPE_USER_AGENT }}
           DESCOPE_TESTACC_THROTTLE: ${{ vars.DESCOPE_TESTACC_THROTTLE }}
+          DESCOPE_TESTACC_PROJECT_ID: ${{ vars.DESCOPE_TESTACC_PROJECT_ID }}
           DESCOPE_TESTACC_PREFIX: testacc-gh-${{ github.run_id }}
           TF_ACC: 1
         run: |
@@ -55,6 +60,8 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Run Linter
         uses: ./.github/actions/ci/lint
 
@@ -65,6 +72,7 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Check Leaks
         uses: ./.github/actions/ci/leaks

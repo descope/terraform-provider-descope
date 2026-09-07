@@ -7,6 +7,8 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 )
 
+// Currently unused, kept as the hook for attribute level plan modifiers.
+
 type ModifierOptions int
 
 const (

@@ -9,46 +9,44 @@ import (
 	"github.com/descope/terraform-provider-descope/tools/terragen/utils"
 )
 
-//go:embed connector.gotmpl
-var connectorTemplateData []byte
+//go:embed resource.gotmpl
+var resourceTemplateData []byte
 
-//go:embed connectors.gotmpl
-var connectorsTemplateData []byte
+//go:embed resourcetest.gotmpl
+var resourceTestTemplateData []byte
 
-//go:embed test.gotmpl
-var testTemplateData []byte
+//go:embed resources.gotmpl
+var resourcesTemplateData []byte
 
+// TrimConnectors drops connectors whose generated model doesn't exist yet, so a normal run only regenerates connectors that were
+// already added. Run with --add-connectors to generate models for new connectors for the first time.
 func TrimConnectors(dir string, conns *Connectors) {
 	if utils.Flags.AddConnectors {
 		return
 	}
 
 	conns.Connectors = slices.DeleteFunc(conns.Connectors, func(connector *Connector) bool {
-		if !connector.BuiltIn {
-			path := filepath.Join(dir, connector.FileName()+".go")
-			_, err := os.Stat(path)
-			return err != nil
-		}
-		return false
+		path := filepath.Join(dir, connector.FileName()+".go")
+		_, err := os.Stat(path)
+		return err != nil
 	})
 }
 
-func GenerateSources(dir string, conns *Connectors) {
-	connectorTemplate := utils.LoadTemplate("connector", connectorTemplateData)
+// Generates the standalone resource model .go source and acceptance test for each connector.
+func GenerateResourceSources(dir string, conns *Connectors) {
+	resourceTemplate := utils.LoadTemplate("resource", resourceTemplateData)
+	resourceTestTemplate := utils.LoadTemplate("resourcetest", resourceTestTemplateData)
 	for _, connector := range conns.Connectors {
-		if !connector.BuiltIn {
-			path := filepath.Join(dir, connector.FileName()+".go")
-			utils.WriteGoSource(path, connector, connectorTemplate, true)
-		}
+		utils.WriteGoSource(filepath.Join(dir, connector.FileName()+".go"), connector, resourceTemplate, true)
+		utils.WriteGoSource(filepath.Join(dir, connector.FileName()+"_test.go"), connector, resourceTestTemplate, true)
 	}
+}
 
-	connectorsTemplate := utils.LoadTemplate("connectors", connectorsTemplateData)
-	path := filepath.Join(dir, "connectors.go")
-	utils.WriteGoSource(path, conns, connectorsTemplate, true)
-
-	testTemplate := utils.LoadTemplate("test", testTemplateData)
-	path = filepath.Join(dir, "connectors_test.go")
-	utils.WriteGoSource(path, conns, testTemplate, true)
+// Generates the connectors.go registration file in the resources package, with a constructor per standalone connector resource.
+func GenerateResourceRegistrations(resourcesdir string, conns *Connectors) {
+	tpl := utils.LoadTemplate("resources", resourcesTemplateData)
+	path := filepath.Join(resourcesdir, "connectors.go")
+	utils.WriteGoSource(path, map[string]any{"Registered": conns.Connectors}, tpl, true)
 }
 
 func UpdateNaming(dir string, conns *Connectors) {

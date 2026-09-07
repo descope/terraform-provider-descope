@@ -4,19 +4,22 @@ import (
 	"crypto/sha256"
 	"encoding/base32"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/tools/terragen/utils"
 )
 
 const (
-	FieldTypeString       = "string"
-	FieldTypeSecret       = "secret"
-	FieldTypeBool         = "boolean"
-	FieldTypeNumber       = "number"
-	FieldTypeHTTPAuth     = "httpAuth"
-	FieldTypeObject       = "object"
-	FieldTypeAuditFilters = "auditFilters"
+	FieldTypeString              = "string"
+	FieldTypeSecret              = "secret"
+	FieldTypeBool                = "boolean"
+	FieldTypeNumber              = "number"
+	FieldTypeHTTPAuth            = "httpAuth"
+	FieldTypeObject              = "object"
+	FieldTypeSecretObject        = "secret-object"
+	FieldTypeSecretObjectSecrets = "secret-object-secrets"
+	FieldTypeAuditFilters        = "auditFilters"
 )
 
 // Generated
@@ -27,8 +30,19 @@ var UseStaticIPsField = &Field{
 	Type:        FieldTypeBool,
 }
 
-// Field
+// The empty initial value doubles as the attribute default and pins the generated test values, so tests don't reference a real engine.
+var EngineIDField = &Field{
+	Name:        "engineId",
+	Description: "The ID of the Descope Engine that runs this connector's actions inside your private network. Leave empty to run the connector in the Descope backend.",
+	Type:        FieldTypeString,
+	Initial:     "",
+}
 
+// Field
+//
+// Console-only field keys are knowingly ignored: displayName (attribute names come from name and naming.json), validation (a format
+// hint whose validators would reject configs that apply today) and _initialValueComment. Dynamic is parsed but unused: it marks fields
+// accepting {{...}} flow expressions, which any Terraform string already allows.
 type Field struct {
 	Name        string           `json:"name"`
 	Description string           `json:"description"`
@@ -41,6 +55,22 @@ type Field struct {
 	Dependency  *FieldDependency `json:"dependsOn"`
 
 	naming *Naming
+
+	// set on a generated twin whose attribute name differs from the configuration key it reads and writes
+	configKey string
+
+	// set on a secret-object field, pointing at the twin holding its secret entries; both are written by one statement
+	secretTwin *Field
+
+	// set on fields that other fields depend on, so test updates don't flip them
+	hasDependents bool
+}
+
+func (f *Field) ConfigKey() string {
+	if f.configKey != "" {
+		return f.configKey
+	}
+	return f.Name
 }
 
 func (f *Field) StructName() string {
@@ -49,14 +79,6 @@ func (f *Field) StructName() string {
 
 func (f *Field) defaultStructName() string {
 	return utils.CapitalCase(f.Name)
-}
-
-func (f *Field) OptionValues() []string {
-	values := []string{}
-	for _, option := range f.Options {
-		values = append(values, option.Value)
-	}
-	return values
 }
 
 func (f *Field) StructType() string {
@@ -68,6 +90,8 @@ func (f *Field) StructType() string {
 	case FieldTypeNumber:
 		return `floatattr.Type`
 	case FieldTypeObject:
+		return `strmapattr.Type`
+	case FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
 		return `strmapattr.Type`
 	case FieldTypeAuditFilters:
 		return `listattr.Type[AuditFilterFieldModel]`
@@ -84,6 +108,26 @@ func (f *Field) AttributeName() string {
 
 func (f *Field) defaultAttributeName() string {
 	return utils.SnakeCase(f.Name)
+}
+
+// the boilerplate attributes of standalone resources reserve several attribute names
+var reservedResourceAttributes = []string{"id", "project_id", "name", "description"}
+
+// Like AttributeName, but configuration fields colliding with a reserved boilerplate attribute name (e.g. a vendor-side `project_id`)
+// get a `config_` prefix.
+func (f *Field) ResourceAttributeName() string {
+	if name := f.AttributeName(); !slices.Contains(reservedResourceAttributes, name) {
+		return name
+	}
+	return "config_" + f.AttributeName()
+}
+
+// Like StructName, matching the `config_` prefix that ResourceAttributeName adds to colliding configuration fields.
+func (f *Field) ResourceFieldName() string {
+	if f.ResourceAttributeName() != f.AttributeName() {
+		return "Config" + f.StructName()
+	}
+	return f.StructName()
 }
 
 func (f *Field) AttributeType() string {
@@ -147,6 +191,10 @@ func (f *Field) AttributeType() string {
 		return `floatattr.Default(0)`
 	case FieldTypeObject:
 		return `strmapattr.Default()`
+	case FieldTypeSecretObject:
+		return `strmapattr.Default()`
+	case FieldTypeSecretObjectSecrets:
+		return `strmapattr.Secret()`
 	case FieldTypeAuditFilters:
 		return `listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes)`
 	case FieldTypeHTTPAuth:
@@ -171,7 +219,7 @@ func (f *Field) GetValueStatement() string {
 		}
 	}
 
-	accessor := fmt.Sprintf(`m.%s`, f.StructName())
+	accessor := fmt.Sprintf(`m.%s`, f.ResourceFieldName())
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
 		return fmt.Sprintf(`stringattr.Get(%s, c, %q)`, accessor, f.Name)
@@ -180,7 +228,11 @@ func (f *Field) GetValueStatement() string {
 	case FieldTypeNumber:
 		return fmt.Sprintf(`floatattr.Get(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeObject:
-		return fmt.Sprintf(`getHeaders(%s, c, %q, h)`, accessor, f.Name)
+		return fmt.Sprintf(`getObjectField(%s, c, %q, h)`, accessor, f.Name)
+	case FieldTypeSecretObject:
+		return fmt.Sprintf(`getSecretObject(%s, m.%s, c, %q, h)`, accessor, f.secretTwin.ResourceFieldName(), f.ConfigKey())
+	case FieldTypeSecretObjectSecrets:
+		return ""
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`listattr.Get(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
@@ -191,7 +243,7 @@ func (f *Field) GetValueStatement() string {
 }
 
 func (f *Field) SetValueStatement() string {
-	accessor := fmt.Sprintf(`&m.%s`, f.StructName())
+	accessor := fmt.Sprintf(`&m.%s`, f.ResourceFieldName())
 	switch f.Type {
 	case FieldTypeString:
 		return fmt.Sprintf(`stringattr.Set(%s, c, %q)`, accessor, f.Name)
@@ -202,7 +254,11 @@ func (f *Field) SetValueStatement() string {
 	case FieldTypeNumber:
 		return fmt.Sprintf(`floatattr.Set(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeObject:
-		return fmt.Sprintf(`setHeaders(%s, c, %q, h)`, accessor, f.Name)
+		return fmt.Sprintf(`setObjectField(%s, c, %q, h)`, accessor, f.Name)
+	case FieldTypeSecretObject:
+		return fmt.Sprintf(`setSecretObject(%s, &m.%s, c, %q, h)`, accessor, f.secretTwin.ResourceFieldName(), f.ConfigKey())
+	case FieldTypeSecretObjectSecrets:
+		return ""
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`listattr.Set(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeHTTPAuth:
@@ -213,7 +269,7 @@ func (f *Field) SetValueStatement() string {
 }
 
 func (f *Field) IsZero() string {
-	accessor := fmt.Sprintf(`m.%s`, f.StructName())
+	accessor := fmt.Sprintf(`m.%s`, f.ResourceFieldName())
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
 		return fmt.Sprintf(`%s.ValueString() == ""`, accessor)
@@ -221,7 +277,7 @@ func (f *Field) IsZero() string {
 		return fmt.Sprintf(`!%s.ValueBool()`, accessor)
 	case FieldTypeNumber:
 		return fmt.Sprintf(`%s.ValueFloat64() == 0`, accessor)
-	case FieldTypeObject:
+	case FieldTypeObject, FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
 		return fmt.Sprintf(`%s.IsEmpty()`, accessor)
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`%s.IsEmpty()`, accessor)
@@ -232,8 +288,34 @@ func (f *Field) IsZero() string {
 	}
 }
 
+// HasDependencyChecks reports whether the dependency renders any check into Validate: a boolean dependency skips the conflict check
+// when the field defaults to a non-zero value, leaving nothing to generate unless the field is also required.
+func (f *Field) HasDependencyChecks() bool {
+	if f.Dependency == nil {
+		return false
+	}
+	if f.Dependency.Field.Type == FieldTypeBool {
+		return f.Required || !f.HasNonZeroInitial()
+	}
+	return true
+}
+
+// HasNonZeroInitial reports whether the attribute defaults to a non-zero value, making an unset field indistinguishable from that value.
+func (f *Field) HasNonZeroInitial() bool {
+	switch v := f.Initial.(type) {
+	case string:
+		return v != ""
+	case bool:
+		return v
+	case float64:
+		return v != 0
+	default:
+		return false
+	}
+}
+
 func (f *Field) IsNonZero() string {
-	accessor := fmt.Sprintf(`m.%s`, f.StructName())
+	accessor := fmt.Sprintf(`m.%s`, f.ResourceFieldName())
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
 		return fmt.Sprintf(`%s.ValueString() != ""`, accessor)
@@ -241,7 +323,7 @@ func (f *Field) IsNonZero() string {
 		return fmt.Sprintf(`%s.ValueBool()`, accessor)
 	case FieldTypeNumber:
 		return fmt.Sprintf(`%s.ValueFloat64() != 0`, accessor)
-	case FieldTypeObject:
+	case FieldTypeObject, FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
 		return fmt.Sprintf(`!%s.IsEmpty()`, accessor)
 	case FieldTypeAuditFilters:
 		return fmt.Sprintf(`!%s.IsEmpty()`, accessor)
@@ -255,85 +337,154 @@ func (f *Field) IsNonZero() string {
 // Tests
 
 func (f *Field) GetTestAssignment() string {
+	return f.testAssignment(false)
+}
+
+// GetTestUpdateAssignment produces a changed value for the update step, keeping the create value where a change isn't valid: pinned
+// initials, single-option fields, unsatisfied dependencies, and bools that other fields depend on.
+func (f *Field) GetTestUpdateAssignment() string {
+	return f.testAssignment(true)
+}
+
+func (f *Field) testAssignment(update bool) string {
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
 		if v, ok := f.Initial.(string); ok {
 			return fmt.Sprintf(`%q`, v)
 		}
-		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
-			return `null`
-		}
-		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeBool && d.Value != true {
+		if !f.testDependencySatisfied() {
 			return `null`
 		}
 		if len(f.Options) > 0 {
-			return fmt.Sprintf(`%q`, f.Options[0].Value)
+			return fmt.Sprintf(`%q`, f.testOption(update))
 		}
-		return fmt.Sprintf(`%q`, f.TestString())
+		return fmt.Sprintf(`%q`, f.testString(update))
 	case FieldTypeBool:
-		return `true`
+		return fmt.Sprintf(`%t`, f.testBool(update))
 	case FieldTypeNumber:
-		return fmt.Sprintf(`%d`, f.TestNumber())
+		if !f.testDependencySatisfied() {
+			return `null`
+		}
+		return fmt.Sprintf(`%d`, f.testNumber(update))
 	case FieldTypeObject:
 		return fmt.Sprintf(`{
     							"key" = %q
-    						}`, f.TestString())
+    						}`, f.testString(update))
+	case FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
+		return fmt.Sprintf(`{ %q = %q }`, f.testKey(), f.testString(update))
 	case FieldTypeAuditFilters:
-		return fmt.Sprintf(`[{ key = "actions", operator = "includes", values = [%q] }]`, f.TestString())
+		if !f.testDependencySatisfied() {
+			return `[]`
+		}
+		return fmt.Sprintf(`[{ key = "actions", operator = "includes", values = [%q] }]`, f.testString(update))
 	case FieldTypeHTTPAuth:
 		return fmt.Sprintf(`{
     							bearer_token = %q
-    						}`, f.TestString())
+    						}`, f.testString(update))
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
 }
 
 func (f *Field) GetTestCheck() string {
+	return f.testCheck(false)
+}
+
+func (f *Field) GetTestUpdateCheck() string {
+	return f.testCheck(true)
+}
+
+func (f *Field) testCheck(update bool) string {
+	attribute := f.ResourceAttributeName()
 	switch f.Type {
 	case FieldTypeString, FieldTypeSecret:
 		if v, ok := f.Initial.(string); ok {
-			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), v)
+			return fmt.Sprintf(`"%s": %q`, attribute, v)
 		}
-		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeString && d.Value != d.Field.Initial {
+		if !f.testDependencySatisfied() {
 			if f.Type == FieldTypeSecret {
-				return fmt.Sprintf(`"%s": testacc.AttributeIsNotSet`, f.AttributeName())
+				return fmt.Sprintf(`"%s": testacc.AttributeIsNotSet`, attribute)
 			}
-			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
-		}
-		if d := f.Dependency; d != nil && d.Field.Type == FieldTypeBool && d.Value != true {
-			if f.Type == FieldTypeSecret {
-				return fmt.Sprintf(`"%s": testacc.AttributeIsNotSet`, f.AttributeName())
-			}
-			return fmt.Sprintf(`"%s": ""`, f.AttributeName())
+			return fmt.Sprintf(`"%s": ""`, attribute)
 		}
 		if len(f.Options) > 0 {
-			return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.Options[0].Value)
+			return fmt.Sprintf(`"%s": %q`, attribute, f.testOption(update))
 		}
-		return fmt.Sprintf(`"%s": %q`, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s": %q`, attribute, f.testString(update))
 	case FieldTypeBool:
-		return fmt.Sprintf(`"%s": true`, f.AttributeName())
+		return fmt.Sprintf(`"%s": %t`, attribute, f.testBool(update))
 	case FieldTypeNumber:
-		return fmt.Sprintf(`"%s": %d`, f.AttributeName(), f.TestNumber())
+		if !f.testDependencySatisfied() {
+			v, _ := f.Initial.(float64)
+			return fmt.Sprintf(`"%s": %q`, attribute, fmt.Sprintf("%g", v))
+		}
+		return fmt.Sprintf(`"%s": %d`, attribute, f.testNumber(update))
 	case FieldTypeObject:
-		return fmt.Sprintf(`"%s.key": %q`, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s.key": %q`, attribute, f.testString(update))
+	case FieldTypeSecretObject, FieldTypeSecretObjectSecrets:
+		return fmt.Sprintf(`"%s.%s": %q`, attribute, f.testKey(), f.testString(update))
 	case FieldTypeAuditFilters:
-		return fmt.Sprintf(`"%s.0.values": []string{%q}`, f.AttributeName(), f.TestString())
+		if !f.testDependencySatisfied() {
+			return fmt.Sprintf(`"%s.#": 0`, attribute)
+		}
+		return fmt.Sprintf(`"%s.0.values": []string{%q}`, attribute, f.testString(update))
 	case FieldTypeHTTPAuth:
-		return fmt.Sprintf(`"%s.bearer_token": %q`, f.AttributeName(), f.TestString())
+		return fmt.Sprintf(`"%s.bearer_token": %q`, attribute, f.testString(update))
 	default:
 		panic("unexpected field type: " + f.Type)
 	}
 }
 
-func (f *Field) TestString() string {
+func (f *Field) testKey() string {
+	if f.Type == FieldTypeSecretObjectSecrets {
+		return "X-Secret"
+	}
+	return "X-Plain"
+}
+
+func (f *Field) testBool(update bool) bool {
 	b := sha256.Sum256([]byte(f.Name))
+	v := b[0]%2 == 0
+	if update && !f.hasDependents {
+		return !v
+	}
+	return v
+}
+
+func (f *Field) testDependencySatisfied() bool {
+	d := f.Dependency
+	if d == nil {
+		return true
+	}
+	if d.Field.Type == FieldTypeBool {
+		return d.Field.testBool(false) == d.Value
+	}
+	return d.Value == d.Field.Initial
+}
+
+func (f *Field) testString(update bool) string {
+	name := f.Name
+	if update {
+		name += "+"
+	}
+	b := sha256.Sum256([]byte(name))
 	s := base32.StdEncoding.EncodeToString(b[:])
 	return strings.ToLower(s[:min(len(s), len(f.Name))])
 }
 
-func (f *Field) TestNumber() int {
+func (f *Field) testNumber(update bool) int {
+	if update {
+		return len(f.Name) + 1
+	}
 	return len(f.Name)
+}
+
+// testOption returns the second option on update when there is one, since a single-option field has no other valid value.
+func (f *Field) testOption(update bool) string {
+	if update && len(f.Options) > 1 {
+		return f.Options[1].Value
+	}
+	return f.Options[0].Value
 }
 
 // Dependency

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/mail"
+	"net/url"
 	"regexp"
 	"strings"
 
@@ -13,8 +14,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
-
-var TimeUnitValidator = stringvalidator.OneOf("seconds", "minutes", "hours", "days", "weeks")
 
 var StandardLenValidator = stringvalidator.LengthAtMost(254)
 
@@ -25,6 +24,8 @@ var OTPValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[0-9]{6}$`)
 var NonEmptyValidator validator.String = &nonEmptyValidator{}
 
 var EmailValidator validator.String = &emailValidator{}
+
+var URLValidator validator.String = &urlValidator{}
 
 func JSONValidator(required ...string) validator.String {
 	return &jsonValidator{required: required}
@@ -81,7 +82,7 @@ func (v jsonValidator) ValidateString(ctx context.Context, req validator.StringR
 	}
 
 	m := map[string]any{}
-	if err := json.Unmarshal([]byte(value), &m); err != nil {
+	if err := json.Unmarshal([]byte(value), &m); err != nil || m == nil {
 		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Invalid Attribute Value", fmt.Sprintf("Attribute %s must be valid JSON", req.Path)))
 		return
 	}
@@ -118,5 +119,31 @@ func (v emailValidator) ValidateString(ctx context.Context, req validator.String
 	parsed, err := mail.ParseAddress(value)
 	if err != nil || parsed.Address != strings.TrimSpace(value) || !strings.Contains(strings.SplitN(parsed.Address, "@", 2)[1], ".") {
 		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Invalid Email Address", fmt.Sprintf("Attribute %s must be a valid email address", req.Path)))
+	}
+}
+
+// URL
+
+type urlValidator struct{}
+
+func (v urlValidator) Description(_ context.Context) string {
+	return "must be a valid URL"
+}
+
+func (v urlValidator) MarkdownDescription(ctx context.Context) string {
+	return v.Description(ctx)
+}
+
+func (v urlValidator) ValidateString(ctx context.Context, req validator.StringRequest, resp *validator.StringResponse) {
+	tflog.Trace(ctx, "Validating string", map[string]any{"path": req.Path.String()})
+	if req.ConfigValue.IsNull() || req.ConfigValue.IsUnknown() {
+		return
+	}
+	value := req.ConfigValue.ValueString()
+	if len(value) == 0 {
+		return
+	}
+	if u, err := url.Parse(value); err != nil || u.Scheme == "" || u.Host == "" {
+		resp.Diagnostics.Append(diag.NewAttributeErrorDiagnostic(req.Path, "Invalid URL", fmt.Sprintf("Attribute %s must be a valid URL", req.Path)))
 	}
 }
