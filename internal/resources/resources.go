@@ -1,6 +1,7 @@
 package resources
 
 import (
+	"github.com/descope/terraform-provider-descope/internal/docs"
 	"github.com/descope/terraform-provider-descope/internal/models/accesskey"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
 	"github.com/descope/terraform-provider-descope/internal/models/engine"
@@ -9,6 +10,11 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/settings"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
+
+// Inject documentation into models before using them
+func init() {
+	docs.InjectModels()
+}
 
 func NewAccessKeyResource() resource.Resource {
 	return newInfraResource[accesskey.AccessKeyModel]("access_key", accesskey.Schema)

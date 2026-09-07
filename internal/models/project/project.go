@@ -19,6 +19,11 @@ var ProjectAttributes = map[string]schema.Attribute{
 	"tags":                strsetattr.Optional(stringvalidator.LengthBetween(1, 50)),
 }
 
+var Schema = schema.Schema{
+	MarkdownDescription: "Manages a Descope project and its core attributes. The project's configuration is managed with the standalone descope resources that reference it by ID.",
+	Attributes:          ProjectAttributes,
+}
+
 type ProjectModel struct {
 	ID                 stringattr.Type `tfsdk:"id"`
 	Name               stringattr.Type `tfsdk:"name"`
@@ -29,7 +34,6 @@ type ProjectModel struct {
 
 func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	data["version"] = helpers.ModelVersion
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Environment, data, "environment")
 	strsetattr.Get(m.Tags, data, "tags", h)
@@ -37,13 +41,21 @@ func (m *ProjectModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *ProjectModel) SetValues(h *helpers.Handler, data map[string]any) {
-	if v, ok := data["version"].(float64); ok {
-		helpers.EnsureModelVersion(v, h.Diagnostics)
-	}
-
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Environment, data, "environment")
 	strsetattr.Set(&m.Tags, data, "tags", h)
+}
+
+func (m *ProjectModel) GetID() stringattr.Type {
+	return m.ID
+}
+
+func (m *ProjectModel) SetID(id stringattr.Type) {
+	m.ID = id
+}
+
+func (m *ProjectModel) GetProjectID() stringattr.Type {
+	return m.ID
 }
 
 func (m *ProjectModel) DeletionProtectionDefault(_ context.Context) bool {
