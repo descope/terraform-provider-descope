@@ -17,11 +17,13 @@ func TestEnchantedLinkSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"id":              testacc.AttributeIsSet,
-				"project_id":      testacc.AttributeIsSet,
-				"disabled":        false,
-				"expiration_time": "3 minutes",
-				"redirect_url":    "",
+				"id":                testacc.AttributeIsSet,
+				"project_id":        testacc.AttributeIsSet,
+				"disabled":          false,
+				"expiration_time":   "3 minutes",
+				"redirect_url":      "",
+				"email_template_id": "",
+				"text_template_id":  "",
 			}),
 		},
 		// update the plain settings fields
@@ -46,13 +48,13 @@ func TestEnchantedLinkSettings(t *testing.T) {
 				"redirect_url":    "",
 			}),
 		},
-		// email_service is server-populated on read, so it is outside the import contract
+		// email_service and text_service are server-populated on read, so they are outside the import contract
 		resource.TestStep{
 			ResourceName:            m.Path(),
 			ImportState:             true,
 			ImportStateVerify:       true,
 			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
-			ImportStateVerifyIgnore: []string{"email_service"},
+			ImportStateVerifyIgnore: []string{"email_service", "text_service"},
 		},
 	)
 }
@@ -85,6 +87,58 @@ func TestEnchantedLinkSettingsTemplates(t *testing.T) {
 			Check: m.Check(map[string]any{
 				"email_service.connector_id": testacc.AttributeIsSet,
 				"email_template_id":          testacc.AttributeIsSet,
+			}),
+		},
+	)
+}
+
+func TestEnchantedLinkSettingsTextTemplates(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	c := testacc.NewResource(t, "generic_sms_gateway_connector")
+	name := testacc.GenerateAlias(t)
+	x := testacc.TextTemplate(t)
+	m := testacc.EnchantedLinkSettings(t)
+	testacc.Run(t,
+		// a custom SMS connector with an enchantedlink text template selected by reference
+		resource.TestStep{
+			Config: c.Config(`
+				project_id = "`+projectID+`"
+				post_url = "https://sms.example.com/send"
+			`) + x.Block(`
+				project_id = "`+projectID+`"
+				method = "enchantedlink"
+				name = "`+name+`"
+				body = "Tap the link to sign in"
+			`) + m.Block(`
+				project_id = "`+projectID+`"
+				text_service = {
+					connector_id = `+c.Path()+`.id
+				}
+				text_template_id = `+x.Path()+`.id
+			`),
+			Check: m.Check(map[string]any{
+				"text_service.connector_id": testacc.AttributeIsSet,
+				"text_template_id":          testacc.AttributeIsSet,
+			}),
+		},
+		// Dropping the text_service block does not leave the custom connector in place: useDescopeService
+		// sends the built-in Descope service whenever the block is absent, which also clears the selected
+		// template. This step pins that behaviour so it cannot regress into a silent no-op.
+		resource.TestStep{
+			Config: c.Config(`
+				project_id = "`+projectID+`"
+				post_url = "https://sms.example.com/send"
+			`) + x.Block(`
+				project_id = "`+projectID+`"
+				method = "enchantedlink"
+				name = "`+name+`"
+				body = "Tap the link to sign in"
+			`) + m.Block(`
+				project_id = "`+projectID+`"
+			`),
+			Check: m.Check(map[string]any{
+				"text_service.connector_id": "Descope",
+				"text_template_id":          "",
 			}),
 		},
 	)

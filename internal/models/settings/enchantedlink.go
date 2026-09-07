@@ -11,7 +11,7 @@ import (
 )
 
 // descope_enchantedlink_settings is the project-level enchanted link settings singleton (id = project_id).
-// The message templates are managed by the descope_email_template resource and selected here by id.
+// The message templates are managed by the descope_email_template and descope_text_template resources and selected here by id.
 
 var EnchantedLinkSettingsSchema = schema.Schema{
 	MarkdownDescription: "Manages the project-level enchanted link authentication settings. This is a singleton resource, and its id is always the project ID.",
@@ -25,7 +25,9 @@ var EnchantedLinkSettingsAttributes = map[string]schema.Attribute{
 	"expiration_time":   durationattr.Default("3 minutes", durationattr.MinimumValue("1 minute")),
 	"redirect_url":      stringattr.Default("", stringattr.URLValidator),
 	"email_service":     objattr.Default[EmailServiceRefModel](nil, EmailServiceRefAttributes),
+	"text_service":      objattr.Default[TextServiceRefModel](nil, TextServiceRefAttributes),
 	"email_template_id": stringattr.Default(""),
+	"text_template_id":  stringattr.Default(""),
 }
 
 type EnchantedLinkSettingsModel struct {
@@ -35,7 +37,9 @@ type EnchantedLinkSettingsModel struct {
 	ExpirationTime  stringattr.Type                    `tfsdk:"expiration_time"`
 	RedirectURL     stringattr.Type                    `tfsdk:"redirect_url"`
 	EmailService    objattr.Type[EmailServiceRefModel] `tfsdk:"email_service"`
+	TextService     objattr.Type[TextServiceRefModel]  `tfsdk:"text_service"`
 	EmailTemplateID stringattr.Type                    `tfsdk:"email_template_id"`
+	TextTemplateID  stringattr.Type                    `tfsdk:"text_template_id"`
 }
 
 func (m *EnchantedLinkSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -44,9 +48,12 @@ func (m *EnchantedLinkSettingsModel) Values(h *helpers.Handler) map[string]any {
 	durationattr.Get(m.ExpirationTime, data, "expirationTime")
 	stringattr.Get(m.RedirectURL, data, "redirectUrl")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
+	objattr.Get(m.TextService, data, helpers.RootKey, h)
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
+	stringattr.Get(m.TextTemplateID, data, "textTemplateId")
 
 	useDescopeService(m.EmailService, data, "emailServiceProvider")
+	useDescopeService(m.TextService, data, "textServiceProvider")
 
 	return data
 }
@@ -56,7 +63,9 @@ func (m *EnchantedLinkSettingsModel) SetValues(h *helpers.Handler, data map[stri
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
 	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
+	objattr.Set(&m.TextService, data, helpers.RootKey, h)
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
+	stringattr.Set(&m.TextTemplateID, data, "textTemplateId")
 }
 
 func (m *EnchantedLinkSettingsModel) GetID() stringattr.Type        { return m.ID }
