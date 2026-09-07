@@ -92,6 +92,7 @@ func TestInboundApp(t *testing.T) {
 				project_id = `+p.Path()+`.id
 				description = "Updated description"
 				force_pkce = true
+				force_dpop = true
 				approved_callback_urls = ["https://example.com/callback"]
 				permissions_scopes = [
 					{
@@ -108,6 +109,7 @@ func TestInboundApp(t *testing.T) {
 			Check: a.Check(map[string]any{
 				"description":                      "Updated description",
 				"force_pkce":                       "true",
+				"force_dpop":                       "true",
 				"approved_callback_urls.#":         "1",
 				"approved_callback_urls.0":         "https://example.com/callback",
 				"permissions_scopes.#":             "2",
