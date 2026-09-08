@@ -5,6 +5,8 @@ import (
 
 	"github.com/descope/terraform-provider-descope/tools/testacc"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/stretchr/testify/require"
 )
 
 func TestStyles(t *testing.T) {
@@ -55,5 +57,96 @@ func TestStyles(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"data"},
 		},
 		// removing the resource is a no-op that leaves the theme in place
+	)
+}
+
+// An apply must not delete styles this resource does not carry - styles created in the console are
+// invisible to Terraform, and used to be wiped by every apply.
+// See https://github.com/descope/etc/issues/12809
+func TestStylesKeepsUnmanagedStyles(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	s := testacc.Styles(t)
+
+	unmanaged := map[string]any{
+		"unmanaged-light": map[string]any{"name": "Unmanaged", "type": "flows"},
+		"unmanaged-dark":  map[string]any{"name": "Unmanaged", "type": "flows"},
+	}
+
+	// leave the project holding only the styles this test manages, whatever the outcome
+	t.Cleanup(func() {
+		if projectID == "" {
+			return
+		}
+		testacc.OutOfBandPost(t, projectID, "/v2/mgmt/theme/import", map[string]any{
+			"theme":            map[string]any{"styles": map[string]any{"light": map[string]any{}, "dark": map[string]any{}}},
+			"replaceAllStyles": true,
+		})
+	})
+
+	testacc.Run(t,
+		// terraform manages the default style only
+		resource.TestStep{
+			Config: s.Block(`
+				project_id = "` + projectID + `"
+				data = jsonencode({
+					styles = {
+						light = {}
+						dark = {}
+					}
+				})
+			`),
+			Check: s.Check(map[string]any{
+				"id.==": "project_id",
+				"data":  testacc.AttributeIsSet,
+			}),
+		},
+		// a style appears outside terraform, the way the console creates one, and then the managed
+		// data changes so an import actually runs
+		resource.TestStep{
+			PreConfig: func() {
+				testacc.OutOfBandPost(t, projectID, "/v2/mgmt/theme/import", map[string]any{
+					"theme": map[string]any{"styles": unmanaged},
+				})
+			},
+			Config: s.Block(`
+				project_id = "` + projectID + `"
+				data = jsonencode({
+					styles = {
+						light = {
+							designTokens = {}
+						}
+						dark = {}
+					}
+				})
+			`),
+			Check: func(*terraform.State) error {
+				theme := testacc.OutOfBandPostData(t, projectID, "/v2/mgmt/theme/export", map[string]any{})
+				inner, ok := theme["theme"].(map[string]any)
+				require.True(t, ok, "exported theme has no theme object")
+				styles, ok := inner["styles"].(map[string]any)
+				require.True(t, ok, "exported theme has no styles object")
+				for key := range unmanaged {
+					require.Contains(t, styles, key, "an apply deleted a style Terraform does not manage")
+				}
+				require.Contains(t, styles, "light", "an apply deleted the managed style")
+				return nil
+			},
+		},
+		// the surviving unmanaged style does not turn into a permanent diff
+		resource.TestStep{
+			Config: s.Block(`
+				project_id = "` + projectID + `"
+				data = jsonencode({
+					styles = {
+						light = {
+							designTokens = {}
+						}
+						dark = {}
+					}
+				})
+			`),
+			PlanOnly:           true,
+			ExpectNonEmptyPlan: false,
+		},
 	)
 }
