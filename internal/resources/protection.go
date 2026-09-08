@@ -92,7 +92,7 @@ func checkRemovalProtection(ctx context.Context, state protectionSource, model a
 }
 
 // Attributes that scope a resource to its parent and must never change once set.
-var immutableAttributes = []string{"project_id", "app_id"}
+var immutableAttributes = []string{"project_id", "app_id", "tenant_id"}
 
 // Rejects plans that change an immutable scoping attribute. Their RequiresReplace modifiers stay on the attributes as defense in
 // depth: without them a regression here would plan an in-place update that silently rescopes the resource.

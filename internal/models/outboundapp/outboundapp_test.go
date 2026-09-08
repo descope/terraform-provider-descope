@@ -40,6 +40,15 @@ func TestOutboundApp(t *testing.T) {
 				"prompt.#":                   "0",
 			}),
 		},
+		// the tenant cannot be changed after creation, and it must fail at plan time rather than
+		// destroying the app, because deleting one cascades to every token stored against it
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				tenant_id = "T2abcdefghijklmnopqrstuvwxyz"
+			`),
+			ExpectError: regexp.MustCompile(`Immutable Attribute Changed`),
+		},
 		// populate every field, including both url param lists and the secret
 		resource.TestStep{
 			Config: a.Config(`

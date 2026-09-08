@@ -21,7 +21,6 @@ var replaceModifierAllowlist = map[string]bool{
 	"project_id":                         true, // moving a resource between projects is a recreate by definition
 	"descope_app_permission app_id":      true,
 	"descope_app_role app_id":            true,
-	"descope_outbound_app tenant_id":     true, // absent from the backend's update statement, so an outbound app cannot change tenant
 	"descope_access_key bound_user_id":   true,
 	"descope_access_key expire_time":     true,
 	"descope_management_key expire_time": true,
