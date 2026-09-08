@@ -99,15 +99,16 @@ func TestOutboundApp(t *testing.T) {
 				"prompt":                         []string{"consent", "select_account"},
 			}),
 		},
-		// change one unrelated field with the secret left exactly as it was: the stored secret must survive,
-		// because the backend never returns it and treats an absent value as "keep the existing one"
+		// Omitting client_secret must be accepted and must not plan a change: SecretOptional leaves it
+		// null, stringattr.Get drops null keys, and the backend reads an absent secret as "keep the
+		// existing one". Whether the server truly kept it is not observable here, because the API never
+		// returns a secret - that half of the contract is the backend's, not this provider's.
 		resource.TestStep{
 			Config: a.Config(`
 				project_id = "` + projectID + `"
 				description = "calendar access, updated"
 				app_type = "oauth"
 				client_id = "client-abc"
-				client_secret = "secret-one"
 				authorization_url = "https://accounts.example.com/authorize"
 				token_url = "https://oauth2.example.com/token"
 				default_redirect_url = "https://app.example.com/oauth/callback"
@@ -116,7 +117,7 @@ func TestOutboundApp(t *testing.T) {
 			`),
 			Check: a.Check(map[string]any{
 				"description":   "calendar access, updated",
-				"client_secret": "secret-one",
+				"client_secret": testacc.AttributeIsNotSet,
 				"access_type":   "offline",
 			}),
 		},
@@ -222,6 +223,16 @@ func TestOutboundAppInvalidValues(t *testing.T) {
 				default_redirect_url = "not-a-url"
 			`),
 			ExpectError: regexp.MustCompile(`(?i)url`),
+		},
+		// Creating against a tenant that does not exist must fail with the backend's own message rather
+		// than succeeding at project level. The regex is deliberately loose because the backend's wording
+		// contains a typo ("requested tenant no found") that may be corrected later.
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				tenant_id = "T2doesnotexist"
+			`),
+			ExpectError: regexp.MustCompile(`(?i)tenant`),
 		},
 	)
 }

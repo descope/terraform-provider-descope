@@ -30,17 +30,19 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 	"project_id": stringattr.Required(stringplanmodifier.RequiresReplace()),
 
 	// The tenant is absent from the backend's update statement, so it can only ever be set at creation.
-	// Changing it is rejected by checkImmutableAttributes at plan time rather than triggering a
-	// replacement, because deleting an outbound app cascades to every token stored against it.
-	"tenant_id": stringattr.Default(""),
+	// checkImmutableAttributes rejects a change at plan time, which aborts before any replacement is
+	// planned: deleting an outbound app cascades to every token stored against it. RequiresReplace stays
+	// as the defense in depth that list's own comment calls for, in case that check ever regresses.
+	"tenant_id": stringattr.Default("", stringplanmodifier.RequiresReplace()),
 
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default("", stringattr.StandardLenValidator),
 	"logo":        stringattr.Default(""),
 	"app_type":    stringattr.Default("", stringvalidator.OneOf("", "oauth", "apikey")),
 
-	"client_id":     stringattr.Default("", stringattr.StandardLenValidator),
-	"client_secret": stringattr.SecretOptional(),
+	"client_id": stringattr.Default("", stringattr.StandardLenValidator),
+	// The backend treats a present-but-empty secret as "clear it", so an empty string must not reach it.
+	"client_secret": stringattr.SecretOptional(stringattr.NonEmptyValidator),
 
 	"discovery_url":            stringattr.Default("", stringattr.StandardLenValidator),
 	"authorization_url":        stringattr.Default("", stringattr.StandardLenValidator),

@@ -21,8 +21,9 @@ tenant_id
 
 The ID of the tenant that owns this outbound application, for applications scoped to a single
 tenant rather than the whole project. An empty value (the default) creates a project level
-application. This value cannot be changed after creation, so changing it will require the resource
-to be deleted and recreated.
+application. This value cannot be changed after creation, and changing it is rejected when the plan
+is generated. Moving an application to a different tenant means creating a new one, because deleting
+an outbound application also deletes every access token stored against it.
 
 
 
