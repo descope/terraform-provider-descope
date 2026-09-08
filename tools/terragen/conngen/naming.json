@@ -428,6 +428,10 @@
       "attribute": "api_version",
       "struct": "APIVersion"
     },
+    "applicationId": {
+      "attribute": "application_id",
+      "struct": "ApplicationID"
+    },
     "assessmentScore": {
       "attribute": "assessment_score",
       "struct": "AssessmentScore"

@@ -20,15 +20,21 @@ func TestVonageConnector(t *testing.T) {
 				api_key = "mhvece"
 				api_secret = "hgg666mus"
 				sender = "owcx"
+				application_id = "pwycpxayqxkgs"
+				private_key = "6wzyztm5y5"
+				from_phone_voice = "giw4ng3jcdb6cc"
 			`),
 			Check: c.Check(map[string]any{
-				"id":          testacc.AttributeIsSet,
-				"project_id":  testacc.AttributeIsSet,
-				"name":        c.Name,
-				"description": "",
-				"api_key":     "mhvece",
-				"api_secret":  "hgg666mus",
-				"sender":      "owcx",
+				"id":               testacc.AttributeIsSet,
+				"project_id":       testacc.AttributeIsSet,
+				"name":             c.Name,
+				"description":      "",
+				"api_key":          "mhvece",
+				"api_secret":       "hgg666mus",
+				"sender":           "owcx",
+				"application_id":   "pwycpxayqxkgs",
+				"private_key":      "6wzyztm5y5",
+				"from_phone_voice": "giw4ng3jcdb6cc",
 			}),
 		},
 		// update the connector in place with changed field values
@@ -39,12 +45,18 @@ func TestVonageConnector(t *testing.T) {
 				api_key = "24ynkg"
 				api_secret = "k6o5jhwwg"
 				sender = "crbp"
+				application_id = "4ickrrc2zofmr"
+				private_key = "5zaotnwgqo"
+				from_phone_voice = "cqqrmbdvote3ax"
 			`),
 			Check: c.Check(map[string]any{
-				"description": "updated",
-				"api_key":     "24ynkg",
-				"api_secret":  "k6o5jhwwg",
-				"sender":      "crbp",
+				"description":      "updated",
+				"api_key":          "24ynkg",
+				"api_secret":       "k6o5jhwwg",
+				"sender":           "crbp",
+				"application_id":   "4ickrrc2zofmr",
+				"private_key":      "5zaotnwgqo",
+				"from_phone_voice": "cqqrmbdvote3ax",
 			}),
 		},
 	)

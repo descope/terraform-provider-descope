@@ -1359,12 +1359,15 @@ var docsUnibeamConnector = map[string]string{
 }
 
 var docsVonageConnector = map[string]string{
-	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
-	"name":        "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"api_key":     "The Vonage API key.",
-	"api_secret":  "The Vonage API secret.",
-	"sender":      "The sender ID or phone number that text messages are sent from.",
+	"project_id":       "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"api_key":          "The Vonage API key.",
+	"api_secret":       "The Vonage API secret.",
+	"sender":           "The sender ID or phone number that text messages are sent from.",
+	"application_id":   "The Vonage voice application ID.",
+	"private_key":      "The Vonage voice application's private key, used to sign the voice API JWT.",
+	"from_phone_voice": "The phone number that voice calls are placed from.",
 }
 
 var docsZeroBounceConnector = map[string]string{
