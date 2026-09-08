@@ -121,9 +121,7 @@ func TestEnchantedLinkSettingsTextTemplates(t *testing.T) {
 				"text_template_id":          testacc.AttributeIsSet,
 			}),
 		},
-		// Dropping the text_service block makes Values send the built-in Descope service, which also
-		// clears the selected template. Only the cleared template is assertable: objattr.Set is a no-op
-		// on a null value outside import, so the provider never writes text_service back into state.
+		// removing the text_service block reverts to the built-in Descope service and clears the template
 		resource.TestStep{
 			Config: c.Config(`
 				project_id = "`+projectID+`"
