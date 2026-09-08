@@ -11,6 +11,7 @@ import (
 func TestOutboundApp(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	a := testacc.OutboundApp(t)
+	p := testacc.Permission(t)
 	testacc.RunWithDestroyCheck(t, "descope_outbound_app",
 		// create with only the required fields, so the defaults are pinned
 		resource.TestStep{
@@ -45,6 +46,14 @@ func TestOutboundApp(t *testing.T) {
 			Config: a.Config(`
 				project_id = "` + projectID + `"
 				tenant_id = "T2abcdefghijklmnopqrstuvwxyz"
+			`),
+			ExpectError: regexp.MustCompile(`Immutable Attribute Changed`),
+		},
+		// a tenant that is only known after apply must fail too, or the update would post it unchecked
+		resource.TestStep{
+			Config: p.Config(`project_id = "`+projectID+`"`) + a.Config(`
+				project_id = "`+projectID+`"
+				tenant_id = `+p.Path()+`.id
 			`),
 			ExpectError: regexp.MustCompile(`Immutable Attribute Changed`),
 		},
