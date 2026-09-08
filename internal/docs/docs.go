@@ -1616,15 +1616,15 @@ var docsOutboundApp = map[string]string{
 		"require the resource to be deleted and recreated.",
 	"tenant_id": "The ID of the tenant that owns this outbound application, for applications scoped to a single " +
 		"tenant rather than the whole project. An empty value (the default) creates a project level " +
-		"application. This value cannot be changed after creation, so changing it will require the resource " +
-		"to be deleted and recreated.",
+		"application. This value cannot be changed after creation, and changing it is rejected when the plan " +
+		"is generated. Moving an application to a different tenant means creating a new one, because deleting " +
+		"an outbound application also deletes every access token stored against it.",
 	"name":        "A name for the outbound application.",
 	"description": "A description for the outbound application.",
 	"logo":        "A URL for an image to display as the outbound application's logo.",
 	"app_type": "The kind of credential this application holds. Use `oauth` for an application that runs the OAuth " +
 		"flow, so that Descope obtains and refreshes tokens on the user's behalf, or `apikey` for an " +
-		"application whose tokens are uploaded directly and never refreshed. An empty value (the default) is " +
-		"treated as `oauth`.",
+		"application whose tokens are uploaded directly and never refreshed.",
 	"client_id": "The OAuth client ID issued by the third party provider.",
 	"client_secret": "The OAuth client secret issued by the third party provider. The Descope API never returns this " +
 		"value, so it cannot be read back and is not verified against the server. Omitting the field leaves " +

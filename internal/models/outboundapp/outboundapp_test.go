@@ -24,7 +24,7 @@ func TestOutboundApp(t *testing.T) {
 				"description":                "",
 				"tenant_id":                  "",
 				"logo":                       "",
-				"app_type":                   "",
+				"app_type":                   "oauth",
 				"client_id":                  "",
 				"discovery_url":              "",
 				"authorization_url":          "",

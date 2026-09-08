@@ -38,7 +38,9 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default("", stringattr.StandardLenValidator),
 	"logo":        stringattr.Default(""),
-	"app_type":    stringattr.Default("", stringvalidator.OneOf("", "oauth", "apikey")),
+	// The server rewrites an absent or unrecognized app type to "oauth" on both create and read, so an empty
+	// string is not a value this attribute can ever hold and the provider default has to match the server.
+	"app_type": stringattr.Default("oauth", stringvalidator.OneOf("oauth", "apikey")),
 
 	"client_id": stringattr.Default("", stringattr.StandardLenValidator),
 	// The backend treats a present-but-empty secret as "clear it", so an empty string must not reach it.

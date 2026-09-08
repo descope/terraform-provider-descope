@@ -58,11 +58,11 @@ app_type
 --------
 
 - Type: `string`
+- Default: `"oauth"`
 
 The kind of credential this application holds. Use `oauth` for an application that runs the OAuth
 flow, so that Descope obtains and refreshes tokens on the user's behalf, or `apikey` for an
-application whose tokens are uploaded directly and never refreshed. An empty value (the default) is
-treated as `oauth`.
+application whose tokens are uploaded directly and never refreshed.
 
 
 

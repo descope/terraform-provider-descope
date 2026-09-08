@@ -23,7 +23,7 @@ Manages a custom outbound application in a Descope project. Outbound application
 ### Optional
 
 - `access_type` (String) Whether the provider should issue a refresh token alongside the access token. Use `offline` to request one, so that Descope can keep the connection alive without the user present, or `online` for an access token only.
-- `app_type` (String) The kind of credential this application holds. Use `oauth` for an application that runs the OAuth flow, so that Descope obtains and refreshes tokens on the user's behalf, or `apikey` for an application whose tokens are uploaded directly and never refreshed. An empty value (the default) is treated as `oauth`.
+- `app_type` (String) The kind of credential this application holds. Use `oauth` for an application that runs the OAuth flow, so that Descope obtains and refreshes tokens on the user's behalf, or `apikey` for an application whose tokens are uploaded directly and never refreshed.
 - `authorization_url` (String) The provider's authorization endpoint, which users are redirected to in order to grant consent.
 - `authorization_url_params` (Attributes List) Additional query parameters to append to the authorization request, for providers that require them. (see [below for nested schema](#nestedatt--authorization_url_params))
 - `callback_domain` (String) The domain that the provider redirects back to after consent. Leave this empty to use the project's configured domain.
