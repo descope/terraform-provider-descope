@@ -40,8 +40,7 @@ func TestOutboundApp(t *testing.T) {
 				"prompt.#":                   "0",
 			}),
 		},
-		// the tenant cannot be changed after creation, and it must fail at plan time rather than
-		// destroying the app, because deleting one cascades to every token stored against it
+		// changing the tenant must fail when the plan is generated, not by recreating the application
 		resource.TestStep{
 			Config: a.Config(`
 				project_id = "` + projectID + `"
@@ -99,10 +98,7 @@ func TestOutboundApp(t *testing.T) {
 				"prompt":                         []string{"consent", "select_account"},
 			}),
 		},
-		// Omitting client_secret must be accepted and must not plan a change: SecretOptional leaves it
-		// null, stringattr.Get drops null keys, and the backend reads an absent secret as "keep the
-		// existing one". Whether the server truly kept it is not observable here, because the API never
-		// returns a secret - that half of the contract is the backend's, not this provider's.
+		// omitting client_secret must be accepted and must not plan a change
 		resource.TestStep{
 			Config: a.Config(`
 				project_id = "` + projectID + `"
@@ -159,7 +155,7 @@ func TestOutboundApp(t *testing.T) {
 				"access_type":                "",
 			}),
 		},
-		// the client secret is never returned by the backend, so it cannot participate in an import
+		// the client secret is never returned by the API, so it cannot participate in an import
 		resource.TestStep{
 			ResourceName:            a.Path(),
 			ImportState:             true,
@@ -194,7 +190,7 @@ func TestOutboundAppInvalidValues(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	a := testacc.OutboundApp(t)
 
-	// every closed set is rejected at plan time rather than as an apply time error from the backend
+	// every closed set is rejected when the plan is generated, not when it is applied
 	testacc.Run(t,
 		resource.TestStep{
 			Config: a.Config(`
@@ -224,9 +220,7 @@ func TestOutboundAppInvalidValues(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`(?i)url`),
 		},
-		// An empty client_secret must never reach the backend, which reads a present-but-empty secret as
-		// "clear the stored one". The validator has to stop it at plan time, because an omitted secret and
-		// an empty one are indistinguishable once the request is built.
+		// an empty client_secret must be rejected when the plan is generated
 		resource.TestStep{
 			Config: a.Config(`
 				project_id = "` + projectID + `"
@@ -234,9 +228,7 @@ func TestOutboundAppInvalidValues(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`(?i)empty`),
 		},
-		// Creating against a tenant that does not exist must fail with the backend's own message rather
-		// than succeeding at project level. The regex is deliberately loose because the backend's wording
-		// contains a typo ("requested tenant no found") that may be corrected later.
+		// an unknown tenant must fail rather than silently creating a project level application
 		resource.TestStep{
 			Config: a.Config(`
 				project_id = "` + projectID + `"

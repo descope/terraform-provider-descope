@@ -12,14 +12,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
 
-// descope_outbound_app is a custom outbound application with a server-assigned id. Outbound apps hold the
-// third party OAuth credentials Descope uses to fetch and refresh tokens on behalf of a user or a tenant.
-//
-// The use_dcr and dcr_url fields of the backend model are deliberately not exposed: the management API's
-// update endpoint does not carry them, so managing them here would reset them on every apply. See the
-// resource documentation for the consequence when importing an app that was created with dynamic
-// client registration.
-
 var OutboundAppSchema = schema.Schema{
 	MarkdownDescription: "Manages a custom outbound application in a Descope project. Outbound applications let Descope hold and refresh a third party OAuth token on behalf of a user or a tenant, so an application can call that provider's API without implementing the OAuth flow itself.",
 	Attributes:          OutboundAppAttributes,
@@ -34,12 +26,9 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default("", stringattr.StandardLenValidator),
 	"logo":        stringattr.Default(""),
-	// The server rewrites an absent or unrecognized app type to "oauth" on both create and read, so an empty
-	// string is not a value this attribute can ever hold and the provider default has to match the server.
-	"app_type": stringattr.Default("oauth", stringvalidator.OneOf("oauth", "apikey")),
+	"app_type":    stringattr.Default("oauth", stringvalidator.OneOf("oauth", "apikey")),
 
-	"client_id": stringattr.Default("", stringattr.StandardLenValidator),
-	// The backend treats a present-but-empty secret as "clear it", so an empty string must not reach it.
+	"client_id":     stringattr.Default("", stringattr.StandardLenValidator),
 	"client_secret": stringattr.SecretOptional(stringattr.NonEmptyValidator),
 
 	"discovery_url":            stringattr.Default("", stringattr.StandardLenValidator),
@@ -120,7 +109,6 @@ func (m *OutboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Logo, data, "logo")
 	stringattr.Set(&m.AppType, data, "appType")
 	stringattr.Set(&m.ClientID, data, "clientId")
-	// The backend never returns the client secret, so the value given at create time is kept in state.
 	stringattr.Set(&m.ClientSecret, data, "clientSecret", stringattr.SkipIfAlreadySet)
 	stringattr.Set(&m.DiscoveryURL, data, "discoveryUrl")
 	stringattr.Set(&m.AuthorizationURL, data, "authorizationUrl")

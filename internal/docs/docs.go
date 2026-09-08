@@ -1628,7 +1628,8 @@ var docsOutboundApp = map[string]string{
 	"client_id": "The OAuth client ID issued by the third party provider.",
 	"client_secret": "The OAuth client secret issued by the third party provider. The Descope API never returns this " +
 		"value, so it cannot be read back and is not verified against the server. Omitting the field leaves " +
-		"any previously stored secret in place, while setting it to a new value replaces it.",
+		"any previously stored secret in place, while setting it to a new value replaces it. An empty " +
+		"string is not accepted.",
 	"discovery_url":     "The provider's OpenID Connect discovery endpoint, used to look up its other endpoints.",
 	"authorization_url": "The provider's authorization endpoint, which users are redirected to in order to grant consent.",
 	"authorization_url_params": "Additional query parameters to append to the authorization request, for providers that require " +

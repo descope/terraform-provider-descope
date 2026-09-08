@@ -82,7 +82,8 @@ client_secret
 
 The OAuth client secret issued by the third party provider. The Descope API never returns this
 value, so it cannot be read back and is not verified against the server. Omitting the field leaves
-any previously stored secret in place, while setting it to a new value replaces it.
+any previously stored secret in place, while setting it to a new value replaces it. An empty
+string is not accepted.
 
 
 

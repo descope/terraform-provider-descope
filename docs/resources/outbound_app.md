@@ -28,7 +28,7 @@ Manages a custom outbound application in a Descope project. Outbound application
 - `authorization_url_params` (Attributes List) Additional query parameters to append to the authorization request, for providers that require them. (see [below for nested schema](#nestedatt--authorization_url_params))
 - `callback_domain` (String) The domain that the provider redirects back to after consent. Leave this empty to use the project's configured domain.
 - `client_id` (String) The OAuth client ID issued by the third party provider.
-- `client_secret` (String, Sensitive) The OAuth client secret issued by the third party provider. The Descope API never returns this value, so it cannot be read back and is not verified against the server. Omitting the field leaves any previously stored secret in place, while setting it to a new value replaces it.
+- `client_secret` (String, Sensitive) The OAuth client secret issued by the third party provider. The Descope API never returns this value, so it cannot be read back and is not verified against the server. Omitting the field leaves any previously stored secret in place, while setting it to a new value replaces it. An empty string is not accepted.
 - `default_redirect_url` (String) The URL that users are returned to once they have finished granting or denying consent at the provider. This can be overridden per connection.
 - `default_scopes` (Set of String) The scopes requested from the provider when no scopes are given for a specific connection.
 - `description` (String) A description for the outbound application.

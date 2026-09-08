@@ -7,8 +7,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
-// Extra query parameters appended to the authorization or token request, matching the backend's repeated URLParam.
-
 var URLParamAttributes = map[string]schema.Attribute{
 	"key":   stringattr.Required(stringattr.StandardLenValidator),
 	"value": stringattr.Default("", stringvalidator.LengthAtMost(4096)),

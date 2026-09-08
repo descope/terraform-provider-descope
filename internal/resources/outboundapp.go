@@ -9,9 +9,6 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 )
 
-// Outbound apps live on dedicated CRUD endpoints with a server-assigned id. Every response wraps the entity
-// in an `app` object, the load endpoint takes the id in the path rather than a query, and update expects the
-// whole entity nested under `app` alongside its id.
 func NewOutboundAppResource() resource.Resource {
 	const path = "/v1/mgmt/outbound/app"
 
