@@ -42,7 +42,7 @@ func templateOps(typ string) operations {
 			body := maps.Clone(data)
 			body["id"] = id
 			body["type"] = typ
-			return c.PostData(ctx, projectID, path+"/update", body)
+			return c.PutData(ctx, projectID, path, body)
 		},
 		ScopedRead: func(ctx context.Context, c *infra.Client, projectID, method, id string) (map[string]any, error) {
 			return c.Get(ctx, projectID, path, map[string]string{"type": typ, "method": method, "id": id})

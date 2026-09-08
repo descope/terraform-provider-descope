@@ -3,199 +3,33 @@ package resources
 import (
 	"context"
 
-	"github.com/descope/terraform-provider-descope/internal/entities"
-	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/internal/models/project"
-	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
-	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-const (
-	projectEntity = "project"
-)
-
-var (
-	_ resource.Resource                   = &projectResource{}
-	_ resource.ResourceWithConfigure      = &projectResource{}
-	_ resource.ResourceWithValidateConfig = &projectResource{}
-	_ resource.ResourceWithImportState    = &projectResource{}
-	_ resource.ResourceWithModifyPlan     = &projectResource{}
-)
-
+// The project container resource on its dedicated /v1/mgmt/project route. The resource id is the project
+// id: reads, updates and deletes scope the bearer token with it, while create runs with a bare key and
+// gets the new id from the response.
 func NewProjectResource() resource.Resource {
-	return &projectResource{}
-}
-
-type projectResource struct {
-	client *infra.Client
-}
-
-func (r *projectResource) Configure(_ context.Context, req resource.ConfigureRequest, _ *resource.ConfigureResponse) {
-	if client, ok := req.ProviderData.(*infra.Client); ok {
-		r.client = client
-	}
-}
-
-func (r *projectResource) Metadata(_ context.Context, req resource.MetadataRequest, resp *resource.MetadataResponse) {
-	resp.TypeName = req.ProviderTypeName + "_" + projectEntity
-}
-
-func (r *projectResource) Schema(_ context.Context, _ resource.SchemaRequest, resp *resource.SchemaResponse) {
-	resp.Schema = entities.ProjectSchema
-}
-
-func (r *projectResource) ValidateConfig(ctx context.Context, req resource.ValidateConfigRequest, resp *resource.ValidateConfigResponse) {
-	tflog.Info(ctx, "Validating project resource")
-
-	entity := entities.NewProjectEntity(ctx, req.Config, &resp.Diagnostics)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	tflog.Info(ctx, "Project resource validated")
-}
-
-func (r *projectResource) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
-	if req.State.Raw.IsNull() {
-		return
-	}
-	if req.Plan.Raw.IsNull() {
-		checkDestroyProtection(ctx, req.State, &project.ProjectModel{}, projectEntity, &resp.Diagnostics)
-		return
-	}
-	if isPlannedReplace(ctx, entities.ProjectSchema, req) {
-		checkReplaceProtection(ctx, req.State, &project.ProjectModel{}, projectEntity, &resp.Diagnostics)
-	}
-}
-
-func (r *projectResource) Create(ctx context.Context, req resource.CreateRequest, resp *resource.CreateResponse) {
-	tflog.Info(ctx, "Creating project resource")
-
-	entity := entities.NewProjectEntity(ctx, req.Plan, &resp.Diagnostics)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	values := entity.Values(ctx)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	res, err := r.client.Create(ctx, infra.NoProjectID, projectEntity, values)
-	if failure, ok := infra.AsValidationError(err); ok {
-		resp.Diagnostics.AddError("Invalid project configuration", failure)
-		return
-	}
-	if err != nil {
-		resp.Diagnostics.AddError("Error creating project", err.Error())
-		return
-	}
-
-	entity.SetProjectID(ctx, res.ID)
-	entity.SetValues(ctx, res.Data)
-	entity.Save(ctx, &resp.State)
-
-	tflog.Info(ctx, "Project resource created")
-}
-
-func (r *projectResource) Read(ctx context.Context, req resource.ReadRequest, resp *resource.ReadResponse) {
-	tflog.Info(ctx, "Reading project resource")
-	ctx = helpers.ContextWithImportState(ctx, req, resp)
-
-	entity := entities.NewProjectEntity(ctx, req.State, &resp.Diagnostics)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	projectID := entity.ProjectID(ctx)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	res, err := r.client.Read(ctx, projectID, projectEntity, projectID)
-	if err != nil {
-		// a project deleted out-of-band is dropped from state so the next plan re-creates it, unless it's protected;
-		// this only fires on an unambiguous not-found, not on the auth failures a deleted project id in the bearer token might cause
-		if infra.AsNotFoundError(err) && !helpers.IsImportState(ctx) {
-			checkRemovalProtection(ctx, req.State, entity.Model, projectEntity, &resp.Diagnostics)
-			if resp.Diagnostics.HasError() {
-				return
+	const path = "/v1/mgmt/project"
+	return newResource[project.ProjectModel]("project", project.Schema, operations{
+		Create: func(ctx context.Context, c *infra.Client, projectID string, data map[string]any) (string, map[string]any, error) {
+			body, err := c.PostData(ctx, projectID, path, data)
+			if err != nil {
+				return "", nil, err
 			}
-			tflog.Info(ctx, "Removing project resource from state")
-			resp.State.RemoveResource(ctx)
-			return
-		}
-		resp.Diagnostics.AddError("Error reading project", err.Error())
-		return
-	}
-
-	entity.SetValues(ctx, res.Data)
-	entity.Save(ctx, &resp.State)
-
-	tflog.Info(ctx, "Project resource read")
-}
-
-func (r *projectResource) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
-	tflog.Info(ctx, "Updating project resource")
-
-	entity := entities.NewProjectEntity(ctx, req.Plan, &resp.Diagnostics)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	values := entity.Values(ctx)
-	projectID := entity.ProjectID(ctx)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	res, err := r.client.Update(ctx, projectID, projectEntity, projectID, values)
-	if failure, ok := infra.AsValidationError(err); ok {
-		resp.Diagnostics.AddError("Invalid project configuration", failure)
-		return
-	}
-	if err != nil {
-		resp.Diagnostics.AddError("Error updating project", err.Error())
-		return
-	}
-
-	entity.SetValues(ctx, res.Data)
-	entity.Save(ctx, &resp.State)
-
-	tflog.Info(ctx, "Project resource updated")
-}
-
-func (r *projectResource) Delete(ctx context.Context, req resource.DeleteRequest, resp *resource.DeleteResponse) {
-	tflog.Info(ctx, "Deleting project resource")
-
-	entity := entities.NewProjectEntity(ctx, req.State, &resp.Diagnostics)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	checkDestroyProtection(ctx, req.State, entity.Model, projectEntity, &resp.Diagnostics)
-	if resp.Diagnostics.HasError() {
-		return
-	}
-
-	projectID := entity.ProjectID(ctx)
-	if entity.Diagnostics.HasError() {
-		return
-	}
-
-	err := r.client.Delete(ctx, projectID, projectEntity, projectID)
-	if err != nil {
-		resp.Diagnostics.AddError("Error deleting project", err.Error())
-		return
-	}
-
-	tflog.Info(ctx, "Project resource deleted")
-}
-
-func (r *projectResource) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
-	tflog.Info(ctx, "Importing project resource")
-	helpers.MarkImportState(ctx, resp)
-	resource.ImportStatePassthroughWithIdentity(ctx, path.Root("id"), path.Root("id"), req, resp)
+			id, _ := body["id"].(string)
+			return id, body, nil
+		},
+		Read: func(ctx context.Context, c *infra.Client, projectID, _ string) (map[string]any, error) {
+			return c.Get(ctx, projectID, path, nil)
+		},
+		Update: func(ctx context.Context, c *infra.Client, projectID, _ string, data map[string]any) (map[string]any, error) {
+			return c.PutData(ctx, projectID, path, data)
+		},
+		Delete: func(ctx context.Context, c *infra.Client, projectID, _ string) error {
+			return c.Del(ctx, projectID, path, nil)
+		},
+	})
 }

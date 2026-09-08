@@ -121,7 +121,7 @@ func NewAppPermissionResource() resource.Resource {
 		Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
 			body := maps.Clone(data)
 			body["id"] = id
-			return c.PostData(ctx, projectID, path+"/update", body)
+			return c.PutData(ctx, projectID, path, body)
 		},
 		ScopedRead: func(ctx context.Context, c *infra.Client, projectID, appID, id string) (map[string]any, error) {
 			return c.Get(ctx, projectID, path, map[string]string{"appId": appID, "id": id})
@@ -146,7 +146,7 @@ func NewAppRoleResource() resource.Resource {
 		Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
 			body := maps.Clone(data)
 			body["id"] = id
-			return c.PostData(ctx, projectID, path+"/update", body)
+			return c.PutData(ctx, projectID, path, body)
 		},
 		ScopedRead: func(ctx context.Context, c *infra.Client, projectID, appID, id string) (map[string]any, error) {
 			return c.Get(ctx, projectID, path, map[string]string{"appId": appID, "id": id})

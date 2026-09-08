@@ -31,6 +31,10 @@ func TestHTTPConnector(t *testing.T) {
 				aws_external_id = null
 				aws_region = null
 				aws_service = null
+				use_mtls = true
+				client_certificate = "ag66debo7j"
+				client_key = "ade26grht"
+				ca_certificate = "7h545x"
 				rfc9421_signing_enabled = false
 				rfc9421_private_key = null
 				rfc9421_key_id = null
@@ -58,6 +62,10 @@ func TestHTTPConnector(t *testing.T) {
 				"aws_external_id":             "",
 				"aws_region":                  "",
 				"aws_service":                 "",
+				"use_mtls":                    true,
+				"client_certificate":          "ag66debo7j",
+				"client_key":                  "ade26grht",
+				"ca_certificate":              "7h545x",
 				"rfc9421_signing_enabled":     false,
 				"rfc9421_private_key":         testacc.AttributeIsNotSet,
 				"rfc9421_key_id":              "",
@@ -88,6 +96,10 @@ func TestHTTPConnector(t *testing.T) {
 				aws_external_id = null
 				aws_region = null
 				aws_service = null
+				use_mtls = true
+				client_certificate = "cwmdh2gtfc"
+				client_key = "ez6okur65"
+				ca_certificate = "azwal3"
 				rfc9421_signing_enabled = false
 				rfc9421_private_key = null
 				rfc9421_key_id = null
@@ -112,6 +124,10 @@ func TestHTTPConnector(t *testing.T) {
 				"aws_external_id":             "",
 				"aws_region":                  "",
 				"aws_service":                 "",
+				"use_mtls":                    true,
+				"client_certificate":          "cwmdh2gtfc",
+				"client_key":                  "ez6okur65",
+				"ca_certificate":              "azwal3",
 				"rfc9421_signing_enabled":     false,
 				"rfc9421_private_key":         testacc.AttributeIsNotSet,
 				"rfc9421_key_id":              "",

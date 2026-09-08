@@ -720,6 +720,14 @@ var docsHTTPConnector = map[string]string{
 	"aws_external_id":       "The external ID to use when assuming the role.",
 	"aws_region":            "The AWS region, e.g. `us-east-1`.",
 	"aws_service":           "The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.",
+	"use_mtls": "Present a client certificate during the TLS handshake. Requires an `https://` " +
+		"base URL. Independent of the Authentication method above, so it can be combined " +
+		"with a bearer token, API key, basic auth or OAuth 2.0 client credentials.",
+	"client_certificate": "The client certificate in PEM format for mTLS authentication.",
+	"client_key":         "The client private key in PEM format for mTLS authentication.",
+	"ca_certificate": "The Certificate Authority certificate in PEM format, for endpoints whose server " +
+		"certificate is signed by a private or internal CA. Leave empty to verify against " +
+		"the public trust store.",
 	"rfc9421_signing_enabled": "Enable RFC 9421 HTTP Message Signatures for cryptographically signing requests. " +
 		"Supports multiple algorithms including ECDSA, Ed25519, RSA, and HMAC",
 	"rfc9421_private_key": "Provide a private key in PEM format or an HMAC secret. Algorithms such as ECDSA " +
@@ -1156,18 +1164,36 @@ var docsSnowflakeConnector = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
 	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type": "How Descope authenticates to the Snowflake SQL API. See the connector " +
+		"documentation for the setup steps of each method.",
 	"api_key": "A Snowflake Programmatic Access Token (PAT). The token's user must have CREATE " +
 		"DATABASE privileges, unless Self Provision is enabled - in which case it only " +
 		"needs write access to the table you created.",
+	"snowflake_user": "The Snowflake user Descope authenticates as. The public key must be registered " +
+		"on this user with `ALTER USER ... SET RSA_PUBLIC_KEY`.",
+	"private_key": "The private key in PEM format, RSA 2048-bit or stronger. Descope reads PKCS#8 " +
+		"encrypted with PBES2, or unencrypted PKCS#8 or PKCS#1. For Snowflake's own " +
+		"key-pair requirements see " +
+		"https://docs.snowflake.com/en/user-guide/key-pair-auth.",
+	"private_key_passphrase": "Required only if the private key is passphrase-protected. Leave empty for an " +
+		"unencrypted key.",
+	"account_identifier": "Overrides the account identifier derived from the Account URL. Only needed for " +
+		"PrivateLink or legacy region locators.",
 	"site": "Your Snowflake account URL, e.g. " +
 		"`https://<org>-<account>.snowflakecomputing.com`.",
-	"warehouse":   "The Snowflake warehouse to use. Defaults to `COMPUTE_WH`.",
-	"database":    "The Snowflake database to use. Defaults to `DESCOPE_EXPORT_DB`.",
-	"schema":      "The schema within the database. Defaults to `PUBLIC`.",
-	"audit_table": "The table to write audit events to. Defaults to `DESCOPE_AUDIT_LOGS`.",
+	"warehouse": "The Snowflake warehouse, exactly as stored (unquoted names are uppercased: " +
+		"descope_wh->DESCOPE_WH). Run SHOW WAREHOUSES to check. Defaults to `COMPUTE_WH`.",
+	"database": "The Snowflake database, exactly as stored (unquoted names are uppercased: " +
+		"descope_db->DESCOPE_DB). Run SHOW DATABASES to check. Defaults to " +
+		"`DESCOPE_EXPORT_DB`.",
+	"schema": "The schema within the database, exactly as stored (unquoted names are " +
+		"uppercased: public->PUBLIC). Run SHOW SCHEMAS to check. Defaults to `PUBLIC`.",
+	"audit_table": "The table to write audit events to, exactly as stored (unquoted names are " +
+		"uppercased: audit_logs->AUDIT_LOGS). Run SHOW TABLES to check. Defaults to " +
+		"`DESCOPE_AUDIT_LOGS`.",
 	"self_provision": "Create the database, table and schema in Snowflake manually instead of allowing " +
-		"the connector to create them. Useful when the user associated with the " +
-		"Programmatic Access Token is restricted to minimal or write-only privileges.",
+		"the connector to create them. Useful when the Snowflake user Descope " +
+		"authenticates as is restricted to minimal or write-only privileges.",
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
