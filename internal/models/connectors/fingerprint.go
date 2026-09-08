@@ -76,10 +76,10 @@ func (m *FingerprintConnectorModel) SetValues(h *helpers.Handler, data map[strin
 }
 
 func (m *FingerprintConnectorModel) Validate(h *helpers.Handler) {
-	if m.CloudflareScriptURL.ValueString() != "" && !m.UseCloudflareIntegration.ValueBool() {
+	if m.CloudflareScriptURL.ValueString() != "" && !m.UseCloudflareIntegration.IsUnknown() && !m.UseCloudflareIntegration.ValueBool() {
 		h.Conflict("The cloudflare_script_url field cannot be used unless use_cloudflare_integration is set to true")
 	}
-	if m.CloudflareEndpointURL.ValueString() != "" && !m.UseCloudflareIntegration.ValueBool() {
+	if m.CloudflareEndpointURL.ValueString() != "" && !m.UseCloudflareIntegration.IsUnknown() && !m.UseCloudflareIntegration.ValueBool() {
 		h.Conflict("The cloudflare_endpoint_url field cannot be used unless use_cloudflare_integration is set to true")
 	}
 }
