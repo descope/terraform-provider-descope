@@ -8,6 +8,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
@@ -26,7 +27,12 @@ var SnowflakeConnectorAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"api_key":                    stringattr.SecretRequired(),
+	"auth_type":                  stringattr.Default("pat", stringvalidator.OneOf("pat", "keypair")),
+	"api_key":                    stringattr.SecretOptional(),
+	"snowflake_user":             stringattr.Default(""),
+	"private_key":                stringattr.SecretOptional(),
+	"private_key_passphrase":     stringattr.SecretOptional(),
+	"account_identifier":         stringattr.Default(""),
 	"site":                       stringattr.Required(),
 	"warehouse":                  stringattr.Required(),
 	"database":                   stringattr.Required(),
@@ -49,7 +55,12 @@ type SnowflakeConnectorModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
+	AuthType                stringattr.Type                      `tfsdk:"auth_type"`
 	APIKey                  stringattr.Type                      `tfsdk:"api_key"`
+	SnowflakeUser           stringattr.Type                      `tfsdk:"snowflake_user"`
+	PrivateKey              stringattr.Type                      `tfsdk:"private_key"`
+	PrivateKeyPassphrase    stringattr.Type                      `tfsdk:"private_key_passphrase"`
+	AccountIdentifier       stringattr.Type                      `tfsdk:"account_identifier"`
 	Site                    stringattr.Type                      `tfsdk:"site"`
 	Warehouse               stringattr.Type                      `tfsdk:"warehouse"`
 	Database                stringattr.Type                      `tfsdk:"database"`
@@ -92,6 +103,30 @@ func (m *SnowflakeConnectorModel) SetValues(h *helpers.Handler, data map[string]
 }
 
 func (m *SnowflakeConnectorModel) Validate(h *helpers.Handler) {
+	if m.APIKey.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "pat" {
+		h.Conflict("The api_key field can only be used when auth_type is set to 'pat'")
+	}
+	if m.APIKey.ValueString() == "" && !m.APIKey.IsUnknown() && m.AuthType.ValueString() == "pat" {
+		h.Conflict("The api_key field is required when auth_type is set to 'pat'")
+	}
+	if m.SnowflakeUser.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "keypair" {
+		h.Conflict("The snowflake_user field can only be used when auth_type is set to 'keypair'")
+	}
+	if m.SnowflakeUser.ValueString() == "" && !m.SnowflakeUser.IsUnknown() && m.AuthType.ValueString() == "keypair" {
+		h.Conflict("The snowflake_user field is required when auth_type is set to 'keypair'")
+	}
+	if m.PrivateKey.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "keypair" {
+		h.Conflict("The private_key field can only be used when auth_type is set to 'keypair'")
+	}
+	if m.PrivateKey.ValueString() == "" && !m.PrivateKey.IsUnknown() && m.AuthType.ValueString() == "keypair" {
+		h.Conflict("The private_key field is required when auth_type is set to 'keypair'")
+	}
+	if m.PrivateKeyPassphrase.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "keypair" {
+		h.Conflict("The private_key_passphrase field can only be used when auth_type is set to 'keypair'")
+	}
+	if m.AccountIdentifier.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "keypair" {
+		h.Conflict("The account_identifier field can only be used when auth_type is set to 'keypair'")
+	}
 	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
@@ -101,7 +136,12 @@ func (m *SnowflakeConnectorModel) Validate(h *helpers.Handler) {
 
 func (m *SnowflakeConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
+	stringattr.Get(m.AuthType, c, "authType")
 	stringattr.Get(m.APIKey, c, "apiKey")
+	stringattr.Get(m.SnowflakeUser, c, "snowflakeUser")
+	stringattr.Get(m.PrivateKey, c, "privateKey")
+	stringattr.Get(m.PrivateKeyPassphrase, c, "privateKeyPassphrase")
+	stringattr.Get(m.AccountIdentifier, c, "accountIdentifier")
 	stringattr.Get(m.Site, c, "site")
 	stringattr.Get(m.Warehouse, c, "warehouse")
 	stringattr.Get(m.Database, c, "database")
@@ -117,7 +157,12 @@ func (m *SnowflakeConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 }
 
 func (m *SnowflakeConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
+	stringattr.Set(&m.AuthType, c, "authType")
 	stringattr.Nil(&m.APIKey)
+	stringattr.Set(&m.SnowflakeUser, c, "snowflakeUser")
+	stringattr.Nil(&m.PrivateKey)
+	stringattr.Nil(&m.PrivateKeyPassphrase)
+	stringattr.Set(&m.AccountIdentifier, c, "accountIdentifier")
 	stringattr.Set(&m.Site, c, "site")
 	stringattr.Set(&m.Warehouse, c, "warehouse")
 	stringattr.Set(&m.Database, c, "database")

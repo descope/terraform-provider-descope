@@ -383,6 +383,10 @@
       "attribute": "account_id",
       "struct": "AccountID"
     },
+    "accountIdentifier": {
+      "attribute": "account_identifier",
+      "struct": "AccountIdentifier"
+    },
     "accountSid": {
       "attribute": "account_sid",
       "struct": "AccountSID"
@@ -819,6 +823,10 @@
       "attribute": "private_key",
       "struct": "PrivateKey"
     },
+    "privateKeyPassphrase": {
+      "attribute": "private_key_passphrase",
+      "struct": "PrivateKeyPassphrase"
+    },
     "profilingTagsScriptUrl": {
       "attribute": "profiling_tags_script_url",
       "struct": "ProfilingTagsScriptURL"
@@ -974,6 +982,10 @@
     "siteKey": {
       "attribute": "site_key",
       "struct": "SiteKey"
+    },
+    "snowflakeUser": {
+      "attribute": "snowflake_user",
+      "struct": "SnowflakeUser"
     },
     "source": {
       "attribute": "source",

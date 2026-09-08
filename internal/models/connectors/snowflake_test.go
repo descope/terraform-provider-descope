@@ -17,7 +17,12 @@ func TestSnowflakeConnector(t *testing.T) {
 		resource.TestStep{
 			Config: c.Config(`
 				project_id = "` + projectID + `"
+				auth_type = "pat"
 				api_key = "mhvece"
+				snowflake_user = null
+				private_key = null
+				private_key_passphrase = null
+				account_identifier = null
 				site = "7oxa"
 				warehouse = "COMPUTE_WH"
 				database = "DESCOPE_EXPORT_DB"
@@ -36,7 +41,12 @@ func TestSnowflakeConnector(t *testing.T) {
 				"name":                       c.Name,
 				"description":                "",
 				"disabled":                   false,
+				"auth_type":                  "pat",
 				"api_key":                    "mhvece",
+				"snowflake_user":             "",
+				"private_key":                testacc.AttributeIsNotSet,
+				"private_key_passphrase":     testacc.AttributeIsNotSet,
+				"account_identifier":         "",
 				"site":                       "7oxa",
 				"warehouse":                  "COMPUTE_WH",
 				"database":                   "DESCOPE_EXPORT_DB",
@@ -56,7 +66,12 @@ func TestSnowflakeConnector(t *testing.T) {
 				project_id = "` + projectID + `"
 				description = "updated"
 				disabled = true
+				auth_type = "pat"
 				api_key = "24ynkg"
+				snowflake_user = null
+				private_key = null
+				private_key_passphrase = null
+				account_identifier = null
 				site = "gbul"
 				warehouse = "COMPUTE_WH"
 				database = "DESCOPE_EXPORT_DB"
@@ -72,7 +87,12 @@ func TestSnowflakeConnector(t *testing.T) {
 			Check: c.Check(map[string]any{
 				"description":                "updated",
 				"disabled":                   true,
+				"auth_type":                  "pat",
 				"api_key":                    "24ynkg",
+				"snowflake_user":             "",
+				"private_key":                testacc.AttributeIsNotSet,
+				"private_key_passphrase":     testacc.AttributeIsNotSet,
+				"account_identifier":         "",
 				"site":                       "gbul",
 				"warehouse":                  "COMPUTE_WH",
 				"database":                   "DESCOPE_EXPORT_DB",

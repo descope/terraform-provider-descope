@@ -42,6 +42,10 @@ var HTTPConnectorAttributes = map[string]schema.Attribute{
 	"aws_external_id":            stringattr.Default(""),
 	"aws_region":                 stringattr.Default(""),
 	"aws_service":                stringattr.Default(""),
+	"use_mtls":                   boolattr.Default(false),
+	"client_certificate":         stringattr.SecretOptional(),
+	"client_key":                 stringattr.SecretOptional(),
+	"ca_certificate":             stringattr.SecretOptional(),
 	"rfc9421_signing_enabled":    boolattr.Default(false),
 	"rfc9421_private_key":        stringattr.SecretOptional(),
 	"rfc9421_key_id":             stringattr.Default(""),
@@ -73,6 +77,10 @@ type HTTPConnectorModel struct {
 	AWSExternalID           stringattr.Type                  `tfsdk:"aws_external_id"`
 	AWSRegion               stringattr.Type                  `tfsdk:"aws_region"`
 	AWSService              stringattr.Type                  `tfsdk:"aws_service"`
+	UseMTLS                 boolattr.Type                    `tfsdk:"use_mtls"`
+	ClientCertificate       stringattr.Type                  `tfsdk:"client_certificate"`
+	ClientKey               stringattr.Type                  `tfsdk:"client_key"`
+	CACertificate           stringattr.Type                  `tfsdk:"ca_certificate"`
 	RFC9421SigningEnabled   boolattr.Type                    `tfsdk:"rfc9421_signing_enabled"`
 	RFC9421PrivateKey       stringattr.Type                  `tfsdk:"rfc9421_private_key"`
 	RFC9421KeyID            stringattr.Type                  `tfsdk:"rfc9421_key_id"`
@@ -148,6 +156,21 @@ func (m *HTTPConnectorModel) Validate(h *helpers.Handler) {
 	if m.AWSService.ValueString() == "" && !m.AWSService.IsUnknown() && slices.Contains([]string{"credentials", "assumeRole"}, m.AWSAuthType.ValueString()) {
 		h.Conflict("The aws_service field is required when aws_auth_type is one of [credentials assumeRole]")
 	}
+	if m.ClientCertificate.ValueString() != "" && !m.UseMTLS.ValueBool() {
+		h.Conflict("The client_certificate field cannot be used unless use_mtls is set to true")
+	}
+	if !m.ClientCertificate.IsUnknown() && m.ClientCertificate.ValueString() == "" && m.UseMTLS.ValueBool() {
+		h.Conflict("The client_certificate field is required when use_mtls is set to true")
+	}
+	if m.ClientKey.ValueString() != "" && !m.UseMTLS.ValueBool() {
+		h.Conflict("The client_key field cannot be used unless use_mtls is set to true")
+	}
+	if !m.ClientKey.IsUnknown() && m.ClientKey.ValueString() == "" && m.UseMTLS.ValueBool() {
+		h.Conflict("The client_key field is required when use_mtls is set to true")
+	}
+	if m.CACertificate.ValueString() != "" && !m.UseMTLS.ValueBool() {
+		h.Conflict("The ca_certificate field cannot be used unless use_mtls is set to true")
+	}
 	if m.RFC9421PrivateKey.ValueString() != "" && !m.RFC9421SigningEnabled.ValueBool() {
 		h.Conflict("The rfc9421_private_key field cannot be used unless rfc9421_signing_enabled is set to true")
 	}
@@ -174,6 +197,10 @@ func (m *HTTPConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]
 	stringattr.Get(m.AWSExternalID, c, "awsExternalId")
 	stringattr.Get(m.AWSRegion, c, "awsRegion")
 	stringattr.Get(m.AWSService, c, "awsService")
+	boolattr.Get(m.UseMTLS, c, "useMTLS")
+	stringattr.Get(m.ClientCertificate, c, "clientCert")
+	stringattr.Get(m.ClientKey, c, "clientKey")
+	stringattr.Get(m.CACertificate, c, "caCert")
 	boolattr.Get(m.RFC9421SigningEnabled, c, "rfc9421SigningEnabled")
 	stringattr.Get(m.RFC9421PrivateKey, c, "rfc9421PrivateKey")
 	stringattr.Get(m.RFC9421KeyID, c, "rfc9421KeyId")
@@ -197,6 +224,10 @@ func (m *HTTPConnectorModel) SetConfigurationValues(c map[string]any, h *helpers
 	stringattr.Set(&m.AWSExternalID, c, "awsExternalId")
 	stringattr.Set(&m.AWSRegion, c, "awsRegion")
 	stringattr.Set(&m.AWSService, c, "awsService")
+	boolattr.Set(&m.UseMTLS, c, "useMTLS")
+	stringattr.Nil(&m.ClientCertificate)
+	stringattr.Nil(&m.ClientKey)
+	stringattr.Nil(&m.CACertificate)
 	boolattr.Set(&m.RFC9421SigningEnabled, c, "rfc9421SigningEnabled")
 	stringattr.Nil(&m.RFC9421PrivateKey)
 	stringattr.Set(&m.RFC9421KeyID, c, "rfc9421KeyId")
