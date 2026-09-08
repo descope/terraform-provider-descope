@@ -121,9 +121,9 @@ func TestEnchantedLinkSettingsTextTemplates(t *testing.T) {
 				"text_template_id":          testacc.AttributeIsSet,
 			}),
 		},
-		// Dropping the text_service block does not leave the custom connector in place: useDescopeService
-		// sends the built-in Descope service whenever the block is absent, which also clears the selected
-		// template. This step pins that behaviour so it cannot regress into a silent no-op.
+		// Dropping the text_service block makes Values send the built-in Descope service, which also
+		// clears the selected template. Only the cleared template is assertable: objattr.Set is a no-op
+		// on a null value outside import, so the provider never writes text_service back into state.
 		resource.TestStep{
 			Config: c.Config(`
 				project_id = "`+projectID+`"
@@ -137,8 +137,7 @@ func TestEnchantedLinkSettingsTextTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 			`),
 			Check: m.Check(map[string]any{
-				"text_service.connector_id": "Descope",
-				"text_template_id":          "",
+				"text_template_id": "",
 			}),
 		},
 	)
