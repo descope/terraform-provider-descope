@@ -29,11 +29,7 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 	"id":         stringattr.Identifier(),
 	"project_id": stringattr.Required(stringplanmodifier.RequiresReplace()),
 
-	// The tenant is absent from the backend's update statement, so it can only ever be set at creation.
-	// checkImmutableAttributes rejects a change at plan time, which aborts before any replacement is
-	// planned: deleting an outbound app cascades to every token stored against it. RequiresReplace stays
-	// as the defense in depth that list's own comment calls for, in case that check ever regresses.
-	"tenant_id": stringattr.Default("", stringplanmodifier.RequiresReplace()),
+	"tenant_id": stringattr.Default(""),
 
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default("", stringattr.StandardLenValidator),

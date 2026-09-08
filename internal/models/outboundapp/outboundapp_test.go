@@ -224,6 +224,16 @@ func TestOutboundAppInvalidValues(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`(?i)url`),
 		},
+		// An empty client_secret must never reach the backend, which reads a present-but-empty secret as
+		// "clear the stored one". The validator has to stop it at plan time, because an omitted secret and
+		// an empty one are indistinguishable once the request is built.
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				client_secret = ""
+			`),
+			ExpectError: regexp.MustCompile(`(?i)empty`),
+		},
 		// Creating against a tenant that does not exist must fail with the backend's own message rather
 		// than succeeding at project level. The regex is deliberately loose because the backend's wording
 		// contains a typo ("requested tenant no found") that may be corrected later.
