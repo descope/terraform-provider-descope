@@ -77,9 +77,13 @@ func TestStylesKeepsUnmanagedStyles(t *testing.T) {
 		if projectID == "" {
 			return
 		}
-		testacc.OutOfBandPost(t, projectID, "/v2/mgmt/theme/import", map[string]any{
-			"theme":            map[string]any{"styles": map[string]any{"light": map[string]any{}, "dark": map[string]any{}}},
-			"replaceAllStyles": true,
+		// /v2/mgmt/theme/import upserts and never deletes, so it cannot undo what this test
+		// created. The deprecated /v1 endpoint still replaces the whole theme, which is what a
+		// reset needs - it takes the theme in its cssTemplate shape rather than as styles.
+		testacc.OutOfBandPost(t, projectID, "/v1/mgmt/theme/import", map[string]any{
+			"theme": map[string]any{
+				"cssTemplate": map[string]any{"light": map[string]any{}, "dark": map[string]any{}},
+			},
 		})
 	})
 
