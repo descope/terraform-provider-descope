@@ -202,7 +202,9 @@ func (c *Client) getAPIClient(projectID string) *api.Client {
 
 func makeAPIClient(version, projectID, baseURL string) *api.Client {
 	headers := map[string]string{
-		"user-agent": makeUserAgent(version),
+		"user-agent":               makeUserAgent(version),
+		"x-descope-client-name":    "terraform",
+		"x-descope-client-version": version,
 	}
 
 	params := api.ClientParams{
