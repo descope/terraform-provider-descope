@@ -156,28 +156,28 @@ func (m *HTTPConnectorModel) Validate(h *helpers.Handler) {
 	if m.AWSService.ValueString() == "" && !m.AWSService.IsUnknown() && slices.Contains([]string{"credentials", "assumeRole"}, m.AWSAuthType.ValueString()) {
 		h.Conflict("The aws_service field is required when aws_auth_type is one of [credentials assumeRole]")
 	}
-	if m.ClientCertificate.ValueString() != "" && !m.UseMTLS.ValueBool() {
+	if m.ClientCertificate.ValueString() != "" && !m.UseMTLS.IsUnknown() && !m.UseMTLS.ValueBool() {
 		h.Conflict("The client_certificate field cannot be used unless use_mtls is set to true")
 	}
 	if !m.ClientCertificate.IsUnknown() && m.ClientCertificate.ValueString() == "" && m.UseMTLS.ValueBool() {
 		h.Conflict("The client_certificate field is required when use_mtls is set to true")
 	}
-	if m.ClientKey.ValueString() != "" && !m.UseMTLS.ValueBool() {
+	if m.ClientKey.ValueString() != "" && !m.UseMTLS.IsUnknown() && !m.UseMTLS.ValueBool() {
 		h.Conflict("The client_key field cannot be used unless use_mtls is set to true")
 	}
 	if !m.ClientKey.IsUnknown() && m.ClientKey.ValueString() == "" && m.UseMTLS.ValueBool() {
 		h.Conflict("The client_key field is required when use_mtls is set to true")
 	}
-	if m.CACertificate.ValueString() != "" && !m.UseMTLS.ValueBool() {
+	if m.CACertificate.ValueString() != "" && !m.UseMTLS.IsUnknown() && !m.UseMTLS.ValueBool() {
 		h.Conflict("The ca_certificate field cannot be used unless use_mtls is set to true")
 	}
-	if m.RFC9421PrivateKey.ValueString() != "" && !m.RFC9421SigningEnabled.ValueBool() {
+	if m.RFC9421PrivateKey.ValueString() != "" && !m.RFC9421SigningEnabled.IsUnknown() && !m.RFC9421SigningEnabled.ValueBool() {
 		h.Conflict("The rfc9421_private_key field cannot be used unless rfc9421_signing_enabled is set to true")
 	}
-	if m.RFC9421KeyID.ValueString() != "" && !m.RFC9421SigningEnabled.ValueBool() {
+	if m.RFC9421KeyID.ValueString() != "" && !m.RFC9421SigningEnabled.IsUnknown() && !m.RFC9421SigningEnabled.ValueBool() {
 		h.Conflict("The rfc9421_key_id field cannot be used unless rfc9421_signing_enabled is set to true")
 	}
-	if m.RFC9421Components.ValueString() != "" && !m.RFC9421SigningEnabled.ValueBool() {
+	if m.RFC9421Components.ValueString() != "" && !m.RFC9421SigningEnabled.IsUnknown() && !m.RFC9421SigningEnabled.ValueBool() {
 		h.Conflict("The rfc9421_components field cannot be used unless rfc9421_signing_enabled is set to true")
 	}
 }

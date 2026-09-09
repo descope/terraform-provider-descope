@@ -97,13 +97,13 @@ func (m *SupabaseConnectorModel) Validate(h *helpers.Handler) {
 	if m.PrivateKey.ValueString() == "" && !m.PrivateKey.IsUnknown() && m.AuthType.ValueString() == "jwtSigningKey" {
 		h.Conflict("The private_key field is required when auth_type is set to 'jwtSigningKey'")
 	}
-	if m.ProjectBaseURL.ValueString() != "" && !m.CreateUsers.ValueBool() {
+	if m.ProjectBaseURL.ValueString() != "" && !m.CreateUsers.IsUnknown() && !m.CreateUsers.ValueBool() {
 		h.Conflict("The project_base_url field cannot be used unless create_users is set to true")
 	}
 	if !m.ProjectBaseURL.IsUnknown() && m.ProjectBaseURL.ValueString() == "" && m.CreateUsers.ValueBool() {
 		h.Conflict("The project_base_url field is required when create_users is set to true")
 	}
-	if m.ServiceRoleAPIKey.ValueString() != "" && !m.CreateUsers.ValueBool() {
+	if m.ServiceRoleAPIKey.ValueString() != "" && !m.CreateUsers.IsUnknown() && !m.CreateUsers.ValueBool() {
 		h.Conflict("The service_role_api_key field cannot be used unless create_users is set to true")
 	}
 	if !m.ServiceRoleAPIKey.IsUnknown() && m.ServiceRoleAPIKey.ValueString() == "" && m.CreateUsers.ValueBool() {

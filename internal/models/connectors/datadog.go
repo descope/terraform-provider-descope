@@ -83,7 +83,7 @@ func (m *DatadogConnectorModel) SetValues(h *helpers.Handler, data map[string]an
 }
 
 func (m *DatadogConnectorModel) Validate(h *helpers.Handler) {
-	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
 }

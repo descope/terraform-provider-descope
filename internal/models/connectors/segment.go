@@ -74,7 +74,7 @@ func (m *SegmentConnectorModel) SetValues(h *helpers.Handler, data map[string]an
 }
 
 func (m *SegmentConnectorModel) Validate(h *helpers.Handler) {
-	if m.PublicWriteKey.ValueString() != "" && !m.BrowserAnalytics.ValueBool() {
+	if m.PublicWriteKey.ValueString() != "" && !m.BrowserAnalytics.IsUnknown() && !m.BrowserAnalytics.ValueBool() {
 		h.Conflict("The public_write_key field cannot be used unless browser_analytics is set to true")
 	}
 	if !m.PublicWriteKey.IsUnknown() && m.PublicWriteKey.ValueString() == "" && m.BrowserAnalytics.ValueBool() {
