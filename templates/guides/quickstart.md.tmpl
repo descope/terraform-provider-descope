@@ -45,6 +45,8 @@ Set your management key as an environment variable to avoid hardcoding it:
 export DESCOPE_MANAGEMENT_KEY="K2..."
 ```
 
+The provider auto-detects the region from the management key. For multi-region setups, see [Regions](../index#regions).
+
 Run `terraform init` to download the provider:
 
 ```shell
