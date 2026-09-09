@@ -1,8 +1,6 @@
 package templates
 
 import (
-	"strings"
-
 	"github.com/descope/terraform-provider-descope/internal/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
@@ -33,7 +31,7 @@ func (m *EmailServiceIDModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *EmailServiceIDModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.ConnectorID, data, "emailServiceProvider")
-	SetServiceConnectorID(&m.ConnectorID)
+	helpers.SetServiceConnectorID(&m.ConnectorID)
 
 	if m.Templates.IsEmpty() {
 		listattr.Set(&m.Templates, data, "emailTemplates", h)
@@ -77,15 +75,5 @@ func (m *EmailServiceIDModel) Validate(h *helpers.Handler) {
 	// the connector_id default isn't applied yet during config validation, so an absent value counts as the Descope sentinel too
 	if connectorID := m.ConnectorID.ValueString(); hasActive && (connectorID == "" || connectorID == helpers.DescopeConnector) {
 		h.Error("Invalid email service connector", "The connector_id attribute must not be set to Descope if any template is marked as active")
-	}
-}
-
-// Provider references come back from the server as `type:id` values, and an empty string means the built-in Descope delivery service.
-func SetServiceConnectorID(s *stringattr.Type) {
-	value := s.ValueString()
-	if value == "" {
-		*s = stringattr.Value(helpers.DescopeConnector)
-	} else if _, id, found := strings.Cut(value, ":"); found {
-		*s = stringattr.Value(id)
 	}
 }

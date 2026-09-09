@@ -212,12 +212,13 @@ already exists.
 
 
 
-email_service
--------------
+email_connector_id
+------------------
 
-- Type: `object` of `settings.EmailServiceRef`
+- Type: `string`
 
-Settings related to sending password reset emails as part of the password feature.
+The ID of an email connector to use for sending emails, or `Descope` (the default) for the
+built-in Descope delivery service.
 
 
 

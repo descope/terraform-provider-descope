@@ -17,11 +17,13 @@ func TestMagicLinkSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"id":              testacc.AttributeIsSet,
-				"project_id":      testacc.AttributeIsSet,
-				"disabled":        false,
-				"expiration_time": "3 minutes",
-				"redirect_url":    "",
+				"id":                 testacc.AttributeIsSet,
+				"project_id":         testacc.AttributeIsSet,
+				"disabled":           false,
+				"expiration_time":    "3 minutes",
+				"redirect_url":       "",
+				"email_connector_id": "Descope",
+				"text_connector_id":  "Descope",
 			}),
 		},
 		// update the plain settings fields
@@ -42,17 +44,17 @@ func TestMagicLinkSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"expiration_time": "3 minutes",
-				"redirect_url":    "",
+				"expiration_time":    "3 minutes",
+				"redirect_url":       "",
+				"email_connector_id": "Descope",
+				"text_connector_id":  "Descope",
 			}),
 		},
-		// email_service and text_service are server-populated on read, outside the import contract
 		resource.TestStep{
-			ResourceName:            m.Path(),
-			ImportState:             true,
-			ImportStateVerify:       true,
-			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
-			ImportStateVerifyIgnore: []string{"email_service", "text_service"},
+			ResourceName:      m.Path(),
+			ImportState:       true,
+			ImportStateVerify: true,
+			ImportStateIdFunc: testacc.GenerateImportStateID(m.Path(), "project_id"),
 		},
 	)
 }
@@ -77,15 +79,13 @@ func TestMagicLinkSettingsTemplates(t *testing.T) {
 				html_body = "Follow the link in this email to sign in"
 			`) + m.Block(`
 				project_id = "`+projectID+`"
-				email_service = {
-					connector_id = `+c.Path()+`.id
-				}
+				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
 			`),
 			Check: m.Check(map[string]any{
-				"email_service.connector_id": testacc.AttributeIsSet,
-				"email_template_id":          testacc.AttributeIsSet,
-				"text_template_id":           "",
+				"email_connector_id": testacc.AttributeIsSet,
+				"email_template_id":  testacc.AttributeIsSet,
+				"text_template_id":   "",
 			}),
 		},
 	)

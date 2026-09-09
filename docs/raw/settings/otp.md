@@ -42,30 +42,33 @@ The amount of time that an OTP code will be valid for.
 
 
 
-email_service
--------------
+email_connector_id
+------------------
 
-- Type: `object` of `settings.EmailServiceRef`
+- Type: `string`
 
-Settings related to sending emails with OTP codes.
-
-
-
-text_service
-------------
-
-- Type: `object` of `settings.TextServiceRef`
-
-Settings related to sending SMS messages with OTP codes.
+The ID of an email connector to use for sending emails, or `Descope` (the default) for the
+built-in Descope delivery service.
 
 
 
-voice_service
--------------
+text_connector_id
+-----------------
 
-- Type: `object` of `settings.VoiceServiceRef`
+- Type: `string`
 
-Settings related to voice calls with OTP codes.
+The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the
+built-in Descope delivery service.
+
+
+
+voice_connector_id
+------------------
+
+- Type: `string`
+
+The ID of a voice call connector to use for making voice calls, or `Descope` (the default) for
+the built-in Descope delivery service.
 
 
 

@@ -54,7 +54,10 @@ func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.SendEmail, data, "inviteSendEmail")
 	boolattr.Get(m.SendText, data, "inviteSendSms")
 	objattr.Get(m.EmailService, data, helpers.RootKey, h)
-	useDescopeService(m.EmailService, data, "emailServiceProvider")
+	if !m.EmailService.IsSet() {
+		// an absent block selects the built-in Descope delivery service, which also resets any custom templates the service had
+		data["emailServiceProvider"] = helpers.DescopeConnector
+	}
 	nestInviteEmailService(data)
 	return data
 }

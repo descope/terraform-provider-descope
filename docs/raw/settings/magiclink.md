@@ -42,21 +42,23 @@ The URL to redirect users to after they log in using the magic link.
 
 
 
-email_service
--------------
+email_connector_id
+------------------
 
-- Type: `object` of `settings.EmailServiceRef`
+- Type: `string`
 
-Settings related to sending emails as part of the magic link authentication.
+The ID of an email connector to use for sending emails, or `Descope` (the default) for the
+built-in Descope delivery service.
 
 
 
-text_service
-------------
+text_connector_id
+-----------------
 
-- Type: `object` of `settings.TextServiceRef`
+- Type: `string`
 
-Settings related to sending SMS messages as part of the magic link authentication.
+The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the
+built-in Descope delivery service.
 
 
 

@@ -4,7 +4,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/durationattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/intattr"
-	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
@@ -44,35 +43,35 @@ var PasswordSettingsAttributes = map[string]schema.Attribute{
 	"temporary_lock_duration": durationattr.Default("5 minutes", durationattr.MinimumValue("1 minute"), durationattr.MaximumValue("24 hours"), durationattr.WholeMinutes()),
 	"enforce_strength":        stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
 	"mask_errors":             boolattr.Default(true),
-	"email_service":           objattr.Default[EmailServiceRefModel](nil, EmailServiceRefAttributes),
+	"email_connector_id":      stringattr.Default(helpers.DescopeConnector),
 	"email_template_id":       stringattr.Default(""),
 }
 
 type PasswordSettingsModel struct {
-	ID                    stringattr.Type                    `tfsdk:"id"`
-	ProjectID             stringattr.Type                    `tfsdk:"project_id"`
-	Disabled              boolattr.Type                      `tfsdk:"disabled"`
-	MinLength             intattr.Type                       `tfsdk:"min_length"`
-	Lowercase             boolattr.Type                      `tfsdk:"lowercase"`
-	Uppercase             boolattr.Type                      `tfsdk:"uppercase"`
-	Number                boolattr.Type                      `tfsdk:"number"`
-	NonAlphanumeric       boolattr.Type                      `tfsdk:"non_alphanumeric"`
-	AnyLetter             boolattr.Type                      `tfsdk:"any_letter"`
-	DisallowedCharacters  stringattr.Type                    `tfsdk:"disallowed_characters"`
-	DisallowEmailMatch    boolattr.Type                      `tfsdk:"disallow_email_match"`
-	Expiration            boolattr.Type                      `tfsdk:"expiration"`
-	ExpirationWeeks       intattr.Type                       `tfsdk:"expiration_weeks"`
-	Reuse                 boolattr.Type                      `tfsdk:"reuse"`
-	ReuseAmount           intattr.Type                       `tfsdk:"reuse_amount"`
-	Lock                  boolattr.Type                      `tfsdk:"lock"`
-	LockAttempts          intattr.Type                       `tfsdk:"lock_attempts"`
-	TemporaryLock         boolattr.Type                      `tfsdk:"temporary_lock"`
-	TemporaryLockAttempts intattr.Type                       `tfsdk:"temporary_lock_attempts"`
-	TemporaryLockDuration durationattr.Type                  `tfsdk:"temporary_lock_duration"`
-	EnforceStrength       stringattr.Type                    `tfsdk:"enforce_strength"`
-	MaskErrors            boolattr.Type                      `tfsdk:"mask_errors"`
-	EmailService          objattr.Type[EmailServiceRefModel] `tfsdk:"email_service"`
-	EmailTemplateID       stringattr.Type                    `tfsdk:"email_template_id"`
+	ID                    stringattr.Type   `tfsdk:"id"`
+	ProjectID             stringattr.Type   `tfsdk:"project_id"`
+	Disabled              boolattr.Type     `tfsdk:"disabled"`
+	MinLength             intattr.Type      `tfsdk:"min_length"`
+	Lowercase             boolattr.Type     `tfsdk:"lowercase"`
+	Uppercase             boolattr.Type     `tfsdk:"uppercase"`
+	Number                boolattr.Type     `tfsdk:"number"`
+	NonAlphanumeric       boolattr.Type     `tfsdk:"non_alphanumeric"`
+	AnyLetter             boolattr.Type     `tfsdk:"any_letter"`
+	DisallowedCharacters  stringattr.Type   `tfsdk:"disallowed_characters"`
+	DisallowEmailMatch    boolattr.Type     `tfsdk:"disallow_email_match"`
+	Expiration            boolattr.Type     `tfsdk:"expiration"`
+	ExpirationWeeks       intattr.Type      `tfsdk:"expiration_weeks"`
+	Reuse                 boolattr.Type     `tfsdk:"reuse"`
+	ReuseAmount           intattr.Type      `tfsdk:"reuse_amount"`
+	Lock                  boolattr.Type     `tfsdk:"lock"`
+	LockAttempts          intattr.Type      `tfsdk:"lock_attempts"`
+	TemporaryLock         boolattr.Type     `tfsdk:"temporary_lock"`
+	TemporaryLockAttempts intattr.Type      `tfsdk:"temporary_lock_attempts"`
+	TemporaryLockDuration durationattr.Type `tfsdk:"temporary_lock_duration"`
+	EnforceStrength       stringattr.Type   `tfsdk:"enforce_strength"`
+	MaskErrors            boolattr.Type     `tfsdk:"mask_errors"`
+	EmailConnectorID      stringattr.Type   `tfsdk:"email_connector_id"`
+	EmailTemplateID       stringattr.Type   `tfsdk:"email_template_id"`
 }
 
 func (m *PasswordSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -103,11 +102,8 @@ func (m *PasswordSettingsModel) Values(h *helpers.Handler) map[string]any {
 		data["passwordStrengthScore"] = strengthScoreFromString(m.EnforceStrength.ValueString())
 	}
 	boolattr.Get(m.MaskErrors, data, "maskError")
-	objattr.Get(m.EmailService, data, helpers.RootKey, h)
+	stringattr.Get(m.EmailConnectorID, data, "emailServiceProvider")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
-
-	useDescopeService(m.EmailService, data, "emailServiceProvider")
-
 	return data
 }
 
@@ -137,7 +133,8 @@ func (m *PasswordSettingsModel) SetValues(h *helpers.Handler, data map[string]an
 		m.EnforceStrength = stringattr.Value(strengthStringFromScore(int(score)))
 	}
 	boolattr.Set(&m.MaskErrors, data, "maskError")
-	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
+	stringattr.Set(&m.EmailConnectorID, data, "emailServiceProvider")
+	helpers.SetServiceConnectorID(&m.EmailConnectorID)
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
 }
 

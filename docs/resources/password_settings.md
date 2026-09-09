@@ -25,7 +25,7 @@ Manages the project-level password authentication settings. This is a singleton 
 - `disabled` (Boolean) Setting this to `true` will disallow using password authentication directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use passwords.
 - `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively. The check is skipped if the user's email is not known at validation time.
 - `disallowed_characters` (String) Reject passwords containing any of these characters. Each character in the string is treated as a forbidden literal (e.g., `"'"` to reject single and double quotes).
-- `email_service` (Attributes) Settings related to sending password reset emails as part of the password feature. (see [below for nested schema](#nestedatt--email_service))
+- `email_connector_id` (String) The ID of an email connector to use for sending emails, or `Descope` (the default) for the built-in Descope delivery service.
 - `email_template_id` (String) The ID of the email template for password reset emails, taken from a `descope_email_template` resource with its `method` set to `password`. The same template serves both the magic link and enchanted link reset flows. An empty value (the default) selects the built-in System template.
 - `enforce_strength` (String) Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.
 - `expiration` (Boolean) Whether users are required to change their password periodically.
@@ -47,10 +47,3 @@ Manages the project-level password authentication settings. This is a singleton 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-<a id="nestedatt--email_service"></a>
-### Nested Schema for `email_service`
-
-Optional:
-
-- `connector_id` (String) The ID of an email connector to use for sending emails, or `Descope` (the default) for the built-in Descope delivery service.

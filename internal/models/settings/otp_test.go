@@ -17,11 +17,14 @@ func TestOTPSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"id":              testacc.AttributeIsSet,
-				"project_id":      testacc.AttributeIsSet,
-				"disabled":        false,
-				"domain":          "",
-				"expiration_time": "3 minutes",
+				"id":                 testacc.AttributeIsSet,
+				"project_id":         testacc.AttributeIsSet,
+				"disabled":           false,
+				"domain":             "",
+				"email_connector_id": "Descope",
+				"text_connector_id":  "Descope",
+				"voice_connector_id": "Descope",
+				"expiration_time":    "3 minutes",
 			}),
 		},
 		// update the plain settings fields
@@ -42,17 +45,18 @@ func TestOTPSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"domain":          "",
-				"expiration_time": "3 minutes",
+				"domain":             "",
+				"email_connector_id": "Descope",
+				"text_connector_id":  "Descope",
+				"voice_connector_id": "Descope",
+				"expiration_time":    "3 minutes",
 			}),
 		},
-		// the messaging service blocks are server-populated on read, outside the import contract
 		resource.TestStep{
-			ResourceName:            m.Path(),
-			ImportState:             true,
-			ImportStateVerify:       true,
-			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
-			ImportStateVerifyIgnore: []string{"email_service", "text_service", "voice_service"},
+			ResourceName:      m.Path(),
+			ImportState:       true,
+			ImportStateVerify: true,
+			ImportStateIdFunc: testacc.GenerateImportStateID(m.Path(), "project_id"),
 		},
 	)
 }
@@ -83,17 +87,15 @@ func TestOTPSettingsTemplates(t *testing.T) {
 				body = "Your code is {{.code}}"
 			`) + m.Block(`
 				project_id = "`+projectID+`"
-				email_service = {
-					connector_id = `+c.Path()+`.id
-				}
+				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
 				voice_template_id = `+v.Path()+`.id
 			`),
 			Check: m.Check(map[string]any{
-				"email_service.connector_id": testacc.AttributeIsSet,
-				"email_template_id":          testacc.AttributeIsSet,
-				"voice_template_id":          testacc.AttributeIsSet,
-				"text_template_id":           "",
+				"email_connector_id": testacc.AttributeIsSet,
+				"email_template_id":  testacc.AttributeIsSet,
+				"voice_template_id":  testacc.AttributeIsSet,
+				"text_template_id":   "",
 			}),
 		},
 	)

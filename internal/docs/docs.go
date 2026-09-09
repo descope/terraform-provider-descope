@@ -1716,10 +1716,15 @@ var docsEnchantedLinkSettings = map[string]string{
 		"links.",
 	"expiration_time": "How long the enchanted link remains valid before it expires.",
 	"redirect_url":    "The URL to redirect users to after they log in using the enchanted link.",
-	"email_service":   "Settings related to sending emails as part of the enchanted link authentication.",
+	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
+		"built-in Descope delivery service.",
+	"text_connector_id": "The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the " +
+		"built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System " +
 		"template.",
+	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
+		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
 }
 
 var docsInviteSettings = map[string]string{
@@ -1744,8 +1749,10 @@ var docsMagicLinkSettings = map[string]string{
 		"Note that this does not affect authentication flows that are configured to use magic links.",
 	"expiration_time": "How long the magic link remains valid before it expires.",
 	"redirect_url":    "The URL to redirect users to after they log in using the magic link.",
-	"email_service":   "Settings related to sending emails as part of the magic link authentication.",
-	"text_service":    "Settings related to sending SMS messages as part of the magic link authentication.",
+	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
+		"built-in Descope delivery service.",
+	"text_connector_id": "The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the " +
+		"built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `magiclink`. An empty value (the default) selects the built-in System template.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
@@ -1766,9 +1773,12 @@ var docsOTPSettings = map[string]string{
 		"that this does not affect authentication flows that are configured to use OTP.",
 	"domain":          "The domain to embed in OTP messages.",
 	"expiration_time": "The amount of time that an OTP code will be valid for.",
-	"email_service":   "Settings related to sending emails with OTP codes.",
-	"text_service":    "Settings related to sending SMS messages with OTP codes.",
-	"voice_service":   "Settings related to voice calls with OTP codes.",
+	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
+		"built-in Descope delivery service.",
+	"text_connector_id": "The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the " +
+		"built-in Descope delivery service.",
+	"voice_connector_id": "The ID of a voice call connector to use for making voice calls, or `Descope` (the default) for " +
+		"the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
@@ -1821,7 +1831,8 @@ var docsPasswordSettings = map[string]string{
 	"enforce_strength":        "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.",
 	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., whether a user " +
 		"already exists.",
-	"email_service": "Settings related to sending password reset emails as part of the password feature.",
+	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
+		"built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template for password reset emails, taken from a `descope_email_template` " +
 		"resource with its `method` set to `password`. The same template serves both the magic link and " +
 		"enchanted link reset flows. An empty value (the default) selects the built-in System template.",
@@ -1847,21 +1858,6 @@ var docsProjectSettings = map[string]string{
 		"be set together with `test_users_verifier_regexp`.",
 	"test_users_verifier_regexp": "A regular expression pattern that determines which test user verifiers (email addresses or " +
 		"phone numbers) the static OTP code applies to.",
-}
-
-var docsEmailServiceRef = map[string]string{
-	"connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
-}
-
-var docsTextServiceRef = map[string]string{
-	"connector_id": "The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
-}
-
-var docsVoiceServiceRef = map[string]string{
-	"connector_id": "The ID of a voice call connector to use for making voice calls, or `Descope` (the default) for " +
-		"the built-in Descope delivery service.",
 }
 
 var docsSettingsSessionSettings = map[string]string{
@@ -1928,7 +1924,8 @@ var docsSSOSettings = map[string]string{
 	"mark_email_as_unverified":                "Whether to mark the user's email as unverified when logging in via SSO.",
 	"allow_merge_users_with_multiple_tenants": "Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.",
 	"sso_suite_settings":                      "Configuration block for the SSO Suite.",
-	"email_service":                           "Settings related to sending SSO invite emails as part of the SSO feature.",
+	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
+		"built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template for SSO configuration invitation emails, taken from a " +
 		"`descope_email_template` resource with its `method` set to `sso`. An empty value (the default) " +
 		"selects the built-in System template.",

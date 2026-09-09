@@ -43,12 +43,23 @@ The URL to redirect users to after they log in using the enchanted link.
 
 
 
-email_service
--------------
+email_connector_id
+------------------
 
-- Type: `object` of `settings.EmailServiceRef`
+- Type: `string`
 
-Settings related to sending emails as part of the enchanted link authentication.
+The ID of an email connector to use for sending emails, or `Descope` (the default) for the
+built-in Descope delivery service.
+
+
+
+text_connector_id
+-----------------
+
+- Type: `string`
+
+The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the
+built-in Descope delivery service.
 
 
 
@@ -60,3 +71,13 @@ email_template_id
 The ID of the email template to send to users, taken from a `descope_email_template` resource with
 its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System
 template.
+
+
+
+text_template_id
+----------------
+
+- Type: `string`
+
+The ID of the text template to send to users, taken from a `descope_text_template` resource with
+its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.
