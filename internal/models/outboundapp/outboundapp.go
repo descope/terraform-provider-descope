@@ -6,6 +6,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -31,9 +32,9 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 
 	"discovery_url":            stringattr.Default("", stringattr.StandardLenValidator),
 	"authorization_url":        stringattr.Default("", stringattr.StandardLenValidator),
-	"authorization_url_params": strmapattr.Default(stringvalidator.LengthAtMost(4096)),
+	"authorization_url_params": strmapattr.Default(stringvalidator.LengthAtMost(4096), mapvalidator.NoNullValues()),
 	"token_url":                stringattr.Default("", stringattr.StandardLenValidator),
-	"token_url_params":         strmapattr.Default(stringvalidator.LengthAtMost(4096)),
+	"token_url_params":         strmapattr.Default(stringvalidator.LengthAtMost(4096), mapvalidator.NoNullValues()),
 	"revocation_url":           stringattr.Default("", stringattr.StandardLenValidator),
 
 	"default_scopes":       strsetattr.Default(stringattr.StandardLenValidator),

@@ -219,5 +219,21 @@ func TestOutboundAppInvalidValues(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`(?i)empty`),
 		},
+		// a url parameter without a value is rejected when the plan is generated, since a map has no
+		// per-element default that could turn it into an empty string
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				authorization_url_params = { audience = null }
+			`),
+			ExpectError: regexp.MustCompile(`(?i)null`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				token_url_params = { resource = null }
+			`),
+			ExpectError: regexp.MustCompile(`(?i)null`),
+		},
 	)
 }
