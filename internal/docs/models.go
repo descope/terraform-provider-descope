@@ -128,6 +128,7 @@ func InjectModels() {
 	inject(connectors.TwilioCoreConnectorAttributes, docsTwilioCoreConnector)
 	inject(connectors.TwilioVerifyConnectorAttributes, docsTwilioVerifyConnector)
 	inject(connectors.UnibeamConnectorAttributes, docsUnibeamConnector)
+	inject(connectors.VonageConnectorAttributes, docsVonageConnector)
 	inject(connectors.ZeroBounceConnectorAttributes, docsZeroBounceConnector)
 	inject(descoper.DescoperAttributes, docsDescoper)
 	inject(descoper.DescoperProjectRoleAttributes, docsDescoperProjectRole)
