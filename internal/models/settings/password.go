@@ -43,7 +43,7 @@ var PasswordSettingsAttributes = map[string]schema.Attribute{
 	"temporary_lock_duration": durationattr.Default("5 minutes", durationattr.MinimumValue("1 minute"), durationattr.MaximumValue("24 hours"), durationattr.WholeMinutes()),
 	"enforce_strength":        stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
 	"mask_errors":             boolattr.Default(true),
-	"email_connector_id":      stringattr.Default(helpers.DescopeConnector),
+	"email_connector_id":      stringattr.Default(""),
 	"email_template_id":       stringattr.Default(""),
 }
 
@@ -102,7 +102,7 @@ func (m *PasswordSettingsModel) Values(h *helpers.Handler) map[string]any {
 		data["passwordStrengthScore"] = strengthScoreFromString(m.EnforceStrength.ValueString())
 	}
 	boolattr.Get(m.MaskErrors, data, "maskError")
-	stringattr.Get(m.EmailConnectorID, data, "emailServiceProvider")
+	stringattr.Get(m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
 	return data
 }
@@ -133,8 +133,7 @@ func (m *PasswordSettingsModel) SetValues(h *helpers.Handler, data map[string]an
 		m.EnforceStrength = stringattr.Value(strengthStringFromScore(int(score)))
 	}
 	boolattr.Set(&m.MaskErrors, data, "maskError")
-	stringattr.Set(&m.EmailConnectorID, data, "emailServiceProvider")
-	helpers.SetServiceConnectorID(&m.EmailConnectorID)
+	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
 }
 

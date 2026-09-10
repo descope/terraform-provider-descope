@@ -2,25 +2,11 @@ package helpers
 
 import (
 	"context"
-	"strings"
 
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-const (
-	DescopeConnector = "Descope"
-	DescopeTemplate  = "System"
-)
-
-// Provider references come back from the server as `type:id` values, and an empty string means the built-in Descope delivery service.
-func SetServiceConnectorID(s *types.String) {
-	value := s.ValueString()
-	if value == "" {
-		*s = types.StringValue(DescopeConnector)
-	} else if _, id, found := strings.Cut(value, ":"); found {
-		*s = types.StringValue(id)
-	}
-}
+const DescopeTemplate = "System"
 
 // Pointer receiver interface for model objects.
 type Model[T any] interface {

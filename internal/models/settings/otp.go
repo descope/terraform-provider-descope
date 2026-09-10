@@ -23,9 +23,9 @@ var OTPSettingsAttributes = map[string]schema.Attribute{
 	"disabled":           boolattr.Default(false),
 	"domain":             stringattr.Default("", stringattr.StandardLenValidator),
 	"expiration_time":    durationattr.Default("3 minutes", durationattr.MinimumValue("1 minute")),
-	"email_connector_id": stringattr.Default(helpers.DescopeConnector),
-	"text_connector_id":  stringattr.Default(helpers.DescopeConnector),
-	"voice_connector_id": stringattr.Default(helpers.DescopeConnector),
+	"email_connector_id": stringattr.Default(""),
+	"text_connector_id":  stringattr.Default(""),
+	"voice_connector_id": stringattr.Default(""),
 	"email_template_id":  stringattr.Default(""),
 	"text_template_id":   stringattr.Default(""),
 	"voice_template_id":  stringattr.Default(""),
@@ -50,9 +50,9 @@ func (m *OTPSettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.GetNot(m.Disabled, data, "enabled")
 	stringattr.Get(m.Domain, data, "domain")
 	durationattr.Get(m.ExpirationTime, data, "expirationTime")
-	stringattr.Get(m.EmailConnectorID, data, "emailServiceProvider")
-	stringattr.Get(m.TextConnectorID, data, "textServiceProvider")
-	stringattr.Get(m.VoiceConnectorID, data, "voiceServiceProvider")
+	stringattr.Get(m.EmailConnectorID, data, "emailConnectorId")
+	stringattr.Get(m.TextConnectorID, data, "textConnectorId")
+	stringattr.Get(m.VoiceConnectorID, data, "voiceConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
 	stringattr.Get(m.TextTemplateID, data, "textTemplateId")
 	stringattr.Get(m.VoiceTemplateID, data, "voiceTemplateId")
@@ -63,12 +63,9 @@ func (m *OTPSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	stringattr.Set(&m.Domain, data, "domain")
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
-	stringattr.Set(&m.EmailConnectorID, data, "emailServiceProvider")
-	helpers.SetServiceConnectorID(&m.EmailConnectorID)
-	stringattr.Set(&m.TextConnectorID, data, "textServiceProvider")
-	helpers.SetServiceConnectorID(&m.TextConnectorID)
-	stringattr.Set(&m.VoiceConnectorID, data, "voiceServiceProvider")
-	helpers.SetServiceConnectorID(&m.VoiceConnectorID)
+	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
+	stringattr.Set(&m.TextConnectorID, data, "textConnectorId")
+	stringattr.Set(&m.VoiceConnectorID, data, "voiceConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
 	stringattr.Set(&m.TextTemplateID, data, "textTemplateId")
 	stringattr.Set(&m.VoiceTemplateID, data, "voiceTemplateId")

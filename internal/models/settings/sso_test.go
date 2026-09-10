@@ -135,7 +135,7 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.show_xaa":             false,
 				"sso_suite_settings.support_email":        "",
 				"sso_suite_settings.show_help_contact":    false,
-				"email_connector_id":                      "Descope",
+				"email_connector_id":                      "",
 			}),
 		},
 		resource.TestStep{

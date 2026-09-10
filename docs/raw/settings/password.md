@@ -217,8 +217,7 @@ email_connector_id
 
 - Type: `string`
 
-The ID of an email connector to use for sending emails, or `Descope` (the default) for the
-built-in Descope delivery service.
+The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.
 
 
 

@@ -1396,7 +1396,7 @@ var docsDescoperTagRole = map[string]string{
 		"Must be one of: `admin`, `developer`, `support`, `auditor`.",
 }
 
-var docsEmailtemplateEmailTemplate = map[string]string{
+var docsEmailTemplate = map[string]string{
 	"project_id": "The ID of the project that the email template belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
 	"method":  "The authentication method the email template is used with, e.g. `magiclink` or `otp`. Changing this value will require the resource to be deleted and recreated.",
@@ -1714,12 +1714,10 @@ var docsEnchantedLinkSettings = map[string]string{
 	"disabled": "Setting this to `true` will disallow using enchanted link authentication directly via API and SDK " +
 		"calls. Note that this does not affect authentication flows that are configured to use enchanted " +
 		"links.",
-	"expiration_time": "How long the enchanted link remains valid before it expires.",
-	"redirect_url":    "The URL to redirect users to after they log in using the enchanted link.",
-	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
-	"text_connector_id": "The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
+	"expiration_time":    "How long the enchanted link remains valid before it expires.",
+	"redirect_url":       "The URL to redirect users to after they log in using the enchanted link.",
+	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System " +
 		"template.",
@@ -1737,9 +1735,11 @@ var docsInviteSettings = map[string]string{
 	"invite_expiration": "The expiry time for the invitation, meant to be used together with " +
 		"`expire_invited_users` and/or `add_magiclink_token`. Use values such " +
 		"as \"2 weeks\", \"4 days\", etc. The minimum value is \"1 hour\".",
-	"send_email":    "Whether to send invitation emails to users.",
-	"send_text":     "Whether to send invitation SMS messages to users.",
-	"email_service": "Settings related to sending invitation emails.",
+	"send_email":         "Whether to send invitation emails to users.",
+	"send_text":          "Whether to send invitation SMS messages to users.",
+	"email_connector_id": "The ID of an email connector to use for sending invitation emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"email_template_id": "The ID of the email template to send to invited users, taken from a `descope_email_template` resource " +
+		"with its `method` set to `invite`. An empty value (the default) selects the built-in System template.",
 }
 
 var docsMagicLinkSettings = map[string]string{
@@ -1747,12 +1747,10 @@ var docsMagicLinkSettings = map[string]string{
 		"to be deleted and recreated.",
 	"disabled": "Setting this to `true` will disallow using magic link authentication directly via API and SDK calls. " +
 		"Note that this does not affect authentication flows that are configured to use magic links.",
-	"expiration_time": "How long the magic link remains valid before it expires.",
-	"redirect_url":    "The URL to redirect users to after they log in using the magic link.",
-	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
-	"text_connector_id": "The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
+	"expiration_time":    "How long the magic link remains valid before it expires.",
+	"redirect_url":       "The URL to redirect users to after they log in using the magic link.",
+	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `magiclink`. An empty value (the default) selects the built-in System template.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
@@ -1771,14 +1769,11 @@ var docsOTPSettings = map[string]string{
 		"to be deleted and recreated.",
 	"disabled": "Setting this to `true` will disallow using OTP authentication directly via API and SDK calls. Note " +
 		"that this does not affect authentication flows that are configured to use OTP.",
-	"domain":          "The domain to embed in OTP messages.",
-	"expiration_time": "The amount of time that an OTP code will be valid for.",
-	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
-	"text_connector_id": "The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
-	"voice_connector_id": "The ID of a voice call connector to use for making voice calls, or `Descope` (the default) for " +
-		"the built-in Descope delivery service.",
+	"domain":             "The domain to embed in OTP messages.",
+	"expiration_time":    "The amount of time that an OTP code will be valid for.",
+	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
+	"voice_connector_id": "The ID of a voice call connector to use for making voice calls. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
@@ -1831,8 +1826,7 @@ var docsPasswordSettings = map[string]string{
 	"enforce_strength":        "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.",
 	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., whether a user " +
 		"already exists.",
-	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
+	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template for password reset emails, taken from a `descope_email_template` " +
 		"resource with its `method` set to `password`. The same template serves both the magic link and " +
 		"enchanted link reset flows. An empty value (the default) selects the built-in System template.",
@@ -1924,8 +1918,7 @@ var docsSSOSettings = map[string]string{
 	"mark_email_as_unverified":                "Whether to mark the user's email as unverified when logging in via SSO.",
 	"allow_merge_users_with_multiple_tenants": "Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.",
 	"sso_suite_settings":                      "Configuration block for the SSO Suite.",
-	"email_connector_id": "The ID of an email connector to use for sending emails, or `Descope` (the default) for the " +
-		"built-in Descope delivery service.",
+	"email_connector_id":                      "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template for SSO configuration invitation emails, taken from a " +
 		"`descope_email_template` resource with its `method` set to `sso`. An empty value (the default) " +
 		"selects the built-in System template.",
@@ -1971,21 +1964,6 @@ var docsStyles = map[string]string{
 	"data": "The JSON data of the styles in their exported theme representation, defining the visual styling of " +
 		"the project's flow pages. This will usually be exported as a `.json` file from the Descope console, " +
 		"and set in the `.tf` file using the `data = file(\"...\")` syntax.",
-}
-
-var docsTemplatesEmailTemplate = map[string]string{
-	"active":              "Whether this email template is currently active and in use.",
-	"name":                "Unique name for this email template.",
-	"subject":             "Subject line of the email message.",
-	"html_body":           "HTML content of the email message body, required if `use_plain_text_body` isn't set.",
-	"plain_text_body":     "Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.",
-	"use_plain_text_body": "Whether to use the plain text body instead of HTML for the email.",
-}
-
-var docsEmailServiceID = map[string]string{
-	"connector_id": "The ID of the email connector to use for sending emails, or `\"Descope\"` to use the built-in Descope " +
-		"email delivery service.",
-	"templates": "A list of email templates for different authentication flows.",
 }
 
 var docsTextTemplate = map[string]string{

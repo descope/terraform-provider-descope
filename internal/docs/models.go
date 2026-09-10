@@ -27,7 +27,6 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/role"
 	"github.com/descope/terraform-provider-descope/internal/models/settings"
 	"github.com/descope/terraform-provider-descope/internal/models/styles"
-	"github.com/descope/terraform-provider-descope/internal/models/templates"
 	"github.com/descope/terraform-provider-descope/internal/models/texttemplate"
 	"github.com/descope/terraform-provider-descope/internal/models/voicetemplate"
 	"github.com/descope/terraform-provider-descope/internal/models/widget"
@@ -134,7 +133,7 @@ func InjectModels() {
 	inject(descoper.DescoperProjectRoleAttributes, docsDescoperProjectRole)
 	inject(descoper.RBacAttributes, docsRBac)
 	inject(descoper.DescoperTagRoleAttributes, docsDescoperTagRole)
-	inject(emailtemplate.EmailTemplateAttributes, docsEmailtemplateEmailTemplate)
+	inject(emailtemplate.EmailTemplateAttributes, docsEmailTemplate)
 	inject(engine.EngineAttributes, docsEngine)
 	inject(fgaschema.FGASchemaAttributes, docsFGASchema)
 	inject(flow.FlowAttributes, docsFlow)
@@ -172,8 +171,6 @@ func InjectModels() {
 	inject(settings.SSOSuiteAttributes, docsSSOSuite)
 	inject(settings.TOTPSettingsAttributes, docsTOTPSettings)
 	inject(styles.StylesAttributes, docsStyles)
-	inject(templates.EmailTemplateAttributes, docsTemplatesEmailTemplate)
-	inject(templates.EmailServiceIDAttributes, docsEmailServiceID)
 	inject(texttemplate.TextTemplateAttributes, docsTextTemplate)
 	inject(voicetemplate.VoiceTemplateAttributes, docsVoiceTemplate)
 	inject(widget.WidgetAttributes, docsWidget)

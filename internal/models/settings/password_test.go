@@ -88,7 +88,7 @@ func TestPasswordSettings(t *testing.T) {
 				"lock":               false,
 				"enforce_strength":   "none",
 				"mask_errors":        true,
-				"email_connector_id": "Descope",
+				"email_connector_id": "",
 			}),
 		},
 		resource.TestStep{

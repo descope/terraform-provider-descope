@@ -22,8 +22,8 @@ func TestMagicLinkSettings(t *testing.T) {
 				"disabled":           false,
 				"expiration_time":    "3 minutes",
 				"redirect_url":       "",
-				"email_connector_id": "Descope",
-				"text_connector_id":  "Descope",
+				"email_connector_id": "",
+				"text_connector_id":  "",
 			}),
 		},
 		// update the plain settings fields
@@ -46,8 +46,8 @@ func TestMagicLinkSettings(t *testing.T) {
 			Check: m.Check(map[string]any{
 				"expiration_time":    "3 minutes",
 				"redirect_url":       "",
-				"email_connector_id": "Descope",
-				"text_connector_id":  "Descope",
+				"email_connector_id": "",
+				"text_connector_id":  "",
 			}),
 		},
 		resource.TestStep{

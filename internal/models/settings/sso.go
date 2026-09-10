@@ -36,7 +36,7 @@ var SSOSettingsAttributes = map[string]schema.Attribute{
 	"mark_email_as_unverified":                boolattr.Default(false),
 	"allow_merge_users_with_multiple_tenants": boolattr.Default(false),
 	"sso_suite_settings":                      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
-	"email_connector_id":                      stringattr.Default(helpers.DescopeConnector),
+	"email_connector_id":                      stringattr.Default(""),
 	"email_template_id":                       stringattr.Default(""),
 }
 
@@ -77,7 +77,7 @@ func (m *SSOSettingsModel) Values(h *helpers.Handler) map[string]any {
 	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
-	stringattr.Get(m.EmailConnectorID, data, "emailServiceProvider")
+	stringattr.Get(m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
 	return data
 }
@@ -97,8 +97,7 @@ func (m *SSOSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
-	stringattr.Set(&m.EmailConnectorID, data, "emailServiceProvider")
-	helpers.SetServiceConnectorID(&m.EmailConnectorID)
+	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
 }
 
