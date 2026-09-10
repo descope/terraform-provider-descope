@@ -92,7 +92,7 @@ func checkRemovalProtection(ctx context.Context, state protectionSource, model a
 }
 
 // Attributes that scope a resource to its parent and must never change once set.
-var immutableAttributes = []string{"project_id", "app_id", "tenant_id"}
+var immutableAttributes = []string{"project_id", "app_id"}
 
 // Rejects plans that change an immutable scoping attribute.
 func checkImmutableAttributes(ctx context.Context, sc schema.Schema, name string, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {

@@ -21,8 +21,6 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 	"id":         stringattr.Identifier(),
 	"project_id": stringattr.Required(stringplanmodifier.RequiresReplace()),
 
-	"tenant_id": stringattr.Default(""),
-
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default("", stringattr.StandardLenValidator),
 	"logo":        stringattr.Default(""),
@@ -52,7 +50,6 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 type OutboundAppModel struct {
 	ID        stringattr.Type `tfsdk:"id"`
 	ProjectID stringattr.Type `tfsdk:"project_id"`
-	TenantID  stringattr.Type `tfsdk:"tenant_id"`
 
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
@@ -80,7 +77,6 @@ type OutboundAppModel struct {
 
 func (m *OutboundAppModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
-	stringattr.Get(m.TenantID, data, "tenantId")
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
@@ -103,7 +99,6 @@ func (m *OutboundAppModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *OutboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
-	stringattr.Set(&m.TenantID, data, "tenantId")
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")

@@ -11,7 +11,6 @@ import (
 func TestOutboundApp(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	a := testacc.OutboundApp(t)
-	p := testacc.Permission(t)
 	testacc.RunWithDestroyCheck(t, "descope_outbound_app",
 		// create with only the required fields, so the defaults are pinned
 		resource.TestStep{
@@ -23,7 +22,6 @@ func TestOutboundApp(t *testing.T) {
 				"project_id":                 testacc.AttributeIsSet,
 				"name":                       a.Name,
 				"description":                "",
-				"tenant_id":                  "",
 				"logo":                       "",
 				"app_type":                   "oauth",
 				"client_id":                  "",
@@ -40,22 +38,6 @@ func TestOutboundApp(t *testing.T) {
 				"access_type":                "",
 				"prompt.#":                   "0",
 			}),
-		},
-		// changing the tenant must fail when the plan is generated, not by recreating the application
-		resource.TestStep{
-			Config: a.Config(`
-				project_id = "` + projectID + `"
-				tenant_id = "T2abcdefghijklmnopqrstuvwxyz"
-			`),
-			ExpectError: regexp.MustCompile(`Immutable Attribute Changed`),
-		},
-		// a tenant that is only known after apply must fail too, or the update would post it unchecked
-		resource.TestStep{
-			Config: p.Config(`project_id = "`+projectID+`"`) + a.Config(`
-				project_id = "`+projectID+`"
-				tenant_id = `+p.Path()+`.id
-			`),
-			ExpectError: regexp.MustCompile(`Immutable Attribute Changed`),
 		},
 		// populate every field, including both url param lists and the secret
 		resource.TestStep{
@@ -236,14 +218,6 @@ func TestOutboundAppInvalidValues(t *testing.T) {
 				client_secret = ""
 			`),
 			ExpectError: regexp.MustCompile(`(?i)empty`),
-		},
-		// an unknown tenant must fail rather than silently creating a project level application
-		resource.TestStep{
-			Config: a.Config(`
-				project_id = "` + projectID + `"
-				tenant_id = "T2doesnotexist"
-			`),
-			ExpectError: regexp.MustCompile(`(?i)tenant`),
 		},
 	)
 }

@@ -37,7 +37,6 @@ Manages a custom outbound application in a Descope project. Outbound application
 - `pkce` (Boolean) Whether to use PKCE when exchanging the authorization code, which is required by some providers and recommended by all of them.
 - `prompt` (Set of String) How the provider should behave when the user is already signed in. Common values are `none`, `login`, `consent` and `select_account`.
 - `revocation_url` (String) The provider's token revocation endpoint.
-- `tenant_id` (String) The ID of the tenant that owns this outbound application, for applications scoped to a single tenant rather than the whole project. An empty value (the default) creates a project level application. This value cannot be changed after creation, and changing it is rejected when the plan is generated. Moving an application to a different tenant means creating a new one, because deleting an outbound application also deletes every access token stored against it.
 - `token_url` (String) The provider's token endpoint, used to exchange an authorization code and to refresh tokens.
 - `token_url_params` (Map of String) Additional query parameters to append to the token request, for providers that require them.
 
