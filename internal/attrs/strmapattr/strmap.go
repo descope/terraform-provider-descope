@@ -96,8 +96,7 @@ func Nil(s *Type, h *helpers.Handler) {
 	}
 }
 
-// For APIs that carry a string map as an array of key and value objects. Entries are sorted by key so that the same map
-// always serializes to the same array.
+// For APIs that carry a string map as an array of key and value objects, sorted by key so the same map always serializes identically.
 func GetKeyValueList(s Type, data map[string]any, key string, h *helpers.Handler) {
 	pairs := map[string]string{}
 	for k, v := range Iterator(s, h) {
