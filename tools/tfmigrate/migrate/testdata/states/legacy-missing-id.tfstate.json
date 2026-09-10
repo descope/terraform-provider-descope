@@ -1,0 +1,42 @@
+{
+  "version": 4,
+  "terraform_version": "1.9.5",
+  "serial": 1,
+  "lineage": "22222222-2222-2222-2222-222222222222",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "descope_project",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "sensitive_attributes": [],
+          "attributes": {
+            "id": "P2missing000000000",
+            "name": "missing-id",
+            "environment": "",
+            "tags": [],
+            "authorization": {
+              "roles": [
+                {
+                  "id": "",
+                  "key": "",
+                  "name": "Admin",
+                  "description": "",
+                  "permissions": [],
+                  "default": false,
+                  "private": false
+                }
+              ],
+              "permissions": [],
+              "fga": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

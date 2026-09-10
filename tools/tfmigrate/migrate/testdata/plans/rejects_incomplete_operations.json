@@ -1,0 +1,45 @@
+{
+  "format_version": "1.2",
+  "terraform_version": "1.13.0",
+  "complete": false,
+  "deferred_changes": [
+    {}
+  ],
+  "action_invocations": [
+    {}
+  ],
+  "resource_changes": [
+    {
+      "address": "descope_access_key.migrated",
+      "mode": "managed",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "importing": {
+          "id": "project/access-key"
+        },
+        "before": {},
+        "after": {},
+        "after_unknown": {}
+      },
+      "provider_name": "registry.terraform.io/descope/descope"
+    },
+    {
+      "address": "descope_project_settings.migrated",
+      "mode": "managed",
+      "change": {
+        "actions": [
+          "no-op"
+        ],
+        "importing": {
+          "id": "project"
+        },
+        "before": {},
+        "after": {},
+        "after_unknown": {}
+      },
+      "provider_name": "registry.terraform.io/descope/descope"
+    }
+  ]
+}

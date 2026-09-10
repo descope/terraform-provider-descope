@@ -1,0 +1,654 @@
+{
+  "tool": "tfmigrate",
+  "format_version": "1",
+  "ready": true,
+  "project_id": "P2abcdefghijklmnop",
+  "legacy_address": "descope_project.main",
+  "legacy_local_address": "descope_project.main",
+  "input_format": "terraform.tfstate",
+  "module_address": "",
+  "source_provider": {
+    "source": "descope/descope",
+    "version": "1.8.3"
+  },
+  "project_core": {
+    "name": "acme-prod",
+    "environment": "production",
+    "tags": [
+      "team-auth"
+    ]
+  },
+  "target_provider": {
+    "source": "descope/descope",
+    "version": "2.0.0"
+  },
+  "required_terraform": ">= 1.8.0",
+  "remote_backfill": false,
+  "ownership_policy": "Only objects represented in the selected legacy descope_project state are adopted. Already standalone state is left alone, built-in Descope objects are recorded as unowned, and remote-only console-managed objects are never generated.",
+  "entries": [
+    {
+      "legacy_path": "attributes.access_key[0]",
+      "address": "descope_access_key_attribute.scope",
+      "type": "descope_access_key_attribute",
+      "label": "scope",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "scope",
+      "import_id": "P2abcdefghijklmnop/scope",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "admin_portal",
+      "address": "descope_admin_portal.admin_portal",
+      "type": "descope_admin_portal",
+      "label": "admin_portal",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "applications.oidc_applications[0].permissions[0]",
+      "address": "descope_app_permission.read",
+      "type": "descope_app_permission",
+      "label": "read",
+      "scope": {
+        "kind": "app",
+        "project_id": "P2abcdefghijklmnop",
+        "app_id": "APP-oidc"
+      },
+      "backend_id": "AP-read",
+      "import_id": "P2abcdefghijklmnop/APP-oidc/AP-read",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "applications.oidc_applications[0].roles[0]",
+      "address": "descope_app_role.viewer",
+      "type": "descope_app_role",
+      "label": "viewer",
+      "scope": {
+        "kind": "app",
+        "project_id": "P2abcdefghijklmnop",
+        "app_id": "APP-oidc"
+      },
+      "backend_id": "AR-viewer",
+      "import_id": "P2abcdefghijklmnop/APP-oidc/AR-viewer",
+      "id_source": "legacy state",
+      "references": {
+        "permission_ids.read": "AP-read"
+      }
+    },
+    {
+      "legacy_path": "authentication.magic_link.email_service.templates[0]",
+      "address": "descope_email_template.magiclink_email",
+      "type": "descope_email_template",
+      "label": "magiclink_email",
+      "scope": {
+        "kind": "method",
+        "project_id": "P2abcdefghijklmnop",
+        "method": "magiclink"
+      },
+      "backend_id": "T-ml-email",
+      "import_id": "P2abcdefghijklmnop/magiclink/T-ml-email",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authentication.otp.email_service.templates[0]",
+      "address": "descope_email_template.otp_email",
+      "type": "descope_email_template",
+      "label": "otp_email",
+      "scope": {
+        "kind": "method",
+        "project_id": "P2abcdefghijklmnop",
+        "method": "otp"
+      },
+      "backend_id": "T-otp-email",
+      "import_id": "P2abcdefghijklmnop/otp/T-otp-email",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authentication.embedded_link",
+      "address": "descope_embeddedlink_settings.embeddedlink_settings",
+      "type": "descope_embeddedlink_settings",
+      "label": "embeddedlink_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authorization.fga",
+      "address": "descope_fga_schema.fga_schema",
+      "type": "descope_fga_schema",
+      "label": "fga_schema",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "flows[\"sign-up-or-in\"]",
+      "address": "descope_flow.flows[\"sign-up-or-in\"]",
+      "type": "descope_flow",
+      "label": "flows",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "sign-up-or-in",
+      "import_id": "P2abcdefghijklmnop/sign-up-or-in",
+      "id_source": "legacy state",
+      "payloads": [
+        "payloads/descope_flow.flows.sign_up_or_in_7c0256edde1e.data.json"
+      ]
+    },
+    {
+      "legacy_path": "flows[\"step-up\"]",
+      "address": "descope_flow.flows[\"step-up\"]",
+      "type": "descope_flow",
+      "label": "flows",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "step-up",
+      "import_id": "P2abcdefghijklmnop/step-up",
+      "id_source": "legacy state",
+      "payloads": [
+        "payloads/descope_flow.flows.step_up_72e408983887.data.json"
+      ]
+    },
+    {
+      "legacy_path": "invite_settings",
+      "address": "descope_invite_settings.invite_settings",
+      "type": "descope_invite_settings",
+      "label": "invite_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state",
+      "references": {
+        "email_service.connector_id": "C-smtp"
+      }
+    },
+    {
+      "legacy_path": "jwt_templates.user_templates[0]",
+      "address": "descope_jwt_template.user_claims",
+      "type": "descope_jwt_template",
+      "label": "user_claims",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "JT-user",
+      "import_id": "P2abcdefghijklmnop/JT-user",
+      "id_source": "legacy state",
+      "payloads": [
+        "payloads/descope_jwt_template.user_claims.template.json"
+      ]
+    },
+    {
+      "legacy_path": "lists[0]",
+      "address": "descope_list.allowlist",
+      "type": "descope_list",
+      "label": "allowlist",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "L-allow",
+      "import_id": "P2abcdefghijklmnop/L-allow",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "lists[2]",
+      "address": "descope_list.config",
+      "type": "descope_list",
+      "label": "config",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "L-json",
+      "import_id": "P2abcdefghijklmnop/L-json",
+      "id_source": "legacy state",
+      "payloads": [
+        "payloads/descope_list.config.json.json"
+      ]
+    },
+    {
+      "legacy_path": "lists[1]",
+      "address": "descope_list.office_ips",
+      "type": "descope_list",
+      "label": "office_ips",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "L-ips",
+      "import_id": "P2abcdefghijklmnop/L-ips",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authentication.magic_link",
+      "address": "descope_magiclink_settings.magiclink_settings",
+      "type": "descope_magiclink_settings",
+      "label": "magiclink_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state",
+      "references": {
+        "email_service.connector_id": "C-smtp"
+      }
+    },
+    {
+      "legacy_path": "authentication.oauth.system.google",
+      "address": "descope_oauth_provider.oauth_provider",
+      "type": "descope_oauth_provider",
+      "label": "oauth_provider",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "google",
+      "import_id": "P2abcdefghijklmnop/google",
+      "id_source": "legacy state",
+      "secret_attributes": [
+        "client_secret"
+      ]
+    },
+    {
+      "legacy_path": "authentication.oauth",
+      "address": "descope_oauth_settings.oauth_settings",
+      "type": "descope_oauth_settings",
+      "label": "oauth_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "applications.oidc_applications[0]",
+      "address": "descope_oidc_app.acme_portal",
+      "type": "descope_oidc_app",
+      "label": "acme_portal",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "APP-oidc",
+      "import_id": "P2abcdefghijklmnop/APP-oidc",
+      "id_source": "legacy state",
+      "secret_attributes": [
+        "client_secret"
+      ]
+    },
+    {
+      "legacy_path": "authentication.otp",
+      "address": "descope_otp_settings.otp_settings",
+      "type": "descope_otp_settings",
+      "label": "otp_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state",
+      "references": {
+        "email_service.connector_id": "C-smtp",
+        "text_service.connector_id": "C-twilio",
+        "voice_service.connector_id": "C-twilio"
+      }
+    },
+    {
+      "legacy_path": "authentication.passkeys",
+      "address": "descope_passkey_settings.passkey_settings",
+      "type": "descope_passkey_settings",
+      "label": "passkey_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authentication.password",
+      "address": "descope_password_settings.password_settings",
+      "type": "descope_password_settings",
+      "label": "password_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "project_settings",
+      "address": "descope_project_settings.project_settings",
+      "type": "descope_project_settings",
+      "label": "project_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authorization.roles[0]",
+      "address": "descope_role.admin",
+      "type": "descope_role",
+      "label": "admin",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "R-admin",
+      "import_id": "P2abcdefghijklmnop/R-admin",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "connectors.sendgrid[0]",
+      "address": "descope_sendgrid_connector.acme_sendgrid",
+      "type": "descope_sendgrid_connector",
+      "label": "acme_sendgrid",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "C-sg",
+      "import_id": "P2abcdefghijklmnop/C-sg",
+      "id_source": "legacy state",
+      "secret_attributes": [
+        "api_key"
+      ]
+    },
+    {
+      "legacy_path": "project_settings.session_migration",
+      "address": "descope_session_migration.session_migration",
+      "type": "descope_session_migration",
+      "label": "session_migration",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state",
+      "secret_attributes": [
+        "api_token"
+      ]
+    },
+    {
+      "legacy_path": "project_settings",
+      "address": "descope_session_settings.session_settings",
+      "type": "descope_session_settings",
+      "label": "session_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state",
+      "references": {
+        "user_jwt_template": "JT-user"
+      }
+    },
+    {
+      "legacy_path": "connectors.smtp[0]",
+      "address": "descope_smtp_connector.acme_smtp",
+      "type": "descope_smtp_connector",
+      "label": "acme_smtp",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "C-smtp",
+      "import_id": "P2abcdefghijklmnop/C-smtp",
+      "id_source": "legacy state",
+      "secret_attributes": [
+        "password"
+      ]
+    },
+    {
+      "legacy_path": "styles",
+      "address": "descope_styles.styles",
+      "type": "descope_styles",
+      "label": "styles",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state",
+      "payloads": [
+        "payloads/descope_styles.styles.data.json"
+      ]
+    },
+    {
+      "legacy_path": "attributes.tenant[0]",
+      "address": "descope_tenant_attribute.tier",
+      "type": "descope_tenant_attribute",
+      "label": "tier",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "tier",
+      "import_id": "P2abcdefghijklmnop/tier",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authentication.otp.text_service.templates[0]",
+      "address": "descope_text_template.otp_text",
+      "type": "descope_text_template",
+      "label": "otp_text",
+      "scope": {
+        "kind": "method",
+        "project_id": "P2abcdefghijklmnop",
+        "method": "otp"
+      },
+      "backend_id": "T-otp-text",
+      "import_id": "P2abcdefghijklmnop/otp/T-otp-text",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authentication.totp",
+      "address": "descope_totp_settings.totp_settings",
+      "type": "descope_totp_settings",
+      "label": "totp_settings",
+      "scope": {
+        "kind": "singleton",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "P2abcdefghijklmnop",
+      "import_id": "P2abcdefghijklmnop",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "connectors.twilio_core[0]",
+      "address": "descope_twilio_core_connector.acme_twilio",
+      "type": "descope_twilio_core_connector",
+      "label": "acme_twilio",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "C-twilio",
+      "import_id": "P2abcdefghijklmnop/C-twilio",
+      "id_source": "legacy state",
+      "secret_attributes": [
+        "auth_token"
+      ]
+    },
+    {
+      "legacy_path": "attributes.user[0]",
+      "address": "descope_user_attribute.nickname",
+      "type": "descope_user_attribute",
+      "label": "nickname",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "nickname",
+      "import_id": "P2abcdefghijklmnop/nickname",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "authentication.otp.voice_service.templates[0]",
+      "address": "descope_voice_template.otp_voice",
+      "type": "descope_voice_template",
+      "label": "otp_voice",
+      "scope": {
+        "kind": "method",
+        "project_id": "P2abcdefghijklmnop",
+        "method": "otp"
+      },
+      "backend_id": "T-otp-voice",
+      "import_id": "P2abcdefghijklmnop/otp/T-otp-voice",
+      "id_source": "legacy state"
+    },
+    {
+      "legacy_path": "widgets[\"user-management\"]",
+      "address": "descope_widget.widgets[\"user-management\"]",
+      "type": "descope_widget",
+      "label": "widgets",
+      "scope": {
+        "kind": "project",
+        "project_id": "P2abcdefghijklmnop"
+      },
+      "backend_id": "user-management",
+      "import_id": "P2abcdefghijklmnop/user-management",
+      "id_source": "legacy state",
+      "payloads": [
+        "payloads/descope_widget.widgets.user_management_f18711d7c220.data.json"
+      ]
+    }
+  ],
+  "blockers": null,
+  "secrets": [
+    {
+      "address": "descope_oauth_provider.oauth_provider",
+      "attribute": "client_secret",
+      "variable": "descope_oauth_provider_oauth_provider_client_secret_eb34aef53128",
+      "type": "string",
+      "legacy_path": "authentication.oauth.system.google.client_secret",
+      "present_in_legacy_state": true
+    },
+    {
+      "address": "descope_oidc_app.acme_portal",
+      "attribute": "client_secret",
+      "variable": "descope_oidc_app_acme_portal_client_secret_a46e64d65d8d",
+      "type": "string",
+      "legacy_path": "applications.oidc_applications[0].client_secret",
+      "present_in_legacy_state": true
+    },
+    {
+      "address": "descope_sendgrid_connector.acme_sendgrid",
+      "attribute": "api_key",
+      "variable": "descope_sendgrid_connector_acme_sendgrid_api_key_24cf138f3fd8",
+      "type": "string",
+      "legacy_path": "connectors.sendgrid[0].authentication.api_key",
+      "present_in_legacy_state": true
+    },
+    {
+      "address": "descope_session_migration.session_migration",
+      "attribute": "api_token",
+      "variable": "descope_session_migration_session_migration_api_token_2d7f85e28b43",
+      "type": "string",
+      "legacy_path": "project_settings.session_migration.api_token",
+      "present_in_legacy_state": true
+    },
+    {
+      "address": "descope_smtp_connector.acme_smtp",
+      "attribute": "password",
+      "variable": "descope_smtp_connector_acme_smtp_password_812244e2f589",
+      "type": "string",
+      "legacy_path": "connectors.smtp[0].authentication.password",
+      "present_in_legacy_state": true
+    },
+    {
+      "address": "descope_twilio_core_connector.acme_twilio",
+      "attribute": "auth_token",
+      "variable": "descope_twilio_core_connector_acme_twilio_auth_token_5d40f97eaa3d",
+      "type": "string",
+      "legacy_path": "connectors.twilio_core[0].authentication.auth_token",
+      "present_in_legacy_state": true
+    }
+  ],
+  "retained": [
+    {
+      "attribute": "deletion_protection",
+      "detail": "Still a descope_project attribute when present in source state."
+    },
+    {
+      "attribute": "environment",
+      "detail": "Still a descope_project attribute."
+    },
+    {
+      "attribute": "id",
+      "detail": "The project id remains the descope_project resource's own id."
+    },
+    {
+      "attribute": "name",
+      "detail": "Still a descope_project attribute."
+    },
+    {
+      "attribute": "tags",
+      "detail": "Still a descope_project attribute."
+    }
+  ],
+  "unowned": null,
+  "already_standalone": [
+    {
+      "address": "descope_permission.already",
+      "type": "descope_permission",
+      "backend_id": "PM-manage",
+      "detail": "already has standalone Terraform state and is never generated or imported by this migration"
+    }
+  ],
+  "rollback": {
+    "state_backup": "backup/legacy-state.json",
+    "restorable": true,
+    "legacy_address": "descope_project.main",
+    "source_provider_version": "1.8.3",
+    "instructions": [
+      "Stop writers and obtain explicit human approval for rollback.",
+      "Verify the workspace, lineage and serial in backup/legacy-state.json before any human runs `terraform state push`.",
+      "A human may restore the state backup from the workspace it was pulled from; the utility and agent never run `terraform state push`.",
+      "Re-pin the descope provider to 1.8.3 and run `terraform init -upgrade`.",
+      "Restore or rotate any write-only secret that the adoption plan rehydrated; restoring Terraform state does not restore a remote credential.",
+      "Remove the generated detach and adopt configuration from the module, then run `terraform plan` and confirm it reports no changes."
+    ],
+    "backend_mutation": "no create or delete; adoption can rehydrate state-held write-only secrets with in-place updates explicitly enumerated in the manifest"
+  }
+}
