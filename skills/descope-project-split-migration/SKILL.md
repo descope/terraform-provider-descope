@@ -50,8 +50,8 @@ Run the utility from the released provider module, not from a provider source ch
 ```bash
 SOURCE_PROVIDER_VERSION="<X.Y.Z>"
 TARGET_PROVIDER_VERSION="<A.B.C>"
+MIGRATION_OUTPUT="<new migration output directory>"
 TFMIGRATE_PACKAGE="github.com/descope/terraform-provider-descope/tools/tfmigrate@v${TARGET_PROVIDER_VERSION}"
-```
 
 The target release must contain `tools/tfmigrate`. `TFMIGRATE_PACKAGE` must remain unchanged for the entire migration. Before reading state, confirm the pinned utility is available:
 
@@ -65,9 +65,9 @@ Do not substitute `@latest`, a branch name, or a locally modified checkout.
 
 | Command | Purpose |
 |---------|---------|
-| `go run "$TFMIGRATE_PACKAGE" plan -state <state.json> -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out <dir>` | Inventory the legacy instance and generate the manifest, review documents, detach configuration, and adoption configuration. |
-| `go run "$TFMIGRATE_PACKAGE" plan -state <state.json> -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out <dir> -remote` | Retry only when the tool reports IDs missing from state. Performs GET-only reads and requires `DESCOPE_MANAGEMENT_KEY`; `DESCOPE_BASE_URL` is optional. |
-| `go run "$TFMIGRATE_PACKAGE" verify-plan -plan <plan.json> -manifest <dir>/manifest.json` | Verify that the saved adoption plan is complete and non-destructive. |
+| `go run "$TFMIGRATE_PACKAGE" plan -state <state.json> -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out "$MIGRATION_OUTPUT"` | Inventory the legacy instance and generate the manifest, review documents, detach configuration, and adoption configuration. |
+| `go run "$TFMIGRATE_PACKAGE" plan -state <state.json> -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out "$MIGRATION_OUTPUT" -remote` | Retry only when the tool reports IDs missing from state. Performs GET-only reads and requires `DESCOPE_MANAGEMENT_KEY`; `DESCOPE_BASE_URL` is optional. |
+| `go run "$TFMIGRATE_PACKAGE" verify-plan -plan <plan.json> -manifest "$MIGRATION_OUTPUT/manifest.json"` | Verify that the saved adoption plan is complete and non-destructive. |
 
 | Exit code | Meaning |
 |-----------|---------|
@@ -98,14 +98,14 @@ Raw state records the provider configuration address. `terraform show -json` omi
 Run the `plan` subcommand with the exact legacy resource address and the exact source and target provider versions:
 
 ```bash
-go run "$TFMIGRATE_PACKAGE" plan -state legacy.tfstate.json -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out <dir>
+go run "$TFMIGRATE_PACKAGE" plan -state legacy.tfstate.json -address <legacy address> -source-provider-version "$SOURCE_PROVIDER_VERSION" -target-provider-version "$TARGET_PROVIDER_VERSION" -out "$MIGRATION_OUTPUT"
 ```
 
-`<dir>` must not exist. The utility atomically creates it with owner-only permissions and refuses existing paths or symlinks so the protected state copy cannot be redirected or mixed with older output.
+`$MIGRATION_OUTPUT` must not exist. The utility atomically creates it with owner-only permissions and refuses existing paths or symlinks so the protected state copy cannot be redirected or mixed with older output.
 
 If and only if the utility reports IDs missing from state, provide `DESCOPE_MANAGEMENT_KEY`, optionally set `DESCOPE_BASE_URL`, and rerun with `-remote`. Remote backfill performs one GET-only project read. A custom base URL must use HTTPS, a DNS hostname, and the default TLS port; the utility rejects HTTP, IP literals, credentials in URLs, custom ports, and `TF_UNSAFE_LOGS`.
 
-Review these generated artifacts before changing Terraform state:
+Review these generated artifacts under `$MIGRATION_OUTPUT` before changing Terraform state:
 
 - `manifest.json`
 - `README.md`
@@ -134,17 +134,19 @@ Never invent an ID, payload, ownership decision, reference, or secret to clear a
 
 ### Step 5: HUMAN CHECKPOINT 1 - Approve Detach
 
-Explicit operator approval is required before detach. Display the exact generated `removed` block from `detach/removed.tf` verbatim. Require the operator to confirm that the block targets the expected legacy local address and visibly contains `lifecycle { destroy = false }`. Do not reconstruct or alter the generated block.
+Explicit operator approval is required before detach. Display the exact generated `removed` block from `detach/removed.tf` verbatim. Require the operator to confirm that the block targets the expected legacy local address and visibly contains `lifecycle { destroy = false }`. Also show the complete list of Terraform expressions that reference the legacy project declaration and the temporary replacements described below. Do not reconstruct or alter the generated block.
 
 ### Step 6: Detach With the Old Provider Pinned
 
-Keep the old source provider version pinned. Preserve the legacy HCL for review, remove the legacy `resource "descope_project"` block from the module, and put `detach/removed.tf` in its place. Then run:
+Keep the old source provider version pinned. Before removing the legacy declaration, find every Terraform expression in its module that references it. Temporarily replace `.id` uses with the exact `project_id` from `"$MIGRATION_OUTPUT/manifest.json"`; never substitute a project name. Preserve module outputs by changing their values to that captured literal instead of deleting the outputs, so callers remain valid. Replace references to other project attributes with their exact preserved values. Run `terraform validate` and do not continue while any reference to the declaration remains.
+
+Preserve the legacy HCL for review, remove the legacy `resource "descope_project"` block from the module, and put `detach/removed.tf` in its place. Then run:
 
 ```bash
 terraform plan
 ```
 
-Require the only planned change to be the single expected `forget` of the legacy address. Any create, update, delete, replacement, read, or additional forget stops the workflow. After the operator reviews the plan, the operator may run `terraform apply`.
+Require the only planned change to be the single expected `forget` of the legacy address. Any create, update, delete, replacement, read, validation error, or additional forget stops the workflow. After the operator reviews the plan, the operator may run `terraform apply`.
 
 The agent must never run `terraform apply`, `terraform state rm`, or `terraform state mv` automatically.
 
@@ -164,13 +166,15 @@ Pin the new target provider version. Remove `detach/removed.tf`, then place thes
 
 `adopt/main.tf`, `adopt/variables.tf`, and `adopt/payloads/` belong in the module that declared the legacy resource. `adopt/imports.tf` belongs in the root module because import blocks are root-only. Place `adopt/versions.tf` as directed by the generated `README.md` and preserve the relative payload paths.
 
+Reconnect every temporary literal introduced during detach to the restored `descope_project` address from `adopt/main.tf`, preserving the original module output contracts, then run `terraform validate`. Do not continue until every temporary literal has been removed and the configuration validates.
+
 Supply the sensitive variables listed in `SECRETS.md` from the operator's own secret store. For a root resource, `TF_VAR_<name>` is acceptable. For a child module, `TF_VAR_*` only populates root inputs: add matching sensitive variables at the root and every parent module, then pass each value through the existing module call chain exactly as `SECRETS.md` directs. Never place secret values in module blocks or a committed `.tfvars` file. Then run:
 
 ```bash
 terraform init -upgrade
 (umask 077; terraform plan -out=adopt.tfplan)
 (umask 077; set -o noclobber; terraform show -json adopt.tfplan > adopt-plan.json)
-go run "$TFMIGRATE_PACKAGE" verify-plan -plan adopt-plan.json -manifest <dir>/manifest.json
+go run "$TFMIGRATE_PACKAGE" verify-plan -plan adopt-plan.json -manifest "$MIGRATION_OUTPUT/manifest.json"
 ```
 
 Both `adopt.tfplan` and `adopt-plan.json` contain sensitive values. Never commit or upload them; delete them according to the team's retention policy after verification and apply.

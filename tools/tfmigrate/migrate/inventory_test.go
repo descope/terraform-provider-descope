@@ -84,6 +84,13 @@ func TestMigrationLifecycle(t *testing.T) {
 	assert.NotContains(t, mainHCL, "authorization_endpoint")
 	assert.Contains(t, string(artifacts.Files[filepath.Join(adoptDir, "imports.tf")]), `for_each = {`)
 	assert.Contains(t, string(artifacts.Files[filepath.Join(detachDir, "removed.tf")]), `destroy = false`)
+	readme := string(artifacts.Files[readmePath])
+	assert.Contains(t, readme, "Before removing the declaration, find every Terraform expression")
+	assert.Contains(t, readme, "captured HCL string `\"P2abcdefghijklmnop\"`")
+	assert.Contains(t, readme, "Reconnect every temporary project literal")
+	assert.Contains(t, readme, "go run github.com/descope/terraform-provider-descope/tools/tfmigrate@v2.0.0 verify-plan")
+	assert.Contains(t, readme, `-manifest "$MIGRATION_OUTPUT/manifest.json"`)
+	assert.NotContains(t, readme, "go run ./tools/tfmigrate")
 	variables := map[string]bool{}
 	for _, secret := range manifest.Secrets {
 		assert.NotEmpty(t, secret.Variable, secret.Address+" "+secret.Attribute)
