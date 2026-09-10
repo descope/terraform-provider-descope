@@ -42,25 +42,11 @@ func (m *AuditFilterFieldModel) SetValues(h *helpers.Handler, data map[string]an
 // Object Fields
 
 func getObjectField(s strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
-	entries := []any{}
-	for k, v := range strmapattr.Iterator(s, h) {
-		entries = append(entries, map[string]any{"key": k, "value": v})
-	}
-	data[key] = entries
+	strmapattr.GetKeyValueList(s, data, key, h)
 }
 
-func setObjectField(s *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) { // nolint:unparam
-	entries := map[string]string{}
-	if v, ok := data[key].([]any); ok {
-		for i := range v {
-			if m, ok := v[i].(map[string]any); ok {
-				key, _ := m["key"].(string)
-				value, _ := m["value"].(string)
-				entries[key] = value
-			}
-		}
-	}
-	*s = strmapattr.Value(entries)
+func setObjectField(s *strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
+	strmapattr.SetKeyValueList(s, data, key, h)
 }
 
 // Secret Object Field

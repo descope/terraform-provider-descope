@@ -21,6 +21,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/list"
 	"github.com/descope/terraform-provider-descope/internal/models/managementkey"
 	"github.com/descope/terraform-provider-descope/internal/models/oauthprovider"
+	"github.com/descope/terraform-provider-descope/internal/models/outboundapp"
 	"github.com/descope/terraform-provider-descope/internal/models/permission"
 	"github.com/descope/terraform-provider-descope/internal/models/project"
 	"github.com/descope/terraform-provider-descope/internal/models/role"
@@ -148,6 +149,7 @@ func InjectModels() {
 	inject(managementkey.TagRoleAttributes, docsTagRole)
 	inject(oauthprovider.ProviderAttributes, docsProvider)
 	inject(oauthprovider.AppleKeyGeneratorModelAttributes, docsAppleKeyGeneratorModel)
+	inject(outboundapp.OutboundAppAttributes, docsOutboundApp)
 	inject(permission.PermissionAttributes, docsPermission)
 	inject(project.ProjectAttributes, docsProject)
 	inject(role.RoleAttributes, docsRole)

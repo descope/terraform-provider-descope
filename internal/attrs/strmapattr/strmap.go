@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"iter"
+	"maps"
+	"slices"
 
 	"github.com/descope/terraform-provider-descope/internal/attrs"
 	"github.com/descope/terraform-provider-descope/internal/attrs/types/valuemaptype"
@@ -92,6 +94,33 @@ func Nil(s *Type, h *helpers.Handler) {
 	if s.IsUnknown() {
 		*s = convertStringMapToValue(h.Ctx, map[string]string{})
 	}
+}
+
+// For APIs that carry a string map as an array of key and value objects, sorted by key so the same map always serializes identically.
+func GetKeyValueList(s Type, data map[string]any, key string, h *helpers.Handler) {
+	pairs := map[string]string{}
+	for k, v := range Iterator(s, h) {
+		pairs[k] = v
+	}
+	entries := []any{}
+	for _, k := range slices.Sorted(maps.Keys(pairs)) {
+		entries = append(entries, map[string]any{"key": k, "value": pairs[k]})
+	}
+	data[key] = entries
+}
+
+func SetKeyValueList(s *Type, data map[string]any, key string, h *helpers.Handler) {
+	pairs := map[string]string{}
+	if entries, ok := data[key].([]any); ok {
+		for i := range entries {
+			if entry, ok := entries[i].(map[string]any); ok {
+				k, _ := entry["key"].(string)
+				v, _ := entry["value"].(string)
+				pairs[k] = v
+			}
+		}
+	}
+	*s = valueOf(h.Ctx, pairs)
 }
 
 func Iterator(s Type, h *helpers.Handler) iter.Seq2[string, string] {

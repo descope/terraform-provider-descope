@@ -44,6 +44,10 @@ func InboundApp(t *testing.T) *Resource {
 	return newResource(t, "inbound_app")
 }
 
+func OutboundApp(t *testing.T) *Resource {
+	return newResource(t, "outbound_app")
+}
+
 func Engine(t *testing.T) *Resource {
 	return newResource(t, "engine")
 }
