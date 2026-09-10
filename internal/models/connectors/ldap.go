@@ -84,31 +84,31 @@ func (m *LDAPConnectorModel) SetValues(h *helpers.Handler, data map[string]any) 
 }
 
 func (m *LDAPConnectorModel) Validate(h *helpers.Handler) {
-	if m.BindDN.ValueString() != "" && !m.UseMTLS.IsNull() && m.UseMTLS.ValueBool() {
+	if m.BindDN.ValueString() != "" && m.UseMTLS.ValueBool() {
 		h.Conflict("The bind_dn field cannot be used when use_mtls isn't set to false")
 	}
-	if !m.BindDN.IsUnknown() && m.BindDN.ValueString() == "" && (m.UseMTLS.IsNull() || !m.UseMTLS.ValueBool()) {
+	if !m.BindDN.IsUnknown() && m.BindDN.ValueString() == "" && !m.UseMTLS.IsUnknown() && !m.UseMTLS.ValueBool() {
 		h.Conflict("The bind_dn field is required when use_mtls is false")
 	}
-	if m.BindPassword.ValueString() != "" && !m.UseMTLS.IsNull() && m.UseMTLS.ValueBool() {
+	if m.BindPassword.ValueString() != "" && m.UseMTLS.ValueBool() {
 		h.Conflict("The bind_password field cannot be used when use_mtls isn't set to false")
 	}
-	if !m.BindPassword.IsUnknown() && m.BindPassword.ValueString() == "" && (m.UseMTLS.IsNull() || !m.UseMTLS.ValueBool()) {
+	if !m.BindPassword.IsUnknown() && m.BindPassword.ValueString() == "" && !m.UseMTLS.IsUnknown() && !m.UseMTLS.ValueBool() {
 		h.Conflict("The bind_password field is required when use_mtls is false")
 	}
-	if m.ClientCertificate.ValueString() != "" && !m.UseMTLS.ValueBool() {
+	if m.ClientCertificate.ValueString() != "" && !m.UseMTLS.IsUnknown() && !m.UseMTLS.ValueBool() {
 		h.Conflict("The client_certificate field cannot be used unless use_mtls is set to true")
 	}
 	if !m.ClientCertificate.IsUnknown() && m.ClientCertificate.ValueString() == "" && m.UseMTLS.ValueBool() {
 		h.Conflict("The client_certificate field is required when use_mtls is set to true")
 	}
-	if m.ClientKey.ValueString() != "" && !m.UseMTLS.ValueBool() {
+	if m.ClientKey.ValueString() != "" && !m.UseMTLS.IsUnknown() && !m.UseMTLS.ValueBool() {
 		h.Conflict("The client_key field cannot be used unless use_mtls is set to true")
 	}
 	if !m.ClientKey.IsUnknown() && m.ClientKey.ValueString() == "" && m.UseMTLS.ValueBool() {
 		h.Conflict("The client_key field is required when use_mtls is set to true")
 	}
-	if m.CACertificate.ValueString() != "" && !m.UseMTLS.ValueBool() {
+	if m.CACertificate.ValueString() != "" && !m.UseMTLS.IsUnknown() && !m.UseMTLS.ValueBool() {
 		h.Conflict("The ca_certificate field cannot be used unless use_mtls is set to true")
 	}
 }

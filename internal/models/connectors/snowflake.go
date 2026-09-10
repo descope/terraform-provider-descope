@@ -127,7 +127,7 @@ func (m *SnowflakeConnectorModel) Validate(h *helpers.Handler) {
 	if m.AccountIdentifier.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "keypair" {
 		h.Conflict("The account_identifier field can only be used when auth_type is set to 'keypair'")
 	}
-	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
 }

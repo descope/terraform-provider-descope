@@ -509,6 +509,36 @@ func (d *FieldDependency) DefaultValue() any {
 	}
 }
 
+func (d *FieldDependency) IsSatisfied() string {
+	return d.boolCondition(true)
+}
+
+func (d *FieldDependency) IsUnsatisfied() string {
+	return d.boolCondition(false)
+}
+
+func (d *FieldDependency) boolCondition(satisfied bool) string {
+	if d.Field.Type != FieldTypeBool {
+		panic("unexpected dependency field type: " + d.Field.Type)
+	}
+	accessor := fmt.Sprintf("m.%s", d.Field.ResourceFieldName())
+	want, _ := d.Value.(bool)
+	if !satisfied {
+		want = !want
+	}
+	nullCounts := d.DefaultValue() == want // null resolves to the default, so it only counts as the tested-for value when it is one
+	switch {
+	case want && nullCounts:
+		return fmt.Sprintf("(%s.IsNull() || %s.ValueBool())", accessor, accessor)
+	case want:
+		return fmt.Sprintf("%s.ValueBool()", accessor)
+	case nullCounts:
+		return fmt.Sprintf("!%s.IsUnknown() && !%s.ValueBool()", accessor, accessor)
+	default:
+		return fmt.Sprintf("!%s.IsUnknown() && !%s.IsNull() && !%s.ValueBool()", accessor, accessor, accessor)
+	}
+}
+
 func (d *FieldDependency) ValuesSlice() string {
 	return fmt.Sprintf("%#v", d.Values)
 }

@@ -1,13 +1,20 @@
 package connectors_test
 
 import (
+	"context"
 	"testing"
 
+	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/connectors"
 	"github.com/descope/terraform-provider-descope/tools/testacc"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/stretchr/testify/require"
 )
 
-// Generated tests pick each boolean's value by hashing the field name, so these pin the toggle-off case for the three shapes that misfire.
 func TestConnectorDependencyValidation(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 
@@ -63,5 +70,42 @@ func TestConnectorDependencyValidation(t *testing.T) {
 				}),
 			},
 		)
+	})
+}
+
+func TestConnectorDependencyUnknown(t *testing.T) {
+	validate := func(t *testing.T, m interface{ Validate(*helpers.Handler) }) diag.Diagnostics {
+		t.Helper()
+		var diags diag.Diagnostics
+		m.Validate(helpers.NewHandler(context.Background(), &diags))
+		return diags
+	}
+
+	t.Run("dependency wants non-default", func(t *testing.T) {
+		m := &connectors.HTTPConnectorModel{
+			ClientCertificate: stringattr.Value("cert"),
+			ClientKey:         stringattr.Value("key"),
+		}
+
+		m.UseMTLS = boolattr.Value(false)
+		require.True(t, validate(t, m).HasError())
+
+		m.UseMTLS = types.BoolUnknown()
+		require.Empty(t, validate(t, m))
+	})
+
+	t.Run("dependency wants default", func(t *testing.T) {
+		m := &connectors.LDAPConnectorModel{
+			ClientCertificate: stringattr.Value("cert"),
+			ClientKey:         stringattr.Value("key"),
+			BindDN:            stringattr.Value("cn=admin"),
+			BindPassword:      stringattr.Value("secret"),
+		}
+
+		m.UseMTLS = boolattr.Value(true)
+		require.True(t, validate(t, m).HasError())
+
+		m.UseMTLS = types.BoolUnknown()
+		require.Empty(t, validate(t, m))
 	})
 }

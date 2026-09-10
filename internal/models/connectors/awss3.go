@@ -114,7 +114,7 @@ func (m *AWSS3ConnectorModel) Validate(h *helpers.Handler) {
 	if m.ExternalID.ValueString() == "" && !m.ExternalID.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
 		h.Conflict("The external_id field is required when auth_type is set to 'assumeRole'")
 	}
-	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
 }

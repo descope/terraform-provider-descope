@@ -111,28 +111,16 @@ func (m *{{.ResourceStructName}}Model) Validate(h *helpers.Handler) {
 		default are never null, so IsNull would fire on configs that never set the field. Fields whose
 		default is non-zero can't be checked at all, since unset and default are indistinguishable. */}}
 		{{- if eq .Dependency.Field.Type "boolean" }}
-			{{- if eq .Dependency.DefaultValue .Dependency.Value }}
-				{{- if not .HasNonZeroInitial }}
-				if {{ .IsNonZero }} && !m.{{ .Dependency.Field.ResourceFieldName }}.IsNull() && {{ if .Dependency.Value }}!{{ end }}m.{{ .Dependency.Field.ResourceFieldName }}.ValueBool() {
-					h.Conflict("The {{.ResourceAttributeName}} field cannot be used when {{ .Dependency.Field.ResourceAttributeName }} isn't set to {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
-				}
-				{{- end }}
-				{{- if .Required }}
-					if !m.{{ .ResourceFieldName }}.IsUnknown() && {{ .IsZero }} && (m.{{ .Dependency.Field.ResourceFieldName }}.IsNull() || {{ if not .Dependency.Value }}!{{ end }}m.{{ .Dependency.Field.ResourceFieldName }}.ValueBool()) {
-						h.Conflict("The {{.ResourceAttributeName}} field is required when {{ .Dependency.Field.ResourceAttributeName }} is {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
-					}
-				{{- end }}
-			{{- else }}
-				{{- if not .HasNonZeroInitial }}
-				if {{ .IsNonZero }} && {{ if .Dependency.Value }}!{{ end }}m.{{ .Dependency.Field.ResourceFieldName }}.ValueBool() {
-					h.Conflict("The {{.ResourceAttributeName}} field cannot be used unless {{ .Dependency.Field.ResourceAttributeName }} is set to {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
-				}
-				{{- end }}
-				{{- if .Required }}
-					if !m.{{ .ResourceFieldName }}.IsUnknown() && {{ .IsZero }} && {{ if not .Dependency.Value }}!{{ end }}m.{{ .Dependency.Field.ResourceFieldName }}.ValueBool() {
-						h.Conflict("The {{.ResourceAttributeName}} field is required when {{ .Dependency.Field.ResourceAttributeName }} is set to {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
-					}
-				{{- end }}
+			{{- $sameAsDefault := eq .Dependency.DefaultValue .Dependency.Value }}
+			{{- if not .HasNonZeroInitial }}
+			if {{ .IsNonZero }} && {{ .Dependency.IsUnsatisfied }} {
+				h.Conflict("The {{.ResourceAttributeName}} field cannot be used {{ if $sameAsDefault }}when {{ .Dependency.Field.ResourceAttributeName }} isn't set to{{ else }}unless {{ .Dependency.Field.ResourceAttributeName }} is set to{{ end }} {{ if .Dependency.Value }}true{{ else }}false{{ end }}")
+			}
+			{{- end }}
+			{{- if .Required }}
+			if !m.{{ .ResourceFieldName }}.IsUnknown() && {{ .IsZero }} && {{ .Dependency.IsSatisfied }} {
+				h.Conflict("The {{.ResourceAttributeName}} field is required when {{ .Dependency.Field.ResourceAttributeName }} is {{ if not $sameAsDefault }}set to {{ end }}{{ if .Dependency.Value }}true{{ else }}false{{ end }}")
+			}
 			{{- end }}
 		{{- end }}
 		{{- if eq .Dependency.Field.Type "string" }}
