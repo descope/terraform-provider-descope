@@ -108,7 +108,7 @@ The provider's authorization endpoint, which users are redirected to in order to
 authorization_url_params
 ------------------------
 
-- Type: `list` of `outboundapp.URLParam`
+- Type: `map` of `string`
 
 Additional query parameters to append to the authorization request, for providers that require
 them.
@@ -127,7 +127,7 @@ The provider's token endpoint, used to exchange an authorization code and to ref
 token_url_params
 ----------------
 
-- Type: `list` of `outboundapp.URLParam`
+- Type: `map` of `string`
 
 Additional query parameters to append to the token request, for providers that require them.
 

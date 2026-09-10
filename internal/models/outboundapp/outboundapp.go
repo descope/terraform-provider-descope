@@ -2,8 +2,8 @@ package outboundapp
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
@@ -33,9 +33,9 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 
 	"discovery_url":            stringattr.Default("", stringattr.StandardLenValidator),
 	"authorization_url":        stringattr.Default("", stringattr.StandardLenValidator),
-	"authorization_url_params": listattr.Default[URLParamModel](URLParamAttributes),
+	"authorization_url_params": strmapattr.Default(stringvalidator.LengthAtMost(4096)),
 	"token_url":                stringattr.Default("", stringattr.StandardLenValidator),
-	"token_url_params":         listattr.Default[URLParamModel](URLParamAttributes),
+	"token_url_params":         strmapattr.Default(stringvalidator.LengthAtMost(4096)),
 	"revocation_url":           stringattr.Default("", stringattr.StandardLenValidator),
 
 	"default_scopes":       strsetattr.Default(stringattr.StandardLenValidator),
@@ -62,12 +62,12 @@ type OutboundAppModel struct {
 	ClientID     stringattr.Type `tfsdk:"client_id"`
 	ClientSecret stringattr.Type `tfsdk:"client_secret"`
 
-	DiscoveryURL           stringattr.Type              `tfsdk:"discovery_url"`
-	AuthorizationURL       stringattr.Type              `tfsdk:"authorization_url"`
-	AuthorizationURLParams listattr.Type[URLParamModel] `tfsdk:"authorization_url_params"`
-	TokenURL               stringattr.Type              `tfsdk:"token_url"`
-	TokenURLParams         listattr.Type[URLParamModel] `tfsdk:"token_url_params"`
-	RevocationURL          stringattr.Type              `tfsdk:"revocation_url"`
+	DiscoveryURL           stringattr.Type `tfsdk:"discovery_url"`
+	AuthorizationURL       stringattr.Type `tfsdk:"authorization_url"`
+	AuthorizationURLParams strmapattr.Type `tfsdk:"authorization_url_params"`
+	TokenURL               stringattr.Type `tfsdk:"token_url"`
+	TokenURLParams         strmapattr.Type `tfsdk:"token_url_params"`
+	RevocationURL          stringattr.Type `tfsdk:"revocation_url"`
 
 	DefaultScopes      strsetattr.Type `tfsdk:"default_scopes"`
 	DefaultRedirectURL stringattr.Type `tfsdk:"default_redirect_url"`
@@ -89,9 +89,9 @@ func (m *OutboundAppModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.ClientSecret, data, "clientSecret")
 	stringattr.Get(m.DiscoveryURL, data, "discoveryUrl")
 	stringattr.Get(m.AuthorizationURL, data, "authorizationUrl")
-	listattr.Get(m.AuthorizationURLParams, data, "authorizationUrlParams", h)
+	strmapattr.GetKeyValueList(m.AuthorizationURLParams, data, "authorizationUrlParams", h)
 	stringattr.Get(m.TokenURL, data, "tokenUrl")
-	listattr.Get(m.TokenURLParams, data, "tokenUrlParams", h)
+	strmapattr.GetKeyValueList(m.TokenURLParams, data, "tokenUrlParams", h)
 	stringattr.Get(m.RevocationURL, data, "revocationUrl")
 	strsetattr.Get(m.DefaultScopes, data, "defaultScopes", h)
 	stringattr.Get(m.DefaultRedirectURL, data, "defaultRedirectUrl")
@@ -112,9 +112,9 @@ func (m *OutboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.ClientSecret, data, "clientSecret", stringattr.SkipIfAlreadySet)
 	stringattr.Set(&m.DiscoveryURL, data, "discoveryUrl")
 	stringattr.Set(&m.AuthorizationURL, data, "authorizationUrl")
-	listattr.Set(&m.AuthorizationURLParams, data, "authorizationUrlParams", h)
+	strmapattr.SetKeyValueList(&m.AuthorizationURLParams, data, "authorizationUrlParams", h)
 	stringattr.Set(&m.TokenURL, data, "tokenUrl")
-	listattr.Set(&m.TokenURLParams, data, "tokenUrlParams", h)
+	strmapattr.SetKeyValueList(&m.TokenURLParams, data, "tokenUrlParams", h)
 	stringattr.Set(&m.RevocationURL, data, "revocationUrl")
 	strsetattr.Set(&m.DefaultScopes, data, "defaultScopes", h)
 	stringattr.Set(&m.DefaultRedirectURL, data, "defaultRedirectUrl")

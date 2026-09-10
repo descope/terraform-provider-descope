@@ -150,7 +150,6 @@ func InjectModels() {
 	inject(oauthprovider.ProviderAttributes, docsProvider)
 	inject(oauthprovider.AppleKeyGeneratorModelAttributes, docsAppleKeyGeneratorModel)
 	inject(outboundapp.OutboundAppAttributes, docsOutboundApp)
-	inject(outboundapp.URLParamAttributes, docsURLParam)
 	inject(permission.PermissionAttributes, docsPermission)
 	inject(project.ProjectAttributes, docsProject)
 	inject(role.RoleAttributes, docsRole)

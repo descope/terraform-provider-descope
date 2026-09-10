@@ -29,9 +29,9 @@ func TestOutboundApp(t *testing.T) {
 				"client_id":                  "",
 				"discovery_url":              "",
 				"authorization_url":          "",
-				"authorization_url_params.#": "0",
+				"authorization_url_params.%": "0",
 				"token_url":                  "",
-				"token_url_params.#":         "0",
+				"token_url_params.%":         "0",
 				"revocation_url":             "",
 				"default_scopes.#":           "0",
 				"default_redirect_url":       "",
@@ -68,14 +68,14 @@ func TestOutboundApp(t *testing.T) {
 				client_secret = "secret-one"
 				discovery_url = "https://accounts.example.com/.well-known/openid-configuration"
 				authorization_url = "https://accounts.example.com/authorize"
-				authorization_url_params = [
-					{ key = "audience", value = "https://api.example.com" },
-					{ key = "login_hint", value = "user@example.com" },
-				]
+				authorization_url_params = {
+					audience   = "https://api.example.com"
+					login_hint = "user@example.com"
+				}
 				token_url = "https://oauth2.example.com/token"
-				token_url_params = [
-					{ key = "resource", value = "https://api.example.com" },
-				]
+				token_url_params = {
+					resource = "https://api.example.com"
+				}
 				revocation_url = "https://oauth2.example.com/revoke"
 				default_scopes = ["openid", "email", "calendar.read"]
 				default_redirect_url = "https://app.example.com/oauth/callback"
@@ -85,26 +85,26 @@ func TestOutboundApp(t *testing.T) {
 				prompt = ["consent", "select_account"]
 			`),
 			Check: a.Check(map[string]any{
-				"description":                    "calendar access",
-				"logo":                           "https://example.com/logo.png",
-				"app_type":                       "oauth",
-				"client_id":                      "client-abc",
-				"client_secret":                  "secret-one",
-				"discovery_url":                  "https://accounts.example.com/.well-known/openid-configuration",
-				"authorization_url":              "https://accounts.example.com/authorize",
-				"authorization_url_params.#":     "2",
-				"authorization_url_params.0.key": "audience",
-				"authorization_url_params.1.key": "login_hint",
-				"token_url":                      "https://oauth2.example.com/token",
-				"token_url_params.#":             "1",
-				"token_url_params.0.value":       "https://api.example.com",
-				"revocation_url":                 "https://oauth2.example.com/revoke",
-				"default_scopes":                 []string{"openid", "email", "calendar.read"},
-				"default_redirect_url":           "https://app.example.com/oauth/callback",
-				"callback_domain":                "app.example.com",
-				"pkce":                           true,
-				"access_type":                    "offline",
-				"prompt":                         []string{"consent", "select_account"},
+				"description":                         "calendar access",
+				"logo":                                "https://example.com/logo.png",
+				"app_type":                            "oauth",
+				"client_id":                           "client-abc",
+				"client_secret":                       "secret-one",
+				"discovery_url":                       "https://accounts.example.com/.well-known/openid-configuration",
+				"authorization_url":                   "https://accounts.example.com/authorize",
+				"authorization_url_params.%":          "2",
+				"authorization_url_params.audience":   "https://api.example.com",
+				"authorization_url_params.login_hint": "user@example.com",
+				"token_url":                           "https://oauth2.example.com/token",
+				"token_url_params.%":                  "1",
+				"token_url_params.resource":           "https://api.example.com",
+				"revocation_url":                      "https://oauth2.example.com/revoke",
+				"default_scopes":                      []string{"openid", "email", "calendar.read"},
+				"default_redirect_url":                "https://app.example.com/oauth/callback",
+				"callback_domain":                     "app.example.com",
+				"pkce":                                true,
+				"access_type":                         "offline",
+				"prompt":                              []string{"consent", "select_account"},
 			}),
 		},
 		// omitting client_secret must be accepted and must not plan a change
@@ -156,8 +156,8 @@ func TestOutboundApp(t *testing.T) {
 				token_url = "https://oauth2.example.com/token"
 			`),
 			Check: a.Check(map[string]any{
-				"authorization_url_params.#": "0",
-				"token_url_params.#":         "0",
+				"authorization_url_params.%": "0",
+				"token_url_params.%":         "0",
 				"default_scopes.#":           "0",
 				"description":                "",
 				"pkce":                       false,

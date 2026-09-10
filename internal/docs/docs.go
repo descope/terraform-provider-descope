@@ -1651,11 +1651,6 @@ var docsOutboundApp = map[string]string{
 		"`login`, `consent` and `select_account`.",
 }
 
-var docsURLParam = map[string]string{
-	"key":   "The name of the query parameter.",
-	"value": "The value of the query parameter.",
-}
-
 var docsPermission = map[string]string{
 	"project_id": "The ID of the project that this permission belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",

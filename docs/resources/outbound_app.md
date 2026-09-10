@@ -25,7 +25,7 @@ Manages a custom outbound application in a Descope project. Outbound application
 - `access_type` (String) Whether the provider should issue a refresh token alongside the access token. Use `offline` to request one, so that Descope can keep the connection alive without the user present, or `online` for an access token only.
 - `app_type` (String) The kind of credential this application holds. Use `oauth` for an application that runs the OAuth flow, so that Descope obtains and refreshes tokens on the user's behalf, or `apikey` for an application whose tokens are uploaded directly and never refreshed.
 - `authorization_url` (String) The provider's authorization endpoint, which users are redirected to in order to grant consent.
-- `authorization_url_params` (Attributes List) Additional query parameters to append to the authorization request, for providers that require them. (see [below for nested schema](#nestedatt--authorization_url_params))
+- `authorization_url_params` (Map of String) Additional query parameters to append to the authorization request, for providers that require them.
 - `callback_domain` (String) The domain that the provider redirects back to after consent. Leave this empty to use the project's configured domain.
 - `client_id` (String) The OAuth client ID issued by the third party provider.
 - `client_secret` (String, Sensitive) The OAuth client secret issued by the third party provider. The Descope API never returns this value, so it cannot be read back and is not verified against the server. Omitting the field leaves any previously stored secret in place, while setting it to a new value replaces it. An empty string is not accepted.
@@ -39,31 +39,8 @@ Manages a custom outbound application in a Descope project. Outbound application
 - `revocation_url` (String) The provider's token revocation endpoint.
 - `tenant_id` (String) The ID of the tenant that owns this outbound application, for applications scoped to a single tenant rather than the whole project. An empty value (the default) creates a project level application. This value cannot be changed after creation, and changing it is rejected when the plan is generated. Moving an application to a different tenant means creating a new one, because deleting an outbound application also deletes every access token stored against it.
 - `token_url` (String) The provider's token endpoint, used to exchange an authorization code and to refresh tokens.
-- `token_url_params` (Attributes List) Additional query parameters to append to the token request, for providers that require them. (see [below for nested schema](#nestedatt--token_url_params))
+- `token_url_params` (Map of String) Additional query parameters to append to the token request, for providers that require them.
 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-<a id="nestedatt--authorization_url_params"></a>
-### Nested Schema for `authorization_url_params`
-
-Required:
-
-- `key` (String) The name of the query parameter.
-
-Optional:
-
-- `value` (String) The value of the query parameter.
-
-
-<a id="nestedatt--token_url_params"></a>
-### Nested Schema for `token_url_params`
-
-Required:
-
-- `key` (String) The name of the query parameter.
-
-Optional:
-
-- `value` (String) The value of the query parameter.
