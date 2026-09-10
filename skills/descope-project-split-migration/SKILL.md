@@ -52,6 +52,7 @@ SOURCE_PROVIDER_VERSION="<X.Y.Z>"
 TARGET_PROVIDER_VERSION="<A.B.C>"
 MIGRATION_OUTPUT="<new migration output directory>"
 TFMIGRATE_PACKAGE="github.com/descope/terraform-provider-descope/tools/tfmigrate@v${TARGET_PROVIDER_VERSION}"
+```
 
 The target release must contain `tools/tfmigrate`. `TFMIGRATE_PACKAGE` must remain unchanged for the entire migration. Before reading state, confirm the pinned utility is available:
 
@@ -164,14 +165,20 @@ Pin the new target provider version. Remove `detach/removed.tf`, then place thes
 - `adopt/versions.tf`
 - `adopt/payloads/`
 
-`adopt/main.tf`, `adopt/variables.tf`, and `adopt/payloads/` belong in the module that declared the legacy resource. `adopt/imports.tf` belongs in the root module because import blocks are root-only. Place `adopt/versions.tf` as directed by the generated `README.md` and preserve the relative payload paths.
-
-Reconnect every temporary literal introduced during detach to the restored `descope_project` address from `adopt/main.tf`, preserving the original module output contracts, then run `terraform validate`. Do not continue until every temporary literal has been removed and the configuration validates.
-
-Supply the sensitive variables listed in `SECRETS.md` from the operator's own secret store. For a root resource, `TF_VAR_<name>` is acceptable. For a child module, `TF_VAR_*` only populates root inputs: add matching sensitive variables at the root and every parent module, then pass each value through the existing module call chain exactly as `SECRETS.md` directs. Never place secret values in module blocks or a committed `.tfvars` file. Then run:
+`adopt/main.tf`, `adopt/variables.tf`, and `adopt/payloads/` belong in the module that declared the legacy resource. `adopt/imports.tf` belongs in the root module because import blocks are root-only. Place `adopt/versions.tf` as directed by the generated `README.md` and preserve the relative payload paths. Initialize the target provider before validating:
 
 ```bash
 terraform init -upgrade
+```
+
+Supply the sensitive variables listed in `SECRETS.md` from the operator's own secret store. For a root resource, `TF_VAR_<name>` is acceptable. For a child module, `TF_VAR_*` only populates root inputs: add matching sensitive variables at the root and every parent module, then pass each value through the existing module call chain exactly as `SECRETS.md` directs. Never place secret values in module blocks or a committed `.tfvars` file.
+
+Reconnect temporary literals for retained core attributes (`id`, `name`, `environment`, `tags`, and `deletion_protection`) to the restored `descope_project` address from `adopt/main.tf`. For each removed nested attribute, use its `legacy_path` in `"$MIGRATION_OUTPUT/manifest.json"` to find the standalone destination `address`, and reconnect the expression to that standalone resource instead. Never reconnect a removed nested attribute to `descope_project`. Preserve every original module output contract.
+
+Only after provider initialization, module-input wiring, and reference reconnection, run:
+
+```bash
+terraform validate
 (umask 077; terraform plan -out=adopt.tfplan)
 (umask 077; set -o noclobber; terraform show -json adopt.tfplan > adopt-plan.json)
 go run "$TFMIGRATE_PACKAGE" verify-plan -plan adopt-plan.json -manifest "$MIGRATION_OUTPUT/manifest.json"
