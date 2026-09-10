@@ -16,7 +16,7 @@ var Schema = schema.Schema{
 var TextTemplateAttributes = map[string]schema.Attribute{
 	"id":         stringattr.Identifier(),
 	"project_id": stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"method":     stringattr.Required(stringvalidator.OneOf("enchantedlink", "magiclink", "otp"), stringplanmodifier.RequiresReplace()),
+	"method":     stringattr.Required(stringvalidator.OneOf("magiclink", "otp"), stringplanmodifier.RequiresReplace()),
 	"name":       stringattr.Required(),
 	"body":       stringattr.Required(),
 }

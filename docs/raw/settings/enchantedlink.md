@@ -52,15 +52,6 @@ The ID of an email connector to use for sending emails. An empty value (the defa
 
 
 
-text_connector_id
------------------
-
-- Type: `string`
-
-The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.
-
-
-
 email_template_id
 -----------------
 
@@ -69,13 +60,3 @@ email_template_id
 The ID of the email template to send to users, taken from a `descope_email_template` resource with
 its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System
 template.
-
-
-
-text_template_id
-----------------
-
-- Type: `string`
-
-The ID of the text template to send to users, taken from a `descope_text_template` resource with
-its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.
