@@ -1,0 +1,45 @@
+{
+  "lineage": "55555555-5555-5555-5555-555555555555",
+  "outputs": {},
+  "resources": [
+    {
+      "instances": [
+        {
+          "attributes": {
+            "environment": "",
+            "id": "P2acme",
+            "name": "Acme",
+            "tags": []
+          },
+          "schema_version": 0
+        }
+      ],
+      "mode": "managed",
+      "module": "module.tenant[\"acme\"]",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "type": "descope_project"
+    },
+    {
+      "instances": [
+        {
+          "attributes": {
+            "environment": "",
+            "id": "P2beta",
+            "name": "Beta",
+            "tags": []
+          },
+          "schema_version": 0
+        }
+      ],
+      "mode": "managed",
+      "module": "module.tenant[\"beta\"]",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "type": "descope_project"
+    }
+  ],
+  "serial": 1,
+  "terraform_version": "1.9.5",
+  "version": 4
+}
