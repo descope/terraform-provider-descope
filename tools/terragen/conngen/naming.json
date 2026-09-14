@@ -360,6 +360,11 @@
       "file": "unibeam",
       "struct": "Unibeam"
     },
+    "vonage": {
+      "attribute": "vonage",
+      "file": "vonage",
+      "struct": "Vonage"
+    },
     "zerobounce": {
       "attribute": "zerobounce",
       "file": "zerobounce",

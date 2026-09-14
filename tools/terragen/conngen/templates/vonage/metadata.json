@@ -1,0 +1,26 @@
+{
+  "id": "vonage",
+  "name": "Vonage",
+  "extProvider": true,
+  "description": "Send text messages through Vonage.",
+  "fields": [
+    {
+      "name": "apiKey",
+      "description": "The Vonage API key.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "apiSecret",
+      "description": "The Vonage API secret.",
+      "type": "secret",
+      "required": true
+    },
+    {
+      "name": "from",
+      "description": "The sender ID or phone number that text messages are sent from.",
+      "type": "string",
+      "required": true
+    }
+  ]
+}

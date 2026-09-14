@@ -1358,6 +1358,15 @@ var docsUnibeamConnector = map[string]string{
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
+var docsVonageConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_key":     "The Vonage API key.",
+	"api_secret":  "The Vonage API secret.",
+	"sender":      "The sender ID or phone number that text messages are sent from.",
+}
+
 var docsZeroBounceConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
