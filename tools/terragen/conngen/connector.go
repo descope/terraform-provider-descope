@@ -233,6 +233,11 @@ func (c *Connector) Prepare() {
 			f.Type = FieldTypeString
 		}
 
+		// a select is a string constrained to its options, which the generated OneOf validator already enforces
+		if f.Type == "select" {
+			f.Type = FieldTypeString
+		}
+
 		// treat secret file fields as regular secret fields, as they are essentially identical
 		if f.Type == "secret-file" || f.Type == "secret-json-file" {
 			f.Type = FieldTypeSecret

@@ -28,6 +28,7 @@ Manages a Fingerprint connector and its configuration in a Descope project. Prev
 - `cloudflare_script_url` (String) The Cloudflare integration Script URL.
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
+- `region` (String) The Fingerprint region your workspace belongs to: `us` (default), `eu`, or `ap`. A workspace is bound to one region and cannot be moved; using the wrong one returns 403 on every request. Find it in your Fingerprint dashboard.
 - `use_cloudflare_integration` (Boolean) Enable to configure the relevant Cloudflare integration parameters if Cloudflare integration is set in your Fingerprint account.
 
 ### Read-Only
