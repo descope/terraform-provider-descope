@@ -43,9 +43,7 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 
 	"pkce":        boolattr.Default(false),
 	"access_type": stringattr.Default("", stringvalidator.OneOf("", "offline", "online")),
-	"prompt": strsetattr.Default(setvalidator.ValueStringsAre(
-		stringvalidator.OneOf("none", "login", "consent", "select_account"),
-	)),
+	"prompt":      strsetattr.Default(setvalidator.ValueStringsAre(stringvalidator.OneOf("none", "login", "consent", "select_account"))),
 }
 
 type OutboundAppModel struct {
