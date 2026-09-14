@@ -38,6 +38,7 @@ var sweepTargets = []sweepTarget{
 	{name: "permission", list: listWithGet("/v1/mgmt/permission/all", "permissions"), delete: deleteByField("/v1/mgmt/permission/delete", "name")},
 	{name: "jwt_template", list: listWithPost("/v1/mgmt/jwt/templates/list", "templates"), delete: deleteByField("/v1/mgmt/jwt/templates/delete", "id")},
 	{name: "access_key", list: listWithPost("/v1/mgmt/accesskey/search", "keys"), delete: deleteInfraEntity("access_key")},
+	{name: "outbound_app", list: listWithGet("/v1/mgmt/outbound/apps", "apps"), delete: deleteByField("/v1/mgmt/outbound/app/delete", "id")},
 }
 
 // Removes leftover testacc- entities from the shared test project; leaked dynamic projects are removed by the testcleanup make target.
