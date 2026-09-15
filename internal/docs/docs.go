@@ -1611,6 +1611,41 @@ var docsAppleKeyGeneratorModel = map[string]string{
 	"private_key": "The apple generator private key produced by Apple.",
 }
 
+var docsOutboundApp = map[string]string{
+	"project_id": "The ID of the Descope project this outbound application belongs to. Changing this value will " +
+		"require the resource to be deleted and recreated.",
+	"name":        "A name for the outbound application.",
+	"description": "A description for the outbound application.",
+	"logo":        "A URL for an image to display as the outbound application's logo.",
+	"app_type": "The kind of credential this application holds. Use `oauth` for an application that runs the OAuth " +
+		"flow, so that Descope obtains and refreshes tokens on the user's behalf, or `apikey` for an " +
+		"application whose tokens are uploaded directly and never refreshed.",
+	"client_id": "The OAuth client ID issued by the third party provider.",
+	"client_secret": "The OAuth client secret issued by the third party provider. The Descope API never returns this " +
+		"value, so it cannot be read back and is not verified against the server. Omitting the field leaves " +
+		"any previously stored secret in place, while setting it to a new value replaces it. An empty " +
+		"string is not accepted.",
+	"discovery_url":     "The provider's OpenID Connect discovery endpoint, used to look up its other endpoints.",
+	"authorization_url": "The provider's authorization endpoint, which users are redirected to in order to grant consent.",
+	"authorization_url_params": "Additional query parameters to append to the authorization request, for providers that require " +
+		"them.",
+	"token_url":        "The provider's token endpoint, used to exchange an authorization code and to refresh tokens.",
+	"token_url_params": "Additional query parameters to append to the token request, for providers that require them.",
+	"revocation_url":   "The provider's token revocation endpoint.",
+	"default_scopes":   "The scopes requested from the provider when no scopes are given for a specific connection.",
+	"default_redirect_url": "The URL that users are returned to once they have finished granting or denying consent at the " +
+		"provider. This can be overridden per connection.",
+	"callback_domain": "The domain that the provider redirects back to after consent. Leave this empty to use the project's " +
+		"configured domain.",
+	"pkce": "Whether to use PKCE when exchanging the authorization code, which is required by some providers and " +
+		"recommended by all of them.",
+	"access_type": "Whether the provider should issue a refresh token alongside the access token. Use `offline` to " +
+		"request one, so that Descope can keep the connection alive without the user present, or `online` " +
+		"for an access token only.",
+	"prompt": "How the provider should behave when the user is already signed in. Common values are `none`, " +
+		"`login`, `consent` and `select_account`.",
+}
+
 var docsPermission = map[string]string{
 	"project_id": "The ID of the project that this permission belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",

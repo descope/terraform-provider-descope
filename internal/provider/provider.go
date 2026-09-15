@@ -148,6 +148,7 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewOIDCAppResource,
 		resources.NewSAMLAppResource,
 		resources.NewWSFedAppResource,
+		resources.NewOutboundAppResource,
 		resources.NewAppRoleResource,
 		resources.NewAppPermissionResource,
 		resources.NewFGASchemaResource,
