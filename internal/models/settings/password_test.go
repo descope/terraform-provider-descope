@@ -82,21 +82,20 @@ func TestPasswordSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"min_length":       8,
-				"non_alphanumeric": true,
-				"expiration":       false,
-				"lock":             false,
-				"enforce_strength": "none",
-				"mask_errors":      true,
+				"min_length":         8,
+				"non_alphanumeric":   true,
+				"expiration":         false,
+				"lock":               false,
+				"enforce_strength":   "none",
+				"mask_errors":        true,
+				"email_connector_id": "",
 			}),
 		},
-		// email_service is server-populated on read, so it is outside the import contract
 		resource.TestStep{
-			ResourceName:            m.Path(),
-			ImportState:             true,
-			ImportStateVerify:       true,
-			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
-			ImportStateVerifyIgnore: []string{"email_service"},
+			ResourceName:      m.Path(),
+			ImportState:       true,
+			ImportStateVerify: true,
+			ImportStateIdFunc: testacc.GenerateImportStateID(m.Path(), "project_id"),
 		},
 	)
 }
@@ -143,14 +142,12 @@ func TestPasswordSettingsTemplates(t *testing.T) {
 				html_body = "Follow the link in this email to reset your password"
 			`) + m.Block(`
 				project_id = "`+projectID+`"
-				email_service = {
-					connector_id = `+c.Path()+`.id
-				}
+				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
 			`),
 			Check: m.Check(map[string]any{
-				"email_service.connector_id": testacc.AttributeIsSet,
-				"email_template_id":          testacc.AttributeIsSet,
+				"email_connector_id": testacc.AttributeIsSet,
+				"email_template_id":  testacc.AttributeIsSet,
 			}),
 		},
 	)

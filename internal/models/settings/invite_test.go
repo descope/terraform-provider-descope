@@ -64,13 +64,13 @@ func TestInviteSettings(t *testing.T) {
 				"send_text":            false,
 			}),
 		},
-		// email_service is server-populated on read; invite_expiration unit is normalized to plural on read
+		// invite_expiration unit is normalized to plural on read
 		resource.TestStep{
 			ResourceName:            m.Path(),
 			ImportState:             true,
 			ImportStateVerify:       true,
 			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
-			ImportStateVerifyIgnore: []string{"email_service", "invite_expiration"},
+			ImportStateVerifyIgnore: []string{"invite_expiration"},
 		},
 	)
 }
@@ -78,37 +78,32 @@ func TestInviteSettings(t *testing.T) {
 func TestInviteSettingsTemplates(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	c := testacc.NewResource(t, "generic_email_gateway_connector")
+	name := testacc.GenerateAlias(t)
+	e := testacc.EmailTemplate(t)
 	m := testacc.InviteSettings(t)
 	testacc.Run(t,
-		// a custom email connector with an active template
+		// a custom email connector with an active template selected by reference
 		resource.TestStep{
 			Config: c.Config(`
 				project_id = "`+projectID+`"
 				post_url = "https://mail.example.com/send"
+			`) + e.Block(`
+				project_id = "`+projectID+`"
+				method = "invite"
+				name = "`+name+`"
+				subject = "You're invited"
+				html_body = "Follow the link in this email to join"
 			`) + m.Block(`
 				project_id = "`+projectID+`"
-				email_service = {
-					connector_id = `+c.Path()+`.id
-					templates = [
-						{
-							name = "custom"
-							subject = "You're invited"
-							html_body = "Follow the link in this email to join"
-							active = true
-						}
-					]
-				}
+				email_connector_id = `+c.Path()+`.id
+				email_template_id = `+e.Path()+`.id
 			`),
 			Check: m.Check(map[string]any{
-				"email_service.connector_id":        testacc.AttributeIsSet,
-				"email_service.templates.#":         "1",
-				"email_service.templates.0.id":      testacc.AttributeIsSet,
-				"email_service.templates.0.name":    "custom",
-				"email_service.templates.0.subject": "You're invited",
-				"email_service.templates.0.active":  true,
+				"email_connector_id": testacc.AttributeIsSet,
+				"email_template_id":  testacc.AttributeIsSet,
 			}),
 		},
-		// removing the email service block resets delivery to the built-in Descope service
+		// dropping the references resets delivery and the template to the built-in ones
 		resource.TestStep{
 			Config: c.Config(`
 				project_id = "`+projectID+`"
@@ -117,8 +112,9 @@ func TestInviteSettingsTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 			`),
 			Check: m.Check(map[string]any{
-				"send_email":    true,
-				"email_service": testacc.AttributeIsNotSet,
+				"send_email":         true,
+				"email_connector_id": "",
+				"email_template_id":  "",
 			}),
 		},
 	)

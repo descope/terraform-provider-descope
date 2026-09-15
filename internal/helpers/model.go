@@ -6,10 +6,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
-const (
-	DescopeConnector = "Descope"
-	DescopeTemplate  = "System"
-)
+const DescopeTemplate = "System"
 
 // Pointer receiver interface for model objects.
 type Model[T any] interface {

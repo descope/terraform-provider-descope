@@ -80,9 +80,19 @@ Whether to send invitation SMS messages to users.
 
 
 
-email_service
--------------
+email_connector_id
+------------------
 
-- Type: `object` of `templates.EmailServiceID`
+- Type: `string`
 
-Settings related to sending invitation emails.
+The ID of an email connector to use for sending invitation emails. An empty value (the default) selects the built-in Descope delivery service.
+
+
+
+email_template_id
+-----------------
+
+- Type: `string`
+
+The ID of the email template to send to invited users, taken from a `descope_email_template` resource
+with its `method` set to `invite`. An empty value (the default) selects the built-in System template.

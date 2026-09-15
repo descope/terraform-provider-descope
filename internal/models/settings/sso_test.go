@@ -135,15 +135,14 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.show_xaa":             false,
 				"sso_suite_settings.support_email":        "",
 				"sso_suite_settings.show_help_contact":    false,
+				"email_connector_id":                      "",
 			}),
 		},
-		// email_service is server-populated on read, so it is outside the import contract
 		resource.TestStep{
-			ResourceName:            m.Path(),
-			ImportState:             true,
-			ImportStateVerify:       true,
-			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
-			ImportStateVerifyIgnore: []string{"email_service"},
+			ResourceName:      m.Path(),
+			ImportState:       true,
+			ImportStateVerify: true,
+			ImportStateIdFunc: testacc.GenerateImportStateID(m.Path(), "project_id"),
 		},
 	)
 }
@@ -168,14 +167,12 @@ func TestSSOSettingsTemplates(t *testing.T) {
 				html_body = "Follow the link in this email to connect"
 			`) + m.Block(`
 				project_id = "`+projectID+`"
-				email_service = {
-					connector_id = `+c.Path()+`.id
-				}
+				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
 			`),
 			Check: m.Check(map[string]any{
-				"email_service.connector_id": testacc.AttributeIsSet,
-				"email_template_id":          testacc.AttributeIsSet,
+				"email_connector_id": testacc.AttributeIsSet,
+				"email_template_id":  testacc.AttributeIsSet,
 			}),
 		},
 		// Dropping the reference resets the selection to the built-in System template; the settings update runs first, so the same apply can destroy it.

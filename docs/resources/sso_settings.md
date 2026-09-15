@@ -26,7 +26,7 @@ Manages the project-level SSO authentication settings. This is a singleton resou
 - `allow_override_roles` (Boolean) Whether to allow overriding user's roles with SSO related roles.
 - `block_if_email_domain_mismatch` (Boolean) Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.
 - `disabled` (Boolean) Setting this to `true` will disallow using SSO authentication directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use SSO.
-- `email_service` (Attributes) Settings related to sending SSO invite emails as part of the SSO feature. (see [below for nested schema](#nestedatt--email_service))
+- `email_connector_id` (String) The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.
 - `email_template_id` (String) The ID of the email template for SSO configuration invitation emails, taken from a `descope_email_template` resource with its `method` set to `sso`. An empty value (the default) selects the built-in System template.
 - `groups_priority` (Boolean) Whether to enable groups priority.
 - `limit_mapping_to_mandatory_attributes` (Boolean) Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
@@ -41,14 +41,6 @@ Manages the project-level SSO authentication settings. This is a singleton resou
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-<a id="nestedatt--email_service"></a>
-### Nested Schema for `email_service`
-
-Optional:
-
-- `connector_id` (String) The ID of an email connector to use for sending emails, or `Descope` (the default) for the built-in Descope delivery service.
-
 
 <a id="nestedatt--mandatory_user_attributes"></a>
 ### Nested Schema for `mandatory_user_attributes`

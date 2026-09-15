@@ -6,6 +6,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
@@ -26,6 +27,7 @@ var FingerprintConnectorAttributes = map[string]schema.Attribute{
 
 	"public_api_key":             stringattr.Required(),
 	"secret_api_key":             stringattr.SecretRequired(),
+	"region":                     stringattr.Default("us", stringvalidator.OneOf("", "us", "eu", "ap")),
 	"use_cloudflare_integration": boolattr.Default(false),
 	"cloudflare_script_url":      stringattr.Default(""),
 	"cloudflare_endpoint_url":    stringattr.Default(""),
@@ -42,6 +44,7 @@ type FingerprintConnectorModel struct {
 
 	PublicAPIKey             stringattr.Type `tfsdk:"public_api_key"`
 	SecretAPIKey             stringattr.Type `tfsdk:"secret_api_key"`
+	Region                   stringattr.Type `tfsdk:"region"`
 	UseCloudflareIntegration boolattr.Type   `tfsdk:"use_cloudflare_integration"`
 	CloudflareScriptURL      stringattr.Type `tfsdk:"cloudflare_script_url"`
 	CloudflareEndpointURL    stringattr.Type `tfsdk:"cloudflare_endpoint_url"`
@@ -90,6 +93,7 @@ func (m *FingerprintConnectorModel) ConfigurationValues(h *helpers.Handler) map[
 	c := map[string]any{}
 	stringattr.Get(m.PublicAPIKey, c, "publicApiKey")
 	stringattr.Get(m.SecretAPIKey, c, "secretApiKey")
+	stringattr.Get(m.Region, c, "region")
 	boolattr.Get(m.UseCloudflareIntegration, c, "useCloudflareIntegration")
 	stringattr.Get(m.CloudflareScriptURL, c, "cloudflareScriptUrl")
 	stringattr.Get(m.CloudflareEndpointURL, c, "cloudflareEndpointUrl")
@@ -99,6 +103,7 @@ func (m *FingerprintConnectorModel) ConfigurationValues(h *helpers.Handler) map[
 func (m *FingerprintConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.PublicAPIKey, c, "publicApiKey")
 	stringattr.Nil(&m.SecretAPIKey)
+	stringattr.Set(&m.Region, c, "region")
 	boolattr.Set(&m.UseCloudflareIntegration, c, "useCloudflareIntegration")
 	stringattr.Set(&m.CloudflareScriptURL, c, "cloudflareScriptUrl")
 	stringattr.Set(&m.CloudflareEndpointURL, c, "cloudflareEndpointUrl")
