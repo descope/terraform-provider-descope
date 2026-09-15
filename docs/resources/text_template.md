@@ -18,7 +18,7 @@ Manages a single text message template for an authentication method in a Descope
 ### Required
 
 - `body` (String) The body of text messages sent with this template. Template macros such as `{{.code}}` can be used to insert dynamic values.
-- `method` (String) The authentication method the text template is used with, e.g. `magiclink` or `otp`. Changing this value will require the resource to be deleted and recreated.
+- `method` (String) The authentication method the text template is used with, e.g. `magiclink`, `otp` or `enchantedlink`. Changing this value will require the resource to be deleted and recreated.
 - `name` (String) A name for the text template that's unique among the templates of the same authentication method.
 - `project_id` (String) The ID of the project that the text template belongs to. Changing this value will require the resource to be deleted and recreated.
 

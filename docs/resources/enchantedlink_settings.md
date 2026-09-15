@@ -26,6 +26,8 @@ Manages the project-level enchanted link authentication settings. This is a sing
 - `email_template_id` (String) The ID of the email template to send to users, taken from a `descope_email_template` resource with its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.
 - `expiration_time` (String) How long the enchanted link remains valid before it expires.
 - `redirect_url` (String) The URL to redirect users to after they log in using the enchanted link.
+- `text_service` (Attributes) Settings related to sending SMS messages as part of the enchanted link authentication. Omitting this block selects the built-in Descope delivery service, which also clears any custom text template that had been selected, so a project configured through the console will be reset by an apply that does not declare it. (see [below for nested schema](#nestedatt--text_service))
+- `text_template_id` (String) The ID of the text template to send to users, taken from a `descope_text_template` resource with its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.
 
 ### Read-Only
 
@@ -37,3 +39,11 @@ Manages the project-level enchanted link authentication settings. This is a sing
 Optional:
 
 - `connector_id` (String) The ID of an email connector to use for sending emails, or `Descope` (the default) for the built-in Descope delivery service.
+
+
+<a id="nestedatt--text_service"></a>
+### Nested Schema for `text_service`
+
+Optional:
+
+- `connector_id` (String) The ID of an SMS connector to use for sending text messages, or `Descope` (the default) for the built-in Descope delivery service.

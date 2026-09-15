@@ -52,6 +52,18 @@ Settings related to sending emails as part of the enchanted link authentication.
 
 
 
+text_service
+------------
+
+- Type: `object` of `settings.TextServiceRef`
+
+Settings related to sending SMS messages as part of the enchanted link authentication. Omitting this
+block selects the built-in Descope delivery service, which also clears any custom text template that
+had been selected, so a project configured through the console will be reset by an apply that does
+not declare it.
+
+
+
 email_template_id
 -----------------
 
@@ -60,3 +72,13 @@ email_template_id
 The ID of the email template to send to users, taken from a `descope_email_template` resource with
 its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System
 template.
+
+
+
+text_template_id
+----------------
+
+- Type: `string`
+
+The ID of the text template to send to users, taken from a `descope_text_template` resource with its
+`method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.
