@@ -22,9 +22,12 @@ var VonageConnectorAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"api_key":    stringattr.Required(),
-	"api_secret": stringattr.SecretRequired(),
-	"sender":     stringattr.Required(),
+	"api_key":          stringattr.Required(),
+	"api_secret":       stringattr.SecretRequired(),
+	"sender":           stringattr.Required(),
+	"application_id":   stringattr.Default(""),
+	"private_key":      stringattr.SecretOptional(),
+	"from_phone_voice": stringattr.Default(""),
 }
 
 // Model
@@ -35,9 +38,12 @@ type VonageConnectorModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	APIKey    stringattr.Type `tfsdk:"api_key"`
-	APISecret stringattr.Type `tfsdk:"api_secret"`
-	Sender    stringattr.Type `tfsdk:"sender"`
+	APIKey         stringattr.Type `tfsdk:"api_key"`
+	APISecret      stringattr.Type `tfsdk:"api_secret"`
+	Sender         stringattr.Type `tfsdk:"sender"`
+	ApplicationID  stringattr.Type `tfsdk:"application_id"`
+	PrivateKey     stringattr.Type `tfsdk:"private_key"`
+	FromPhoneVoice stringattr.Type `tfsdk:"from_phone_voice"`
 }
 
 func (m *VonageConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -64,6 +70,9 @@ func (m *VonageConnectorModel) ConfigurationValues(h *helpers.Handler) map[strin
 	stringattr.Get(m.APIKey, c, "apiKey")
 	stringattr.Get(m.APISecret, c, "apiSecret")
 	stringattr.Get(m.Sender, c, "from")
+	stringattr.Get(m.ApplicationID, c, "applicationId")
+	stringattr.Get(m.PrivateKey, c, "privateKey")
+	stringattr.Get(m.FromPhoneVoice, c, "fromPhoneVoice")
 	return c
 }
 
@@ -71,6 +80,9 @@ func (m *VonageConnectorModel) SetConfigurationValues(c map[string]any, h *helpe
 	stringattr.Set(&m.APIKey, c, "apiKey")
 	stringattr.Nil(&m.APISecret)
 	stringattr.Set(&m.Sender, c, "from")
+	stringattr.Set(&m.ApplicationID, c, "applicationId")
+	stringattr.Nil(&m.PrivateKey)
+	stringattr.Set(&m.FromPhoneVoice, c, "fromPhoneVoice")
 }
 
 func (m *VonageConnectorModel) GetID() stringattr.Type        { return m.ID }
