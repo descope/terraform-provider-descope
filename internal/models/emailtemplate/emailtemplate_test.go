@@ -119,9 +119,7 @@ func TestMagicLinkTemplatesAndSettings(t *testing.T) {
 		resource.TestStep{
 			Config: templates + settings.Block(`
 				project_id = "`+projectID+`"
-				email_service = {
-					connector_id = `+connector.Path()+`.id
-				}
+				email_connector_id = `+connector.Path()+`.id
 				email_template_id = `+welcome.Path()+`.id
 			`),
 			Check: resource.ComposeAggregateTestCheckFunc(
@@ -134,9 +132,7 @@ func TestMagicLinkTemplatesAndSettings(t *testing.T) {
 		resource.TestStep{
 			Config: templates + settings.Block(`
 				project_id = "`+projectID+`"
-				email_service = {
-					connector_id = `+connector.Path()+`.id
-				}
+				email_connector_id = `+connector.Path()+`.id
 				email_template_id = `+reminder.Path()+`.id
 			`),
 			Check: settings.Check(map[string]any{"email_template_id": testacc.AttributeIsSet}),

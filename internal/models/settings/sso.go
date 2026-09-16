@@ -36,7 +36,7 @@ var SSOSettingsAttributes = map[string]schema.Attribute{
 	"mark_email_as_unverified":                boolattr.Default(false),
 	"allow_merge_users_with_multiple_tenants": boolattr.Default(false),
 	"sso_suite_settings":                      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
-	"email_service":                           objattr.Default[EmailServiceRefModel](nil, EmailServiceRefAttributes),
+	"email_connector_id":                      stringattr.Default(""),
 	"email_template_id":                       stringattr.Default(""),
 }
 
@@ -57,7 +57,7 @@ type SSOSettingsModel struct {
 	MarkEmailAsUnverified              boolattr.Type                              `tfsdk:"mark_email_as_unverified"`
 	AllowMergeUsersWithMultipleTenants boolattr.Type                              `tfsdk:"allow_merge_users_with_multiple_tenants"`
 	SSOSuiteSettings                   objattr.Type[SSOSuiteModel]                `tfsdk:"sso_suite_settings"`
-	EmailService                       objattr.Type[EmailServiceRefModel]         `tfsdk:"email_service"`
+	EmailConnectorID                   stringattr.Type                            `tfsdk:"email_connector_id"`
 	EmailTemplateID                    stringattr.Type                            `tfsdk:"email_template_id"`
 }
 
@@ -77,11 +77,8 @@ func (m *SSOSettingsModel) Values(h *helpers.Handler) map[string]any {
 	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
-	objattr.Get(m.EmailService, data, helpers.RootKey, h)
+	stringattr.Get(m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
-
-	useDescopeService(m.EmailService, data, "emailServiceProvider")
-
 	return data
 }
 
@@ -100,7 +97,7 @@ func (m *SSOSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
 
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
-	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
+	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
 }
 

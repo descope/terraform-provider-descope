@@ -17,24 +17,29 @@ Manages a Snowflake connector and its configuration in a Descope project. Stream
 
 ### Required
 
-- `api_key` (String, Sensitive) A Snowflake Programmatic Access Token (PAT). The token's user must have CREATE DATABASE privileges, unless Self Provision is enabled - in which case it only needs write access to the table you created.
-- `database` (String) The Snowflake database to use. Defaults to `DESCOPE_EXPORT_DB`.
+- `database` (String) The Snowflake database, exactly as stored (unquoted names are uppercased: descope_db->DESCOPE_DB). Run SHOW DATABASES to check. Defaults to `DESCOPE_EXPORT_DB`.
 - `name` (String) A custom name for your connector.
 - `project_id` (String) The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.
-- `schema` (String) The schema within the database. Defaults to `PUBLIC`.
+- `schema` (String) The schema within the database, exactly as stored (unquoted names are uppercased: public->PUBLIC). Run SHOW SCHEMAS to check. Defaults to `PUBLIC`.
 - `site` (String) Your Snowflake account URL, e.g. `https://<org>-<account>.snowflakecomputing.com`.
-- `warehouse` (String) The Snowflake warehouse to use. Defaults to `COMPUTE_WH`.
+- `warehouse` (String) The Snowflake warehouse, exactly as stored (unquoted names are uppercased: descope_wh->DESCOPE_WH). Run SHOW WAREHOUSES to check. Defaults to `COMPUTE_WH`.
 
 ### Optional
 
+- `account_identifier` (String) Overrides the account identifier derived from the Account URL. Only needed for PrivateLink or legacy region locators.
+- `api_key` (String, Sensitive) A Snowflake Programmatic Access Token (PAT). The token's user must have CREATE DATABASE privileges, unless Self Provision is enabled - in which case it only needs write access to the table you created.
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--audit_filters))
-- `audit_table` (String) The table to write audit events to. Defaults to `DESCOPE_AUDIT_LOGS`.
+- `audit_table` (String) The table to write audit events to, exactly as stored (unquoted names are uppercased: audit_logs->AUDIT_LOGS). Run SHOW TABLES to check. Defaults to `DESCOPE_AUDIT_LOGS`.
+- `auth_type` (String) How Descope authenticates to the Snowflake SQL API. See the connector documentation for the setup steps of each method.
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
 - `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
 - `min_flush_interval_minutes` (Number) The minimum time between writes to Snowflake, in minutes. When set, events are accumulated and written in a single batch at most once per interval, which lets the warehouse auto-suspend between writes and reduces cost. Set to 0 (or leave empty) to write events according to the default Descope cycle.
-- `self_provision` (Boolean) Create the database, table and schema in Snowflake manually instead of allowing the connector to create them. Useful when the user associated with the Programmatic Access Token is restricted to minimal or write-only privileges.
+- `private_key` (String, Sensitive) The private key in PEM format, RSA 2048-bit or stronger. Descope reads PKCS#8 encrypted with PBES2, or unencrypted PKCS#8 or PKCS#1. For Snowflake's own key-pair requirements see https://docs.snowflake.com/en/user-guide/key-pair-auth.
+- `private_key_passphrase` (String, Sensitive) Required only if the private key is passphrase-protected. Leave empty for an unencrypted key.
+- `self_provision` (Boolean) Create the database, table and schema in Snowflake manually instead of allowing the connector to create them. Useful when the Snowflake user Descope authenticates as is restricted to minimal or write-only privileges.
+- `snowflake_user` (String) The Snowflake user Descope authenticates as. The public key must be registered on this user with `ALTER USER ... SET RSA_PUBLIC_KEY`.
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
 
 ### Read-Only

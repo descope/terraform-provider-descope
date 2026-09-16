@@ -43,12 +43,12 @@ The URL to redirect users to after they log in using the enchanted link.
 
 
 
-email_service
--------------
+email_connector_id
+------------------
 
-- Type: `object` of `settings.EmailServiceRef`
+- Type: `string`
 
-Settings related to sending emails as part of the enchanted link authentication.
+The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.
 
 
 

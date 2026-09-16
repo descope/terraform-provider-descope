@@ -17,7 +17,7 @@ var Schema = schema.Schema{
 var EmailTemplateAttributes = map[string]schema.Attribute{
 	"id":                  stringattr.Identifier(),
 	"project_id":          stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"method":              stringattr.Required(stringvalidator.OneOf("enchantedlink", "magiclink", "otp", "password", "sso"), stringplanmodifier.RequiresReplace()),
+	"method":              stringattr.Required(stringvalidator.OneOf("enchantedlink", "invite", "magiclink", "otp", "password", "sso"), stringplanmodifier.RequiresReplace()),
 	"name":                stringattr.Required(),
 	"subject":             stringattr.Required(),
 	"html_body":           stringattr.Default(""),

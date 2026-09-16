@@ -22,7 +22,8 @@ Manages the project-level user invitation settings. This is a singleton resource
 ### Optional
 
 - `add_magiclink_token` (Boolean) Whether to include a magic link token in invitation messages.
-- `email_service` (Attributes) Settings related to sending invitation emails. (see [below for nested schema](#nestedatt--email_service))
+- `email_connector_id` (String) The ID of an email connector to use for sending invitation emails. An empty value (the default) selects the built-in Descope delivery service.
+- `email_template_id` (String) The ID of the email template to send to invited users, taken from a `descope_email_template` resource with its `method` set to `invite`. An empty value (the default) selects the built-in System template.
 - `expire_invited_users` (Boolean) Expire the user account if the invitation is not accepted within the expiration time.
 - `invite_expiration` (String) The expiry time for the invitation, meant to be used together with `expire_invited_users` and/or `add_magiclink_token`. Use values such as "2 weeks", "4 days", etc. The minimum value is "1 hour".
 - `invite_url` (String) Custom URL to include in the message sent to invited users.
@@ -33,30 +34,3 @@ Manages the project-level user invitation settings. This is a singleton resource
 ### Read-Only
 
 - `id` (String) The ID of this resource.
-
-<a id="nestedatt--email_service"></a>
-### Nested Schema for `email_service`
-
-Optional:
-
-- `connector_id` (String) The ID of the email connector to use for sending emails, or `"Descope"` to use the built-in Descope email delivery service.
-- `templates` (Attributes List) A list of email templates for different authentication flows. (see [below for nested schema](#nestedatt--email_service--templates))
-
-<a id="nestedatt--email_service--templates"></a>
-### Nested Schema for `email_service.templates`
-
-Required:
-
-- `name` (String) Unique name for this email template.
-- `subject` (String) Subject line of the email message.
-
-Optional:
-
-- `active` (Boolean) Whether this email template is currently active and in use.
-- `html_body` (String) HTML content of the email message body, required if `use_plain_text_body` isn't set.
-- `plain_text_body` (String) Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.
-- `use_plain_text_body` (Boolean) Whether to use the plain text body instead of HTML for the email.
-
-Read-Only:
-
-- `id` (String)

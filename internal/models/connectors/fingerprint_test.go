@@ -19,6 +19,7 @@ func TestFingerprintConnector(t *testing.T) {
 				project_id = "` + projectID + `"
 				public_api_key = "htt624yz4z6i"
 				secret_api_key = "qxt75gbg4234"
+				region = "us"
 				use_cloudflare_integration = false
 				cloudflare_script_url = null
 				cloudflare_endpoint_url = null
@@ -31,6 +32,7 @@ func TestFingerprintConnector(t *testing.T) {
 				"disabled":                   false,
 				"public_api_key":             "htt624yz4z6i",
 				"secret_api_key":             "qxt75gbg4234",
+				"region":                     "us",
 				"use_cloudflare_integration": false,
 				"cloudflare_script_url":      "",
 				"cloudflare_endpoint_url":    "",
@@ -44,6 +46,7 @@ func TestFingerprintConnector(t *testing.T) {
 				disabled = true
 				public_api_key = "sa3gjeq6eyuu"
 				secret_api_key = "lakzwr5kwwzs"
+				region = "us"
 				use_cloudflare_integration = false
 				cloudflare_script_url = null
 				cloudflare_endpoint_url = null
@@ -53,6 +56,7 @@ func TestFingerprintConnector(t *testing.T) {
 				"disabled":                   true,
 				"public_api_key":             "sa3gjeq6eyuu",
 				"secret_api_key":             "lakzwr5kwwzs",
+				"region":                     "us",
 				"use_cloudflare_integration": false,
 				"cloudflare_script_url":      "",
 				"cloudflare_endpoint_url":    "",

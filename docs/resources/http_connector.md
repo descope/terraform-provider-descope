@@ -31,6 +31,9 @@ Manages a Generic HTTP connector and its configuration in a Descope project. A g
 - `aws_role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
 - `aws_secret_access_key` (String, Sensitive) The secret AWS access key.
 - `aws_service` (String) The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.
+- `ca_certificate` (String, Sensitive) The Certificate Authority certificate in PEM format, for endpoints whose server certificate is signed by a private or internal CA. Leave empty to verify against the public trust store.
+- `client_certificate` (String, Sensitive) The client certificate in PEM format for mTLS authentication.
+- `client_key` (String, Sensitive) The client private key in PEM format for mTLS authentication.
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
 - `headers` (Map of String) The headers to send with the request
@@ -43,6 +46,7 @@ Manages a Generic HTTP connector and its configuration in a Descope project. A g
 - `rfc9421_signature_ttl` (Number) How long the signature is valid for, in seconds. Default is 300 seconds (5 minutes). The signature includes automatic replay protection via a randomly generated nonce
 - `rfc9421_signing_enabled` (Boolean) Enable RFC 9421 HTTP Message Signatures for cryptographically signing requests. Supports multiple algorithms including ECDSA, Ed25519, RSA, and HMAC
 - `secret_headers` (Map of String, Sensitive) The headers to send with the request. Values set here are stored encrypted and are never returned by the API, so they are not read back into the Terraform state.
+- `use_mtls` (Boolean) Present a client certificate during the TLS handshake. Requires an `https://` base URL. Independent of the Authentication method above, so it can be combined with a bearer token, API key, basic auth or OAuth 2.0 client credentials.
 - `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 ### Read-Only

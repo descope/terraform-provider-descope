@@ -3,7 +3,6 @@ package settings
 import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/durationattr"
-	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -19,23 +18,23 @@ var EnchantedLinkSettingsSchema = schema.Schema{
 }
 
 var EnchantedLinkSettingsAttributes = map[string]schema.Attribute{
-	"id":                stringattr.Identifier(),
-	"project_id":        stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"disabled":          boolattr.Default(false),
-	"expiration_time":   durationattr.Default("3 minutes", durationattr.MinimumValue("1 minute")),
-	"redirect_url":      stringattr.Default("", stringattr.URLValidator),
-	"email_service":     objattr.Default[EmailServiceRefModel](nil, EmailServiceRefAttributes),
-	"email_template_id": stringattr.Default(""),
+	"id":                 stringattr.Identifier(),
+	"project_id":         stringattr.Required(stringplanmodifier.RequiresReplace()),
+	"disabled":           boolattr.Default(false),
+	"expiration_time":    durationattr.Default("3 minutes", durationattr.MinimumValue("1 minute")),
+	"redirect_url":       stringattr.Default("", stringattr.URLValidator),
+	"email_connector_id": stringattr.Default(""),
+	"email_template_id":  stringattr.Default(""),
 }
 
 type EnchantedLinkSettingsModel struct {
-	ID              stringattr.Type                    `tfsdk:"id"`
-	ProjectID       stringattr.Type                    `tfsdk:"project_id"`
-	Disabled        boolattr.Type                      `tfsdk:"disabled"`
-	ExpirationTime  stringattr.Type                    `tfsdk:"expiration_time"`
-	RedirectURL     stringattr.Type                    `tfsdk:"redirect_url"`
-	EmailService    objattr.Type[EmailServiceRefModel] `tfsdk:"email_service"`
-	EmailTemplateID stringattr.Type                    `tfsdk:"email_template_id"`
+	ID               stringattr.Type `tfsdk:"id"`
+	ProjectID        stringattr.Type `tfsdk:"project_id"`
+	Disabled         boolattr.Type   `tfsdk:"disabled"`
+	ExpirationTime   stringattr.Type `tfsdk:"expiration_time"`
+	RedirectURL      stringattr.Type `tfsdk:"redirect_url"`
+	EmailConnectorID stringattr.Type `tfsdk:"email_connector_id"`
+	EmailTemplateID  stringattr.Type `tfsdk:"email_template_id"`
 }
 
 func (m *EnchantedLinkSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -43,11 +42,8 @@ func (m *EnchantedLinkSettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.GetNot(m.Disabled, data, "enabled")
 	durationattr.Get(m.ExpirationTime, data, "expirationTime")
 	stringattr.Get(m.RedirectURL, data, "redirectUrl")
-	objattr.Get(m.EmailService, data, helpers.RootKey, h)
+	stringattr.Get(m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
-
-	useDescopeService(m.EmailService, data, "emailServiceProvider")
-
 	return data
 }
 
@@ -55,7 +51,7 @@ func (m *EnchantedLinkSettingsModel) SetValues(h *helpers.Handler, data map[stri
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
 	stringattr.Set(&m.RedirectURL, data, "redirectUrl")
-	objattr.Set(&m.EmailService, data, helpers.RootKey, h)
+	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
 }
 

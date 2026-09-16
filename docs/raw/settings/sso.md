@@ -142,12 +142,12 @@ Configuration block for the SSO Suite.
 
 
 
-email_service
--------------
+email_connector_id
+------------------
 
-- Type: `object` of `settings.EmailServiceRef`
+- Type: `string`
 
-Settings related to sending SSO invite emails as part of the SSO feature.
+The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.
 
 
 
