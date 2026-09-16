@@ -21,7 +21,7 @@ using Terraform configuration files.
 * Modify project settings and authentication methods.
 * Create connectors, roles, permissions, applications and other entities.
 * Use custom themes and flows created in the Descope console.
-* Ensure dependencies between entities are satisfied.
+* Reference entities from one another so they're created in the right order.
 
 <br/>
 
@@ -65,95 +65,108 @@ resource "descope_project" "my_project" {
 Run `terraform plan` to ensure everything works, and then `terraform apply` if you want the project to actually
 be created.
 
+The `descope_project` resource manages the project itself and little else. Everything inside the project, from
+authentication methods to roles, connectors and flows, is a separate resource that points back at it with a
+`project_id` attribute. The examples below all assume the `my_project` resource declared above.
+
 <br/>
 
 ## Examples
 
-### Project Settings
+### Settings
 
-Override the default values for specified project settings:
+Override the default values for specified project settings, in this case the session settings:
 
 ```hcl
-resource "descope_project" "my_project" {
-  name = "My Project"
+resource "descope_session_settings" "my_settings" {
+  project_id = descope_project.my_project.id
 
-  project_settings = {
-    refresh_token_expiration = "3 weeks"
-    enable_inactivity = true
-    inactivity_time = "1 hour"
-  }
+  refresh_token_expiration = "3 weeks"
+  enable_inactivity = true
+  inactivity_time = "1 hour"
 }
 ```
 
+The other settings resources work the same way, such as `descope_project_settings` for domains and security,
+`descope_invite_settings` for user invitations, and `descope_otp_settings`, `descope_password_settings` and
+the rest for the authentication methods.
+
 ### Authorization
 
-Configure roles and permissions for users in the project:
+Configure roles and permissions for users in the project. Roles refer to permissions by name, so use the `name`
+attribute of the permission resources rather than hardcoding the names, and Terraform will know to create the
+permissions first:
 
 ```hcl
-resource "descope_project" "my_project" {
-  name = "My Project"
+resource "descope_permission" "build_apps" {
+  project_id = descope_project.my_project.id
+  name = "build-apps"
+  description = "Allowed to build and sign applications"
+}
 
-  authorization = {
-    roles = [
-      {
-        name = "App Developer"
-        description = "Builds apps and uploads new beta builds"
-        permissions = ["build-apps", "upload-builds", "install-builds"]
-      },
-      {
-        name = "App Tester"
-        description = "Installs and tests beta releases"
-        permissions = ["install-builds"]
-      },
-    ]
-    permissions = [
-      {
-        name = "build-apps"
-        description = "Allowed to build and sign applications"
-      },
-      {
-        name = "upload-builds"
-        description = "Allowed to upload new releases"
-      },
-      {
-        name = "install-builds"
-        description = "Allowed to install beta releases"
-      },
-    ]
-  }
+resource "descope_permission" "upload_builds" {
+  project_id = descope_project.my_project.id
+  name = "upload-builds"
+  description = "Allowed to upload new releases"
+}
+
+resource "descope_permission" "install_builds" {
+  project_id = descope_project.my_project.id
+  name = "install-builds"
+  description = "Allowed to install beta releases"
+}
+
+resource "descope_role" "app_developer" {
+  project_id = descope_project.my_project.id
+  name = "App Developer"
+  description = "Builds apps and uploads new beta builds"
+  permissions = [
+    descope_permission.build_apps.name,
+    descope_permission.upload_builds.name,
+    descope_permission.install_builds.name,
+  ]
+}
+
+resource "descope_role" "app_tester" {
+  project_id = descope_project.my_project.id
+  name = "App Tester"
+  description = "Installs and tests beta releases"
+  permissions = [descope_permission.install_builds.name]
 }
 ```
 
 ### Connectors and Flows
 
 Setup a flow called `sign-up-or-in` by creating it in the Descope console in a development
-project and exporting it as a `.json` file. The provider will ensure that any entities used
-by the flow such as connectors will be provided by the plan. In this example, we also configure
-an HTTP connector with the expected name `User Check` that the flow expects to be able to
-make use of.
+project and exporting it as a `.json` file. Any entities the flow relies on need to be in the
+plan as well, so in this example we also configure an HTTP connector with the expected name
+`User Check` that the flow expects to be able to make use of. The names in the flow data are
+matched against the entities in the project when the flow is imported, and nothing resolves them
+again afterwards, so the connector has to exist by then and `depends_on` is what guarantees it.
 
 ```hcl
-resource "descope_project" "my_project" {
-  name = "My Project"
+resource "descope_flow" "sign_up_or_in" {
+  project_id = descope_project.my_project.id
+  flow_id = "sign-up-or-in"
+  data = file("flows/sign-up-or-in.json")
 
-  flows = {
-    "sign-up-or-in" = {
-      data = file("flows/sign-up-or-in.json")
-    }
-  }
+  depends_on = [descope_http_connector.user_check]
+}
 
-  connectors = {
-    "http": [
-      {
-        name = "User Check"
-        description = "A connector for checking if a new user is allowed to sign up"
-        base_url = "https://example.com"
-        bearer_token = "<secret>"
-      }
-    ]
+resource "descope_http_connector" "user_check" {
+  project_id = descope_project.my_project.id
+  name = "User Check"
+  description = "A connector for checking if a new user is allowed to sign up"
+  base_url = "https://example.com"
+
+  authentication = {
+    bearer_token = "<secret>"
   }
 }
 ```
+
+There's a resource for every connector type, named after the connector itself, so an SMTP connector is
+a `descope_smtp_connector`, a Datadog connector is a `descope_datadog_connector`, and so on.
 
 <br/>
 
