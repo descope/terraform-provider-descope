@@ -123,9 +123,8 @@ func (c *Client) Delete(ctx context.Context, projectID, entity, entityID string)
 	return nil
 }
 
-// Post/PostData/PutData/Get/Del are thin helpers for dedicated per-resource endpoints. Unlike the
-// entity methods above they take a full path and don't wrap the body in an {entity,id,data} envelope —
-// the request/response bodies are the resource's JSON directly.
+// Post/PostData/PutData/Get/Del are thin helpers for dedicated per-resource endpoints: unlike the entity
+// methods above they take a full path and send the resource's JSON directly, not an {entity,id,data} envelope.
 
 func (c *Client) Post(ctx context.Context, projectID, path string, body map[string]any) error {
 	tflog.Info(ctx, "Starting POST request", map[string]any{"path": path, "body": debugRequest(body)})
