@@ -9,21 +9,21 @@ import (
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
-// A management key's authorization for a project comes from ReBAC tuples the backend writes asynchronously
-// after the project is created, so calls in the same apply can be rejected until those tuples land.
-const projectNotReadyErrorCode = "E111009"
+// Transient races with the backend's async post-creation work: E111009 = management key ReBAC tuples not yet
+// written, E111604 = theme version conflict with the creation handler republishing it. Both clear on the next apply.
+var retryableErrorCodes = []string{"E111009", "E111604"}
 
-var projectNotReadyDelays = []time.Duration{500 * time.Millisecond, time.Second, 2 * time.Second}
+var retryDelays = []time.Duration{500 * time.Millisecond, time.Second, 2 * time.Second, 4 * time.Second}
 
-// Retries only the error above, which the backend returns before the request has any effect, so replaying
-// it cannot duplicate a write. Any other failure, other forbidden responses included, is returned as is.
+// Safe to replay: the backend returns these codes before the request has any effect.
 func retrying(ctx context.Context, call func() (*api.HTTPResponse, error)) (*api.HTTPResponse, error) {
 	res, err := call()
-	for _, delay := range projectNotReadyDelays {
-		if descope.AsError(err, projectNotReadyErrorCode) == nil {
+	for _, delay := range retryDelays {
+		de := descope.AsError(err, retryableErrorCodes...)
+		if de == nil {
 			break
 		}
-		tflog.Info(ctx, "Waiting for project authorization to propagate", map[string]any{"delay": delay.String()})
+		tflog.Info(ctx, "Retrying after a transient backend error", map[string]any{"code": de.Code, "delay": delay.String()})
 		select {
 		case <-ctx.Done():
 			return res, err
