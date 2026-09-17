@@ -54,6 +54,7 @@ var ConnectorsAttributes = map[string]schema.Attribute{
 	"intercom":                   listattr.Default[IntercomModel](IntercomAttributes),
 	"ldap":                       listattr.Default[LDAPModel](LDAPAttributes, LDAPValidator),
 	"lokalise":                   listattr.Default[LokaliseModel](LokaliseAttributes),
+	"mailjet":                    listattr.Default[MailjetModel](MailjetAttributes),
 	"mixpanel":                   listattr.Default[MixpanelModel](MixpanelAttributes, MixpanelValidator),
 	"mparticle":                  listattr.Default[MParticleModel](MParticleAttributes),
 	"newrelic":                   listattr.Default[NewRelicModel](NewRelicAttributes, NewRelicValidator),
@@ -130,6 +131,7 @@ type ConnectorsModel struct {
 	Intercom                 listattr.Type[IntercomModel]                 `tfsdk:"intercom"`
 	LDAP                     listattr.Type[LDAPModel]                     `tfsdk:"ldap"`
 	Lokalise                 listattr.Type[LokaliseModel]                 `tfsdk:"lokalise"`
+	Mailjet                  listattr.Type[MailjetModel]                  `tfsdk:"mailjet"`
 	Mixpanel                 listattr.Type[MixpanelModel]                 `tfsdk:"mixpanel"`
 	MParticle                listattr.Type[MParticleModel]                `tfsdk:"mparticle"`
 	NewRelic                 listattr.Type[NewRelicModel]                 `tfsdk:"newrelic"`
@@ -207,6 +209,7 @@ func (m *ConnectorsModel) Values(h *helpers.Handler) map[string]any {
 	listattr.Get(m.Intercom, data, "intercom", h)
 	listattr.Get(m.LDAP, data, "ldap", h)
 	listattr.Get(m.Lokalise, data, "lokalise", h)
+	listattr.Get(m.Mailjet, data, "mail-jet", h)
 	listattr.Get(m.Mixpanel, data, "mixpanel", h)
 	listattr.Get(m.MParticle, data, "mparticle", h)
 	listattr.Get(m.NewRelic, data, "newrelic", h)
@@ -284,6 +287,7 @@ func (m *ConnectorsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	listattr.SetMatchingNames(&m.Intercom, data, "intercom", "name", h)
 	listattr.SetMatchingNames(&m.LDAP, data, "ldap", "name", h)
 	listattr.SetMatchingNames(&m.Lokalise, data, "lokalise", "name", h)
+	listattr.SetMatchingNames(&m.Mailjet, data, "mail-jet", "name", h)
 	listattr.SetMatchingNames(&m.Mixpanel, data, "mixpanel", "name", h)
 	listattr.SetMatchingNames(&m.MParticle, data, "mparticle", "name", h)
 	listattr.SetMatchingNames(&m.NewRelic, data, "newrelic", "name", h)
@@ -360,6 +364,7 @@ func (m *ConnectorsModel) CollectReferences(h *helpers.Handler) {
 	addConnectorReferences(h, "intercom", m.Intercom)
 	addConnectorReferences(h, "ldap", m.LDAP)
 	addConnectorReferences(h, "lokalise", m.Lokalise)
+	addConnectorReferences(h, "mail-jet", m.Mailjet)
 	addConnectorReferences(h, "mixpanel", m.Mixpanel)
 	addConnectorReferences(h, "mparticle", m.MParticle)
 	addConnectorReferences(h, "newrelic", m.NewRelic)
@@ -437,6 +442,7 @@ func (m *ConnectorsModel) Validate(h *helpers.Handler) {
 	addConnectorNames(h, names, m.Intercom)
 	addConnectorNames(h, names, m.LDAP)
 	addConnectorNames(h, names, m.Lokalise)
+	addConnectorNames(h, names, m.Mailjet)
 	addConnectorNames(h, names, m.Mixpanel)
 	addConnectorNames(h, names, m.MParticle)
 	addConnectorNames(h, names, m.NewRelic)
@@ -518,6 +524,7 @@ func (m *ConnectorsModel) Modify(h *helpers.Handler, state *ConnectorsModel) {
 	listattr.ModifyMatchingNames(h, &m.Intercom, state.Intercom)
 	listattr.ModifyMatchingNames(h, &m.LDAP, state.LDAP)
 	listattr.ModifyMatchingNames(h, &m.Lokalise, state.Lokalise)
+	listattr.ModifyMatchingNames(h, &m.Mailjet, state.Mailjet)
 	listattr.ModifyMatchingNames(h, &m.Mixpanel, state.Mixpanel)
 	listattr.ModifyMatchingNames(h, &m.MParticle, state.MParticle)
 	listattr.ModifyMatchingNames(h, &m.NewRelic, state.NewRelic)

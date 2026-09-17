@@ -24,7 +24,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 73,
+				"connectors.%": 74,
 			}),
 		},
 		resource.TestStep{
@@ -1148,6 +1148,34 @@ func TestConnectors(t *testing.T) {
 					"team_id":              "ontsaz",
 					"card_id":              "uo4way",
 					"translation_provider": "zdmwgn7cvt7zfpsmrww",
+				},
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config(`
+				connectors = {
+					"mailjet": [
+						{
+							name = "Test mail-jet Connector"
+							description = "A description for the mail-jet connector"
+    						api_key = "mhvece"
+    						secret_key = "wi4bhwt7a"
+    						from_email = "pkik6p7rr"
+    						from_name = "qquro4c7"
+						}
+					]
+				}
+			`),
+			Check: p.Check(map[string]any{
+				"connectors.mailjet.#": 1,
+				"connectors.mailjet.0": map[string]any{
+					"id":          testacc.AttributeHasPrefix("CI"),
+					"name":        "Test mail-jet Connector",
+					"description": "A description for the mail-jet connector",
+					"api_key":     "mhvece",
+					"secret_key":  "wi4bhwt7a",
+					"from_email":  "pkik6p7rr",
+					"from_name":   "qquro4c7",
 				},
 			}),
 		},

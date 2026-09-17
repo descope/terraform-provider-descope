@@ -781,6 +781,7 @@ var docsConnectors = map[string]string{
 		"endpoint using OTLP over HTTP or gRPC.",
 	"pendo":                "Stream authentication audit logs with the Pendo connector.",
 	"ping_directory":       "Authenticate against PingDirectory.",
+	"mailjet":              "Send emails using Mailjet",
 	"postmark":             "Send emails using Postmark",
 	"radar":                "Get address autocompletions from Radar Autocomplete API.",
 	"recaptcha":            "Prevent bot attacks on your login pages with the reCAPTCHA v3 connector.",
@@ -1187,6 +1188,16 @@ var docsLokalise = map[string]string{
 		"provided, the team credit will be used.",
 	"translation_provider": "The translation provider to use ('gengo', 'google', 'lokalise', 'deepl'), " +
 		"default is 'deepl'.",
+}
+
+var docsMailjet = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"api_key":     "Your Mailjet API Key, found under Account settings / API Key Management",
+	"secret_key": "The Secret Key that pairs with the API Key above. Mailjet needs both to " +
+		"authenticate",
+	"from_email": "A sender address verified in your Mailjet account. Defines the email sender",
+	"from_name":  "The display name shown next to the sender address",
 }
 
 var docsMixpanel = map[string]string{

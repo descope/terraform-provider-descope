@@ -355,6 +355,15 @@ connector.
 
 
 
+mailjet
+-------
+
+- Type: `list` of `connectors.Mailjet`
+
+Send emails using Mailjet
+
+
+
 mixpanel
 --------
 

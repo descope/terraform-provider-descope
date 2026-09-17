@@ -1764,6 +1764,7 @@ Optional:
 - `intercom` (Attributes List) Orchestrate customer identity information from your Descope user journey with the Intercom connector. (see [below for nested schema](#nestedatt--connectors--intercom))
 - `ldap` (Attributes List) Use this connector to authenticate users against an LDAP directory server with support for both password and mTLS authentication. (see [below for nested schema](#nestedatt--connectors--ldap))
 - `lokalise` (Attributes List) Localize the language of your login and user journey screens with the Lokalise connector. (see [below for nested schema](#nestedatt--connectors--lokalise))
+- `mailjet` (Attributes List) Send emails using Mailjet (see [below for nested schema](#nestedatt--connectors--mailjet))
 - `mixpanel` (Attributes List) Stream authentication audit logs and troubleshoot logs to Mixpanel. (see [below for nested schema](#nestedatt--connectors--mixpanel))
 - `mparticle` (Attributes List) Track and send user event data (e.g. page views, purchases, etc.) across connected tools using the mParticle connector. (see [below for nested schema](#nestedatt--connectors--mparticle))
 - `newrelic` (Attributes List) Stream authentication audit logs with the New Relic connector. (see [below for nested schema](#nestedatt--connectors--newrelic))
@@ -2874,6 +2875,26 @@ Optional:
 - `description` (String) A description of what your connector is used for.
 - `team_id` (String) Lokalise team ID. If not provided, the oldest available team will be used.
 - `translation_provider` (String) The translation provider to use ('gengo', 'google', 'lokalise', 'deepl'), default is 'deepl'.
+
+Read-Only:
+
+- `id` (String)
+
+
+<a id="nestedatt--connectors--mailjet"></a>
+### Nested Schema for `connectors.mailjet`
+
+Required:
+
+- `api_key` (String, Sensitive) Your Mailjet API Key, found under Account settings / API Key Management
+- `from_email` (String) A sender address verified in your Mailjet account. Defines the email sender
+- `name` (String) A custom name for your connector.
+- `secret_key` (String, Sensitive) The Secret Key that pairs with the API Key above. Mailjet needs both to authenticate
+
+Optional:
+
+- `description` (String) A description of what your connector is used for.
+- `from_name` (String) The display name shown next to the sender address
 
 Read-Only:
 

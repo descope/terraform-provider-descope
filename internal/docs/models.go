@@ -118,6 +118,7 @@ func InjectModels() {
 	inject(connectors.IntercomAttributes, docsIntercom)
 	inject(connectors.LDAPAttributes, docsLDAP)
 	inject(connectors.LokaliseAttributes, docsLokalise)
+	inject(connectors.MailjetAttributes, docsMailjet)
 	inject(connectors.MixpanelAttributes, docsMixpanel)
 	inject(connectors.MParticleAttributes, docsMParticle)
 	inject(connectors.NewRelicAttributes, docsNewRelic)
