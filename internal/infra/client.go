@@ -43,7 +43,9 @@ func (c *Client) Create(ctx context.Context, projectID, entity string, data map[
 	}
 
 	tflog.Info(ctx, "Starting CREATE request", map[string]any{"body": debugRequest(httpBody)})
-	httpRes, err := c.getAPIClient(projectID).DoPostRequest(ctx, "/v1/mgmt/infra", httpBody, nil, c.managementKey)
+	httpRes, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoPostRequest(ctx, "/v1/mgmt/infra", httpBody, nil, c.managementKey)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -64,7 +66,9 @@ func (c *Client) Read(ctx context.Context, projectID, entity, entityID string) (
 	}
 
 	tflog.Info(ctx, "Starting READ request", map[string]any{"query": debugRequest(httpQuery)})
-	httpRes, err := c.getAPIClient(projectID).DoGetRequest(ctx, "/v1/mgmt/infra", &api.HTTPRequest{QueryParams: httpQuery}, c.managementKey)
+	httpRes, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoGetRequest(ctx, "/v1/mgmt/infra", &api.HTTPRequest{QueryParams: httpQuery}, c.managementKey)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +90,9 @@ func (c *Client) Update(ctx context.Context, projectID, entity, entityID string,
 	}
 
 	tflog.Info(ctx, "Starting UPDATE request", map[string]any{"body": debugRequest(httpBody)})
-	httpRes, err := c.getAPIClient(projectID).DoPutRequest(ctx, "/v1/mgmt/infra", httpBody, nil, c.managementKey)
+	httpRes, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoPutRequest(ctx, "/v1/mgmt/infra", httpBody, nil, c.managementKey)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -107,7 +113,9 @@ func (c *Client) Delete(ctx context.Context, projectID, entity, entityID string)
 	}
 
 	tflog.Info(ctx, "Starting DELETE request", map[string]any{"query": debugRequest(httpQuery)})
-	if _, err := c.getAPIClient(projectID).DoDeleteRequest(ctx, "/v1/mgmt/infra", &api.HTTPRequest{QueryParams: httpQuery}, c.managementKey); err != nil {
+	if _, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoDeleteRequest(ctx, "/v1/mgmt/infra", &api.HTTPRequest{QueryParams: httpQuery}, c.managementKey)
+	}); err != nil {
 		return err
 	}
 
@@ -121,13 +129,17 @@ func (c *Client) Delete(ctx context.Context, projectID, entity, entityID string)
 
 func (c *Client) Post(ctx context.Context, projectID, path string, body map[string]any) error {
 	tflog.Info(ctx, "Starting POST request", map[string]any{"path": path, "body": debugRequest(body)})
-	_, err := c.getAPIClient(projectID).DoPostRequest(ctx, path, body, nil, c.managementKey)
+	_, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoPostRequest(ctx, path, body, nil, c.managementKey)
+	})
 	return err
 }
 
 func (c *Client) PostData(ctx context.Context, projectID, path string, body map[string]any) (map[string]any, error) {
 	tflog.Info(ctx, "Starting POST request", map[string]any{"path": path, "body": debugRequest(body)})
-	httpRes, err := c.getAPIClient(projectID).DoPostRequest(ctx, path, body, nil, c.managementKey)
+	httpRes, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoPostRequest(ctx, path, body, nil, c.managementKey)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -143,7 +155,9 @@ func (c *Client) PostData(ctx context.Context, projectID, path string, body map[
 
 func (c *Client) PutData(ctx context.Context, projectID, path string, body map[string]any) (map[string]any, error) {
 	tflog.Info(ctx, "Starting PUT request", map[string]any{"path": path, "body": debugRequest(body)})
-	httpRes, err := c.getAPIClient(projectID).DoPutRequest(ctx, path, body, nil, c.managementKey)
+	httpRes, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoPutRequest(ctx, path, body, nil, c.managementKey)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -163,7 +177,9 @@ func (c *Client) Get(ctx context.Context, projectID, path string, query map[stri
 		req = &api.HTTPRequest{QueryParams: query}
 	}
 	tflog.Info(ctx, "Starting GET request", map[string]any{"path": path, "query": debugRequest(query)})
-	httpRes, err := c.getAPIClient(projectID).DoGetRequest(ctx, path, req, c.managementKey)
+	httpRes, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoGetRequest(ctx, path, req, c.managementKey)
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +199,9 @@ func (c *Client) Del(ctx context.Context, projectID, path string, query map[stri
 		req = &api.HTTPRequest{QueryParams: query}
 	}
 	tflog.Info(ctx, "Starting DELETE request", map[string]any{"path": path, "query": debugRequest(query)})
-	_, err := c.getAPIClient(projectID).DoDeleteRequest(ctx, path, req, c.managementKey)
+	_, err := retrying(ctx, func() (*api.HTTPResponse, error) {
+		return c.getAPIClient(projectID).DoDeleteRequest(ctx, path, req, c.managementKey)
+	})
 	return err
 }
 
