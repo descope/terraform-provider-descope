@@ -6,6 +6,7 @@ import (
 
 	"github.com/descope/go-sdk/descope"
 	"github.com/descope/go-sdk/descope/api"
+	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
 // A management key's authorization for a project comes from ReBAC tuples the backend writes asynchronously
@@ -22,6 +23,7 @@ func retrying(ctx context.Context, call func() (*api.HTTPResponse, error)) (*api
 		if descope.AsError(err, projectNotReadyErrorCode) == nil {
 			break
 		}
+		tflog.Info(ctx, "Waiting for project authorization to propagate", map[string]any{"delay": delay.String()})
 		select {
 		case <-ctx.Done():
 			return res, err
