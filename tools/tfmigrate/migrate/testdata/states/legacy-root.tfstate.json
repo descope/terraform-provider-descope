@@ -1,0 +1,502 @@
+{
+  "lineage": "00000000-0000-0000-0000-000000000000",
+  "outputs": {},
+  "resources": [
+    {
+      "instances": [
+        {
+          "attributes": {
+            "admin_portal": {
+              "enabled": true,
+              "style_id": "",
+              "widgets": [
+                {
+                  "type": "user-management",
+                  "widget_id": "user-management"
+                }
+              ]
+            },
+            "applications": {
+              "oidc_applications": [
+                {
+                  "approved_redirect_urls": [
+                    "https://app.acme.test/cb"
+                  ],
+                  "authorization_code_disabled": false,
+                  "backchannel_logout_url": "",
+                  "claims": [
+                    "email"
+                  ],
+                  "client_credentials_disabled": false,
+                  "client_id": "portal-client",
+                  "client_secret": "generated-secret",
+                  "client_type": "confidential",
+                  "custom_idp_initiated_login_page_url": "",
+                  "default_audience": "",
+                  "description": "",
+                  "device_code_disabled": false,
+                  "disabled": false,
+                  "force_authentication": false,
+                  "force_pkce": false,
+                  "id": "APP-oidc",
+                  "jwt_bearer_disabled": false,
+                  "login_page_url": "https://app.acme.test/login",
+                  "logo": "",
+                  "name": "Acme Portal",
+                  "permissions": [
+                    {
+                      "description": "read",
+                      "id": "AP-read",
+                      "name": "read"
+                    }
+                  ],
+                  "refresh_token_disabled": false,
+                  "roles": [
+                    {
+                      "description": "",
+                      "id": "AR-viewer",
+                      "name": "viewer",
+                      "permissions": [
+                        "read"
+                      ],
+                      "role_mappings": []
+                    }
+                  ],
+                  "trusted_apps_audience": ""
+                }
+              ],
+              "saml_applications": [],
+              "wsfed_applications": []
+            },
+            "attributes": {
+              "access_key": [
+                {
+                  "id": "scope",
+                  "name": "Scope",
+                  "select_options": [],
+                  "type": "string"
+                }
+              ],
+              "tenant": [
+                {
+                  "id": "tier",
+                  "name": "Tier",
+                  "select_options": [],
+                  "type": "string",
+                  "widget_authorization": {
+                    "edit_permissions": [],
+                    "view_permissions": []
+                  }
+                }
+              ],
+              "user": [
+                {
+                  "id": "nickname",
+                  "name": "Nickname",
+                  "select_options": [],
+                  "type": "string",
+                  "widget_authorization": {
+                    "edit_permissions": [],
+                    "view_permissions": []
+                  }
+                }
+              ]
+            },
+            "authentication": {
+              "embedded_link": {
+                "expiration_time": "1 hour"
+              },
+              "enchanted_link": null,
+              "magic_link": {
+                "disabled": false,
+                "email_service": {
+                  "connector": "acme-smtp",
+                  "templates": [
+                    {
+                      "active": true,
+                      "html_body": "<p>hi</p>",
+                      "id": "T-ml-email",
+                      "name": "magiclink email",
+                      "plain_text_body": "",
+                      "subject": "Sign in",
+                      "use_plain_text_body": false
+                    }
+                  ]
+                },
+                "expiration_time": "3 minutes",
+                "redirect_url": "https://app.acme.test/ml",
+                "text_service": null
+              },
+              "oauth": {
+                "custom": {},
+                "disabled": false,
+                "system": {
+                  "apple": null,
+                  "discord": null,
+                  "facebook": null,
+                  "github": null,
+                  "gitlab": null,
+                  "google": {
+                    "allowed_grant_types": [],
+                    "apple_key_generator": null,
+                    "authorization_endpoint": "",
+                    "callback_domain": "",
+                    "claim_mapping": {},
+                    "client_id": "google-client",
+                    "client_secret": "shh",
+                    "description": "",
+                    "disable_jit_updates": false,
+                    "disabled": false,
+                    "issuer": "",
+                    "jwks_endpoint": "",
+                    "logo": "",
+                    "manage_provider_tokens": false,
+                    "merge_user_accounts": true,
+                    "native_apple_key_generator": null,
+                    "native_client_id": "",
+                    "native_client_secret": null,
+                    "prompts": [],
+                    "provider_token_management": null,
+                    "redirect_url": "",
+                    "scopes": [
+                      "email"
+                    ],
+                    "token_endpoint": "",
+                    "use_client_assertion": false,
+                    "user_info_endpoint": ""
+                  },
+                  "linkedin": null,
+                  "microsoft": null,
+                  "slack": null
+                }
+              },
+              "otp": {
+                "disabled": false,
+                "domain": "",
+                "email_service": {
+                  "connector": "acme-smtp",
+                  "templates": [
+                    {
+                      "active": true,
+                      "html_body": "<p>hi</p>",
+                      "id": "T-otp-email",
+                      "name": "otp email",
+                      "plain_text_body": "",
+                      "subject": "Your code",
+                      "use_plain_text_body": false
+                    }
+                  ]
+                },
+                "expiration_time": "3 minutes",
+                "text_service": {
+                  "connector": "acme-twilio",
+                  "templates": [
+                    {
+                      "active": true,
+                      "body": "code {{code}}",
+                      "id": "T-otp-text",
+                      "name": "otp text"
+                    }
+                  ]
+                },
+                "voice_service": {
+                  "connector": "acme-twilio",
+                  "templates": [
+                    {
+                      "active": true,
+                      "body": "your code is {{code}}",
+                      "id": "T-otp-voice",
+                      "name": "otp voice"
+                    }
+                  ]
+                }
+              },
+              "passkeys": {
+                "disabled": false,
+                "top_level_domain": "acme.test"
+              },
+              "password": {
+                "disabled": false,
+                "email_service": null,
+                "expiration": false,
+                "expiration_weeks": 0,
+                "lock": false,
+                "lock_attempts": 5,
+                "lowercase": true,
+                "min_length": 8,
+                "non_alphanumeric": true,
+                "number": true,
+                "reuse": false,
+                "reuse_amount": 3,
+                "uppercase": true
+              },
+              "sso": null,
+              "totp": {
+                "disabled": false
+              }
+            },
+            "authorization": {
+              "fga": "model AuthZ 1.0\ntype user\n",
+              "permissions": [
+                {
+                  "description": "manage",
+                  "id": "PM-manage",
+                  "name": "Manage Users"
+                }
+              ],
+              "roles": [
+                {
+                  "default": false,
+                  "description": "admins",
+                  "id": "R-admin",
+                  "key": "admin",
+                  "name": "Admin",
+                  "permissions": [
+                    "Manage Users"
+                  ],
+                  "private": false
+                }
+              ]
+            },
+            "connectors": {
+              "sendgrid": [
+                {
+                  "authentication": {
+                    "api_key": "sg-secret"
+                  },
+                  "description": "",
+                  "id": "C-sg",
+                  "name": "acme-sendgrid",
+                  "sender": {
+                    "email": "mail@acme.test",
+                    "name": "Acme Mail"
+                  }
+                }
+              ],
+              "smtp": [
+                {
+                  "authentication": {
+                    "method": "plain",
+                    "password": "smtp-secret",
+                    "username": "acme"
+                  },
+                  "description": "",
+                  "id": "C-smtp",
+                  "name": "acme-smtp",
+                  "sender": {
+                    "email": "no-reply@acme.test",
+                    "name": "Acme"
+                  },
+                  "server": {
+                    "host": "smtp.acme.test",
+                    "port": 587
+                  },
+                  "use_static_ips": false
+                }
+              ],
+              "twilio_core": [
+                {
+                  "account_sid": "AC123",
+                  "authentication": {
+                    "api_key": null,
+                    "api_secret": null,
+                    "auth_token": "twilio-token"
+                  },
+                  "description": "",
+                  "id": "C-twilio",
+                  "name": "acme-twilio",
+                  "senders": {
+                    "sms": {
+                      "messaging_service_sid": "",
+                      "phone_number": "+15551230000"
+                    },
+                    "voice": {
+                      "phone_number": "+15551230001"
+                    }
+                  }
+                }
+              ]
+            },
+            "environment": "production",
+            "flows": {
+              "sign-up-or-in": {
+                "data": "{\"metadata\":{\"version\":1},\"contents\":{\"nodes\":[]}}"
+              },
+              "step-up": {
+                "data": "{\"metadata\":{\"version\":1},\"contents\":{\"nodes\":[]}}"
+              }
+            },
+            "id": "P2abcdefghijklmnop",
+            "invite_settings": {
+              "add_magiclink_token": false,
+              "email_service": {
+                "connector": "acme-smtp",
+                "templates": [
+                  {
+                    "active": true,
+                    "html_body": "<p>hi</p>",
+                    "id": "T-invite",
+                    "name": "invite",
+                    "plain_text_body": "",
+                    "subject": "You are invited",
+                    "use_plain_text_body": false
+                  }
+                ]
+              },
+              "expire_invited_users": false,
+              "invite_expiration": "1 week",
+              "invite_url": "https://app.acme.test/invite",
+              "require_invitation": true,
+              "send_email": true,
+              "send_text": false
+            },
+            "jwt_templates": {
+              "access_key_templates": [],
+              "user_templates": [
+                {
+                  "add_jti_claim": false,
+                  "auth_schema": "default",
+                  "auto_tenant_claim": false,
+                  "conformance_issuer": false,
+                  "description": "",
+                  "empty_claim_policy": "none",
+                  "enforce_issuer": false,
+                  "exclude_permission_claim": false,
+                  "id": "JT-user",
+                  "name": "user-claims",
+                  "override_subject_claim": false,
+                  "template": "{\"claim\":\"value\"}"
+                }
+              ]
+            },
+            "lists": [
+              {
+                "data": "[\"a@acme.test\"]",
+                "description": "",
+                "id": "L-allow",
+                "name": "allowlist",
+                "type": "texts"
+              },
+              {
+                "data": "[\"10.0.0.0/8\"]",
+                "description": "",
+                "id": "L-ips",
+                "name": "office-ips",
+                "type": "ips"
+              },
+              {
+                "data": "{\"k\":\"v\"}",
+                "description": "",
+                "id": "L-json",
+                "name": "config",
+                "type": "json"
+              }
+            ],
+            "name": "acme-prod",
+            "project_settings": {
+              "access_key_jwt_template": "",
+              "access_key_session_token_expiration": "10 minutes",
+              "allow_auth_hosting_iframe_embedding": false,
+              "app_url": "https://app.acme.test",
+              "approved_domains": [
+                "acme.test"
+              ],
+              "custom_domain": "",
+              "default_no_sso_apps": false,
+              "enable_inactivity": false,
+              "inactivity_time": "12 minutes",
+              "refresh_token_cookie_domain": "",
+              "refresh_token_cookie_policy": "none",
+              "refresh_token_expiration": "4 weeks",
+              "refresh_token_response_method": "response_body",
+              "refresh_token_rotation": true,
+              "session_migration": {
+                "api_token": "migration-secret",
+                "audience": "aud",
+                "client_id": "client",
+                "domain": "https://tenant.example",
+                "issuer": "https://tenant.example/",
+                "loginid_matched_attributes": [
+                  "email"
+                ],
+                "user_mapping": [
+                  {
+                    "descope_key": "loginId",
+                    "external_key": "sub"
+                  }
+                ],
+                "user_sync_type": "jit",
+                "vendor": "auth0"
+              },
+              "session_token_cookie_domain": "",
+              "session_token_cookie_policy": "none",
+              "session_token_expiration": "10 minutes",
+              "session_token_response_method": "response_body",
+              "step_up_token_expiration": "10 minutes",
+              "tenant_user_isolation": false,
+              "test_users_loginid_regexp": "",
+              "test_users_static_otp": "",
+              "test_users_verifier_regexp": "",
+              "trusted_device_token_expiration": "365 days",
+              "user_jwt_template": "user-claims"
+            },
+            "styles": {
+              "data": "{\"styles\":{\"primary\":\"#123456\"}}"
+            },
+            "tags": [
+              "team-auth"
+            ],
+            "widgets": {
+              "user-management": {
+                "data": "{\"metadata\":{\"version\":1},\"screens\":[]}"
+              }
+            }
+          },
+          "schema_version": 0,
+          "sensitive_attributes": []
+        }
+      ],
+      "mode": "managed",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "type": "descope_project"
+    },
+    {
+      "instances": [
+        {
+          "attributes": {
+            "id": "AK-1",
+            "name": "ci",
+            "project_id": "P2abcdefghijklmnop"
+          },
+          "schema_version": 0
+        }
+      ],
+      "mode": "managed",
+      "name": "ci",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "type": "descope_access_key"
+    },
+    {
+      "instances": [
+        {
+          "attributes": {
+            "description": "manage",
+            "id": "PM-manage",
+            "name": "Manage Users",
+            "project_id": "P2abcdefghijklmnop"
+          },
+          "schema_version": 0,
+          "sensitive_attributes": []
+        }
+      ],
+      "mode": "managed",
+      "name": "already",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "type": "descope_permission"
+    }
+  ],
+  "serial": 12,
+  "terraform_version": "1.9.5",
+  "version": 4
+}
