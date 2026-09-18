@@ -38,12 +38,12 @@ func (m *FGASchemaModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *FGASchemaModel) SetValues(h *helpers.Handler, data map[string]any) {
-	// the backend stores the DSL as strings.TrimSpace(dsl)+"\n", so a stored value is adopted only when it differs by more
-	// than surrounding whitespace, while a state without one (an import) always takes it
+	// the backend returns the DSL exactly as stored, so it's adopted only when it differs by more than surrounding whitespace: an
+	// apply keeps whatever spelling the configuration used, while an import has no state to keep and takes the stored form verbatim
 	if dsl, ok := data["dsl"].(string); ok {
 		unset := m.Schema.IsNull() || m.Schema.IsUnknown()
 		if unset || strings.TrimSpace(dsl) != strings.TrimSpace(m.Schema.ValueString()) {
-			m.Schema = stringattr.Value(strings.TrimSpace(dsl))
+			m.Schema = stringattr.Value(dsl)
 		}
 	}
 }
