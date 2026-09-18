@@ -37,3 +37,7 @@ website/vendor
 
 # Keep windows files with windows line endings
 *.winfile eol=crlf
+
+# AI / local tooling
+.local
+.claude/worktrees/

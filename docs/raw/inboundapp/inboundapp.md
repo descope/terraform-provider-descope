@@ -149,13 +149,14 @@ as the audience, `clientId` to set the app's client ID, or leave empty to includ
 
 
 
-non_confidential_client
------------------------
+client_type
+-----------
 
-- Type: `bool`
+- Type: `string`
 
-Whether this is a public (non-confidential) client that does not use a client secret. Changing this
-value after creation will require the resource to be replaced.
+The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for
+one that authenticates with PKCE and has no secret. Leave empty to let the backend decide. Changing
+this value after creation will require the resource to be replaced.
 
 
 
@@ -185,3 +186,23 @@ force_pkce
 - Type: `bool`
 
 When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.
+
+
+
+allowed_tenants
+---------------
+
+- Type: `set` of `string`
+
+Restricts the app to these tenant IDs. Leave empty to allow all tenants.
+
+
+
+scope_claim_mapping
+-------------------
+
+- Type: `list` of `inboundapp.ScopeClaimMapping`
+
+Maps the claims that each scope contributes to the tokens issued for this app. This is the structured
+form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the
+mapping here wins.
