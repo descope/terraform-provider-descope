@@ -195,6 +195,19 @@ func TestInboundApp(t *testing.T) {
 				deletion_protection = false
 			`),
 		},
+		// force_dpop needs an explicit client type, and setting one replaces the app, so this runs after protection is disabled
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				deletion_protection = false
+				client_type = "confidential"
+				force_dpop = true
+			`),
+			Check: a.Check(map[string]any{
+				"client_type": "confidential",
+				"force_dpop":  "true",
+			}),
+		},
 		// Destroy resource
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
