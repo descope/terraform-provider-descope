@@ -30,7 +30,7 @@ func TestInboundAppDeletionProtection(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
-				non_confidential_client = true
+				client_type = "public"
 			`),
 			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),
 		},
@@ -45,11 +45,11 @@ func TestInboundAppDeletionProtection(t *testing.T) {
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
 				deletion_protection = false
-				non_confidential_client = true
+				client_type = "public"
 			`),
 			Check: a.Check(map[string]any{
-				"non_confidential_client": "true",
-				"deletion_protection":     "false",
+				"client_type":         "public",
+				"deletion_protection": "false",
 			}),
 		},
 	)
@@ -72,7 +72,7 @@ func TestInboundApp(t *testing.T) {
 				"project_id":                       testacc.AttributeIsSet,
 				"name":                             a.Name,
 				"description":                      "",
-				"non_confidential_client":          "false",
+				"client_type":                      "",
 				"client_id":                        testacc.AttributeIsSet,
 				"client_secret":                    testacc.AttributeIsSet,
 				"force_pkce":                       "false",

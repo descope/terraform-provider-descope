@@ -22,11 +22,13 @@ description: |-
 
 ### Optional
 
+- `allowed_tenants` (Set of String) Restricts the app to these tenant IDs. Leave empty to allow all tenants.
 - `approved_callback_urls` (Set of String) A set of approved redirect URIs that the inbound app is allowed to redirect to after authorization.
 - `attributes_scopes` (Attributes List) A list of user information scopes that the inbound app can request. Attribute scopes provide the app with access to user profile data such as email, phone, or custom attributes. (see [below for nested schema](#nestedatt--attributes_scopes))
 - `audience_whitelist` (Set of String) A set of allowed custom `aud` claim values that the inbound app can request via the `resource` parameter, per RFC 8707.
 - `client_id` (String) A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing this value after creation will require the resource to be replaced.
 - `client_secret` (String, Sensitive) The client secret for authenticating this inbound app. This value is generated automatically and cannot be retrieved after the resource is created. Store this value securely.
+- `client_type` (String) The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for one that authenticates with PKCE and has no secret. Leave empty to let the backend decide. Changing this value after creation will require the resource to be replaced.
 - `connections_scopes` (Attributes List) A list of connection scopes that the inbound app can request. Connection scopes provide the app with the ability to access external tokens based on the mapped scopes. (see [below for nested schema](#nestedatt--connections_scopes))
 - `default_audience` (String) The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID as the audience, `clientId` to set the app's client ID, or leave empty to include both.
 - `deletion_protection` (Boolean) Protects the inbound app from being accidentally destroyed or replaced. Destroying or replacing an inbound app issues a new client ID and client secret, breaking any integrations that rely on the existing ones, so inbound apps are protected by default. To allow the resource to be destroyed or replaced, for example in ephemeral test environments, set this attribute to `false` and apply the change first.
@@ -36,8 +38,8 @@ description: |-
 - `force_pkce` (Boolean) When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.
 - `login_page_url` (String) The Flow Hosting URL.
 - `logo_url` (String) A URL to the inbound app's logo image.
-- `non_confidential_client` (Boolean) Whether this is a public (non-confidential) client that does not use a client secret. Changing this value after creation will require the resource to be replaced.
 - `permissions_scopes` (Attributes List) A list of permission scopes that the inbound app can request. Permission scopes provide the app with the ability to act on behalf of a user based on their roles and permissions. (see [below for nested schema](#nestedatt--permissions_scopes))
+- `scope_claim_mapping` (Attributes List) Maps the claims that each scope contributes to the tokens issued for this app. This is the structured form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the mapping here wins. (see [below for nested schema](#nestedatt--scope_claim_mapping))
 - `session_settings` (Attributes) Custom session management settings for this inbound app, overriding the project defaults. (see [below for nested schema](#nestedatt--session_settings))
 
 ### Read-Only
@@ -84,6 +86,21 @@ Optional:
 
 - `optional` (Boolean) Whether this scope is optional. When `false`, the scope is mandatory and must be granted during authorization. When `true`, the user may choose to withhold it.
 - `values` (List of String) The identifiers of the relevant permission, attribute or connection scopes.
+
+
+<a id="nestedatt--scope_claim_mapping"></a>
+### Nested Schema for `scope_claim_mapping`
+
+Required:
+
+- `scope` (String) The scope this mapping applies to.
+
+Optional:
+
+- `claims` (Map of String) The claims the scope contributes, mapping each claim name to the attribute it is taken from.
+- `description` (String) A description of what the scope grants access to.
+- `mandatory` (Boolean) Whether the scope is non-optional. A token request that is denied a mandatory scope fails outright, rather than succeeding with the subset of scopes that were granted.
+- `use_project_mapping` (Boolean) Whether the entry inherits the project-wide claim mapping instead of the claims listed here.
 
 
 <a id="nestedatt--session_settings"></a>

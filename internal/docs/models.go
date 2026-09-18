@@ -139,6 +139,7 @@ func InjectModels() {
 	inject(flow.FlowAttributes, docsFlow)
 	inject(inboundapp.ApplicationScopeAttributes, docsApplicationScope)
 	inject(inboundapp.InboundAppAttributes, docsInboundApp)
+	inject(inboundapp.ScopeClaimMappingAttributes, docsScopeClaimMapping)
 	inject(inboundapp.SessionSettingsAttributes, docsInboundappSessionSettings)
 	inject(jwttemplate.JWTTemplateAttributes, docsJWTTemplate)
 	inject(list.ListAttributes, docsList)
