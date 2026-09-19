@@ -2135,7 +2135,7 @@ func TestConnectors(t *testing.T) {
 				connectors = {}
 			`),
 			Check: p.Check(map[string]any{
-				"connectors.%": 73,
+				"connectors.%": 74,
 			}),
 		},
 	)
