@@ -52,6 +52,10 @@ func NewAdminPortalResource() resource.Resource {
 	return newSettingsResource[settings.AdminPortalModel]("admin_portal", settings.AdminPortalSchema, "/v1/mgmt/adminportal/settings")
 }
 
+func NewGovernanceResource() resource.Resource {
+	return newSplitSettingsResource[settings.GovernanceModel]("governance", settings.GovernanceSchema, "/v1/mgmt/agentic/governance/settings", "/v1/mgmt/agentic/governance/settings/update")
+}
+
 func NewOTPSettingsResource() resource.Resource {
 	return newSettingsResource[settings.OTPSettingsModel]("otp_settings", settings.OTPSettingsSchema, "/v1/mgmt/otp/settings")
 }
