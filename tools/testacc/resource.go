@@ -84,6 +84,10 @@ func AdminPortal(t *testing.T) *Resource {
 	return newResource(t, "admin_portal")
 }
 
+func Governance(t *testing.T) *Resource {
+	return newResource(t, "governance")
+}
+
 func MagicLinkSettings(t *testing.T) *Resource {
 	return newResource(t, "magiclink_settings")
 }

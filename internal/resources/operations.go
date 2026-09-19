@@ -93,13 +93,18 @@ func newInfraResource[T any, M helpers.ResourceModel[T]](name string, sc schema.
 // Creates a singleton resource for settings on one GET/POST endpoint (e.g. /v1/mgmt/oauth/settings); there
 // is no reset endpoint, so delete is a no-op.
 func newSettingsResource[T any, M helpers.ResourceModel[T]](name string, sc schema.Schema, path string) resource.Resource {
+	return newSplitSettingsResource[T, M](name, sc, path, path)
+}
+
+// Same, for settings whose write lives on its own path rather than POSTing back to the read path.
+func newSplitSettingsResource[T any, M helpers.ResourceModel[T]](name string, sc schema.Schema, readPath, writePath string) resource.Resource {
 	read := func(ctx context.Context, c *infra.Client, projectID, _ string) (map[string]any, error) {
-		return c.Get(ctx, projectID, path, nil)
+		return c.Get(ctx, projectID, readPath, nil)
 	}
 	return newSingletonResource[T, M](name, sc, operations{
 		Read: read,
 		Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
-			if err := c.Post(ctx, projectID, path, data); err != nil {
+			if err := c.Post(ctx, projectID, writePath, data); err != nil {
 				return nil, err
 			}
 			return read(ctx, c, projectID, id)
