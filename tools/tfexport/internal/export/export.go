@@ -79,7 +79,7 @@ func Run(ctx context.Context, client *infra.Client, projectID, outDir, only stri
 			continue // nothing but defaults, so the resource is left out entirely
 		}
 		attrs, secrets = ensureValidConfig(ctx, exportable, result.Instance.Name, result.Object, attrs, secrets, func(format string, args ...any) {
-			warnings = append(warnings, warn.Note(format, args...))
+			warnings = append(warnings, warn.Lost(format, args...))
 		})
 
 		_, hasProjectID := schema.Attributes["project_id"]
