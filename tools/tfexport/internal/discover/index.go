@@ -1,9 +1,10 @@
 package discover
 
 import (
-	"fmt"
 	"slices"
 	"strings"
+
+	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/warn"
 )
 
 var templateKinds = []struct {
@@ -24,9 +25,12 @@ type Instance struct {
 	MayBeAbsent bool   // the snapshot lists this entity before it exists, so a not-found read is expected
 }
 
-func Instances(files map[string]any, connectorTypes map[string]string) (instances []Instance, warnings []string) {
-	warn := func(format string, args ...any) {
-		warnings = append(warnings, fmt.Sprintf(format, args...))
+func Instances(files map[string]any, connectorTypes map[string]string) (instances []Instance, warnings []warn.Warning) {
+	lost := func(format string, args ...any) {
+		warnings = append(warnings, warn.Lost(format, args...))
+	}
+	note := func(format string, args ...any) {
+		warnings = append(warnings, warn.Note(format, args...))
 	}
 
 	for _, id := range stringList(files, "flows/flows.json", "flows") {
@@ -39,13 +43,13 @@ func Instances(files map[string]any, connectorTypes map[string]string) (instance
 	}
 
 	if flows := stringList(files, "widgets/flows/flows.json", "flows"); len(flows) > 0 {
-		warn("Skipped %d widget flows which are not supported yet", len(flows))
+		note("Skipped %d widget flows which are not supported yet", len(flows))
 	}
 
 	for _, slug := range stringList(files, "connectors/connectors.json", "connectors") {
 		connector, ok := files["connectors/"+slug+".json"].(map[string]any)
 		if !ok {
-			warn("Skipped connector %s: no snapshot file", slug)
+			lost("Skipped connector %s: no snapshot file", slug)
 			continue
 		}
 		wireType, _ := connector["type"].(string)
@@ -53,11 +57,11 @@ func Instances(files map[string]any, connectorTypes map[string]string) (instance
 		name, _ := connector["name"].(string)
 		resource, ok := connectorTypes[wireType]
 		if !ok {
-			warn("Skipped connector %s: unsupported connector type %q", name, wireType)
+			note("Skipped connector %s: unsupported connector type %q", name, wireType)
 			continue
 		}
 		if id == "" {
-			warn("Skipped connector %s: no id in snapshot", name)
+			lost("Skipped connector %s: no id in snapshot", name)
 			continue
 		}
 		instances = append(instances, Instance{Resource: resource, ID: id, Name: name})
@@ -74,7 +78,7 @@ func Instances(files map[string]any, connectorTypes map[string]string) (instance
 			}
 		}
 		if resource == "" {
-			warn("Skipped application %s: unrecognized application type", name)
+			lost("Skipped application %s: unrecognized application type", name)
 			continue
 		}
 		instances = append(instances, Instance{Resource: resource, ID: id, Name: name})
@@ -145,7 +149,7 @@ func Instances(files map[string]any, connectorTypes map[string]string) (instance
 					continue // the built-in System template is not an exportable entity and cannot be read
 				}
 				if !slices.Contains(kind.methods, method) {
-					warn("Skipped %s %s: the %s method is not supported by the resource", kind.resource, name, method)
+					note("Skipped %s %s: the %s method is not supported by the resource", kind.resource, name, method)
 					continue
 				}
 				instances = append(instances, Instance{Resource: kind.resource, ID: id, Scope: method, Name: name})

@@ -2,11 +2,11 @@ package read
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/internal/resources"
 	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/discover"
+	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/warn"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -33,18 +33,18 @@ func Singletons(loaded map[string]resources.ExportableResource, projectID string
 
 const UnreadableWarning = "the entity was discovered but could not be read"
 
-func All(ctx context.Context, client *infra.Client, loaded map[string]resources.ExportableResource, projectID string, instances []discover.Instance) (results []Result, warnings []string) {
+func All(ctx context.Context, client *infra.Client, loaded map[string]resources.ExportableResource, projectID string, instances []discover.Instance) (results []Result, warnings []warn.Warning) {
 	for _, instance := range instances {
 		exportable, ok := loaded[instance.Resource]
 		if !ok {
-			warnings = append(warnings, fmt.Sprintf("Skipped %s %s: unknown resource type", instance.Resource, instance.ID))
+			warnings = append(warnings, warn.Lost("Skipped %s %s: unknown resource type", instance.Resource, instance.ID))
 			continue
 		}
 		model, found, diags := exportable.ExportRead(ctx, client, projectID, instance.Scope, instance.ID)
 		if !found {
 			// a singleton or uncustomized placeholder has nothing to export, but any other unreadable entity is a silent loss and must be reported
 			if !exportable.ExportSingleton() && !instance.MayBeAbsent {
-				warnings = append(warnings, fmt.Sprintf("Skipped %s %s: %s", instance.Resource, instance.ID, UnreadableWarning))
+				warnings = append(warnings, warn.Lost("Skipped %s %s: %s", instance.Resource, instance.ID, UnreadableWarning))
 			}
 			continue
 		}
@@ -52,7 +52,7 @@ func All(ctx context.Context, client *infra.Client, loaded map[string]resources.
 		diags.Append(objectDiags...)
 		if diags.HasError() {
 			for _, diagnostic := range diags.Errors() {
-				warnings = append(warnings, fmt.Sprintf("Failed reading %s %s: %s: %s", instance.Resource, instance.ID, diagnostic.Summary(), diagnostic.Detail()))
+				warnings = append(warnings, warn.Lost("Failed reading %s %s: %s: %s", instance.Resource, instance.ID, diagnostic.Summary(), diagnostic.Detail()))
 			}
 			continue
 		}

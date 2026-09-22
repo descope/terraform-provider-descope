@@ -11,10 +11,11 @@ import (
 	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/prune"
 	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/read"
 	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/registry"
+	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/warn"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
 
-func ReadProject(ctx context.Context, client *infra.Client, projectID, only string) ([]read.Result, []string, error) {
+func ReadProject(ctx context.Context, client *infra.Client, projectID, only string) ([]read.Result, []warn.Warning, error) {
 	loaded := registry.Load(ctx)
 
 	files, err := discover.Snapshot(ctx, client, projectID)
@@ -28,7 +29,7 @@ func ReadProject(ctx context.Context, client *infra.Client, projectID, only stri
 	}
 	inboundApps, err := discover.InboundApps(ctx, client, projectID)
 	if err != nil {
-		warnings = append(warnings, fmt.Sprintf("Failed to list inbound apps: %s", err.Error()))
+		warnings = append(warnings, warn.Lost("Failed to list inbound apps: %s", err.Error()))
 	}
 	instances = append(instances, inboundApps...)
 	instances, resolveWarnings := discover.ResolveAuthorizationIDs(ctx, client, projectID, instances)
@@ -60,7 +61,7 @@ func projectNameOf(results []read.Result) string {
 	return ""
 }
 
-func Run(ctx context.Context, client *infra.Client, projectID, outDir, only string) (int, []string, error) {
+func Run(ctx context.Context, client *infra.Client, projectID, outDir, only string) (int, []warn.Warning, error) {
 	results, warnings, err := ReadProject(ctx, client, projectID, only)
 	if err != nil {
 		return 0, warnings, err
@@ -78,7 +79,7 @@ func Run(ctx context.Context, client *infra.Client, projectID, outDir, only stri
 			continue // nothing but defaults, so the resource is left out entirely
 		}
 		attrs, secrets = ensureValidConfig(ctx, exportable, result.Instance.Name, result.Object, attrs, secrets, func(format string, args ...any) {
-			warnings = append(warnings, fmt.Sprintf(format, args...))
+			warnings = append(warnings, warn.Note(format, args...))
 		})
 
 		_, hasProjectID := schema.Attributes["project_id"]
@@ -114,9 +115,9 @@ func Run(ctx context.Context, client *infra.Client, projectID, outDir, only stri
 		for _, secret := range secrets {
 			switch {
 			case secret.Required:
-				warnings = append(warnings, fmt.Sprintf("Secret %s of %s.%s must be assigned via its generated variable", secret.Path, resource.Type, resource.Label))
+				warnings = append(warnings, warn.Note("Secret %s of %s.%s must be assigned via its generated variable", secret.Path, resource.Type, resource.Label))
 			case secret.Dropped:
-				warnings = append(warnings, fmt.Sprintf("Secret %s of %s.%s has a stored value that the generated configuration cannot carry: set it manually before applying, or the apply clears it", secret.Path, resource.Type, resource.Label))
+				warnings = append(warnings, warn.Note("Secret %s of %s.%s has a stored value that the generated configuration cannot carry: set it manually before applying, or the apply clears it", secret.Path, resource.Type, resource.Label))
 			}
 		}
 		plan.Resources = append(plan.Resources, resource)

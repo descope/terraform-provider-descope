@@ -10,6 +10,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/discover"
 	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/export"
+	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/warn"
 )
 
 func main() {
@@ -51,6 +52,9 @@ func main() {
 		}
 		printWarnings(warnings)
 		fmt.Printf("Generated %d resources in %s\n", count, *outDir)
+		if warn.Incomplete(warnings) {
+			os.Exit(2)
+		}
 	}
 }
 
@@ -81,11 +85,18 @@ func printResources(ctx context.Context, client *infra.Client, projectID, only s
 	}
 	export.PrintState(ctx, os.Stdout, results)
 	printWarnings(warnings)
+	if warn.Incomplete(warnings) {
+		os.Exit(2)
+	}
 }
 
-func printWarnings(warnings []string) {
+func printWarnings(warnings []warn.Warning) {
 	for _, warning := range warnings {
-		fmt.Fprintf(os.Stderr, "warning: %s\n", warning)
+		label := "warning"
+		if warning.Lossy {
+			label = "incomplete"
+		}
+		fmt.Fprintf(os.Stderr, "%s: %s\n", label, warning.Text)
 	}
 }
 

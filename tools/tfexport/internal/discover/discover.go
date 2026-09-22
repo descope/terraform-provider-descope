@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/infra"
+	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/warn"
 )
 
 func Snapshot(ctx context.Context, client *infra.Client, projectID string) (map[string]any, error) {
@@ -39,7 +40,7 @@ func InboundApps(ctx context.Context, client *infra.Client, projectID string) ([
 	return instances, nil
 }
 
-func ResolveAuthorizationIDs(ctx context.Context, client *infra.Client, projectID string, instances []Instance) (resolved []Instance, warnings []string) {
+func ResolveAuthorizationIDs(ctx context.Context, client *infra.Client, projectID string, instances []Instance) (resolved []Instance, warnings []warn.Warning) {
 	live := map[string]map[string]string{}
 	for resource, load := range map[string]func() (map[string]string, error){
 		"descope_role":       func() (map[string]string, error) { return loadRoles(ctx, client, projectID) },
@@ -50,7 +51,7 @@ func ResolveAuthorizationIDs(ctx context.Context, client *infra.Client, projectI
 		}
 		ids, err := load()
 		if err != nil {
-			warnings = append(warnings, fmt.Sprintf("Failed to resolve %s ids: %s", resource, err.Error()))
+			warnings = append(warnings, warn.Lost("Failed to resolve %s ids: %s", resource, err.Error()))
 			continue
 		}
 		live[resource] = ids
@@ -60,7 +61,7 @@ func ResolveAuthorizationIDs(ctx context.Context, client *infra.Client, projectI
 		if ids, ok := live[instance.Resource]; ok {
 			id, ok := ids[instance.Name]
 			if !ok {
-				warnings = append(warnings, fmt.Sprintf("Skipped %s %q: no entity with that name exists", instance.Resource, instance.Name))
+				warnings = append(warnings, warn.Lost("Skipped %s %q: no entity with that name exists", instance.Resource, instance.Name))
 				continue
 			}
 			instance.ID = id

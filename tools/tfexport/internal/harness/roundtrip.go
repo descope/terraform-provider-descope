@@ -128,9 +128,9 @@ func RunScenario(t *testing.T, scenario Scenario) {
 		}
 		t.Logf("%s: exported %d resources with %d warnings", stepName, count, len(warnings))
 		for _, warning := range warnings {
-			t.Logf("%s: warning: %s", stepName, warning)
-			if strings.Contains(warning, read.UnreadableWarning) {
-				t.Errorf("%s: %s", stepName, warning)
+			t.Logf("%s: warning: %s", stepName, warning.Text)
+			if strings.Contains(warning.Text, read.UnreadableWarning) {
+				t.Errorf("%s: %s", stepName, warning.Text)
 			}
 		}
 
