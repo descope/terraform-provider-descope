@@ -16,6 +16,7 @@ func main() {
 	projectID := flag.String("project", "", "the ID of the Descope project to export")
 	outDir := flag.String("out", "", "the directory to write generated files into")
 	only := flag.String("only", "", "limit the export to resource types containing this substring")
+	force := flag.Bool("force", false, "write into the output directory even when it already has files in it")
 	dumpIndex := flag.Bool("dump-index", false, "print a structural summary of the project's snapshot index and exit")
 	dumpFile := flag.String("dump-file", "", "print the raw JSON of a single snapshot file and exit")
 	printState := flag.Bool("print-state", false, "print the attribute values of all read resources and exit")
@@ -40,6 +41,9 @@ func main() {
 	default:
 		if *outDir == "" {
 			fail("The -out flag is required")
+		}
+		if entries, err := os.ReadDir(*outDir); err == nil && len(entries) > 0 && !*force {
+			fail("The output directory %s is not empty: files this export doesn't overwrite would survive into it, pass -force to write anyway", *outDir)
 		}
 		count, warnings, err := export.Run(ctx, client, *projectID, *outDir, *only)
 		if err != nil {
