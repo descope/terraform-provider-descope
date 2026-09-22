@@ -22,13 +22,13 @@ const redacted = "(redacted)"
 func PrintState(ctx context.Context, w io.Writer, results []read.Result) {
 	loaded := registry.Load(ctx)
 	for _, result := range results {
-		fmt.Fprintf(w, "### %s %q (id %s)\n", result.Instance.Resource, result.Instance.Name, result.Instance.ID)
+		fmt.Fprintf(w, "### %s %q (id %s)\n", result.Instance.Resource, result.Instance.Name, result.Instance.ID) // nolint:errcheck
 		var attributes map[string]schema.Attribute
 		if exportable, ok := loaded[result.Instance.Resource]; ok {
 			attributes = exportable.ExportSchema().Attributes
 		}
 		printObject(ctx, w, attributes, result.Object, "  ")
-		fmt.Fprintln(w)
+		fmt.Fprintln(w) // nolint:errcheck
 	}
 }
 
@@ -38,7 +38,7 @@ func printObject(ctx context.Context, w io.Writer, attributes map[string]schema.
 		value := values[name]
 		attribute := attributes[name]
 		if attribute != nil && attribute.IsSensitive() && !value.IsNull() {
-			fmt.Fprintf(w, "%s%s = %s\n", indent, name, redacted)
+			fmt.Fprintf(w, "%s%s = %s\n", indent, name, redacted) // nolint:errcheck
 			continue
 		}
 
@@ -52,41 +52,41 @@ func printObject(ctx context.Context, w io.Writer, attributes map[string]schema.
 			nested = a.NestedObject.Attributes
 		}
 		if nested == nil || value.IsNull() || value.IsUnknown() {
-			fmt.Fprintf(w, "%s%s = %s\n", indent, name, value.String())
+			fmt.Fprintf(w, "%s%s = %s\n", indent, name, value.String()) // nolint:errcheck
 			continue
 		}
 
 		if _, ok := attribute.(schema.SingleNestedAttribute); ok {
-			fmt.Fprintf(w, "%s%s = {\n", indent, name)
+			fmt.Fprintf(w, "%s%s = {\n", indent, name) // nolint:errcheck
 			printNested(ctx, w, nested, value, indent+"  ")
-			fmt.Fprintf(w, "%s}\n", indent)
+			fmt.Fprintf(w, "%s}\n", indent) // nolint:errcheck
 			continue
 		}
 
 		elements, ok := value.(interface{ Elements() []attr.Value })
 		if !ok {
-			fmt.Fprintf(w, "%s%s = %s\n", indent, name, value.String())
+			fmt.Fprintf(w, "%s%s = %s\n", indent, name, value.String()) // nolint:errcheck
 			continue
 		}
-		fmt.Fprintf(w, "%s%s = [\n", indent, name)
+		fmt.Fprintf(w, "%s%s = [\n", indent, name) // nolint:errcheck
 		for _, element := range elements.Elements() {
-			fmt.Fprintf(w, "%s  {\n", indent)
+			fmt.Fprintf(w, "%s  {\n", indent) // nolint:errcheck
 			printNested(ctx, w, nested, element, indent+"    ")
-			fmt.Fprintf(w, "%s  }\n", indent)
+			fmt.Fprintf(w, "%s  }\n", indent) // nolint:errcheck
 		}
-		fmt.Fprintf(w, "%s]\n", indent)
+		fmt.Fprintf(w, "%s]\n", indent) // nolint:errcheck
 	}
 }
 
 func printNested(ctx context.Context, w io.Writer, attributes map[string]schema.Attribute, value attr.Value, indent string) {
 	valuable, ok := value.(basetypes.ObjectValuable)
 	if !ok {
-		fmt.Fprintf(w, "%s%s\n", indent, value.String())
+		fmt.Fprintf(w, "%s%s\n", indent, value.String()) // nolint:errcheck
 		return
 	}
 	object, diags := valuable.ToObjectValue(ctx)
 	if diags.HasError() {
-		fmt.Fprintf(w, "%s%s\n", indent, value.String())
+		fmt.Fprintf(w, "%s%s\n", indent, value.String()) // nolint:errcheck
 		return
 	}
 	printObject(ctx, w, attributes, object, indent)
