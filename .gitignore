@@ -30,3 +30,6 @@ terraform.tfvars
 .local
 .history
 .claude/worktrees/
+
+# Instructions are tracked, overriding any local exclude
+!CLAUDE.md
