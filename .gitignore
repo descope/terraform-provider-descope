@@ -1,43 +1,32 @@
-*.dll
-*.exe
+# macOS
 .DS_Store
-example.tf
-terraform.tfplan
-terraform.tfstate
+
+# Editors
+.idea/
+*.iml
+.*.swp
+*~
+
+# Go build output
+terraform-provider-descope
 bin/
 dist/
-modules-dev/
-/pkg/
-website/.vagrant
-website/.bundle
-website/build
-website/node_modules
-.vagrant/
-*.backup
-./*.tfstate
+*.test
+/coverage.*
+
+# Terraform
 .terraform/
 .terraform.tfstate.lock.info
+*.tfstate
+*.tfplan
+*.backup
 *.log
-*.bak
-*~
-.*.swp
-.idea
-*.iml
-*.test
+
+# Secrets and local configuration
 *.env
-/coverage.*
-.history
+terraform.tfvars
 
-website/vendor
-/vendor
-
-# Test exclusions
-!command/test-fixtures/**/*.tfstate
-!command/test-fixtures/**/.terraform/
-
-# Keep windows files with windows line endings
-*.winfile eol=crlf
-
-# AI / local tooling
+# Local tooling
 .local
+.history
 .claude/worktrees/
