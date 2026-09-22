@@ -106,7 +106,7 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ForceAddAllAuthorizationInfo, data, "forceAddAllAuthorizationInfo")
 	boolattr.Set(&m.ForceDpop, data, "forceDpop")
 	stringattr.Set(&m.DefaultAudience, data, "defaultAudience")
-	stringattr.Set(&m.ClientType, data, "clientType")
+	stringattr.SetDefault(&m.ClientType, data, "clientType", "") // omitted by the backend when unset, and Set would leave a null that forces a replacement on import
 	stringattr.Set(&m.ClientId, data, "clientId")
 	stringattr.Set(&m.ClientSecret, data, "clientSecret")
 	boolattr.Set(&m.ForcePkce, data, "forcePkce")
