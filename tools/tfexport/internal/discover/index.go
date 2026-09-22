@@ -177,6 +177,10 @@ func dedupe(instances []Instance) []Instance {
 	seen := map[Instance]bool{}
 	result := make([]Instance, 0, len(instances))
 	for _, instance := range instances {
+		if instance.ID == "" {
+			result = append(result, instance) // no id is no identity to compare on, so it is left for the read to report
+			continue
+		}
 		key := Instance{Resource: instance.Resource, ID: instance.ID, Scope: instance.Scope}
 		if seen[key] {
 			continue
