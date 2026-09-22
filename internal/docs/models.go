@@ -88,6 +88,7 @@ func InjectModels() {
 	inject(connectors.IntercomConnectorAttributes, docsIntercomConnector)
 	inject(connectors.LDAPConnectorAttributes, docsLDAPConnector)
 	inject(connectors.LokaliseConnectorAttributes, docsLokaliseConnector)
+	inject(connectors.MailjetConnectorAttributes, docsMailjetConnector)
 	inject(connectors.MixpanelConnectorAttributes, docsMixpanelConnector)
 	inject(connectors.MParticleConnectorAttributes, docsMParticleConnector)
 	inject(connectors.NewRelicConnectorAttributes, docsNewRelicConnector)

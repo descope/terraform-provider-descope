@@ -810,6 +810,18 @@ var docsLokaliseConnector = map[string]string{
 	"config_project_id": "Lokalise project ID.",
 }
 
+var docsMailjetConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"api_key":     "Your Mailjet API Key, found under Account settings / API Key Management",
+	"secret_key": "The Secret Key that pairs with the API Key above. Mailjet needs both to " +
+		"authenticate",
+	"sender_email": "A sender address verified in your Mailjet account. Defines the email sender",
+	"sender_name":  "The display name shown next to the sender address",
+}
+
 var docsMixpanelConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
