@@ -79,9 +79,7 @@ func printResources(ctx context.Context, client *infra.Client, projectID, only s
 	if err != nil {
 		fail("%s", err.Error())
 	}
-	for _, result := range results {
-		fmt.Printf("### %s %q (id %s)\n%s\n\n", result.Instance.Resource, result.Instance.Name, result.Instance.ID, result.Object.String())
-	}
+	export.PrintState(ctx, os.Stdout, results)
 	printWarnings(warnings)
 }
 
