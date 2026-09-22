@@ -2,7 +2,6 @@ package settings
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/attrs/intattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -24,7 +23,8 @@ var GovernanceAttributes = map[string]schema.Attribute{
 	"suite_disabled": boolattr.Default(false),
 	"logo":           stringattr.Default(""),
 	// The write is version checked, so the value read has to travel back out.
-	"version": intattr.Generated(),
+	// A string because int64 crosses protojson as one.
+	"version": stringattr.Generated(),
 }
 
 type GovernanceModel struct {
@@ -34,7 +34,7 @@ type GovernanceModel struct {
 	AutoApproval  boolattr.Type   `tfsdk:"auto_approval"`
 	SuiteDisabled boolattr.Type   `tfsdk:"suite_disabled"`
 	Logo          stringattr.Type `tfsdk:"logo"`
-	Version       intattr.Type    `tfsdk:"version"`
+	Version       stringattr.Type `tfsdk:"version"`
 }
 
 func (m *GovernanceModel) Values(_ *helpers.Handler) map[string]any {
@@ -43,7 +43,7 @@ func (m *GovernanceModel) Values(_ *helpers.Handler) map[string]any {
 	boolattr.Get(m.AutoApproval, data, "autoApproval")
 	boolattr.Get(m.SuiteDisabled, data, "suiteDisabled")
 	stringattr.Get(m.Logo, data, "logo")
-	intattr.Get(m.Version, data, "version")
+	stringattr.Get(m.Version, data, "version")
 	return data
 }
 
@@ -52,7 +52,7 @@ func (m *GovernanceModel) SetValues(_ *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.AutoApproval, data, "autoApproval")
 	boolattr.Set(&m.SuiteDisabled, data, "suiteDisabled")
 	stringattr.Set(&m.Logo, data, "logo")
-	intattr.Set(&m.Version, data, "version")
+	stringattr.Set(&m.Version, data, "version")
 }
 
 func (m *GovernanceModel) GetID() stringattr.Type        { return m.ID }
