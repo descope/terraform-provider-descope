@@ -25,7 +25,9 @@ func ProjectID(t *testing.T) string {
 }
 
 func Project(t *testing.T) *Resource {
-	return newResource(t, "project")
+	r := newResource(t, "project")
+	r.Defaults = []string{"deletion_protection = false"} // test projects have to be destroyable
+	return r
 }
 
 func Descoper(t *testing.T) *Resource {
@@ -201,9 +203,10 @@ func newResource(t *testing.T, typ string) *Resource {
 }
 
 type Resource struct {
-	Type string // the resource type without the 'descope_' prefix
-	ID   string // the resource name in the Terraform config
-	Name string // the value of the 'name' attribute
+	Type     string   // the resource type without the 'descope_' prefix
+	ID       string   // the resource name in the Terraform config
+	Name     string   // the value of the 'name' attribute
+	Defaults []string // attributes Config appends, for tests that have no opinion about them
 }
 
 func (r *Resource) Path() string {
@@ -216,7 +219,7 @@ func (r *Resource) Variables(s ...string) string {
 
 func (r *Resource) Config(s ...string) string {
 	n := fmt.Sprintf(`name = %q`, r.Name)
-	s = append([]string{n}, s...)
+	s = append(append([]string{n}, s...), r.Defaults...)
 	return fmt.Sprintf(resourceFormat, r.Type, r.ID, strings.Join(s, "\n	"))
 }
 

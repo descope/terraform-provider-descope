@@ -10,10 +10,11 @@ import (
 
 func TestProjectDeletionProtection(t *testing.T) {
 	p := testacc.Project(t)
+	p.Defaults = nil // this test manages deletion protection itself
 	testacc.Run(t,
 		resource.TestStep{
 			Config: p.Config(`
-				environment = "production"
+				environment = ""
 			`),
 			Check: p.Check(map[string]any{
 				"deletion_protection": testacc.AttributeIsNotSet,
@@ -21,7 +22,7 @@ func TestProjectDeletionProtection(t *testing.T) {
 		},
 		resource.TestStep{
 			Config: p.Config(`
-				environment = "production"
+				environment = ""
 			`),
 			Destroy:     true,
 			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),

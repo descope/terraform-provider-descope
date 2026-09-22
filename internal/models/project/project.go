@@ -58,6 +58,7 @@ func (m *ProjectModel) GetProjectID() stringattr.Type {
 	return m.ID
 }
 
+// Protected by default like the other protected resources: destroying a project is unrecoverable, so it takes an explicit opt-out.
 func (m *ProjectModel) DeletionProtectionDefault(_ context.Context) bool {
-	return m.Environment.ValueString() == "production"
+	return true
 }
