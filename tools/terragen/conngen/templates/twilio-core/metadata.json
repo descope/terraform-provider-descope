@@ -1,0 +1,56 @@
+{
+  "id": "twilio-core",
+  "name": "Twilio Core",
+  "extProvider": true,
+  "description": "Send text messages and place voice calls through Twilio.",
+  "fields": [
+    {
+      "name": "accountSid",
+      "description": "The Twilio account SID.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "fromPhone",
+      "description": "The phone number that text messages are sent from. Set either this or a messaging service SID.",
+      "type": "string"
+    },
+    {
+      "name": "messagingServiceSid",
+      "description": "The Twilio messaging service SID to send text messages through. Set either this or a from phone number.",
+      "type": "string"
+    },
+    {
+      "name": "fromPhoneVoice",
+      "description": "The phone number that voice calls are placed from.",
+      "type": "string"
+    },
+    {
+      "name": "authToken",
+      "description": "The Twilio auth token. Set either this or an API key and secret pair.",
+      "type": "secret"
+    },
+    {
+      "name": "apiKey",
+      "description": "The Twilio API key. Set together with an API secret instead of an auth token.",
+      "type": "secret"
+    },
+    {
+      "name": "apiSecret",
+      "description": "The Twilio API secret. Set together with an API key instead of an auth token.",
+      "type": "secret"
+    }
+  ],
+  "extDiscriminators": [
+    {
+      "name": "selectedProp",
+      "cases": [{ "field": "fromPhone", "value": "fromPhone" }],
+      "default": "messagingServiceSid"
+    },
+    {
+      "name": "selectedAuthProp",
+      "cases": [{ "field": "authToken", "value": "methodAuthToken" }],
+      "default": "methodApiSecret"
+    }
+  ]
+}

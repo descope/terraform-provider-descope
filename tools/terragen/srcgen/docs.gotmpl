@@ -5,7 +5,7 @@ package docs
 {{- range .Files }}
 {{- range .Models }}
 
-var docs{{.Name}} = map[string]string{
+var {{.DocsVar}} = map[string]string{
 {{- range .Fields }}
 	"{{.Name}}": {{ srcliteral .Name .Description }},
 {{- end }}

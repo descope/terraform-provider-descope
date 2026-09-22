@@ -1,0 +1,79 @@
+{
+  "metadata": {
+    "name": "Applications Portal",
+    "description": "With this widget, users view all their associated applications, and quickly redirect to any of them.",
+    "type": "applications-portal-widget",
+    "components": [
+      "applications-portal-widget-apps-list"
+    ],
+    "columns": [],
+    "flowsIds": [],
+    "allowSubTenants": false,
+    "eventActions": [],
+    "editMultiTenantUsers": false,
+    "forAppUsers": false,
+    "forTenantUsers": false,
+    "eventExcludeFields": [],
+    "eventFilter": [],
+    "translation": {
+      "enabled": false,
+      "connectorId": "",
+      "sourceLanguage": "",
+      "targetLanguages": []
+    }
+  },
+  "screens": [
+    {
+      "screenId": "root",
+      "interactions": [],
+      "contents": {
+        "ROOT": {
+          "custom": {},
+          "displayName": "Container",
+          "hidden": false,
+          "isCanvas": true,
+          "linkedNodes": {},
+          "nodes": [
+            "appsList"
+          ],
+          "props": {
+            "align": "center",
+            "background": "",
+            "data-editor-type": "container",
+            "direction": "column",
+            "id": "ROOT",
+            "justify": "center",
+            "paddingX": "4",
+            "paddingY": "4",
+            "space-between": "md",
+            "spaceBetween": "4",
+            "st-items-grow": 0,
+            "width": "100%"
+          },
+          "type": {
+            "resolvedName": "Container"
+          }
+        },
+        "appsList": {
+          "custom": {},
+          "displayName": "Applications",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "ROOT",
+          "props": {
+            "emptyState": "Looks like there are no apps available yet...",
+            "nonDeletable": true,
+            "size": "md",
+            "variant": "tiles"
+          },
+          "type": {
+            "resolvedName": "AppsList"
+          }
+        }
+      }
+    }
+  ],
+  "flows": []
+}

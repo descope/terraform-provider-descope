@@ -1,0 +1,77 @@
+{
+  "id": "sns",
+  "name": "AWS SNS",
+  "extProvider": true,
+  "description": "Send text messages through Amazon Simple Notification Service (SNS).",
+  "fields": [
+    {
+      "name": "authType",
+      "description": "How to authenticate with AWS: using static credentials or by assuming an IAM role.",
+      "type": "string",
+      "initialValue": "credentials",
+      "options": [
+        { "name": "Credentials", "value": "credentials" },
+        { "name": "Assume Role", "value": "assumeRole" }
+      ]
+    },
+    {
+      "name": "accessKeyId",
+      "description": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+      "type": "secret",
+      "required": true,
+      "dependsOn": { "name": "authType", "value": "credentials" }
+    },
+    {
+      "name": "secretAccessKey",
+      "description": "The AWS secret access key. Required when the authentication type is 'credentials'.",
+      "type": "secret",
+      "required": true,
+      "dependsOn": { "name": "authType", "value": "credentials" }
+    },
+    {
+      "name": "roleArn",
+      "description": "The ARN of the IAM role to assume. Required when the authentication type is 'assumeRole'.",
+      "type": "string",
+      "required": true,
+      "dependsOn": { "name": "authType", "value": "assumeRole" }
+    },
+    {
+      "name": "externalId",
+      "description": "The external ID used when assuming the IAM role. Required when the authentication type is 'assumeRole'.",
+      "type": "string",
+      "required": true,
+      "dependsOn": { "name": "authType", "value": "assumeRole" }
+    },
+    {
+      "name": "awsSNSRegion",
+      "description": "The AWS region the SNS service is configured in.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "awsEndpoint",
+      "description": "A custom endpoint for the SNS API. Leave empty to use the default AWS endpoint.",
+      "type": "string"
+    },
+    {
+      "name": "originationNumber",
+      "description": "The phone number that text messages are sent from.",
+      "type": "string"
+    },
+    {
+      "name": "senderId",
+      "description": "The sender ID shown as the origin of the text messages, where supported.",
+      "type": "string"
+    },
+    {
+      "name": "entityId",
+      "description": "The entity ID used for regulatory registration, where required.",
+      "type": "string"
+    },
+    {
+      "name": "templateId",
+      "description": "The template ID used for regulatory registration, where required.",
+      "type": "string"
+    }
+  ]
+}

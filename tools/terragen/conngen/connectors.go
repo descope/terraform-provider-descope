@@ -15,30 +15,21 @@ type Connectors struct {
 	Naming     *Naming
 }
 
-func (c *Connectors) Read(datadir string, templatesdir string) {
+// Read loads all connectors, in-repo mock templates first and external connector templates second. A mock template takes precedence
+// over an external template with the same id (e.g. the messaging connectors we ship a flat mock template for).
+func (c *Connectors) Read(mockdir string, templatesdir string) {
 	utils.Debug(0, "Connectors")
 	utils.Debug(0, "==========")
-	c.readBuiltins(datadir)
+	utils.Debug(0, "+ mock templates:")
+	c.readTemplates(mockdir)
+	utils.Debug(0, "+ templates:")
 	c.readTemplates(templatesdir)
 	slices.SortFunc(c.Connectors, func(a, b *Connector) int { return strings.Compare(a.ID, b.ID) })
 	utils.Debug(0, "")
 }
 
-func (c *Connectors) readBuiltins(datadir string) {
-	builtins := []*Connector{}
-
-	path := filepath.Join(datadir, "builtins.json")
-	if err := utils.ReadJSON(path, &builtins); err != nil {
-		log.Fatalf("error reading builtin.json file: %s", err.Error())
-	}
-
-	utils.Debug(0, "+ builtins:")
-	for _, conn := range builtins {
-		utils.Debug(1, "- %s", conn.ID)
-		conn.BuiltIn = true
-	}
-
-	c.Connectors = append(c.Connectors, builtins...)
+func (c *Connectors) has(id string) bool {
+	return slices.ContainsFunc(c.Connectors, func(conn *Connector) bool { return conn.ID == id })
 }
 
 func (c *Connectors) readTemplates(templatesdir string) {
@@ -58,7 +49,6 @@ func (c *Connectors) readTemplates(templatesdir string) {
 		}
 	}
 
-	utils.Debug(0, "+ templates:")
 	for _, path := range paths {
 		c.readConnector(path)
 	}
@@ -79,6 +69,12 @@ func (c *Connectors) readConnector(path string) {
 
 	if connector.IsSkipped() {
 		utils.Debug(1, "- %s (skipped)", connector.ID)
+		return
+	}
+
+	// a mock template with the same id was already read, so it takes precedence
+	if c.has(connector.ID) {
+		utils.Debug(1, "- %s (overridden)", connector.ID)
 		return
 	}
 

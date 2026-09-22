@@ -15,6 +15,9 @@ var docsTemplateData []byte
 var modelsTemplateData []byte
 
 func GenerateSources(root string, schema *schema.Schema) {
+	schema.ComputeDocsVars()
+	schema.ResolveModelImports()
+
 	tpl := utils.LoadTemplate("docs", docsTemplateData)
 	path := filepath.Join(root, "docs.go")
 	utils.WriteGoSource(path, schema, tpl, true)

@@ -1,0 +1,56 @@
+{
+  "id": "smtp",
+  "name": "SMTP",
+  "extProvider": true,
+  "description": "A general purpose SMTP connector for sending emails through your own mail server.",
+  "extra": {
+    "supportStaticIps": true
+  },
+  "fields": [
+    {
+      "name": "host",
+      "description": "The hostname or IP address of the SMTP server.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "port",
+      "description": "The port the SMTP server listens on.",
+      "type": "number",
+      "initialValue": 25
+    },
+    {
+      "name": "username",
+      "description": "The username used to authenticate with the SMTP server.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "password",
+      "description": "The password used to authenticate with the SMTP server.",
+      "type": "secret",
+      "required": true
+    },
+    {
+      "name": "authMethod",
+      "description": "The authentication method to use when connecting to the SMTP server.",
+      "type": "string",
+      "initialValue": "plain",
+      "options": [
+        { "name": "Plain", "value": "plain" },
+        { "name": "Login", "value": "login" }
+      ]
+    },
+    {
+      "name": "fromEmail",
+      "description": "The email address that emails are sent from. Make sure it is properly registered with your server.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "fromName",
+      "description": "The name shown as the sender of the emails.",
+      "type": "string"
+    }
+  ]
+}
