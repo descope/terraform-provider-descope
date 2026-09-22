@@ -63,21 +63,39 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	nameRefs := nameReferences(ctx, plan)
 	projectRef := projectReference(plan)
 
-	var variables []variable
+	type prepared struct {
+		resource Resource
+		files    map[string]string
+	}
+	resources := make([]prepared, 0, len(plan.Resources))
 	for _, resource := range plan.Resources {
 		files, err := extractFiles(ctx, outDir, &resource)
 		if err != nil {
 			return fmt.Errorf("extracting files for %s.%s: %w", resource.Type, resource.Label, err)
 		}
-		body := fileBody(areaFile(resource.Type))
-		block := body.AppendNewBlock("resource", []string{resource.Type, resource.Label})
-		if err := resourceBody(ctx, block.Body(), resource, refs, nameRefs, projectRef, files, &variables); err != nil {
-			return fmt.Errorf("emitting %s.%s: %w", resource.Type, resource.Label, err)
+		resources = append(resources, prepared{resource: resource, files: files})
+	}
+
+	// a variable name is only known to collide once every resource has claimed one, so this pass runs for the claims alone
+	claimed := &variables{claims: map[string]map[string]bool{}}
+	scratch := hclwrite.NewEmptyFile()
+	for _, entry := range resources {
+		if err := resourceBody(ctx, scratch.Body(), entry.resource, refs, nameRefs, projectRef, entry.files, claimed); err != nil {
+			return fmt.Errorf("emitting %s.%s: %w", entry.resource.Type, entry.resource.Label, err)
+		}
+	}
+
+	vars := &variables{qualify: claimed.conflicts()}
+	for _, entry := range resources {
+		body := fileBody(areaFile(entry.resource.Type))
+		block := body.AppendNewBlock("resource", []string{entry.resource.Type, entry.resource.Label})
+		if err := resourceBody(ctx, block.Body(), entry.resource, refs, nameRefs, projectRef, entry.files, vars); err != nil {
+			return fmt.Errorf("emitting %s.%s: %w", entry.resource.Type, entry.resource.Label, err)
 		}
 	}
 
 	writeProviderFile(fileBody("provider.tf"))
-	writeVariablesFile(fileBody("variables.tf"), variables, projectRef == nil)
+	writeVariablesFile(fileBody("variables.tf"), vars.collected, projectRef == nil)
 	writeImportsFile(fileBody("import.tf"), plan.Resources)
 
 	for name, file := range files {
@@ -97,7 +115,45 @@ type variable struct {
 	description string
 }
 
-func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, refs, nameRefs map[string]hcl.Traversal, projectRef hcl.Traversal, files map[string]string, variables *[]variable) error {
+// variables allocates the names of the generated secret variables, which share one namespace across every resource type
+// while resource labels are only unique within one type.
+type variables struct {
+	collected []variable
+	claims    map[string]map[string]bool // short name -> the resources that claimed it, gathered on the first pass
+	qualify   map[string]bool            // short names that more than one resource claimed, so every claimant takes the longer form
+}
+
+func (v *variables) assign(resource Resource, short, attribute string) string {
+	if v.claims != nil {
+		claimants := v.claims[short]
+		if claimants == nil {
+			claimants = map[string]bool{}
+			v.claims[short] = claimants
+		}
+		claimants[resource.Type+"."+resource.Label] = true
+	}
+	name := short
+	if v.qualify[short] {
+		name = sanitizeLabel(strings.TrimPrefix(resource.Type, "descope_") + "_" + short)
+	}
+	v.collected = append(v.collected, variable{
+		name:        name,
+		description: fmt.Sprintf("Secret value for the %s attribute of %s.%s", attribute, resource.Type, resource.Label),
+	})
+	return name
+}
+
+func (v *variables) conflicts() map[string]bool {
+	qualify := map[string]bool{}
+	for short, claimants := range v.claims {
+		if len(claimants) > 1 {
+			qualify[short] = true
+		}
+	}
+	return qualify
+}
+
+func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, refs, nameRefs map[string]hcl.Traversal, projectRef hcl.Traversal, files map[string]string, vars *variables) error {
 	if resource.HasProjectID {
 		if projectRef == nil {
 			projectRef = hcl.Traversal{hcl.TraverseRoot{Name: "var"}, hcl.TraverseAttr{Name: "project_id"}}
@@ -139,7 +195,7 @@ func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, r
 				continue
 			}
 		}
-		tokens, err := attrTokens(ctx, attr, resource, refs, resource.Label, variables)
+		tokens, err := attrTokens(ctx, attr, resource, refs, resource.Label, vars)
 		if err != nil {
 			return err
 		}
@@ -148,17 +204,13 @@ func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, r
 	return nil
 }
 
-func attrTokens(ctx context.Context, attr prune.Attr, resource Resource, refs map[string]hcl.Traversal, prefix string, variables *[]variable) (hclwrite.Tokens, error) {
+func attrTokens(ctx context.Context, attr prune.Attr, resource Resource, refs map[string]hcl.Traversal, prefix string, vars *variables) (hclwrite.Tokens, error) {
 	if attr.Placeholder {
-		name := sanitizeLabel(prefix + "_" + attr.Name)
-		*variables = append(*variables, variable{
-			name:        name,
-			description: fmt.Sprintf("Secret value for the %s attribute of %s.%s", attr.Name, resource.Type, resource.Label),
-		})
+		name := vars.assign(resource, sanitizeLabel(prefix+"_"+attr.Name), attr.Name)
 		return hclwrite.TokensForTraversal(hcl.Traversal{hcl.TraverseRoot{Name: "var"}, hcl.TraverseAttr{Name: name}}), nil
 	}
 	if attr.IsNested {
-		return objectTokens(ctx, attr.Nested, resource, refs, prefix+"_"+attr.Name, variables)
+		return objectTokens(ctx, attr.Nested, resource, refs, prefix+"_"+attr.Name, vars)
 	}
 	if attr.IsElements {
 		elements := make([]hclwrite.Tokens, 0, len(attr.Elements))
@@ -168,7 +220,7 @@ func attrTokens(ctx context.Context, attr prune.Attr, resource Resource, refs ma
 			if len(attr.Elements) > 1 {
 				elementPrefix = fmt.Sprintf("%s_%d", elementPrefix, i)
 			}
-			tokens, err := objectTokens(ctx, element, resource, refs, elementPrefix, variables)
+			tokens, err := objectTokens(ctx, element, resource, refs, elementPrefix, vars)
 			if err != nil {
 				return nil, err
 			}
@@ -188,10 +240,10 @@ func attrTokens(ctx context.Context, attr prune.Attr, resource Resource, refs ma
 	return hclwrite.TokensForValue(value), nil
 }
 
-func objectTokens(ctx context.Context, attrs []prune.Attr, resource Resource, refs map[string]hcl.Traversal, prefix string, variables *[]variable) (hclwrite.Tokens, error) {
+func objectTokens(ctx context.Context, attrs []prune.Attr, resource Resource, refs map[string]hcl.Traversal, prefix string, vars *variables) (hclwrite.Tokens, error) {
 	items := make([]hclwrite.ObjectAttrTokens, 0, len(attrs))
 	for _, attr := range attrs {
-		tokens, err := attrTokens(ctx, attr, resource, refs, prefix, variables)
+		tokens, err := attrTokens(ctx, attr, resource, refs, prefix, vars)
 		if err != nil {
 			return nil, err
 		}

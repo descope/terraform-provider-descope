@@ -138,3 +138,41 @@ func TestElementVariablesAreNamedByIndexOnlyWhenAmbiguous(t *testing.T) {
 		}
 	})
 }
+
+func TestSecretVariablesAreScopedOnlyWhenTheyCollide(t *testing.T) {
+	plan := &Plan{
+		ProjectID: "P123",
+		Resources: []Resource{
+			{
+				Type:         "descope_outbound_app",
+				Label:        "crm",
+				EntityID:     "OA1",
+				ImportID:     "P123/OA1",
+				HasProjectID: true,
+				Attrs:        []prune.Attr{{Name: "client_secret", Placeholder: true}},
+			},
+			{
+				Type:         "descope_salesforce_connector",
+				Label:        "crm",
+				EntityID:     "CON1",
+				ImportID:     "P123/CON1",
+				HasProjectID: true,
+				Attrs:        []prune.Attr{{Name: "client_secret", Placeholder: true}, {Name: "api_key", Placeholder: true}},
+			},
+		},
+	}
+
+	files := write(t, plan)
+
+	for _, want := range []string{"outbound_app_crm_client_secret", "salesforce_connector_crm_client_secret", "crm_api_key"} {
+		if !strings.Contains(files["variables.tf"], `variable "`+want+`"`) {
+			t.Errorf("expected a %q variable:\n%s", want, files["variables.tf"])
+		}
+	}
+	if strings.Contains(files["variables.tf"], `variable "crm_client_secret"`) {
+		t.Errorf("expected the colliding name to be gone:\n%s", files["variables.tf"])
+	}
+	if want := "client_secret = var.outbound_app_crm_client_secret"; !strings.Contains(files["apps.tf"], want) {
+		t.Errorf("expected %q in apps.tf:\n%s", want, files["apps.tf"])
+	}
+}
