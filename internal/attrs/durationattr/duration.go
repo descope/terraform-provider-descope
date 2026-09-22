@@ -65,6 +65,21 @@ func Set(s *Type, data map[string]any, key string) {
 	}
 }
 
+func SetDefault(s *Type, data map[string]any, key string, defaultValue string) {
+	num, hasNum := getNumber(data, key)
+	unit, hasUnit := data[key+"Unit"].(string)
+	if !hasNum || !hasUnit || unit == "" {
+		if s.IsNull() || s.IsUnknown() {
+			*s = Value(defaultValue)
+		}
+		return
+	}
+	value := composeString(num, unit)
+	if value != s.ValueString()+"s" {
+		*s = Value(value)
+	}
+}
+
 func GetMinutes(s Type, data map[string]any, key string) {
 	if !s.IsNull() && !s.IsUnknown() {
 		seconds, _ := getSeconds(s.ValueString())
@@ -89,6 +104,14 @@ func SetMinutes(s *Type, data map[string]any, key string) {
 	if s.IsUnknown() {
 		*s = Value("")
 	}
+}
+
+func SetMinutesDefault(s *Type, data map[string]any, key string, defaultValue string) {
+	if _, ok := getNumber(data, key); !ok && (s.IsNull() || s.IsUnknown()) {
+		*s = Value(defaultValue)
+		return
+	}
+	SetMinutes(s, data, key)
 }
 
 // GetSeconds returns the duration in seconds, for comparing two values that may use different units. Not ok when null, unknown or unparseable.

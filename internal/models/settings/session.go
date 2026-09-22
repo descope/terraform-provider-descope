@@ -84,20 +84,20 @@ func (m *SessionSettingsModel) Values(h *helpers.Handler) map[string]any {
 func (m *SessionSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.UserJWTTemplate, data, "userTemplateId")
 	stringattr.Set(&m.AccessKeyJWTTemplate, data, "keyTemplateId")
-	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
+	durationattr.SetDefault(&m.RefreshTokenExpiration, data, "refreshTokenExpiration", "4 weeks")
 	boolattr.Set(&m.RefreshTokenRotation, data, "rotateJwt")
 	setResponseMethod(&m.RefreshTokenResponseMethod, data, "refreshTokenResponseMethod", h)
 	setCookiePolicy(&m.RefreshTokenCookiePolicy, data, "refreshTokenCookiePolicy")
 	stringattr.Set(&m.RefreshTokenCookieDomain, data, "refreshTokenCookieDomain")
-	durationattr.Set(&m.SessionTokenExpiration, data, "sessionTokenExpiration")
+	durationattr.SetDefault(&m.SessionTokenExpiration, data, "sessionTokenExpiration", "10 minutes")
 	setResponseMethod(&m.SessionTokenResponseMethod, data, "sessionTokenResponseMethod", h)
 	setCookiePolicy(&m.SessionTokenCookiePolicy, data, "sessionTokenCookiePolicy")
 	stringattr.Set(&m.SessionTokenCookieDomain, data, "sessionTokenCookieDomain")
-	durationattr.Set(&m.StepUpTokenExpiration, data, "stepupTokenExpiration")
-	durationattr.Set(&m.TrustedDeviceTokenExpiration, data, "trustedDeviceTokenExpiration")
-	durationattr.Set(&m.AccessKeySessionTokenExpiration, data, "keySessionTokenExpiration")
+	durationattr.SetDefault(&m.StepUpTokenExpiration, data, "stepupTokenExpiration", "10 minutes")
+	durationattr.SetDefault(&m.TrustedDeviceTokenExpiration, data, "trustedDeviceTokenExpiration", "365 days")
+	durationattr.SetDefault(&m.AccessKeySessionTokenExpiration, data, "keySessionTokenExpiration", "10 minutes")
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
-	durationattr.Set(&m.InactivityTime, data, "inactivityTime")
+	durationattr.SetDefault(&m.InactivityTime, data, "inactivityTime", "12 minutes")
 }
 
 func (m *SessionSettingsModel) ModifyPlan(h *helpers.Handler, _, _ *SessionSettingsModel) {
