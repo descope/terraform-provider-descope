@@ -165,7 +165,22 @@ func Instances(files map[string]any, connectorTypes map[string]string) (instance
 		}
 	}
 
-	return instances, warnings
+	return dedupe(instances), warnings
+}
+
+// the same entity can be listed twice by the snapshot, and two resources importing one entity is invisible to the integrity checks
+func dedupe(instances []Instance) []Instance {
+	seen := map[Instance]bool{}
+	result := make([]Instance, 0, len(instances))
+	for _, instance := range instances {
+		key := Instance{Resource: instance.Resource, ID: instance.ID, Scope: instance.Scope}
+		if seen[key] {
+			continue
+		}
+		seen[key] = true
+		result = append(result, instance)
+	}
+	return result
 }
 
 func roleOrPermission(entry map[string]any, resource, appResource string) Instance {
