@@ -62,7 +62,7 @@ func (m *OTPSettingsModel) Values(h *helpers.Handler) map[string]any {
 func (m *OTPSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	stringattr.Set(&m.Domain, data, "domain")
-	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
+	durationattr.SetDefault(&m.ExpirationTime, data, "expirationTime", "3 minutes")
 	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Set(&m.TextConnectorID, data, "textConnectorId")
 	stringattr.Set(&m.VoiceConnectorID, data, "voiceConnectorId")

@@ -29,10 +29,10 @@ deletion_protection
 - Type: `bool`
 
 Protects the project from being accidentally destroyed. When this attribute isn't set,
-deletion protection is enabled automatically for projects that have their `environment`
-attribute set to `production`. To destroy a protected project, set this attribute to
-`false` and apply the change first. Note that this only guards operations performed
-through this provider, so removing the resource from the Terraform state is not prevented.
+deletion protection is enabled automatically for every project, whatever its `environment`
+attribute is set to. To destroy a protected project, set this attribute to `false` and apply
+the change first. Note that this only guards operations performed through this provider, so
+removing the resource from the Terraform state is not prevented.
 
 
 

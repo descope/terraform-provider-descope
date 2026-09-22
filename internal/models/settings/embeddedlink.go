@@ -40,7 +40,7 @@ func (m *EmbeddedLinkSettingsModel) Values(h *helpers.Handler) map[string]any {
 
 func (m *EmbeddedLinkSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
-	durationattr.Set(&m.ExpirationTime, data, "expirationTime")
+	durationattr.SetDefault(&m.ExpirationTime, data, "expirationTime", "3 minutes")
 }
 
 func (m *EmbeddedLinkSettingsModel) GetID() stringattr.Type        { return m.ID }

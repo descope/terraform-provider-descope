@@ -302,7 +302,7 @@ resource "descope_sso_settings" "example" {
 
 ### Optional
 
-- `deletion_protection` (Boolean) Protects the project from being accidentally destroyed. When this attribute isn't set, deletion protection is enabled automatically for projects that have their `environment` attribute set to `production`. To destroy a protected project, set this attribute to `false` and apply the change first. Note that this only guards operations performed through this provider, so removing the resource from the Terraform state is not prevented.
+- `deletion_protection` (Boolean) Protects the project from being accidentally destroyed. When this attribute isn't set, deletion protection is enabled automatically for every project, whatever its `environment` attribute is set to. To destroy a protected project, set this attribute to `false` and apply the change first. Note that this only guards operations performed through this provider, so removing the resource from the Terraform state is not prevented.
 - `environment` (String) This can be set to `production` to mark production projects, otherwise this should be left unset for development or staging projects.
 - `tags` (Set of String) Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.
 

@@ -133,20 +133,28 @@ const (
 )
 
 func Set(s *Type, data map[string]any, key string, options ...SetOption) {
-	SetDefault(s, data, key, "", options...)
+	if v, ok := data[key].(string); ok {
+		setValue(s, v, "", options...)
+	} else {
+		Nil(s)
+	}
 }
 
 func SetDefault(s *Type, data map[string]any, key string, defaultValue string, options ...SetOption) {
 	if v, ok := data[key].(string); ok {
-		if s.ValueString() == "" || !slices.Contains(options, SkipIfAlreadySet) {
-			if v != "" {
-				*s = Value(v)
-			} else {
-				*s = Value(defaultValue)
-			}
+		setValue(s, v, defaultValue, options...)
+	} else if s.IsNull() || s.IsUnknown() {
+		*s = Value(defaultValue)
+	}
+}
+
+func setValue(s *Type, v string, defaultValue string, options ...SetOption) {
+	if s.ValueString() == "" || !slices.Contains(options, SkipIfAlreadySet) {
+		if v != "" {
+			*s = Value(v)
+		} else {
+			*s = Value(defaultValue)
 		}
-	} else {
-		Nil(s)
 	}
 }
 

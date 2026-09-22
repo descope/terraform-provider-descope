@@ -71,6 +71,14 @@ func Set(b *types.Bool, data map[string]any, key string) {
 	}
 }
 
+func SetDefault(b *types.Bool, data map[string]any, key string, defaultValue bool) {
+	if v, ok := data[key].(bool); ok {
+		*b = Value(v)
+	} else if b.IsNull() || b.IsUnknown() {
+		*b = Value(defaultValue)
+	}
+}
+
 func GetNot(b types.Bool, data map[string]any, key string) {
 	if !b.IsNull() && !b.IsUnknown() {
 		data[key] = !b.ValueBool()

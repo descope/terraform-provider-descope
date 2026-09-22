@@ -125,7 +125,7 @@ func (m *PasswordSettingsModel) SetValues(h *helpers.Handler, data map[string]an
 	intattr.Set(&m.LockAttempts, data, "lockAttempts")
 	boolattr.Set(&m.TemporaryLock, data, "tempLock")
 	intattr.Set(&m.TemporaryLockAttempts, data, "tempLockAttempts")
-	durationattr.SetMinutes(&m.TemporaryLockDuration, data, "tempLockDuration")
+	durationattr.SetMinutesDefault(&m.TemporaryLockDuration, data, "tempLockDuration", "5 minutes")
 	if enabled, _ := data["enablePasswordStrength"].(bool); !enabled {
 		m.EnforceStrength = stringattr.Value("none")
 	} else {
