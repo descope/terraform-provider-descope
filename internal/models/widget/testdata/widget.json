@@ -7,7 +7,9 @@
       "applications-portal-widget-apps-list"
     ],
     "columns": [],
-    "flowsIds": [],
+    "flowsIds": [
+      "testacc-portal-delete-name"
+    ],
     "allowSubTenants": false,
     "eventActions": [],
     "editMultiTenantUsers": false,
@@ -75,5 +77,315 @@
       }
     }
   ],
-  "flows": []
+  "flows": [
+    {
+      "flowId": "testacc-portal-delete-name",
+      "metadata": {
+        "name": "Delete Name",
+        "description": "Deletes the name of the user",
+        "componentsVersion": "2.0.240",
+        "disabled": false,
+        "fingerprint": false,
+        "widget": true,
+        "translation": null,
+        "sharedInteractions": [],
+        "management": false,
+        "managementConfig": null,
+        "clientValidationTracking": false
+      },
+      "contents": {
+        "startTask": "1",
+        "tasks": {
+          "0": {
+            "action": "logged-in",
+            "id": "0",
+            "name": "End",
+            "next": {},
+            "type": "automated",
+            "view": {
+              "x": 816,
+              "y": 0
+            }
+          },
+          "1": {
+            "id": "1",
+            "name": "Delete Name",
+            "next": {
+              "rules": [
+                {
+                  "interactionId": "sKa92Eu3MU",
+                  "taskId": "0"
+                },
+                {
+                  "interactionId": "u-7nZnOask",
+                  "taskId": "2"
+                }
+              ]
+            },
+            "screenId": "SC2xiyIAxYF9aShpGIyz8ZnLN3hFU",
+            "type": "screen",
+            "view": {
+              "x": 12,
+              "y": -24
+            }
+          },
+          "2": {
+            "action": "update-user-properties",
+            "arguments": {
+              "userPropertiesDefinitions": {
+                "type": "inline",
+                "value": [
+                  {
+                    "key": "displayName",
+                    "type": "string",
+                    "value": ""
+                  }
+                ]
+              }
+            },
+            "errorHandlingV2": {
+              "UpdateUserPropertiesFailed": {
+                "errorHandlingType": "automatic"
+              }
+            },
+            "id": "2",
+            "name": "Update User / Properties",
+            "next": {
+              "rules": [
+                {
+                  "interactionId": "success",
+                  "taskId": "0"
+                }
+              ]
+            },
+            "type": "automated",
+            "view": {
+              "x": 384,
+              "y": 37
+            }
+          },
+          "start": {
+            "id": "start",
+            "name": "start",
+            "next": {
+              "rules": [
+                {
+                  "taskId": "1"
+                }
+              ]
+            },
+            "view": {
+              "x": -168,
+              "y": 0
+            }
+          }
+        }
+      },
+      "screens": [
+        {
+          "screenId": "SC2xiyIAxYF9aShpGIyz8ZnLN3hFU",
+          "interactions": [
+            {
+              "id": "sKa92Eu3MU",
+              "type": "",
+              "label": "Cancel",
+              "icon": "",
+              "subType": ""
+            },
+            {
+              "id": "u-7nZnOask",
+              "type": "",
+              "label": "Delete",
+              "icon": "",
+              "subType": ""
+            }
+          ],
+          "contents": {
+            "1sMmkeVxVT": {
+              "custom": {},
+              "displayName": "Error Message",
+              "hidden": false,
+              "isCanvas": false,
+              "linkedNodes": {},
+              "nodes": [],
+              "parent": "ROOT",
+              "props": {
+                "align": "center",
+                "data-type": "error-message",
+                "full-width": false,
+                "hide-when-empty": true,
+                "id": "1sMmkeVxVT",
+                "italic": false,
+                "mode": "error",
+                "text-align": "center",
+                "variant": "body1"
+              },
+              "type": {
+                "resolvedName": "ErrorMessage"
+              }
+            },
+            "BPYH6sTAqi": {
+              "custom": {},
+              "displayName": "Text",
+              "hidden": false,
+              "isCanvas": false,
+              "linkedNodes": {},
+              "nodes": [],
+              "parent": "ROOT",
+              "props": {
+                "children": "Delete Name?",
+                "full-width": true,
+                "id": "BPYH6sTAqi",
+                "italic": false,
+                "mode": "primary",
+                "text-align": "left",
+                "variant": "subtitle1"
+              },
+              "type": {
+                "resolvedName": "Text"
+              }
+            },
+            "LmrSIGOWZb": {
+              "custom": {},
+              "displayName": "Text",
+              "hidden": false,
+              "isCanvas": false,
+              "linkedNodes": {},
+              "nodes": [],
+              "parent": "ROOT",
+              "props": {
+                "align": "center",
+                "children": "Are you sure your want to delete your name?",
+                "full-width": true,
+                "id": "LmrSIGOWZb",
+                "italic": false,
+                "mode": "primary",
+                "text-align": "left",
+                "variant": "body1"
+              },
+              "type": {
+                "resolvedName": "Text"
+              }
+            },
+            "ROOT": {
+              "custom": {},
+              "displayName": "Container",
+              "hidden": false,
+              "isCanvas": true,
+              "linkedNodes": {},
+              "nodes": [
+                "BPYH6sTAqi",
+                "LmrSIGOWZb",
+                "bsGx5R00DC",
+                "1sMmkeVxVT"
+              ],
+              "props": {
+                "align": "center",
+                "background": "",
+                "data-editor-type": "container",
+                "direction": "column",
+                "id": "ROOT",
+                "justify": "center",
+                "paddingX": "0",
+                "paddingY": "0",
+                "space-between": "md",
+                "spaceBetween": "4",
+                "width": "100%"
+              },
+              "type": {
+                "resolvedName": "Container"
+              }
+            },
+            "bsGx5R00DC": {
+              "custom": {},
+              "displayName": "Container",
+              "hidden": false,
+              "isCanvas": true,
+              "linkedNodes": {},
+              "nodes": [
+                "sKa92Eu3MU",
+                "u-7nZnOask"
+              ],
+              "parent": "ROOT",
+              "props": {
+                "align": "start",
+                "background": "#ffffff00",
+                "data-editor-type": "container",
+                "direction": "row",
+                "id": "bsGx5R00DC",
+                "justify": "end",
+                "paddingX": "0",
+                "paddingY": "1",
+                "spaceBetween": "4",
+                "width": "100%"
+              },
+              "type": {
+                "resolvedName": "Container"
+              }
+            },
+            "sKa92Eu3MU": {
+              "custom": {
+                "type": "button"
+              },
+              "displayName": "Button",
+              "hidden": false,
+              "isCanvas": false,
+              "linkedNodes": {},
+              "nodes": [],
+              "parent": "bsGx5R00DC",
+              "props": {
+                "auto-submit": false,
+                "children": "Cancel",
+                "color": "primary",
+                "data-type": "button",
+                "formNoValidate": true,
+                "full-width": false,
+                "id": "sKa92Eu3MU",
+                "shape": "",
+                "size": "sm",
+                "variant": "link"
+              },
+              "type": {
+                "resolvedName": "Button"
+              }
+            },
+            "u-7nZnOask": {
+              "custom": {
+                "type": "button"
+              },
+              "displayName": "Button",
+              "hidden": false,
+              "isCanvas": false,
+              "linkedNodes": {},
+              "nodes": [],
+              "parent": "bsGx5R00DC",
+              "props": {
+                "auto-submit": true,
+                "children": "Delete",
+                "color": "primary",
+                "data-type": "button",
+                "formNoValidate": true,
+                "full-width": false,
+                "id": "u-7nZnOask",
+                "shape": "",
+                "size": "sm",
+                "variant": "contained"
+              },
+              "type": {
+                "resolvedName": "Button"
+              }
+            }
+          }
+        }
+      ],
+      "references": {
+        "connectors": {},
+        "oauth": [],
+        "omitted": [],
+        "roles": {},
+        "userAttributes": [],
+        "tenantAttributes": []
+      }
+    }
+  ]
 }

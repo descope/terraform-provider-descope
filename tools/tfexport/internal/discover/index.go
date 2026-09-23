@@ -42,10 +42,6 @@ func Instances(files map[string]any, connectorTypes map[string]string) (instance
 		instances = append(instances, Instance{Resource: "descope_widget", ID: id, Name: id, MayBeAbsent: true})
 	}
 
-	if flows := stringList(files, "widgets/flows/flows.json", "flows"); len(flows) > 0 {
-		note("Skipped %d widget flows which are not supported yet", len(flows))
-	}
-
 	for _, slug := range stringList(files, "connectors/connectors.json", "connectors") {
 		connector, ok := files["connectors/"+slug+".json"].(map[string]any)
 		if !ok {
