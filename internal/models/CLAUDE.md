@@ -1,6 +1,25 @@
 # Adding Attributes to Models
 
-This guide explains how to add new attributes to existing models in the `internal/models/project` directory.
+This guide explains how to add new attributes to existing models under `internal/models/`.
+
+
+## Attribute helpers
+
+`internal/attrs` provides the typed attribute helpers - `stringattr`, `boolattr`, `listattr`, `objattr` and the
+rest - so schemas are declared the same way everywhere: required and optional variants, optional validators, and
+getting and setting values to and from JSON.
+
+`internal/attrs/types` provides the generic object and collection types that augment the basic
+[terraform-plugin-framework](https://github.com/hashicorp/terraform-plugin-framework/tree/main/types) types. Use
+`objtype` rather than `types.Object` for model objects, `listtype`, `settype` and `maptype` for collections of
+them, and `valuelisttype`, `valuesettype` and `valuemaptype` for collections of plain values such as
+`types.String`.
+
+For troubleshooting custom types, these are the useful references:
+
+- https://developer.hashicorp.com/terraform/plugin/framework/handling-data/attributes
+- https://github.com/hashicorp/terraform-provider-aws/tree/main/internal/framework/types
+- https://github.com/cloudflare/terraform-provider-cloudflare/tree/main/internal/customfield
 
 
 ## Overview

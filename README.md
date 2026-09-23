@@ -172,8 +172,8 @@ a `descope_smtp_connector`, a Datadog connector is a `descope_datadog_connector`
 
 ## Development
 
-See the [README](internal/README.md) file in the `internal` directory for more details about the development
-process, architecture, and tools.
+See the [CLAUDE.md](CLAUDE.md) file for the development commands, code generation rules, and conventions used in
+this repository.
 
 ### Setup
 
