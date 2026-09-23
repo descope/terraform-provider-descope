@@ -185,6 +185,11 @@
       "file": "lokalise",
       "struct": "Lokalise"
     },
+    "mailjet": {
+      "attribute": "mailjet",
+      "file": "mailjet",
+      "struct": "Mailjet"
+    },
     "mixpanel": {
       "attribute": "mixpanel",
       "file": "mixpanel",
