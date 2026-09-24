@@ -63,8 +63,8 @@ func NewGovernanceResource() resource.Resource {
 	return newSingletonResource[settings.GovernanceModel]("governance", settings.GovernanceSchema, operations{
 		Read: read,
 		Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
-			// The write is version checked. With no version in state (a create) adopt the stored one, as every other
-			// settings resource overwrites on create; an update keeps the one it read.
+			// A create has no version in state, so adopt the stored one: every other settings resource overwrites on
+			// create too. An update carries the version from state (see VersionChecked).
 			if _, ok := data["version"]; !ok {
 				current, err := read(ctx, c, projectID, id)
 				if err != nil {
