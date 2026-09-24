@@ -27,6 +27,9 @@ using Terraform configuration files.
 
 ## Getting Started
 
+**Upgrading from v0.3.x?** v1.0 splits `descope_project` into standalone resources. Follow the
+[upgrade guide](docs/guides/upgrading-from-v0.3.md) to adopt your existing project without changing it.
+
 ### Requirements
 
 -   The [Terraform CLI](https://developer.hashicorp.com/terraform/install) installed.
@@ -68,6 +71,11 @@ be created.
 The `descope_project` resource manages the project itself and little else. Everything inside the project, from
 authentication methods to roles, connectors and flows, is a separate resource that points back at it with a
 `project_id` attribute. The examples below all assume the `my_project` resource declared above.
+
+### Existing Projects
+
+To start managing a project that already exists, use the [tfexport](tools/tfexport) tool to generate its
+configuration, along with `import` blocks that adopt its entities into your Terraform state.
 
 <br/>
 

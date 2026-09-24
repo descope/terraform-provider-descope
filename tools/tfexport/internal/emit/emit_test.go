@@ -275,3 +275,64 @@ func TestSecretMapKeysBecomeVariables(t *testing.T) {
 		}
 	}
 }
+
+func TestNamePrefixSeparatesExports(t *testing.T) {
+	labels := NewLabels("prod")
+	if got := labels.Assign("descope_http_connector", "Webhook", "CI123"); got != "prod_webhook" {
+		t.Errorf("expected prod_webhook, got %s", got)
+	}
+	if got := labels.Assign("descope_http_connector", "Webhook", "CI456"); got != "prod_webhook_2" {
+		t.Errorf("expected prod_webhook_2, got %s", got)
+	}
+
+	address, err := ParseProjectAddress(`descope_project.main["prod"]`)
+	if err != nil {
+		t.Fatal(err)
+	}
+	plan := &Plan{
+		ProjectID:      "P123",
+		ProjectAddress: address,
+		NamePrefix:     "prod",
+		Resources: []Resource{
+			{
+				Type:         "descope_styles",
+				Label:        "prod_my_project",
+				ImportID:     "P123",
+				HasProjectID: true,
+				Attrs:        []prune.Attr{{Name: "data", Value: types.StringValue(`{"styles":{}}`)}},
+			},
+		},
+	}
+
+	files := write(t, plan)
+
+	for _, name := range []string{"prod_flows.tf", "prod_import.tf", "prod_styles.json"} {
+		if _, ok := files[name]; !ok {
+			t.Errorf("expected %s, got %v", name, keys(files))
+		}
+	}
+	for _, name := range []string{"flows.tf", "import.tf", "styles.json"} {
+		if _, ok := files[name]; ok {
+			t.Errorf("expected no unprefixed %s, got %v", name, keys(files))
+		}
+	}
+	if want := `data       = file("${path.module}/prod_styles.json")`; !strings.Contains(files["prod_flows.tf"], want) {
+		t.Errorf("expected %q in prod_flows.tf:\n%s", want, files["prod_flows.tf"])
+	}
+	if want := "to = descope_styles.prod_my_project"; !strings.Contains(files["prod_import.tf"], want) {
+		t.Errorf("expected %q in prod_import.tf:\n%s", want, files["prod_import.tf"])
+	}
+}
+
+func TestValidateNamePrefix(t *testing.T) {
+	for _, valid := range []string{"prod", "dev_1", "_staging"} {
+		if err := ValidateNamePrefix(valid); err != nil {
+			t.Errorf("expected %s to be valid: %v", valid, err)
+		}
+	}
+	for _, invalid := range []string{"", "1x", "a-b", "Prod", "a b", "prod."} {
+		if err := ValidateNamePrefix(invalid); err == nil {
+			t.Errorf("expected %s to be invalid", invalid)
+		}
+	}
+}

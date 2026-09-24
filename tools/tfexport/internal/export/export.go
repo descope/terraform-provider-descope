@@ -65,10 +65,11 @@ type Options struct {
 	Only           string
 	ProjectAddress string
 	ImportPrefix   string
+	NamePrefix     string
 }
 
 func Run(ctx context.Context, client *infra.Client, projectID, outDir string, options Options) (int, []warn.Warning, error) {
-	plan := &emit.Plan{ProjectID: projectID}
+	plan := &emit.Plan{ProjectID: projectID, NamePrefix: options.NamePrefix}
 	if options.ProjectAddress != "" {
 		address, err := emit.ParseProjectAddress(options.ProjectAddress)
 		if err != nil {
@@ -83,6 +84,11 @@ func Run(ctx context.Context, client *infra.Client, projectID, outDir string, op
 		}
 		plan.ImportPrefix = prefix
 	}
+	if options.NamePrefix != "" {
+		if err := emit.ValidateNamePrefix(options.NamePrefix); err != nil {
+			return 0, nil, err
+		}
+	}
 
 	results, warnings, err := ReadProject(ctx, client, projectID, options.Only)
 	if err != nil {
@@ -90,7 +96,7 @@ func Run(ctx context.Context, client *infra.Client, projectID, outDir string, op
 	}
 
 	loaded := registry.Load(ctx)
-	labels := emit.NewLabels()
+	labels := emit.NewLabels(options.NamePrefix)
 	projectName := projectNameOf(results)
 	redirectURL := builtinRedirectURL(results)
 	for _, result := range results {

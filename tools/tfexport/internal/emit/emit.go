@@ -31,6 +31,7 @@ type Plan struct {
 	ProjectID      string
 	ProjectAddress hcl.Traversal
 	ImportPrefix   hcl.Traversal
+	NamePrefix     string
 	Resources      []Resource
 }
 
@@ -71,7 +72,7 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	}
 	resources := make([]prepared, 0, len(plan.Resources))
 	for _, resource := range plan.Resources {
-		files, err := extractFiles(ctx, outDir, &resource)
+		files, err := extractFiles(ctx, outDir, plan.NamePrefix, &resource)
 		if err != nil {
 			return fmt.Errorf("extracting files for %s.%s: %w", resource.Type, resource.Label, err)
 		}
@@ -107,7 +108,7 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 		if strings.TrimSpace(string(content)) == "" {
 			continue // e.g. variables.tf when the project supplies the id and nothing sensitive was promoted
 		}
-		if err := os.WriteFile(filepath.Join(outDir, name), content, 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(outDir, prefixed(plan.NamePrefix, name)), content, 0o644); err != nil {
 			return err
 		}
 	}

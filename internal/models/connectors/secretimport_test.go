@@ -50,6 +50,7 @@ func TestConnectorSecretsImport(t *testing.T) {
 	})
 
 	testacc.Run(t,
+		// creates a connector with stored secrets
 		resource.TestStep{
 			Config: withSecrets,
 			Check: c.Check(map[string]any{
@@ -59,6 +60,7 @@ func TestConnectorSecretsImport(t *testing.T) {
 				},
 			}),
 		},
+		// importing it without the secrets plans clearing each of them
 		resource.TestStep{
 			Config:             withoutSecrets,
 			ResourceName:       c.Path(),
@@ -70,6 +72,7 @@ func TestConnectorSecretsImport(t *testing.T) {
 				PreApply: []plancheck.PlanCheck{expectImportedSecrets(c.Path(), nil)},
 			},
 		},
+		// importing it with the secrets plans re-sending the configured values
 		resource.TestStep{
 			Config:             withSecrets,
 			ResourceName:       c.Path(),
@@ -85,6 +88,7 @@ func TestConnectorSecretsImport(t *testing.T) {
 				})},
 			},
 		},
+		// adopting it with an import block keeps the secrets and settles to an empty plan
 		resource.TestStep{
 			Config:          adoptedConfig,
 			ConfigVariables: adoptedVariables,
@@ -94,6 +98,7 @@ func TestConnectorSecretsImport(t *testing.T) {
 			},
 			Check: adoptedChecks,
 		},
+		// a later refresh keeps the configured secrets rather than the placeholder
 		resource.TestStep{
 			Config:          adoptedConfig,
 			ConfigVariables: adoptedVariables,

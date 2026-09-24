@@ -158,6 +158,7 @@ func TestProjectUpgradeFromV03(t *testing.T) {
 	resource.Test(t, resource.TestCase{
 		PreCheck: func() { testacc.PreCheck(t) },
 		Steps: []resource.TestStep{
+			// creates the project and its configuration with the published v0.3.16 provider
 			{
 				ExternalProviders: map[string]resource.ExternalProvider{
 					"descope": {Source: "descope/descope", VersionConstraint: "0.3.16"},
@@ -169,6 +170,7 @@ func TestProjectUpgradeFromV03(t *testing.T) {
 					"connectors.http.0.id": capture("connector"),
 				}),
 			},
+			// upgrading and cutting the project down to its core attributes plans no changes
 			{
 				ProtoV6ProviderFactories: testacc.ProviderFactories,
 				Config:                   trimmedConfig,
@@ -180,6 +182,7 @@ func TestProjectUpgradeFromV03(t *testing.T) {
 					"name": p.Name,
 				}),
 			},
+			// adopting the configuration with import blocks changes nothing but the http connector's new defaults
 			{
 				ProtoV6ProviderFactories: testacc.ProviderFactories,
 				PreConfig:                func() { resolveAuthorizationIDs(t, ids) },

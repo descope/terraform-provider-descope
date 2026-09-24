@@ -59,8 +59,8 @@ its own variable.
 ## Labels and references
 
 Labels come from entity names, fall back to the entity id, and are made unique per resource type with a
-numeric suffix. The project and every singleton are labelled after the project itself, so two exports can be
-pasted into one configuration without colliding.
+numeric suffix. The project and every singleton are labelled after the project itself. Other entities with the
+same name collide across exports, so `-name-prefix` prefixes every label, variable and file name of an export.
 
 Server-assigned ids become references to the resource managing them rather than opaque literals. Short
 human-chosen ids are excluded, since a flow id or attribute name would match far too eagerly. Permissions

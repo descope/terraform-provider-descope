@@ -70,6 +70,7 @@ When it finishes, it prints how many resources it generated, along with any warn
 | `-only` | Limit the export to resource types whose name contains this text, e.g. `-only connector`. |
 | `-project-address` | Reference an existing `descope_project` resource instead of exporting the project, e.g. `-project-address descope_project.main`. The export then has no project block, project import or `provider.tf`. See [Migrating from v0.3.x](#migrating-from-v03x). |
 | `-import-prefix` | The module path the generated resources will live in, e.g. `-import-prefix module.auth`. It's prepended to the `to` address of every import block. |
+| `-name-prefix` | Prefix every generated resource name, variable name and file name, e.g. `-name-prefix prod`, so that exports of several projects can share one directory. |
 
 ### Warnings and exit codes
 
@@ -141,3 +142,12 @@ tfexport -project P... -out ./generated -project-address descope_project.main -i
 
 The variables in the generated `variables.tf` become inputs of that module, so pass their values in the `module` block,
 and rename any that clash with inputs the module already has.
+
+If your configuration manages several projects, for example with `for_each` or one `descope_project` resource per
+environment, run the tool once per project with a different `-name-prefix`. The prefix is added to every generated
+resource name, variable name and file name, so the exports can be copied into the same directory:
+
+```bash
+tfexport -project P... -out ./generated-dev -project-address 'descope_project.main["dev"]' -name-prefix dev
+tfexport -project P... -out ./generated-prod -project-address 'descope_project.main["prod"]' -name-prefix prod
+```

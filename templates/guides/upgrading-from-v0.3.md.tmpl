@@ -57,6 +57,16 @@ standalone resources to your configuration and adopting the existing entities in
     values in the `module` block, and rename any that clash with inputs the module already has. Alternatively, write
     the resources yourself using the table below.
 
+    If the configuration manages several projects, for example with `for_each` or one `descope_project` resource per
+    environment, run the tool once per project with a different `-name-prefix`. The prefix is added to every
+    generated resource name, variable name and file name, so the exports don't clash and can be copied into the
+    same directory:
+
+    ```bash
+    tfexport -project P... -out ./generated-dev -project-address 'descope_project.main["dev"]' -name-prefix dev
+    tfexport -project P... -out ./generated-prod -project-address 'descope_project.main["prod"]' -name-prefix prod
+    ```
+
 5. **Supply secrets.** The Descope API never returns secrets such as connector credentials, so the generated
    configuration declares them as sensitive variables. Provide their values, e.g. in a `terraform.tfvars` file that's
    kept out of version control.

@@ -19,6 +19,7 @@ func main() {
 	only := flag.String("only", "", "limit the export to resource types containing this substring")
 	projectAddress := flag.String("project-address", "", "reference this existing descope_project resource address instead of exporting the project, e.g. descope_project.main")
 	importPrefix := flag.String("import-prefix", "", "the module path of the generated resources, prepended to the import block addresses, e.g. module.auth")
+	namePrefix := flag.String("name-prefix", "", "prefix the generated resource names, variable names and file names, so exports of several projects fit in one configuration, e.g. prod")
 	force := flag.Bool("force", false, "write into the output directory even when it already has files in it")
 	dumpIndex := flag.Bool("dump-index", false, "print a structural summary of the project's snapshot index and exit")
 	dumpFile := flag.String("dump-file", "", "print the raw JSON of a single snapshot file and exit")
@@ -48,7 +49,7 @@ func main() {
 		if entries, err := os.ReadDir(*outDir); err == nil && len(entries) > 0 && !*force {
 			fail("The output directory %s is not empty: files this export doesn't overwrite would survive into it, pass -force to write anyway", *outDir)
 		}
-		count, warnings, err := export.Run(ctx, client, *projectID, *outDir, export.Options{Only: *only, ProjectAddress: *projectAddress, ImportPrefix: *importPrefix})
+		count, warnings, err := export.Run(ctx, client, *projectID, *outDir, export.Options{Only: *only, ProjectAddress: *projectAddress, ImportPrefix: *importPrefix, NamePrefix: *namePrefix})
 		if err != nil {
 			fail("%s", err.Error())
 		}
