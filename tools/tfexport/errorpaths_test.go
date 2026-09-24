@@ -25,7 +25,7 @@ func TestExportErrorPaths(t *testing.T) {
 
 	t.Run("NonexistentProject", func(t *testing.T) {
 		outDir := t.TempDir()
-		_, _, err := export.Run(ctx, client, "P0000000000000000000000000000", outDir, "")
+		_, _, err := export.Run(ctx, client, "P0000000000000000000000000000", outDir, export.Options{})
 		if err == nil {
 			t.Fatal("expected an error exporting a nonexistent project")
 		}
@@ -44,7 +44,7 @@ func TestExportErrorPaths(t *testing.T) {
 			t.Skip("set DESCOPE_TESTACC_PROJECT_ID to run this test")
 		}
 		outDir := t.TempDir()
-		count, _, err := export.Run(ctx, client, projectID, outDir, "no_such_resource_type")
+		count, _, err := export.Run(ctx, client, projectID, outDir, export.Options{Only: "no_such_resource_type"})
 		if err != nil {
 			t.Fatalf("export failed: %s", err)
 		}

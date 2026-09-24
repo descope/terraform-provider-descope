@@ -68,6 +68,8 @@ When it finishes, it prints how many resources it generated, along with any warn
 | `-out` | The directory to write the generated files into. Required, and must be empty or not exist yet. |
 | `-force` | Write into the output directory even if it already contains files. Files the export doesn't overwrite are left in place, so prefer a fresh directory. |
 | `-only` | Limit the export to resource types whose name contains this text, e.g. `-only connector`. |
+| `-project-address` | Reference an existing `descope_project` resource instead of exporting the project, e.g. `-project-address descope_project.main`. The export then has no project block, project import or `provider.tf`. See [Migrating from v0.3.x](#migrating-from-v03x). |
+| `-import-prefix` | The module path the generated resources will live in, e.g. `-import-prefix module.auth`. It's prepended to the `to` address of every import block. |
 
 ### Warnings and exit codes
 
@@ -112,3 +114,26 @@ cannot carry means you must set that value manually before applying, otherwise t
     ignores import blocks for resources that are already in state.
 
 From here on, make changes by editing the `.tf` files and running `terraform apply`.
+
+## Migrating from v0.3.x
+
+In v0.3.x of the provider, the `descope_project` resource managed the whole project configuration. The new
+provider only manages the project's name, environment and tags with it, and everything else with standalone
+resources. After upgrading, use `tfexport` to generate those resources and adopt them into your existing state,
+next to the `descope_project` resource you already have. The full procedure is in the provider's
+[Upgrading from v0.3.x](https://registry.terraform.io/providers/descope/descope/latest/docs/guides/upgrading-from-v0.3)
+guide.
+
+```bash
+tfexport -project P... -out ./generated -project-address descope_project.main
+```
+
+Copy the generated `.tf` files, and the `flows`, `widgets` and `templates` directories and `styles.json` when present,
+into the directory that has your `descope_project` resource. Then follow [Applying the configuration](#applying-the-configuration).
+
+If the project resource is in a module, pass its address as seen from inside that module, and the module's path with
+`-import-prefix`. Terraform only allows import blocks in the root module, so move `import.tf` there:
+
+```bash
+tfexport -project P... -out ./generated -project-address descope_project.main -import-prefix module.auth
+```

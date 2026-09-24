@@ -61,17 +61,41 @@ func projectNameOf(results []read.Result) string {
 	return ""
 }
 
-func Run(ctx context.Context, client *infra.Client, projectID, outDir, only string) (int, []warn.Warning, error) {
-	results, warnings, err := ReadProject(ctx, client, projectID, only)
+type Options struct {
+	Only           string
+	ProjectAddress string
+	ImportPrefix   string
+}
+
+func Run(ctx context.Context, client *infra.Client, projectID, outDir string, options Options) (int, []warn.Warning, error) {
+	plan := &emit.Plan{ProjectID: projectID}
+	if options.ProjectAddress != "" {
+		address, err := emit.ParseProjectAddress(options.ProjectAddress)
+		if err != nil {
+			return 0, nil, err
+		}
+		plan.ProjectAddress = address
+	}
+	if options.ImportPrefix != "" {
+		prefix, err := emit.ParseModulePrefix(options.ImportPrefix)
+		if err != nil {
+			return 0, nil, err
+		}
+		plan.ImportPrefix = prefix
+	}
+
+	results, warnings, err := ReadProject(ctx, client, projectID, options.Only)
 	if err != nil {
 		return 0, warnings, err
 	}
 
 	loaded := registry.Load(ctx)
-	plan := &emit.Plan{ProjectID: projectID}
 	labels := emit.NewLabels()
 	projectName := projectNameOf(results)
 	for _, result := range results {
+		if plan.ProjectAddress != nil && result.Instance.Resource == "descope_project" {
+			continue
+		}
 		exportable := loaded[result.Instance.Resource]
 		schema := exportable.ExportSchema()
 		attrs, secrets := prune.Object(ctx, schema.Attributes, result.Object, true)

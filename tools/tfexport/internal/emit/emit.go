@@ -28,8 +28,10 @@ type Resource struct {
 }
 
 type Plan struct {
-	ProjectID string
-	Resources []Resource
+	ProjectID      string
+	ProjectAddress hcl.Traversal
+	ImportPrefix   hcl.Traversal
+	Resources      []Resource
 }
 
 func Write(ctx context.Context, outDir string, plan *Plan) error {
@@ -94,9 +96,11 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 		}
 	}
 
-	writeProviderFile(fileBody("provider.tf"))
+	if plan.ProjectAddress == nil {
+		writeProviderFile(fileBody("provider.tf"))
+	}
 	writeVariablesFile(fileBody("variables.tf"), vars.collected, projectRef == nil)
-	writeImportsFile(fileBody("import.tf"), plan.Resources)
+	writeImportsFile(fileBody("import.tf"), plan.Resources, plan.ImportPrefix)
 
 	for name, file := range files {
 		content := hclwrite.Format(file.Bytes())
@@ -291,16 +295,17 @@ func writeVariablesFile(body *hclwrite.Body, variables []variable, declareProjec
 	}
 }
 
-func writeImportsFile(body *hclwrite.Body, resources []Resource) {
+func writeImportsFile(body *hclwrite.Body, resources []Resource, prefix hcl.Traversal) {
 	for i, resource := range resources {
 		if i > 0 {
 			body.AppendNewline()
 		}
 		block := body.AppendNewBlock("import", nil)
-		block.Body().SetAttributeTraversal("to", hcl.Traversal{
-			hcl.TraverseRoot{Name: resource.Type},
-			hcl.TraverseAttr{Name: resource.Label},
-		})
+		to := hcl.Traversal{hcl.TraverseRoot{Name: resource.Type}, hcl.TraverseAttr{Name: resource.Label}}
+		if prefix != nil {
+			to = append(slices.Clone(prefix), hcl.TraverseAttr{Name: resource.Type}, hcl.TraverseAttr{Name: resource.Label})
+		}
+		block.Body().SetAttributeTraversal("to", to)
 		block.Body().SetAttributeValue("id", cty.StringVal(resource.ImportID))
 	}
 }

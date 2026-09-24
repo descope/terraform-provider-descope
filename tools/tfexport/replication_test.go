@@ -95,7 +95,7 @@ resource "descope_jwt_template" "claims" {
 	projectA := strings.TrimSpace(string(harness.Run(t, seedDir, env, "output", "-raw", "project_id")))
 
 	exportA := t.TempDir()
-	if _, _, err := export.Run(ctx, client, projectA, exportA, ""); err != nil {
+	if _, _, err := export.Run(ctx, client, projectA, exportA, export.Options{}); err != nil {
 		t.Fatalf("export of project A failed: %s", err)
 	}
 
@@ -126,7 +126,7 @@ resource "descope_jwt_template" "claims" {
 	harness.AssertNoopPlan(t, harness.PlanJSON(t, exportA, env))
 
 	exportB := t.TempDir()
-	if _, _, err := export.Run(ctx, client, projectB, exportB, ""); err != nil {
+	if _, _, err := export.Run(ctx, client, projectB, exportB, export.Options{}); err != nil {
 		t.Fatalf("export of project B failed: %s", err)
 	}
 	a, b := exportSignature(t, exportA, nameA), exportSignature(t, exportB, nameB)

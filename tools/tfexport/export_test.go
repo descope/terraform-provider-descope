@@ -25,7 +25,7 @@ func TestExportGolden(t *testing.T) {
 	outDir := t.TempDir()
 
 	client := infra.NewClient("tfexport-test", managementKey, os.Getenv("DESCOPE_BASE_URL"))
-	count, warnings, err := export.Run(ctx, client, projectID, outDir, "")
+	count, warnings, err := export.Run(ctx, client, projectID, outDir, export.Options{})
 	if err != nil {
 		t.Fatalf("export failed: %s", err)
 	}
