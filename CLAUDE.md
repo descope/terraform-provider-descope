@@ -101,5 +101,5 @@ payload, `internal/resources/` wires them to CRUD operations, and `internal/infr
 models are generated from templates rather than written. The generic `/v1/mgmt/infra` entity endpoint is frozen:
 new resources use dedicated endpoints.
 
-Adding or changing a model attribute means reading `internal/models/CLAUDE.md` first. The `tools/tfexport` tool has
-its own `CLAUDE.md`.
+Adding or changing a model attribute means reading `internal/models/CLAUDE.md` first, and adding a resource means
+reading `internal/resources/CLAUDE.md`. The `tools/tfexport` tool has its own `CLAUDE.md`.
