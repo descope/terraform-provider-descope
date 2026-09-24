@@ -125,6 +125,9 @@ func (r *baseResource[T, M]) ModifyPlan(ctx context.Context, req resource.Modify
 	}
 	if !req.Plan.Raw.IsNull() {
 		checkImmutableAttributes(ctx, r.schema, r.name, req, resp)
+		if r.ops.CreateOverwrites && isPlannedReplace(ctx, r.schema, req) {
+			warnCreateOverwrites(ctx, req, resp, r.name, false)
+		}
 	}
 	if _, ok := r.schema.Attributes[deletionProtectionAttribute]; !ok {
 		return
