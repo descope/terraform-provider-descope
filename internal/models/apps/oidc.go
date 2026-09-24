@@ -141,6 +141,27 @@ func (m *OIDCAppModel) ModifyPlan(_ *helpers.Handler, config, state *OIDCAppMode
 	}
 }
 
+const (
+	DefaultOIDCAppID          = "descope-default-oidc"
+	defaultOIDCAppName        = "OIDC default application"
+	defaultOIDCAppDescription = "Default OIDC APP"
+)
+
+func (m *OIDCAppModel) Validate(h *helpers.Handler) {
+	if helpers.HasUnknownValues(m.ID) || m.ID.ValueString() != DefaultOIDCAppID {
+		return
+	}
+	if !helpers.HasUnknownValues(m.Name) && m.Name.ValueString() != defaultOIDCAppName {
+		h.Invalid("The name of the built-in default OIDC application cannot be changed, so it must be set to %q", defaultOIDCAppName)
+	}
+	if !helpers.HasUnknownValues(m.Description) && m.Description.ValueString() != defaultOIDCAppDescription {
+		h.Invalid("The description of the built-in default OIDC application cannot be changed, so it must be set to %q", defaultOIDCAppDescription)
+	}
+	if !helpers.HasUnknownValues(m.Disabled) && m.Disabled.ValueBool() {
+		h.Invalid("The built-in default OIDC application cannot be disabled")
+	}
+}
+
 func (m *OIDCAppModel) DeletionProtectionDefault(_ context.Context) bool {
 	return true
 }

@@ -26,6 +26,10 @@ func NewOIDCAppResource() resource.Resource {
 			return read(ctx, c, projectID, id)
 		},
 		Delete: func(ctx context.Context, c *infra.Client, projectID, id string) error {
+			// the backend refuses to delete the built-in app, so destroying it only removes it from the state
+			if id == apps.DefaultOIDCAppID {
+				return nil
+			}
 			return c.Post(ctx, projectID, "/v1/mgmt/sso/idp/app/delete", map[string]any{"id": id})
 		},
 	})

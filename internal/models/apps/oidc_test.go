@@ -1,12 +1,18 @@
 package apps_test
 
 import (
+	"context"
 	"fmt"
+	"os"
 	"regexp"
+	"strings"
 	"testing"
 
+	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/internal/models/apps"
 	"github.com/descope/terraform-provider-descope/tools/testacc"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
@@ -35,6 +41,38 @@ func TestOIDCAppClientSecretPlan(t *testing.T) {
 			plan.ModifyPlan(nil, &apps.OIDCAppModel{ClientSecret: tc.config}, &apps.OIDCAppModel{ClientSecret: tc.state})
 			if !plan.ClientSecret.Equal(tc.expected) {
 				t.Errorf("expected planned client_secret to be %s, got %s", tc.expected, plan.ClientSecret)
+			}
+		})
+	}
+}
+
+func TestOIDCAppDefaultApplicationValidation(t *testing.T) {
+	name, description := types.StringValue("OIDC default application"), types.StringValue("Default OIDC APP")
+	testCases := []struct {
+		name        string
+		id          types.String
+		appName     types.String
+		description types.String
+		disabled    types.Bool
+		invalid     bool
+	}{
+		{"built-in values are valid", types.StringValue("descope-default-oidc"), name, description, types.BoolNull(), false},
+		{"explicitly enabled is valid", types.StringValue("descope-default-oidc"), name, description, types.BoolValue(false), false},
+		{"changed name is invalid", types.StringValue("descope-default-oidc"), types.StringValue("Renamed"), description, types.BoolNull(), true},
+		{"omitted description is invalid", types.StringValue("descope-default-oidc"), name, types.StringNull(), types.BoolNull(), true},
+		{"changed description is invalid", types.StringValue("descope-default-oidc"), name, types.StringValue("Custom"), types.BoolNull(), true},
+		{"disabled is invalid", types.StringValue("descope-default-oidc"), name, description, types.BoolValue(true), true},
+		{"unknown values are skipped", types.StringValue("descope-default-oidc"), types.StringUnknown(), types.StringUnknown(), types.BoolUnknown(), false},
+		{"other apps are unrestricted", types.StringValue("my-app"), types.StringValue("Renamed"), types.StringNull(), types.BoolValue(true), false},
+		{"unknown id is skipped", types.StringUnknown(), types.StringValue("Renamed"), types.StringNull(), types.BoolValue(true), false},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var diags diag.Diagnostics
+			model := &apps.OIDCAppModel{ID: tc.id, Name: tc.appName, Description: tc.description, Disabled: tc.disabled}
+			model.Validate(helpers.NewHandler(context.Background(), &diags))
+			if diags.HasError() != tc.invalid {
+				t.Errorf("expected invalid=%t, got %v", tc.invalid, diags)
 			}
 		})
 	}
@@ -214,6 +252,50 @@ func TestOIDCAppDeletionProtection(t *testing.T) {
 		},
 		resource.TestStep{
 			Config: a.Config(project, `deletion_protection = false`),
+		},
+	)
+}
+
+func TestOIDCAppDefaultApplication(t *testing.T) {
+	p := testacc.Project(t)
+	adopted := `
+		import {
+			to = descope_oidc_app.default
+			id = "${descope_project.test.id}/descope-default-oidc"
+		}
+
+		resource "descope_oidc_app" "default" {
+			project_id = descope_project.test.id
+			id = "descope-default-oidc"
+			name = "OIDC default application"
+			description = "Default OIDC APP"
+			deletion_protection = false
+		}
+	`
+	var projectID string
+	testacc.Run(t,
+		resource.TestStep{
+			Config: p.Config(),
+			Check: resource.TestCheckResourceAttrWith(p.Path(), "id", func(s string) error {
+				projectID = s
+				return nil
+			}),
+		},
+		resource.TestStep{
+			Config:      p.Config() + strings.Replace(adopted, `description = "Default OIDC APP"`, `description = "Custom"`, 1),
+			ExpectError: regexp.MustCompile(`description of the built-in default OIDC application`),
+		},
+		resource.TestStep{
+			Config: p.Config() + adopted,
+			Check:  resource.TestCheckResourceAttr("descope_oidc_app.default", "id", "descope-default-oidc"),
+		},
+		resource.TestStep{
+			Config: p.Config(),
+			Check: func(*terraform.State) error {
+				client := infra.NewClient("testacc", os.Getenv("DESCOPE_MANAGEMENT_KEY"), os.Getenv("DESCOPE_BASE_URL"))
+				_, err := client.Get(context.Background(), projectID, "/v1/mgmt/sso/idp/app/load", map[string]string{"id": "descope-default-oidc"})
+				return err
+			},
 		},
 	)
 }
