@@ -242,3 +242,36 @@ func TestParseModulePrefix(t *testing.T) {
 		}
 	}
 }
+
+func TestSecretMapKeysBecomeVariables(t *testing.T) {
+	plan := &Plan{
+		ProjectID: "P123",
+		Resources: []Resource{
+			{
+				Type:         "descope_http_connector",
+				Label:        "webhook",
+				EntityID:     "CI1",
+				ImportID:     "P123/CI1",
+				HasProjectID: true,
+				Attrs: []prune.Attr{{Name: "secret_headers", IsNested: true, Nested: []prune.Attr{
+					{Name: "X-Api-Key", Placeholder: true},
+					{Name: "X.Trace", Placeholder: true},
+				}}},
+			},
+		},
+	}
+
+	files := write(t, plan)
+	all := strings.Join([]string{files["connectors.tf"], files["main.tf"]}, "\n")
+
+	for _, want := range []string{"X-Api-Key = var.webhook_secret_headers_x_api_key", `"X.Trace" = var.webhook_secret_headers_x_trace`} {
+		if !strings.Contains(all, want) {
+			t.Errorf("expected %q in the generated resource:\n%s", want, all)
+		}
+	}
+	for _, want := range []string{"webhook_secret_headers_x_api_key", "webhook_secret_headers_x_trace"} {
+		if !strings.Contains(files["variables.tf"], `variable "`+want+`"`) {
+			t.Errorf("expected a %q variable:\n%s", want, files["variables.tf"])
+		}
+	}
+}

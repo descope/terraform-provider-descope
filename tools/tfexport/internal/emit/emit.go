@@ -251,8 +251,12 @@ func objectTokens(ctx context.Context, attrs []prune.Attr, resource Resource, re
 		if err != nil {
 			return nil, err
 		}
+		name := hclwrite.TokensForIdentifier(attr.Name)
+		if !hclsyntax.ValidIdentifier(attr.Name) {
+			name = hclwrite.TokensForValue(cty.StringVal(attr.Name))
+		}
 		items = append(items, hclwrite.ObjectAttrTokens{
-			Name:  hclwrite.TokensForIdentifier(attr.Name),
+			Name:  name,
 			Value: tokens,
 		})
 	}

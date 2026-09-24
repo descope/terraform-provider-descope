@@ -67,10 +67,15 @@ func Object(ctx context.Context, attributes map[string]schema.Attribute, object 
 			case attribute.IsRequired():
 				attrs = append(attrs, Attr{Name: name, Placeholder: true})
 				secrets = append(secrets, Secret{Path: name, Required: true})
+			case isMap(attribute) && !value.IsNull() && !isServerZeroValue(ctx, attribute, value):
+				nested := secretMapKeys(ctx, value, name, &secrets)
+				attrs = append(attrs, Attr{Name: name, Nested: nested, IsNested: true})
 			case !value.IsNull() && !isServerZeroValue(ctx, attribute, value):
 				if _, hasDefault := AttributeDefault(ctx, attribute); hasDefault {
 					attrs = append(attrs, Attr{Name: name, Placeholder: true})
 					secrets = append(secrets, Secret{Path: name, Required: true})
+				} else if attribute.IsComputed() {
+					secrets = append(secrets, Secret{Path: name})
 				} else {
 					secrets = append(secrets, Secret{Path: name, Dropped: true})
 				}
@@ -131,6 +136,34 @@ func nestedObject(ctx context.Context, attributes map[string]schema.Attribute, v
 		*secrets = append(*secrets, Secret{Path: path + "." + secret.Path, Required: secret.Required, Dropped: secret.Dropped})
 	}
 	return nested
+}
+
+func isMap(attribute schema.Attribute) bool {
+	_, ok := attribute.(schema.MapAttribute)
+	return ok
+}
+
+func secretMapKeys(ctx context.Context, value attr.Value, path string, secrets *[]Secret) []Attr {
+	valuable, ok := value.(basetypes.MapValuable)
+	if !ok {
+		return nil
+	}
+	m, diags := valuable.ToMapValue(ctx)
+	if diags.HasError() {
+		return nil
+	}
+	keys := make([]string, 0, len(m.Elements()))
+	for key := range m.Elements() {
+		keys = append(keys, key)
+	}
+	slices.Sort(keys)
+
+	attrs := make([]Attr, 0, len(keys))
+	for _, key := range keys {
+		attrs = append(attrs, Attr{Name: key, Placeholder: true})
+		*secrets = append(*secrets, Secret{Path: fmt.Sprintf("%s[%q]", path, key), Required: true})
+	}
+	return attrs
 }
 
 func verbatimObject(ctx context.Context, attributes map[string]schema.Attribute, value attr.Value) []Attr {
