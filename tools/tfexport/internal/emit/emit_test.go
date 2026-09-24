@@ -364,3 +364,35 @@ func TestNamePrefixKeepsTheSharedProviderFile(t *testing.T) {
 		t.Errorf("expected the project in prod_project.tf, got %v", keys(files))
 	}
 }
+
+func TestSecretMapKeysWithTheSameVariableNameGetDistinctVariables(t *testing.T) {
+	plan := &Plan{
+		ProjectID: "P123",
+		Resources: []Resource{
+			{
+				Type:         "descope_http_connector",
+				Label:        "webhook",
+				EntityID:     "CI1",
+				ImportID:     "P123/CI1",
+				HasProjectID: true,
+				Attrs: []prune.Attr{{Name: "secret_headers", IsNested: true, Nested: []prune.Attr{
+					{Name: "X-Api-Key", Placeholder: true},
+					{Name: "X_Api_Key", Placeholder: true},
+				}}},
+			},
+		},
+	}
+
+	files := write(t, plan)
+
+	for _, want := range []string{"X-Api-Key = var.webhook_secret_headers_x_api_key\n", "X_Api_Key = var.webhook_secret_headers_x_api_key_2\n"} {
+		if !strings.Contains(files["connectors.tf"], want) {
+			t.Errorf("expected %q in the generated resource:\n%s", want, files["connectors.tf"])
+		}
+	}
+	for _, want := range []string{`variable "webhook_secret_headers_x_api_key"`, `variable "webhook_secret_headers_x_api_key_2"`} {
+		if !strings.Contains(files["variables.tf"], want) {
+			t.Errorf("expected %s:\n%s", want, files["variables.tf"])
+		}
+	}
+}

@@ -129,6 +129,7 @@ type variables struct {
 	collected []variable
 	claims    map[string]map[string]bool // short name -> the resources that claimed it, gathered on the first pass
 	qualify   map[string]bool            // short names that more than one resource claimed, so every claimant takes the longer form
+	taken     map[string]bool
 }
 
 func (v *variables) assign(resource Resource, short, attribute string) string {
@@ -144,6 +145,13 @@ func (v *variables) assign(resource Resource, short, attribute string) string {
 	if v.qualify[short] {
 		name = sanitizeLabel(strings.TrimPrefix(resource.Type, "descope_") + "_" + short)
 	}
+	if v.taken == nil {
+		v.taken = map[string]bool{}
+	}
+	for base, suffix := name, 2; v.taken[name]; suffix++ {
+		name = fmt.Sprintf("%s_%d", base, suffix)
+	}
+	v.taken[name] = true
 	v.collected = append(v.collected, variable{
 		name:        name,
 		description: fmt.Sprintf("Secret value for the %s attribute of %s.%s", attribute, resource.Type, resource.Label),
