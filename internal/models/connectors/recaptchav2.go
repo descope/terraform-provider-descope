@@ -89,7 +89,7 @@ func (m *RecaptchaV2ConnectorModel) ConfigurationValues(h *helpers.Handler) map[
 
 func (m *RecaptchaV2ConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.SiteKey, c, "siteKey")
-	stringattr.Nil(&m.SecretKey)
+	stringattr.SetSecret(&m.SecretKey, c, "secretKey", h)
 	floatattr.Set(&m.BotThreshold, c, "botThreshold")
 	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Set(&m.AssessmentScore, c, "assessmentScore")

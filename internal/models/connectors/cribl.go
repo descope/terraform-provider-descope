@@ -102,7 +102,7 @@ func (m *CriblConnectorModel) ConfigurationValues(h *helpers.Handler) map[string
 
 func (m *CriblConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.Endpoint, c, "endpoint")
-	stringattr.Nil(&m.AuthToken)
+	stringattr.SetSecret(&m.AuthToken, c, "authToken", h)
 	stringattr.Set(&m.Source, c, "source")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)

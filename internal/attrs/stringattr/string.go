@@ -164,6 +164,14 @@ func Nil(s *Type) {
 	}
 }
 
+func SetSecret(s *Type, data map[string]any, key string, h *helpers.Handler) {
+	if v, ok := data[key].(string); ok && v != "" && helpers.IsImportState(h.Ctx) {
+		*s = Value(v)
+	} else {
+		Nil(s)
+	}
+}
+
 func parseExtras(extras []any) (validators []validator.String, modifiers []planmodifier.String) {
 	for _, e := range extras {
 		matched := false

@@ -79,7 +79,7 @@ func (m *TelesignConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 
 func (m *TelesignConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.CustomerID, c, "customerID")
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 }
 
 func (m *TelesignConnectorModel) GetID() stringattr.Type        { return m.ID }

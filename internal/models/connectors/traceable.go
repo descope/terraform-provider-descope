@@ -78,7 +78,7 @@ func (m *TraceableConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 }
 
 func (m *TraceableConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.SecretKey)
+	stringattr.SetSecret(&m.SecretKey, c, "secretKey", h)
 	boolattr.Set(&m.EURegion, c, "euRegion")
 }
 

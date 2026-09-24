@@ -108,9 +108,9 @@ func (m *DarwiniumConnectorModel) SetConfigurationValues(c map[string]any, h *he
 	stringattr.Set(&m.WebAPIName, c, "webApiName")
 	stringattr.Set(&m.NativeAPIName, c, "nativeApiName")
 	stringattr.Set(&m.NativeBlobKeyName, c, "nativeBlobKeyName")
-	stringattr.Nil(&m.PEMCertificate)
-	stringattr.Nil(&m.PrivateKey)
-	stringattr.Nil(&m.Passphrase)
+	stringattr.SetSecret(&m.PEMCertificate, c, "pemCert", h)
+	stringattr.SetSecret(&m.PrivateKey, c, "privateKey", h)
+	stringattr.SetSecret(&m.Passphrase, c, "passphrase", h)
 	stringattr.Set(&m.ProfilingTagsScriptURL, c, "profilingTagsScriptUrl")
 	stringattr.Set(&m.DefaultResult, c, "defaultResult")
 }

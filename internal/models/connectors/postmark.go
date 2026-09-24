@@ -81,7 +81,7 @@ func (m *PostmarkConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 }
 
 func (m *PostmarkConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.ServerAPIToken)
+	stringattr.SetSecret(&m.ServerAPIToken, c, "serverAPIToken", h)
 	stringattr.Set(&m.MessageStreamID, c, "messageStreamId")
 	stringattr.Set(&m.EmailFrom, c, "emailFrom")
 }

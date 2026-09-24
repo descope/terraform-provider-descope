@@ -86,9 +86,9 @@ func (m *TwilioVerifyConnectorModel) SetConfigurationValues(c map[string]any, h 
 	stringattr.Set(&m.AccountSID, c, "accountSid")
 	stringattr.Set(&m.ServiceSID, c, "verifyServiceSid")
 	stringattr.Set(&m.Sender, c, "from")
-	stringattr.Nil(&m.AuthToken)
-	stringattr.Nil(&m.APIKey)
-	stringattr.Nil(&m.APISecret)
+	stringattr.SetSecret(&m.AuthToken, c, "authToken", h)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
+	stringattr.SetSecret(&m.APISecret, c, "apiSecret", h)
 }
 
 func (m *TwilioVerifyConnectorModel) GetID() stringattr.Type        { return m.ID }

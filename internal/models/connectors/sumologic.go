@@ -92,7 +92,7 @@ func (m *SumoLogicConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 }
 
 func (m *SumoLogicConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.HTTPSourceURL)
+	stringattr.SetSecret(&m.HTTPSourceURL, c, "httpSourceUrl", h)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")

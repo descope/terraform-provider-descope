@@ -105,7 +105,7 @@ func (m *GroundcoverConnectorModel) ConfigurationValues(h *helpers.Handler) map[
 
 func (m *GroundcoverConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.Endpoint, c, "endpoint")
-	stringattr.Nil(&m.IngestionKey)
+	stringattr.SetSecret(&m.IngestionKey, c, "ingestionKey", h)
 	stringattr.Set(&m.EnvironmentName, c, "environmentName")
 	stringattr.Set(&m.ServiceName, c, "serviceName")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")

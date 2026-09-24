@@ -89,7 +89,7 @@ func (m *SMTPConnectorModel) SetConfigurationValues(c map[string]any, h *helpers
 	stringattr.Set(&m.Host, c, "host")
 	floatattr.Set(&m.Port, c, "port")
 	stringattr.Set(&m.Username, c, "username")
-	stringattr.Nil(&m.Password)
+	stringattr.SetSecret(&m.Password, c, "password", h)
 	stringattr.Set(&m.AuthMethod, c, "authMethod")
 	stringattr.Set(&m.SenderEmail, c, "fromEmail")
 	stringattr.Set(&m.SenderName, c, "fromName")

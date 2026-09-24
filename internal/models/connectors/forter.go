@@ -101,7 +101,7 @@ func (m *ForterConnectorModel) ConfigurationValues(h *helpers.Handler) map[strin
 
 func (m *ForterConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.SiteID, c, "siteId")
-	stringattr.Nil(&m.SecretKey)
+	stringattr.SetSecret(&m.SecretKey, c, "secretKey", h)
 	stringattr.Set(&m.APIVersion, c, "apiVersion")
 	boolattr.Set(&m.Overrides, c, "overrides")
 	stringattr.Set(&m.OverrideIPAddress, c, "overrideIpAddress")

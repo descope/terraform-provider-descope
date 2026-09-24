@@ -93,8 +93,8 @@ func (m *UnibeamConnectorModel) SetConfigurationValues(c map[string]any, h *help
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	stringattr.Set(&m.CustomerID, c, "customerId")
 	stringattr.Set(&m.ClientID, c, "clientId")
-	stringattr.Nil(&m.ClientSecret)
-	stringattr.Nil(&m.HMACSecret)
+	stringattr.SetSecret(&m.ClientSecret, c, "clientSecret", h)
+	stringattr.SetSecret(&m.HMACSecret, c, "hmacSecret", h)
 	stringattr.Set(&m.DefaultMessage, c, "defaultMessage")
 }
 

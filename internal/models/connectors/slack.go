@@ -75,7 +75,7 @@ func (m *SlackConnectorModel) ConfigurationValues(h *helpers.Handler) map[string
 }
 
 func (m *SlackConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.Token)
+	stringattr.SetSecret(&m.Token, c, "token", h)
 }
 
 func (m *SlackConnectorModel) GetID() stringattr.Type        { return m.ID }

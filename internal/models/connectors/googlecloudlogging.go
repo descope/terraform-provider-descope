@@ -92,7 +92,7 @@ func (m *GoogleCloudLoggingConnectorModel) ConfigurationValues(h *helpers.Handle
 }
 
 func (m *GoogleCloudLoggingConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.ServiceAccountKey)
+	stringattr.SetSecret(&m.ServiceAccountKey, c, "serviceAccountKey", h)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")

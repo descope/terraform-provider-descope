@@ -81,8 +81,8 @@ func (m *AlloyConnectorModel) ConfigurationValues(h *helpers.Handler) map[string
 }
 
 func (m *AlloyConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIToken)
-	stringattr.Nil(&m.APISecret)
+	stringattr.SetSecret(&m.APIToken, c, "apiToken", h)
+	stringattr.SetSecret(&m.APISecret, c, "apiSecret", h)
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 }
 

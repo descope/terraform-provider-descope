@@ -82,7 +82,7 @@ func (m *SmartlingConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 
 func (m *SmartlingConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.UserIdentifier, c, "userIdentifier")
-	stringattr.Nil(&m.UserSecret)
+	stringattr.SetSecret(&m.UserSecret, c, "userSecret", h)
 	stringattr.Set(&m.AccountUID, c, "accountUid")
 }
 

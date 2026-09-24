@@ -79,7 +79,7 @@ func (m *RndReassignedConnectorModel) ConfigurationValues(h *helpers.Handler) ma
 
 func (m *RndReassignedConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.CompanyID, c, "companyId")
-	stringattr.Nil(&m.RefreshToken)
+	stringattr.SetSecret(&m.RefreshToken, c, "refreshToken", h)
 }
 
 func (m *RndReassignedConnectorModel) GetID() stringattr.Type        { return m.ID }

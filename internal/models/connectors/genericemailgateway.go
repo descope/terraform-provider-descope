@@ -101,7 +101,7 @@ func (m *GenericEmailGatewayConnectorModel) SetConfigurationValues(c map[string]
 	stringattr.Set(&m.Sender, c, "sender")
 	objattr.Set(&m.Authentication, c, "authentication", h)
 	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
-	stringattr.Nil(&m.HMACSecret)
+	stringattr.SetSecret(&m.HMACSecret, c, "hmacSecret", h)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
 }

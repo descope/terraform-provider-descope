@@ -79,7 +79,7 @@ func (m *TurnstileConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 
 func (m *TurnstileConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.SiteKey, c, "siteKey")
-	stringattr.Nil(&m.SecretKey)
+	stringattr.SetSecret(&m.SecretKey, c, "secretKey", h)
 }
 
 func (m *TurnstileConnectorModel) GetID() stringattr.Type        { return m.ID }

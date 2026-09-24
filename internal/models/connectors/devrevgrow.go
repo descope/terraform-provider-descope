@@ -75,7 +75,7 @@ func (m *DevRevGrowConnectorModel) ConfigurationValues(h *helpers.Handler) map[s
 }
 
 func (m *DevRevGrowConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 }
 
 func (m *DevRevGrowConnectorModel) GetID() stringattr.Type        { return m.ID }

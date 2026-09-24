@@ -89,9 +89,9 @@ func (m *DoceboConnectorModel) ConfigurationValues(h *helpers.Handler) map[strin
 func (m *DoceboConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	stringattr.Set(&m.ClientID, c, "clientId")
-	stringattr.Nil(&m.ClientSecret)
+	stringattr.SetSecret(&m.ClientSecret, c, "clientSecret", h)
 	stringattr.Set(&m.Username, c, "username")
-	stringattr.Nil(&m.Password)
+	stringattr.SetSecret(&m.Password, c, "password", h)
 }
 
 func (m *DoceboConnectorModel) GetID() stringattr.Type        { return m.ID }

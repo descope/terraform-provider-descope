@@ -102,7 +102,7 @@ func (m *FingerprintConnectorModel) ConfigurationValues(h *helpers.Handler) map[
 
 func (m *FingerprintConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.PublicAPIKey, c, "publicApiKey")
-	stringattr.Nil(&m.SecretAPIKey)
+	stringattr.SetSecret(&m.SecretAPIKey, c, "secretApiKey", h)
 	stringattr.Set(&m.Region, c, "region")
 	boolattr.Set(&m.UseCloudflareIntegration, c, "useCloudflareIntegration")
 	stringattr.Set(&m.CloudflareScriptURL, c, "cloudflareScriptUrl")

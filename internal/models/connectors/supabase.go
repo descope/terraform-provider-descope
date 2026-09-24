@@ -128,11 +128,11 @@ func (m *SupabaseConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 
 func (m *SupabaseConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.AuthType, c, "authType")
-	stringattr.Nil(&m.SigningSecret)
-	stringattr.Nil(&m.PrivateKey)
+	stringattr.SetSecret(&m.SigningSecret, c, "signingSecret", h)
+	stringattr.SetSecret(&m.PrivateKey, c, "privateKey", h)
 	boolattr.Set(&m.CreateUsers, c, "createSupabaseUser")
 	stringattr.Set(&m.ProjectBaseURL, c, "supabaseUrl")
-	stringattr.Nil(&m.ServiceRoleAPIKey)
+	stringattr.SetSecret(&m.ServiceRoleAPIKey, c, "supabaseServiceRoleKey", h)
 	setObjectField(&m.CustomClaimsMapping, c, "customClaimsMapping", h)
 	floatattr.Set(&m.ExpirationTime, c, "expirationTimeMinutes")
 }

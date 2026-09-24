@@ -75,7 +75,7 @@ func (m *ElephantConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 }
 
 func (m *ElephantConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.AccessKey)
+	stringattr.SetSecret(&m.AccessKey, c, "accessKey", h)
 }
 
 func (m *ElephantConnectorModel) GetID() stringattr.Type        { return m.ID }

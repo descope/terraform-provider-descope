@@ -78,7 +78,7 @@ func (m *LokaliseConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 }
 
 func (m *LokaliseConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIToken)
+	stringattr.SetSecret(&m.APIToken, c, "apiToken", h)
 	stringattr.Set(&m.ConfigProjectID, c, "projectId")
 }
 

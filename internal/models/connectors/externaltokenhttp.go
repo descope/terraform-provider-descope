@@ -97,7 +97,7 @@ func (m *ExternalTokenHTTPConnectorModel) SetConfigurationValues(c map[string]an
 	stringattr.Set(&m.Endpoint, c, "endpoint")
 	objattr.Set(&m.Authentication, c, "authentication", h)
 	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
-	stringattr.Nil(&m.HMACSecret)
+	stringattr.SetSecret(&m.HMACSecret, c, "hmacSecret", h)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
 }

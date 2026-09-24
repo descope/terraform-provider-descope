@@ -98,7 +98,7 @@ func (m *SCIMConnectorModel) SetConfigurationValues(c map[string]any, h *helpers
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
 	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
-	stringattr.Nil(&m.HMACSecret)
+	stringattr.SetSecret(&m.HMACSecret, c, "hmacSecret", h)
 	boolattr.Set(&m.Insecure, c, "insecure")
 }
 

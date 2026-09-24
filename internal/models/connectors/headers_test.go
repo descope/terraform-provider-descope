@@ -90,8 +90,11 @@ func TestConnectorSecretHeadersImport(t *testing.T) {
 				if v := attrs["headers.X-Plain"]; v != "visible" {
 					return fmt.Errorf("expected the plain header to be imported, got %q", v)
 				}
-				if v := attrs["secret_headers.%"]; v != "0" {
-					return fmt.Errorf("expected no secret headers to be imported, got %s entries", v)
+				if v := attrs["secret_headers.%"]; v != "1" {
+					return fmt.Errorf("expected the stored secret header to be imported, got %s entries", v)
+				}
+				if v := attrs["secret_headers.X-Api-Key"]; v == "" || v == "topsecret" {
+					return fmt.Errorf("expected the secret header value to be masked on import, got %q", v)
 				}
 				return nil
 			},

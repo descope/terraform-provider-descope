@@ -158,10 +158,10 @@ func (m *SnowflakeConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 
 func (m *SnowflakeConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.AuthType, c, "authType")
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 	stringattr.Set(&m.SnowflakeUser, c, "snowflakeUser")
-	stringattr.Nil(&m.PrivateKey)
-	stringattr.Nil(&m.PrivateKeyPassphrase)
+	stringattr.SetSecret(&m.PrivateKey, c, "privateKey", h)
+	stringattr.SetSecret(&m.PrivateKeyPassphrase, c, "privateKeyPassphrase", h)
 	stringattr.Set(&m.AccountIdentifier, c, "accountIdentifier")
 	stringattr.Set(&m.Site, c, "site")
 	stringattr.Set(&m.Warehouse, c, "warehouse")

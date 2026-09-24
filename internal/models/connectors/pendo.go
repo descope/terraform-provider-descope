@@ -99,7 +99,7 @@ func (m *PendoConnectorModel) ConfigurationValues(h *helpers.Handler) map[string
 
 func (m *PendoConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.BaseURL, c, "baseURL")
-	stringattr.Nil(&m.IntegrationKey)
+	stringattr.SetSecret(&m.IntegrationKey, c, "integrationKey", h)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
