@@ -22,9 +22,9 @@ var GovernanceAttributes = map[string]schema.Attribute{
 	"auto_approval":  boolattr.Default(false),
 	"suite_disabled": boolattr.Default(false),
 	"logo":           stringattr.Default(""),
-	// The write is version checked, so the value read has to travel back out.
-	// A string because int64 crosses protojson as one.
-	"version": stringattr.Generated(),
+	// The write is version checked, so the value read travels back out. A string because int64 crosses
+	// protojson as one, and no prior-state plan modifier because every write bumps it.
+	"version": schema.StringAttribute{Computed: true},
 }
 
 type GovernanceModel struct {
@@ -54,6 +54,8 @@ func (m *GovernanceModel) SetValues(_ *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Logo, data, "logo")
 	stringattr.Set(&m.Version, data, "version")
 }
+
+func (m *GovernanceModel) VersionChecked() {}
 
 func (m *GovernanceModel) GetID() stringattr.Type        { return m.ID }
 func (m *GovernanceModel) SetID(id stringattr.Type)      { m.ID = id }

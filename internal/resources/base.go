@@ -247,6 +247,18 @@ func (r *baseResource[T, M]) Update(ctx context.Context, req resource.UpdateRequ
 		return
 	}
 
+	// Every write bumps the version, so the plan never knows it; the write has to carry the one in state.
+	if _, ok := any(model).(helpers.VersionChecked); ok {
+		var version types.String
+		resp.Diagnostics.Append(req.State.GetAttribute(ctx, path.Root("version"), &version)...)
+		if resp.Diagnostics.HasError() {
+			return
+		}
+		if !version.IsNull() && !version.IsUnknown() {
+			values["version"] = version.ValueString()
+		}
+	}
+
 	data, err := r.ops.Update(ctx, r.client, model.GetProjectID().ValueString(), model.GetID().ValueString(), values)
 	if failure, ok := infra.AsValidationError(err); ok {
 		resp.Diagnostics.AddError("Invalid "+r.name+" configuration", failure)
