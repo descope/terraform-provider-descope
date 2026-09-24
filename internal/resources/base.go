@@ -105,7 +105,7 @@ func (r *baseResource[T, M]) ValidateConfig(ctx context.Context, req resource.Va
 }
 
 // Blocks destroy and replace plans for resources with the deletion protection attribute, and rejects changes to scoping attributes
-// in all resources. Note: projectResource (project.go) duplicates this wiring by hand - keep it in sync.
+// in all resources.
 func (r *baseResource[T, M]) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
 	if !req.Plan.Raw.IsNull() {
 		r.modelModifyPlan(ctx, req, resp) // runs on create and update, not on destroy
