@@ -95,14 +95,15 @@ cannot carry means you must set that value manually before applying, otherwise t
     terraform plan
     ```
 
-    The plan should only import resources, and end with a summary like this one:
+    The plan should only import resources and update secrets, and end with a summary like this one:
 
     ```
-    Plan: 42 to import, 0 to add, 0 to change, 0 to destroy.
+    Plan: 42 to import, 0 to add, 3 to change, 0 to destroy.
     ```
 
-    If it proposes changes, the configuration doesn't yet match your project, most often because a variable is
-    missing.
+    The API reports that a secret is stored but not its value, so every resource with a stored secret plans an
+    in-place update that sets it to the value of its variable, shown as `(sensitive value)`. If the plan proposes any
+    other change, the configuration doesn't yet match your project, most often because a variable is missing.
 
 3. Apply to adopt the project into your Terraform state:
 
@@ -137,3 +138,6 @@ If the project resource is in a module, pass its address as seen from inside tha
 ```bash
 tfexport -project P... -out ./generated -project-address descope_project.main -import-prefix module.auth
 ```
+
+The variables in the generated `variables.tf` become inputs of that module, so pass their values in the `module` block,
+and rename any that clash with inputs the module already has.
