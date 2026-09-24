@@ -108,7 +108,10 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 		if strings.TrimSpace(string(content)) == "" {
 			continue // e.g. variables.tf when the project supplies the id and nothing sensitive was promoted
 		}
-		if err := os.WriteFile(filepath.Join(outDir, prefixed(plan.NamePrefix, name)), content, 0o644); err != nil {
+		if name != "provider.tf" {
+			name = prefixed(plan.NamePrefix, name)
+		}
+		if err := os.WriteFile(filepath.Join(outDir, name), content, 0o644); err != nil {
 			return err
 		}
 	}

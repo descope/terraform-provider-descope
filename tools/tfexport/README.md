@@ -70,7 +70,7 @@ When it finishes, it prints how many resources it generated, along with any warn
 | `-only` | Limit the export to resource types whose name contains this text, e.g. `-only connector`. |
 | `-project-address` | Reference an existing `descope_project` resource instead of exporting the project, e.g. `-project-address descope_project.main`. The export then has no project block, project import or `provider.tf`. See [Migrating from v0.3.x](#migrating-from-v03x). |
 | `-import-prefix` | The module path the generated resources will live in, e.g. `-import-prefix module.auth`. It's prepended to the `to` address of every import block. |
-| `-name-prefix` | Prefix every generated resource name, variable name and file name, e.g. `-name-prefix prod`, so that exports of several projects can share one directory. |
+| `-name-prefix` | Prefix every generated resource name, variable name and file name except the shared `provider.tf`, e.g. `-name-prefix prod`, so that exports of several projects can share one directory. |
 
 ### Warnings and exit codes
 

@@ -336,3 +336,31 @@ func TestValidateNamePrefix(t *testing.T) {
 		}
 	}
 }
+
+func TestNamePrefixKeepsTheSharedProviderFile(t *testing.T) {
+	plan := &Plan{
+		ProjectID:  "P123",
+		NamePrefix: "prod",
+		Resources: []Resource{
+			{
+				Type:     "descope_project",
+				Label:    "prod_my_project",
+				EntityID: "P123",
+				ImportID: "P123",
+				Attrs:    []prune.Attr{{Name: "name", Value: types.StringValue("My Project")}},
+			},
+		},
+	}
+
+	files := write(t, plan)
+
+	if _, ok := files["provider.tf"]; !ok {
+		t.Errorf("expected an unprefixed provider.tf that every export writes identically, got %v", keys(files))
+	}
+	if _, ok := files["prod_provider.tf"]; ok {
+		t.Errorf("expected no prod_provider.tf, got %v", keys(files))
+	}
+	if _, ok := files["prod_project.tf"]; !ok {
+		t.Errorf("expected the project in prod_project.tf, got %v", keys(files))
+	}
+}
