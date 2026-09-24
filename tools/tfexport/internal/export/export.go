@@ -160,8 +160,23 @@ func Run(ctx context.Context, client *infra.Client, projectID, outDir string, op
 		plan.Resources = append(plan.Resources, resource)
 	}
 
+	warnings = append(warnings, adoptionWarnings(plan)...)
+
 	if err := emit.Write(ctx, outDir, plan); err != nil {
 		return 0, warnings, fmt.Errorf("failed to write output files: %w", err)
 	}
 	return len(plan.Resources), warnings, nil
+}
+
+func adoptionWarnings(plan *emit.Plan) []warn.Warning {
+	if plan.ProjectAddress == nil {
+		return nil
+	}
+	var warnings []warn.Warning
+	for _, resource := range plan.Resources {
+		if resource.Type == "descope_inbound_app" {
+			warnings = append(warnings, warn.Note("Inbound app %s.%s may already be managed by a descope_inbound_app resource in your configuration, which v0.3.x also supported: if it is, delete this generated resource and its import block, or both would manage the same app", resource.Type, resource.Label))
+		}
+	}
+	return warnings
 }

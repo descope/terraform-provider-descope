@@ -6,108 +6,180 @@ description: |-
 
 # Upgrading from v0.3.x
 
-In v0.3.x, the `descope_project` resource managed the entire project configuration with nested attributes such as
-`authentication`, `connectors` and `flows`. Starting with v1.0, `descope_project` only manages the project's `name`,
-`environment`, `tags` and `deletion_protection`, and every other part of the project is managed by a standalone
-resource that references the project with `project_id`.
+In v0.3.x, a single `descope_project` resource managed your whole project through nested attributes like
+`authentication`, `connectors` and `flows`. In v1.0, each of those parts has its own standalone resource that points
+at the project with `project_id`, and `descope_project` only manages the project's `name`, `environment` and `tags`.
 
-The upgrade keeps your existing `descope_project` resource and its state, so it works in a state that manages other
-infrastructure as well. It never changes the project's configuration in Descope. What it does require is adding the
-standalone resources to your configuration and adopting the existing entities into them with `import` blocks.
+The upgrade happens in two parts:
 
--> Terraform 1.5 or later is required for `import` blocks.
+1. **Upgrade the provider.** Bump the version and trim `descope_project` down to the attributes it still supports.
+2. **Adopt the rest of the project.** Generate the standalone resources with the `tfexport` tool and import them.
 
-## What to expect after upgrading to v1.0
+The provider upgrade doesn't change anything in Descope, and the adoption plan shows exactly what it will change. You
+also keep your existing `descope_project` resource and its state, so this works fine in a state that manages other
+infrastructure too.
 
-- **Your v0.3.x configuration stops working.** With v1.0, `terraform plan` fails with an `Unsupported argument` error
-  for each nested attribute of `descope_project` that no longer exists, such as `authentication` or `connectors`.
-  The plan fails before anything is changed in Descope or in your state.
-- **Removing the nested attributes is safe.** It doesn't delete or change anything in Descope, since v1.0's
-  `descope_project` only ever sends the project's `name`, `environment` and `tags`. Terraform just stops managing the
-  rest of the project's configuration until you adopt it with the standalone resources, as described in the steps
-  below. Until the first `terraform apply` with v1.0, each plan warns about this.
-- **The state can't be used with v0.3.x anymore.** Once you apply with v1.0, a v0.3.x version of the provider refuses
-  the state, so upgrade every workspace that shares it at the same time. To roll back, restore the state backup from
-  the first step.
-- **The project is protected from deletion.** In v1.0, destroying a `descope_project` fails unless you set
-  `deletion_protection = false`.
+## Before you start
 
-## Upgrade steps
+- You need Terraform 1.5 or later, for `import` blocks.
+- If more than one workspace shares the same state, upgrade them all together. Once you apply with v1.0, previous
+  versions of the provider can't read the state anymore.
 
-1. **Back up the state.** Run `terraform state pull > backup.tfstate` with your current provider version.
+## Part 1: Upgrading the provider
 
-2. **Upgrade the provider and remove the nested attributes.** Change the version constraint to `~> 1.0` and run
-   `terraform init -upgrade`. Remove every nested attribute from the `descope_project` resource, keeping only `name`,
-   `environment` and `tags`.
+1. **Back up the state.** With your current provider version, run:
 
-3. **Plan and apply.** `terraform plan` should report no changes for the project, along with the warning about the
-   configuration that's no longer tracked. Run `terraform apply` to save the upgraded state.
+   ```shell
+   terraform state pull > backup.tfstate
+   ```
 
-4. **Generate the standalone resources.** Use the [tfexport](https://github.com/descope/terraform-provider-descope/tree/main/tools/tfexport)
-   tool to read the project and write the matching resources and `import` blocks, referencing your existing project
-   resource:
+   You'll only need this if you want to [roll back](#rolling-back).
 
-    ```bash
-    tfexport -project P... -out ./generated -project-address descope_project.main
-    ```
+2. **Switch to v1.0 and trim the project resource.** Change the provider's version constraint to `~> 1.0` and run
+   `terraform init -upgrade`. Then remove every nested attribute from `descope_project`, so that only `name`,
+   `environment` and `tags` are left. If you use `descope_inbound_app`, also remove its `non_confidential_client`
+   attribute, which v1.0 no longer has, and see [Known issues](#known-issues).
 
-    Copy the generated files into the directory that has your project resource. If that's a module, add
-    `-import-prefix module.<name>` and move `import.tf` to the root module, since Terraform only allows `import`
-    blocks there. The variables in the generated `variables.tf` then become inputs of that module, so pass their
-    values in the `module` block, and rename any that clash with inputs the module already has. Alternatively, write
-    the resources yourself using the table below.
+   Removing the nested attributes doesn't delete anything in Descope. Terraform just stops tracking those settings
+   until you adopt them again in Part 2.
 
-    If the configuration manages several projects, for example with `for_each` or one `descope_project` resource per
-    environment, run the tool once per project with a different `-name-prefix`. The prefix is added to every
-    generated resource name, variable name and file name, so the exports don't clash and can be copied into the
-    same directory:
+   If you run `terraform plan` before removing them, you'll get an `Unsupported argument` error for each one. That's
+   expected, and nothing is changed in Descope or in your state.
 
-    ```bash
-    tfexport -project P... -out ./generated-dev -project-address 'descope_project.main["dev"]' -name-prefix dev
-    tfexport -project P... -out ./generated-prod -project-address 'descope_project.main["prod"]' -name-prefix prod
-    ```
+3. **Plan and apply.** `terraform plan` should show no changes to the project, along with a warning about the
+   configuration Terraform no longer tracks. Run `terraform apply` to save the upgraded state.
 
-5. **Supply secrets.** The Descope API never returns secrets such as connector credentials, so the generated
-   configuration declares them as sensitive variables. Provide their values, e.g. in a `terraform.tfvars` file that's
-   kept out of version control.
+## Part 2: Adopting the rest of the project
 
-6. **Plan and review.** `terraform plan` should import every resource and change nothing but secrets:
+1. **Generate the standalone resources.** The [tfexport](https://github.com/descope/terraform-provider-descope/tree/main/tools/tfexport)
+   tool reads your project and writes the matching resources, plus `import` blocks that adopt what's already there.
+   Its README explains how to install it and which management key it needs. Pass it the address of your existing
+   project resource so the generated resources reference it:
 
-    ```
-    Plan: 42 to import, 0 to add, 3 to change, 0 to destroy.
-    ```
+   ```shell
+   tfexport -project P... -out ./generated -project-address descope_project.main
+   ```
 
-    The API reports that a secret is stored but not its value, so a sensitive update per imported secret is expected:
-    every resource with a stored secret plans an in-place update that sets it to the value of its variable, shown as
-    `(sensitive value)`, and applying it resends the secret.
+   Copy the generated files into the directory that has your `descope_project` resource. If your configuration
+   already has `descope_inbound_app` resources, see [Known issues](#known-issues) first.
 
-    Don't apply a plan that creates a resource that already exists in the project, or that changes a value you've
-    configured or clears a secret, which shows as a sensitive value that changes to `null` or an empty string. An
-    update that only sets an attribute that has no stored value to its default, such as `use_mtls` and
-    `use_static_ips` on HTTP connectors created with v0.3.x, is safe.
+   If your `descope_project` resource is inside a module, or you manage several projects in one configuration, see
+   [Special cases](#special-cases).
 
-7. **Apply** to adopt the resources, then delete the `import` blocks.
+2. **Fill in secrets.** The Descope API never returns secrets like connector credentials, so the generated
+   configuration declares them as sensitive variables. Set their values, for example in a `terraform.tfvars` file that
+   you keep out of version control.
 
-Steps 3 and 6 can be merged into a single apply, by doing step 2 and steps 4 and 5 together. Doing them separately is
-recommended, so that the first plan confirms the upgrade itself leaves the project unchanged.
+3. **Plan and review.** `terraform plan` should import everything and change nothing but secrets:
 
-~> Always import the settings resources, `descope_styles`, `descope_fga_schema`, flows and widgets. Creating them
-without an import overwrites the existing configuration in the project with the configuration in the resource. The
-provider warns during planning when one of these resources is about to be created in an existing project.
+   ```
+   Plan: 42 to import, 0 to add, 3 to change, 0 to destroy.
+   ```
+
+   The in-place changes are normal. The API tells the provider that a secret is stored, but not its value, so every
+   imported resource with a stored secret plans an update that sets it from its variable. It shows up as
+   `(sensitive value)`, and applying it just resends the secret.
+
+   Don't apply the plan if it:
+
+   - creates a resource that already exists in the project
+   - changes a value you've configured
+   - clears a secret, which shows as a sensitive value changing to `null` or an empty string
+
+   See [Known issues](#known-issues) for the other in-place changes you might see.
+
+4. **Apply and clean up.** Run `terraform apply` to adopt the resources, then delete the `import` blocks.
+
+That's it. Your project is managed by Terraform again.
+
+**Important:** In v1.0 the project is protected from deletion. Destroying a `descope_project` fails unless you set
+`deletion_protection = false`.
+
+## Known issues
+
+### Inbound apps can end up managed twice
+
+`descope_inbound_app` was already a standalone resource in v0.3.x, and tfexport exports every inbound app in the
+project. If your configuration already manages an inbound app, delete the generated resource for it and its `import`
+block, or two resources will manage the same app. tfexport prints a warning for each inbound app it exports as a
+reminder.
+
+### Adding `client_type` to an existing inbound app replaces it
+
+v1.0 replaces the `non_confidential_client` attribute of `descope_inbound_app` with `client_type`. Don't add
+`client_type` to an app that already exists: changing it replaces the app, which gives it a new client ID and secret.
+Removing `non_confidential_client` on its own plans no changes.
+
+### HTTP connectors created with v0.3.x plan an update
+
+The adoption plan shows an in-place update that sets `use_mtls` and `use_static_ips` to `false` on HTTP connectors that
+were created with v0.3.x, because those connectors have no stored value for them. The update is safe: `false` is how
+the connector already behaves.
+
+## Special cases
+
+### The project resource is inside a module
+
+Terraform only allows `import` blocks in the root module, so run tfexport with `-import-prefix module.<name>`, copy the
+generated resources into the module, and move `import.tf` to the root module.
+
+The variables in the generated `variables.tf` become inputs of the module, so pass their values in the `module` block.
+Rename any that clash with inputs the module already has.
+
+### You manage several projects
+
+If your configuration manages several projects, for example with `for_each` or one `descope_project` resource per
+environment, run tfexport once per project with a different `-name-prefix`. The prefix is added to every generated
+resource, variable and file name, so the exports don't clash and can go in the same directory:
+
+```shell
+tfexport -project P... -out ./generated-dev -project-address 'descope_project.main["dev"]' -name-prefix dev
+tfexport -project P... -out ./generated-prod -project-address 'descope_project.main["prod"]' -name-prefix prod
+```
+
+### Upgrading with a single apply
+
+You can skip the apply in Part 1 by making all the configuration changes first (trimming `descope_project`, generating
+the resources and filling in secrets) and then running one plan and apply.
+
+We recommend doing it in two steps anyway. The first plan confirms that the provider upgrade by itself leaves the
+project unchanged, which makes the second, bigger plan easier to review.
 
 ## Writing the resources by hand
 
-If you write the standalone resources yourself instead of generating them with tfexport, keep in mind:
+If you'd rather write the standalone resources yourself, use the [attribute mapping](#attribute-mapping) below to find
+the resources and import IDs that replace each part of your v0.3.x configuration.
 
-- References that used names now use IDs, e.g. `user_jwt_template` in `descope_session_settings` and the connector
-  used by a messaging method's settings resource.
+**Note:** Always import the settings resources, `descope_styles`, `descope_fga_schema`, flows and widgets. Creating one
+of them without an import overwrites the existing configuration in the project with the configuration in the resource.
+The provider warns during planning when one of these is about to be created in an existing project.
+
+A few more things to watch for:
+
+- References that used names now use IDs, e.g. `user_jwt_template` in `descope_session_settings` and the connector used
+  by a messaging method's settings resource.
+- Every project has built-in entities that Descope creates automatically, such as the default OIDC application, JWT
+  templates and flows. You only need them in your configuration if you actually use them. If you do, import them with
+  their existing IDs (see the Import ID column below) rather than creating them.
 - The role and permission IDs in the v0.3.x state aren't the IDs that `descope_role` and `descope_permission` import
   with, so look them up by name with the management API.
-- Every project has built-in entities, such as the default OIDC application, JWT templates and flows. Import them
-  rather than creating them.
-- `descope_inbound_app`, which was already a standalone resource in v0.3.x, replaces `non_confidential_client` with
-  `client_type`.
 - `descope_outbound_app` is new in v1.0 and has no v0.3.x counterpart.
+
+## Rolling back
+
+Until your first `terraform apply` with v1.0, you can roll back by reverting the version constraint and your
+configuration changes, then running `terraform init -upgrade`. After that apply, v0.3.x refuses the upgraded state, so
+you'll also need to restore the backup from Part 1:
+
+```shell
+terraform state push -force backup.tfstate
+```
+
+Pushing the backup replaces the whole state, and `-force` skips the check that would normally stop an older state from
+overwriting a newer one.
+
+**Important:** Only do this if nothing else was applied to the state since you took the backup, including
+changes to resources that aren't managed by Descope. Otherwise, contact Descope support.
 
 ## Attribute mapping
 
