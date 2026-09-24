@@ -111,6 +111,9 @@ func (r *baseResource[T, M]) ModifyPlan(ctx context.Context, req resource.Modify
 		r.modelModifyPlan(ctx, req, resp) // runs on create and update, not on destroy
 	}
 	if req.State.Raw.IsNull() {
+		if !req.Plan.Raw.IsNull() && (r.singleton || r.ops.CreateOverwrites) {
+			warnCreateOverwrites(ctx, req, resp, r.name, r.singleton)
+		}
 		return // nothing to protect when the resource is being created
 	}
 	if !req.Plan.Raw.IsNull() {
@@ -126,6 +129,18 @@ func (r *baseResource[T, M]) ModifyPlan(ctx context.Context, req resource.Modify
 	if isPlannedReplace(ctx, r.schema, req) {
 		checkReplaceProtection(ctx, req.State, M(new(T)), r.name, &resp.Diagnostics)
 	}
+}
+
+func warnCreateOverwrites(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse, name string, singleton bool) {
+	var projectID types.String
+	if diags := req.Plan.GetAttribute(ctx, path.Root("project_id"), &projectID); diags.HasError() || projectID.IsNull() || projectID.IsUnknown() {
+		return
+	}
+	if singleton {
+		resp.Diagnostics.AddWarning("Existing Configuration Will Be Replaced", "Creating this descope_"+name+" resource replaces the existing descope_"+name+" configuration of the "+projectID.ValueString()+" project with the configuration in the resource. To keep the existing configuration, import it with an import block instead.")
+		return
+	}
+	resp.Diagnostics.AddWarning("Existing Configuration Might Be Overwritten", "Creating this descope_"+name+" resource writes its configuration to the "+projectID.ValueString()+" project. If the project already has one with the same ID, it's overwritten: import it with an import block instead to keep its configuration.")
 }
 
 func (r *baseResource[T, M]) modelModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {

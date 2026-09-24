@@ -16,6 +16,7 @@ func NewOAuthProviderResource() resource.Resource {
 		return c.PostData(ctx, projectID, path, data)
 	}
 	return newResource[oauthprovider.OAuthProviderModel]("oauth_provider", oauthprovider.Schema, operations{
+		CreateOverwrites: true,
 		Create: func(ctx context.Context, c *infra.Client, projectID string, data map[string]any) (string, map[string]any, error) {
 			id, _ := data["id"].(string)
 			entity, err := write(ctx, c, projectID, id, data)

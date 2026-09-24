@@ -28,12 +28,13 @@ type scopedDeleteFunc func(ctx context.Context, c *infra.Client, projectID, scop
 // both a scope (the model's app_id or method attribute) and their own id; Create and Update need no scoped
 // variants because the model emits the scope in the request body.
 type operations struct {
-	Create       createFunc
-	Read         readFunc
-	Update       updateFunc
-	Delete       deleteFunc
-	ScopedRead   scopedReadFunc
-	ScopedDelete scopedDeleteFunc
+	CreateOverwrites bool
+	Create           createFunc
+	Read             readFunc
+	Update           updateFunc
+	Delete           deleteFunc
+	ScopedRead       scopedReadFunc
+	ScopedDelete     scopedDeleteFunc
 }
 
 // Treats an empty response envelope as a missing entity, so a read removes the resource from state instead of reporting a clean refresh.
