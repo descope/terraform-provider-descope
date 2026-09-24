@@ -23,6 +23,12 @@ type ResourceModel[T any] interface {
 	GetProjectID() types.String
 }
 
+// A model whose writes are version checked against a computed "version" attribute. An update sends the version
+// from state, since the plan cannot know it.
+type VersionChecked interface {
+	VersionChecked()
+}
+
 // Models without this interface are unprotected when the deletion protection attribute is unset.
 type DeletionProtectionDefaulter interface {
 	DeletionProtectionDefault(ctx context.Context) bool
