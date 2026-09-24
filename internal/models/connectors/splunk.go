@@ -98,7 +98,7 @@ func (m *SplunkConnectorModel) ConfigurationValues(h *helpers.Handler) map[strin
 }
 
 func (m *SplunkConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.HecToken)
+	stringattr.SetSecret(&m.HecToken, c, "hecToken", h)
 	stringattr.Set(&m.HecURL, c, "hecUrl")
 	stringattr.Set(&m.Index, c, "index")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")

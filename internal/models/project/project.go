@@ -20,6 +20,7 @@ var ProjectAttributes = map[string]schema.Attribute{
 }
 
 var Schema = schema.Schema{
+	Version:             1,
 	MarkdownDescription: "Manages a Descope project and its core attributes. The project's configuration is managed with the standalone descope resources that reference it by ID.",
 	Attributes:          ProjectAttributes,
 }
@@ -61,4 +62,8 @@ func (m *ProjectModel) GetProjectID() stringattr.Type {
 // Protected by default like the other protected resources: destroying a project is unrecoverable, so it takes an explicit opt-out.
 func (m *ProjectModel) DeletionProtectionDefault(_ context.Context) bool {
 	return true
+}
+
+func (m *ProjectModel) ReportDroppedState(h *helpers.Handler) {
+	h.Warn("Project Configuration No Longer Managed", "The state of this descope_project resource was written by a v0.3.x version of the provider, which managed the project configuration with nested attributes. The configuration in Descope is unchanged, but it is no longer tracked in the Terraform state. To manage it again, import it into the standalone descope resources that reference the project. See the Upgrading from v0.3.x guide in the provider documentation: https://registry.terraform.io/providers/descope/descope/latest/docs/guides/upgrading-from-v0.3")
 }

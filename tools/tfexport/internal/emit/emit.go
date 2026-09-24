@@ -28,8 +28,11 @@ type Resource struct {
 }
 
 type Plan struct {
-	ProjectID string
-	Resources []Resource
+	ProjectID      string
+	ProjectAddress hcl.Traversal
+	ImportPrefix   hcl.Traversal
+	NamePrefix     string
+	Resources      []Resource
 }
 
 func Write(ctx context.Context, outDir string, plan *Plan) error {
@@ -69,7 +72,7 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	}
 	resources := make([]prepared, 0, len(plan.Resources))
 	for _, resource := range plan.Resources {
-		files, err := extractFiles(ctx, outDir, &resource)
+		files, err := extractFiles(ctx, outDir, plan.NamePrefix, &resource)
 		if err != nil {
 			return fmt.Errorf("extracting files for %s.%s: %w", resource.Type, resource.Label, err)
 		}
@@ -94,14 +97,19 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 		}
 	}
 
-	writeProviderFile(fileBody("provider.tf"))
+	if plan.ProjectAddress == nil {
+		writeProviderFile(fileBody("provider.tf"))
+	}
 	writeVariablesFile(fileBody("variables.tf"), vars.collected, projectRef == nil)
-	writeImportsFile(fileBody("import.tf"), plan.Resources)
+	writeImportsFile(fileBody("import.tf"), plan.Resources, plan.ImportPrefix)
 
 	for name, file := range files {
 		content := hclwrite.Format(file.Bytes())
 		if strings.TrimSpace(string(content)) == "" {
 			continue // e.g. variables.tf when the project supplies the id and nothing sensitive was promoted
+		}
+		if name != "provider.tf" {
+			name = prefixed(plan.NamePrefix, name)
 		}
 		if err := os.WriteFile(filepath.Join(outDir, name), content, 0o644); err != nil {
 			return err
@@ -121,6 +129,7 @@ type variables struct {
 	collected []variable
 	claims    map[string]map[string]bool // short name -> the resources that claimed it, gathered on the first pass
 	qualify   map[string]bool            // short names that more than one resource claimed, so every claimant takes the longer form
+	taken     map[string]bool
 }
 
 func (v *variables) assign(resource Resource, short, attribute string) string {
@@ -136,6 +145,13 @@ func (v *variables) assign(resource Resource, short, attribute string) string {
 	if v.qualify[short] {
 		name = sanitizeLabel(strings.TrimPrefix(resource.Type, "descope_") + "_" + short)
 	}
+	if v.taken == nil {
+		v.taken = map[string]bool{}
+	}
+	for base, suffix := name, 2; v.taken[name]; suffix++ {
+		name = fmt.Sprintf("%s_%d", base, suffix)
+	}
+	v.taken[name] = true
 	v.collected = append(v.collected, variable{
 		name:        name,
 		description: fmt.Sprintf("Secret value for the %s attribute of %s.%s", attribute, resource.Type, resource.Label),
@@ -247,8 +263,12 @@ func objectTokens(ctx context.Context, attrs []prune.Attr, resource Resource, re
 		if err != nil {
 			return nil, err
 		}
+		name := hclwrite.TokensForIdentifier(attr.Name)
+		if !hclsyntax.ValidIdentifier(attr.Name) {
+			name = hclwrite.TokensForValue(cty.StringVal(attr.Name))
+		}
 		items = append(items, hclwrite.ObjectAttrTokens{
-			Name:  hclwrite.TokensForIdentifier(attr.Name),
+			Name:  name,
 			Value: tokens,
 		})
 	}
@@ -291,16 +311,17 @@ func writeVariablesFile(body *hclwrite.Body, variables []variable, declareProjec
 	}
 }
 
-func writeImportsFile(body *hclwrite.Body, resources []Resource) {
+func writeImportsFile(body *hclwrite.Body, resources []Resource, prefix hcl.Traversal) {
 	for i, resource := range resources {
 		if i > 0 {
 			body.AppendNewline()
 		}
 		block := body.AppendNewBlock("import", nil)
-		block.Body().SetAttributeTraversal("to", hcl.Traversal{
-			hcl.TraverseRoot{Name: resource.Type},
-			hcl.TraverseAttr{Name: resource.Label},
-		})
+		to := hcl.Traversal{hcl.TraverseRoot{Name: resource.Type}, hcl.TraverseAttr{Name: resource.Label}}
+		if prefix != nil {
+			to = append(slices.Clone(prefix), hcl.TraverseAttr{Name: resource.Type}, hcl.TraverseAttr{Name: resource.Label})
+		}
+		block.Body().SetAttributeTraversal("to", to)
 		block.Body().SetAttributeValue("id", cty.StringVal(resource.ImportID))
 	}
 }

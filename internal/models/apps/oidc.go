@@ -128,8 +128,11 @@ func (m *OIDCAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	}
 }
 
-// The backend materializes a client_secret and a client_id when an app without them is switched to a modern client type.
-func (m *OIDCAppModel) ModifyPlan(_ *helpers.Handler, config, state *OIDCAppModel) {
+func (m *OIDCAppModel) ModifyPlan(h *helpers.Handler, config, state *OIDCAppModel) {
+	if config.ID.IsNull() {
+		m.validateDefaultApp(h, state.ID)
+	}
+	// the backend materializes a client_secret and a client_id when an app without them is switched to a modern client type
 	if config.ClientID.IsNull() && state.ClientID.ValueString() == "" && (m.ClientType.IsUnknown() || m.ClientType.ValueString() != "") {
 		m.ClientID = types.StringUnknown()
 	}
@@ -138,6 +141,31 @@ func (m *OIDCAppModel) ModifyPlan(_ *helpers.Handler, config, state *OIDCAppMode
 	}
 	if m.ClientType.IsUnknown() || m.ClientType.ValueString() == "confidential" {
 		m.ClientSecret = types.StringUnknown()
+	}
+}
+
+const (
+	DefaultOIDCAppID          = "descope-default-oidc"
+	defaultOIDCAppName        = "OIDC default application"
+	defaultOIDCAppDescription = "Default OIDC APP"
+)
+
+func (m *OIDCAppModel) Validate(h *helpers.Handler) {
+	m.validateDefaultApp(h, m.ID)
+}
+
+func (m *OIDCAppModel) validateDefaultApp(h *helpers.Handler, id stringattr.Type) {
+	if helpers.HasUnknownValues(id) || id.ValueString() != DefaultOIDCAppID {
+		return
+	}
+	if !helpers.HasUnknownValues(m.Name) && m.Name.ValueString() != defaultOIDCAppName {
+		h.Invalid("The name of the built-in default OIDC application cannot be changed, so it must be set to %q", defaultOIDCAppName)
+	}
+	if !helpers.HasUnknownValues(m.Description) && m.Description.ValueString() != defaultOIDCAppDescription {
+		h.Invalid("The description of the built-in default OIDC application cannot be changed, so it must be set to %q", defaultOIDCAppDescription)
+	}
+	if !helpers.HasUnknownValues(m.Disabled) && m.Disabled.ValueBool() {
+		h.Invalid("The built-in default OIDC application cannot be disabled")
 	}
 }
 

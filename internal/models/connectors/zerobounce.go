@@ -79,7 +79,7 @@ func (m *ZeroBounceConnectorModel) ConfigurationValues(h *helpers.Handler) map[s
 }
 
 func (m *ZeroBounceConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 	stringattr.Set(&m.Region, c, "region")
 }
 

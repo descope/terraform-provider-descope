@@ -2,6 +2,7 @@ package emit
 
 import (
 	"context"
+	"slices"
 
 	"github.com/hashicorp/hcl/v2"
 )
@@ -26,6 +27,9 @@ func references(plan *Plan) map[string]hcl.Traversal {
 }
 
 func projectReference(plan *Plan) hcl.Traversal {
+	if plan.ProjectAddress != nil {
+		return append(slices.Clone(plan.ProjectAddress), hcl.TraverseAttr{Name: "id"})
+	}
 	for _, resource := range plan.Resources {
 		if resource.Type == "descope_project" {
 			return hcl.Traversal{

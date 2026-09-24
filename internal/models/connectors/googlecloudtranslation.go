@@ -79,7 +79,7 @@ func (m *GoogleCloudTranslationConnectorModel) ConfigurationValues(h *helpers.Ha
 
 func (m *GoogleCloudTranslationConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ConfigProjectID, c, "projectId")
-	stringattr.Nil(&m.ServiceAccountJSON)
+	stringattr.SetSecret(&m.ServiceAccountJSON, c, "serviceAccountJSON", h)
 }
 
 func (m *GoogleCloudTranslationConnectorModel) GetID() stringattr.Type        { return m.ID }

@@ -39,6 +39,20 @@ comments merit putting into the code.
 - Use a soft cap of around 120 characters per line, but prefer dense code over pointless line wrapping.
 - Keep function signatures and function calls on a single line unless wrapping is absolutely necessary.
 
+### Testing
+
+Write the tests before the code they test, so they prove the change works rather than just agreeing with it:
+
+1. Write the tests that assert the desired behavior: acceptance tests, positive and negative unit tests, or both,
+   whichever fits the change.
+2. Run them and confirm they fail, and fail for the expected reason.
+3. Make the change.
+4. Run them again, along with the rest of the affected suite, and confirm everything passes.
+
+When asserting errors with `testify`, check which error it is: use `require.ErrorIs` for a specific error, and
+`require.ErrorContains` (alone or alongside it) for a specific message. `require.Error` and `assert.Error` only prove
+that something failed, so there's almost never a reason to use them.
+
 ## Commands
 
 - `make dev` - prepares the development environment (runs `make install` and `make terraformrc`)

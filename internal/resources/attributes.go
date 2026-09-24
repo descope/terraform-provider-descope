@@ -33,6 +33,7 @@ func attributeOps(path string) operations {
 		return read(ctx, c, projectID, id)
 	}
 	return operations{
+		CreateOverwrites: true,
 		Create: func(ctx context.Context, c *infra.Client, projectID string, data map[string]any) (string, map[string]any, error) {
 			id, _ := data["name"].(string)
 			entity, err := write(ctx, c, projectID, id, data)

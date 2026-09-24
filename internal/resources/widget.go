@@ -22,6 +22,7 @@ func NewWidgetResource() resource.Resource {
 		return read(ctx, c, projectID, id)
 	}
 	return newResource[widget.WidgetModel]("widget", widget.Schema, operations{
+		CreateOverwrites: true,
 		Create: func(ctx context.Context, c *infra.Client, projectID string, data map[string]any) (string, map[string]any, error) {
 			id, _ := data["widgetId"].(string)
 			entity, err := write(ctx, c, projectID, id, data)

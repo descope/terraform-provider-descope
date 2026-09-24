@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
 )
 
@@ -34,6 +36,7 @@ var (
 	_ resource.ResourceWithImportState    = &baseResource[accesskey.AccessKeyModel, *accesskey.AccessKeyModel]{}
 	_ resource.ResourceWithModifyPlan     = &baseResource[accesskey.AccessKeyModel, *accesskey.AccessKeyModel]{}
 	_ resource.ResourceWithValidateConfig = &baseResource[accesskey.AccessKeyModel, *accesskey.AccessKeyModel]{}
+	_ resource.ResourceWithUpgradeState   = &baseResource[accesskey.AccessKeyModel, *accesskey.AccessKeyModel]{}
 )
 
 // DestroyChecker lets acceptance tests verify a destroyed entity is gone via the resource's own Read; meaningless for singletons.
@@ -60,6 +63,10 @@ func (r *baseResource[T, M]) CheckDestroyed(ctx context.Context, client *infra.C
 // validatableModel is the optional hook for plan-time cross-field validation; models without it are only validated per attribute.
 type validatableModel interface {
 	Validate(*helpers.Handler)
+}
+
+type stateUpgradeReporter interface {
+	ReportDroppedState(h *helpers.Handler)
 }
 
 // planModifiableModel is the optional hook for cross-attribute plan logic, called after attribute plan modifiers on create and update
@@ -111,10 +118,16 @@ func (r *baseResource[T, M]) ModifyPlan(ctx context.Context, req resource.Modify
 		r.modelModifyPlan(ctx, req, resp) // runs on create and update, not on destroy
 	}
 	if req.State.Raw.IsNull() {
+		if !req.Plan.Raw.IsNull() && (r.singleton || r.ops.CreateOverwrites) {
+			warnCreateOverwrites(ctx, req, resp, r.name, r.singleton)
+		}
 		return // nothing to protect when the resource is being created
 	}
 	if !req.Plan.Raw.IsNull() {
 		checkImmutableAttributes(ctx, r.schema, r.name, req, resp)
+		if r.ops.CreateOverwrites && isPlannedReplace(ctx, r.schema, req) {
+			warnCreateOverwrites(ctx, req, resp, r.name, false)
+		}
 	}
 	if _, ok := r.schema.Attributes[deletionProtectionAttribute]; !ok {
 		return
@@ -126,6 +139,19 @@ func (r *baseResource[T, M]) ModifyPlan(ctx context.Context, req resource.Modify
 	if isPlannedReplace(ctx, r.schema, req) {
 		checkReplaceProtection(ctx, req.State, M(new(T)), r.name, &resp.Diagnostics)
 	}
+}
+
+// An unknown project_id belongs to a project created in the same apply, which has no existing configuration to overwrite.
+func warnCreateOverwrites(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse, name string, singleton bool) {
+	var projectID types.String
+	if diags := req.Plan.GetAttribute(ctx, path.Root("project_id"), &projectID); diags.HasError() || projectID.IsNull() || projectID.IsUnknown() {
+		return
+	}
+	if singleton {
+		resp.Diagnostics.AddWarning("Existing Configuration Will Be Replaced", "Creating this descope_"+name+" resource replaces the existing descope_"+name+" configuration of the "+projectID.ValueString()+" project with the configuration in the resource. To keep the existing configuration, import it with an import block instead.")
+		return
+	}
+	resp.Diagnostics.AddWarning("Existing Configuration Might Be Overwritten", "Creating this descope_"+name+" resource writes its configuration to the "+projectID.ValueString()+" project. If the project already has one with the same ID, it's overwritten: import it with an import block instead to keep its configuration.")
 }
 
 func (r *baseResource[T, M]) modelModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
@@ -293,6 +319,45 @@ func (r *baseResource[T, M]) Delete(ctx context.Context, req resource.DeleteRequ
 	}
 
 	tflog.Info(ctx, "Deleted "+r.name+" resource")
+}
+
+func (r *baseResource[T, M]) UpgradeState(_ context.Context) map[int64]resource.StateUpgrader {
+	upgraders := map[int64]resource.StateUpgrader{}
+	for version := range r.schema.Version {
+		upgraders[version] = resource.StateUpgrader{StateUpgrader: r.upgradeState}
+	}
+	return upgraders
+}
+
+// Version 0 state comes from both v0.3.x and the v0.9.0 prereleases, so only attributes the current schema lacks are dropped.
+func (r *baseResource[T, M]) upgradeState(ctx context.Context, req resource.UpgradeStateRequest, resp *resource.UpgradeStateResponse) {
+	prior := map[string]any{}
+	if err := json.Unmarshal(req.RawState.JSON, &prior); err != nil {
+		resp.Diagnostics.AddError("Error upgrading "+r.name+" state", err.Error())
+		return
+	}
+
+	upgraded := map[string]any{}
+	for name := range r.schema.Attributes {
+		upgraded[name] = prior[name]
+	}
+	dropped := false
+	for name, value := range prior {
+		if _, ok := r.schema.Attributes[name]; !ok && value != nil {
+			dropped = true
+		}
+	}
+
+	if reporter, ok := any(M(new(T))).(stateUpgradeReporter); ok && dropped {
+		reporter.ReportDroppedState(helpers.NewHandler(ctx, &resp.Diagnostics))
+	}
+
+	data, err := json.Marshal(upgraded)
+	if err != nil {
+		resp.Diagnostics.AddError("Error upgrading "+r.name+" state", err.Error())
+		return
+	}
+	resp.DynamicValue = &tfprotov6.DynamicValue{JSON: data}
 }
 
 func (r *baseResource[T, M]) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {

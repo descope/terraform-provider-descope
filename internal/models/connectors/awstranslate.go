@@ -85,8 +85,8 @@ func (m *AWSTranslateConnectorModel) ConfigurationValues(h *helpers.Handler) map
 
 func (m *AWSTranslateConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
-	stringattr.Nil(&m.SecretAccessKey)
-	stringattr.Nil(&m.SessionToken)
+	stringattr.SetSecret(&m.SecretAccessKey, c, "secretAccessKey", h)
+	stringattr.SetSecret(&m.SessionToken, c, "sessionToken", h)
 	stringattr.Set(&m.Region, c, "region")
 }
 

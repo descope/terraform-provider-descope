@@ -122,7 +122,7 @@ func RunScenario(t *testing.T, scenario Scenario) {
 		}
 
 		exportDir := t.TempDir()
-		count, warnings, err := export.Run(ctx, client, projectID, exportDir, "")
+		count, warnings, err := export.Run(ctx, client, projectID, exportDir, export.Options{})
 		if err != nil {
 			t.Fatalf("%s: export failed: %s", stepName, err)
 		}
@@ -139,7 +139,7 @@ func RunScenario(t *testing.T, scenario Scenario) {
 		assertFormatting(t, stepName, exportDir, env)
 
 		secondDir := t.TempDir()
-		if _, _, err := export.Run(ctx, client, projectID, secondDir, ""); err != nil {
+		if _, _, err := export.Run(ctx, client, projectID, secondDir, export.Options{}); err != nil {
 			t.Fatalf("%s: second export failed: %s", stepName, err)
 		}
 		assertExportDeterminism(t, stepName, exportDir, secondDir)

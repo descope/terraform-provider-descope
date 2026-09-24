@@ -78,7 +78,7 @@ func (m *IntercomConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 }
 
 func (m *IntercomConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.Token)
+	stringattr.SetSecret(&m.Token, c, "token", h)
 	stringattr.Set(&m.Region, c, "region")
 }
 

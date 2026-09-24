@@ -70,7 +70,7 @@ func (m *SendGridConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 func (m *SendGridConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.SenderEmail, c, "fromEmail")
 	stringattr.Set(&m.SenderName, c, "fromName")
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 }
 
 func (m *SendGridConnectorModel) GetID() stringattr.Type        { return m.ID }

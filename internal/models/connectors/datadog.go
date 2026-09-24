@@ -104,7 +104,7 @@ func (m *DatadogConnectorModel) ConfigurationValues(h *helpers.Handler) map[stri
 }
 
 func (m *DatadogConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 	stringattr.Set(&m.Site, c, "site")
 	stringattr.Set(&m.Source, c, "source")
 	stringattr.Set(&m.Tags, c, "tags")

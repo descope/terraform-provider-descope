@@ -82,7 +82,7 @@ func (m *SardineConnectorModel) ConfigurationValues(h *helpers.Handler) map[stri
 
 func (m *SardineConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ClientID, c, "clientId")
-	stringattr.Nil(&m.ClientSecret)
+	stringattr.SetSecret(&m.ClientSecret, c, "clientSecret", h)
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 }
 

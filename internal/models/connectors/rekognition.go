@@ -82,7 +82,7 @@ func (m *RekognitionConnectorModel) ConfigurationValues(h *helpers.Handler) map[
 
 func (m *RekognitionConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
-	stringattr.Nil(&m.SecretAccessKey)
+	stringattr.SetSecret(&m.SecretAccessKey, c, "secretAccessKey", h)
 	stringattr.Set(&m.CollectionID, c, "collectionId")
 }
 

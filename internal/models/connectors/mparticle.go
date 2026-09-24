@@ -87,8 +87,8 @@ func (m *MParticleConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 }
 
 func (m *MParticleConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIKey)
-	stringattr.Nil(&m.APISecret)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
+	stringattr.SetSecret(&m.APISecret, c, "apiSecret", h)
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	stringattr.Set(&m.DefaultEnvironment, c, "defaultEnvironment")
 	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")

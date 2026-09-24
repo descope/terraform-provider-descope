@@ -85,7 +85,7 @@ func (m *ArkoseConnectorModel) ConfigurationValues(h *helpers.Handler) map[strin
 
 func (m *ArkoseConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.PublicKey, c, "publicKey")
-	stringattr.Nil(&m.PrivateKey)
+	stringattr.SetSecret(&m.PrivateKey, c, "privateKey", h)
 	stringattr.Set(&m.ClientBaseURL, c, "clientBaseUrl")
 	stringattr.Set(&m.VerifyBaseURL, c, "verifyBaseUrl")
 }

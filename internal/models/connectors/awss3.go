@@ -139,8 +139,8 @@ func (m *AWSS3ConnectorModel) ConfigurationValues(h *helpers.Handler) map[string
 
 func (m *AWSS3ConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.AuthType, c, "authType")
-	stringattr.Nil(&m.AccessKeyID)
-	stringattr.Nil(&m.SecretAccessKey)
+	stringattr.SetSecret(&m.AccessKeyID, c, "accessKeyId", h)
+	stringattr.SetSecret(&m.SecretAccessKey, c, "secretAccessKey", h)
 	stringattr.Set(&m.RoleARN, c, "roleArn")
 	stringattr.Set(&m.ExternalID, c, "externalId")
 	stringattr.Set(&m.Region, c, "region")

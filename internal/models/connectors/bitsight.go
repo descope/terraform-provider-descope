@@ -79,7 +79,7 @@ func (m *BitsightConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 
 func (m *BitsightConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ClientID, c, "clientId")
-	stringattr.Nil(&m.ClientSecret)
+	stringattr.SetSecret(&m.ClientSecret, c, "clientSecret", h)
 }
 
 func (m *BitsightConnectorModel) GetID() stringattr.Type        { return m.ID }

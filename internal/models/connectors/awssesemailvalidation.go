@@ -127,8 +127,8 @@ func (m *AWSSESEmailValidationConnectorModel) ConfigurationValues(h *helpers.Han
 func (m *AWSSESEmailValidationConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.AuthType, c, "authType")
 	stringattr.Set(&m.AccessKeyID, c, "accessKeyId")
-	stringattr.Nil(&m.SecretAccessKey)
-	stringattr.Nil(&m.SessionToken)
+	stringattr.SetSecret(&m.SecretAccessKey, c, "secretAccessKey", h)
+	stringattr.SetSecret(&m.SessionToken, c, "sessionToken", h)
 	stringattr.Set(&m.RoleARN, c, "roleArn")
 	stringattr.Set(&m.ExternalID, c, "externalId")
 	stringattr.Set(&m.Region, c, "region")

@@ -164,6 +164,16 @@ func Nil(s *Type) {
 	}
 }
 
+// Only correct where a read returns a placeholder for a stored secret and a write that omits the secret clears it, which holds for connectors.
+// An import adopts the placeholder so the plan shows the clear, and other reads keep the state value.
+func SetSecret(s *Type, data map[string]any, key string, h *helpers.Handler) {
+	if v, ok := data[key].(string); ok && v != "" && helpers.IsImportState(h.Ctx) {
+		*s = Value(v)
+	} else {
+		Nil(s)
+	}
+}
+
 func parseExtras(extras []any) (validators []validator.String, modifiers []planmodifier.String) {
 	for _, e := range extras {
 		matched := false

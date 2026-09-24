@@ -75,7 +75,7 @@ func (m *FirebaseAdminConnectorModel) ConfigurationValues(h *helpers.Handler) ma
 }
 
 func (m *FirebaseAdminConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.ServiceAccount)
+	stringattr.SetSecret(&m.ServiceAccount, c, "serviceAccount", h)
 }
 
 func (m *FirebaseAdminConnectorModel) GetID() stringattr.Type        { return m.ID }

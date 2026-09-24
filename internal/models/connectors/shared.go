@@ -52,7 +52,7 @@ func setObjectField(s *strmapattr.Type, data map[string]any, key string, h *help
 // Secret Object Field
 //
 // A secret-object field is one wire array of {key, value, secret} entries, split into a plain map and a sensitive one so that
-// ordinary values stay visible in plans. Secret values are masked on read, so only the plain entries are adopted back.
+// ordinary values stay visible in plans. Secret values are masked on read, so only an import adopts the secret keys, with masked values.
 
 func getSecretObject(plain, secret strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
 	entries := []any{}
@@ -68,24 +68,28 @@ func getSecretObject(plain, secret strmapattr.Type, data map[string]any, key str
 	data[key] = entries
 }
 
-func setSecretObject(plain, secret *strmapattr.Type, data map[string]any, key string, _ *helpers.Handler) { // nolint:unparam
+func setSecretObject(plain, secret *strmapattr.Type, data map[string]any, key string, h *helpers.Handler) { // nolint:unparam
 	entries := map[string]string{}
+	secrets := map[string]string{}
 	if v, ok := data[key].([]any); ok {
 		for i := range v {
 			m, ok := v[i].(map[string]any)
 			if !ok {
 				continue
 			}
-			if isSecret, _ := m["secret"].(bool); isSecret {
-				continue
-			}
 			name, _ := m["key"].(string)
 			value, _ := m["value"].(string)
+			if isSecret, _ := m["secret"].(bool); isSecret {
+				secrets[name] = value
+				continue
+			}
 			entries[name] = value
 		}
 	}
 	*plain = strmapattr.Value(entries)
-	if secret.IsNull() || secret.IsUnknown() {
+	if helpers.IsImportState(h.Ctx) {
+		*secret = strmapattr.Value(secrets)
+	} else if secret.IsNull() || secret.IsUnknown() {
 		*secret = strmapattr.Empty()
 	}
 }
@@ -138,7 +142,11 @@ func (m *HTTPAuthFieldModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *HTTPAuthFieldModel) SetValues(h *helpers.Handler, data map[string]any) {
-	stringattr.Nil(&m.BearerToken)
+	if data["method"] == "bearerToken" {
+		stringattr.SetSecret(&m.BearerToken, data, "bearerToken", h)
+	} else {
+		stringattr.Nil(&m.BearerToken)
+	}
 	if data["method"] == "basic" {
 		objattr.Set(&m.Basic, data, "basic", h)
 	} else {

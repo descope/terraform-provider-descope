@@ -94,7 +94,7 @@ func (m *SegmentConnectorModel) ConfigurationValues(h *helpers.Handler) map[stri
 }
 
 func (m *SegmentConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.WriteKey)
+	stringattr.SetSecret(&m.WriteKey, c, "writeKey", h)
 	stringattr.Set(&m.Host, c, "host")
 	boolattr.Set(&m.BrowserAnalytics, c, "browserAnalytics")
 	stringattr.Set(&m.PublicWriteKey, c, "publicWriteKey")

@@ -101,7 +101,7 @@ func (m *RecaptchaEnterpriseConnectorModel) ConfigurationValues(h *helpers.Handl
 func (m *RecaptchaEnterpriseConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ConfigProjectID, c, "projectId")
 	stringattr.Set(&m.SiteKey, c, "siteKey")
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	stringattr.Set(&m.Action, c, "action")
 	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")

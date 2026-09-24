@@ -98,7 +98,7 @@ func (m *AuditWebhookConnectorModel) SetConfigurationValues(c map[string]any, h 
 	stringattr.Set(&m.BaseURL, c, "baseUrl")
 	objattr.Set(&m.Authentication, c, "authentication", h)
 	setSecretObject(&m.Headers, &m.SecretHeaders, c, "headers", h)
-	stringattr.Nil(&m.HMACSecret)
+	stringattr.SetSecret(&m.HMACSecret, c, "hmacSecret", h)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 }

@@ -248,7 +248,7 @@ func (f *Field) SetValueStatement() string {
 	case FieldTypeString:
 		return fmt.Sprintf(`stringattr.Set(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeSecret:
-		return fmt.Sprintf(`stringattr.Nil(%s)`, accessor)
+		return fmt.Sprintf(`stringattr.SetSecret(%s, c, %q, h)`, accessor, f.Name)
 	case FieldTypeBool:
 		return fmt.Sprintf(`boolattr.Set(%s, c, %q)`, accessor, f.Name)
 	case FieldTypeNumber:

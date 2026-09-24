@@ -3,6 +3,7 @@ package prune_test
 import (
 	"context"
 	"fmt"
+	"slices"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/prune"
@@ -274,17 +275,23 @@ func TestPruneGeneratedSecrets(t *testing.T) {
 		}
 	})
 
-	t.Run("RealGeneratedSecretIsDropped", func(t *testing.T) {
+	t.Run("RealGeneratedSecretIsKeptByState", func(t *testing.T) {
 		obj := object(ctx, t, oidc, map[string]any{
 			"id": "APP1", "project_id": "P123", "name": "app", "client_secret": "actual-value",
 		})
-		_, secrets := prune.Object(ctx, oidc.Attributes, obj, true)
+		attrs, secrets := prune.Object(ctx, oidc.Attributes, obj, true)
 		secret, ok := secretFor(secrets, "client_secret")
 		if !ok {
 			t.Fatalf("expected client_secret to be recorded, got %v", secrets)
 		}
-		if !secret.Dropped {
-			t.Error("a secret the configuration cannot carry should be reported as dropped")
+		if secret.Dropped {
+			t.Error("a computed secret keeps its imported value when omitted, so it should not be reported as dropped")
+		}
+		if secret.Required {
+			t.Error("a computed secret should not be promoted to a variable")
+		}
+		if slices.Contains(names(attrs), "client_secret") {
+			t.Errorf("expected client_secret to be omitted from the configuration, got %v", names(attrs))
 		}
 	})
 }
@@ -323,4 +330,51 @@ func findAttr(attrs []prune.Attr, name string) (prune.Attr, bool) {
 		}
 	}
 	return prune.Attr{}, false
+}
+
+func TestPruneImportedConnectorSecrets(t *testing.T) {
+	ctx := context.Background()
+	http := registry.Load(ctx)["descope_http_connector"].ExportSchema()
+
+	obj := object(ctx, t, http, map[string]any{
+		"id":             "CI123",
+		"project_id":     "P123",
+		"name":           "webhook",
+		"base_url":       "https://example.com",
+		"authentication": map[string]any{"bearer_token": "PLACEHOLDER_VALUE"},
+		"hmac_secret":    "PLACEHOLDER_VALUE",
+		"secret_headers": map[string]any{"X-Api-Key": "PLACEHOLDER_VALUE", "X.Trace": "PLACEHOLDER_VALUE"},
+	})
+	attrs, secrets := prune.Object(ctx, http.Attributes, obj, true)
+
+	if auth := find(attrs, "authentication"); auth == nil || len(auth.Nested) != 1 || auth.Nested[0].Name != "bearer_token" || !auth.Nested[0].Placeholder {
+		t.Errorf("expected authentication to carry only a bearer_token placeholder, got %+v", auth)
+	}
+	if hmac := find(attrs, "hmac_secret"); hmac == nil || !hmac.Placeholder {
+		t.Errorf("expected an hmac_secret placeholder, got %+v", hmac)
+	}
+	headers := find(attrs, "secret_headers")
+	if headers == nil || !headers.IsNested || len(headers.Nested) != 2 {
+		t.Fatalf("expected secret_headers to carry one placeholder per key, got %+v", headers)
+	}
+	for i, key := range []string{"X-Api-Key", "X.Trace"} {
+		if headers.Nested[i].Name != key || !headers.Nested[i].Placeholder {
+			t.Errorf("expected a placeholder for the %s key, got %+v", key, headers.Nested[i])
+		}
+	}
+
+	required := map[string]bool{}
+	for _, secret := range secrets {
+		if secret.Required {
+			required[secret.Path] = true
+		}
+	}
+	for _, path := range []string{"authentication.bearer_token", "hmac_secret", `secret_headers["X-Api-Key"]`, `secret_headers["X.Trace"]`} {
+		if !required[path] {
+			t.Errorf("expected %s to be a required secret, got %v", path, secrets)
+		}
+	}
+	if required["client_key"] {
+		t.Errorf("expected the unset client_key not to be required, got %v", secrets)
+	}
 }

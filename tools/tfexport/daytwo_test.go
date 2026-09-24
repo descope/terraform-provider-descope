@@ -68,7 +68,7 @@ resource "descope_role" "added" {
 	projectID := strings.TrimSpace(string(harness.Run(t, seedDir, env, "output", "-raw", "project_id")))
 
 	workspace := t.TempDir()
-	if _, _, err := export.Run(ctx, client, projectID, workspace, ""); err != nil {
+	if _, _, err := export.Run(ctx, client, projectID, workspace, export.Options{}); err != nil {
 		t.Fatalf("day one export failed: %s", err)
 	}
 	harness.WriteVariables(t, workspace, projectID)
@@ -86,7 +86,7 @@ resource "descope_role" "added" {
 	}
 	harness.Run(t, seedDir, env, "apply", "-auto-approve", "-input=false")
 
-	if _, _, err := export.Run(ctx, client, projectID, workspace, ""); err != nil {
+	if _, _, err := export.Run(ctx, client, projectID, workspace, export.Options{}); err != nil {
 		t.Fatalf("day two export failed: %s", err)
 	}
 	harness.WriteVariables(t, workspace, projectID)

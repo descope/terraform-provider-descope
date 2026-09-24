@@ -16,7 +16,7 @@ import (
 
 const inlineBodyLimit = 1024
 
-func extractFiles(ctx context.Context, outDir string, resource *Resource) (map[string]string, error) {
+func extractFiles(ctx context.Context, outDir, prefix string, resource *Resource) (map[string]string, error) {
 	extracted := map[string]string{}
 
 	extract := func(name, dir, filename string, pretty bool) error {
@@ -53,7 +53,7 @@ func extractFiles(ctx context.Context, outDir string, resource *Resource) (map[s
 	case "descope_widget":
 		return extracted, extract("data", "widgets", resource.Label+".json", true)
 	case "descope_styles":
-		return extracted, extract("data", ".", "styles.json", true)
+		return extracted, extract("data", ".", prefixed(prefix, "styles.json"), true)
 	case "descope_email_template", "descope_text_template":
 		for name, extension := range map[string]string{"html_body": ".html", "plain_text_body": ".txt", "body": ".txt"} {
 			attribute := findAttr(resource.Attrs, name)

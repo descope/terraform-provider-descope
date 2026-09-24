@@ -99,7 +99,7 @@ func (m *CoralogixConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 
 func (m *CoralogixConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.Endpoint, c, "endpoint")
-	stringattr.Nil(&m.BearerToken)
+	stringattr.SetSecret(&m.BearerToken, c, "bearerToken", h)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")

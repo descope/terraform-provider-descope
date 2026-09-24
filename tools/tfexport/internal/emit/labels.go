@@ -8,12 +8,15 @@ import (
 
 var labelInvalidChars = regexp.MustCompile(`[^a-z0-9_]+`)
 
+var namePrefixPattern = regexp.MustCompile(`^[a-z_][a-z0-9_]*$`)
+
 type Labels struct {
-	used map[string]map[string]bool
+	prefix string
+	used   map[string]map[string]bool
 }
 
-func NewLabels() *Labels {
-	return &Labels{used: map[string]map[string]bool{}}
+func NewLabels(prefix string) *Labels {
+	return &Labels{prefix: prefix, used: map[string]map[string]bool{}}
 }
 
 func (l *Labels) Assign(resourceType, name, fallback string) string {
@@ -35,7 +38,21 @@ func (l *Labels) Assign(resourceType, name, fallback string) string {
 		assigned = fmt.Sprintf("%s_%d", label, suffix)
 	}
 	used[assigned] = true
-	return assigned
+	return prefixed(l.prefix, assigned)
+}
+
+func ValidateNamePrefix(prefix string) error {
+	if !namePrefixPattern.MatchString(prefix) {
+		return fmt.Errorf("invalid name prefix %q: expected lowercase letters, digits and underscores, not starting with a digit, such as prod", prefix)
+	}
+	return nil
+}
+
+func prefixed(prefix, name string) string {
+	if prefix == "" {
+		return name
+	}
+	return prefix + "_" + name
 }
 
 func sanitizeLabel(name string) string {

@@ -96,9 +96,9 @@ func (m *TwilioCoreConnectorModel) SetConfigurationValues(c map[string]any, h *h
 	stringattr.Set(&m.FromPhone, c, "fromPhone")
 	stringattr.Set(&m.MessagingServiceSID, c, "messagingServiceSid")
 	stringattr.Set(&m.FromPhoneVoice, c, "fromPhoneVoice")
-	stringattr.Nil(&m.AuthToken)
-	stringattr.Nil(&m.APIKey)
-	stringattr.Nil(&m.APISecret)
+	stringattr.SetSecret(&m.AuthToken, c, "authToken", h)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
+	stringattr.SetSecret(&m.APISecret, c, "apiSecret", h)
 }
 
 func (m *TwilioCoreConnectorModel) GetID() stringattr.Type        { return m.ID }

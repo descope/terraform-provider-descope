@@ -101,7 +101,7 @@ func (m *NewRelicConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 }
 
 func (m *NewRelicConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 	stringattr.Set(&m.DataCenter, c, "dataCenter")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)

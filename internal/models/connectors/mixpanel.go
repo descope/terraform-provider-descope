@@ -114,10 +114,10 @@ func (m *MixpanelConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 
 func (m *MixpanelConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.ProjectToken, c, "projectToken")
-	stringattr.Nil(&m.APISecret)
+	stringattr.SetSecret(&m.APISecret, c, "apiSecret", h)
 	stringattr.Set(&m.ConfigProjectID, c, "projectId")
 	stringattr.Set(&m.ServiceAccountUsername, c, "saUsername")
-	stringattr.Nil(&m.ServiceAccountSecret)
+	stringattr.SetSecret(&m.ServiceAccountSecret, c, "saSecret", h)
 	boolattr.Set(&m.EUResidency, c, "euResidency")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)

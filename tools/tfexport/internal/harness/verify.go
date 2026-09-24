@@ -176,7 +176,7 @@ func assertExportIntegrity(t *testing.T, stepName, exportDir string) {
 		}
 	}
 
-	leakChecks := slices.Clone(fakeSecretValues)
+	leakChecks := append(slices.Clone(fakeSecretValues), "PLACEHOLDER_VALUE")
 	if key := os.Getenv("DESCOPE_MANAGEMENT_KEY"); key != "" {
 		leakChecks = append(leakChecks, key)
 	}
@@ -202,7 +202,11 @@ func assertExportIntegrity(t *testing.T, stepName, exportDir string) {
 var attributesExemptFromConsistency = map[string]string{
 	"descope_flow.data.flowId":                     "the flow_id attribute is authoritative, so the write overrides the id the configured document carried",
 	"descope_flow.data.metadata.componentsVersion": "writing a flow upgrades it to the current components version",
+	"descope_oauth_provider.client_secret":         "the write keeps a stored secret the configuration omits, so an export only carries the ones validation requires",
+	"descope_outbound_app.client_secret":           "the read never reports a stored secret, so an export can't carry it, and the write keeps a stored secret the configuration omits",
 	"descope_styles.data.componentsVersion":        "writing the theme upgrades it the same way writing a flow does",
+	"descope_twilio_core_connector.api_secret":     "the backend discards it when auth_token selects the auth token method, and the sweep seeds both",
+	"descope_twilio_verify_connector.api_secret":   "the backend discards it when auth_token selects the auth token method, and the sweep seeds both",
 	"descope_widget.data.metadata.screens":         "the read reports the screens at the top level of the document instead",
 	"descope_widget.data.metadata.widgetId":        "the read reports the widget id at the top level of the document instead",
 }
@@ -416,6 +420,37 @@ func collectSensitivePaths(attributes map[string]schema.Attribute, prefix string
 	}
 }
 
+var carriedSecretPathsCache = map[string]map[string]bool{}
+
+func carriedSecretPaths(resourceType string) map[string]bool {
+	if cached, ok := carriedSecretPathsCache[resourceType]; ok {
+		return cached
+	}
+	paths := map[string]bool{}
+	if exportable, ok := registry.Load(context.Background())[resourceType]; ok {
+		collectCarriedSecretPaths(exportable.ExportSchema().Attributes, "", paths)
+	}
+	carriedSecretPathsCache[resourceType] = paths
+	return paths
+}
+
+func collectCarriedSecretPaths(attributes map[string]schema.Attribute, prefix string, paths map[string]bool) {
+	for name, attribute := range attributes {
+		path := prefix + name
+		if _, hasDefault := prune.AttributeDefault(context.Background(), attribute); attribute.IsSensitive() && (attribute.IsRequired() || hasDefault) {
+			paths[path] = true
+		}
+		switch a := attribute.(type) {
+		case schema.SingleNestedAttribute:
+			collectCarriedSecretPaths(a.Attributes, path+".", paths)
+		case schema.ListNestedAttribute:
+			collectCarriedSecretPaths(a.NestedObject.Attributes, path+".", paths)
+		case schema.SetNestedAttribute:
+			collectCarriedSecretPaths(a.NestedObject.Attributes, path+".", paths)
+		}
+	}
+}
+
 func assertExportDeterminism(t *testing.T, stepName, firstDir, secondDir string) {
 	t.Helper()
 	firstConfigs, firstPayloads := ExportFiles(t, firstDir)
@@ -538,6 +573,9 @@ func assertExportedValues(t *testing.T, stepName string, seed []stateResource, c
 			if _, known := knownInconsistencies[resource.Type+"."+name]; known {
 				continue
 			}
+			for _, path := range droppedSecrets(carriedSecretPaths(resource.Type), name, seedValue, after[name]) {
+				t.Errorf("%s: exported values: %s %q secret %q was seeded but the export doesn't carry it", stepName, resource.Type, resourceIdentity(resource.Values), path)
+			}
 			if sensitivePaths(resource.Type)[name] {
 				pruned++
 				continue // secrets become variable references; their values can't be verified
@@ -566,6 +604,42 @@ func assertExportedValues(t *testing.T, stepName string, seed []stateResource, c
 	}
 	t.Logf("%s: exported values verified: %d attribute values match the seed exactly, %d pruned as defaults or write-only",
 		stepName, verified, pruned)
+}
+
+func droppedSecrets(sensitive map[string]bool, path string, seedValue, exportedValue any) []string {
+	if sensitive[path] {
+		seedMap, seedOK := seedValue.(map[string]any)
+		exportedMap, _ := exportedValue.(map[string]any)
+		if !seedOK {
+			if seedValue != nil && !isZeroValue(seedValue) && (exportedValue == nil || isZeroValue(exportedValue)) {
+				return []string{path}
+			}
+			return nil
+		}
+		var dropped []string
+		for key, value := range seedMap {
+			if !isZeroValue(value) && (exportedMap[key] == nil || isZeroValue(exportedMap[key])) {
+				dropped = append(dropped, fmt.Sprintf("%s[%q]", path, key))
+			}
+		}
+		return dropped
+	}
+	var dropped []string
+	switch seed := seedValue.(type) {
+	case map[string]any:
+		exported, _ := exportedValue.(map[string]any)
+		for key, value := range seed {
+			dropped = append(dropped, droppedSecrets(sensitive, path+"."+key, value, exported[key])...)
+		}
+	case []any:
+		exported, _ := exportedValue.([]any)
+		if len(exported) == len(seed) {
+			for i := range seed {
+				dropped = append(dropped, droppedSecrets(sensitive, path, seed[i], exported[i])...)
+			}
+		}
+	}
+	return dropped
 }
 
 func seedEqualsSchemaDefault(t *testing.T, resourceType, attribute string, seedValue any) bool {

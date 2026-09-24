@@ -61,22 +61,59 @@ func projectNameOf(results []read.Result) string {
 	return ""
 }
 
-func Run(ctx context.Context, client *infra.Client, projectID, outDir, only string) (int, []warn.Warning, error) {
-	results, warnings, err := ReadProject(ctx, client, projectID, only)
+type Options struct {
+	Only           string
+	ProjectAddress string
+	ImportPrefix   string
+	NamePrefix     string
+}
+
+func Run(ctx context.Context, client *infra.Client, projectID, outDir string, options Options) (int, []warn.Warning, error) {
+	plan := &emit.Plan{ProjectID: projectID, NamePrefix: options.NamePrefix}
+	if options.ProjectAddress != "" {
+		address, err := emit.ParseProjectAddress(options.ProjectAddress)
+		if err != nil {
+			return 0, nil, err
+		}
+		plan.ProjectAddress = address
+	}
+	if options.ImportPrefix != "" {
+		prefix, err := emit.ParseModulePrefix(options.ImportPrefix)
+		if err != nil {
+			return 0, nil, err
+		}
+		plan.ImportPrefix = prefix
+	}
+	if options.NamePrefix != "" {
+		if err := emit.ValidateNamePrefix(options.NamePrefix); err != nil {
+			return 0, nil, err
+		}
+	}
+
+	results, warnings, err := ReadProject(ctx, client, projectID, options.Only)
 	if err != nil {
 		return 0, warnings, err
 	}
 
 	loaded := registry.Load(ctx)
-	plan := &emit.Plan{ProjectID: projectID}
-	labels := emit.NewLabels()
+	labels := emit.NewLabels(options.NamePrefix)
 	projectName := projectNameOf(results)
+	redirectURL := builtinRedirectURL(results)
 	for _, result := range results {
+		if plan.ProjectAddress != nil && result.Instance.Resource == "descope_project" {
+			continue
+		}
 		exportable := loaded[result.Instance.Resource]
 		schema := exportable.ExportSchema()
 		attrs, secrets := prune.Object(ctx, schema.Attributes, result.Object, true)
 		if !prune.Meaningful(attrs) && exportable.ExportSingleton() {
 			continue // nothing but defaults, so the resource is left out entirely
+		}
+		if result.Instance.Builtin {
+			attrs = withoutBuiltinRedirectURL(attrs, redirectURL)
+			if uncustomized(attrs) {
+				continue
+			}
 		}
 		attrs, secrets = ensureValidConfig(ctx, exportable, result.Instance.Name, result.Object, attrs, secrets, func(format string, args ...any) {
 			warnings = append(warnings, warn.Lost(format, args...))

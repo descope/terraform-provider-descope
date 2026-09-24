@@ -75,7 +75,7 @@ func (m *AbuseIPDBConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 }
 
 func (m *AbuseIPDBConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
-	stringattr.Nil(&m.APIKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
 }
 
 func (m *AbuseIPDBConnectorModel) GetID() stringattr.Type        { return m.ID }
