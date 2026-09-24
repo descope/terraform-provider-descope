@@ -45,9 +45,9 @@ closures, as in `lists.go` and `authorization.go`, and the fix belongs in the ba
 3. **Resource.** Add the constructor to a file here, named after the resource.
 4. **Registration.** Add the constructor to the resources list in `internal/provider/provider.go`.
 5. **Deletion protection.** Only for entities whose deletion loses something that can't be recreated from the
-   configuration, such as applications with issued credentials. Add a `deletion_protection` attribute using
-   `boolattr.Tristate()`, and implement `helpers.DeletionProtectionDefaulter` returning true to protect by default,
-   following `inboundapp`. The attribute is never sent in `Values()` or read in `SetValues()`.
+   configuration, such as applications with issued credentials. Add a `deletion_protection` attribute following
+   `inboundapp`, and implement `helpers.DeletionProtectionDefaulter` returning true to protect by default. The
+   attribute is never sent in `Values()` or read in `SetValues()`.
 6. **Documentation.** Run `make terragen`, which writes the placeholders in `docs/raw/<package>/` and exits with an
    error by design. Replace every `//` placeholder with a description, then run `make terragen` and `make docs`.
 7. **Acceptance test.** Add a helper for the resource in `tools/testacc/resource.go`, then a test in the model's
