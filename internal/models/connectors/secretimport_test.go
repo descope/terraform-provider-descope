@@ -12,6 +12,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
+// Stored secrets survive an import: omitting them plans a visible clear, supplying them re-sends them and settles.
 func TestConnectorSecretsImport(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	c := testacc.NewResource(t, "http_connector")

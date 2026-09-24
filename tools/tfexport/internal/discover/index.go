@@ -23,6 +23,7 @@ type Instance struct {
 	Scope       string // the method or app_id for scoped entities, empty otherwise
 	Name        string // a friendly name for deriving the resource label
 	MayBeAbsent bool   // the snapshot lists this entity before it exists, so a not-found read is expected
+	Builtin     bool   // the entity always exists with built-in values, so it is only exported once customized
 }
 
 func Instances(files map[string]any, connectorTypes map[string]string) (instances []Instance, warnings []warn.Warning) {
@@ -158,9 +159,8 @@ func Instances(files map[string]any, connectorTypes map[string]string) (instance
 				if !ok {
 					continue
 				}
-				if custom, _ := settings["custom"].(bool); custom {
-					instances = append(instances, Instance{Resource: "descope_oauth_provider", ID: key, Name: key})
-				}
+				custom, _ := settings["custom"].(bool)
+				instances = append(instances, Instance{Resource: "descope_oauth_provider", ID: key, Name: key, Builtin: !custom})
 			}
 		}
 	}

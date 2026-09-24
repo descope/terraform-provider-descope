@@ -9,12 +9,15 @@ own files. It only reads and generates, and never changes customer data.
 `discover -> read -> prune -> emit`, wired together in `internal/export`.
 
 **discover** builds the work list. The project snapshot is an index of what exists, not a source of values.
-Two things about it are easy to get wrong:
+Three things about it are easy to get wrong:
 
 - Not everything is in it. Inbound apps have their own load-all endpoint.
 - It rewrites role and permission ids for portability, so reading one back by its snapshot id fails and the
   entity is silently lost. Both are name keyed, so live ids are resolved by name instead. App scoped entries
   keep their application ids.
+- System OAuth providers always exist in it with built-in values, so they are read like any other provider
+  but only exported when pruning leaves something besides their id and a redirect_url equal to the one most
+  system providers share.
 
 **read** loads each entity through the provider's own export hooks, the same path a `terraform import`
 refresh takes, so the tool never grows a second opinion about what an attribute means.
@@ -43,6 +46,10 @@ dropped, only their fields, so an all-default element still appears as an empty 
 Secret values never reach a generated file. A required secret becomes a variable, and so does an optional
 one with a declared null default, since omitting that would erase the stored value on the next apply. One
 with no declared default cannot be expressed at all, so it is dropped and the run warns.
+
+An import read records a stored connector secret as the backend's placeholder, which is how prune learns it
+exists. A secret map becomes one variable per key, since variables are strings. The placeholder itself must
+never reach a generated file, and the round-trip integrity check fails if it does.
 
 When pruning leaves a configuration that fails the model's cross-field validation, `ensureValidConfig`
 promotes the smallest set of omitted secrets that makes it valid. Paths are dotted, and a secret inside a

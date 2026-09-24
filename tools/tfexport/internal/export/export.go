@@ -92,6 +92,7 @@ func Run(ctx context.Context, client *infra.Client, projectID, outDir string, op
 	loaded := registry.Load(ctx)
 	labels := emit.NewLabels()
 	projectName := projectNameOf(results)
+	redirectURL := builtinRedirectURL(results)
 	for _, result := range results {
 		if plan.ProjectAddress != nil && result.Instance.Resource == "descope_project" {
 			continue
@@ -101,6 +102,12 @@ func Run(ctx context.Context, client *infra.Client, projectID, outDir string, op
 		attrs, secrets := prune.Object(ctx, schema.Attributes, result.Object, true)
 		if !prune.Meaningful(attrs) && exportable.ExportSingleton() {
 			continue // nothing but defaults, so the resource is left out entirely
+		}
+		if result.Instance.Builtin {
+			attrs = withoutBuiltinRedirectURL(attrs, redirectURL)
+			if uncustomized(attrs) {
+				continue
+			}
 		}
 		attrs, secrets = ensureValidConfig(ctx, exportable, result.Instance.Name, result.Object, attrs, secrets, func(format string, args ...any) {
 			warnings = append(warnings, warn.Lost(format, args...))

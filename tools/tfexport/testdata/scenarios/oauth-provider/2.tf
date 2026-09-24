@@ -10,3 +10,12 @@ resource "descope_oauth_provider" "custom" {
   user_info_endpoint     = "https://idp2.example.com/userinfo"
   scopes                 = ["openid", "email", "profile"]
 }
+
+resource "descope_oauth_provider" "google" {
+  project_id          = descope_project.test.id
+  id                  = "google"
+  client_id           = "roundtrip-google-client-v2"
+  client_secret       = "not-a-real-secret"
+  allowed_grant_types = ["authorization_code", "implicit"]
+  prompts             = ["select_account"]
+}
