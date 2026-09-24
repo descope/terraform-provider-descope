@@ -50,7 +50,7 @@ comments merit putting into the code.
 - `make sweep` - removes leftover `testacc-` entities from the shared test project
 - `make lint` - golangci-lint and gitleaks
 
-Run a subset with `tests=pattern`, e.g. `make testacc tests=TestProjectResource`. Do not use `$` anchors in that
+Run a subset with `tests=pattern`, e.g. `make testacc tests=TestPermission`. Do not use `$` anchors in that
 pattern; make eats them.
 
 ## Environment
