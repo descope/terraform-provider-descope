@@ -39,8 +39,8 @@ func TestCase(t *testing.T, steps ...resource.TestStep) resource.TestCase {
 		steps[i] = applyStepThrottling(steps[i])
 	}
 	return resource.TestCase{
-		PreCheck:                 func() { preCheck(t) },
-		ProtoV6ProviderFactories: protoV6ProviderFactories,
+		PreCheck:                 func() { PreCheck(t) },
+		ProtoV6ProviderFactories: ProviderFactories,
 		Steps:                    steps,
 	}
 }
