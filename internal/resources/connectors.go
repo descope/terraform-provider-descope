@@ -15,6 +15,7 @@ func ConnectorResources() []func() resource.Resource {
 		newConnectorResource[connectors.AmplitudeConnectorModel]("amplitude_connector", "amplitude", connectors.AmplitudeConnectorSchema),
 		newConnectorResource[connectors.ArkoseConnectorModel]("arkose_connector", "arkose", connectors.ArkoseConnectorSchema),
 		newConnectorResource[connectors.AuditWebhookConnectorModel]("audit_webhook_connector", "audit-webhook", connectors.AuditWebhookConnectorSchema),
+		newConnectorResource[connectors.AWSEventBridgeConnectorModel]("aws_eventbridge_connector", "aws-eventbridge", connectors.AWSEventBridgeConnectorSchema),
 		newConnectorResource[connectors.AWSS3ConnectorModel]("aws_s3_connector", "aws-s3", connectors.AWSS3ConnectorSchema),
 		newConnectorResource[connectors.AWSSESEmailValidationConnectorModel]("aws_ses_email_validation_connector", "aws-ses-email-validation", connectors.AWSSESEmailValidationConnectorSchema),
 		newConnectorResource[connectors.AWSTranslateConnectorModel]("aws_translate_connector", "aws-translate", connectors.AWSTranslateConnectorSchema),

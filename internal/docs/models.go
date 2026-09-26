@@ -56,6 +56,7 @@ func InjectModels() {
 	inject(connectors.AmplitudeConnectorAttributes, docsAmplitudeConnector)
 	inject(connectors.ArkoseConnectorAttributes, docsArkoseConnector)
 	inject(connectors.AuditWebhookConnectorAttributes, docsAuditWebhookConnector)
+	inject(connectors.AWSEventBridgeConnectorAttributes, docsAWSEventBridgeConnector)
 	inject(connectors.AWSS3ConnectorAttributes, docsAWSS3Connector)
 	inject(connectors.AWSSESEmailValidationConnectorAttributes, docsAWSSESEmailValidationConnector)
 	inject(connectors.AWSTranslateConnectorAttributes, docsAWSTranslateConnector)

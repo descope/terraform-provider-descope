@@ -326,6 +326,30 @@ var docsAuditWebhookConnector = map[string]string{
 		"tenant selection).",
 }
 
+var docsAWSEventBridgeConnector = map[string]string{
+	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":              "A custom name for your connector.",
+	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type":         "The authentication type to use.",
+	"access_key_id":     "The unique AWS access key ID.",
+	"secret_access_key": "The secret AWS access key.",
+	"role_arn":          "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id":       "The external ID to use when assuming the role.",
+	"region":            "The AWS EventBridge region, e.g. `us-east-1`.",
+	"event_bus_name": "The name or ARN of the EventBridge event bus. Use `default` for the default " +
+		"event bus or provide a custom event bus name/ARN.",
+	"detail_type": "The detail type for the EventBridge event. This is a free-form string used to " +
+		"identify the event type, e.g. `descope.audit.event`.",
+	"source": "The source of the EventBridge event. This identifies the application or service " +
+		"that is generating the event, e.g. `descope.auth`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
 var docsAWSS3Connector = map[string]string{
 	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":              "A custom name for your connector.",
