@@ -25,6 +25,11 @@
       "file": "auditwebhook",
       "struct": "AuditWebhook"
     },
+    "aws-eventbridge": {
+      "attribute": "aws_eventbridge",
+      "file": "awseventbridge",
+      "struct": "AWSEventBridge"
+    },
     "aws-s3": {
       "attribute": "aws_s3",
       "file": "awss3",
@@ -615,6 +620,10 @@
       "attribute": "default_result",
       "struct": "DefaultResult"
     },
+    "detailType": {
+      "attribute": "detail_type",
+      "struct": "DetailType"
+    },
     "emailFrom": {
       "attribute": "email_from",
       "struct": "EmailFrom"
@@ -650,6 +659,10 @@
     "euResidency": {
       "attribute": "eu_residency",
       "struct": "EUResidency"
+    },
+    "eventBusName": {
+      "attribute": "event_bus_name",
+      "struct": "EventBusName"
     },
     "expirationTimeMinutes": {
       "attribute": "expiration_time",
