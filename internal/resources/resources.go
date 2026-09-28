@@ -1,7 +1,10 @@
 package resources
 
 import (
+	"context"
+
 	"github.com/descope/terraform-provider-descope/internal/docs"
+	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/internal/models/accesskey"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
 	"github.com/descope/terraform-provider-descope/internal/models/engine"
@@ -50,6 +53,32 @@ func NewTOTPSettingsResource() resource.Resource {
 
 func NewAdminPortalResource() resource.Resource {
 	return newSettingsResource[settings.AdminPortalModel]("admin_portal", settings.AdminPortalSchema, "/v1/mgmt/adminportal/settings")
+}
+
+func NewGovernanceResource() resource.Resource {
+	const path = "/v1/mgmt/agentic/governance/settings"
+	read := func(ctx context.Context, c *infra.Client, projectID, _ string) (map[string]any, error) {
+		return c.Get(ctx, projectID, path, nil)
+	}
+	return newSingletonResource[settings.GovernanceModel]("governance", settings.GovernanceSchema, operations{
+		Read: read,
+		Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
+			// A create has no version in state, so adopt the stored one: every other settings resource overwrites on
+			// create too. An update carries the version from state (see VersionChecked).
+			if _, ok := data["version"]; !ok {
+				current, err := read(ctx, c, projectID, id)
+				if err != nil {
+					return nil, err
+				}
+				data["version"] = current["version"]
+			}
+			if err := c.Post(ctx, projectID, path+"/update", data); err != nil {
+				return nil, err
+			}
+			return read(ctx, c, projectID, id)
+		},
+		Delete: noDelete,
+	})
 }
 
 func NewOTPSettingsResource() resource.Resource {
