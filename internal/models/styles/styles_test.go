@@ -60,9 +60,6 @@ func TestStyles(t *testing.T) {
 	)
 }
 
-// An apply must not delete styles this resource does not carry - styles created in the console are
-// invisible to Terraform, and used to be wiped by every apply.
-// See https://github.com/descope/etc/issues/12809
 func TestStylesKeepsUnmanagedStyles(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	s := testacc.Styles(t)
@@ -72,14 +69,10 @@ func TestStylesKeepsUnmanagedStyles(t *testing.T) {
 		"unmanaged-dark":  map[string]any{"name": "Unmanaged", "type": "flows"},
 	}
 
-	// leave the project holding only the styles this test manages, whatever the outcome
 	t.Cleanup(func() {
 		if projectID == "" {
 			return
 		}
-		// /v2/mgmt/theme/import upserts and never deletes, so it cannot undo what this test
-		// created. The deprecated /v1 endpoint still replaces the whole theme, which is what a
-		// reset needs - it takes the theme in its cssTemplate shape rather than as styles.
 		testacc.OutOfBandPost(t, projectID, "/v1/mgmt/theme/import", map[string]any{
 			"theme": map[string]any{
 				"cssTemplate": map[string]any{"light": map[string]any{}, "dark": map[string]any{}},
@@ -149,8 +142,7 @@ func TestStylesKeepsUnmanagedStyles(t *testing.T) {
 					}
 				})
 			`),
-			PlanOnly:           true,
-			ExpectNonEmptyPlan: false,
+			PlanOnly: true,
 		},
 	)
 }
