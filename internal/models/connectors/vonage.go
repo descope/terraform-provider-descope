@@ -81,7 +81,7 @@ func (m *VonageConnectorModel) SetConfigurationValues(c map[string]any, h *helpe
 	stringattr.SetSecret(&m.APISecret, c, "apiSecret", h)
 	stringattr.Set(&m.Sender, c, "from")
 	stringattr.Set(&m.ApplicationID, c, "applicationId")
-	stringattr.Nil(&m.PrivateKey)
+	stringattr.SetSecret(&m.PrivateKey, c, "privateKey", h)
 	stringattr.Set(&m.FromPhoneVoice, c, "fromPhoneVoice")
 }
 
