@@ -69,7 +69,7 @@ func (m *VonageConnectorModel) ConfigurationValues(h *helpers.Handler) map[strin
 
 func (m *VonageConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.APIKey, c, "apiKey")
-	stringattr.Nil(&m.APISecret)
+	stringattr.SetSecret(&m.APISecret, c, "apiSecret", h)
 	stringattr.Set(&m.Sender, c, "from")
 }
 
