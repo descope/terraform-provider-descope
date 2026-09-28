@@ -73,8 +73,8 @@ func (m *MailjetConnectorModel) ConfigurationValues(h *helpers.Handler) map[stri
 func (m *MailjetConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.SenderEmail, c, "fromEmail")
 	stringattr.Set(&m.SenderName, c, "fromName")
-	stringattr.Nil(&m.APIKey)
-	stringattr.Nil(&m.SecretKey)
+	stringattr.SetSecret(&m.APIKey, c, "apiKey", h)
+	stringattr.SetSecret(&m.SecretKey, c, "secretKey", h)
 }
 
 func (m *MailjetConnectorModel) GetID() stringattr.Type        { return m.ID }
