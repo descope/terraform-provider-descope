@@ -39,6 +39,7 @@ var ProviderAttributes = map[string]schema.Attribute{
 	"scopes":                 strlistattr.Optional(),
 	"merge_user_accounts":    boolattr.Default(true),
 	"disable_jit_updates":    boolattr.Default(false),
+	"client_auth_method":     stringattr.Default("", stringvalidator.OneOf("", "client_secret_basic", "client_secret_post")),
 	"native_client_id":       stringattr.Optional(),
 	"native_client_secret":   stringattr.SecretOptional(),
 
@@ -72,6 +73,7 @@ type OAuthProviderModel struct {
 	Scopes                  strlistattr.Type                     `tfsdk:"scopes"`
 	MergeUserAccounts       boolattr.Type                        `tfsdk:"merge_user_accounts"`
 	DisableJITUpdates       boolattr.Type                        `tfsdk:"disable_jit_updates"`
+	ClientAuthMethod        stringattr.Type                      `tfsdk:"client_auth_method"`
 	NativeClientID          stringattr.Type                      `tfsdk:"native_client_id"`
 	NativeClientSecret      stringattr.Type                      `tfsdk:"native_client_secret"`
 	AppleKeyGenerator       objattr.Type[AppleKeyGeneratorModel] `tfsdk:"apple_key_generator"`
@@ -110,6 +112,7 @@ func (m *OAuthProviderModel) Values(h *helpers.Handler) map[string]any {
 	strlistattr.Get(m.Scopes, data, "scopes", h)
 	boolattr.Get(m.MergeUserAccounts, data, "trustProvidedEmails")
 	boolattr.Get(m.DisableJITUpdates, data, "jitUpdatesDisabled")
+	stringattr.Get(m.ClientAuthMethod, data, "clientAuthMethod")
 	boolattr.Get(m.UseClientAssertion, data, "useClientAssertion")
 
 	// the configuration fields are Descope-managed on system providers and the backend rejects them as reserved
@@ -165,6 +168,7 @@ func (m *OAuthProviderModel) SetValues(h *helpers.Handler, data map[string]any) 
 	strlistattr.Set(&m.Scopes, data, "scopes", h)
 	boolattr.Set(&m.MergeUserAccounts, data, "trustProvidedEmails")
 	boolattr.Set(&m.DisableJITUpdates, data, "jitUpdatesDisabled")
+	stringattr.SetDefault(&m.ClientAuthMethod, data, "clientAuthMethod", "")
 	stringattr.Set(&m.Description, data, "description")
 	stringattr.Set(&m.Logo, data, "logo")
 	stringattr.Set(&m.Issuer, data, "issuer")
