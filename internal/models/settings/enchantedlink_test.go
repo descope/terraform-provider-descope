@@ -23,6 +23,9 @@ func TestEnchantedLinkSettings(t *testing.T) {
 				"expiration_time":    "3 minutes",
 				"redirect_url":       "",
 				"email_connector_id": "",
+				"text_connector_id":  "",
+				"email_template_id":  "",
+				"text_template_id":   "",
 			}),
 		},
 		// update the plain settings fields
@@ -46,6 +49,9 @@ func TestEnchantedLinkSettings(t *testing.T) {
 				"expiration_time":    "3 minutes",
 				"redirect_url":       "",
 				"email_connector_id": "",
+				"text_connector_id":  "",
+				"email_template_id":  "",
+				"text_template_id":   "",
 			}),
 		},
 		resource.TestStep{
@@ -83,6 +89,56 @@ func TestEnchantedLinkSettingsTemplates(t *testing.T) {
 			Check: m.Check(map[string]any{
 				"email_connector_id": testacc.AttributeIsSet,
 				"email_template_id":  testacc.AttributeIsSet,
+				"text_template_id":   "",
+			}),
+		},
+	)
+}
+
+func TestEnchantedLinkSettingsTextTemplates(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	c := testacc.NewResource(t, "generic_sms_gateway_connector")
+	name := testacc.GenerateAlias(t)
+	x := testacc.TextTemplate(t)
+	m := testacc.EnchantedLinkSettings(t)
+	testacc.Run(t,
+		// a custom SMS connector with an enchantedlink text template selected by reference
+		resource.TestStep{
+			Config: c.Config(`
+				project_id = "`+projectID+`"
+				post_url = "https://sms.example.com/send"
+			`) + x.Block(`
+				project_id = "`+projectID+`"
+				method = "enchantedlink"
+				name = "`+name+`"
+				body = "Tap the link to sign in"
+			`) + m.Block(`
+				project_id = "`+projectID+`"
+				text_connector_id = `+c.Path()+`.id
+				text_template_id = `+x.Path()+`.id
+			`),
+			Check: m.Check(map[string]any{
+				"text_connector_id": testacc.AttributeIsSet,
+				"text_template_id":  testacc.AttributeIsSet,
+				"email_template_id": "",
+			}),
+		},
+		// removing the selections reverts to the built-in Descope service and System template
+		resource.TestStep{
+			Config: c.Config(`
+				project_id = "`+projectID+`"
+				post_url = "https://sms.example.com/send"
+			`) + x.Block(`
+				project_id = "`+projectID+`"
+				method = "enchantedlink"
+				name = "`+name+`"
+				body = "Tap the link to sign in"
+			`) + m.Block(`
+				project_id = "`+projectID+`"
+			`),
+			Check: m.Check(map[string]any{
+				"text_connector_id": "",
+				"text_template_id":  "",
 			}),
 		},
 	)

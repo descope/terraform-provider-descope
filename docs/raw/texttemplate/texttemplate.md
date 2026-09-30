@@ -19,7 +19,7 @@ method
 
 - Type: `string` (required)
 
-The authentication method the text template is used with, e.g. `magiclink` or `otp`. Changing this value will require the resource to be deleted and recreated.
+The authentication method the text template is used with, e.g. `magiclink`, `otp` or `enchantedlink`. Changing this value will require the resource to be deleted and recreated.
 
 
 

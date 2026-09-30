@@ -1758,9 +1758,12 @@ var docsEnchantedLinkSettings = map[string]string{
 	"expiration_time":    "How long the enchanted link remains valid before it expires.",
 	"redirect_url":       "The URL to redirect users to after they log in using the enchanted link.",
 	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System " +
 		"template.",
+	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
+		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
 }
 
 var docsInviteSettings = map[string]string{
@@ -2007,7 +2010,7 @@ var docsStyles = map[string]string{
 var docsTextTemplate = map[string]string{
 	"project_id": "The ID of the project that the text template belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
-	"method": "The authentication method the text template is used with, e.g. `magiclink` or `otp`. Changing this value will require the resource to be deleted and recreated.",
+	"method": "The authentication method the text template is used with, e.g. `magiclink`, `otp` or `enchantedlink`. Changing this value will require the resource to be deleted and recreated.",
 	"name":   "A name for the text template that's unique among the templates of the same authentication method.",
 	"body":   "The body of text messages sent with this template. Template macros such as `{{.code}}` can be used to insert dynamic values.",
 }
