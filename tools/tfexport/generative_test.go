@@ -140,6 +140,7 @@ var attributeValueOverrides = map[string]string{
 	"issuer":                            `"https://cov.example.com/issuer"|"https://cov.example.com/issuer2"`,
 	"refresh_token_response_method":     `"cookies"|"response_body"`,
 	"session_token_response_method":     `"response_body"|"cookies"`,
+	"client_auth_method":                `"client_secret_basic"|"client_secret_post"`,
 }
 
 var nestedValueOverrides = map[string]string{
