@@ -1888,6 +1888,10 @@ var docsProjectSettings = map[string]string{
 	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
 		"your website. This modifies the security headers that typically prevent the page from " +
 		"being embedded.",
+	"disable_auth_hosting": "When enabled, Descope stops serving this project's flows from its hosted login pages, both " +
+		"at the Descope domain and at the `/login` path of a custom domain. Anything that relies on " +
+		"the default hosted login page URL, such as a federated application or an embedded link that " +
+		"lands on it, stops working. Flows running in your own application are unaffected.",
 	"test_users_loginid_regexp": "A regular expression pattern that, when a user is created with a matching login ID, will " +
 		"automatically mark the user as a test user.",
 	"test_users_static_otp": "A static OTP code that can be used by test users instead of a real verification code. Must " +
