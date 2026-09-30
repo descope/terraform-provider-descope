@@ -21,6 +21,21 @@
       "description": "The sender ID or phone number that text messages are sent from.",
       "type": "string",
       "required": true
+    },
+    {
+      "name": "applicationId",
+      "description": "The Vonage voice application ID.",
+      "type": "string"
+    },
+    {
+      "name": "privateKey",
+      "description": "The Vonage voice application's private key, used to sign the voice API JWT.",
+      "type": "secret"
+    },
+    {
+      "name": "fromPhoneVoice",
+      "description": "The phone number that voice calls are placed from.",
+      "type": "string"
     }
   ]
 }
