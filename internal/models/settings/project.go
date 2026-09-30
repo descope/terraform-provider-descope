@@ -72,7 +72,7 @@ func (m *ProjectSettingsModel) SetValues(h *helpers.Handler, data map[string]any
 	boolattr.Set(&m.DefaultNoSSOApps, data, "defaultNoSSOApps")
 	boolattr.Set(&m.TenantUserIsolation, data, "tenantUserIsolation")
 	boolattr.Set(&m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
-	boolattr.Set(&m.DisableAuthHosting, data, "disableAuthHosting")
+	boolattr.SetDefault(&m.DisableAuthHosting, data, "disableAuthHosting", false) // absent on a backend that predates the field, and Set would leave a null that never matches the schema default
 	stringattr.Set(&m.TestUsersLoginIDRegExp, data, "testUserRegex")
 	if data["testUserAllowFixedAuth"] == true {
 		stringattr.Set(&m.TestUsersStaticOTP, data, "testUserFixedAuthToken")
