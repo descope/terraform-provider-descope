@@ -5,6 +5,8 @@ import (
 
 	"github.com/descope/terraform-provider-descope/tools/testacc"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
+	"github.com/stretchr/testify/require"
 )
 
 func TestStyles(t *testing.T) {
@@ -55,5 +57,95 @@ func TestStyles(t *testing.T) {
 			ImportStateVerifyIgnore: []string{"data"},
 		},
 		// removing the resource is a no-op that leaves the theme in place
+	)
+}
+
+func TestStylesKeepsUnmanagedStyles(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	s := testacc.Styles(t)
+
+	unmanaged := map[string]any{
+		"unmanaged-light": map[string]any{"name": "Unmanaged", "type": "flows"},
+		"unmanaged-dark":  map[string]any{"name": "Unmanaged", "type": "flows"},
+	}
+
+	// runs as the first step's PreConfig so a skipped acceptance run never touches the shared project;
+	// /v1 replaces the whole theme, which an exact restore needs and /v2's upsert cannot do
+	saveAndRestoreTheme := func() {
+		saved := testacc.OutOfBandPostData(t, projectID, "/v1/mgmt/theme/export", map[string]any{})
+		theme, ok := saved["theme"].(map[string]any)
+		require.True(t, ok, "exported theme has no theme object")
+		t.Cleanup(func() {
+			testacc.OutOfBandPost(t, projectID, "/v1/mgmt/theme/import", map[string]any{
+				"theme": map[string]any{"cssTemplate": theme["cssTemplate"]},
+			})
+		})
+	}
+
+	testacc.Run(t,
+		// terraform manages the default style only
+		resource.TestStep{
+			PreConfig: saveAndRestoreTheme,
+			Config: s.Block(`
+				project_id = "` + projectID + `"
+				data = jsonencode({
+					styles = {
+						light = {}
+						dark = {}
+					}
+				})
+			`),
+			Check: s.Check(map[string]any{
+				"id.==": "project_id",
+				"data":  testacc.AttributeIsSet,
+			}),
+		},
+		// a style appears outside terraform, the way the console creates one, and then the managed
+		// data changes so an import actually runs
+		resource.TestStep{
+			PreConfig: func() {
+				testacc.OutOfBandPost(t, projectID, "/v2/mgmt/theme/import", map[string]any{
+					"theme": map[string]any{"styles": unmanaged},
+				})
+			},
+			Config: s.Block(`
+				project_id = "` + projectID + `"
+				data = jsonencode({
+					styles = {
+						light = {
+							designTokens = {}
+						}
+						dark = {}
+					}
+				})
+			`),
+			Check: func(*terraform.State) error {
+				theme := testacc.OutOfBandPostData(t, projectID, "/v2/mgmt/theme/export", map[string]any{})
+				inner, ok := theme["theme"].(map[string]any)
+				require.True(t, ok, "exported theme has no theme object")
+				styles, ok := inner["styles"].(map[string]any)
+				require.True(t, ok, "exported theme has no styles object")
+				for key := range unmanaged {
+					require.Contains(t, styles, key, "an apply deleted a style Terraform does not manage")
+				}
+				require.Contains(t, styles, "light", "an apply deleted the managed style")
+				return nil
+			},
+		},
+		// the surviving unmanaged style does not turn into a permanent diff
+		resource.TestStep{
+			Config: s.Block(`
+				project_id = "` + projectID + `"
+				data = jsonencode({
+					styles = {
+						light = {
+							designTokens = {}
+						}
+						dark = {}
+					}
+				})
+			`),
+			PlanOnly: true,
+		},
 	)
 }
