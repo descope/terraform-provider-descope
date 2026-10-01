@@ -69,20 +69,23 @@ func TestStylesKeepsUnmanagedStyles(t *testing.T) {
 		"unmanaged-dark":  map[string]any{"name": "Unmanaged", "type": "flows"},
 	}
 
-	t.Cleanup(func() {
-		if projectID == "" {
-			return
-		}
-		testacc.OutOfBandPost(t, projectID, "/v1/mgmt/theme/import", map[string]any{
-			"theme": map[string]any{
-				"cssTemplate": map[string]any{"light": map[string]any{}, "dark": map[string]any{}},
-			},
+	// runs as the first step's PreConfig so a skipped acceptance run never touches the shared project;
+	// /v1 replaces the whole theme, which an exact restore needs and /v2's upsert cannot do
+	saveAndRestoreTheme := func() {
+		saved := testacc.OutOfBandPostData(t, projectID, "/v1/mgmt/theme/export", map[string]any{})
+		theme, ok := saved["theme"].(map[string]any)
+		require.True(t, ok, "exported theme has no theme object")
+		t.Cleanup(func() {
+			testacc.OutOfBandPost(t, projectID, "/v1/mgmt/theme/import", map[string]any{
+				"theme": map[string]any{"cssTemplate": theme["cssTemplate"]},
+			})
 		})
-	})
+	}
 
 	testacc.Run(t,
 		// terraform manages the default style only
 		resource.TestStep{
+			PreConfig: saveAndRestoreTheme,
 			Config: s.Block(`
 				project_id = "` + projectID + `"
 				data = jsonencode({
