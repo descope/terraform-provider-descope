@@ -1,0 +1,51 @@
+{
+  "version": 4,
+  "terraform_version": "1.9.5",
+  "serial": 1,
+  "lineage": "33333333-3333-3333-3333-333333333333",
+  "outputs": {},
+  "resources": [
+    {
+      "mode": "managed",
+      "type": "descope_project",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "instances": [
+        {
+          "schema_version": 0,
+          "sensitive_attributes": [],
+          "attributes": {
+            "id": "P2duplicate0000000",
+            "name": "duplicate",
+            "environment": "",
+            "tags": [],
+            "authorization": {
+              "roles": [
+                {
+                  "id": "R-shared",
+                  "key": "",
+                  "name": "Admin",
+                  "description": "",
+                  "permissions": [],
+                  "default": false,
+                  "private": false
+                },
+                {
+                  "id": "R-shared",
+                  "key": "",
+                  "name": "Admin duplicate",
+                  "description": "",
+                  "permissions": [],
+                  "default": false,
+                  "private": false
+                }
+              ],
+              "permissions": [],
+              "fga": ""
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

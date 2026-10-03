@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 
-.PHONY:  help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-jq ensure-courtney ensure-brew ensure-go
-.SILENT: help dev install test testacc testcoverage testcleanup terragen docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-jq ensure-courtney ensure-brew ensure-go
+.PHONY:  help dev install test testacc testcoverage testcleanup terragen tfexport tfmigrate docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-jq ensure-courtney ensure-brew ensure-go
+.SILENT: help dev install test testacc testcoverage testcleanup terragen tfexport tfmigrate docs terraformrc lint ensure-linter ensure-gitleaks ensure-descope ensure-jq ensure-courtney ensure-brew ensure-go
 
 ifneq ($(tests),)
   flags := $(flags) -count 1 -run '$(tests)'
@@ -61,6 +61,9 @@ terragen: ensure-go ## runs the terragen tool to generate code and model documen
 
 tfexport: ensure-go ## runs the tfexport tool to export a project's configuration as Terraform files
 	go run ./tools/tfexport $(flags)
+
+tfmigrate: ensure-go ## runs the descope_project resource split migration utility
+	go run ./tools/tfmigrate $(flags)
 
 docs: ensure-go ## runs tfplugindocs to generate documentation for the registry 
 	go run github.com/hashicorp/terraform-plugin-docs/cmd/tfplugindocs@v0.19.4 generate -provider-name descope
