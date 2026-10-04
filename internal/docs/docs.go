@@ -1118,6 +1118,8 @@ var docsSESConnector = map[string]string{
 	"sender_email": "The email address that emails are sent from. Make sure it is a verified identity " +
 		"in SES.",
 	"sender_name": "The name shown as the sender of the emails.",
+	"tags": "Custom AWS SES message tags added to every email sent through this connector, as " +
+		"key/value pairs.",
 }
 
 var docsAuditFilterField = map[string]string{

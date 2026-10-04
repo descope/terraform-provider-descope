@@ -26,6 +26,9 @@ func TestSESConnector(t *testing.T) {
 				endpoint = "w27xxsgz"
 				sender_email = "pkik6p7rr"
 				sender_name = "qquro4c7"
+				tags = {
+    							"key" = "s6gc"
+    						}
 			`),
 			Check: c.Check(map[string]any{
 				"id":                testacc.AttributeIsSet,
@@ -41,6 +44,7 @@ func TestSESConnector(t *testing.T) {
 				"endpoint":          "w27xxsgz",
 				"sender_email":      "pkik6p7rr",
 				"sender_name":       "qquro4c7",
+				"tags.key":          "s6gc",
 			}),
 		},
 		// update the connector in place with changed field values
@@ -57,6 +61,9 @@ func TestSESConnector(t *testing.T) {
 				endpoint = "ef4vxrwc"
 				sender_email = "macajtsxd"
 				sender_name = "amlgf3lm"
+				tags = {
+    							"key" = "fnld"
+    						}
 			`),
 			Check: c.Check(map[string]any{
 				"description":       "updated",
@@ -69,6 +76,7 @@ func TestSESConnector(t *testing.T) {
 				"endpoint":          "ef4vxrwc",
 				"sender_email":      "macajtsxd",
 				"sender_name":       "amlgf3lm",
+				"tags.key":          "fnld",
 			}),
 		},
 	)

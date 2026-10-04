@@ -4,6 +4,7 @@ package connectors
 
 import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
@@ -32,6 +33,7 @@ var SESConnectorAttributes = map[string]schema.Attribute{
 	"endpoint":          stringattr.Default(""),
 	"sender_email":      stringattr.Required(),
 	"sender_name":       stringattr.Default(""),
+	"tags":              strmapattr.Default(),
 }
 
 // Model
@@ -51,6 +53,7 @@ type SESConnectorModel struct {
 	Endpoint        stringattr.Type `tfsdk:"endpoint"`
 	SenderEmail     stringattr.Type `tfsdk:"sender_email"`
 	SenderName      stringattr.Type `tfsdk:"sender_name"`
+	Tags            strmapattr.Type `tfsdk:"tags"`
 }
 
 func (m *SESConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -111,6 +114,7 @@ func (m *SESConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]a
 	stringattr.Get(m.Endpoint, c, "endpoint")
 	stringattr.Get(m.SenderEmail, c, "fromEmail")
 	stringattr.Get(m.SenderName, c, "fromName")
+	getObjectField(m.Tags, c, "tags", h)
 	return c
 }
 
@@ -124,6 +128,7 @@ func (m *SESConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.
 	stringattr.Set(&m.Endpoint, c, "endpoint")
 	stringattr.Set(&m.SenderEmail, c, "fromEmail")
 	stringattr.Set(&m.SenderName, c, "fromName")
+	setObjectField(&m.Tags, c, "tags", h)
 }
 
 func (m *SESConnectorModel) GetID() stringattr.Type        { return m.ID }
