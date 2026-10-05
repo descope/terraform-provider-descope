@@ -615,7 +615,7 @@
     },
     "dcrImmutableId": {
       "attribute": "dcr_immutable_id",
-      "struct": "DcrImmutableId"
+      "struct": "DcrImmutableID"
     },
     "defaultEnvironment": {
       "attribute": "default_environment",
@@ -1051,7 +1051,7 @@
     },
     "tenantId": {
       "attribute": "tenant_id",
-      "struct": "TenantId"
+      "struct": "TenantID"
     },
     "token": {
       "attribute": "token",

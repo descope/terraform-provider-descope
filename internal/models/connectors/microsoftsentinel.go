@@ -46,9 +46,9 @@ type MicrosoftSentinelConnectorModel struct {
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
 	IngestionEndpoint stringattr.Type                      `tfsdk:"ingestion_endpoint"`
-	DcrImmutableId    stringattr.Type                      `tfsdk:"dcr_immutable_id"`
+	DcrImmutableID    stringattr.Type                      `tfsdk:"dcr_immutable_id"`
 	StreamName        stringattr.Type                      `tfsdk:"stream_name"`
-	TenantId          stringattr.Type                      `tfsdk:"tenant_id"`
+	TenantID          stringattr.Type                      `tfsdk:"tenant_id"`
 	ClientID          stringattr.Type                      `tfsdk:"client_id"`
 	ClientSecret      stringattr.Type                      `tfsdk:"client_secret"`
 	AuditEnabled      boolattr.Type                        `tfsdk:"audit_enabled"`
@@ -95,9 +95,9 @@ func (m *MicrosoftSentinelConnectorModel) Validate(h *helpers.Handler) {
 func (m *MicrosoftSentinelConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]any {
 	c := map[string]any{}
 	stringattr.Get(m.IngestionEndpoint, c, "ingestionEndpoint")
-	stringattr.Get(m.DcrImmutableId, c, "dcrImmutableId")
+	stringattr.Get(m.DcrImmutableID, c, "dcrImmutableId")
 	stringattr.Get(m.StreamName, c, "streamName")
-	stringattr.Get(m.TenantId, c, "tenantId")
+	stringattr.Get(m.TenantID, c, "tenantId")
 	stringattr.Get(m.ClientID, c, "clientId")
 	stringattr.Get(m.ClientSecret, c, "clientSecret")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
@@ -108,9 +108,9 @@ func (m *MicrosoftSentinelConnectorModel) ConfigurationValues(h *helpers.Handler
 
 func (m *MicrosoftSentinelConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.Handler) {
 	stringattr.Set(&m.IngestionEndpoint, c, "ingestionEndpoint")
-	stringattr.Set(&m.DcrImmutableId, c, "dcrImmutableId")
+	stringattr.Set(&m.DcrImmutableID, c, "dcrImmutableId")
 	stringattr.Set(&m.StreamName, c, "streamName")
-	stringattr.Set(&m.TenantId, c, "tenantId")
+	stringattr.Set(&m.TenantID, c, "tenantId")
 	stringattr.Set(&m.ClientID, c, "clientId")
 	stringattr.SetSecret(&m.ClientSecret, c, "clientSecret", h)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")

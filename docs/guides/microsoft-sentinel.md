@@ -53,7 +53,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = ">= 4.0"
+      version = ">= 4.55.0"
     }
     azuread = {
       source  = "hashicorp/azuread"
@@ -103,6 +103,10 @@ resource "azuread_service_principal" "descope" {
 
 resource "azuread_application_password" "descope" {
   application_id = azuread_application.descope.id
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "azurerm_log_analytics_workspace_table_custom_log" "descope_audit" {
@@ -184,7 +188,7 @@ output "clientSecret" {
 
 ## Usage
 
-Call the module from a configuration where the `azurerm` and `azuread` providers are authenticated against the
+Call the module from a configuration where the `azurerm`, `azuread` and `azapi` providers are authenticated against the
 subscription and tenant of the workspace, and create the connector in your Descope project from its outputs:
 
 ```terraform
@@ -217,5 +221,6 @@ resource "descope_microsoft_sentinel_connector" "sentinel" {
 }
 ```
 
-The client secret expires after two years by default. Replace the `azuread_application_password` resource before then
-to rotate it, and the next `terraform apply` updates the connector with the new secret.
+The client secret expires after two years by default. To rotate it before then, run
+`terraform apply -replace=module.descope_sentinel.azuread_application_password.descope`. Terraform creates the new
+secret and updates the connector with it before it revokes the old secret, so the connector never holds a revoked one.
