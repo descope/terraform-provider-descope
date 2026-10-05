@@ -124,7 +124,7 @@ resource "azurerm_log_analytics_workspace_table_custom_log" "descope_audit" {
 
 resource "azapi_resource" "data_collection_rule" {
   type      = "Microsoft.Insights/dataCollectionRules@2024-03-11"
-  name      = "dcr-descope-audit"
+  name      = "dcr-descope-audit-${substr(sha1(var.log_analytics_workspace_id), 0, 13)}"
   parent_id = data.azurerm_resource_group.sentinel.id
   location  = var.location
   body = {
