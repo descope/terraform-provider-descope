@@ -25,15 +25,17 @@ var MicrosoftSentinelConnectorAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"ingestion_endpoint": stringattr.Required(),
-	"dcr_immutable_id":   stringattr.Required(),
-	"stream_name":        stringattr.Required(),
-	"tenant_id":          stringattr.Required(),
-	"client_id":          stringattr.Required(),
-	"client_secret":      stringattr.SecretRequired(),
-	"audit_enabled":      boolattr.Default(true),
-	"audit_filters":      listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
-	"mask_pii":           boolattr.Default(false),
+	"ingestion_endpoint":       stringattr.Required(),
+	"dcr_immutable_id":         stringattr.Required(),
+	"stream_name":              stringattr.Required(),
+	"tenant_id":                stringattr.Required(),
+	"client_id":                stringattr.Required(),
+	"client_secret":            stringattr.SecretRequired(),
+	"audit_enabled":            boolattr.Default(true),
+	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"troubleshoot_log_enabled": boolattr.Default(false),
+	"troubleshoot_stream_name": stringattr.Default("Custom-DescopeTroubleshoot_CL"),
+	"mask_pii":                 boolattr.Default(false),
 }
 
 // Model
@@ -45,15 +47,17 @@ type MicrosoftSentinelConnectorModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	IngestionEndpoint stringattr.Type                      `tfsdk:"ingestion_endpoint"`
-	DcrImmutableID    stringattr.Type                      `tfsdk:"dcr_immutable_id"`
-	StreamName        stringattr.Type                      `tfsdk:"stream_name"`
-	TenantID          stringattr.Type                      `tfsdk:"tenant_id"`
-	ClientID          stringattr.Type                      `tfsdk:"client_id"`
-	ClientSecret      stringattr.Type                      `tfsdk:"client_secret"`
-	AuditEnabled      boolattr.Type                        `tfsdk:"audit_enabled"`
-	AuditFilters      listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
-	MaskPII           boolattr.Type                        `tfsdk:"mask_pii"`
+	IngestionEndpoint      stringattr.Type                      `tfsdk:"ingestion_endpoint"`
+	DcrImmutableID         stringattr.Type                      `tfsdk:"dcr_immutable_id"`
+	StreamName             stringattr.Type                      `tfsdk:"stream_name"`
+	TenantID               stringattr.Type                      `tfsdk:"tenant_id"`
+	ClientID               stringattr.Type                      `tfsdk:"client_id"`
+	ClientSecret           stringattr.Type                      `tfsdk:"client_secret"`
+	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
+	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
+	TroubleshootStreamName stringattr.Type                      `tfsdk:"troubleshoot_stream_name"`
+	MaskPII                boolattr.Type                        `tfsdk:"mask_pii"`
 }
 
 func (m *MicrosoftSentinelConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -102,6 +106,8 @@ func (m *MicrosoftSentinelConnectorModel) ConfigurationValues(h *helpers.Handler
 	stringattr.Get(m.ClientSecret, c, "clientSecret")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	stringattr.Get(m.TroubleshootStreamName, c, "troubleshootStreamName")
 	boolattr.Get(m.MaskPII, c, "maskPII")
 	return c
 }
@@ -115,6 +121,8 @@ func (m *MicrosoftSentinelConnectorModel) SetConfigurationValues(c map[string]an
 	stringattr.SetSecret(&m.ClientSecret, c, "clientSecret", h)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	stringattr.Set(&m.TroubleshootStreamName, c, "troubleshootStreamName")
 	boolattr.Set(&m.MaskPII, c, "maskPII")
 }
 

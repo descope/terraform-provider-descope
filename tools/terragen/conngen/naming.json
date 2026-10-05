@@ -1065,6 +1065,10 @@
       "attribute": "troubleshoot_log_enabled",
       "struct": "TroubleshootLogEnabled"
     },
+    "troubleshootStreamName": {
+      "attribute": "troubleshoot_stream_name",
+      "struct": "TroubleshootStreamName"
+    },
     "useCloudflareIntegration": {
       "attribute": "use_cloudflare_integration",
       "struct": "UseCloudflareIntegration"

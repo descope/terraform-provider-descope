@@ -852,7 +852,9 @@ var docsMicrosoftSentinelConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
-	"mask_pii": "Whether to mask personally identifiable information in the logs.",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"troubleshoot_stream_name": "The data collection rule stream that receives the troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
 }
 
 var docsMixpanelConnector = map[string]string{

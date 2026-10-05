@@ -6,11 +6,12 @@ description: |-
 
 # Microsoft Sentinel Audit Stream
 
-The Microsoft Sentinel connector streams Descope audit events to a Log Analytics workspace through the Azure Monitor
-Logs Ingestion API. This guide provides a Terraform module that creates the Azure side of that setup:
+The Microsoft Sentinel connector streams Descope audit events and troubleshooting logs to a Log Analytics workspace
+through the Azure Monitor Logs Ingestion API. This guide provides a Terraform module that creates the Azure side of that setup:
 
-- The `DescopeAudit_CL` custom table in the workspace
-- A `Direct` data collection rule that routes the `Custom-DescopeAudit_CL` stream into the table
+- The `DescopeAudit_CL` and `DescopeTroubleshoot_CL` custom tables in the workspace
+- A `Direct` data collection rule that routes the `Custom-DescopeAudit_CL` and `Custom-DescopeTroubleshoot_CL` streams
+  into those tables
 - An Entra app registration, service principal and client secret that Descope authenticates as
 - A Monitoring Metrics Publisher role assignment for the service principal on the data collection rule
 
@@ -85,6 +86,36 @@ locals {
     { name = "RemoteAddress", type = "string" },
     { name = "Data", type = "dynamic" },
   ]
+  troubleshoot_table_name  = "DescopeTroubleshoot_CL"
+  troubleshoot_stream_name = "Custom-DescopeTroubleshoot_CL"
+  troubleshoot_columns = [
+    { name = "TimeGenerated", type = "dateTime" },
+    { name = "Message", type = "string" },
+    { name = "Level", type = "string" },
+    { name = "Status", type = "string" },
+    { name = "CompanyId", type = "string" },
+    { name = "ProjectId", type = "string" },
+    { name = "DescopeTenantId", type = "string" },
+    { name = "FlowSelectedTenantId", type = "string" },
+    { name = "UserId", type = "string" },
+    { name = "AppId", type = "string" },
+    { name = "RequestId", type = "string" },
+    { name = "FlowId", type = "string" },
+    { name = "FlowVersion", type = "string" },
+    { name = "FlowPath", type = "string" },
+    { name = "ExecutionId", type = "string" },
+    { name = "InteractionId", type = "string" },
+    { name = "TaskId", type = "string" },
+    { name = "TaskName", type = "string" },
+    { name = "TaskType", type = "string" },
+    { name = "StepId", type = "string" },
+    { name = "ActionName", type = "string" },
+    { name = "Action", type = "string" },
+    { name = "SdkName", type = "string" },
+    { name = "SdkVersion", type = "string" },
+    { name = "IpAddress", type = "string" },
+    { name = "AdditionalFields", type = "dynamic" },
+  ]
 }
 
 data "azurerm_client_config" "current" {}
@@ -122,30 +153,47 @@ resource "azurerm_log_analytics_workspace_table_custom_log" "descope_audit" {
   }
 }
 
+resource "azurerm_log_analytics_workspace_table_custom_log" "descope_troubleshoot" {
+  name         = local.troubleshoot_table_name
+  workspace_id = var.log_analytics_workspace_id
+
+  dynamic "column" {
+    for_each = local.troubleshoot_columns
+    content {
+      name = column.value.name
+      type = column.value.type
+    }
+  }
+}
+
 resource "azapi_resource" "data_collection_rule" {
   type      = "Microsoft.Insights/dataCollectionRules@2024-03-11"
-  name      = "dcr-descope-audit-${substr(sha1(var.log_analytics_workspace_id), 0, 13)}"
+  name      = "dcr-descope-${substr(sha1(var.log_analytics_workspace_id), 0, 13)}"
   parent_id = data.azurerm_resource_group.sentinel.id
   location  = var.location
   body = {
     kind = "Direct"
     properties = {
       streamDeclarations = {
-        (local.stream_name) = { columns = [for column in local.columns : { name = column.name, type = lower(column.type) }] }
+        (local.stream_name)              = { columns = [for column in local.columns : { name = column.name, type = lower(column.type) }] }
+        (local.troubleshoot_stream_name) = { columns = [for column in local.troubleshoot_columns : { name = column.name, type = lower(column.type) }] }
       }
       destinations = {
         logAnalytics = [{ name = "workspace", workspaceResourceId = var.log_analytics_workspace_id }]
       }
-      dataFlows = [{
-        streams      = [local.stream_name]
+      dataFlows = [for stream in [local.stream_name, local.troubleshoot_stream_name] : {
+        streams      = [stream]
         destinations = ["workspace"]
         transformKql = "source"
-        outputStream = local.stream_name
+        outputStream = stream
       }]
     }
   }
   response_export_values = ["properties.endpoints.logsIngestion", "properties.immutableId"]
-  depends_on             = [azurerm_log_analytics_workspace_table_custom_log.descope_audit]
+  depends_on = [
+    azurerm_log_analytics_workspace_table_custom_log.descope_audit,
+    azurerm_log_analytics_workspace_table_custom_log.descope_troubleshoot,
+  ]
 }
 
 resource "azurerm_role_assignment" "monitoring_metrics_publisher" {
@@ -170,6 +218,10 @@ output "dcrImmutableId" {
 
 output "streamName" {
   value = local.stream_name
+}
+
+output "troubleshootStreamName" {
+  value = local.troubleshoot_stream_name
 }
 
 output "tenantId" {
@@ -218,6 +270,9 @@ resource "descope_microsoft_sentinel_connector" "sentinel" {
   client_id          = module.descope_sentinel.clientId
   client_secret      = module.descope_sentinel.clientSecret
   audit_enabled      = true
+
+  troubleshoot_log_enabled = true
+  troubleshoot_stream_name = module.descope_sentinel.troubleshootStreamName
 }
 ```
 

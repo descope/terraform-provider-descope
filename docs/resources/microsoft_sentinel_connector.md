@@ -33,6 +33,8 @@ Manages a Microsoft Sentinel connector and its configuration in a Descope projec
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
 - `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
+- `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
+- `troubleshoot_stream_name` (String) The data collection rule stream that receives the troubleshooting events.
 
 ### Read-Only
 
