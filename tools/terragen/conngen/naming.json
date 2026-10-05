@@ -190,6 +190,11 @@
       "file": "lokalise",
       "struct": "Lokalise"
     },
+    "microsoft-sentinel": {
+      "attribute": "microsoft_sentinel",
+      "file": "microsoftsentinel",
+      "struct": "MicrosoftSentinel"
+    },
     "mixpanel": {
       "attribute": "mixpanel",
       "file": "mixpanel",
@@ -608,6 +613,10 @@
       "attribute": "database_name",
       "struct": "DatabaseName"
     },
+    "dcrImmutableId": {
+      "attribute": "dcr_immutable_id",
+      "struct": "DcrImmutableId"
+    },
     "defaultEnvironment": {
       "attribute": "default_environment",
       "struct": "DefaultEnvironment"
@@ -731,6 +740,10 @@
     "index": {
       "attribute": "index",
       "struct": "Index"
+    },
+    "ingestionEndpoint": {
+      "attribute": "ingestion_endpoint",
+      "struct": "IngestionEndpoint"
     },
     "ingestionKey": {
       "attribute": "ingestion_key",
@@ -1004,6 +1017,10 @@
       "attribute": "source",
       "struct": "Source"
     },
+    "streamName": {
+      "attribute": "stream_name",
+      "struct": "StreamName"
+    },
     "subAccountId": {
       "attribute": "sub_account_id",
       "struct": "SubAccountID"
@@ -1031,6 +1048,10 @@
     "templateId": {
       "attribute": "template_id",
       "struct": "TemplateID"
+    },
+    "tenantId": {
+      "attribute": "tenant_id",
+      "struct": "TenantId"
     },
     "token": {
       "attribute": "token",

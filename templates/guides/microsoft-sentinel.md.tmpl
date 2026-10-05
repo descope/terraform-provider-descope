@@ -185,7 +185,7 @@ output "clientSecret" {
 ## Usage
 
 Call the module from a configuration where the `azurerm` and `azuread` providers are authenticated against the
-subscription and tenant of the workspace:
+subscription and tenant of the workspace, and create the connector in your Descope project from its outputs:
 
 ```terraform
 provider "azurerm" {
@@ -204,12 +204,18 @@ module "descope_sentinel" {
   location                   = data.azurerm_log_analytics_workspace.sentinel.location
 }
 
-output "descope_sentinel" {
-  value     = module.descope_sentinel
-  sensitive = true
+resource "descope_microsoft_sentinel_connector" "sentinel" {
+  project_id         = descope_project.myapp.id
+  name               = "Microsoft Sentinel"
+  ingestion_endpoint = module.descope_sentinel.ingestionEndpoint
+  dcr_immutable_id   = module.descope_sentinel.dcrImmutableId
+  stream_name        = module.descope_sentinel.streamName
+  tenant_id          = module.descope_sentinel.tenantId
+  client_id          = module.descope_sentinel.clientId
+  client_secret      = module.descope_sentinel.clientSecret
+  audit_enabled      = true
 }
 ```
 
-After `terraform apply`, read the values with `terraform output -json descope_sentinel`, and enter them in the
-fields of the same name in the Microsoft Sentinel connector in the Descope console. The client secret expires after
-two years by default, at which point the connector needs a new one.
+The client secret expires after two years by default. Replace the `azuread_application_password` resource before then
+to rotate it, and the next `terraform apply` updates the connector with the new secret.
