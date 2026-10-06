@@ -24,8 +24,8 @@ github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc h1:U9qPSI2PIWSS1
 github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.1 h1:5RVFMOWjMyRy8cARdy79nAmgYw3hK/4HUq48LQ6Wwqo=
 github.com/decred/dcrd/dcrec/secp256k1/v4 v4.4.1/go.mod h1:ZXNYxsqcloTdSy/rNShjYzMhyjf0LaoftYK0p+A3h40=
-github.com/descope/go-sdk v1.34.0 h1:Tr1rWX92q6cK0TvkxJIW44GGGsiZwuNyo8q+KpHzQT4=
-github.com/descope/go-sdk v1.34.0/go.mod h1:daIz6NqlwJLIFXL//fhLfUyPO+f/shbfmUTX5aXdZxY=
+github.com/descope/go-sdk v1.36.0 h1:10yhFvjmOYZJ83X6GeVJqyFpOOl1kB7au366M3VnE48=
+github.com/descope/go-sdk v1.36.0/go.mod h1:daIz6NqlwJLIFXL//fhLfUyPO+f/shbfmUTX5aXdZxY=
 github.com/emirpasic/gods v1.18.1 h1:FXtiHYKDGKCW2KzwZKx0iC0PQmdlorYgdFG9jPXJ1Bc=
 github.com/emirpasic/gods v1.18.1/go.mod h1:8tpGGwCnJ5H4r6BWwaV6OrWmMoPhUl5jm/FMNAnJvWQ=
 github.com/fatih/color v1.13.0/go.mod h1:kLAiJbzzSOZDVNGyDpeOxJ47H46qBXwg5ILebYFFOfk=
@@ -97,8 +97,8 @@ github.com/hashicorp/terraform-plugin-framework-validators v0.19.0 h1:Zz3iGgzxe/
 github.com/hashicorp/terraform-plugin-framework-validators v0.19.0/go.mod h1:GBKTNGbGVJohU03dZ7U8wHqc2zYnMUawgCN+gC0itLc=
 github.com/hashicorp/terraform-plugin-go v0.30.0 h1:VmEiD0n/ewxbvV5VI/bYwNtlSEAXtHaZlSnyUUuQK6k=
 github.com/hashicorp/terraform-plugin-go v0.30.0/go.mod h1:8d523ORAW8OHgA9e8JKg0ezL3XUO84H0A25o4NY/jRo=
-github.com/hashicorp/terraform-plugin-log v0.10.0 h1:eu2kW6/QBVdN4P3Ju2WiB2W3ObjkAsyfBsL3Wh1fj3g=
-github.com/hashicorp/terraform-plugin-log v0.10.0/go.mod h1:/9RR5Cv2aAbrqcTSdNmY1NRHP4E3ekrXRGjqORpXyB0=
+github.com/hashicorp/terraform-plugin-log v0.11.0 h1:WjhcpZIVqP8YRe83+dIZXncwSgtu4vh27i23G33PUQY=
+github.com/hashicorp/terraform-plugin-log v0.11.0/go.mod h1:XygBz8+m5kgwTb73MMyrnUjeNQeVWECEfg+h2opMsj0=
 github.com/hashicorp/terraform-plugin-sdk/v2 v2.38.1 h1:mlAq/OrMlg04IuJT7NpefI1wwtdpWudnEmjuQs04t/4=
 github.com/hashicorp/terraform-plugin-sdk/v2 v2.38.1/go.mod h1:GQhpKVvvuwzD79e8/NZ+xzj+ZpWovdPAe8nfV/skwNU=
 github.com/hashicorp/terraform-plugin-testing v1.14.0 h1:5t4VKrjOJ0rg0sVuSJ86dz5K7PHsMO6OKrHFzDBerWA=

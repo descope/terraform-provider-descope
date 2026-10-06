@@ -80,12 +80,14 @@ func TestOAuthProviderCustom(t *testing.T) {
 				authorization_endpoint = "https://auth.example.com"
 				token_endpoint = "https://token.example.com"
 				user_info_endpoint = "https://userinfo.example.com"
+				client_auth_method = "client_secret_basic"
 			`),
 			Check: o.Check(map[string]any{
 				"id":                     "custom_idp",
 				"authorization_endpoint": "https://auth.example.com",
 				"token_endpoint":         "https://token.example.com",
 				"user_info_endpoint":     "https://userinfo.example.com",
+				"client_auth_method":     "client_secret_basic",
 			}),
 		},
 		// a different provider id forces a replacement, since an in-place update would keep the unset endpoint values from the prior state

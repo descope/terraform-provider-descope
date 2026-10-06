@@ -1118,6 +1118,8 @@ var docsSESConnector = map[string]string{
 	"sender_email": "The email address that emails are sent from. Make sure it is a verified identity " +
 		"in SES.",
 	"sender_name": "The name shown as the sender of the emails.",
+	"tags": "Custom AWS SES message tags added to every email sent through this connector, as " +
+		"key/value pairs.",
 }
 
 var docsAuditFilterField = map[string]string{
@@ -1629,6 +1631,7 @@ var docsProvider = map[string]string{
 	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
 	"disable_jit_updates": "By default the user attribute mapping configuration is used to update the user's attributes " +
 		"automatically during sign in. Disable this if you want this to happen only during user creation.",
+	"client_auth_method":   "The token endpoint client authentication method: `client_secret_basic` (credentials in the HTTP Basic auth header) or `client_secret_post` (credentials in the request body). Empty defaults to `client_secret_post`.",
 	"native_client_id":     "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"native_client_secret": "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for " +
@@ -1758,9 +1761,12 @@ var docsEnchantedLinkSettings = map[string]string{
 	"expiration_time":    "How long the enchanted link remains valid before it expires.",
 	"redirect_url":       "The URL to redirect users to after they log in using the enchanted link.",
 	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System " +
 		"template.",
+	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
+		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
 }
 
 var docsInviteSettings = map[string]string{
@@ -2011,7 +2017,7 @@ var docsStyles = map[string]string{
 var docsTextTemplate = map[string]string{
 	"project_id": "The ID of the project that the text template belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
-	"method": "The authentication method the text template is used with, e.g. `magiclink` or `otp`. Changing this value will require the resource to be deleted and recreated.",
+	"method": "The authentication method the text template is used with, e.g. `magiclink`, `otp` or `enchantedlink`. Changing this value will require the resource to be deleted and recreated.",
 	"name":   "A name for the text template that's unique among the templates of the same authentication method.",
 	"body":   "The body of text messages sent with this template. Template macros such as `{{.code}}` can be used to insert dynamic values.",
 }
