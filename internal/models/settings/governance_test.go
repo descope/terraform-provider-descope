@@ -22,7 +22,6 @@ func TestGovernance(t *testing.T) {
 				"configured":     false,
 				"auto_approval":  false,
 				"suite_disabled": false,
-				"logo":           "",
 			}),
 		},
 		// set every field, including the suite kill switch
@@ -32,13 +31,11 @@ func TestGovernance(t *testing.T) {
 				configured = true
 				auto_approval = true
 				suite_disabled = true
-				logo = "data:image/png;base64,iVBORw0KGgo="
 			`),
 			Check: o.Check(map[string]any{
 				"configured":     true,
 				"auto_approval":  true,
 				"suite_disabled": true,
-				"logo":           "data:image/png;base64,iVBORw0KGgo=",
 			}),
 		},
 		// a false has to stick: one that fails to round-trip reads as never set,
@@ -49,13 +46,11 @@ func TestGovernance(t *testing.T) {
 				configured = true
 				auto_approval = false
 				suite_disabled = false
-				logo = ""
 			`),
 			Check: o.Check(map[string]any{
 				"configured":     true,
 				"auto_approval":  false,
 				"suite_disabled": false,
-				"logo":           "",
 			}),
 		},
 		// import using <project_id>/<id> (id == project_id for this singleton)
@@ -64,6 +59,17 @@ func TestGovernance(t *testing.T) {
 			ImportState:       true,
 			ImportStateVerify: true,
 			ImportStateIdFunc: testacc.GenerateImportStateID(o.Path(), "project_id"),
+		},
+		// restore the shared project to its default unconfigured state
+		resource.TestStep{
+			Config: o.Block(`
+				project_id = "` + projectID + `"
+			`),
+			Check: o.Check(map[string]any{
+				"configured":     false,
+				"auto_approval":  false,
+				"suite_disabled": false,
+			}),
 		},
 	)
 }
