@@ -1769,6 +1769,15 @@ var docsEnchantedLinkSettings = map[string]string{
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
 }
 
+var docsGovernance = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"configured": "Whether the Agentic Governance Suite has been set up for the project.",
+	"auto_approval": "Setting this to `true` approves access requests automatically instead of waiting for an admin to " +
+		"review them.",
+	"suite_disabled": "Setting this to `true` turns off the Agentic Governance Suite for the project.",
+}
+
 var docsInviteSettings = map[string]string{
 	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
 		"to be deleted and recreated.",
