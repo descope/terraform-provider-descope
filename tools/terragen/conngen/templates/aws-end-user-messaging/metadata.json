@@ -84,7 +84,7 @@
     },
     {
       "name": "templateExpiryMinutes",
-      "description": "The code expiry, in minutes, shown by templates that include one. Between 1 and 60, or 0 to use the project's OTP expiry.",
+      "description": "The code expiry in minutes, between 1 and 60. Set it when the template shows the code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message otherwise.",
       "type": "number"
     },
     {

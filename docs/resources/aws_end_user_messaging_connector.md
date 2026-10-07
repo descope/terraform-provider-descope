@@ -34,7 +34,7 @@ Manages a AWS End User Messaging connector and its configuration in a Descope pr
 - `role_arn` (String) The ARN of the IAM role to assume. Required when the authentication type is 'assumeRole'.
 - `secret_access_key` (String, Sensitive) The AWS secret access key. Required when the authentication type is 'credentials'.
 - `template_code_variable` (String) The template variable that receives the OTP code. Defaults to 'code'.
-- `template_expiry_minutes` (Number) The code expiry, in minutes, shown by templates that include one. Between 1 and 60, or 0 to use the project's OTP expiry.
+- `template_expiry_minutes` (Number) The code expiry in minutes, between 1 and 60. Set it when the template shows the code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message otherwise.
 
 ### Read-Only
 

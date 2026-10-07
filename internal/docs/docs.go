@@ -345,8 +345,9 @@ var docsAWSEndUserMessagingConnector = map[string]string{
 	"default_template_id": "The Notify template used when the flow does not select one. Leave empty to use " +
 		"the Notify configuration's default template.",
 	"template_code_variable": "The template variable that receives the OTP code. Defaults to 'code'.",
-	"template_expiry_minutes": "The code expiry, in minutes, shown by templates that include one. Between 1 and " +
-		"60, or 0 to use the project's OTP expiry.",
+	"template_expiry_minutes": "The code expiry in minutes, between 1 and 60. Set it when the template shows the " +
+		"code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message " +
+		"otherwise.",
 	"configuration_set_name": "The AWS configuration set used for sending, which carries the SMS Protect " +
 		"association.",
 	"protect_configuration_id": "The ID of the AWS SMS Protect configuration associated with the configuration " +
