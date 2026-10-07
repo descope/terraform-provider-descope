@@ -72,7 +72,6 @@ locals {
   stream_name = "Custom-DescopeAudit_CL"
   columns = [
     { name = "TimeGenerated", type = "dateTime" },
-    { name = "AuditId", type = "string" },
     { name = "Action", type = "string" },
     { name = "AuditType", type = "string" },
     { name = "ProjectId", type = "string" },
