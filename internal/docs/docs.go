@@ -338,6 +338,8 @@ var docsAWSEndUserMessagingConnector = map[string]string{
 		"'credentials'.",
 	"role_arn": "The ARN of the IAM role to assume. Required when the authentication type is " +
 		"'assumeRole'.",
+	"external_id": "The external ID used when assuming the IAM role. Required when the " +
+		"authentication type is 'assumeRole'.",
 	"notify_configuration_id": "The ID of the AWS End User Messaging Notify configuration that sends the " +
 		"messages.",
 	"default_template_id": "The Notify template used when the flow does not select one. Leave empty to use " +

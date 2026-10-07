@@ -29,6 +29,7 @@ var AWSEndUserMessagingConnectorAttributes = map[string]schema.Attribute{
 	"access_key_id":            stringattr.SecretOptional(),
 	"secret_access_key":        stringattr.SecretOptional(),
 	"role_arn":                 stringattr.Default(""),
+	"external_id":              stringattr.Default(""),
 	"notify_configuration_id":  stringattr.Required(),
 	"default_template_id":      stringattr.Default(""),
 	"template_code_variable":   stringattr.Default(""),
@@ -50,6 +51,7 @@ type AWSEndUserMessagingConnectorModel struct {
 	AccessKeyID            stringattr.Type `tfsdk:"access_key_id"`
 	SecretAccessKey        stringattr.Type `tfsdk:"secret_access_key"`
 	RoleARN                stringattr.Type `tfsdk:"role_arn"`
+	ExternalID             stringattr.Type `tfsdk:"external_id"`
 	NotifyConfigurationID  stringattr.Type `tfsdk:"notify_configuration_id"`
 	DefaultTemplateID      stringattr.Type `tfsdk:"default_template_id"`
 	TemplateCodeVariable   stringattr.Type `tfsdk:"template_code_variable"`
@@ -95,6 +97,12 @@ func (m *AWSEndUserMessagingConnectorModel) Validate(h *helpers.Handler) {
 	if m.RoleARN.ValueString() == "" && !m.RoleARN.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
 		h.Conflict("The role_arn field is required when auth_type is set to 'assumeRole'")
 	}
+	if m.ExternalID.ValueString() != "" && m.AuthType.ValueString() != "" && m.AuthType.ValueString() != "assumeRole" {
+		h.Conflict("The external_id field can only be used when auth_type is set to 'assumeRole'")
+	}
+	if m.ExternalID.ValueString() == "" && !m.ExternalID.IsUnknown() && m.AuthType.ValueString() == "assumeRole" {
+		h.Conflict("The external_id field is required when auth_type is set to 'assumeRole'")
+	}
 }
 
 // Configuration
@@ -106,6 +114,7 @@ func (m *AWSEndUserMessagingConnectorModel) ConfigurationValues(h *helpers.Handl
 	stringattr.Get(m.AccessKeyID, c, "accessKeyId")
 	stringattr.Get(m.SecretAccessKey, c, "secretAccessKey")
 	stringattr.Get(m.RoleARN, c, "roleArn")
+	stringattr.Get(m.ExternalID, c, "externalId")
 	stringattr.Get(m.NotifyConfigurationID, c, "notifyConfigurationId")
 	stringattr.Get(m.DefaultTemplateID, c, "defaultTemplateId")
 	stringattr.Get(m.TemplateCodeVariable, c, "templateCodeVariable")
@@ -121,6 +130,7 @@ func (m *AWSEndUserMessagingConnectorModel) SetConfigurationValues(c map[string]
 	stringattr.SetSecret(&m.AccessKeyID, c, "accessKeyId", h)
 	stringattr.SetSecret(&m.SecretAccessKey, c, "secretAccessKey", h)
 	stringattr.Set(&m.RoleARN, c, "roleArn")
+	stringattr.Set(&m.ExternalID, c, "externalId")
 	stringattr.Set(&m.NotifyConfigurationID, c, "notifyConfigurationId")
 	stringattr.Set(&m.DefaultTemplateID, c, "defaultTemplateId")
 	stringattr.Set(&m.TemplateCodeVariable, c, "templateCodeVariable")

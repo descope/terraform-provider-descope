@@ -22,6 +22,7 @@ func TestAWSEndUserMessagingConnector(t *testing.T) {
 				access_key_id = "ezzrllbqu22"
 				secret_access_key = "xiyuadzk4w64hog"
 				role_arn = null
+				external_id = null
 				notify_configuration_id = "qbugcwck4cxxforb3ewpn"
 				default_template_id = "v75lq6uyd7j7uitsc"
 				template_code_variable = "vd3rvsdovka47bddzoum"
@@ -39,6 +40,7 @@ func TestAWSEndUserMessagingConnector(t *testing.T) {
 				"access_key_id":            "ezzrllbqu22",
 				"secret_access_key":        "xiyuadzk4w64hog",
 				"role_arn":                 "",
+				"external_id":              "",
 				"notify_configuration_id":  "qbugcwck4cxxforb3ewpn",
 				"default_template_id":      "v75lq6uyd7j7uitsc",
 				"template_code_variable":   "vd3rvsdovka47bddzoum",
@@ -57,6 +59,7 @@ func TestAWSEndUserMessagingConnector(t *testing.T) {
 				access_key_id = "an2mu73kjot"
 				secret_access_key = "vzjnvlzyyvbdwad"
 				role_arn = null
+				external_id = null
 				notify_configuration_id = "w6et4gg32h6xfxwhcvfof"
 				default_template_id = "see2j2vg7e3mkkowm"
 				template_code_variable = "qza44veuazb3fqh26how"
@@ -71,6 +74,7 @@ func TestAWSEndUserMessagingConnector(t *testing.T) {
 				"access_key_id":            "an2mu73kjot",
 				"secret_access_key":        "vzjnvlzyyvbdwad",
 				"role_arn":                 "",
+				"external_id":              "",
 				"notify_configuration_id":  "w6et4gg32h6xfxwhcvfof",
 				"default_template_id":      "see2j2vg7e3mkkowm",
 				"template_code_variable":   "qza44veuazb3fqh26how",

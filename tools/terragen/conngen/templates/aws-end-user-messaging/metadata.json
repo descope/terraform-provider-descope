@@ -57,6 +57,16 @@
       }
     },
     {
+      "name": "externalId",
+      "description": "The external ID used when assuming the IAM role. Required when the authentication type is 'assumeRole'.",
+      "type": "string",
+      "required": true,
+      "dependsOn": {
+        "name": "authType",
+        "value": "assumeRole"
+      }
+    },
+    {
       "name": "notifyConfigurationId",
       "description": "The ID of the AWS End User Messaging Notify configuration that sends the messages.",
       "type": "string",
