@@ -26,11 +26,10 @@ Manages a AWS End User Messaging connector and its configuration in a Descope pr
 
 - `access_key_id` (String, Sensitive) The AWS access key ID. Required when the authentication type is 'credentials'.
 - `auth_type` (String) How to authenticate with AWS: using static credentials or by assuming an IAM role.
-- `configuration_set_name` (String) The AWS configuration set used for sending, which carries the SMS Protect association.
+- `configuration_set_name` (String) The AWS configuration set whose event destinations receive delivery events, including messages that AWS blocks.
 - `default_template_id` (String) The Notify template used when the flow does not select one. Leave empty to use the Notify configuration's default template.
 - `description` (String) A description of what your connector is used for.
 - `external_id` (String) The external ID used when assuming the IAM role. Required when the authentication type is 'assumeRole'.
-- `protect_configuration_id` (String) The ID of the AWS SMS Protect configuration associated with the configuration set, verified when the connector is created.
 - `role_arn` (String) The ARN of the IAM role to assume. Required when the authentication type is 'assumeRole'.
 - `secret_access_key` (String, Sensitive) The AWS secret access key. Required when the authentication type is 'credentials'.
 - `template_code_variable` (String) The template variable that receives the OTP code. Defaults to 'code'.

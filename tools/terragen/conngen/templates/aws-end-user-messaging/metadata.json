@@ -89,12 +89,7 @@
     },
     {
       "name": "configurationSetName",
-      "description": "The AWS configuration set used for sending, which carries the SMS Protect association.",
-      "type": "string"
-    },
-    {
-      "name": "protectConfigurationId",
-      "description": "The ID of the AWS SMS Protect configuration associated with the configuration set, verified when the connector is created.",
+      "description": "The AWS configuration set whose event destinations receive delivery events, including messages that AWS blocks.",
       "type": "string"
     }
   ]

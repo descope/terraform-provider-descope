@@ -869,10 +869,6 @@
       "attribute": "project_token",
       "struct": "ProjectToken"
     },
-    "protectConfigurationId": {
-      "attribute": "protect_configuration_id",
-      "struct": "ProtectConfigurationID"
-    },
     "protocol": {
       "attribute": "protocol",
       "struct": "Protocol"

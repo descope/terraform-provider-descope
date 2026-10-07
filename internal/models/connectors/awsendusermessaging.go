@@ -24,18 +24,17 @@ var AWSEndUserMessagingConnectorAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"aws_region":               stringattr.Required(),
-	"auth_type":                stringattr.Default("credentials", stringvalidator.OneOf("", "credentials", "assumeRole")),
-	"access_key_id":            stringattr.SecretOptional(),
-	"secret_access_key":        stringattr.SecretOptional(),
-	"role_arn":                 stringattr.Default(""),
-	"external_id":              stringattr.Default(""),
-	"notify_configuration_id":  stringattr.Required(),
-	"default_template_id":      stringattr.Default(""),
-	"template_code_variable":   stringattr.Default(""),
-	"template_expiry_minutes":  floatattr.Default(0),
-	"configuration_set_name":   stringattr.Default(""),
-	"protect_configuration_id": stringattr.Default(""),
+	"aws_region":              stringattr.Required(),
+	"auth_type":               stringattr.Default("credentials", stringvalidator.OneOf("", "credentials", "assumeRole")),
+	"access_key_id":           stringattr.SecretOptional(),
+	"secret_access_key":       stringattr.SecretOptional(),
+	"role_arn":                stringattr.Default(""),
+	"external_id":             stringattr.Default(""),
+	"notify_configuration_id": stringattr.Required(),
+	"default_template_id":     stringattr.Default(""),
+	"template_code_variable":  stringattr.Default(""),
+	"template_expiry_minutes": floatattr.Default(0),
+	"configuration_set_name":  stringattr.Default(""),
 }
 
 // Model
@@ -46,18 +45,17 @@ type AWSEndUserMessagingConnectorModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	AWSRegion              stringattr.Type `tfsdk:"aws_region"`
-	AuthType               stringattr.Type `tfsdk:"auth_type"`
-	AccessKeyID            stringattr.Type `tfsdk:"access_key_id"`
-	SecretAccessKey        stringattr.Type `tfsdk:"secret_access_key"`
-	RoleARN                stringattr.Type `tfsdk:"role_arn"`
-	ExternalID             stringattr.Type `tfsdk:"external_id"`
-	NotifyConfigurationID  stringattr.Type `tfsdk:"notify_configuration_id"`
-	DefaultTemplateID      stringattr.Type `tfsdk:"default_template_id"`
-	TemplateCodeVariable   stringattr.Type `tfsdk:"template_code_variable"`
-	TemplateExpiryMinutes  floatattr.Type  `tfsdk:"template_expiry_minutes"`
-	ConfigurationSetName   stringattr.Type `tfsdk:"configuration_set_name"`
-	ProtectConfigurationID stringattr.Type `tfsdk:"protect_configuration_id"`
+	AWSRegion             stringattr.Type `tfsdk:"aws_region"`
+	AuthType              stringattr.Type `tfsdk:"auth_type"`
+	AccessKeyID           stringattr.Type `tfsdk:"access_key_id"`
+	SecretAccessKey       stringattr.Type `tfsdk:"secret_access_key"`
+	RoleARN               stringattr.Type `tfsdk:"role_arn"`
+	ExternalID            stringattr.Type `tfsdk:"external_id"`
+	NotifyConfigurationID stringattr.Type `tfsdk:"notify_configuration_id"`
+	DefaultTemplateID     stringattr.Type `tfsdk:"default_template_id"`
+	TemplateCodeVariable  stringattr.Type `tfsdk:"template_code_variable"`
+	TemplateExpiryMinutes floatattr.Type  `tfsdk:"template_expiry_minutes"`
+	ConfigurationSetName  stringattr.Type `tfsdk:"configuration_set_name"`
 }
 
 func (m *AWSEndUserMessagingConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -120,7 +118,6 @@ func (m *AWSEndUserMessagingConnectorModel) ConfigurationValues(h *helpers.Handl
 	stringattr.Get(m.TemplateCodeVariable, c, "templateCodeVariable")
 	floatattr.Get(m.TemplateExpiryMinutes, c, "templateExpiryMinutes")
 	stringattr.Get(m.ConfigurationSetName, c, "configurationSetName")
-	stringattr.Get(m.ProtectConfigurationID, c, "protectConfigurationId")
 	return c
 }
 
@@ -136,7 +133,6 @@ func (m *AWSEndUserMessagingConnectorModel) SetConfigurationValues(c map[string]
 	stringattr.Set(&m.TemplateCodeVariable, c, "templateCodeVariable")
 	floatattr.Set(&m.TemplateExpiryMinutes, c, "templateExpiryMinutes")
 	stringattr.Set(&m.ConfigurationSetName, c, "configurationSetName")
-	stringattr.Set(&m.ProtectConfigurationID, c, "protectConfigurationId")
 }
 
 func (m *AWSEndUserMessagingConnectorModel) GetID() stringattr.Type        { return m.ID }

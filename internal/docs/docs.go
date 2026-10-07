@@ -348,10 +348,8 @@ var docsAWSEndUserMessagingConnector = map[string]string{
 	"template_expiry_minutes": "The code expiry in minutes, between 1 and 60. Set it when the template shows the " +
 		"code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message " +
 		"otherwise.",
-	"configuration_set_name": "The AWS configuration set used for sending, which carries the SMS Protect " +
-		"association.",
-	"protect_configuration_id": "The ID of the AWS SMS Protect configuration associated with the configuration " +
-		"set, verified when the connector is created.",
+	"configuration_set_name": "The AWS configuration set whose event destinations receive delivery events, " +
+		"including messages that AWS blocks.",
 }
 
 var docsAWSEventBridgeConnector = map[string]string{
