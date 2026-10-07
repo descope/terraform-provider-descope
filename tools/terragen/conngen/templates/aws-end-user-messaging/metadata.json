@@ -1,0 +1,96 @@
+{
+  "id": "aws-end-user-messaging",
+  "name": "AWS End User Messaging",
+  "extProvider": true,
+  "description": "Send OTP codes by SMS through AWS End User Messaging Notify, using AWS-managed numbers and preapproved templates.",
+  "fields": [
+    {
+      "name": "awsRegion",
+      "description": "The AWS region the Notify configuration is in.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "authType",
+      "description": "How to authenticate with AWS: using static credentials or by assuming an IAM role.",
+      "type": "string",
+      "initialValue": "credentials",
+      "options": [
+        {
+          "name": "Credentials",
+          "value": "credentials"
+        },
+        {
+          "name": "Assume Role",
+          "value": "assumeRole"
+        }
+      ]
+    },
+    {
+      "name": "accessKeyId",
+      "description": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+      "type": "secret",
+      "required": true,
+      "dependsOn": {
+        "name": "authType",
+        "value": "credentials"
+      }
+    },
+    {
+      "name": "secretAccessKey",
+      "description": "The AWS secret access key. Required when the authentication type is 'credentials'.",
+      "type": "secret",
+      "required": true,
+      "dependsOn": {
+        "name": "authType",
+        "value": "credentials"
+      }
+    },
+    {
+      "name": "roleArn",
+      "description": "The ARN of the IAM role to assume. Required when the authentication type is 'assumeRole'.",
+      "type": "string",
+      "required": true,
+      "dependsOn": {
+        "name": "authType",
+        "value": "assumeRole"
+      }
+    },
+    {
+      "name": "externalId",
+      "description": "The external ID used when assuming the IAM role. Required when the authentication type is 'assumeRole'.",
+      "type": "string",
+      "required": true,
+      "dependsOn": {
+        "name": "authType",
+        "value": "assumeRole"
+      }
+    },
+    {
+      "name": "notifyConfigurationId",
+      "description": "The ID of the AWS End User Messaging Notify configuration that sends the messages.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "defaultTemplateId",
+      "description": "The Notify template used when the flow does not select one. Leave empty to use the Notify configuration's default template.",
+      "type": "string"
+    },
+    {
+      "name": "templateCodeVariable",
+      "description": "The template variable that receives the OTP code. Defaults to 'code'.",
+      "type": "string"
+    },
+    {
+      "name": "templateExpiryMinutes",
+      "description": "The code expiry in minutes, between 1 and 60. Set it when the template shows the code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message otherwise.",
+      "type": "number"
+    },
+    {
+      "name": "configurationSetName",
+      "description": "The AWS configuration set whose event destinations receive delivery events, including messages that AWS blocks.",
+      "type": "string"
+    }
+  ]
+}

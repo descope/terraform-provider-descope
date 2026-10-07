@@ -326,6 +326,32 @@ var docsAuditWebhookConnector = map[string]string{
 		"tenant selection).",
 }
 
+var docsAWSEndUserMessagingConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"aws_region":  "The AWS region the Notify configuration is in.",
+	"auth_type": "How to authenticate with AWS: using static credentials or by assuming an IAM " +
+		"role.",
+	"access_key_id": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+	"secret_access_key": "The AWS secret access key. Required when the authentication type is " +
+		"'credentials'.",
+	"role_arn": "The ARN of the IAM role to assume. Required when the authentication type is " +
+		"'assumeRole'.",
+	"external_id": "The external ID used when assuming the IAM role. Required when the " +
+		"authentication type is 'assumeRole'.",
+	"notify_configuration_id": "The ID of the AWS End User Messaging Notify configuration that sends the " +
+		"messages.",
+	"default_template_id": "The Notify template used when the flow does not select one. Leave empty to use " +
+		"the Notify configuration's default template.",
+	"template_code_variable": "The template variable that receives the OTP code. Defaults to 'code'.",
+	"template_expiry_minutes": "The code expiry in minutes, between 1 and 60. Set it when the template shows the " +
+		"code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message " +
+		"otherwise.",
+	"configuration_set_name": "The AWS configuration set whose event destinations receive delivery events, " +
+		"including messages that AWS blocks.",
+}
+
 var docsAWSEventBridgeConnector = map[string]string{
 	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":              "A custom name for your connector.",

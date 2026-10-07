@@ -25,6 +25,11 @@
       "file": "auditwebhook",
       "struct": "AuditWebhook"
     },
+    "aws-end-user-messaging": {
+      "attribute": "aws_end_user_messaging",
+      "file": "awsendusermessaging",
+      "struct": "AWSEndUserMessaging"
+    },
     "aws-eventbridge": {
       "attribute": "aws_eventbridge",
       "file": "awseventbridge",
@@ -572,6 +577,10 @@
       "attribute": "company_id",
       "struct": "CompanyID"
     },
+    "configurationSetName": {
+      "attribute": "configuration_set_name",
+      "struct": "ConfigurationSetName"
+    },
     "country": {
       "attribute": "country",
       "struct": "Country"
@@ -619,6 +628,10 @@
     "defaultResult": {
       "attribute": "default_result",
       "struct": "DefaultResult"
+    },
+    "defaultTemplateId": {
+      "attribute": "default_template_id",
+      "struct": "DefaultTemplateID"
     },
     "detailType": {
       "attribute": "detail_type",
@@ -787,6 +800,10 @@
     "nodeName": {
       "attribute": "node_name",
       "struct": "NodeName"
+    },
+    "notifyConfigurationId": {
+      "attribute": "notify_configuration_id",
+      "struct": "NotifyConfigurationID"
     },
     "originationNumber": {
       "attribute": "origination_number",
@@ -1027,6 +1044,14 @@
     "teamId": {
       "attribute": "team_id",
       "struct": "TeamID"
+    },
+    "templateCodeVariable": {
+      "attribute": "template_code_variable",
+      "struct": "TemplateCodeVariable"
+    },
+    "templateExpiryMinutes": {
+      "attribute": "template_expiry_minutes",
+      "struct": "TemplateExpiryMinutes"
     },
     "templateId": {
       "attribute": "template_id",
