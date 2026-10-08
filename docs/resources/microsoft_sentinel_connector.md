@@ -19,8 +19,8 @@ Manages a Microsoft Sentinel connector and its configuration in a Descope projec
 
 - `client_id` (String) The client ID of the Entra application that Descope authenticates as.
 - `client_secret` (String, Sensitive) A client secret of the Entra application. Entra client secrets expire, so update this value before the secret does.
-- `dcr_immutable_id` (String) The immutable ID of the data collection rule, in the form dcr-<32 hex characters>. The Deploy to Azure template outputs it as dcrImmutableId.
-- `ingestion_endpoint` (String) The logs ingestion endpoint of the data collection rule, for example https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Deploy to Azure template outputs it as ingestionEndpoint.
+- `dcr_immutable_id` (String) The immutable ID of the data collection rule, in the form dcr-<32 hex characters>. The Terraform guide outputs it as dcrImmutableId.
+- `ingestion_endpoint` (String) The logs ingestion endpoint of the data collection rule, for example https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Terraform guide outputs it as ingestionEndpoint.
 - `name` (String) A custom name for your connector.
 - `project_id` (String) The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.
 - `stream_name` (String) The data collection rule stream that receives the audit events.

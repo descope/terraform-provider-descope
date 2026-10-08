@@ -840,10 +840,10 @@ var docsMicrosoftSentinelConnector = map[string]string{
 	"description": "A description of what your connector is used for.",
 	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"ingestion_endpoint": "The logs ingestion endpoint of the data collection rule, for example " +
-		"https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Deploy to " +
-		"Azure template outputs it as ingestionEndpoint.",
+		"https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Terraform " +
+		"guide outputs it as ingestionEndpoint.",
 	"dcr_immutable_id": "The immutable ID of the data collection rule, in the form dcr-<32 hex " +
-		"characters>. The Deploy to Azure template outputs it as dcrImmutableId.",
+		"characters>. The Terraform guide outputs it as dcrImmutableId.",
 	"stream_name": "The data collection rule stream that receives the audit events.",
 	"tenant_id":   "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
 	"client_id":   "The client ID of the Entra application that Descope authenticates as.",
