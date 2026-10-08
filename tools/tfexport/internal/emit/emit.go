@@ -211,6 +211,12 @@ func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, r
 				continue
 			}
 		}
+		if resource.Type == "descope_auth_access_policy" && attr.Name == "rule_ids" {
+			if tokens, ok := permissionListTokens(ctx, attr, refs); ok {
+				body.SetAttributeRaw(attr.Name, tokens)
+				continue
+			}
+		}
 		tokens, err := attrTokens(ctx, attr, resource, refs, resource.Label, vars)
 		if err != nil {
 			return err
@@ -341,7 +347,7 @@ func areaFile(resourceType string) string {
 		return "apps.tf"
 	case "descope_role", "descope_permission":
 		return "authorization.tf"
-	case "descope_admin_portal", "descope_fga_schema", "descope_session_migration":
+	case "descope_admin_portal", "descope_fga_schema", "descope_session_migration", "descope_auth_access_rule", "descope_auth_access_policy":
 		return "auth.tf"
 	}
 	if strings.HasSuffix(resourceType, "_settings") {
