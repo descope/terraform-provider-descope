@@ -1,0 +1,45 @@
+{
+  "format_version": "1.0",
+  "terraform_version": "1.9.5",
+  "values": {
+    "root_module": {
+      "child_modules": [
+        {
+          "address": "module.tenant",
+          "child_modules": [],
+          "resources": [
+            {
+              "address": "module.tenant.descope_project.main[\"prod\"]",
+              "index": "prod",
+              "mode": "managed",
+              "name": "main",
+              "provider_name": "registry.terraform.io/descope/descope",
+              "schema_version": 0,
+              "type": "descope_project",
+              "values": {
+                "admin_portal": null,
+                "applications": null,
+                "attributes": null,
+                "authentication": null,
+                "authorization": null,
+                "connectors": null,
+                "environment": "",
+                "flows": {},
+                "id": "P2nested0000000000",
+                "invite_settings": null,
+                "jwt_templates": null,
+                "lists": [],
+                "name": "nested",
+                "project_settings": null,
+                "styles": null,
+                "tags": [],
+                "widgets": {}
+              }
+            }
+          ]
+        }
+      ],
+      "resources": []
+    }
+  }
+}

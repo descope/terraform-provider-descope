@@ -1,0 +1,65 @@
+{
+  "lineage": "11111111-1111-1111-1111-111111111111",
+  "outputs": {},
+  "resources": [
+    {
+      "instances": [
+        {
+          "attributes": {
+            "admin_portal": null,
+            "applications": null,
+            "attributes": null,
+            "authentication": null,
+            "authorization": null,
+            "connectors": null,
+            "environment": "",
+            "flows": {},
+            "id": "P2nested0000000000",
+            "invite_settings": null,
+            "jwt_templates": null,
+            "lists": [],
+            "name": "nested-0",
+            "project_settings": null,
+            "styles": null,
+            "tags": [],
+            "widgets": {}
+          },
+          "index_key": 0,
+          "schema_version": 0,
+          "sensitive_attributes": []
+        },
+        {
+          "attributes": {
+            "admin_portal": null,
+            "applications": null,
+            "attributes": null,
+            "authentication": null,
+            "authorization": null,
+            "connectors": null,
+            "environment": "",
+            "flows": {},
+            "id": "P2nested0000000001",
+            "invite_settings": null,
+            "jwt_templates": null,
+            "lists": [],
+            "name": "nested-1",
+            "project_settings": null,
+            "styles": null,
+            "tags": [],
+            "widgets": {}
+          },
+          "index_key": 1,
+          "schema_version": 0,
+          "sensitive_attributes": []
+        }
+      ],
+      "mode": "managed",
+      "name": "main",
+      "provider": "provider[\"registry.terraform.io/descope/descope\"]",
+      "type": "descope_project"
+    }
+  ],
+  "serial": 1,
+  "terraform_version": "1.9.5",
+  "version": 4
+}
