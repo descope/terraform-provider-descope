@@ -19,6 +19,8 @@ var publicByDesign = map[string]bool{
 	"project_token":    true, // mixpanel project tokens are client-side identifiers
 	"public_write_key": true, // the segment browser library needs this one in the page, unlike write_key
 	"key":              true, // generic map key fields, not credentials
+
+	"descope_vonage_connector.api_key": true,
 }
 
 // knownMisclassified carry real secret material but are not marked sensitive - each entry is an open bug that must go once its template is fixed.
@@ -39,7 +41,7 @@ func TestSecretClassification(t *testing.T) {
 			if !secretLikeName.MatchString(name) || attribute.IsSensitive() {
 				continue
 			}
-			if publicByDesign[name] {
+			if publicByDesign[name] || publicByDesign[resourceType+"."+name] {
 				continue
 			}
 			key := resourceType + "." + name
