@@ -10,6 +10,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/approle"
 	"github.com/descope/terraform-provider-descope/internal/models/apps"
 	"github.com/descope/terraform-provider-descope/internal/models/attribute"
+	"github.com/descope/terraform-provider-descope/internal/models/authaccessrule"
 	"github.com/descope/terraform-provider-descope/internal/models/connectors"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
 	"github.com/descope/terraform-provider-descope/internal/models/emailtemplate"
@@ -51,6 +52,8 @@ func InjectModels() {
 	inject(attribute.TenantAttributeAttributes, docsTenantAttribute)
 	inject(attribute.TenantAttributeAuthorizationAttributes, docsTenantAttributeAuthorization)
 	inject(attribute.UserAttributeAttributes, docsUserAttribute)
+	inject(authaccessrule.AuthAccessRuleAttributes, docsAuthAccessRule)
+	inject(authaccessrule.AuthAccessConditionAttributes, docsAuthAccessCondition)
 	inject(connectors.AbuseIPDBConnectorAttributes, docsAbuseIPDBConnector)
 	inject(connectors.AlloyConnectorAttributes, docsAlloyConnector)
 	inject(connectors.AmplitudeConnectorAttributes, docsAmplitudeConnector)
@@ -156,6 +159,7 @@ func InjectModels() {
 	inject(role.RoleAttributes, docsRole)
 	inject(settings.AdminPortalAttributes, docsAdminPortal)
 	inject(settings.AdminPortalWidgetAttributes, docsAdminPortalWidget)
+	inject(settings.AuthAccessPolicyAttributes, docsAuthAccessPolicy)
 	inject(settings.EmbeddedLinkSettingsAttributes, docsEmbeddedLinkSettings)
 	inject(settings.EnchantedLinkSettingsAttributes, docsEnchantedLinkSettings)
 	inject(settings.InviteSettingsAttributes, docsInviteSettings)

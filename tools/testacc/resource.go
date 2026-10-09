@@ -162,6 +162,14 @@ func List(t *testing.T) *Resource {
 	return newResource(t, "list")
 }
 
+func AuthAccessRule(t *testing.T) *Resource {
+	return newResource(t, "auth_access_rule")
+}
+
+func AuthAccessPolicy(t *testing.T) *Resource {
+	return newResource(t, "auth_access_policy")
+}
+
 func JWTTemplate(t *testing.T) *Resource {
 	return newResource(t, "jwt_template")
 }
