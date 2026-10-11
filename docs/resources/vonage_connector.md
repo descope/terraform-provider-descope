@@ -25,7 +25,10 @@ Manages a Vonage connector and its configuration in a Descope project. Send text
 
 ### Optional
 
+- `application_id` (String) The Vonage voice application ID.
 - `description` (String) A description of what your connector is used for.
+- `from_phone_voice` (String) The phone number that voice calls are placed from.
+- `private_key` (String, Sensitive) The Vonage voice application's private key, used to sign the voice API JWT.
 
 ### Read-Only
 
