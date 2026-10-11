@@ -136,6 +136,7 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.support_email":        "",
 				"sso_suite_settings.show_help_contact":    false,
 				"email_connector_id":                      "",
+				"external_email_template_id":              "",
 			}),
 		},
 		resource.TestStep{
@@ -169,10 +170,12 @@ func TestSSOSettingsTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
+				external_email_template_id = "d-external"
 			`),
 			Check: m.Check(map[string]any{
-				"email_connector_id": testacc.AttributeIsSet,
-				"email_template_id":  testacc.AttributeIsSet,
+				"email_connector_id":         testacc.AttributeIsSet,
+				"email_template_id":          testacc.AttributeIsSet,
+				"external_email_template_id": "d-external",
 			}),
 		},
 		// Dropping the reference resets the selection to the built-in System template; the settings update runs first, so the same apply can destroy it.

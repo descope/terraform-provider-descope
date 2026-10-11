@@ -26,6 +26,7 @@ Manages the project-level one-time passcode authentication settings. This is a s
 - `email_connector_id` (String) The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.
 - `email_template_id` (String) The ID of the email template to send to users, taken from a `descope_email_template` resource with its `method` set to `otp`. An empty value (the default) selects the built-in System template.
 - `expiration_time` (String) The amount of time that an OTP code will be valid for.
+- `external_email_template_id` (String) The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An empty value (the default) sends the Descope template selected by `email_template_id`.
 - `text_connector_id` (String) The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.
 - `text_template_id` (String) The ID of the text template to send to users, taken from a `descope_text_template` resource with its `method` set to `otp`. An empty value (the default) selects the built-in System template.
 - `voice_connector_id` (String) The ID of a voice call connector to use for making voice calls. An empty value (the default) selects the built-in Descope delivery service.
