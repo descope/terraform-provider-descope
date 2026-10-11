@@ -8,6 +8,7 @@ import (
 )
 
 func TestGovernance(t *testing.T) {
+	t.Skip("governance settings endpoint not yet deployed to the acceptance environment")
 	projectID := testacc.ProjectID(t)
 	o := testacc.Governance(t)
 	testacc.Run(t,
