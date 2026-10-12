@@ -33,9 +33,6 @@ In [Company Settings](https://app.descope.com/settings/company), create a manage
 
 Once the key is created, copy its **Audience (aud)** value.
 
--> The [`descope_management_key`](../resources/management_key) resource does not support federated management keys yet,
-so create them in the console.
-
 ## Configure the Provider
 
 Request a token from the workload's platform with the audience you copied, exactly as shown in the console, and pass
