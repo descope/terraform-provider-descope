@@ -133,6 +133,7 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewPasskeySettingsResource,
 		resources.NewTOTPSettingsResource,
 		resources.NewAdminPortalResource,
+		resources.NewGovernanceResource,
 		resources.NewMagicLinkSettingsResource,
 		resources.NewInviteSettingsResource,
 		resources.NewProjectSettingsResource,
