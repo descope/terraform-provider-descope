@@ -141,6 +141,11 @@ var attributeValueOverrides = map[string]string{
 	"refresh_token_response_method":     `"cookies"|"response_body"`,
 	"session_token_response_method":     `"response_body"|"cookies"`,
 	"client_auth_method":                `"client_secret_basic"|"client_secret_post"`,
+
+	"descope_auth_access_rule.effect":           `"allow"|"block"`,
+	"descope_auth_access_rule.expire_time":      `0|2000000000`,
+	"descope_auth_access_policy.default_action": `"allow"|"block"`,
+	"descope_auth_access_policy.rule_ids":       `[descope_auth_access_rule.cov_auth_access_rule.id]`,
 }
 
 var nestedValueOverrides = map[string]string{
@@ -149,6 +154,7 @@ var nestedValueOverrides = map[string]string{
 	"mandatory_user_attributes":              `[{ id = "email" }]|[{ id = "email" }, { id = "givenName" }]`,
 	"attributes_scopes":                      `[{ name = "profile", description = "cov scope" }]`,
 	"attribute_mapping":                      `[{ name = "cov-attr", value = "user.email" }]|[{ name = "cov-attr", value = "user.name" }]`,
+	"descope_auth_access_rule.conditions":    `[{ key = "request.ip", operator = "inCidr", values = ["10.0.0.0/8"] }]|[{ key = "user.email", operator = "in", values = ["a@example.com", "b@example.com"] }]`,
 }
 
 var namePatternValues = []struct {

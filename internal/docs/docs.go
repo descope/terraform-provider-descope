@@ -258,6 +258,32 @@ var docsUserAttribute = map[string]string{
 		"widget.",
 }
 
+var docsAuthAccessRule = map[string]string{
+	"project_id": "The ID of the project that this rule belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name":        "A name for the rule, shown in the console.",
+	"description": "An optional description of what the rule is for.",
+	"enabled": "Whether the rule is evaluated. A disabled rule keeps its place in the evaluation order " +
+		"but never matches.",
+	"effect": "Whether an authentication that matches the rule is `allow`ed or `block`ed.",
+	"conditions": "The conditions that must all match for the rule to apply. A rule with no conditions " +
+		"matches every authentication.",
+	"expire_time": "The time after which the rule is no longer evaluated, in seconds since the Unix epoch. " +
+		"Set to `0` for a rule that never expires.",
+}
+
+var docsAuthAccessCondition = map[string]string{
+	"key": "The attribute the condition checks. One of `request.ip`, `request.country`, `user.email`, " +
+		"`user.emailDomain`, `user.loginId` or `user.phone`.",
+	"operator": "How the attribute is compared with the values. One of `equal`, `notEqual`, `in`, `notIn`, " +
+		"`inCidr` or `notInCidr`. The CIDR operators are only supported with the `request.ip` key.",
+	"values": "The values to compare with. The `equal`, `notEqual`, `inCidr` and `notInCidr` operators " +
+		"take exactly one value. With `equal` and `notEqual` the value may instead be a reference of " +
+		"the form `{{jwtClaims.<name>}}`, which compares the attribute with that custom claim of the " +
+		"token the user presented. An absent claim never matches. Values must be in canonical form: lowercase emails and domains, uppercase " +
+		"country codes, phone numbers in E.164 form and IP addresses in their shortest form.",
+}
+
 var docsAbuseIPDBConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1741,6 +1767,17 @@ var docsAdminPortal = map[string]string{
 var docsAdminPortalWidget = map[string]string{
 	"widget_id": "The unique identifier of the Widget",
 	"type":      "The type of the Widget",
+}
+
+var docsAuthAccessPolicy = map[string]string{
+	"project_id": "The ID of the project that this policy belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"default_action": "Whether an authentication that matches no rule is `allow`ed or `block`ed.",
+	"rule_ids": "The evaluation order of the project's rules, as a list of `descope_auth_access_rule` ids. " +
+		"The list must include every rule in the project exactly once. Reference the `id` attribute " +
+		"of each rule resource (e.g., `descope_auth_access_rule.example.id`) so that Terraform orders " +
+		"the operations correctly, and avoid `create_before_destroy` on rule resources, which makes " +
+		"Terraform update the order before a removed rule is deleted.",
 }
 
 var docsEmbeddedLinkSettings = map[string]string{
