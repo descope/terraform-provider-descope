@@ -48,6 +48,7 @@ func ConnectorResources() []func() resource.Resource {
 		newConnectorResource[connectors.IntercomConnectorModel]("intercom_connector", "intercom", connectors.IntercomConnectorSchema),
 		newConnectorResource[connectors.LDAPConnectorModel]("ldap_connector", "ldap", connectors.LDAPConnectorSchema),
 		newConnectorResource[connectors.LokaliseConnectorModel]("lokalise_connector", "lokalise", connectors.LokaliseConnectorSchema),
+		newConnectorResource[connectors.MicrosoftSentinelConnectorModel]("microsoft_sentinel_connector", "microsoft-sentinel", connectors.MicrosoftSentinelConnectorSchema),
 		newConnectorResource[connectors.MixpanelConnectorModel]("mixpanel_connector", "mixpanel", connectors.MixpanelConnectorSchema),
 		newConnectorResource[connectors.MParticleConnectorModel]("mparticle_connector", "mparticle", connectors.MParticleConnectorSchema),
 		newConnectorResource[connectors.NewRelicConnectorModel]("newrelic_connector", "newrelic", connectors.NewRelicConnectorSchema),
