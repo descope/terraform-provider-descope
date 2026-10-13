@@ -17,14 +17,15 @@ func TestOTPSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"id":                 testacc.AttributeIsSet,
-				"project_id":         testacc.AttributeIsSet,
-				"disabled":           false,
-				"domain":             "",
-				"email_connector_id": "",
-				"text_connector_id":  "",
-				"voice_connector_id": "",
-				"expiration_time":    "3 minutes",
+				"id":                         testacc.AttributeIsSet,
+				"project_id":                 testacc.AttributeIsSet,
+				"disabled":                   false,
+				"domain":                     "",
+				"email_connector_id":         "",
+				"external_email_template_id": "",
+				"text_connector_id":          "",
+				"voice_connector_id":         "",
+				"expiration_time":            "3 minutes",
 			}),
 		},
 		// update the plain settings fields
@@ -89,13 +90,15 @@ func TestOTPSettingsTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
+				external_email_template_id = "d-external"
 				voice_template_id = `+v.Path()+`.id
 			`),
 			Check: m.Check(map[string]any{
-				"email_connector_id": testacc.AttributeIsSet,
-				"email_template_id":  testacc.AttributeIsSet,
-				"voice_template_id":  testacc.AttributeIsSet,
-				"text_template_id":   "",
+				"email_connector_id":         testacc.AttributeIsSet,
+				"email_template_id":          testacc.AttributeIsSet,
+				"external_email_template_id": "d-external",
+				"voice_template_id":          testacc.AttributeIsSet,
+				"text_template_id":           "",
 			}),
 		},
 	)

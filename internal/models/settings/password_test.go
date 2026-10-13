@@ -82,13 +82,14 @@ func TestPasswordSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"min_length":         8,
-				"non_alphanumeric":   true,
-				"expiration":         false,
-				"lock":               false,
-				"enforce_strength":   "none",
-				"mask_errors":        true,
-				"email_connector_id": "",
+				"min_length":                 8,
+				"non_alphanumeric":           true,
+				"expiration":                 false,
+				"lock":                       false,
+				"enforce_strength":           "none",
+				"mask_errors":                true,
+				"email_connector_id":         "",
+				"external_email_template_id": "",
 			}),
 		},
 		resource.TestStep{
@@ -144,10 +145,12 @@ func TestPasswordSettingsTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
+				external_email_template_id = "d-external"
 			`),
 			Check: m.Check(map[string]any{
-				"email_connector_id": testacc.AttributeIsSet,
-				"email_template_id":  testacc.AttributeIsSet,
+				"email_connector_id":         testacc.AttributeIsSet,
+				"email_template_id":          testacc.AttributeIsSet,
+				"external_email_template_id": "d-external",
 			}),
 		},
 	)
