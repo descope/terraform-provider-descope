@@ -29,22 +29,24 @@ func TestSESConnector(t *testing.T) {
 				tags = {
     							"key" = "s6gc"
     						}
+				configuration_set_name = "guttmdz2j2twslbt37c4"
 			`),
 			Check: c.Check(map[string]any{
-				"id":                testacc.AttributeIsSet,
-				"project_id":        testacc.AttributeIsSet,
-				"name":              c.Name,
-				"description":       "",
-				"auth_type":         "credentials",
-				"access_key_id":     "ezzrllbqu22",
-				"secret_access_key": "xiyuadzk4w64hog",
-				"role_arn":          "",
-				"external_id":       "",
-				"region":            "y2l5fg",
-				"endpoint":          "w27xxsgz",
-				"sender_email":      "pkik6p7rr",
-				"sender_name":       "qquro4c7",
-				"tags.key":          "s6gc",
+				"id":                     testacc.AttributeIsSet,
+				"project_id":             testacc.AttributeIsSet,
+				"name":                   c.Name,
+				"description":            "",
+				"auth_type":              "credentials",
+				"access_key_id":          "ezzrllbqu22",
+				"secret_access_key":      "xiyuadzk4w64hog",
+				"role_arn":               "",
+				"external_id":            "",
+				"region":                 "y2l5fg",
+				"endpoint":               "w27xxsgz",
+				"sender_email":           "pkik6p7rr",
+				"sender_name":            "qquro4c7",
+				"tags.key":               "s6gc",
+				"configuration_set_name": "guttmdz2j2twslbt37c4",
 			}),
 		},
 		// update the connector in place with changed field values
@@ -64,19 +66,21 @@ func TestSESConnector(t *testing.T) {
 				tags = {
     							"key" = "fnld"
     						}
+				configuration_set_name = "l65augp7jxxm5itoj3kr"
 			`),
 			Check: c.Check(map[string]any{
-				"description":       "updated",
-				"auth_type":         "credentials",
-				"access_key_id":     "an2mu73kjot",
-				"secret_access_key": "vzjnvlzyyvbdwad",
-				"role_arn":          "",
-				"external_id":       "",
-				"region":            "versrj",
-				"endpoint":          "ef4vxrwc",
-				"sender_email":      "macajtsxd",
-				"sender_name":       "amlgf3lm",
-				"tags.key":          "fnld",
+				"description":            "updated",
+				"auth_type":              "credentials",
+				"access_key_id":          "an2mu73kjot",
+				"secret_access_key":      "vzjnvlzyyvbdwad",
+				"role_arn":               "",
+				"external_id":            "",
+				"region":                 "versrj",
+				"endpoint":               "ef4vxrwc",
+				"sender_email":           "macajtsxd",
+				"sender_name":            "amlgf3lm",
+				"tags.key":               "fnld",
+				"configuration_set_name": "l65augp7jxxm5itoj3kr",
 			}),
 		},
 	)

@@ -1146,6 +1146,9 @@ var docsSESConnector = map[string]string{
 	"sender_name": "The name shown as the sender of the emails.",
 	"tags": "Custom AWS SES message tags added to every email sent through this connector, as " +
 		"key/value pairs.",
+	"configuration_set_name": "The SES configuration set to send every email with, so SES events such as " +
+		"bounces, complaints and deliveries carry it. It must exist in the same AWS " +
+		"account and region.",
 }
 
 var docsAuditFilterField = map[string]string{
