@@ -63,6 +63,11 @@
       "name": "fromName",
       "description": "The name shown as the sender of the emails.",
       "type": "string"
+    },
+    {
+      "name": "tags",
+      "description": "Custom AWS SES message tags added to every email sent through this connector, as key/value pairs.",
+      "type": "object"
     }
   ]
 }

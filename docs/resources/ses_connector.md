@@ -32,6 +32,7 @@ Manages a AWS SES connector and its configuration in a Descope project. Send ema
 - `role_arn` (String) The ARN of the IAM role to assume. Required when the authentication type is 'assumeRole'.
 - `secret_access_key` (String, Sensitive) The AWS secret access key. Required when the authentication type is 'credentials'.
 - `sender_name` (String) The name shown as the sender of the emails.
+- `tags` (Map of String) Custom AWS SES message tags added to every email sent through this connector, as key/value pairs.
 
 ### Read-Only
 
