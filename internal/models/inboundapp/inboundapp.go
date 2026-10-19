@@ -127,7 +127,7 @@ func (m *InboundAppModel) Validate(h *helpers.Handler) {
 }
 
 func isPublicClientTypeChange(_ context.Context, req planmodifier.StringRequest, resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {
-	resp.RequiresReplace = req.StateValue.ValueString() == "public" || req.PlanValue.ValueString() == "public"
+	resp.RequiresReplace = req.PlanValue.IsUnknown() || req.StateValue.ValueString() == "public" || req.PlanValue.ValueString() == "public"
 }
 
 // Protected by default because replacing an inbound app issues a new client ID and secret.

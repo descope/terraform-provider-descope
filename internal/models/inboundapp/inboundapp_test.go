@@ -35,18 +35,26 @@ func TestInboundAppClientTypeReplacement(t *testing.T) {
 		t.Fatalf("expected client_type to be a string attribute")
 	}
 	raw := tftypes.NewValue(tftypes.Object{}, map[string]tftypes.Value{})
+	requiresReplace := func(state, plan types.String) bool {
+		req := planmodifier.StringRequest{State: tfsdk.State{Raw: raw}, Plan: tfsdk.Plan{Raw: raw}, StateValue: state, PlanValue: plan}
+		resp := &planmodifier.StringResponse{PlanValue: req.PlanValue}
+		for _, modifier := range attr.PlanModifiers {
+			modifier.PlanModifyString(context.Background(), req, resp)
+		}
+		return resp.RequiresReplace
+	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			req := planmodifier.StringRequest{State: tfsdk.State{Raw: raw}, Plan: tfsdk.Plan{Raw: raw}, StateValue: types.StringValue(tc.state), PlanValue: types.StringValue(tc.plan)}
-			resp := &planmodifier.StringResponse{PlanValue: req.PlanValue}
-			for _, modifier := range attr.PlanModifiers {
-				modifier.PlanModifyString(context.Background(), req, resp)
-			}
-			if resp.RequiresReplace != tc.replace {
-				t.Errorf("expected requires replace to be %t, got %t", tc.replace, resp.RequiresReplace)
+			if got := requiresReplace(types.StringValue(tc.state), types.StringValue(tc.plan)); got != tc.replace {
+				t.Errorf("expected requires replace to be %t, got %t", tc.replace, got)
 			}
 		})
 	}
+	t.Run("unknown plan value replaces", func(t *testing.T) {
+		if !requiresReplace(types.StringValue("confidential"), types.StringUnknown()) {
+			t.Errorf("expected requires replace when the planned client type is unknown")
+		}
+	})
 }
 
 func TestInboundAppDeletionProtection(t *testing.T) {
