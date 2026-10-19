@@ -104,11 +104,12 @@ project. If your configuration already manages an inbound app, delete the genera
 block, or two resources will manage the same app. tfexport prints a warning for each inbound app it exports as a
 reminder.
 
-### Adding `client_type` to an existing inbound app replaces it
+### Adding `client_type` to an existing inbound app
 
-v1.0 replaces the `non_confidential_client` attribute of `descope_inbound_app` with `client_type`. Don't add
-`client_type` to an app that already exists: changing it replaces the app, which gives it a new client ID and secret.
-Removing `non_confidential_client` on its own plans no changes.
+v1.0 replaces the `non_confidential_client` attribute of `descope_inbound_app` with `client_type`. Removing
+`non_confidential_client` on its own plans no changes. Setting `client_type = "confidential"` on an app that already
+exists updates it in place and keeps its client ID and secret, but setting `client_type = "public"` replaces the app,
+which gives it a new client ID and secret.
 
 ### HTTP connectors created with v0.3.x plan an update
 

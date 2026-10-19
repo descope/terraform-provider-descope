@@ -99,10 +99,12 @@ var docsOIDCApp = map[string]string{
 		"stays empty. The value in the state is never overwritten afterwards, so a secret rotated via " +
 		"the API or the Descope console is not reflected until the resource is replaced. Changing this " +
 		"value will require the resource to be deleted and recreated.",
-	"client_type": "OAuth client confidentiality. One of `\"\"` (default — legacy access-key authentication), " +
+	"client_type": "OAuth client confidentiality. One of `\"\"` (the default, legacy mode with access-key authentication), " +
 		"`\"confidential\"` (a dedicated client secret is generated for the app), or `\"public\"` (PKCE " +
-		"only, no client secret). Changing this value on an existing application changes how its " +
-		"clients must authenticate, so coordinate the change with the application's developers.",
+		"only, no client secret). The legacy mode is only available in accounts created before it was " +
+		"retired, so apps in newer accounts must set `\"confidential\"` or `\"public\"`. Changing this value on " +
+		"an existing application changes how its clients must authenticate, so coordinate the change with " +
+		"the application's developers.",
 	"approved_redirect_urls": "A list of approved redirect URLs for this application (supports `*` wildcards). When set, " +
 		"redirect URIs are validated against this per-app list; when empty, validation falls back to " +
 		"the project's approved/trusted domains.",
@@ -1528,8 +1530,10 @@ var docsInboundApp = map[string]string{
 	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
 		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
 	"client_type": "The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for " +
-		"one that authenticates with PKCE and has no secret. Leave empty to let the backend decide. Changing " +
-		"this value after creation will require the resource to be replaced.",
+		"one that authenticates with PKCE and has no secret. The empty default is the legacy mode, which is only " +
+		"available in accounts created before it was retired, so apps in newer accounts must set `confidential` " +
+		"or `public`. Changing between the legacy mode and `confidential` updates the app in place, while " +
+		"changing to or from `public` replaces the resource, which issues a new client ID and secret.",
 	"client_id": "A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing " +
 		"this value after creation will require the resource to be replaced.",
 	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +

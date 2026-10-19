@@ -156,10 +156,12 @@ client_type
 
 - Type: `string`
 
-OAuth client confidentiality. One of `""` (default — legacy access-key authentication),
+OAuth client confidentiality. One of `""` (the default, legacy mode with access-key authentication),
 `"confidential"` (a dedicated client secret is generated for the app), or `"public"` (PKCE
-only, no client secret). Changing this value on an existing application changes how its
-clients must authenticate, so coordinate the change with the application's developers.
+only, no client secret). The legacy mode is only available in accounts created before it was
+retired, so apps in newer accounts must set `"confidential"` or `"public"`. Changing this value on
+an existing application changes how its clients must authenticate, so coordinate the change with
+the application's developers.
 
 
 

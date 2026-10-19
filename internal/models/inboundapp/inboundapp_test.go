@@ -1,12 +1,53 @@
 package inboundapp_test
 
 import (
+	"context"
 	"regexp"
 	"testing"
 
+	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
 	"github.com/descope/terraform-provider-descope/tools/testacc"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
+
+func TestInboundAppClientTypeReplacement(t *testing.T) {
+	testCases := []struct {
+		name    string
+		state   string
+		plan    string
+		replace bool
+	}{
+		{"legacy to confidential updates in place", "", "confidential", false},
+		{"confidential to legacy updates in place", "confidential", "", false},
+		{"legacy to public replaces", "", "public", true},
+		{"confidential to public replaces", "confidential", "public", true},
+		{"public to confidential replaces", "public", "confidential", true},
+		{"public to legacy replaces", "public", "", true},
+		{"unchanged public is kept", "public", "public", false},
+	}
+	attr, ok := inboundapp.InboundAppAttributes["client_type"].(schema.StringAttribute)
+	if !ok {
+		t.Fatalf("expected client_type to be a string attribute")
+	}
+	raw := tftypes.NewValue(tftypes.Object{}, map[string]tftypes.Value{})
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			req := planmodifier.StringRequest{State: tfsdk.State{Raw: raw}, Plan: tfsdk.Plan{Raw: raw}, StateValue: types.StringValue(tc.state), PlanValue: types.StringValue(tc.plan)}
+			resp := &planmodifier.StringResponse{PlanValue: req.PlanValue}
+			for _, modifier := range attr.PlanModifiers {
+				modifier.PlanModifyString(context.Background(), req, resp)
+			}
+			if resp.RequiresReplace != tc.replace {
+				t.Errorf("expected requires replace to be %t, got %t", tc.replace, resp.RequiresReplace)
+			}
+		})
+	}
+}
 
 func TestInboundAppDeletionProtection(t *testing.T) {
 	p := testacc.Project(t)
@@ -15,6 +56,7 @@ func TestInboundAppDeletionProtection(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 			`),
 			Check: a.Check(map[string]any{
 				"deletion_protection": testacc.AttributeIsNotSet,
@@ -23,6 +65,7 @@ func TestInboundAppDeletionProtection(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 			`),
 			Destroy:     true,
 			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),
@@ -38,6 +81,7 @@ func TestInboundAppDeletionProtection(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 				deletion_protection = false
 			`),
 		},
@@ -62,17 +106,18 @@ func TestInboundApp(t *testing.T) {
 	j2 := testacc.JWTTemplate(t)
 	j2.ID = "other"
 	testacc.Run(t,
-		// Test basic creation with required fields only
+		// Test basic creation with the required fields and a client type
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 			`),
 			Check: a.Check(map[string]any{
 				"id":                               testacc.AttributeIsSet,
 				"project_id":                       testacc.AttributeIsSet,
 				"name":                             a.Name,
 				"description":                      "",
-				"client_type":                      "",
+				"client_type":                      "confidential",
 				"client_id":                        testacc.AttributeIsSet,
 				"client_secret":                    testacc.AttributeIsSet,
 				"force_pkce":                       "false",
@@ -90,6 +135,7 @@ func TestInboundApp(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 				description = "Updated description"
 				force_pkce = true
 				approved_callback_urls = ["https://example.com/callback"]
@@ -121,6 +167,7 @@ func TestInboundApp(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 				session_settings = {
 					enabled = true
 					refresh_token_expiration = "4 weeks"
@@ -143,6 +190,7 @@ func TestInboundApp(t *testing.T) {
 				template = "{}"
 			`) + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 				session_settings = {
 					enabled = true
 					refresh_token_expiration = "4 weeks"
@@ -166,6 +214,7 @@ func TestInboundApp(t *testing.T) {
 				template = "{}"
 			`) + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 				session_settings = {
 					enabled = true
 					refresh_token_expiration = "4 weeks"
@@ -192,10 +241,11 @@ func TestInboundApp(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 				deletion_protection = false
 			`),
 		},
-		// force_dpop needs an explicit client type, and setting one replaces the app, so this runs after protection is disabled
+		// force_dpop needs an explicit client type
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
@@ -212,6 +262,7 @@ func TestInboundApp(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
+				client_type = "confidential"
 				deletion_protection = false
 			`),
 			Destroy: true,

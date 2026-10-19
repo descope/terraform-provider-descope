@@ -11,8 +11,13 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
+
+const clientTypeReplacementDescription = "Changing the client type to or from public replaces the app."
+
+var clientTypeReplacement = stringplanmodifier.RequiresReplaceIf(isPublicClientTypeChange, clientTypeReplacementDescription, clientTypeReplacementDescription)
 
 var InboundAppAttributes = map[string]schema.Attribute{
 	"id":                               stringattr.Identifier(),
@@ -31,7 +36,7 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"force_add_all_authorization_info": boolattr.Default(false),
 	"force_dpop":                       boolattr.Default(false),
 	"default_audience":                 stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")), // XXX maybe switch to set
-	"client_type":                      stringattr.Default("", stringvalidator.OneOf("", "confidential", "public"), stringplanmodifier.RequiresReplace()),
+	"client_type":                      stringattr.Default("", stringvalidator.OneOf("", "confidential", "public"), clientTypeReplacement),
 	"client_id":                        stringattr.Optional(stringplanmodifier.RequiresReplace()),
 	"client_secret":                    stringattr.SecretGenerated(true),
 	"force_pkce":                       boolattr.Default(false),
@@ -106,7 +111,7 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ForceAddAllAuthorizationInfo, data, "forceAddAllAuthorizationInfo")
 	boolattr.Set(&m.ForceDpop, data, "forceDpop")
 	stringattr.Set(&m.DefaultAudience, data, "defaultAudience")
-	stringattr.SetDefault(&m.ClientType, data, "clientType", "") // omitted by the backend when unset, and Set would leave a null that forces a replacement on import
+	stringattr.SetDefault(&m.ClientType, data, "clientType", "") // omitted by the backend when unset, and Set would leave a null that never matches the schema default
 	stringattr.Set(&m.ClientId, data, "clientId")
 	stringattr.Set(&m.ClientSecret, data, "clientSecret")
 	boolattr.Set(&m.ForcePkce, data, "forcePkce")
@@ -119,6 +124,10 @@ func (m *InboundAppModel) Validate(h *helpers.Handler) {
 	if m.ClientSecret.ValueString() != "" && m.ClientType.ValueString() == "public" {
 		h.Conflict("The client_secret field cannot be used when client_type is public, as public clients do not have a secret")
 	}
+}
+
+func isPublicClientTypeChange(_ context.Context, req planmodifier.StringRequest, resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+	resp.RequiresReplace = req.StateValue.ValueString() == "public" || req.PlanValue.ValueString() == "public"
 }
 
 // Protected by default because replacing an inbound app issues a new client ID and secret.

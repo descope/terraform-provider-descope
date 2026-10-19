@@ -155,8 +155,10 @@ client_type
 - Type: `string`
 
 The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for
-one that authenticates with PKCE and has no secret. Leave empty to let the backend decide. Changing
-this value after creation will require the resource to be replaced.
+one that authenticates with PKCE and has no secret. The empty default is the legacy mode, which is only
+available in accounts created before it was retired, so apps in newer accounts must set `confidential`
+or `public`. Changing between the legacy mode and `confidential` updates the app in place, while
+changing to or from `public` replaces the resource, which issues a new client ID and secret.
 
 
 
