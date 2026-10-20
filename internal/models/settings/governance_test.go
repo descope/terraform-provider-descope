@@ -8,6 +8,7 @@ import (
 )
 
 func TestGovernance(t *testing.T) {
+	testacc.RequireLicense(t, "allowAgenticGovernance")
 	projectID := testacc.ProjectID(t)
 	o := testacc.Governance(t)
 	testacc.Run(t,
