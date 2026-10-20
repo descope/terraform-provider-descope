@@ -2,6 +2,7 @@ package inboundapp_test
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"testing"
 
@@ -13,6 +14,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
 func TestInboundAppClientTypeReplacement(t *testing.T) {
@@ -23,7 +25,7 @@ func TestInboundAppClientTypeReplacement(t *testing.T) {
 		replace bool
 	}{
 		{"legacy to confidential updates in place", "", "confidential", false},
-		{"confidential to legacy updates in place", "confidential", "", false},
+		{"confidential to legacy replaces", "confidential", "", true},
 		{"legacy to public replaces", "", "public", true},
 		{"confidential to public replaces", "confidential", "public", true},
 		{"public to confidential replaces", "public", "confidential", true},
@@ -274,6 +276,82 @@ func TestInboundApp(t *testing.T) {
 				deletion_protection = false
 			`),
 			Destroy: true,
+		},
+	)
+}
+
+func TestInboundAppLegacyClientType(t *testing.T) {
+	p := testacc.Project(t)
+	a := testacc.InboundApp(t)
+
+	var clientID, clientSecret string
+	captureClientID := func(s string) error {
+		clientID = s
+		return nil
+	}
+	captureClientSecret := func(s string) error {
+		if s == "" {
+			return fmt.Errorf("expected a client secret for a legacy app")
+		}
+		clientSecret = s
+		return nil
+	}
+	sameClientID := func(s string) error {
+		if s != clientID {
+			return fmt.Errorf("expected client_id to be preserved as %s, got %s", clientID, s)
+		}
+		return nil
+	}
+	sameClientSecret := func(s string) error {
+		if s != clientSecret {
+			return fmt.Errorf("expected client_secret to be preserved")
+		}
+		return nil
+	}
+
+	testacc.Run(t,
+		// A legacy app is created with a client ID and secret
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = ""
+				deletion_protection = false
+			`),
+			Check: a.Check(map[string]any{
+				"client_type":   "",
+				"client_id":     captureClientID,
+				"client_secret": captureClientSecret,
+			}),
+		},
+		// Moving from the legacy type to confidential updates the app in place and keeps its credentials
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(a.Path(), plancheck.ResourceActionUpdate)},
+			},
+			Check: a.Check(map[string]any{
+				"client_type":   "confidential",
+				"client_id":     sameClientID,
+				"client_secret": sameClientSecret,
+			}),
+		},
+		// Moving back to the legacy type replaces the app
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = ""
+				deletion_protection = false
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(a.Path(), plancheck.ResourceActionReplace)},
+			},
+			Check: a.Check(map[string]any{
+				"client_type": "",
+			}),
 		},
 	)
 }

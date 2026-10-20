@@ -15,9 +15,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
 
-const clientTypeReplacementDescription = "Changing the client type to or from public replaces the app."
+const clientTypeReplacementDescription = "Changing the client type replaces the app, except from the legacy empty value to confidential."
 
-var clientTypeReplacement = stringplanmodifier.RequiresReplaceIf(isPublicClientTypeChange, clientTypeReplacementDescription, clientTypeReplacementDescription)
+var clientTypeReplacement = stringplanmodifier.RequiresReplaceIf(isClientTypeReplacement, clientTypeReplacementDescription, clientTypeReplacementDescription)
 
 var InboundAppAttributes = map[string]schema.Attribute{
 	"id":                               stringattr.Identifier(),
@@ -126,8 +126,9 @@ func (m *InboundAppModel) Validate(h *helpers.Handler) {
 	}
 }
 
-func isPublicClientTypeChange(_ context.Context, req planmodifier.StringRequest, resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {
-	resp.RequiresReplace = req.PlanValue.IsUnknown() || req.StateValue.ValueString() == "public" || req.PlanValue.ValueString() == "public"
+func isClientTypeReplacement(_ context.Context, req planmodifier.StringRequest, resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {
+	state, plan := req.StateValue.ValueString(), req.PlanValue.ValueString()
+	resp.RequiresReplace = req.PlanValue.IsUnknown() || state == "public" || plan == "public" || (state != "" && plan == "")
 }
 
 // Protected by default because replacing an inbound app issues a new client ID and secret.

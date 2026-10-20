@@ -239,19 +239,19 @@ func TestOIDCAppDeletionProtection(t *testing.T) {
 
 	testacc.Run(t,
 		resource.TestStep{
-			Config: a.Config(project),
+			Config: a.Config(project, `client_type = "confidential"`),
 			Check: a.Check(map[string]any{
 				"id":                  testacc.AttributeIsSet,
 				"deletion_protection": testacc.AttributeIsNotSet,
 			}),
 		},
 		resource.TestStep{
-			Config:      a.Config(project),
+			Config:      a.Config(project, `client_type = "confidential"`),
 			Destroy:     true,
 			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),
 		},
 		resource.TestStep{
-			Config: a.Config(project, `deletion_protection = false`),
+			Config: a.Config(project, `client_type = "confidential"`, `deletion_protection = false`),
 		},
 	)
 }

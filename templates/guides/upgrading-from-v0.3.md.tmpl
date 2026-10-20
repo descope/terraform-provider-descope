@@ -108,8 +108,13 @@ reminder.
 
 v1.0 replaces the `non_confidential_client` attribute of `descope_inbound_app` with `client_type`. Removing
 `non_confidential_client` on its own plans no changes. Setting `client_type = "confidential"` on an app that already
-exists updates it in place and keeps its client ID and secret, but setting `client_type = "public"` replaces the app,
-which gives it a new client ID and secret.
+exists updates it in place and keeps its client ID and existing client secret, but setting `client_type = "public"`
+replaces the app, which gives it a new client ID and secret.
+
+An app created with `non_confidential_client = true` was never issued a client secret, so after switching it to
+`confidential` it needs one. Rotate its client secret, for example in the Descope console, or replace the app with
+`terraform apply -replace=<address>` to get a new client ID and secret. Replacing it requires `deletion_protection`
+to be set to `false` and applied first.
 
 ### HTTP connectors created with v0.3.x plan an update
 

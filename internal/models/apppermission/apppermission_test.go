@@ -14,7 +14,7 @@ func TestAppPermission(t *testing.T) {
 	a := testacc.OIDCApp(t)
 	p := testacc.AppPermission(t)
 	project := `project_id = "` + projectID + `"`
-	app := a.Config(project, `deletion_protection = false`)
+	app := a.Config(project, `client_type = "confidential"`, `deletion_protection = false`)
 	appID := `app_id = ` + a.Path() + `.id`
 
 	var permissionID string

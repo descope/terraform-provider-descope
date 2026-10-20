@@ -72,6 +72,7 @@ resource "descope_role" "sink" {
 resource "descope_oidc_app" "sink" {
   project_id          = descope_project.test.id
   name                = "sink-portal"
+  client_type         = "confidential"
   deletion_protection = false
 }
 

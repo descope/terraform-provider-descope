@@ -1532,8 +1532,11 @@ var docsInboundApp = map[string]string{
 	"client_type": "The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for " +
 		"one that authenticates with PKCE and has no secret. The empty default is the legacy mode, which is only " +
 		"available in accounts created before it was retired, so apps in newer accounts must set `confidential` " +
-		"or `public`. Changing between the legacy mode and `confidential` updates the app in place, while " +
-		"changing to or from `public` replaces the resource, which issues a new client ID and secret.",
+		"or `public`. Moving from the legacy mode to `confidential` updates the app in place and keeps its " +
+		"client ID, and any other change replaces the resource, which issues a new client ID and secret. An app " +
+		"that was never issued a client secret, such as one created with `non_confidential_client = true` in " +
+		"v0.3, needs one after moving to `confidential`: rotate its client secret, for example in the Descope " +
+		"console, or force a replacement with `terraform apply -replace` to get a new client ID and secret.",
 	"client_id": "A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing " +
 		"this value after creation will require the resource to be replaced.",
 	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +
