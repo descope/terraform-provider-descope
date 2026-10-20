@@ -73,6 +73,18 @@ being embedded.
 
 
 
+disable_auth_hosting
+--------------------
+
+- Type: `bool`
+
+When enabled, Descope stops serving this project's flows from its hosted login pages, both
+at the Descope domain and at the `/login` path of a custom domain. Anything that relies on
+the default hosted login page URL, such as a federated application or an embedded link that
+lands on it, stops working. Flows running in your own application are unaffected.
+
+
+
 test_users_loginid_regexp
 -------------------------
 
