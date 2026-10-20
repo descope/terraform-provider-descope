@@ -26,6 +26,7 @@ Manages the project-level domain, security, and test user settings. This is a si
 - `approved_domains` (Set of String) List of approved domains that are allowed for redirect and verification URLs for different authentication methods.
 - `custom_domain` (String) A custom CNAME domain for the project, used instead of the default Descope base URL for authentication traffic. Must be a subdomain of the `app_url` domain.
 - `default_no_sso_apps` (Boolean) Whether new users should not be given access to any federated applications by default.
+- `disable_auth_hosting` (Boolean) When enabled, Descope stops serving this project's flows from its hosted login pages, both at the Descope domain and at the `/login` path of a custom domain. Anything that relies on the default hosted login page URL, such as a federated application or an embedded link that lands on it, stops working. Flows running in your own application are unaffected.
 - `tenant_user_isolation` (Boolean) Isolate users per tenant so the same login ID is treated as a separate identity in each tenant, with independent credentials and MFA state.
 - `test_users_loginid_regexp` (String) A regular expression pattern that, when a user is created with a matching login ID, will automatically mark the user as a test user.
 - `test_users_static_otp` (String) A static OTP code that can be used by test users instead of a real verification code. Must be set together with `test_users_verifier_regexp`.
