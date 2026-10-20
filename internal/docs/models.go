@@ -159,6 +159,7 @@ func InjectModels() {
 	inject(settings.AdminPortalWidgetAttributes, docsAdminPortalWidget)
 	inject(settings.EmbeddedLinkSettingsAttributes, docsEmbeddedLinkSettings)
 	inject(settings.EnchantedLinkSettingsAttributes, docsEnchantedLinkSettings)
+	inject(settings.GovernanceAttributes, docsGovernance)
 	inject(settings.InviteSettingsAttributes, docsInviteSettings)
 	inject(settings.MagicLinkSettingsAttributes, docsMagicLinkSettings)
 	inject(settings.OAuthSettingsAttributes, docsOAuthSettings)
