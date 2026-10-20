@@ -3,12 +3,12 @@
 page_title: "descope_vonage_connector Resource - descope"
 subcategory: ""
 description: |-
-  Manages a Vonage connector and its configuration in a Descope project. Send text messages through Vonage.
+  Manages a Vonage connector and its configuration in a Descope project. Send text messages and place voice calls through Vonage.
 ---
 
 # descope_vonage_connector (Resource)
 
-Manages a Vonage connector and its configuration in a Descope project. Send text messages through Vonage.
+Manages a Vonage connector and its configuration in a Descope project. Send text messages and place voice calls through Vonage.
 
 
 
@@ -17,18 +17,18 @@ Manages a Vonage connector and its configuration in a Descope project. Send text
 
 ### Required
 
-- `api_key` (String) The Vonage API key.
-- `api_secret` (String, Sensitive) The Vonage API secret.
 - `name` (String) A custom name for your connector.
 - `project_id` (String) The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.
-- `sender` (String) The sender ID or phone number that text messages are sent from.
 
 ### Optional
 
+- `api_key` (String) The Vonage API key.
+- `api_secret` (String, Sensitive) The Vonage API secret.
 - `application_id` (String) The Vonage voice application ID.
 - `description` (String) A description of what your connector is used for.
 - `from_phone_voice` (String) The phone number that voice calls are placed from.
 - `private_key` (String, Sensitive) The Vonage voice application's private key, used to sign the voice API JWT.
+- `sender` (String) The sender ID or phone number that text messages are sent from.
 
 ### Read-Only
 

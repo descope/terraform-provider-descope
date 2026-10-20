@@ -12,7 +12,7 @@ import (
 // descope_vonage_connector is a standalone Vonage connector with a server-assigned id.
 
 var VonageConnectorSchema = schema.Schema{
-	MarkdownDescription: "Manages a Vonage connector and its configuration in a Descope project. Send text messages through Vonage.",
+	MarkdownDescription: "Manages a Vonage connector and its configuration in a Descope project. Send text messages and place voice calls through Vonage.",
 	Attributes:          VonageConnectorAttributes,
 }
 
@@ -22,9 +22,9 @@ var VonageConnectorAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"api_key":          stringattr.Required(),
-	"api_secret":       stringattr.SecretRequired(),
-	"sender":           stringattr.Required(),
+	"api_key":          stringattr.Default(""),
+	"api_secret":       stringattr.SecretOptional(),
+	"sender":           stringattr.Default(""),
 	"application_id":   stringattr.Default(""),
 	"private_key":      stringattr.SecretOptional(),
 	"from_phone_voice": stringattr.Default(""),

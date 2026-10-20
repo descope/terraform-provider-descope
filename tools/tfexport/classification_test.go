@@ -20,7 +20,7 @@ var publicByDesign = map[string]bool{
 	"public_write_key": true, // the segment browser library needs this one in the page, unlike write_key
 	"key":              true, // generic map key fields, not credentials
 
-	"descope_vonage_connector.api_key": true,
+	"descope_vonage_connector.api_key": true, // vonage api keys are the basic auth username, the credential is api_secret
 }
 
 // knownMisclassified carry real secret material but are not marked sensitive - each entry is an open bug that must go once its template is fixed.

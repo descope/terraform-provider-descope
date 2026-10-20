@@ -2,25 +2,22 @@
   "id": "vonage",
   "name": "Vonage",
   "extProvider": true,
-  "description": "Send text messages through Vonage.",
+  "description": "Send text messages and place voice calls through Vonage.",
   "fields": [
     {
       "name": "apiKey",
       "description": "The Vonage API key.",
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     {
       "name": "apiSecret",
       "description": "The Vonage API secret.",
-      "type": "secret",
-      "required": true
+      "type": "secret"
     },
     {
       "name": "from",
       "description": "The sender ID or phone number that text messages are sent from.",
-      "type": "string",
-      "required": true
+      "type": "string"
     },
     {
       "name": "applicationId",
