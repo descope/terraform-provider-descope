@@ -46,7 +46,7 @@ func OutOfBandPost(t *testing.T, projectID, path string, body map[string]any) {
 // DESCOPE_TESTACC_LICENSED lists the licenses the test company has (comma separated), or is "true" for all of them.
 func RequireLicense(t *testing.T, license string) {
 	licensed := os.Getenv("DESCOPE_TESTACC_LICENSED")
-	if licensed != "true" && !slices.Contains(strings.Split(licensed, ","), license) {
+	if licensed != "true" && !slices.ContainsFunc(strings.Split(licensed, ","), func(s string) bool { return strings.TrimSpace(s) == license }) {
 		t.Skipf("Skipping test that requires the %s license (add it to DESCOPE_TESTACC_LICENSED to run)", license)
 	}
 }
