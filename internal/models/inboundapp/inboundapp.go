@@ -36,7 +36,7 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"force_add_all_authorization_info": boolattr.Default(false),
 	"force_dpop":                       boolattr.Default(false),
 	"default_audience":                 stringattr.Default("", stringvalidator.OneOf("", "projectId", "clientId")), // XXX maybe switch to set
-	"client_type":                      stringattr.Default("", stringvalidator.OneOf("", "confidential", "public"), clientTypeReplacement),
+	"client_type":                      stringattr.Optional(stringvalidator.OneOf("", "confidential", "public"), clientTypeReplacement),
 	"client_id":                        stringattr.Optional(stringplanmodifier.RequiresReplace()),
 	"client_secret":                    stringattr.SecretGenerated(true),
 	"force_pkce":                       boolattr.Default(false),
@@ -111,7 +111,7 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ForceAddAllAuthorizationInfo, data, "forceAddAllAuthorizationInfo")
 	boolattr.Set(&m.ForceDpop, data, "forceDpop")
 	stringattr.Set(&m.DefaultAudience, data, "defaultAudience")
-	stringattr.SetDefault(&m.ClientType, data, "clientType", "") // omitted by the backend when unset, and Set would leave a null that never matches the schema default
+	stringattr.SetDefault(&m.ClientType, data, "clientType", "") // omitted by the backend for the legacy type, and Set would leave a null on import
 	stringattr.Set(&m.ClientId, data, "clientId")
 	stringattr.Set(&m.ClientSecret, data, "clientSecret")
 	boolattr.Set(&m.ForcePkce, data, "forcePkce")

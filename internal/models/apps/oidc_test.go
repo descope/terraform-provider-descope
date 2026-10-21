@@ -13,7 +13,11 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/apps"
 	"github.com/descope/terraform-provider-descope/tools/testacc"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-go/tftypes"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
@@ -105,6 +109,49 @@ func TestOIDCAppClientIDPlan(t *testing.T) {
 	}
 }
 
+func TestOIDCAppOmittedClientType(t *testing.T) {
+	ctx := context.Background()
+	attr, ok := apps.OIDCAppAttributes["client_type"].(schema.StringAttribute)
+	if !ok {
+		t.Fatalf("expected client_type to be a string attribute")
+	}
+	t.Run("create leaves it to the server", func(t *testing.T) {
+		if attr.Default != nil || !attr.Computed {
+			t.Errorf("expected client_type to be computed with no default")
+		}
+	})
+	t.Run("update keeps the stored value", func(t *testing.T) {
+		raw := tftypes.NewValue(tftypes.Object{}, map[string]tftypes.Value{})
+		req := planmodifier.StringRequest{State: tfsdk.State{Raw: raw}, Plan: tfsdk.Plan{Raw: raw}, StateValue: types.StringValue("confidential"), ConfigValue: types.StringNull(), PlanValue: types.StringUnknown()}
+		for _, modifier := range attr.PlanModifiers {
+			resp := &planmodifier.StringResponse{PlanValue: req.PlanValue}
+			modifier.PlanModifyString(ctx, req, resp)
+			req.PlanValue = resp.PlanValue
+		}
+		if !req.PlanValue.Equal(types.StringValue("confidential")) {
+			t.Errorf("expected the stored client type to be kept, got %s", req.PlanValue)
+		}
+	})
+	t.Run("read without a type is legacy", func(t *testing.T) {
+		objType, ok := apps.OIDCAppSchema.Type().TerraformType(ctx).(tftypes.Object)
+		if !ok {
+			t.Fatalf("expected the OIDC app schema to be an object")
+		}
+		values := map[string]tftypes.Value{}
+		for name, typ := range objType.AttributeTypes {
+			values[name] = tftypes.NewValue(typ, nil)
+		}
+		m := &apps.OIDCAppModel{}
+		if diags := (tfsdk.State{Schema: apps.OIDCAppSchema, Raw: tftypes.NewValue(objType, values)}).Get(ctx, m); diags.HasError() {
+			t.Fatalf("failed to build the OIDC app model: %v", diags)
+		}
+		m.SetValues(helpers.NewHandler(ctx, &diag.Diagnostics{}), map[string]any{"oidcSettings": map[string]any{}})
+		if !m.ClientType.Equal(types.StringValue("")) {
+			t.Errorf("expected an omitted client type to be read as legacy, got %s", m.ClientType)
+		}
+	})
+}
+
 func TestOIDCApp(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	a := testacc.OIDCApp(t)
@@ -142,7 +189,7 @@ func TestOIDCApp(t *testing.T) {
 	}
 
 	createStep := resource.TestStep{
-		Config: a.Config(project, `deletion_protection = false`),
+		Config: a.Config(project, `client_type = ""`, `deletion_protection = false`),
 		Check: a.Check(map[string]any{
 			"id":                                  captureID,
 			"project_id":                          projectID,

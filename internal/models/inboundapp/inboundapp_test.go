@@ -6,8 +6,10 @@ import (
 	"regexp"
 	"testing"
 
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
 	"github.com/descope/terraform-provider-descope/tools/testacc"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
@@ -37,26 +39,95 @@ func TestInboundAppClientTypeReplacement(t *testing.T) {
 		t.Fatalf("expected client_type to be a string attribute")
 	}
 	raw := tftypes.NewValue(tftypes.Object{}, map[string]tftypes.Value{})
-	requiresReplace := func(state, plan types.String) bool {
-		req := planmodifier.StringRequest{State: tfsdk.State{Raw: raw}, Plan: tfsdk.Plan{Raw: raw}, StateValue: state, PlanValue: plan}
-		resp := &planmodifier.StringResponse{PlanValue: req.PlanValue}
+	modifyPlan := func(state, config, planned types.String) (types.String, bool) {
+		req := planmodifier.StringRequest{State: tfsdk.State{Raw: raw}, Plan: tfsdk.Plan{Raw: raw}, StateValue: state, ConfigValue: config, PlanValue: planned}
+		replace := false
 		for _, modifier := range attr.PlanModifiers {
+			resp := &planmodifier.StringResponse{PlanValue: req.PlanValue}
 			modifier.PlanModifyString(context.Background(), req, resp)
+			req.PlanValue = resp.PlanValue
+			replace = replace || resp.RequiresReplace
 		}
-		return resp.RequiresReplace
+		return req.PlanValue, replace
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			if got := requiresReplace(types.StringValue(tc.state), types.StringValue(tc.plan)); got != tc.replace {
+			if _, got := modifyPlan(types.StringValue(tc.state), types.StringValue(tc.plan), types.StringValue(tc.plan)); got != tc.replace {
 				t.Errorf("expected requires replace to be %t, got %t", tc.replace, got)
 			}
 		})
 	}
-	t.Run("unknown plan value replaces", func(t *testing.T) {
-		if !requiresReplace(types.StringValue("confidential"), types.StringUnknown()) {
+	t.Run("unknown config value replaces", func(t *testing.T) {
+		if _, replace := modifyPlan(types.StringValue("confidential"), types.StringUnknown(), types.StringUnknown()); !replace {
 			t.Errorf("expected requires replace when the planned client type is unknown")
 		}
 	})
+	for name, state := range map[string]string{"legacy": "", "confidential": "confidential", "public": "public"} {
+		t.Run("omitted value keeps "+name+" in place", func(t *testing.T) {
+			planned, replace := modifyPlan(types.StringValue(state), types.StringNull(), types.StringUnknown())
+			if replace || !planned.Equal(types.StringValue(state)) {
+				t.Errorf("expected the stored client type %q to be kept in place, got %s with requires replace %t", state, planned, replace)
+			}
+		})
+	}
+	t.Run("omitted value on create is left to the server", func(t *testing.T) {
+		if attr.Default != nil || !attr.Computed {
+			t.Errorf("expected client_type to be computed with no default")
+		}
+	})
+}
+
+func TestInboundAppClientTypeValues(t *testing.T) {
+	h := helpers.NewHandler(context.Background(), &diag.Diagnostics{})
+	for _, value := range []tftypes.Value{tftypes.NewValue(tftypes.String, tftypes.UnknownValue), tftypes.NewValue(tftypes.String, nil)} {
+		m := newInboundAppModel(t, value)
+		if v, ok := m.Values(h)["clientType"]; ok {
+			t.Errorf("expected a %s client type not to be sent, got %v", value, v)
+		}
+	}
+	m := newInboundAppModel(t, tftypes.NewValue(tftypes.String, "public"))
+	if v := m.Values(h)["clientType"]; v != "public" {
+		t.Errorf("expected the client type to be sent as public, got %v", v)
+	}
+}
+
+func TestInboundAppClientTypeSetValues(t *testing.T) {
+	h := helpers.NewHandler(context.Background(), &diag.Diagnostics{})
+	testCases := []struct {
+		name     string
+		data     map[string]any
+		expected string
+	}{
+		{"server type is adopted", map[string]any{"clientType": "confidential"}, "confidential"},
+		{"omitted server type is legacy", map[string]any{}, ""},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			m := newInboundAppModel(t, tftypes.NewValue(tftypes.String, tftypes.UnknownValue))
+			m.SetValues(h, tc.data)
+			if !m.ClientType.Equal(types.StringValue(tc.expected)) {
+				t.Errorf("expected client type %q, got %s", tc.expected, m.ClientType)
+			}
+		})
+	}
+}
+
+func newInboundAppModel(t *testing.T, clientType tftypes.Value) *inboundapp.InboundAppModel {
+	ctx := context.Background()
+	objType, ok := inboundapp.Schema.Type().TerraformType(ctx).(tftypes.Object)
+	if !ok {
+		t.Fatalf("expected the inbound app schema to be an object")
+	}
+	values := map[string]tftypes.Value{}
+	for name, typ := range objType.AttributeTypes {
+		values[name] = tftypes.NewValue(typ, nil)
+	}
+	values["client_type"] = clientType
+	m := &inboundapp.InboundAppModel{}
+	if diags := (tfsdk.Plan{Schema: inboundapp.Schema, Raw: tftypes.NewValue(objType, values)}).Get(ctx, m); diags.HasError() {
+		t.Fatalf("failed to build the inbound app model: %v", diags)
+	}
+	return m
 }
 
 func TestInboundAppDeletionProtection(t *testing.T) {
@@ -337,6 +408,19 @@ func TestInboundAppLegacyClientType(t *testing.T) {
 				"client_type":   "confidential",
 				"client_id":     sameClientID,
 				"client_secret": sameClientSecret,
+			}),
+		},
+		// Removing client_type from the configuration keeps the stored type
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				deletion_protection = false
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+			},
+			Check: a.Check(map[string]any{
+				"client_type": "confidential",
 			}),
 		},
 		// Moving back to the legacy type replaces the app
