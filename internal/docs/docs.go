@@ -860,6 +860,29 @@ var docsLokaliseConnector = map[string]string{
 	"config_project_id": "Lokalise project ID.",
 }
 
+var docsMicrosoftSentinelConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The logs ingestion endpoint of the data collection rule, for example " +
+		"https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Terraform " +
+		"guide outputs it as ingestionEndpoint.",
+	"dcr_immutable_id": "The immutable ID of the data collection rule, in the form dcr-<32 hex " +
+		"characters>. The Terraform guide outputs it as dcrImmutableId.",
+	"stream_name": "The data collection rule stream that receives the audit events.",
+	"tenant_id":   "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id":   "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"troubleshoot_stream_name": "The data collection rule stream that receives the troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
 var docsMixpanelConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1411,6 +1434,18 @@ var docsUnibeamConnector = map[string]string{
 	"client_secret":   "OAuth2 client secret for authentication.",
 	"hmac_secret":     "HMAC secret supplied by Unibeam for securing communications.",
 	"default_message": "Default message to display when no message is provided in the command.",
+}
+
+var docsVonageConnector = map[string]string{
+	"project_id":       "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"api_key":          "The Vonage API key.",
+	"api_secret":       "The Vonage API secret.",
+	"sender":           "The sender ID or phone number that text messages are sent from.",
+	"application_id":   "The Vonage voice application ID.",
+	"private_key":      "The Vonage voice application's private key, used to sign the voice API JWT.",
+	"from_phone_voice": "The phone number that voice calls are placed from.",
 }
 
 var docsZeroBounceConnector = map[string]string{
@@ -2046,7 +2081,13 @@ var docsStyles = map[string]string{
 		"deleted and recreated.",
 	"data": "The JSON data of the styles in their exported theme representation, defining the visual styling of " +
 		"the project's flow pages. This will usually be exported as a `.json` file from the Descope console, " +
-		"and set in the `.tf` file using the `data = file(\"...\")` syntax.",
+		"which exports one style per file, and set in the `.tf` file using the `data = file(\"...\")` syntax. " +
+		"Applying this resource creates and overwrites the styles the data carries, and leaves every other " +
+		"style in the project untouched, so styles created in the console are safe from a Terraform apply. " +
+		"For the same reason removing a style from the data does not remove it from the project - delete it " +
+		"in the console or through the management API instead. An apply is rejected if the data's " +
+		"`componentsVersion` differs from the project's, in which case export the styles again or leave " +
+		"`componentsVersion` out, and if it changes the type of a style that already exists in the project.",
 }
 
 var docsTextTemplate = map[string]string{
