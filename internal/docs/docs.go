@@ -326,6 +326,32 @@ var docsAuditWebhookConnector = map[string]string{
 		"tenant selection).",
 }
 
+var docsAWSEndUserMessagingConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"aws_region":  "The AWS region the Notify configuration is in.",
+	"auth_type": "How to authenticate with AWS: using static credentials or by assuming an IAM " +
+		"role.",
+	"access_key_id": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+	"secret_access_key": "The AWS secret access key. Required when the authentication type is " +
+		"'credentials'.",
+	"role_arn": "The ARN of the IAM role to assume. Required when the authentication type is " +
+		"'assumeRole'.",
+	"external_id": "The external ID used when assuming the IAM role. Required when the " +
+		"authentication type is 'assumeRole'.",
+	"notify_configuration_id": "The ID of the AWS End User Messaging Notify configuration that sends the " +
+		"messages.",
+	"default_template_id": "The Notify template used when the flow does not select one. Leave empty to use " +
+		"the Notify configuration's default template.",
+	"template_code_variable": "The template variable that receives the OTP code. Defaults to 'code'.",
+	"template_expiry_minutes": "The code expiry in minutes, between 1 and 60. Set it when the template shows the " +
+		"code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message " +
+		"otherwise.",
+	"configuration_set_name": "The AWS configuration set whose event destinations receive delivery events, " +
+		"including messages that AWS blocks.",
+}
+
 var docsAWSEventBridgeConnector = map[string]string{
 	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":              "A custom name for your connector.",
@@ -1410,6 +1436,18 @@ var docsUnibeamConnector = map[string]string{
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
+var docsVonageConnector = map[string]string{
+	"project_id":       "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"api_key":          "The Vonage API key.",
+	"api_secret":       "The Vonage API secret.",
+	"sender":           "The sender ID or phone number that text messages are sent from.",
+	"application_id":   "The Vonage voice application ID.",
+	"private_key":      "The Vonage voice application's private key, used to sign the voice API JWT.",
+	"from_phone_voice": "The phone number that voice calls are placed from.",
+}
+
 var docsZeroBounceConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1792,6 +1830,15 @@ var docsEnchantedLinkSettings = map[string]string{
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
 }
 
+var docsGovernance = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"configured": "Whether the Agentic Governance Suite has been set up for the project.",
+	"auto_approval": "Setting this to `true` approves access requests automatically instead of waiting for an admin to " +
+		"review them.",
+	"suite_disabled": "Setting this to `true` turns off the Agentic Governance Suite for the project.",
+}
+
 var docsInviteSettings = map[string]string{
 	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
 		"to be deleted and recreated.",
@@ -1913,6 +1960,10 @@ var docsProjectSettings = map[string]string{
 	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
 		"your website. This modifies the security headers that typically prevent the page from " +
 		"being embedded.",
+	"disable_auth_hosting": "When enabled, Descope stops serving this project's flows from its hosted login pages, both " +
+		"at the Descope domain and at the `/login` path of a custom domain. Anything that relies on " +
+		"the default hosted login page URL, such as a federated application or an embedded link that " +
+		"lands on it, stops working. Flows running in your own application are unaffected.",
 	"test_users_loginid_regexp": "A regular expression pattern that, when a user is created with a matching login ID, will " +
 		"automatically mark the user as a test user.",
 	"test_users_static_otp": "A static OTP code that can be used by test users instead of a real verification code. Must " +
@@ -2030,7 +2081,13 @@ var docsStyles = map[string]string{
 		"deleted and recreated.",
 	"data": "The JSON data of the styles in their exported theme representation, defining the visual styling of " +
 		"the project's flow pages. This will usually be exported as a `.json` file from the Descope console, " +
-		"and set in the `.tf` file using the `data = file(\"...\")` syntax.",
+		"which exports one style per file, and set in the `.tf` file using the `data = file(\"...\")` syntax. " +
+		"Applying this resource creates and overwrites the styles the data carries, and leaves every other " +
+		"style in the project untouched, so styles created in the console are safe from a Terraform apply. " +
+		"For the same reason removing a style from the data does not remove it from the project - delete it " +
+		"in the console or through the management API instead. An apply is rejected if the data's " +
+		"`componentsVersion` differs from the project's, in which case export the styles again or leave " +
+		"`componentsVersion` out, and if it changes the type of a style that already exists in the project.",
 }
 
 var docsTextTemplate = map[string]string{
