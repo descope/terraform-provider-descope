@@ -15,6 +15,7 @@ func ConnectorResources() []func() resource.Resource {
 		newConnectorResource[connectors.AmplitudeConnectorModel]("amplitude_connector", "amplitude", connectors.AmplitudeConnectorSchema),
 		newConnectorResource[connectors.ArkoseConnectorModel]("arkose_connector", "arkose", connectors.ArkoseConnectorSchema),
 		newConnectorResource[connectors.AuditWebhookConnectorModel]("audit_webhook_connector", "audit-webhook", connectors.AuditWebhookConnectorSchema),
+		newConnectorResource[connectors.AWSEndUserMessagingConnectorModel]("aws_end_user_messaging_connector", "aws-end-user-messaging", connectors.AWSEndUserMessagingConnectorSchema),
 		newConnectorResource[connectors.AWSEventBridgeConnectorModel]("aws_eventbridge_connector", "aws-eventbridge", connectors.AWSEventBridgeConnectorSchema),
 		newConnectorResource[connectors.AWSS3ConnectorModel]("aws_s3_connector", "aws-s3", connectors.AWSS3ConnectorSchema),
 		newConnectorResource[connectors.AWSSESEmailValidationConnectorModel]("aws_ses_email_validation_connector", "aws-ses-email-validation", connectors.AWSSESEmailValidationConnectorSchema),
@@ -48,6 +49,7 @@ func ConnectorResources() []func() resource.Resource {
 		newConnectorResource[connectors.IntercomConnectorModel]("intercom_connector", "intercom", connectors.IntercomConnectorSchema),
 		newConnectorResource[connectors.LDAPConnectorModel]("ldap_connector", "ldap", connectors.LDAPConnectorSchema),
 		newConnectorResource[connectors.LokaliseConnectorModel]("lokalise_connector", "lokalise", connectors.LokaliseConnectorSchema),
+		newConnectorResource[connectors.MicrosoftSentinelConnectorModel]("microsoft_sentinel_connector", "microsoft-sentinel", connectors.MicrosoftSentinelConnectorSchema),
 		newConnectorResource[connectors.MixpanelConnectorModel]("mixpanel_connector", "mixpanel", connectors.MixpanelConnectorSchema),
 		newConnectorResource[connectors.MParticleConnectorModel]("mparticle_connector", "mparticle", connectors.MParticleConnectorSchema),
 		newConnectorResource[connectors.NewRelicConnectorModel]("newrelic_connector", "newrelic", connectors.NewRelicConnectorSchema),
@@ -83,6 +85,7 @@ func ConnectorResources() []func() resource.Resource {
 		newConnectorResource[connectors.TwilioCoreConnectorModel]("twilio_core_connector", "twilio-core", connectors.TwilioCoreConnectorSchema),
 		newConnectorResource[connectors.TwilioVerifyConnectorModel]("twilio_verify_connector", "twilio-verify", connectors.TwilioVerifyConnectorSchema),
 		newConnectorResource[connectors.UnibeamConnectorModel]("unibeam_connector", "unibeam", connectors.UnibeamConnectorSchema),
+		newConnectorResource[connectors.VonageConnectorModel]("vonage_connector", "vonage", connectors.VonageConnectorSchema),
 		newConnectorResource[connectors.ZeroBounceConnectorModel]("zerobounce_connector", "zerobounce", connectors.ZeroBounceConnectorSchema),
 	}
 }
