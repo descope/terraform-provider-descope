@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -42,8 +43,10 @@ func OutOfBandPost(t *testing.T, projectID, path string, body map[string]any) {
 }
 
 // Used to skip specific tests in environments where the required license is expected to not be available usually.
+// DESCOPE_TESTACC_LICENSED lists the licenses the test company has (comma separated), or is "true" for all of them.
 func RequireLicense(t *testing.T, license string) {
-	if os.Getenv("DESCOPE_TESTACC_LICENSED") == "" {
-		t.Skipf("Skipping test that requires the %s license (set DESCOPE_TESTACC_LICENSED to run)", license)
+	licensed := os.Getenv("DESCOPE_TESTACC_LICENSED")
+	if licensed != "true" && !slices.Contains(strings.Split(licensed, ","), license) {
+		t.Skipf("Skipping test that requires the %s license (add it to DESCOPE_TESTACC_LICENSED to run)", license)
 	}
 }
