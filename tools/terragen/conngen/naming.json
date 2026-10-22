@@ -195,6 +195,11 @@
       "file": "lokalise",
       "struct": "Lokalise"
     },
+    "microsoft-sentinel": {
+      "attribute": "microsoft_sentinel",
+      "file": "microsoftsentinel",
+      "struct": "MicrosoftSentinel"
+    },
     "mixpanel": {
       "attribute": "mixpanel",
       "file": "mixpanel",
@@ -370,6 +375,11 @@
       "file": "unibeam",
       "struct": "Unibeam"
     },
+    "vonage": {
+      "attribute": "vonage",
+      "file": "vonage",
+      "struct": "Vonage"
+    },
     "zerobounce": {
       "attribute": "zerobounce",
       "file": "zerobounce",
@@ -432,6 +442,10 @@
     "apiVersion": {
       "attribute": "api_version",
       "struct": "APIVersion"
+    },
+    "applicationId": {
+      "attribute": "application_id",
+      "struct": "ApplicationID"
     },
     "assessmentScore": {
       "attribute": "assessment_score",
@@ -617,6 +631,10 @@
       "attribute": "database_name",
       "struct": "DatabaseName"
     },
+    "dcrImmutableId": {
+      "attribute": "dcr_immutable_id",
+      "struct": "DcrImmutableID"
+    },
     "defaultEnvironment": {
       "attribute": "default_environment",
       "struct": "DefaultEnvironment"
@@ -744,6 +762,10 @@
     "index": {
       "attribute": "index",
       "struct": "Index"
+    },
+    "ingestionEndpoint": {
+      "attribute": "ingestion_endpoint",
+      "struct": "IngestionEndpoint"
     },
     "ingestionKey": {
       "attribute": "ingestion_key",
@@ -1021,6 +1043,10 @@
       "attribute": "source",
       "struct": "Source"
     },
+    "streamName": {
+      "attribute": "stream_name",
+      "struct": "StreamName"
+    },
     "subAccountId": {
       "attribute": "sub_account_id",
       "struct": "SubAccountID"
@@ -1057,6 +1083,10 @@
       "attribute": "template_id",
       "struct": "TemplateID"
     },
+    "tenantId": {
+      "attribute": "tenant_id",
+      "struct": "TenantID"
+    },
     "token": {
       "attribute": "token",
       "struct": "Token"
@@ -1068,6 +1098,10 @@
     "troubleshootLogEnabled": {
       "attribute": "troubleshoot_log_enabled",
       "struct": "TroubleshootLogEnabled"
+    },
+    "troubleshootStreamName": {
+      "attribute": "troubleshoot_stream_name",
+      "struct": "TroubleshootStreamName"
     },
     "useCloudflareIntegration": {
       "attribute": "use_cloudflare_integration",

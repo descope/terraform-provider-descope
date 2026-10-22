@@ -38,6 +38,7 @@ jobs:
           DESCOPE_USER_AGENT: ${{ secrets.DESCOPE_USER_AGENT }}
           DESCOPE_TESTACC_THROTTLE: ${{ vars.DESCOPE_TESTACC_THROTTLE }}
           DESCOPE_TESTACC_PROJECT_ID: ${{ vars.DESCOPE_TESTACC_PROJECT_ID }}
+          DESCOPE_TESTACC_LICENSED: ${{ vars.DESCOPE_TESTACC_LICENSED }}
           DESCOPE_TESTACC_PREFIX: testacc-gh-${{ github.run_id }}
           TF_ACC: 1
         run: |

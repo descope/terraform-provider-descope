@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"os"
+	"slices"
 	"strconv"
 	"strings"
 	"testing"
@@ -32,6 +33,16 @@ func FixtureJSON(t *testing.T, path string, replacements ...string) string {
 	return q
 }
 
+// Reads an entity through the management API, bypassing Terraform, to assert on state the provider does not keep.
+func OutOfBandPostData(t *testing.T, projectID, path string, body map[string]any) map[string]any {
+	base := os.Getenv("DESCOPE_BASE_URL")
+	require.NotEmpty(t, base, "The DESCOPE_BASE_URL environment variable must be set for out-of-band requests")
+	client := infra.NewClient("testacc", os.Getenv("DESCOPE_MANAGEMENT_KEY"), base)
+	data, err := client.PostData(context.Background(), projectID, path, body)
+	require.NoError(t, err, "Out-of-band POST request to %s failed", path)
+	return data
+}
+
 // Removes or modifies an entity through the management API, bypassing Terraform, to simulate out-of-band changes.
 func OutOfBandPost(t *testing.T, projectID, path string, body map[string]any) {
 	base := os.Getenv("DESCOPE_BASE_URL")
@@ -42,8 +53,10 @@ func OutOfBandPost(t *testing.T, projectID, path string, body map[string]any) {
 }
 
 // Used to skip specific tests in environments where the required license is expected to not be available usually.
+// DESCOPE_TESTACC_LICENSED lists the licenses the test company has (comma separated), or is "true" for all of them.
 func RequireLicense(t *testing.T, license string) {
-	if os.Getenv("DESCOPE_TESTACC_LICENSED") == "" {
-		t.Skipf("Skipping test that requires the %s license (set DESCOPE_TESTACC_LICENSED to run)", license)
+	licensed := os.Getenv("DESCOPE_TESTACC_LICENSED")
+	if licensed != "true" && !slices.ContainsFunc(strings.Split(licensed, ","), func(s string) bool { return strings.TrimSpace(s) == license }) {
+		t.Skipf("Skipping test that requires the %s license (add it to DESCOPE_TESTACC_LICENSED to run)", license)
 	}
 }

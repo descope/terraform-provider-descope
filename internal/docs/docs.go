@@ -860,6 +860,29 @@ var docsLokaliseConnector = map[string]string{
 	"config_project_id": "Lokalise project ID.",
 }
 
+var docsMicrosoftSentinelConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The logs ingestion endpoint of the data collection rule, for example " +
+		"https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Terraform " +
+		"guide outputs it as ingestionEndpoint.",
+	"dcr_immutable_id": "The immutable ID of the data collection rule, in the form dcr-<32 hex " +
+		"characters>. The Terraform guide outputs it as dcrImmutableId.",
+	"stream_name": "The data collection rule stream that receives the audit events.",
+	"tenant_id":   "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id":   "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"troubleshoot_stream_name": "The data collection rule stream that receives the troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
 var docsMixpanelConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1416,6 +1439,18 @@ var docsUnibeamConnector = map[string]string{
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
+var docsVonageConnector = map[string]string{
+	"project_id":       "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"api_key":          "The Vonage API key.",
+	"api_secret":       "The Vonage API secret.",
+	"sender":           "The sender ID or phone number that text messages are sent from.",
+	"application_id":   "The Vonage voice application ID.",
+	"private_key":      "The Vonage voice application's private key, used to sign the voice API JWT.",
+	"from_phone_voice": "The phone number that voice calls are placed from.",
+}
+
 var docsZeroBounceConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1798,6 +1833,15 @@ var docsEnchantedLinkSettings = map[string]string{
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
 }
 
+var docsGovernance = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"configured": "Whether the Agentic Governance Suite has been set up for the project.",
+	"auto_approval": "Setting this to `true` approves access requests automatically instead of waiting for an admin to " +
+		"review them.",
+	"suite_disabled": "Setting this to `true` turns off the Agentic Governance Suite for the project.",
+}
+
 var docsInviteSettings = map[string]string{
 	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
 		"to be deleted and recreated.",
@@ -1919,6 +1963,10 @@ var docsProjectSettings = map[string]string{
 	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
 		"your website. This modifies the security headers that typically prevent the page from " +
 		"being embedded.",
+	"disable_auth_hosting": "When enabled, Descope stops serving this project's flows from its hosted login pages, both " +
+		"at the Descope domain and at the `/login` path of a custom domain. Anything that relies on " +
+		"the default hosted login page URL, such as a federated application or an embedded link that " +
+		"lands on it, stops working. Flows running in your own application are unaffected.",
 	"test_users_loginid_regexp": "A regular expression pattern that, when a user is created with a matching login ID, will " +
 		"automatically mark the user as a test user.",
 	"test_users_static_otp": "A static OTP code that can be used by test users instead of a real verification code. Must " +
@@ -2036,7 +2084,13 @@ var docsStyles = map[string]string{
 		"deleted and recreated.",
 	"data": "The JSON data of the styles in their exported theme representation, defining the visual styling of " +
 		"the project's flow pages. This will usually be exported as a `.json` file from the Descope console, " +
-		"and set in the `.tf` file using the `data = file(\"...\")` syntax.",
+		"which exports one style per file, and set in the `.tf` file using the `data = file(\"...\")` syntax. " +
+		"Applying this resource creates and overwrites the styles the data carries, and leaves every other " +
+		"style in the project untouched, so styles created in the console are safe from a Terraform apply. " +
+		"For the same reason removing a style from the data does not remove it from the project - delete it " +
+		"in the console or through the management API instead. An apply is rejected if the data's " +
+		"`componentsVersion` differs from the project's, in which case export the styles again or leave " +
+		"`componentsVersion` out, and if it changes the type of a style that already exists in the project.",
 }
 
 var docsTextTemplate = map[string]string{
