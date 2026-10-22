@@ -68,6 +68,11 @@
       "name": "tags",
       "description": "Custom AWS SES message tags added to every email sent through this connector, as key/value pairs.",
       "type": "object"
+    },
+    {
+      "name": "configurationSetName",
+      "description": "The SES configuration set to send every email with, so SES events such as bounces, complaints and deliveries carry it. It must exist in the same AWS account and region.",
+      "type": "string"
     }
   ]
 }
