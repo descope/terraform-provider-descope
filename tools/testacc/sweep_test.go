@@ -39,6 +39,7 @@ var sweepTargets = []sweepTarget{
 	{name: "jwt_template", list: listWithPost("/v1/mgmt/jwt/templates/list", "templates"), delete: deleteByField("/v1/mgmt/jwt/templates/delete", "id")},
 	{name: "access_key", list: listWithPost("/v1/mgmt/accesskey/search", "keys"), delete: deleteInfraEntity("access_key")},
 	{name: "outbound_app", list: listWithGet("/v1/mgmt/outbound/apps", "apps"), delete: deleteByField("/v1/mgmt/outbound/app/delete", "id")},
+	{name: "auth_access_rule", list: listWithGet("/v1/mgmt/authaccess/rule/all", "rules"), delete: deleteByQuery("/v1/mgmt/authaccess/rule", "id")},
 }
 
 // Removes leftover testacc- entities from the shared test project; leaked dynamic projects are removed by the testcleanup make target.
@@ -124,6 +125,13 @@ func extractEntities(body map[string]any, key string) []map[string]any {
 func deleteByField(path, field string) func(ctx context.Context, c *infra.Client, projectID string, entity map[string]any) error {
 	return func(ctx context.Context, c *infra.Client, projectID string, entity map[string]any) error {
 		return c.Post(ctx, projectID, path, map[string]any{field: entity[field]})
+	}
+}
+
+func deleteByQuery(path, field string) func(ctx context.Context, c *infra.Client, projectID string, entity map[string]any) error {
+	return func(ctx context.Context, c *infra.Client, projectID string, entity map[string]any) error {
+		value, _ := entity[field].(string)
+		return c.Del(ctx, projectID, path, map[string]string{field: value})
 	}
 }
 

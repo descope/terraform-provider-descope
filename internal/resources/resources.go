@@ -48,6 +48,10 @@ func NewTOTPSettingsResource() resource.Resource {
 	return newSettingsResource[settings.TOTPSettingsModel]("totp_settings", settings.TOTPSettingsSchema, "/v1/mgmt/totp/settings")
 }
 
+func NewAuthAccessPolicyResource() resource.Resource {
+	return newSettingsResource[settings.AuthAccessPolicyModel]("auth_access_policy", settings.AuthAccessPolicySchema, "/v1/mgmt/authaccess/settings")
+}
+
 func NewAdminPortalResource() resource.Resource {
 	return newSettingsResource[settings.AdminPortalModel]("admin_portal", settings.AdminPortalSchema, "/v1/mgmt/adminportal/settings")
 }
