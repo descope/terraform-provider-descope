@@ -21,57 +21,59 @@ var PasswordSettingsSchema = schema.Schema{
 }
 
 var PasswordSettingsAttributes = map[string]schema.Attribute{
-	"id":                      stringattr.Identifier(),
-	"project_id":              stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"disabled":                boolattr.Default(false),
-	"min_length":              intattr.Default(8, int64validator.Between(4, 64)),
-	"lowercase":               boolattr.Default(true),
-	"uppercase":               boolattr.Default(true),
-	"number":                  boolattr.Default(true),
-	"non_alphanumeric":        boolattr.Default(true),
-	"any_letter":              boolattr.Default(false),
-	"disallowed_characters":   stringattr.Default(""),
-	"disallow_email_match":    boolattr.Default(false),
-	"expiration":              boolattr.Default(false),
-	"expiration_weeks":        intattr.Default(20, int64validator.Between(1, 999)),
-	"reuse":                   boolattr.Default(false),
-	"reuse_amount":            intattr.Default(10, int64validator.Between(1, 50)),
-	"lock":                    boolattr.Default(false),
-	"lock_attempts":           intattr.Default(5, int64validator.Between(2, 10)),
-	"temporary_lock":          boolattr.Default(false),
-	"temporary_lock_attempts": intattr.Default(3, int64validator.Between(1, 10)),
-	"temporary_lock_duration": durationattr.Default("5 minutes", durationattr.MinimumValue("1 minute"), durationattr.MaximumValue("24 hours"), durationattr.WholeMinutes()),
-	"enforce_strength":        stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
-	"mask_errors":             boolattr.Default(true),
-	"email_connector_id":      stringattr.Default(""),
-	"email_template_id":       stringattr.Default(""),
+	"id":                         stringattr.Identifier(),
+	"project_id":                 stringattr.Required(stringplanmodifier.RequiresReplace()),
+	"disabled":                   boolattr.Default(false),
+	"min_length":                 intattr.Default(8, int64validator.Between(4, 64)),
+	"lowercase":                  boolattr.Default(true),
+	"uppercase":                  boolattr.Default(true),
+	"number":                     boolattr.Default(true),
+	"non_alphanumeric":           boolattr.Default(true),
+	"any_letter":                 boolattr.Default(false),
+	"disallowed_characters":      stringattr.Default(""),
+	"disallow_email_match":       boolattr.Default(false),
+	"expiration":                 boolattr.Default(false),
+	"expiration_weeks":           intattr.Default(20, int64validator.Between(1, 999)),
+	"reuse":                      boolattr.Default(false),
+	"reuse_amount":               intattr.Default(10, int64validator.Between(1, 50)),
+	"lock":                       boolattr.Default(false),
+	"lock_attempts":              intattr.Default(5, int64validator.Between(2, 10)),
+	"temporary_lock":             boolattr.Default(false),
+	"temporary_lock_attempts":    intattr.Default(3, int64validator.Between(1, 10)),
+	"temporary_lock_duration":    durationattr.Default("5 minutes", durationattr.MinimumValue("1 minute"), durationattr.MaximumValue("24 hours"), durationattr.WholeMinutes()),
+	"enforce_strength":           stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
+	"mask_errors":                boolattr.Default(true),
+	"email_connector_id":         stringattr.Default(""),
+	"email_template_id":          stringattr.Default(""),
+	"external_email_template_id": stringattr.Default(""),
 }
 
 type PasswordSettingsModel struct {
-	ID                    stringattr.Type   `tfsdk:"id"`
-	ProjectID             stringattr.Type   `tfsdk:"project_id"`
-	Disabled              boolattr.Type     `tfsdk:"disabled"`
-	MinLength             intattr.Type      `tfsdk:"min_length"`
-	Lowercase             boolattr.Type     `tfsdk:"lowercase"`
-	Uppercase             boolattr.Type     `tfsdk:"uppercase"`
-	Number                boolattr.Type     `tfsdk:"number"`
-	NonAlphanumeric       boolattr.Type     `tfsdk:"non_alphanumeric"`
-	AnyLetter             boolattr.Type     `tfsdk:"any_letter"`
-	DisallowedCharacters  stringattr.Type   `tfsdk:"disallowed_characters"`
-	DisallowEmailMatch    boolattr.Type     `tfsdk:"disallow_email_match"`
-	Expiration            boolattr.Type     `tfsdk:"expiration"`
-	ExpirationWeeks       intattr.Type      `tfsdk:"expiration_weeks"`
-	Reuse                 boolattr.Type     `tfsdk:"reuse"`
-	ReuseAmount           intattr.Type      `tfsdk:"reuse_amount"`
-	Lock                  boolattr.Type     `tfsdk:"lock"`
-	LockAttempts          intattr.Type      `tfsdk:"lock_attempts"`
-	TemporaryLock         boolattr.Type     `tfsdk:"temporary_lock"`
-	TemporaryLockAttempts intattr.Type      `tfsdk:"temporary_lock_attempts"`
-	TemporaryLockDuration durationattr.Type `tfsdk:"temporary_lock_duration"`
-	EnforceStrength       stringattr.Type   `tfsdk:"enforce_strength"`
-	MaskErrors            boolattr.Type     `tfsdk:"mask_errors"`
-	EmailConnectorID      stringattr.Type   `tfsdk:"email_connector_id"`
-	EmailTemplateID       stringattr.Type   `tfsdk:"email_template_id"`
+	ID                      stringattr.Type   `tfsdk:"id"`
+	ProjectID               stringattr.Type   `tfsdk:"project_id"`
+	Disabled                boolattr.Type     `tfsdk:"disabled"`
+	MinLength               intattr.Type      `tfsdk:"min_length"`
+	Lowercase               boolattr.Type     `tfsdk:"lowercase"`
+	Uppercase               boolattr.Type     `tfsdk:"uppercase"`
+	Number                  boolattr.Type     `tfsdk:"number"`
+	NonAlphanumeric         boolattr.Type     `tfsdk:"non_alphanumeric"`
+	AnyLetter               boolattr.Type     `tfsdk:"any_letter"`
+	DisallowedCharacters    stringattr.Type   `tfsdk:"disallowed_characters"`
+	DisallowEmailMatch      boolattr.Type     `tfsdk:"disallow_email_match"`
+	Expiration              boolattr.Type     `tfsdk:"expiration"`
+	ExpirationWeeks         intattr.Type      `tfsdk:"expiration_weeks"`
+	Reuse                   boolattr.Type     `tfsdk:"reuse"`
+	ReuseAmount             intattr.Type      `tfsdk:"reuse_amount"`
+	Lock                    boolattr.Type     `tfsdk:"lock"`
+	LockAttempts            intattr.Type      `tfsdk:"lock_attempts"`
+	TemporaryLock           boolattr.Type     `tfsdk:"temporary_lock"`
+	TemporaryLockAttempts   intattr.Type      `tfsdk:"temporary_lock_attempts"`
+	TemporaryLockDuration   durationattr.Type `tfsdk:"temporary_lock_duration"`
+	EnforceStrength         stringattr.Type   `tfsdk:"enforce_strength"`
+	MaskErrors              boolattr.Type     `tfsdk:"mask_errors"`
+	EmailConnectorID        stringattr.Type   `tfsdk:"email_connector_id"`
+	EmailTemplateID         stringattr.Type   `tfsdk:"email_template_id"`
+	ExternalEmailTemplateID stringattr.Type   `tfsdk:"external_email_template_id"`
 }
 
 func (m *PasswordSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -104,6 +106,7 @@ func (m *PasswordSettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.MaskErrors, data, "maskError")
 	stringattr.Get(m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
+	stringattr.Get(m.ExternalEmailTemplateID, data, "externalEmailTemplateId")
 	return data
 }
 
@@ -135,6 +138,7 @@ func (m *PasswordSettingsModel) SetValues(h *helpers.Handler, data map[string]an
 	boolattr.Set(&m.MaskErrors, data, "maskError")
 	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
+	stringattr.Set(&m.ExternalEmailTemplateID, data, "externalEmailTemplateId")
 }
 
 func (m *PasswordSettingsModel) GetID() stringattr.Type        { return m.ID }
