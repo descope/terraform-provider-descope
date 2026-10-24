@@ -30,3 +30,15 @@ service_label
 - Type: `string`
 
 The template for the service issuer label (issuer) shown in the authenticator app.
+
+
+
+account_label
+-------------
+
+- Type: `string`
+
+The template for the account name shown in the authenticator app, for example `{{user.email}}`
+or `{{user.customAttributes.employeeId}}`. Supports `{{user.email}}`, `{{user.phone}}`,
+`{{user.name}}`, `{{user.loginId}}` and `{{user.customAttributes.<name>}}`. When empty, or when
+it renders empty for a user, the user's login ID is used.
