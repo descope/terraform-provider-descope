@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/tools/tfexport/internal/prune"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
@@ -92,6 +93,48 @@ func TestProjectIDFallsBackToAVariable(t *testing.T) {
 	}
 	if want := `variable "project_id"`; !strings.Contains(files["variables.tf"], want) {
 		t.Errorf("expected %q to be declared:\n%s", want, files["variables.tf"])
+	}
+}
+
+func TestRolePoliciesReferenceRolesByName(t *testing.T) {
+	plan := &Plan{
+		ProjectID: "P123",
+		Resources: []Resource{
+			{
+				Type:         "descope_role",
+				Label:        "admin",
+				EntityID:     "ROL456",
+				ImportID:     "P123/ROL456",
+				HasProjectID: true,
+				Attrs:        []prune.Attr{{Name: "name", Value: types.StringValue("Admin")}},
+			},
+			{
+				Type:         "descope_permission",
+				Label:        "auditor",
+				EntityID:     "Auditor",
+				ImportID:     "P123/Auditor",
+				HasProjectID: true,
+				Attrs:        []prune.Attr{{Name: "name", Value: types.StringValue("Auditor")}},
+			},
+			{
+				Type:         "descope_password_settings",
+				Label:        "my_project",
+				ImportID:     "P123",
+				HasProjectID: true,
+				Attrs: []prune.Attr{{Name: "role_policies", IsElements: true, Elements: [][]prune.Attr{
+					{
+						{Name: "min_length", Value: types.Int64Value(16)},
+						{Name: "roles", Value: types.SetValueMust(types.StringType, []attr.Value{types.StringValue("Admin"), types.StringValue("Auditor")})},
+					},
+				}}},
+			},
+		},
+	}
+
+	files := write(t, plan)
+
+	if want := `roles      = [descope_role.admin.name, "Auditor"]`; !strings.Contains(files["auth.tf"], want) {
+		t.Errorf("expected %q in auth.tf:\n%s", want, files["auth.tf"])
 	}
 }
 

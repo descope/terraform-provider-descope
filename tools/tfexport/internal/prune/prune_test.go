@@ -230,6 +230,36 @@ func TestPrune(t *testing.T) {
 		}
 	})
 
+	t.Run("NestedListElementDefaultsPrune", func(t *testing.T) {
+		password := loaded["descope_password_settings"].ExportSchema()
+		obj := object(ctx, t, password, map[string]any{
+			"id":         "P123",
+			"project_id": "P123",
+			"role_policies": []any{
+				map[string]any{
+					"roles":                 []any{"Admin"},
+					"min_length":            16,
+					"lowercase":             false,
+					"uppercase":             false,
+					"number":                false,
+					"non_alphanumeric":      false,
+					"any_letter":            false,
+					"disallowed_characters": "",
+					"disallow_email_match":  false,
+					"enforce_strength":      "none",
+				},
+			},
+		})
+		attrs, _ := prune.Object(ctx, password.Attributes, obj, true)
+		policies := find(attrs, "role_policies")
+		if policies == nil || !policies.IsElements || len(policies.Elements) != 1 {
+			t.Fatalf("expected role_policies with 1 element, got %+v", attrs)
+		}
+		if fields := names(policies.Elements[0]); !slices.Equal(fields, []string{"min_length", "roles"}) {
+			t.Errorf("expected only roles and the non-default min_length to survive, got %v", fields)
+		}
+	})
+
 	t.Run("EmptyNestedListPrunesToDefault", func(t *testing.T) {
 		obj := object(ctx, t, adminportal, map[string]any{
 			"id":         "P123",

@@ -42,10 +42,10 @@ func projectReference(plan *Plan) hcl.Traversal {
 	return nil
 }
 
-func nameReferences(ctx context.Context, plan *Plan) map[string]hcl.Traversal {
+func nameReferences(ctx context.Context, plan *Plan, resourceType string) map[string]hcl.Traversal {
 	refs := map[string]hcl.Traversal{}
 	for _, resource := range plan.Resources {
-		if resource.Type != "descope_permission" {
+		if resource.Type != resourceType {
 			continue
 		}
 		for _, attr := range resource.Attrs {

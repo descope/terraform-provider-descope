@@ -70,6 +70,16 @@ func Set(n *types.Int64, data map[string]any, key string) {
 	}
 }
 
+func SetDefault(n *types.Int64, data map[string]any, key string, defaultValue int64) {
+	if v, ok := data[key].(float64); ok {
+		*n = Value(int64(v))
+	} else if v, ok := data[key].(int64); ok {
+		*n = Value(v)
+	} else if n.IsNull() || n.IsUnknown() {
+		*n = Value(defaultValue)
+	}
+}
+
 func parseExtras(extras []any) (validators []validator.Int64, modifiers []planmodifier.Int64) {
 	for _, e := range extras {
 		matched := false

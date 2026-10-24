@@ -39,6 +39,7 @@ Manages the project-level password authentication settings. This is a singleton 
 - `number` (Boolean) Whether passwords must contain at least one number.
 - `reuse` (Boolean) Whether to forbid password reuse when users change their password.
 - `reuse_amount` (Number) The number of previous passwords whose hashes are kept to prevent users from reusing old passwords.
+- `role_policies` (Attributes List) Stricter password requirements for users who hold specific roles. When a user holds any of the roles of a policy, at the project level or in any of their tenants, each rule of the policy is combined with the matching rule of the password settings that apply to the user, and the strictest value wins. A policy can therefore only make the requirements stricter, and when a user matches more than one policy all of them apply. The policies are enforced when a signed-in user sets or changes their own password, and not at sign-up or to passwords set for a user by an administrator. Existing passwords are not checked again when roles or policies change. (see [below for nested schema](#nestedatt--role_policies))
 - `temporary_lock` (Boolean) Whether the user account should be temporarily locked after a specified number of failed login attempts.
 - `temporary_lock_attempts` (Number) The number of failed login attempts allowed before an account is temporarily locked.
 - `temporary_lock_duration` (String) The amount of time before the user can sign in again after the account is temporarily locked.
@@ -47,3 +48,22 @@ Manages the project-level password authentication settings. This is a singleton 
 ### Read-Only
 
 - `id` (String) The ID of this resource.
+
+<a id="nestedatt--role_policies"></a>
+### Nested Schema for `role_policies`
+
+Required:
+
+- `roles` (Set of String) The names of the roles the policy applies to. Reference the `name` attribute of `descope_role` resources (e.g., `descope_role.admin.name`) so that Terraform orders the operations correctly. Each role must exist when the policy is applied.
+
+Optional:
+
+- `any_letter` (Boolean) Whether passwords must contain at least one letter, either uppercase or lowercase.
+- `disallow_email_match` (Boolean) Whether to reject passwords that match the user's email address or its local-part (the segment before `@`), case-insensitively.
+- `disallowed_characters` (String) Reject passwords containing any of these characters, in addition to the characters that the password settings disallow. Each character in the string is treated as a forbidden literal.
+- `enforce_strength` (String) Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength. The default value of `none` adds no requirement.
+- `lowercase` (Boolean) Whether passwords must contain at least one lowercase letter.
+- `min_length` (Number) The minimum length of the password, up to `64`. The default value of `0` adds no requirement.
+- `non_alphanumeric` (Boolean) Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).
+- `number` (Boolean) Whether passwords must contain at least one number.
+- `uppercase` (Boolean) Whether passwords must contain at least one uppercase letter.
