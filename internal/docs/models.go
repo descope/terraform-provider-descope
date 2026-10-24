@@ -172,6 +172,7 @@ func InjectModels() {
 	inject(settings.OTPSettingsAttributes, docsOTPSettings)
 	inject(settings.PasskeySettingsAttributes, docsPasskeySettings)
 	inject(settings.PasswordSettingsAttributes, docsPasswordSettings)
+	inject(settings.PasswordRolePolicyAttributes, docsPasswordRolePolicy)
 	inject(settings.ProjectSettingsAttributes, docsProjectSettings)
 	inject(settings.SessionSettingsAttributes, docsSettingsSessionSettings)
 	inject(settings.SessionMigrationSettingsAttributes, docsSessionMigrationSettings)

@@ -4,9 +4,13 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/durationattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/intattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/listvalidator"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
@@ -45,33 +49,35 @@ var PasswordSettingsAttributes = map[string]schema.Attribute{
 	"mask_errors":             boolattr.Default(true),
 	"email_connector_id":      stringattr.Default(""),
 	"email_template_id":       stringattr.Default(""),
+	"role_policies":           listattr.Default[PasswordRolePolicyModel](PasswordRolePolicyAttributes, listvalidator.SizeAtMost(50)),
 }
 
 type PasswordSettingsModel struct {
-	ID                    stringattr.Type   `tfsdk:"id"`
-	ProjectID             stringattr.Type   `tfsdk:"project_id"`
-	Disabled              boolattr.Type     `tfsdk:"disabled"`
-	MinLength             intattr.Type      `tfsdk:"min_length"`
-	Lowercase             boolattr.Type     `tfsdk:"lowercase"`
-	Uppercase             boolattr.Type     `tfsdk:"uppercase"`
-	Number                boolattr.Type     `tfsdk:"number"`
-	NonAlphanumeric       boolattr.Type     `tfsdk:"non_alphanumeric"`
-	AnyLetter             boolattr.Type     `tfsdk:"any_letter"`
-	DisallowedCharacters  stringattr.Type   `tfsdk:"disallowed_characters"`
-	DisallowEmailMatch    boolattr.Type     `tfsdk:"disallow_email_match"`
-	Expiration            boolattr.Type     `tfsdk:"expiration"`
-	ExpirationWeeks       intattr.Type      `tfsdk:"expiration_weeks"`
-	Reuse                 boolattr.Type     `tfsdk:"reuse"`
-	ReuseAmount           intattr.Type      `tfsdk:"reuse_amount"`
-	Lock                  boolattr.Type     `tfsdk:"lock"`
-	LockAttempts          intattr.Type      `tfsdk:"lock_attempts"`
-	TemporaryLock         boolattr.Type     `tfsdk:"temporary_lock"`
-	TemporaryLockAttempts intattr.Type      `tfsdk:"temporary_lock_attempts"`
-	TemporaryLockDuration durationattr.Type `tfsdk:"temporary_lock_duration"`
-	EnforceStrength       stringattr.Type   `tfsdk:"enforce_strength"`
-	MaskErrors            boolattr.Type     `tfsdk:"mask_errors"`
-	EmailConnectorID      stringattr.Type   `tfsdk:"email_connector_id"`
-	EmailTemplateID       stringattr.Type   `tfsdk:"email_template_id"`
+	ID                    stringattr.Type                        `tfsdk:"id"`
+	ProjectID             stringattr.Type                        `tfsdk:"project_id"`
+	Disabled              boolattr.Type                          `tfsdk:"disabled"`
+	MinLength             intattr.Type                           `tfsdk:"min_length"`
+	Lowercase             boolattr.Type                          `tfsdk:"lowercase"`
+	Uppercase             boolattr.Type                          `tfsdk:"uppercase"`
+	Number                boolattr.Type                          `tfsdk:"number"`
+	NonAlphanumeric       boolattr.Type                          `tfsdk:"non_alphanumeric"`
+	AnyLetter             boolattr.Type                          `tfsdk:"any_letter"`
+	DisallowedCharacters  stringattr.Type                        `tfsdk:"disallowed_characters"`
+	DisallowEmailMatch    boolattr.Type                          `tfsdk:"disallow_email_match"`
+	Expiration            boolattr.Type                          `tfsdk:"expiration"`
+	ExpirationWeeks       intattr.Type                           `tfsdk:"expiration_weeks"`
+	Reuse                 boolattr.Type                          `tfsdk:"reuse"`
+	ReuseAmount           intattr.Type                           `tfsdk:"reuse_amount"`
+	Lock                  boolattr.Type                          `tfsdk:"lock"`
+	LockAttempts          intattr.Type                           `tfsdk:"lock_attempts"`
+	TemporaryLock         boolattr.Type                          `tfsdk:"temporary_lock"`
+	TemporaryLockAttempts intattr.Type                           `tfsdk:"temporary_lock_attempts"`
+	TemporaryLockDuration durationattr.Type                      `tfsdk:"temporary_lock_duration"`
+	EnforceStrength       stringattr.Type                        `tfsdk:"enforce_strength"`
+	MaskErrors            boolattr.Type                          `tfsdk:"mask_errors"`
+	EmailConnectorID      stringattr.Type                        `tfsdk:"email_connector_id"`
+	EmailTemplateID       stringattr.Type                        `tfsdk:"email_template_id"`
+	RolePolicies          listattr.Type[PasswordRolePolicyModel] `tfsdk:"role_policies"`
 }
 
 func (m *PasswordSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -104,6 +110,7 @@ func (m *PasswordSettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.MaskErrors, data, "maskError")
 	stringattr.Get(m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
+	listattr.Get(m.RolePolicies, data, "rolePolicies", h)
 	return data
 }
 
@@ -135,11 +142,78 @@ func (m *PasswordSettingsModel) SetValues(h *helpers.Handler, data map[string]an
 	boolattr.Set(&m.MaskErrors, data, "maskError")
 	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
+	listattr.Set(&m.RolePolicies, data, "rolePolicies", h)
 }
 
 func (m *PasswordSettingsModel) GetID() stringattr.Type        { return m.ID }
 func (m *PasswordSettingsModel) SetID(id stringattr.Type)      { m.ID = id }
 func (m *PasswordSettingsModel) GetProjectID() stringattr.Type { return m.ProjectID }
+
+var PasswordRolePolicyAttributes = map[string]schema.Attribute{
+	"roles":                 strsetattr.Required(setvalidator.SizeBetween(1, 100), stringvalidator.LengthBetween(1, 100)),
+	"min_length":            intattr.Default(0, int64validator.Between(0, 64)),
+	"lowercase":             boolattr.Default(false),
+	"uppercase":             boolattr.Default(false),
+	"number":                boolattr.Default(false),
+	"non_alphanumeric":      boolattr.Default(false),
+	"any_letter":            boolattr.Default(false),
+	"disallowed_characters": stringattr.Default("", stringvalidator.LengthAtMost(1024)),
+	"disallow_email_match":  boolattr.Default(false),
+	"enforce_strength":      stringattr.Default("none", stringvalidator.OneOf("none", "very_weak", "weak", "average", "strong", "very_strong")),
+}
+
+type PasswordRolePolicyModel struct {
+	Roles                strsetattr.Type `tfsdk:"roles"`
+	MinLength            intattr.Type    `tfsdk:"min_length"`
+	Lowercase            boolattr.Type   `tfsdk:"lowercase"`
+	Uppercase            boolattr.Type   `tfsdk:"uppercase"`
+	Number               boolattr.Type   `tfsdk:"number"`
+	NonAlphanumeric      boolattr.Type   `tfsdk:"non_alphanumeric"`
+	AnyLetter            boolattr.Type   `tfsdk:"any_letter"`
+	DisallowedCharacters stringattr.Type `tfsdk:"disallowed_characters"`
+	DisallowEmailMatch   boolattr.Type   `tfsdk:"disallow_email_match"`
+	EnforceStrength      stringattr.Type `tfsdk:"enforce_strength"`
+}
+
+func (m *PasswordRolePolicyModel) Values(h *helpers.Handler) map[string]any {
+	data := map[string]any{}
+	strsetattr.Get(m.Roles, data, "roleNames", h)
+	intattr.Get(m.MinLength, data, "minLength")
+	boolattr.Get(m.Lowercase, data, "lowercase")
+	boolattr.Get(m.Uppercase, data, "uppercase")
+	boolattr.Get(m.Number, data, "number")
+	boolattr.Get(m.NonAlphanumeric, data, "nonAlphanumeric")
+	boolattr.Get(m.AnyLetter, data, "anyLetter")
+	stringattr.Get(m.DisallowedCharacters, data, "disallowedCharacters")
+	boolattr.Get(m.DisallowEmailMatch, data, "disallowEmailMatch")
+	if m.EnforceStrength.ValueString() == "none" {
+		data["enablePasswordStrength"] = false
+		data["passwordStrengthScore"] = 0
+	} else {
+		data["enablePasswordStrength"] = true
+		data["passwordStrengthScore"] = strengthScoreFromString(m.EnforceStrength.ValueString())
+	}
+	return data
+}
+
+func (m *PasswordRolePolicyModel) SetValues(h *helpers.Handler, data map[string]any) {
+	*m = PasswordRolePolicyModel{}
+	strsetattr.Set(&m.Roles, data, "roleNames", h)
+	intattr.SetDefault(&m.MinLength, data, "minLength", 0)
+	boolattr.SetDefault(&m.Lowercase, data, "lowercase", false)
+	boolattr.SetDefault(&m.Uppercase, data, "uppercase", false)
+	boolattr.SetDefault(&m.Number, data, "number", false)
+	boolattr.SetDefault(&m.NonAlphanumeric, data, "nonAlphanumeric", false)
+	boolattr.SetDefault(&m.AnyLetter, data, "anyLetter", false)
+	stringattr.SetDefault(&m.DisallowedCharacters, data, "disallowedCharacters", "")
+	boolattr.SetDefault(&m.DisallowEmailMatch, data, "disallowEmailMatch", false)
+	if enabled, _ := data["enablePasswordStrength"].(bool); !enabled {
+		m.EnforceStrength = stringattr.Value("none")
+	} else {
+		score, _ := data["passwordStrengthScore"].(float64)
+		m.EnforceStrength = stringattr.Value(strengthStringFromScore(int(score)))
+	}
+}
 
 var strengthLevels = map[string]int{
 	"very_weak":   0,
