@@ -6,6 +6,7 @@ resource "descope_role" "member" {
 resource "descope_oidc_app" "portal" {
   project_id          = descope_project.test.id
   name                = "roundtrip-portal"
+  client_type         = "confidential"
   description         = "Customer portal"
   login_page_url      = "https://example.com/login"
   deletion_protection = false

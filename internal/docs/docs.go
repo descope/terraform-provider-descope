@@ -99,10 +99,13 @@ var docsOIDCApp = map[string]string{
 		"stays empty. The value in the state is never overwritten afterwards, so a secret rotated via " +
 		"the API or the Descope console is not reflected until the resource is replaced. Changing this " +
 		"value will require the resource to be deleted and recreated.",
-	"client_type": "OAuth client confidentiality. One of `\"\"` (default — legacy access-key authentication), " +
-		"`\"confidential\"` (a dedicated client secret is generated for the app), or `\"public\"` (PKCE " +
-		"only, no client secret). Changing this value on an existing application changes how its " +
-		"clients must authenticate, so coordinate the change with the application's developers.",
+	"client_type": "OAuth client confidentiality. One of `\"confidential\"` (a dedicated client secret is generated for " +
+		"the app), `\"public\"` (PKCE only, no client secret), or `\"\"` (the legacy mode with access-key " +
+		"authentication). If this attribute is omitted when the application is created, newer Descope " +
+		"accounts create a `\"confidential\"` application and older accounts create a legacy one, and removing " +
+		"it from the configuration later keeps the current type. Newer accounts can't move an application to " +
+		"the legacy mode. Changing this value on an existing application changes how its clients must " +
+		"authenticate, so coordinate the change with the application's developers.",
 	"approved_redirect_urls": "A list of approved redirect URLs for this application (supports `*` wildcards). When set, " +
 		"redirect URIs are validated against this per-app list; when empty, validation falls back to " +
 		"the project's approved/trusted domains.",
@@ -1592,8 +1595,15 @@ var docsInboundApp = map[string]string{
 	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
 		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
 	"client_type": "The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for " +
-		"one that authenticates with PKCE and has no secret. Leave empty to let the backend decide. Changing " +
-		"this value after creation will require the resource to be replaced.",
+		"one that authenticates with PKCE and has no secret. The empty value `\"\"` is the legacy mode. If this " +
+		"attribute is omitted when the app is created, newer Descope accounts create a `confidential` app and " +
+		"older accounts create a legacy one, and removing it from the configuration later keeps the current " +
+		"type. Newer accounts can't move an app to the legacy mode. Moving from the legacy mode to `confidential` " +
+		"updates the app in place and keeps its client ID, and any other change replaces the resource, which " +
+		"issues a new client ID and secret. An app that was never issued a client secret, such as one created " +
+		"with `non_confidential_client = true` in v0.3, needs one after moving to `confidential`: rotate its " +
+		"client secret, for example in the Descope console, or force a replacement with `terraform apply -replace` " +
+		"to get a new client ID and secret.",
 	"client_id": "A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing " +
 		"this value after creation will require the resource to be replaced.",
 	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +

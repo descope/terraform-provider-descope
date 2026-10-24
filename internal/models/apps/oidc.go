@@ -35,7 +35,7 @@ var OIDCAppAttributes = map[string]schema.Attribute{
 	"custom_idp_initiated_login_page_url": stringattr.Default(""),
 	"client_id":                           stringattr.Optional(stringplanmodifier.RequiresReplace()),
 	"client_secret":                       stringattr.SecretGenerated(true, stringplanmodifier.RequiresReplace()),
-	"client_type":                         stringattr.Default("", stringvalidator.OneOf("", "confidential", "public")),
+	"client_type":                         stringattr.Optional(stringvalidator.OneOf("", "confidential", "public")),
 	"approved_redirect_urls":              strsetattr.Default(),
 	"authorization_code_disabled":         boolattr.Default(false),
 	"client_credentials_disabled":         boolattr.Default(false),
@@ -115,7 +115,7 @@ func (m *OIDCAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 		}
 		// The read always blanks the clientSecret, so the create-time value in the state is kept.
 		stringattr.Set(&m.ClientSecret, settings, "clientSecret", stringattr.SkipIfAlreadySet)
-		stringattr.Set(&m.ClientType, settings, "clientType")
+		stringattr.SetDefault(&m.ClientType, settings, "clientType", "")
 		strsetattr.Set(&m.ApprovedRedirectURLs, settings, "approvedRedirectUrls", h)
 		boolattr.Set(&m.AuthorizationCodeDisabled, settings, "authorizationCodeDisabled")
 		boolattr.Set(&m.ClientCredentialsDisabled, settings, "clientCredentialsDisabled")
