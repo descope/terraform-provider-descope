@@ -33,6 +33,19 @@ authentication traffic. Must be a subdomain of the `app_url` domain.
 
 
 
+apps_custom_domain
+------------------
+
+- Type: `string`
+
+The custom domain that federated and inbound application URLs are built on, such as the SAML
+entity ID, SSO and metadata URLs and the OIDC issuer and discovery URL. Set it to `custom_domain`
+or to another custom domain that was added to the project. When empty, or when the domain is no
+longer one of the project's custom domains, `custom_domain` is used. Changing it changes the SAML
+entity ID and SSO URL of every federated application, so service providers must be updated.
+
+
+
 approved_domains
 ----------------
 
