@@ -10,6 +10,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/approle"
 	"github.com/descope/terraform-provider-descope/internal/models/apps"
 	"github.com/descope/terraform-provider-descope/internal/models/attribute"
+	"github.com/descope/terraform-provider-descope/internal/models/authaccessrule"
 	"github.com/descope/terraform-provider-descope/internal/models/connectors"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
 	"github.com/descope/terraform-provider-descope/internal/models/emailtemplate"
@@ -51,11 +52,14 @@ func InjectModels() {
 	inject(attribute.TenantAttributeAttributes, docsTenantAttribute)
 	inject(attribute.TenantAttributeAuthorizationAttributes, docsTenantAttributeAuthorization)
 	inject(attribute.UserAttributeAttributes, docsUserAttribute)
+	inject(authaccessrule.AuthAccessRuleAttributes, docsAuthAccessRule)
+	inject(authaccessrule.AuthAccessConditionAttributes, docsAuthAccessCondition)
 	inject(connectors.AbuseIPDBConnectorAttributes, docsAbuseIPDBConnector)
 	inject(connectors.AlloyConnectorAttributes, docsAlloyConnector)
 	inject(connectors.AmplitudeConnectorAttributes, docsAmplitudeConnector)
 	inject(connectors.ArkoseConnectorAttributes, docsArkoseConnector)
 	inject(connectors.AuditWebhookConnectorAttributes, docsAuditWebhookConnector)
+	inject(connectors.AWSEndUserMessagingConnectorAttributes, docsAWSEndUserMessagingConnector)
 	inject(connectors.AWSEventBridgeConnectorAttributes, docsAWSEventBridgeConnector)
 	inject(connectors.AWSS3ConnectorAttributes, docsAWSS3Connector)
 	inject(connectors.AWSSESEmailValidationConnectorAttributes, docsAWSSESEmailValidationConnector)
@@ -90,6 +94,7 @@ func InjectModels() {
 	inject(connectors.LDAPConnectorAttributes, docsLDAPConnector)
 	inject(connectors.LokaliseConnectorAttributes, docsLokaliseConnector)
 	inject(connectors.MailjetConnectorAttributes, docsMailjetConnector)
+	inject(connectors.MicrosoftSentinelConnectorAttributes, docsMicrosoftSentinelConnector)
 	inject(connectors.MixpanelConnectorAttributes, docsMixpanelConnector)
 	inject(connectors.MParticleConnectorAttributes, docsMParticleConnector)
 	inject(connectors.NewRelicConnectorAttributes, docsNewRelicConnector)
@@ -130,6 +135,7 @@ func InjectModels() {
 	inject(connectors.TwilioCoreConnectorAttributes, docsTwilioCoreConnector)
 	inject(connectors.TwilioVerifyConnectorAttributes, docsTwilioVerifyConnector)
 	inject(connectors.UnibeamConnectorAttributes, docsUnibeamConnector)
+	inject(connectors.VonageConnectorAttributes, docsVonageConnector)
 	inject(connectors.ZeroBounceConnectorAttributes, docsZeroBounceConnector)
 	inject(descoper.DescoperAttributes, docsDescoper)
 	inject(descoper.DescoperProjectRoleAttributes, docsDescoperProjectRole)
@@ -157,8 +163,10 @@ func InjectModels() {
 	inject(role.RoleAttributes, docsRole)
 	inject(settings.AdminPortalAttributes, docsAdminPortal)
 	inject(settings.AdminPortalWidgetAttributes, docsAdminPortalWidget)
+	inject(settings.AuthAccessPolicyAttributes, docsAuthAccessPolicy)
 	inject(settings.EmbeddedLinkSettingsAttributes, docsEmbeddedLinkSettings)
 	inject(settings.EnchantedLinkSettingsAttributes, docsEnchantedLinkSettings)
+	inject(settings.GovernanceAttributes, docsGovernance)
 	inject(settings.InviteSettingsAttributes, docsInviteSettings)
 	inject(settings.MagicLinkSettingsAttributes, docsMagicLinkSettings)
 	inject(settings.OAuthSettingsAttributes, docsOAuthSettings)

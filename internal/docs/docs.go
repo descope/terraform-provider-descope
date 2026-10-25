@@ -258,6 +258,32 @@ var docsUserAttribute = map[string]string{
 		"widget.",
 }
 
+var docsAuthAccessRule = map[string]string{
+	"project_id": "The ID of the project that this rule belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name":        "A name for the rule, shown in the console.",
+	"description": "An optional description of what the rule is for.",
+	"enabled": "Whether the rule is evaluated. A disabled rule keeps its place in the evaluation order " +
+		"but never matches.",
+	"effect": "Whether an authentication that matches the rule is `allow`ed or `block`ed.",
+	"conditions": "The conditions that must all match for the rule to apply. A rule with no conditions " +
+		"matches every authentication.",
+	"expire_time": "The time after which the rule is no longer evaluated, in seconds since the Unix epoch. " +
+		"Set to `0` for a rule that never expires.",
+}
+
+var docsAuthAccessCondition = map[string]string{
+	"key": "The attribute the condition checks. One of `request.ip`, `request.country`, `user.email`, " +
+		"`user.emailDomain`, `user.loginId` or `user.phone`.",
+	"operator": "How the attribute is compared with the values. One of `equal`, `notEqual`, `in`, `notIn`, " +
+		"`inCidr` or `notInCidr`. The CIDR operators are only supported with the `request.ip` key.",
+	"values": "The values to compare with. The `equal`, `notEqual`, `inCidr` and `notInCidr` operators " +
+		"take exactly one value. With `equal` and `notEqual` the value may instead be a reference of " +
+		"the form `{{jwtClaims.<name>}}`, which compares the attribute with that custom claim of the " +
+		"token the user presented. An absent claim never matches. Values must be in canonical form: lowercase emails and domains, uppercase " +
+		"country codes, phone numbers in E.164 form and IP addresses in their shortest form.",
+}
+
 var docsAbuseIPDBConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -324,6 +350,32 @@ var docsAuditWebhookConnector = map[string]string{
 	"insecure": "Will ignore certificate errors raised by the client",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+}
+
+var docsAWSEndUserMessagingConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"aws_region":  "The AWS region the Notify configuration is in.",
+	"auth_type": "How to authenticate with AWS: using static credentials or by assuming an IAM " +
+		"role.",
+	"access_key_id": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+	"secret_access_key": "The AWS secret access key. Required when the authentication type is " +
+		"'credentials'.",
+	"role_arn": "The ARN of the IAM role to assume. Required when the authentication type is " +
+		"'assumeRole'.",
+	"external_id": "The external ID used when assuming the IAM role. Required when the " +
+		"authentication type is 'assumeRole'.",
+	"notify_configuration_id": "The ID of the AWS End User Messaging Notify configuration that sends the " +
+		"messages.",
+	"default_template_id": "The Notify template used when the flow does not select one. Leave empty to use " +
+		"the Notify configuration's default template.",
+	"template_code_variable": "The template variable that receives the OTP code. Defaults to 'code'.",
+	"template_expiry_minutes": "The code expiry in minutes, between 1 and 60. Set it when the template shows the " +
+		"code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message " +
+		"otherwise.",
+	"configuration_set_name": "The AWS configuration set whose event destinations receive delivery events, " +
+		"including messages that AWS blocks.",
 }
 
 var docsAWSEventBridgeConnector = map[string]string{
@@ -847,6 +899,29 @@ var docsMailjetConnector = map[string]string{
 		"authenticate.",
 }
 
+var docsMicrosoftSentinelConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The logs ingestion endpoint of the data collection rule, for example " +
+		"https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Terraform " +
+		"guide outputs it as ingestionEndpoint.",
+	"dcr_immutable_id": "The immutable ID of the data collection rule, in the form dcr-<32 hex " +
+		"characters>. The Terraform guide outputs it as dcrImmutableId.",
+	"stream_name": "The data collection rule stream that receives the audit events.",
+	"tenant_id":   "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id":   "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"troubleshoot_stream_name": "The data collection rule stream that receives the troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
 var docsMixpanelConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1131,6 +1206,11 @@ var docsSESConnector = map[string]string{
 	"sender_email": "The email address that emails are sent from. Make sure it is a verified identity " +
 		"in SES.",
 	"sender_name": "The name shown as the sender of the emails.",
+	"tags": "Custom AWS SES message tags added to every email sent through this connector, as " +
+		"key/value pairs.",
+	"configuration_set_name": "The SES configuration set to send every email with, so SES events such as " +
+		"bounces, complaints and deliveries carry it. It must exist in the same AWS " +
+		"account and region.",
 }
 
 var docsAuditFilterField = map[string]string{
@@ -1398,6 +1478,18 @@ var docsUnibeamConnector = map[string]string{
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
+var docsVonageConnector = map[string]string{
+	"project_id":       "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"api_key":          "The Vonage API key.",
+	"api_secret":       "The Vonage API secret.",
+	"sender":           "The sender ID or phone number that text messages are sent from.",
+	"application_id":   "The Vonage voice application ID.",
+	"private_key":      "The Vonage voice application's private key, used to sign the voice API JWT.",
+	"from_phone_voice": "The phone number that voice calls are placed from.",
+}
+
 var docsZeroBounceConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1642,6 +1734,7 @@ var docsProvider = map[string]string{
 	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
 	"disable_jit_updates": "By default the user attribute mapping configuration is used to update the user's attributes " +
 		"automatically during sign in. Disable this if you want this to happen only during user creation.",
+	"client_auth_method":   "The token endpoint client authentication method: `client_secret_basic` (credentials in the HTTP Basic auth header) or `client_secret_post` (credentials in the request body). Empty defaults to `client_secret_post`.",
 	"native_client_id":     "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"native_client_secret": "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
 	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for " +
@@ -1753,6 +1846,17 @@ var docsAdminPortalWidget = map[string]string{
 	"type":      "The type of the Widget",
 }
 
+var docsAuthAccessPolicy = map[string]string{
+	"project_id": "The ID of the project that this policy belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"default_action": "Whether an authentication that matches no rule is `allow`ed or `block`ed.",
+	"rule_ids": "The evaluation order of the project's rules, as a list of `descope_auth_access_rule` ids. " +
+		"The list must include every rule in the project exactly once. Reference the `id` attribute " +
+		"of each rule resource (e.g., `descope_auth_access_rule.example.id`) so that Terraform orders " +
+		"the operations correctly, and avoid `create_before_destroy` on rule resources, which makes " +
+		"Terraform update the order before a removed rule is deleted.",
+}
+
 var docsEmbeddedLinkSettings = map[string]string{
 	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
 		"to be deleted and recreated.",
@@ -1771,9 +1875,21 @@ var docsEnchantedLinkSettings = map[string]string{
 	"expiration_time":    "How long the enchanted link remains valid before it expires.",
 	"redirect_url":       "The URL to redirect users to after they log in using the enchanted link.",
 	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System " +
 		"template.",
+	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
+		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
+}
+
+var docsGovernance = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"configured": "Whether the Agentic Governance Suite has been set up for the project.",
+	"auto_approval": "Setting this to `true` approves access requests automatically instead of waiting for an admin to " +
+		"review them.",
+	"suite_disabled": "Setting this to `true` turns off the Agentic Governance Suite for the project.",
 }
 
 var docsInviteSettings = map[string]string{
@@ -1897,6 +2013,10 @@ var docsProjectSettings = map[string]string{
 	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
 		"your website. This modifies the security headers that typically prevent the page from " +
 		"being embedded.",
+	"disable_auth_hosting": "When enabled, Descope stops serving this project's flows from its hosted login pages, both " +
+		"at the Descope domain and at the `/login` path of a custom domain. Anything that relies on " +
+		"the default hosted login page URL, such as a federated application or an embedded link that " +
+		"lands on it, stops working. Flows running in your own application are unaffected.",
 	"test_users_loginid_regexp": "A regular expression pattern that, when a user is created with a matching login ID, will " +
 		"automatically mark the user as a test user.",
 	"test_users_static_otp": "A static OTP code that can be used by test users instead of a real verification code. Must " +
@@ -2007,6 +2127,10 @@ var docsTOTPSettings = map[string]string{
 	"disabled": "Setting this to `true` will disallow using TOTP authentication directly via API and SDK calls. Note " +
 		"that this does not affect authentication flows that are configured to use TOTP.",
 	"service_label": "The template for the service issuer label (issuer) shown in the authenticator app.",
+	"account_label": "The template for the account name shown in the authenticator app, for example `{{user.email}}` " +
+		"or `{{user.customAttributes.employeeId}}`. Supports `{{user.email}}`, `{{user.phone}}`, " +
+		"`{{user.name}}`, `{{user.loginId}}` and `{{user.customAttributes.<name>}}`. When empty, or when " +
+		"it renders empty for a user, the user's login ID is used.",
 }
 
 var docsStyles = map[string]string{
@@ -2014,13 +2138,19 @@ var docsStyles = map[string]string{
 		"deleted and recreated.",
 	"data": "The JSON data of the styles in their exported theme representation, defining the visual styling of " +
 		"the project's flow pages. This will usually be exported as a `.json` file from the Descope console, " +
-		"and set in the `.tf` file using the `data = file(\"...\")` syntax.",
+		"which exports one style per file, and set in the `.tf` file using the `data = file(\"...\")` syntax. " +
+		"Applying this resource creates and overwrites the styles the data carries, and leaves every other " +
+		"style in the project untouched, so styles created in the console are safe from a Terraform apply. " +
+		"For the same reason removing a style from the data does not remove it from the project - delete it " +
+		"in the console or through the management API instead. An apply is rejected if the data's " +
+		"`componentsVersion` differs from the project's, in which case export the styles again or leave " +
+		"`componentsVersion` out, and if it changes the type of a style that already exists in the project.",
 }
 
 var docsTextTemplate = map[string]string{
 	"project_id": "The ID of the project that the text template belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
-	"method": "The authentication method the text template is used with, e.g. `magiclink` or `otp`. Changing this value will require the resource to be deleted and recreated.",
+	"method": "The authentication method the text template is used with, e.g. `magiclink`, `otp` or `enchantedlink`. Changing this value will require the resource to be deleted and recreated.",
 	"name":   "A name for the text template that's unique among the templates of the same authentication method.",
 	"body":   "The body of text messages sent with this template. Template macros such as `{{.code}}` can be used to insert dynamic values.",
 }

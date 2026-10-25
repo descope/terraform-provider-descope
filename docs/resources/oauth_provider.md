@@ -27,6 +27,7 @@ Manages a single OAuth provider in a Descope project, either the custom configur
 - `authorization_endpoint` (String) The URL that users are redirected to for authorization with the OAuth provider.
 - `callback_domain` (String) Use a custom domain in your OAuth verification screen.
 - `claim_mapping` (Map of String) Maps OAuth provider claims to Descope user attributes.
+- `client_auth_method` (String) The token endpoint client authentication method: `client_secret_basic` (credentials in the HTTP Basic auth header) or `client_secret_post` (credentials in the request body). Empty defaults to `client_secret_post`.
 - `client_id` (String) The client ID for the OAuth provider, used to identify the application to the provider.
 - `client_secret` (String, Sensitive) The client secret for the OAuth provider, used to authenticate the application with the provider.
 - `description` (String) A brief description of the OAuth provider.

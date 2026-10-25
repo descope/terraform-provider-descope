@@ -25,6 +25,11 @@
       "file": "auditwebhook",
       "struct": "AuditWebhook"
     },
+    "aws-end-user-messaging": {
+      "attribute": "aws_end_user_messaging",
+      "file": "awsendusermessaging",
+      "struct": "AWSEndUserMessaging"
+    },
     "aws-eventbridge": {
       "attribute": "aws_eventbridge",
       "file": "awseventbridge",
@@ -194,6 +199,11 @@
       "attribute": "mailjet",
       "file": "mailjet",
       "struct": "Mailjet"
+    },
+    "microsoft-sentinel": {
+      "attribute": "microsoft_sentinel",
+      "file": "microsoftsentinel",
+      "struct": "MicrosoftSentinel"
     },
     "mixpanel": {
       "attribute": "mixpanel",
@@ -370,6 +380,11 @@
       "file": "unibeam",
       "struct": "Unibeam"
     },
+    "vonage": {
+      "attribute": "vonage",
+      "file": "vonage",
+      "struct": "Vonage"
+    },
     "zerobounce": {
       "attribute": "zerobounce",
       "file": "zerobounce",
@@ -432,6 +447,10 @@
     "apiVersion": {
       "attribute": "api_version",
       "struct": "APIVersion"
+    },
+    "applicationId": {
+      "attribute": "application_id",
+      "struct": "ApplicationID"
     },
     "assessmentScore": {
       "attribute": "assessment_score",
@@ -577,6 +596,10 @@
       "attribute": "company_id",
       "struct": "CompanyID"
     },
+    "configurationSetName": {
+      "attribute": "configuration_set_name",
+      "struct": "ConfigurationSetName"
+    },
     "country": {
       "attribute": "country",
       "struct": "Country"
@@ -613,6 +636,10 @@
       "attribute": "database_name",
       "struct": "DatabaseName"
     },
+    "dcrImmutableId": {
+      "attribute": "dcr_immutable_id",
+      "struct": "DcrImmutableID"
+    },
     "defaultEnvironment": {
       "attribute": "default_environment",
       "struct": "DefaultEnvironment"
@@ -624,6 +651,10 @@
     "defaultResult": {
       "attribute": "default_result",
       "struct": "DefaultResult"
+    },
+    "defaultTemplateId": {
+      "attribute": "default_template_id",
+      "struct": "DefaultTemplateID"
     },
     "detailType": {
       "attribute": "detail_type",
@@ -737,6 +768,10 @@
       "attribute": "index",
       "struct": "Index"
     },
+    "ingestionEndpoint": {
+      "attribute": "ingestion_endpoint",
+      "struct": "IngestionEndpoint"
+    },
     "ingestionKey": {
       "attribute": "ingestion_key",
       "struct": "IngestionKey"
@@ -792,6 +827,10 @@
     "nodeName": {
       "attribute": "node_name",
       "struct": "NodeName"
+    },
+    "notifyConfigurationId": {
+      "attribute": "notify_configuration_id",
+      "struct": "NotifyConfigurationID"
     },
     "originationNumber": {
       "attribute": "origination_number",
@@ -1009,6 +1048,10 @@
       "attribute": "source",
       "struct": "Source"
     },
+    "streamName": {
+      "attribute": "stream_name",
+      "struct": "StreamName"
+    },
     "subAccountId": {
       "attribute": "sub_account_id",
       "struct": "SubAccountID"
@@ -1033,9 +1076,21 @@
       "attribute": "team_id",
       "struct": "TeamID"
     },
+    "templateCodeVariable": {
+      "attribute": "template_code_variable",
+      "struct": "TemplateCodeVariable"
+    },
+    "templateExpiryMinutes": {
+      "attribute": "template_expiry_minutes",
+      "struct": "TemplateExpiryMinutes"
+    },
     "templateId": {
       "attribute": "template_id",
       "struct": "TemplateID"
+    },
+    "tenantId": {
+      "attribute": "tenant_id",
+      "struct": "TenantID"
     },
     "token": {
       "attribute": "token",
@@ -1048,6 +1103,10 @@
     "troubleshootLogEnabled": {
       "attribute": "troubleshoot_log_enabled",
       "struct": "TroubleshootLogEnabled"
+    },
+    "troubleshootStreamName": {
+      "attribute": "troubleshoot_stream_name",
+      "struct": "TroubleshootStreamName"
     },
     "useCloudflareIntegration": {
       "attribute": "use_cloudflare_integration",

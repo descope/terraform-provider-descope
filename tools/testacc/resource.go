@@ -86,6 +86,10 @@ func AdminPortal(t *testing.T) *Resource {
 	return newResource(t, "admin_portal")
 }
 
+func Governance(t *testing.T) *Resource {
+	return newResource(t, "governance")
+}
+
 func MagicLinkSettings(t *testing.T) *Resource {
 	return newResource(t, "magiclink_settings")
 }
@@ -160,6 +164,14 @@ func AppPermission(t *testing.T) *Resource {
 
 func List(t *testing.T) *Resource {
 	return newResource(t, "list")
+}
+
+func AuthAccessRule(t *testing.T) *Resource {
+	return newResource(t, "auth_access_rule")
+}
+
+func AuthAccessPolicy(t *testing.T) *Resource {
+	return newResource(t, "auth_access_policy")
 }
 
 func JWTTemplate(t *testing.T) *Resource {
