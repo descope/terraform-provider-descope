@@ -20,6 +20,7 @@ func ConnectorResources() []func() resource.Resource {
 		newConnectorResource[connectors.AWSS3ConnectorModel]("aws_s3_connector", "aws-s3", connectors.AWSS3ConnectorSchema),
 		newConnectorResource[connectors.AWSSESEmailValidationConnectorModel]("aws_ses_email_validation_connector", "aws-ses-email-validation", connectors.AWSSESEmailValidationConnectorSchema),
 		newConnectorResource[connectors.AWSTranslateConnectorModel]("aws_translate_connector", "aws-translate", connectors.AWSTranslateConnectorSchema),
+		newConnectorResource[connectors.AzureMonitorConnectorModel]("azure_monitor_connector", "azure-monitor", connectors.AzureMonitorConnectorSchema),
 		newConnectorResource[connectors.BitsightConnectorModel]("bitsight_connector", "bitsight", connectors.BitsightConnectorSchema),
 		newConnectorResource[connectors.CoralogixConnectorModel]("coralogix_connector", "coralogix", connectors.CoralogixConnectorSchema),
 		newConnectorResource[connectors.CriblConnectorModel]("cribl_connector", "cribl", connectors.CriblConnectorSchema),

@@ -448,6 +448,30 @@ var docsAWSTranslateConnector = map[string]string{
 	"region": "The AWS region to which this client will send requests. (e.g. us-east-1.)",
 }
 
+var docsAzureMonitorConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The scheme and host of the logs ingestion endpoint, in the form " +
+		"https://<name>.<region>-1.ingest.monitor.azure.com, without any path.",
+	"dcr_immutable_id": "The immutable ID of the OTLP-enabled data collection rule, in the form dcr-<32 " +
+		"hex characters>.",
+	"tenant_id": "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id": "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"service_name": "The service name attached to the logs as the `service.name` resource attribute. " +
+		"Default is `descope`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
 var docsBitsightConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
