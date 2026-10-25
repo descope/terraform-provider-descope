@@ -19,6 +19,10 @@ The module uses the `azurerm`, `azuread` and `azapi` providers. The data collect
 because `azurerm_monitor_data_collection_rule` does not support OTLP data sources. OTLP ingestion is an Azure Monitor
 preview feature, see [Microsoft's documentation](https://learn.microsoft.com/en-us/azure/azure-monitor/containers/opentelemetry-protocol-ingestion).
 
+The module creates its resources in the resource group of the workspace. Use a workspace in a resource group you
+manage: the `ai_*_managed` resource groups that Application Insights creates have a deny assignment that rejects the
+data collection rule.
+
 ## Module
 
 Save the following files in a `descope-azure-monitor` directory.
