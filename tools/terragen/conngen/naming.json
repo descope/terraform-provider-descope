@@ -195,6 +195,11 @@
       "file": "lokalise",
       "struct": "Lokalise"
     },
+    "mailjet": {
+      "attribute": "mailjet",
+      "file": "mailjet",
+      "struct": "Mailjet"
+    },
     "microsoft-sentinel": {
       "attribute": "microsoft_sentinel",
       "file": "microsoftsentinel",
