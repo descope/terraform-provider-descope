@@ -59,6 +59,8 @@ func TestSSOSettings(t *testing.T) {
 					show_xaa = true
 					support_email = "help@example.com"
 					show_help_contact = true
+					login_flow_id = "sign-in"
+					login_flow_style_id = "login-style"
 				}
 			`),
 			Check: m.Check(map[string]any{
@@ -80,6 +82,8 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.show_xaa":             true,
 				"sso_suite_settings.support_email":        "help@example.com",
 				"sso_suite_settings.show_help_contact":    true,
+				"sso_suite_settings.login_flow_id":        "sign-in",
+				"sso_suite_settings.login_flow_style_id":  "login-style",
 			}),
 		},
 		// conflicting sso suite settings are rejected
@@ -135,6 +139,8 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.show_xaa":             false,
 				"sso_suite_settings.support_email":        "",
 				"sso_suite_settings.show_help_contact":    false,
+				"sso_suite_settings.login_flow_id":        "",
+				"sso_suite_settings.login_flow_style_id":  "",
 				"email_connector_id":                      "",
 			}),
 		},
