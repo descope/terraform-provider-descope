@@ -24,16 +24,17 @@ var SESConnectorAttributes = map[string]schema.Attribute{
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
 
-	"auth_type":         stringattr.Default("credentials", stringvalidator.OneOf("", "credentials", "assumeRole")),
-	"access_key_id":     stringattr.SecretOptional(),
-	"secret_access_key": stringattr.SecretOptional(),
-	"role_arn":          stringattr.Default(""),
-	"external_id":       stringattr.Default(""),
-	"region":            stringattr.Required(),
-	"endpoint":          stringattr.Default(""),
-	"sender_email":      stringattr.Required(),
-	"sender_name":       stringattr.Default(""),
-	"tags":              strmapattr.Default(),
+	"auth_type":              stringattr.Default("credentials", stringvalidator.OneOf("", "credentials", "assumeRole")),
+	"access_key_id":          stringattr.SecretOptional(),
+	"secret_access_key":      stringattr.SecretOptional(),
+	"role_arn":               stringattr.Default(""),
+	"external_id":            stringattr.Default(""),
+	"region":                 stringattr.Required(),
+	"endpoint":               stringattr.Default(""),
+	"sender_email":           stringattr.Required(),
+	"sender_name":            stringattr.Default(""),
+	"tags":                   strmapattr.Default(),
+	"configuration_set_name": stringattr.Default(""),
 }
 
 // Model
@@ -44,16 +45,17 @@ type SESConnectorModel struct {
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
 
-	AuthType        stringattr.Type `tfsdk:"auth_type"`
-	AccessKeyID     stringattr.Type `tfsdk:"access_key_id"`
-	SecretAccessKey stringattr.Type `tfsdk:"secret_access_key"`
-	RoleARN         stringattr.Type `tfsdk:"role_arn"`
-	ExternalID      stringattr.Type `tfsdk:"external_id"`
-	Region          stringattr.Type `tfsdk:"region"`
-	Endpoint        stringattr.Type `tfsdk:"endpoint"`
-	SenderEmail     stringattr.Type `tfsdk:"sender_email"`
-	SenderName      stringattr.Type `tfsdk:"sender_name"`
-	Tags            strmapattr.Type `tfsdk:"tags"`
+	AuthType             stringattr.Type `tfsdk:"auth_type"`
+	AccessKeyID          stringattr.Type `tfsdk:"access_key_id"`
+	SecretAccessKey      stringattr.Type `tfsdk:"secret_access_key"`
+	RoleARN              stringattr.Type `tfsdk:"role_arn"`
+	ExternalID           stringattr.Type `tfsdk:"external_id"`
+	Region               stringattr.Type `tfsdk:"region"`
+	Endpoint             stringattr.Type `tfsdk:"endpoint"`
+	SenderEmail          stringattr.Type `tfsdk:"sender_email"`
+	SenderName           stringattr.Type `tfsdk:"sender_name"`
+	Tags                 strmapattr.Type `tfsdk:"tags"`
+	ConfigurationSetName stringattr.Type `tfsdk:"configuration_set_name"`
 }
 
 func (m *SESConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -117,6 +119,7 @@ func (m *SESConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]a
 	if !m.Tags.IsEmpty() {
 		getObjectField(m.Tags, c, "tags", h)
 	}
+	stringattr.Get(m.ConfigurationSetName, c, "configurationSetName")
 	return c
 }
 
@@ -131,6 +134,7 @@ func (m *SESConnectorModel) SetConfigurationValues(c map[string]any, h *helpers.
 	stringattr.Set(&m.SenderEmail, c, "fromEmail")
 	stringattr.Set(&m.SenderName, c, "fromName")
 	setObjectField(&m.Tags, c, "tags", h)
+	stringattr.Set(&m.ConfigurationSetName, c, "configurationSetName")
 }
 
 func (m *SESConnectorModel) GetID() stringattr.Type        { return m.ID }

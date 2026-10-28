@@ -22,10 +22,12 @@ func TestProjectSettings(t *testing.T) {
 				"project_id":                          testacc.AttributeIsSet,
 				"app_url":                             "",
 				"custom_domain":                       "",
+				"apps_custom_domain":                  "",
 				"approved_domains":                    []string{},
 				"default_no_sso_apps":                 false,
 				"tenant_user_isolation":               false,
 				"allow_auth_hosting_iframe_embedding": false,
+				"disable_auth_hosting":                false,
 				"test_users_loginid_regexp":           "",
 				"test_users_static_otp":               "",
 				"test_users_verifier_regexp":          "",
@@ -39,6 +41,22 @@ func TestProjectSettings(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`set together`),
 		},
+		// apps custom domain must be a domain name
+		resource.TestStep{
+			Config: m.Block(`
+				project_id = "` + projectID + `"
+				apps_custom_domain = "https://apps.example.com"
+			`),
+			ExpectError: regexp.MustCompile(`domain name and not a full URL`),
+		},
+		// apps custom domain must be one of the project's custom domains
+		resource.TestStep{
+			Config: m.Block(`
+				project_id = "` + projectID + `"
+				apps_custom_domain = "apps.example.com"
+			`),
+			ExpectError: regexp.MustCompile(`configured custom domains`),
+		},
 		// update the settings fields
 		resource.TestStep{
 			Config: m.Block(`
@@ -47,6 +65,7 @@ func TestProjectSettings(t *testing.T) {
 				approved_domains = ["example.com", "*.example.dev"]
 				default_no_sso_apps = true
 				allow_auth_hosting_iframe_embedding = true
+				disable_auth_hosting = true
 				test_users_loginid_regexp = ".*@test\\.example\\.com"
 				test_users_static_otp = "123456"
 				test_users_verifier_regexp = ".*"
@@ -56,6 +75,7 @@ func TestProjectSettings(t *testing.T) {
 				"approved_domains":                    []string{"example.com", "*.example.dev"},
 				"default_no_sso_apps":                 true,
 				"allow_auth_hosting_iframe_embedding": true,
+				"disable_auth_hosting":                true,
 				"test_users_loginid_regexp":           ".*@test\\.example\\.com",
 				"test_users_static_otp":               "123456",
 				"test_users_verifier_regexp":          ".*",
@@ -68,9 +88,11 @@ func TestProjectSettings(t *testing.T) {
 			`),
 			Check: m.Check(map[string]any{
 				"app_url":                             "",
+				"apps_custom_domain":                  "",
 				"approved_domains":                    []string{},
 				"default_no_sso_apps":                 false,
 				"allow_auth_hosting_iframe_embedding": false,
+				"disable_auth_hosting":                false,
 				"test_users_loginid_regexp":           "",
 				"test_users_static_otp":               "",
 				"test_users_verifier_regexp":          "",
