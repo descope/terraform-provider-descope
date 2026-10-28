@@ -99,10 +99,14 @@ var docsOIDCApp = map[string]string{
 		"stays empty. The value in the state is never overwritten afterwards, so a secret rotated via " +
 		"the API or the Descope console is not reflected until the resource is replaced. Changing this " +
 		"value will require the resource to be deleted and recreated.",
-	"client_type": "OAuth client confidentiality. One of `\"\"` (default — legacy access-key authentication), " +
-		"`\"confidential\"` (a dedicated client secret is generated for the app), or `\"public\"` (PKCE " +
-		"only, no client secret). Changing this value on an existing application changes how its " +
-		"clients must authenticate, so coordinate the change with the application's developers.",
+	"client_type": "OAuth client confidentiality. One of `\"confidential\"` (a dedicated client secret is generated for " +
+		"the app) or `\"public\"` (PKCE only, no client secret), and setting it explicitly is recommended. The " +
+		"empty value `\"\"` is the legacy mode with access-key authentication. If this attribute is omitted when " +
+		"the application is created, the account's default client type is used and the stored value shows " +
+		"which one it is, and removing the attribute from the configuration later keeps the current type. " +
+		"Moving an existing application to the legacy mode can be rejected by the Descope API. Changing this " +
+		"value on an existing application changes how its clients must authenticate, so coordinate the change " +
+		"with the application's developers.",
 	"approved_redirect_urls": "A list of approved redirect URLs for this application (supports `*` wildcards). When set, " +
 		"redirect URIs are validated against this per-app list; when empty, validation falls back to " +
 		"the project's approved/trusted domains.",
@@ -1592,8 +1596,15 @@ var docsInboundApp = map[string]string{
 	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
 		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
 	"client_type": "The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for " +
-		"one that authenticates with PKCE and has no secret. Leave empty to let the backend decide. Changing " +
-		"this value after creation will require the resource to be replaced.",
+		"one that authenticates with PKCE and has no secret. Setting it explicitly is recommended. The empty " +
+		"value `\"\"` is the legacy mode. If this attribute is omitted when the app is created, the account's " +
+		"default client type is used and the stored value shows which one it is, and removing the attribute " +
+		"from the configuration later keeps the current type. Moving from the legacy mode to `confidential` " +
+		"updates the app in place and keeps its client ID, and any other change, including a move to the legacy " +
+		"mode, replaces the resource, which issues a new client ID and secret. An app that was never issued a " +
+		"client secret, such as one created with `non_confidential_client = true` in v0.3, needs one after " +
+		"moving to `confidential`: rotate its client secret, for example in the Descope console, or force a " +
+		"replacement with `terraform apply -replace` to get a new client ID and secret.",
 	"client_id": "A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing " +
 		"this value after creation will require the resource to be replaced.",
 	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +
@@ -2017,6 +2028,11 @@ var docsProjectSettings = map[string]string{
 	"app_url": "The URL where your application resides.",
 	"custom_domain": "A custom CNAME domain for the project, used instead of the default Descope base URL for " +
 		"authentication traffic. Must be a subdomain of the `app_url` domain.",
+	"apps_custom_domain": "The custom domain that federated and inbound application URLs are built on, such as the SAML " +
+		"entity ID, SSO and metadata URLs and the OIDC issuer and discovery URL. Set it to `custom_domain` " +
+		"or to another custom domain that was added to the project. When empty, or when the domain is no " +
+		"longer one of the project's custom domains, `custom_domain` is used. Changing it changes the SAML " +
+		"entity ID and SSO URL of every federated application, so service providers must be updated.",
 	"approved_domains": "List of approved domains that are allowed for redirect and verification URLs for different " +
 		"authentication methods.",
 	"default_no_sso_apps": "Whether new users should not be given access to any federated applications by default.",
@@ -2139,6 +2155,10 @@ var docsTOTPSettings = map[string]string{
 	"disabled": "Setting this to `true` will disallow using TOTP authentication directly via API and SDK calls. Note " +
 		"that this does not affect authentication flows that are configured to use TOTP.",
 	"service_label": "The template for the service issuer label (issuer) shown in the authenticator app.",
+	"account_label": "The template for the account name shown in the authenticator app, for example `{{user.email}}` " +
+		"or `{{user.customAttributes.employeeId}}`. Supports `{{user.email}}`, `{{user.phone}}`, " +
+		"`{{user.name}}`, `{{user.loginId}}` and `{{user.customAttributes.<name>}}`. When empty, or when " +
+		"it renders empty for a user, the user's login ID is used.",
 }
 
 var docsStyles = map[string]string{

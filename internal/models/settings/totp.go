@@ -20,6 +20,7 @@ var TOTPSettingsAttributes = map[string]schema.Attribute{
 	"project_id":    stringattr.Required(stringplanmodifier.RequiresReplace()),
 	"disabled":      boolattr.Default(false),
 	"service_label": stringattr.Default(""),
+	"account_label": stringattr.Default(""),
 }
 
 type TOTPSettingsModel struct {
@@ -27,18 +28,21 @@ type TOTPSettingsModel struct {
 	ProjectID    stringattr.Type `tfsdk:"project_id"`
 	Disabled     boolattr.Type   `tfsdk:"disabled"`
 	ServiceLabel stringattr.Type `tfsdk:"service_label"`
+	AccountLabel stringattr.Type `tfsdk:"account_label"`
 }
 
 func (m *TOTPSettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	boolattr.GetNot(m.Disabled, data, "enabled")
 	stringattr.Get(m.ServiceLabel, data, "issuerLabelTemplate")
+	stringattr.Get(m.AccountLabel, data, "accountNameTemplate")
 	return data
 }
 
 func (m *TOTPSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.SetNot(&m.Disabled, data, "enabled")
 	stringattr.Set(&m.ServiceLabel, data, "issuerLabelTemplate")
+	stringattr.Set(&m.AccountLabel, data, "accountNameTemplate")
 }
 
 func (m *TOTPSettingsModel) GetID() stringattr.Type        { return m.ID }
