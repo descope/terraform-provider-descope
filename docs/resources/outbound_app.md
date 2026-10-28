@@ -29,6 +29,7 @@ Manages a custom outbound application in a Descope project. Outbound application
 - `callback_domain` (String) The domain that the provider redirects back to after consent. Leave this empty to use the project's configured domain.
 - `client_id` (String) The OAuth client ID issued by the third party provider.
 - `client_secret` (String, Sensitive) The OAuth client secret issued by the third party provider. The Descope API never returns this value, so it cannot be read back and is not verified against the server. Omitting the field leaves any previously stored secret in place, while setting it to a new value replaces it. An empty string is not accepted.
+- `dcr_url` (String) The URL of the provider's protected resource, such as an MCP server, or of its authorization server, used to discover the registration endpoint when `use_dcr` is enabled. This cannot be changed on an existing outbound application.
 - `default_redirect_url` (String) The URL that users are returned to once they have finished granting or denying consent at the provider. This can be overridden per connection.
 - `default_scopes` (Set of String) The scopes requested from the provider when no scopes are given for a specific connection.
 - `description` (String) A description for the outbound application.
@@ -39,6 +40,7 @@ Manages a custom outbound application in a Descope project. Outbound application
 - `revocation_url` (String) The provider's token revocation endpoint.
 - `token_url` (String) The provider's token endpoint, used to exchange an authorization code and to refresh tokens.
 - `token_url_params` (Map of String) Additional query parameters to append to the token request, for providers that require them.
+- `use_dcr` (Boolean) Whether Descope registers itself as a client with the provider using OAuth Dynamic Client Registration when the outbound application is created. The registration fills in the `client_id`, `client_secret`, `authorization_url`, `token_url`, `revocation_url`, `default_scopes` and `pkce` fields, so they cannot be set when creating the application. Registration only happens on creation, so this cannot be enabled on an existing outbound application.
 
 ### Read-Only
 

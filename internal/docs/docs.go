@@ -1770,6 +1770,14 @@ var docsOutboundApp = map[string]string{
 		"value, so it cannot be read back and is not verified against the server. Omitting the field leaves " +
 		"any previously stored secret in place, while setting it to a new value replaces it. An empty " +
 		"string is not accepted.",
+	"use_dcr": "Whether Descope registers itself as a client with the provider using OAuth Dynamic Client " +
+		"Registration when the outbound application is created. The registration fills in the `client_id`, " +
+		"`client_secret`, `authorization_url`, `token_url`, `revocation_url`, `default_scopes` and `pkce` " +
+		"fields, so they cannot be set when creating the application. Registration only happens on creation, " +
+		"so this cannot be enabled on an existing outbound application.",
+	"dcr_url": "The URL of the provider's protected resource, such as an MCP server, or of its authorization " +
+		"server, used to discover the registration endpoint when `use_dcr` is enabled. This cannot be " +
+		"changed on an existing outbound application.",
 	"discovery_url":     "The provider's OpenID Connect discovery endpoint, used to look up its other endpoints.",
 	"authorization_url": "The provider's authorization endpoint, which users are redirected to in order to grant consent.",
 	"authorization_url_params": "Additional query parameters to append to the authorization request, for providers that require " +
