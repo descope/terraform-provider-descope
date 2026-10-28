@@ -64,7 +64,8 @@ same name collide across exports, so `-name-prefix` prefixes every label, variab
 
 Server-assigned ids become references to the resource managing them rather than opaque literals. Short
 human-chosen ids are excluded, since a flow id or attribute name would match far too eagerly. Permissions
-are additionally mapped by name, because roles grant them by name and terraform needs the ordering.
+are additionally mapped by name, because roles grant them by name and terraform needs the ordering. Roles are
+mapped by name the same way in password role policies, since writing a policy that names a missing role fails.
 
 Import block id formats have to match what `baseResource.ImportState` expects.
 
