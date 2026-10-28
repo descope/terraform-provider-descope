@@ -27,10 +27,10 @@ func TestInboundAppClientTypeReplacement(t *testing.T) {
 		replace bool
 	}{
 		{"legacy to confidential updates in place", "", "confidential", false},
+		{"legacy to public updates in place", "", "public", false},
+		{"confidential to public updates in place", "confidential", "public", false},
+		{"public to confidential updates in place", "public", "confidential", false},
 		{"confidential to legacy replaces", "confidential", "", true},
-		{"legacy to public replaces", "", "public", true},
-		{"confidential to public replaces", "confidential", "public", true},
-		{"public to confidential replaces", "public", "confidential", true},
 		{"public to legacy replaces", "public", "", true},
 		{"unchanged public is kept", "public", "public", false},
 	}
@@ -154,7 +154,7 @@ func TestInboundAppDeletionProtection(t *testing.T) {
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
-				client_type = "public"
+				client_type = ""
 			`),
 			ExpectError: regexp.MustCompile(`Deletion Protection Enabled`),
 		},
@@ -170,10 +170,10 @@ func TestInboundAppDeletionProtection(t *testing.T) {
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
 				deletion_protection = false
-				client_type = "public"
+				client_type = ""
 			`),
 			Check: a.Check(map[string]any{
-				"client_type":         "public",
+				"client_type":         "",
 				"deletion_protection": "false",
 			}),
 		},

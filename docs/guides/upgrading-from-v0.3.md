@@ -107,9 +107,9 @@ reminder.
 ### Adding `client_type` to an existing inbound app
 
 v1.0 replaces the `non_confidential_client` attribute of `descope_inbound_app` with `client_type`. Removing
-`non_confidential_client` on its own plans no changes. Setting `client_type = "confidential"` on an app that already
-exists updates it in place and keeps its client ID and existing client secret, but setting `client_type = "public"`
-replaces the app, which gives it a new client ID and secret.
+`non_confidential_client` on its own plans no changes. Setting `client_type` on an app that already exists updates it
+in place and keeps its client ID. With `client_type = "confidential"` the app also keeps its existing client secret,
+and with `client_type = "public"` the client credentials, JWT bearer and CIBA grants are turned off for the app.
 
 An app created with `non_confidential_client = true` was never issued a client secret, so after switching it to
 `confidential` it needs one. Rotate its client secret, for example in the Descope console, or replace the app with

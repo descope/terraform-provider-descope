@@ -158,12 +158,13 @@ The OAuth client type: `confidential` for a client that authenticates with a sec
 one that authenticates with PKCE and has no secret. Setting it explicitly is recommended. The empty
 value `""` is the legacy mode. If this attribute is omitted when the app is created, the account's
 default client type is used and the stored value shows which one it is, and removing the attribute
-from the configuration later keeps the current type. Moving from the legacy mode to `confidential`
-updates the app in place and keeps its client ID, and any other change, including a move to the legacy
-mode, replaces the resource, which issues a new client ID and secret. An app that was never issued a
-client secret, such as one created with `non_confidential_client = true` in v0.3, needs one after
-moving to `confidential`: rotate its client secret, for example in the Descope console, or force a
-replacement with `terraform apply -replace` to get a new client ID and secret.
+from the configuration later keeps the current type. Changing the client type updates the app in place
+and keeps its client ID, except moving to the legacy mode, which replaces the resource and issues a new
+client ID and secret. Switching to `public` turns off the client credentials, JWT bearer and CIBA grants
+for the app. After moving to `confidential`, an app whose client secret Terraform doesn't have, such as
+one created as `public` or with `non_confidential_client = true` in v0.3, needs its client secret
+rotated, for example in the Descope console, or use `terraform apply -replace` to get a new client ID
+and secret.
 
 
 
