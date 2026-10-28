@@ -6,6 +6,7 @@ import (
 	"slices"
 	"testing"
 
+	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strsetattr"
@@ -13,6 +14,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/outboundapp"
 	"github.com/descope/terraform-provider-descope/tools/testacc"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 )
 
@@ -33,6 +35,8 @@ func TestOutboundApp(t *testing.T) {
 				"logo":                       "",
 				"app_type":                   "oauth",
 				"client_id":                  "",
+				"use_dcr":                    false,
+				"dcr_url":                    "",
 				"discovery_url":              "",
 				"authorization_url":          "",
 				"authorization_url_params.%": "0",
@@ -243,6 +247,39 @@ func TestOutboundAppInvalidValues(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`(?i)null`),
 		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				use_dcr = true
+			`),
+			ExpectError: regexp.MustCompile(`dcr_url field is required`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				dcr_url = "https://mcp.example.com"
+			`),
+			ExpectError: regexp.MustCompile(`cannot be used unless use_dcr`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				app_type = "apikey"
+				use_dcr = true
+				dcr_url = "https://mcp.example.com"
+			`),
+			ExpectError: regexp.MustCompile(`cannot be used when app_type`),
+		},
+		// registration overwrites the client credentials and endpoints on create, so they cannot be configured alongside it
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				use_dcr = true
+				dcr_url = "https://mcp.example.com"
+				client_id = "client-abc"
+			`),
+			ExpectError: regexp.MustCompile(`filled in by dynamic client registration`),
+		},
 	)
 }
 
@@ -300,5 +337,129 @@ func TestOutboundAppURLParamOrder(t *testing.T) {
 		if !slices.IsSorted(keys) {
 			t.Fatalf("url params must serialize in a stable order or the request body differs on every apply, got %v", keys)
 		}
+	}
+}
+
+func dcrPlan() *outboundapp.OutboundAppModel {
+	return &outboundapp.OutboundAppModel{
+		AppType:          stringattr.Value("oauth"),
+		UseDCR:           boolattr.Value(true),
+		DCRURL:           stringattr.Value("https://mcp.example.com"),
+		ClientID:         stringattr.Value(""),
+		AuthorizationURL: stringattr.Value(""),
+		TokenURL:         stringattr.Value(""),
+		RevocationURL:    stringattr.Value(""),
+		DefaultScopes:    strsetattr.Empty(),
+		Pkce:             boolattr.Value(false),
+	}
+}
+
+func dcrState() *outboundapp.OutboundAppModel {
+	return &outboundapp.OutboundAppModel{
+		ID:               stringattr.Value("app-1"),
+		UseDCR:           boolattr.Value(true),
+		DCRURL:           stringattr.Value("https://mcp.example.com"),
+		ClientID:         stringattr.Value("registered-client"),
+		AuthorizationURL: stringattr.Value("https://as.example.com/authorize"),
+		TokenURL:         stringattr.Value("https://as.example.com/token"),
+		RevocationURL:    stringattr.Value("https://as.example.com/revoke"),
+		DefaultScopes:    strsetattr.Value([]string{"read", "write"}),
+		Pkce:             boolattr.Value(true),
+	}
+}
+
+func dcrConfig() *outboundapp.OutboundAppModel {
+	return &outboundapp.OutboundAppModel{UseDCR: boolattr.Value(true), DCRURL: stringattr.Value("https://mcp.example.com")}
+}
+
+func TestOutboundAppDCRCreatePlan(t *testing.T) {
+	var diags diag.Diagnostics
+	plan := dcrPlan()
+	plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), dcrConfig(), &outboundapp.OutboundAppModel{})
+	if diags.HasError() {
+		t.Fatalf("unexpected errors: %v", diags)
+	}
+	for name, unknown := range map[string]bool{
+		"client_id":         plan.ClientID.IsUnknown(),
+		"authorization_url": plan.AuthorizationURL.IsUnknown(),
+		"token_url":         plan.TokenURL.IsUnknown(),
+		"revocation_url":    plan.RevocationURL.IsUnknown(),
+		"default_scopes":    plan.DefaultScopes.IsUnknown(),
+		"pkce":              plan.Pkce.IsUnknown(),
+	} {
+		if !unknown {
+			t.Errorf("%s is filled in by registration on create and must be planned as unknown", name)
+		}
+	}
+}
+
+func TestOutboundAppDCRUpdatePlan(t *testing.T) {
+	var diags diag.Diagnostics
+	plan, state := dcrPlan(), dcrState()
+	plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), dcrConfig(), state)
+	if diags.HasError() {
+		t.Fatalf("unexpected errors: %v", diags)
+	}
+	if !plan.ClientID.Equal(state.ClientID) || !plan.AuthorizationURL.Equal(state.AuthorizationURL) || !plan.TokenURL.Equal(state.TokenURL) ||
+		!plan.RevocationURL.Equal(state.RevocationURL) || !plan.DefaultScopes.Equal(state.DefaultScopes) || !plan.Pkce.Equal(state.Pkce) {
+		t.Errorf("registered values must be kept on update when not configured, got %+v", plan)
+	}
+}
+
+func TestOutboundAppDCRPlanErrors(t *testing.T) {
+	testCases := []struct {
+		name    string
+		create  bool
+		modify  func(plan, config, state *outboundapp.OutboundAppModel)
+		invalid bool
+	}{
+		{"client_id on create", true, func(_, c, _ *outboundapp.OutboundAppModel) { c.ClientID = stringattr.Value("x") }, true},
+		{"client_secret on create", true, func(_, c, _ *outboundapp.OutboundAppModel) { c.ClientSecret = stringattr.Value("x") }, true},
+		{"pkce on create", true, func(_, c, _ *outboundapp.OutboundAppModel) { c.Pkce = boolattr.Value(false) }, true},
+		{"client_id on update", false, func(_, c, _ *outboundapp.OutboundAppModel) { c.ClientID = stringattr.Value("registered-client") }, false},
+		{"enabling on an existing app", false, func(_, _, s *outboundapp.OutboundAppModel) { s.UseDCR = boolattr.Value(false) }, true},
+		{"changing dcr_url", false, func(_, _, s *outboundapp.OutboundAppModel) { s.DCRURL = stringattr.Value("https://old.example.com") }, true},
+		{"disabling", false, func(p, _, _ *outboundapp.OutboundAppModel) { p.UseDCR = boolattr.Value(false) }, false},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var diags diag.Diagnostics
+			plan, config, state := dcrPlan(), dcrConfig(), dcrState()
+			if tc.create {
+				state = &outboundapp.OutboundAppModel{}
+			}
+			tc.modify(plan, config, state)
+			plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), config, state)
+			if diags.HasError() != tc.invalid {
+				t.Errorf("expected invalid=%t, got %v", tc.invalid, diags)
+			}
+		})
+	}
+}
+
+func TestOutboundAppDCRValidate(t *testing.T) {
+	testCases := []struct {
+		name    string
+		appType stringattr.Type
+		useDCR  boolattr.Type
+		dcrURL  stringattr.Type
+		invalid bool
+	}{
+		{"use_dcr with dcr_url", stringattr.Value("oauth"), boolattr.Value(true), stringattr.Value("https://mcp.example.com"), false},
+		{"use_dcr without dcr_url", stringattr.Value("oauth"), boolattr.Value(true), types.StringNull(), true},
+		{"dcr_url without use_dcr", stringattr.Value("oauth"), types.BoolNull(), stringattr.Value("https://mcp.example.com"), true},
+		{"apikey with use_dcr", stringattr.Value("apikey"), boolattr.Value(true), stringattr.Value("https://mcp.example.com"), true},
+		{"unknown use_dcr", stringattr.Value("oauth"), types.BoolUnknown(), stringattr.Value("https://mcp.example.com"), false},
+		{"unknown dcr_url", stringattr.Value("oauth"), boolattr.Value(true), types.StringUnknown(), false},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var diags diag.Diagnostics
+			m := &outboundapp.OutboundAppModel{AppType: tc.appType, UseDCR: tc.useDCR, DCRURL: tc.dcrURL}
+			m.Validate(helpers.NewHandler(context.Background(), &diags))
+			if diags.HasError() != tc.invalid {
+				t.Errorf("expected invalid=%t, got %v", tc.invalid, diags)
+			}
+		})
 	}
 }
