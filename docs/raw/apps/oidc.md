@@ -157,12 +157,13 @@ client_type
 - Type: `string`
 
 OAuth client confidentiality. One of `"confidential"` (a dedicated client secret is generated for
-the app), `"public"` (PKCE only, no client secret), or `""` (the legacy mode with access-key
-authentication). If this attribute is omitted when the application is created, newer Descope
-accounts create a `"confidential"` application and older accounts create a legacy one, and removing
-it from the configuration later keeps the current type. Newer accounts can't move an application to
-the legacy mode. Changing this value on an existing application changes how its clients must
-authenticate, so coordinate the change with the application's developers.
+the app) or `"public"` (PKCE only, no client secret), and setting it explicitly is recommended. The
+empty value `""` is the legacy mode with access-key authentication. If this attribute is omitted when
+the application is created, the account's default client type is used and the stored value shows
+which one it is, and removing the attribute from the configuration later keeps the current type.
+Moving an existing application to the legacy mode can be rejected by the Descope API. Changing this
+value on an existing application changes how its clients must authenticate, so coordinate the change
+with the application's developers.
 
 
 
