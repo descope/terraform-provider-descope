@@ -38,6 +38,7 @@ var SSOSettingsAttributes = map[string]schema.Attribute{
 	"sso_suite_settings":                      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
 	"email_connector_id":                      stringattr.Default(""),
 	"email_template_id":                       stringattr.Default(""),
+	"external_email_template_id":              stringattr.Default(""),
 }
 
 type SSOSettingsModel struct {
@@ -59,6 +60,7 @@ type SSOSettingsModel struct {
 	SSOSuiteSettings                   objattr.Type[SSOSuiteModel]                `tfsdk:"sso_suite_settings"`
 	EmailConnectorID                   stringattr.Type                            `tfsdk:"email_connector_id"`
 	EmailTemplateID                    stringattr.Type                            `tfsdk:"email_template_id"`
+	ExternalEmailTemplateID            stringattr.Type                            `tfsdk:"external_email_template_id"`
 }
 
 func (m *SSOSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -79,6 +81,7 @@ func (m *SSOSettingsModel) Values(h *helpers.Handler) map[string]any {
 	objattr.Get(m.SSOSuiteSettings, data, helpers.RootKey, h)
 	stringattr.Get(m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
+	stringattr.Get(m.ExternalEmailTemplateID, data, "externalEmailTemplateId")
 	return data
 }
 
@@ -99,6 +102,7 @@ func (m *SSOSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	objattr.Set(&m.SSOSuiteSettings, data, helpers.RootKey, h)
 	stringattr.Set(&m.EmailConnectorID, data, "emailConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
+	stringattr.Set(&m.ExternalEmailTemplateID, data, "externalEmailTemplateId")
 }
 
 func (m *SSOSettingsModel) GetID() stringattr.Type        { return m.ID }
