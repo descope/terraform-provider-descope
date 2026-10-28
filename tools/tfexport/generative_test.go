@@ -89,6 +89,8 @@ var generativeSkippedAttributes = map[string]string{
 	"descope_inbound_app.connections_scopes":              "nested scope objects, exercised by the inbound-app scenario",
 	"descope_inbound_app.session_settings":                "nested settings object, exercised by the inbound-app scenario",
 	"descope_inbound_app.scope_claim_mapping":             "nested mapping objects, exercised by the inbound-app scenario",
+	"descope_inbound_app.client_assertions":               "nested key objects, exercised by the inbound-app scenario",
+	"descope_inbound_app.workload_client_assertions":      "nested trust objects, exercised by the inbound-app scenario",
 	"descope_password_settings.expiration_weeks":          "requires expiration=true pairing, set explicitly",
 	"descope_password_settings.lock_attempts":             "requires lock=true pairing, set explicitly",
 	"descope_password_settings.reuse_amount":              "requires reuse=true pairing, set explicitly",
@@ -295,6 +297,8 @@ func (g *configGenerator) pairings(resourceType string, generation int) ([]strin
 	case "descope_inbound_app":
 		// a public client has no secret and the provider rejects that pairing, and DPoP needs a client type, so it is pinned rather than rotated
 		emit(`  client_type = "confidential"`, "client_type")
+		// the global client_auth_method values belong to the OAuth provider, and the inbound app secret is the default method
+		emit(`  client_auth_method = "clientSecret"`, "client_auth_method")
 	case "descope_email_template":
 		// required unless use_plain_text_body is enabled, so pinned in every generation
 		emit(fmt.Sprintf(`  html_body = "cov body %d"`, generation), "html_body")
