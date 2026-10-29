@@ -2193,6 +2193,33 @@ var docsTOTPSettings = map[string]string{
 		"it renders empty for a user, the user's login ID is used.",
 }
 
+var docsWellKnownSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"enabled": "Setting this to `true` applies the customization to the project's discovery documents. While `false` the " +
+		"customization is kept but the default documents are served.",
+	"hidden_fields": "Fields to omit from the discovery documents. Hiding a field only stops advertising it, the endpoint or " +
+		"capability itself stays enabled. Supported values are `backchannel_authentication_endpoint`, " +
+		"`pushed_authorization_request_endpoint`, `request_parameter_supported`, `registration_endpoint`, " +
+		"`end_session_endpoint`, `introspection_endpoint`, `device_authorization_endpoint`, `revocation_endpoint`, " +
+		"`userinfo_endpoint` and `backchannel_logout_supported`.",
+	"removed_values": "Values to remove from list fields in the discovery documents, such as a grant type from " +
+		"`grant_types_supported`. A list is never emptied, removing every value keeps the full list.",
+	"scopes_supported": "Scopes to add to or exclude from `scopes_supported`.",
+	"claims_supported": "Claims to add to or exclude from `claims_supported`.",
+}
+
+var docsWellKnownRemovedValues = map[string]string{
+	"field": "The name of a list field in the discovery documents, such as `grant_types_supported`, " +
+		"`token_endpoint_auth_methods_supported` or `code_challenge_methods_supported`.",
+	"values": "The values to remove from the list.",
+}
+
+var docsWellKnownValueDelta = map[string]string{
+	"extra":    "Values to add to the list.",
+	"excluded": "Values to remove from the list.",
+}
+
 var docsStyles = map[string]string{
 	"project_id": "The ID of the project that the styles belong to. Changing this value will require the resource to be " +
 		"deleted and recreated.",

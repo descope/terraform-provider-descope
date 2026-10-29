@@ -60,6 +60,10 @@ func NewGovernanceResource() resource.Resource {
 	return newSettingsResource[settings.GovernanceModel]("governance", settings.GovernanceSchema, "/v1/mgmt/agentic/governance/settings")
 }
 
+func NewWellKnownSettingsResource() resource.Resource {
+	return newSettingsResource[settings.WellKnownSettingsModel]("wellknown_settings", settings.WellKnownSettingsSchema, "/v1/mgmt/wellknown/settings")
+}
+
 func NewOTPSettingsResource() resource.Resource {
 	return newSettingsResource[settings.OTPSettingsModel]("otp_settings", settings.OTPSettingsSchema, "/v1/mgmt/otp/settings")
 }
