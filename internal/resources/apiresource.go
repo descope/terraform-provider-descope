@@ -2,6 +2,7 @@ package resources
 
 import (
 	"context"
+	"fmt"
 	"maps"
 
 	"github.com/descope/terraform-provider-descope/internal/infra"
@@ -34,6 +35,7 @@ func NewAPIResourceResource() resource.Resource {
 			payload := maps.Clone(data)
 			payload["id"] = id
 			payload["version"] = current["version"]
+			payload["dynamicRegistrationSettings"] = current["dynamicRegistrationSettings"]
 			body, err := c.PostData(ctx, projectID, "/v1/mgmt/resource/update", map[string]any{"resource": payload})
 			if err != nil {
 				return nil, err
@@ -55,10 +57,8 @@ func loadAPIResource(ctx context.Context, c *infra.Client, projectID, id string)
 	if err != nil {
 		return nil, err
 	}
-	if t, _ := entity["type"].(string); t != "" {
-		if err := checkEntityType(entity, "type", "api", "resource", id); err != nil {
-			return nil, err
-		}
+	if t, _ := entity["type"].(string); t != "" && t != "api" {
+		return nil, fmt.Errorf("the resource with id %s is of type %q, not \"api\"", id, t)
 	}
 	return entity, nil
 }

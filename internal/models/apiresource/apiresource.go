@@ -12,7 +12,7 @@ import (
 )
 
 var Schema = schema.Schema{
-	MarkdownDescription: "Manages an API resource in a Descope project: an external API or MCP server that inbound applications request access to, protected by another authorization server.",
+	MarkdownDescription: "Manages an API resource in a Descope project: an external API or MCP server that inbound applications request access to.",
 	Attributes:          APIResourceAttributes,
 }
 
@@ -23,7 +23,7 @@ var APIResourceAttributes = map[string]schema.Attribute{
 	"project_id":         stringattr.Required(stringplanmodifier.RequiresReplace()),
 	"name":               stringattr.Required(stringattr.StandardLenValidator),
 	"description":        stringattr.Default("", stringvalidator.LengthAtMost(1000)),
-	"uri":                stringattr.Required(stringvalidator.LengthAtMost(3000)),
+	"uri":                stringattr.Required(stringvalidator.LengthAtMost(3000), stringplanmodifier.RequiresReplace()),
 	"user_access":        stringattr.Default("", accessValidator),
 	"client_access":      stringattr.Default("", accessValidator),
 	"permissions_scopes": listattr.Default[inboundapp.ApplicationScopeModel](inboundapp.ApplicationScopeAttributes),

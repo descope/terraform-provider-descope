@@ -37,7 +37,8 @@ uri
 
 - Type: `string` (required)
 
-The URI that identifies the API or MCP server, used as the token audience.
+The URI that identifies the API or MCP server, used as the token audience. Changing this value will require the resource to be deleted
+and recreated.
 
 
 

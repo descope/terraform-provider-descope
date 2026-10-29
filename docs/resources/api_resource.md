@@ -3,12 +3,12 @@
 page_title: "descope_api_resource Resource - descope"
 subcategory: ""
 description: |-
-  Manages an API resource in a Descope project: an external API or MCP server that inbound applications request access to, protected by another authorization server.
+  Manages an API resource in a Descope project: an external API or MCP server that inbound applications request access to.
 ---
 
 # descope_api_resource (Resource)
 
-Manages an API resource in a Descope project: an external API or MCP server that inbound applications request access to, protected by another authorization server.
+Manages an API resource in a Descope project: an external API or MCP server that inbound applications request access to.
 
 
 
@@ -19,7 +19,7 @@ Manages an API resource in a Descope project: an external API or MCP server that
 
 - `name` (String) A name for the API resource.
 - `project_id` (String) The ID of the project that this API resource belongs to. Changing this value will require the resource to be deleted and recreated.
-- `uri` (String) The URI that identifies the API or MCP server, used as the token audience.
+- `uri` (String) The URI that identifies the API or MCP server, used as the token audience. Changing this value will require the resource to be deleted and recreated.
 
 ### Optional
 

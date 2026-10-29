@@ -40,7 +40,8 @@ var docsAPIResource = map[string]string{
 		"to be deleted and recreated.",
 	"name":        "A name for the API resource.",
 	"description": "An optional description for the API resource.",
-	"uri":         "The URI that identifies the API or MCP server, used as the token audience.",
+	"uri": "The URI that identifies the API or MCP server, used as the token audience. Changing this value will require the resource to be deleted " +
+		"and recreated.",
 	"user_access": "Whether users may be granted access to the resource: `allow`, `deny` or `allowViaPolicy`. Empty uses the " +
 		"project default.",
 	"client_access": "Whether clients may be granted access to the resource: `allow`, `deny` or `allowViaPolicy`. Empty uses the " +
