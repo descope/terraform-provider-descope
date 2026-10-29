@@ -26,6 +26,8 @@ description: |-
 - `approved_callback_urls` (Set of String) A set of approved redirect URIs that the inbound app is allowed to redirect to after authorization.
 - `attributes_scopes` (Attributes List) A list of user information scopes that the inbound app can request. Attribute scopes provide the app with access to user profile data such as email, phone, or custom attributes. (see [below for nested schema](#nestedatt--attributes_scopes))
 - `audience_whitelist` (Set of String) A set of allowed custom `aud` claim values that the inbound app can request via the `resource` parameter, per RFC 8707.
+- `authorization_code_disabled` (Boolean) Disables the `authorization_code` grant type for this inbound app, including its authorization requests.
+- `client_credentials_disabled` (Boolean) Disables the `client_credentials` grant type for this inbound app. Public clients cannot use this grant type, so it defaults to `true` when `client_type` is `public` and cannot be set to `false` for one.
 - `client_id` (String) A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing this value after creation will require the resource to be replaced.
 - `client_secret` (String, Sensitive) The client secret for authenticating this inbound app. This value is generated automatically and cannot be retrieved after the resource is created. Store this value securely.
 - `client_type` (String) The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for one that authenticates with PKCE and has no secret. Setting it explicitly is recommended. The empty value `""` is the legacy mode. If this attribute is omitted when the app is created, the account's default client type is used and the stored value shows which one it is, and removing the attribute from the configuration later keeps the current type. Moving from the legacy mode to `confidential` updates the app in place and keeps its client ID, and any other change, including a move to the legacy mode, replaces the resource, which issues a new client ID and secret. An app that was never issued a client secret, such as one created with `non_confidential_client = true` in v0.3, needs one after moving to `confidential`: rotate its client secret, for example in the Descope console, or force a replacement with `terraform apply -replace` to get a new client ID and secret.
@@ -33,14 +35,18 @@ description: |-
 - `default_audience` (String) The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID as the audience, `clientId` to set the app's client ID, or leave empty to include both.
 - `deletion_protection` (Boolean) Protects the inbound app from being accidentally destroyed or replaced. Destroying or replacing an inbound app issues a new client ID and client secret, breaking any integrations that rely on the existing ones, so inbound apps are protected by default. To allow the resource to be destroyed or replaced, for example in ephemeral test environments, set this attribute to `false` and apply the change first.
 - `description` (String) A description for the inbound app.
+- `device_code_disabled` (Boolean) Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this inbound app.
 - `force_add_all_authorization_info` (Boolean) When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.
 - `force_dpop` (Boolean) Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.
 - `force_pkce` (Boolean) When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.
+- `jwt_bearer_disabled` (Boolean) Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this inbound app. Public clients cannot use this grant type, so it defaults to `true` when `client_type` is `public` and cannot be set to `false` for one.
 - `login_page_url` (String) The Flow Hosting URL.
 - `logo_url` (String) A URL to the inbound app's logo image.
 - `permissions_scopes` (Attributes List) A list of permission scopes that the inbound app can request. Permission scopes provide the app with the ability to act on behalf of a user based on their roles and permissions. (see [below for nested schema](#nestedatt--permissions_scopes))
+- `refresh_token_disabled` (Boolean) Disables the `refresh_token` grant type for this inbound app, so its tokens cannot be refreshed.
 - `scope_claim_mapping` (Attributes List) Maps the claims that each scope contributes to the tokens issued for this app. This is the structured form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the mapping here wins. (see [below for nested schema](#nestedatt--scope_claim_mapping))
 - `session_settings` (Attributes) Custom session management settings for this inbound app, overriding the project defaults. (see [below for nested schema](#nestedatt--session_settings))
+- `token_exchange_disabled` (Boolean) Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app.
 
 ### Read-Only
 

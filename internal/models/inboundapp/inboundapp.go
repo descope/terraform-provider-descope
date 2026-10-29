@@ -13,6 +13,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 const clientTypeReplacementDescription = "Changing the client type replaces the app, except from the legacy empty value to confidential."
@@ -42,6 +43,12 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"force_pkce":                       boolattr.Default(false),
 	"allowed_tenants":                  strsetattr.Default(),
 	"scope_claim_mapping":              listattr.Default[ScopeClaimMappingModel](ScopeClaimMappingAttributes),
+	"authorization_code_disabled":      boolattr.Default(false),
+	"client_credentials_disabled":      boolattr.Default(false),
+	"refresh_token_disabled":           boolattr.Default(false),
+	"jwt_bearer_disabled":              boolattr.Default(false),
+	"device_code_disabled":             boolattr.Default(false),
+	"token_exchange_disabled":          boolattr.Default(false),
 }
 
 var Schema = schema.Schema{
@@ -71,6 +78,12 @@ type InboundAppModel struct {
 	ForcePkce                    boolattr.Type                         `tfsdk:"force_pkce"`
 	AllowedTenants               strsetattr.Type                       `tfsdk:"allowed_tenants"`
 	ScopeClaimMapping            listattr.Type[ScopeClaimMappingModel] `tfsdk:"scope_claim_mapping"`
+	AuthorizationCodeDisabled    boolattr.Type                         `tfsdk:"authorization_code_disabled"`
+	ClientCredentialsDisabled    boolattr.Type                         `tfsdk:"client_credentials_disabled"`
+	RefreshTokenDisabled         boolattr.Type                         `tfsdk:"refresh_token_disabled"`
+	JWTBearerDisabled            boolattr.Type                         `tfsdk:"jwt_bearer_disabled"`
+	DeviceCodeDisabled           boolattr.Type                         `tfsdk:"device_code_disabled"`
+	TokenExchangeDisabled        boolattr.Type                         `tfsdk:"token_exchange_disabled"`
 }
 
 func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
@@ -94,6 +107,12 @@ func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.ForcePkce, data, "forcePkce")
 	strsetattr.Get(m.AllowedTenants, data, "allowedTenants", h)
 	listattr.Get(m.ScopeClaimMapping, data, "scopeClaimMapping", h)
+	boolattr.Get(m.AuthorizationCodeDisabled, data, "authorizationCodeDisabled")
+	boolattr.Get(m.ClientCredentialsDisabled, data, "clientCredentialsDisabled")
+	boolattr.Get(m.RefreshTokenDisabled, data, "refreshTokenDisabled")
+	boolattr.Get(m.JWTBearerDisabled, data, "jwtBearerDisabled")
+	boolattr.Get(m.DeviceCodeDisabled, data, "deviceCodeDisabled")
+	boolattr.Get(m.TokenExchangeDisabled, data, "tokenExchangeDisabled")
 	return data
 }
 
@@ -117,6 +136,12 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ForcePkce, data, "forcePkce")
 	strsetattr.Set(&m.AllowedTenants, data, "allowedTenants", h)
 	listattr.Set(&m.ScopeClaimMapping, data, "scopeClaimMapping", h)
+	boolattr.Set(&m.AuthorizationCodeDisabled, data, "authorizationCodeDisabled")
+	boolattr.Set(&m.ClientCredentialsDisabled, data, "clientCredentialsDisabled")
+	boolattr.Set(&m.RefreshTokenDisabled, data, "refreshTokenDisabled")
+	boolattr.Set(&m.JWTBearerDisabled, data, "jwtBearerDisabled")
+	boolattr.Set(&m.DeviceCodeDisabled, data, "deviceCodeDisabled")
+	boolattr.Set(&m.TokenExchangeDisabled, data, "tokenExchangeDisabled")
 }
 
 // The backend silently discards a client_secret given for a public client, so without this the apply would fail with an inconsistent-result error.
@@ -124,6 +149,35 @@ func (m *InboundAppModel) Validate(h *helpers.Handler) {
 	if m.ClientSecret.ValueString() != "" && m.ClientType.ValueString() == "public" {
 		h.Conflict("The client_secret field cannot be used when client_type is public, as public clients do not have a secret")
 	}
+	if m.ClientType.ValueString() == "public" && isFalse(m.ClientCredentialsDisabled) {
+		h.Conflict("The client_credentials_disabled field cannot be false when client_type is public, as public clients cannot use the client_credentials grant type")
+	}
+	if m.ClientType.ValueString() == "public" && isFalse(m.JWTBearerDisabled) {
+		h.Conflict("The jwt_bearer_disabled field cannot be false when client_type is public, as public clients cannot use the jwt-bearer grant type")
+	}
+}
+
+// The backend always disables the client_credentials and jwt-bearer grant types for a public client, so they default to true for one.
+func (m *InboundAppModel) ModifyPlan(_ *helpers.Handler, config, _ *InboundAppModel) {
+	var value types.Bool
+	switch {
+	case config.ClientType.IsUnknown():
+		value = types.BoolUnknown() // the client type is only known after apply, and might be public
+	case m.ClientType.ValueString() == "public":
+		value = types.BoolValue(true)
+	default:
+		return
+	}
+	if config.ClientCredentialsDisabled.IsNull() {
+		m.ClientCredentialsDisabled = value
+	}
+	if config.JWTBearerDisabled.IsNull() {
+		m.JWTBearerDisabled = value
+	}
+}
+
+func isFalse(b boolattr.Type) bool {
+	return !b.IsNull() && !b.IsUnknown() && !b.ValueBool()
 }
 
 func isClientTypeReplacement(_ context.Context, req planmodifier.StringRequest, resp *stringplanmodifier.RequiresReplaceIfFuncResponse) {

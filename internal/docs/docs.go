@@ -1638,6 +1638,15 @@ var docsInboundApp = map[string]string{
 	"scope_claim_mapping": "Maps the claims that each scope contributes to the tokens issued for this app. This is the structured " +
 		"form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the " +
 		"mapping here wins.",
+	"authorization_code_disabled": "Disables the `authorization_code` grant type for this inbound app, including its authorization requests.",
+	"client_credentials_disabled": "Disables the `client_credentials` grant type for this inbound app. Public clients cannot use this grant " +
+		"type, so it defaults to `true` when `client_type` is `public` and cannot be set to `false` for one.",
+	"refresh_token_disabled": "Disables the `refresh_token` grant type for this inbound app, so its tokens cannot be refreshed.",
+	"jwt_bearer_disabled": "Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this inbound app. Public clients " +
+		"cannot use this grant type, so it defaults to `true` when `client_type` is `public` and cannot be set to " +
+		"`false` for one.",
+	"device_code_disabled":    "Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this inbound app.",
+	"token_exchange_disabled": "Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app.",
 }
 
 var docsScopeClaimMapping = map[string]string{
