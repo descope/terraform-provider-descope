@@ -39,6 +39,7 @@ var sweepTargets = []sweepTarget{
 	{name: "jwt_template", list: listWithPost("/v1/mgmt/jwt/templates/list", "templates"), delete: deleteByField("/v1/mgmt/jwt/templates/delete", "id")},
 	{name: "access_key", list: listWithPost("/v1/mgmt/accesskey/search", "keys"), delete: deleteInfraEntity("access_key")},
 	{name: "outbound_app", list: listWithGet("/v1/mgmt/outbound/apps", "apps"), delete: deleteByField("/v1/mgmt/outbound/app/delete", "id")},
+	{name: "api_resource", list: listWithGet("/v1/mgmt/resources/load", "resources"), delete: deleteByField("/v1/mgmt/resource/delete", "id")},
 	{name: "auth_access_rule", list: listWithGet("/v1/mgmt/authaccess/rule/all", "rules"), delete: deleteByQuery("/v1/mgmt/authaccess/rule", "id")},
 }
 

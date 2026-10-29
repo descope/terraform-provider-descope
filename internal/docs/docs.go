@@ -35,6 +35,40 @@ var docsAccessKeyTenant = map[string]string{
 	"roles":     "The roles the access key will be granted within the tenant.",
 }
 
+var docsAPIResource = map[string]string{
+	"project_id": "The ID of the project that this API resource belongs to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"name":        "A name for the API resource.",
+	"description": "An optional description for the API resource.",
+	"uri":         "The URI that identifies the API or MCP server, used as the token audience.",
+	"user_access": "Whether users may be granted access to the resource: `allow`, `deny` or `allowViaPolicy`. Empty uses the " +
+		"project default.",
+	"client_access": "Whether clients may be granted access to the resource: `allow`, `deny` or `allowViaPolicy`. Empty uses the " +
+		"project default.",
+	"permissions_scopes": "Permission scopes that inbound applications can request for this resource.",
+	"attributes_scopes":  "User attribute scopes that inbound applications can request for this resource.",
+	"connections_scopes": "Connection scopes that inbound applications can request for this resource.",
+	"id_jag_target": "Cross App Access settings for an external server protected by another authorization server. Inbound " +
+		"applications that exchange a token for this resource receive an ID-JAG assertion for that authorization server.",
+}
+
+var docsIDJAGTarget = map[string]string{
+	"authorization_server": "The issuer of the external authorization server, used as the assertion audience.",
+	"target_tenant":        "The tenant ID as the target authorization server knows it. Empty reuses the user's current tenant ID.",
+	"continuation_trust": "Issuers outside this project whose identity-continuation assertions are accepted for this " +
+		"authorization server. Applies to the whole project. At most 20 entries.",
+}
+
+var docsContinuationTrust = map[string]string{
+	"issuer": "The https issuer URL of the trusted authorization server, matched exactly against the `iss` claim " +
+		"of the assertion. It cannot be this project's own issuer.",
+	"jwks_uri":       "The https URL of the issuer's JWKS. Only keys published there can sign a trusted assertion.",
+	"sign_algorithm": "The signing algorithm of the assertion: `RS256`, `ES256`, `ES384` or `ES512`.",
+	"actor_client_id": "The client ID of the only actor allowed to present assertions from this issuer. Each issuer and " +
+		"actor client pair may appear once.",
+	"enabled": "Whether the entry is trusted. A disabled entry is kept but never trusted.",
+}
+
 var docsAppPermission = map[string]string{
 	"project_id": "The ID of the project that this permission belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
