@@ -114,34 +114,43 @@ func TestInboundAppClientTypeSetValues(t *testing.T) {
 }
 
 func TestInboundAppGrantTypesModifyPlan(t *testing.T) {
+	str := func(v any) tftypes.Value { return tftypes.NewValue(tftypes.String, v) }
 	testCases := []struct {
 		name       string
-		clientType tftypes.Value
+		configType tftypes.Value
+		planType   tftypes.Value
 		configured types.Bool
 		expected   types.Bool
+		conflict   bool
 	}{
-		{"public defaults to disabled", tftypes.NewValue(tftypes.String, "public"), types.BoolNull(), types.BoolValue(true)},
-		{"public keeps the configured value", tftypes.NewValue(tftypes.String, "public"), types.BoolValue(true), types.BoolValue(true)},
-		{"confidential keeps the default", tftypes.NewValue(tftypes.String, "confidential"), types.BoolNull(), types.BoolValue(false)},
-		{"legacy keeps the default", tftypes.NewValue(tftypes.String, ""), types.BoolNull(), types.BoolValue(false)},
-		{"omitted type keeps the default", tftypes.NewValue(tftypes.String, nil), types.BoolNull(), types.BoolValue(false)},
-		{"unknown type is known after apply", tftypes.NewValue(tftypes.String, tftypes.UnknownValue), types.BoolNull(), types.BoolUnknown()},
-		{"unknown type keeps the configured value", tftypes.NewValue(tftypes.String, tftypes.UnknownValue), types.BoolValue(false), types.BoolValue(false)},
+		{"public defaults to disabled", str("public"), str("public"), types.BoolNull(), types.BoolValue(true), false},
+		{"public keeps the configured value", str("public"), str("public"), types.BoolValue(true), types.BoolValue(true), false},
+		{"confidential keeps the default", str("confidential"), str("confidential"), types.BoolNull(), types.BoolValue(false), false},
+		{"legacy keeps the default", str(""), str(""), types.BoolNull(), types.BoolValue(false), false},
+		{"omitted type on create is known after apply", str(nil), str(tftypes.UnknownValue), types.BoolNull(), types.BoolUnknown(), false},
+		{"unknown type is known after apply", str(tftypes.UnknownValue), str(tftypes.UnknownValue), types.BoolNull(), types.BoolUnknown(), false},
+		{"unknown type keeps the configured value", str(tftypes.UnknownValue), str(tftypes.UnknownValue), types.BoolValue(false), types.BoolValue(false), false},
+		{"stored public defaults to disabled", str(nil), str("public"), types.BoolNull(), types.BoolValue(true), false},
+		{"stored public cannot enable the grant", str(nil), str("public"), types.BoolValue(false), types.BoolValue(false), true},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			config := newInboundAppModel(t, tc.clientType)
+			config := newInboundAppModel(t, tc.configType)
 			config.ClientCredentialsDisabled = tc.configured
 			config.JWTBearerDisabled = tc.configured
 			planned := types.BoolValue(false) // the attribute default when not configured
 			if !tc.configured.IsNull() {
 				planned = tc.configured
 			}
-			plan := newInboundAppModel(t, tc.clientType)
+			plan := newInboundAppModel(t, tc.planType)
 			plan.ClientCredentialsDisabled = planned
 			plan.JWTBearerDisabled = planned
 			plan.RefreshTokenDisabled = types.BoolValue(false)
-			plan.ModifyPlan(helpers.NewHandler(context.Background(), &diag.Diagnostics{}), config, newInboundAppModel(t, tftypes.NewValue(tftypes.String, nil)))
+			diags := diag.Diagnostics{}
+			plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), config, newInboundAppModel(t, str(nil)))
+			if diags.HasError() != tc.conflict {
+				t.Errorf("expected a conflict to be %t, got %v", tc.conflict, diags)
+			}
 			if !plan.ClientCredentialsDisabled.Equal(tc.expected) || !plan.JWTBearerDisabled.Equal(tc.expected) {
 				t.Errorf("expected client_credentials_disabled and jwt_bearer_disabled to be planned as %s, got %s and %s", tc.expected, plan.ClientCredentialsDisabled, plan.JWTBearerDisabled)
 			}
@@ -556,6 +565,17 @@ func TestInboundAppGrantTypes(t *testing.T) {
 				"jwt_bearer_disabled":         "true",
 				"refresh_token_disabled":      "true",
 			}),
+		},
+		// The stored public client type still rejects the grant types when client_type is removed from the configuration
+		resource.TestStep{
+			Config: p.Config() + pub.Config(`
+				project_id = `+p.Path()+`.id
+				deletion_protection = false
+				description = "Public client"
+				refresh_token_disabled = true
+				jwt_bearer_disabled = false
+			`),
+			ExpectError: regexp.MustCompile(`jwt_bearer_disabled field cannot be false`),
 		},
 	)
 }

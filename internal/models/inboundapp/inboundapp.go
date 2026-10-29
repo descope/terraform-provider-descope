@@ -149,21 +149,19 @@ func (m *InboundAppModel) Validate(h *helpers.Handler) {
 	if m.ClientSecret.ValueString() != "" && m.ClientType.ValueString() == "public" {
 		h.Conflict("The client_secret field cannot be used when client_type is public, as public clients do not have a secret")
 	}
-	if m.ClientType.ValueString() == "public" && isFalse(m.ClientCredentialsDisabled) {
-		h.Conflict("The client_credentials_disabled field cannot be false when client_type is public, as public clients cannot use the client_credentials grant type")
-	}
-	if m.ClientType.ValueString() == "public" && isFalse(m.JWTBearerDisabled) {
-		h.Conflict("The jwt_bearer_disabled field cannot be false when client_type is public, as public clients cannot use the jwt-bearer grant type")
+	if m.ClientType.ValueString() == "public" {
+		validatePublicGrantTypes(h, m)
 	}
 }
 
 // The backend always disables the client_credentials and jwt-bearer grant types for a public client, so they default to true for one.
-func (m *InboundAppModel) ModifyPlan(_ *helpers.Handler, config, _ *InboundAppModel) {
+func (m *InboundAppModel) ModifyPlan(h *helpers.Handler, config, _ *InboundAppModel) {
 	var value types.Bool
 	switch {
-	case config.ClientType.IsUnknown():
-		value = types.BoolUnknown() // the client type is only known after apply, and might be public
+	case m.ClientType.IsUnknown():
+		value = types.BoolUnknown() // the client type is chosen by the server or only known after apply, and might be public
 	case m.ClientType.ValueString() == "public":
+		validatePublicGrantTypes(h, config) // Validate misses a public client type that is kept from the state
 		value = types.BoolValue(true)
 	default:
 		return
@@ -173,6 +171,15 @@ func (m *InboundAppModel) ModifyPlan(_ *helpers.Handler, config, _ *InboundAppMo
 	}
 	if config.JWTBearerDisabled.IsNull() {
 		m.JWTBearerDisabled = value
+	}
+}
+
+func validatePublicGrantTypes(h *helpers.Handler, config *InboundAppModel) {
+	if isFalse(config.ClientCredentialsDisabled) {
+		h.Conflict("The client_credentials_disabled field cannot be false when client_type is public, as public clients cannot use the client_credentials grant type")
+	}
+	if isFalse(config.JWTBearerDisabled) {
+		h.Conflict("The jwt_bearer_disabled field cannot be false when client_type is public, as public clients cannot use the jwt-bearer grant type")
 	}
 }
 
