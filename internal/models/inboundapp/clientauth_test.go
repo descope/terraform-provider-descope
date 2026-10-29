@@ -145,6 +145,11 @@ func TestClientAssertionSetValuesKeepsUntrimmedPlan(t *testing.T) {
 	if fresh.PublicKey.IsNull() || fresh.SignAlgorithm.IsNull() {
 		t.Errorf("expected fields the backend omits to be empty rather than null on import, got %v", fresh)
 	}
+	stale := &inboundapp.ClientAssertionModel{KeySource: types.StringValue("jwks"), JwksUri: types.StringValue("https://example.com/jwks"), SignAlgorithm: types.StringValue("RS256")}
+	stale.SetValues(h, map[string]any{"keySource": "jwks", "jwksUri": "https://example.com/jwks"})
+	if !stale.SignAlgorithm.Equal(types.StringValue("")) {
+		t.Errorf("expected a field the backend omits to read back as empty over the state value, got %s", stale.SignAlgorithm)
+	}
 }
 
 func TestWorkloadClientAssertionValues(t *testing.T) {
