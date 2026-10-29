@@ -1,16 +1,31 @@
 package managementkey_test
 
 import (
+	"fmt"
 	"regexp"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/tools/testacc"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
 func TestManagementKey(t *testing.T) {
 	m := testacc.ManagementKey(t)
 	p := testacc.Project(t)
+
+	var keyID string
+	captureID := func(s string) error {
+		keyID = s
+		return nil
+	}
+	sameID := func(s string) error {
+		if s != keyID {
+			return fmt.Errorf("expected id to be preserved as %s, got %s", keyID, s)
+		}
+		return nil
+	}
+
 	testacc.Run(t,
 		// Test empty rebac fails validation
 		resource.TestStep{
@@ -52,7 +67,7 @@ func TestManagementKey(t *testing.T) {
 				}
 			`),
 			Check: m.Check(map[string]any{
-				"id":                    testacc.AttributeIsSet,
+				"id":                    captureID,
 				"name":                  m.Name,
 				"status":                "active",
 				"cleartext":             testacc.AttributeIsSet,
@@ -118,6 +133,54 @@ func TestManagementKey(t *testing.T) {
 				"permitted_ips.1":       "10.0.0.1",
 				"rebac.company_roles.#": "1",
 				"rebac.company_roles.0": "company-full-access",
+			}),
+		},
+		// Test changing company_roles updates the key in place
+		resource.TestStep{
+			Config: m.Config(`
+				description = "With permitted IPs"
+				permitted_ips = ["192.168.1.0/24", "10.0.0.1"]
+				rebac = {
+					company_roles = ["company-infra-read-write"]
+				}
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(m.Path(), plancheck.ResourceActionUpdate)},
+			},
+			Check: m.Check(map[string]any{
+				"id":                    sameID,
+				"cleartext":             testacc.AttributeIsSet,
+				"rebac.company_roles.#": "1",
+				"rebac.company_roles.0": "company-infra-read-write",
+			}),
+		},
+		// Test switching from company_roles to tag_roles updates the key in place
+		resource.TestStep{
+			Config: m.Config(`
+				description = "With permitted IPs"
+				permitted_ips = ["192.168.1.0/24", "10.0.0.1"]
+				rebac = {
+					tag_roles = [
+						{
+							tags = ["production"]
+							roles = ["tag-infra-read-write"]
+						}
+					]
+				}
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(m.Path(), plancheck.ResourceActionUpdate)},
+			},
+			Check: m.Check(map[string]any{
+				"id":        sameID,
+				"cleartext": testacc.AttributeIsSet,
+				"rebac.tag_roles": map[string]any{
+					"#":         "1",
+					"0.tags.#":  "1",
+					"0.tags.0":  "production",
+					"0.roles.#": "1",
+					"0.roles.0": "tag-infra-read-write",
+				},
 			}),
 		},
 		// Destroy resource

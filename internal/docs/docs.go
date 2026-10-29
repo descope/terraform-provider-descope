@@ -1708,8 +1708,9 @@ var docsManagementKey = map[string]string{
 		"If not set, the key can be used from any IP address.",
 	"rebac": "Access control settings for the management key. This defines the permissions granted " +
 		"to the management key, either at the company level or for specific projects or for " +
-		"project tags. Changing this value after creation will require the management key " +
-		"to be replaced.",
+		"project tags. Changing this value after creation updates the management key in " +
+		"place without rotating its secret. Changing the roles requires the management key " +
+		"that the provider is configured with to be allowed to manage management keys.",
 	"cleartext": "The plaintext value of the management key. This is only available after the key is " +
 		"created and cannot be retrieved later. Store this value securely as it is required " +
 		"to authenticate API requests.",
