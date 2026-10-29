@@ -146,6 +146,7 @@ var attributeValueOverrides = map[string]string{
 	"descope_auth_access_rule.expire_time":      `0|2000000000`,
 	"descope_auth_access_policy.default_action": `"allow"|"block"`,
 	"descope_auth_access_policy.rule_ids":       `[descope_auth_access_rule.cov_auth_access_rule.id]`,
+	"descope_wellknown_settings.hidden_fields":  `["end_session_endpoint"]|["userinfo_endpoint", "revocation_endpoint"]`,
 }
 
 var nestedValueOverrides = map[string]string{
