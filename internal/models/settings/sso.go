@@ -149,6 +149,8 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"hide_jit_guide":            boolattr.Default(false),
 	"show_xaa":                  boolattr.Default(false),
 	"oidc_login_id_attribute":   stringattr.Default(""),
+	"login_flow_id":             stringattr.Default(""),
+	"login_flow_style_id":       stringattr.Default(""),
 }
 
 type SSOSuiteModel struct {
@@ -167,6 +169,8 @@ type SSOSuiteModel struct {
 	HideJitGuide            boolattr.Type   `tfsdk:"hide_jit_guide"`
 	ShowXAA                 boolattr.Type   `tfsdk:"show_xaa"`
 	OIDCLoginIDAttribute    stringattr.Type `tfsdk:"oidc_login_id_attribute"`
+	LoginFlowID             stringattr.Type `tfsdk:"login_flow_id"`
+	LoginFlowStyleID        stringattr.Type `tfsdk:"login_flow_style_id"`
 }
 
 var SSOSuiteDefault = &SSOSuiteModel{
@@ -185,6 +189,8 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	HideJitGuide:            boolattr.Value(false),
 	ShowXAA:                 boolattr.Value(false),
 	OIDCLoginIDAttribute:    stringattr.Value(""),
+	LoginFlowID:             stringattr.Value(""),
+	LoginFlowStyleID:        stringattr.Value(""),
 }
 
 func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
@@ -204,6 +210,8 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.HideJitGuide, data, "hideSsoSuiteJitGuide")
 	boolattr.Get(m.ShowXAA, data, "showSsoSuiteXaa")
 	stringattr.Get(m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
+	stringattr.Get(m.LoginFlowID, data, "ssoSuiteLoginFlowId")
+	stringattr.Get(m.LoginFlowStyleID, data, "ssoSuiteLoginFlowStyleId")
 	return data
 }
 
@@ -223,6 +231,8 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.HideJitGuide, data, "hideSsoSuiteJitGuide")
 	boolattr.Set(&m.ShowXAA, data, "showSsoSuiteXaa")
 	stringattr.Set(&m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
+	stringattr.Set(&m.LoginFlowID, data, "ssoSuiteLoginFlowId")
+	stringattr.Set(&m.LoginFlowStyleID, data, "ssoSuiteLoginFlowStyleId")
 }
 
 func (m *SSOSuiteModel) Validate(h *helpers.Handler) {
