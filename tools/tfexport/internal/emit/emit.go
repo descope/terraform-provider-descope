@@ -63,7 +63,8 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	}
 
 	refs := references(plan)
-	nameRefs := nameReferences(ctx, plan)
+	permissionRefs := nameReferences(ctx, plan, "descope_permission")
+	roleRefs := nameReferences(ctx, plan, "descope_role")
 	projectRef := projectReference(plan)
 
 	type prepared struct {
@@ -83,7 +84,7 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	claimed := &variables{claims: map[string]map[string]bool{}}
 	scratch := hclwrite.NewEmptyFile()
 	for _, entry := range resources {
-		if err := resourceBody(ctx, scratch.Body(), entry.resource, refs, nameRefs, projectRef, entry.files, claimed); err != nil {
+		if err := resourceBody(ctx, scratch.Body(), entry.resource, refs, permissionRefs, roleRefs, projectRef, entry.files, claimed); err != nil {
 			return fmt.Errorf("emitting %s.%s: %w", entry.resource.Type, entry.resource.Label, err)
 		}
 	}
@@ -92,7 +93,7 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	for _, entry := range resources {
 		body := fileBody(areaFile(entry.resource.Type))
 		block := body.AppendNewBlock("resource", []string{entry.resource.Type, entry.resource.Label})
-		if err := resourceBody(ctx, block.Body(), entry.resource, refs, nameRefs, projectRef, entry.files, vars); err != nil {
+		if err := resourceBody(ctx, block.Body(), entry.resource, refs, permissionRefs, roleRefs, projectRef, entry.files, vars); err != nil {
 			return fmt.Errorf("emitting %s.%s: %w", entry.resource.Type, entry.resource.Label, err)
 		}
 	}
@@ -169,7 +170,7 @@ func (v *variables) conflicts() map[string]bool {
 	return qualify
 }
 
-func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, refs, nameRefs map[string]hcl.Traversal, projectRef hcl.Traversal, files map[string]string, vars *variables) error {
+func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, refs, permissionRefs, roleRefs map[string]hcl.Traversal, projectRef hcl.Traversal, files map[string]string, vars *variables) error {
 	if resource.HasProjectID {
 		if projectRef == nil {
 			projectRef = hcl.Traversal{hcl.TraverseRoot{Name: "var"}, hcl.TraverseAttr{Name: "project_id"}}
@@ -206,7 +207,7 @@ func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, r
 			continue
 		}
 		if resource.Type == "descope_role" && attr.Name == "permissions" {
-			if tokens, ok := permissionListTokens(ctx, attr, nameRefs); ok {
+			if tokens, ok := permissionListTokens(ctx, attr, permissionRefs); ok {
 				body.SetAttributeRaw(attr.Name, tokens)
 				continue
 			}
@@ -216,6 +217,14 @@ func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, r
 				body.SetAttributeRaw(attr.Name, tokens)
 				continue
 			}
+		}
+		if resource.Type == "descope_password_settings" && attr.Name == "role_policies" && attr.IsElements {
+			tokens, err := rolePolicyTokens(ctx, attr, resource, refs, roleRefs, vars)
+			if err != nil {
+				return err
+			}
+			body.SetAttributeRaw(attr.Name, tokens)
+			continue
 		}
 		tokens, err := attrTokens(ctx, attr, resource, refs, resource.Label, vars)
 		if err != nil {
@@ -379,4 +388,26 @@ func permissionListTokens(ctx context.Context, attr prune.Attr, nameRefs map[str
 		return nil, false
 	}
 	return hclwrite.TokensForTuple(elements), true
+}
+
+func rolePolicyTokens(ctx context.Context, attr prune.Attr, resource Resource, refs, roleRefs map[string]hcl.Traversal, vars *variables) (hclwrite.Tokens, error) {
+	elements := make([]hclwrite.Tokens, 0, len(attr.Elements))
+	for _, element := range attr.Elements {
+		items := make([]hclwrite.ObjectAttrTokens, 0, len(element))
+		for _, field := range element {
+			if field.Name == "roles" {
+				if tokens, ok := permissionListTokens(ctx, field, roleRefs); ok {
+					items = append(items, hclwrite.ObjectAttrTokens{Name: hclwrite.TokensForIdentifier(field.Name), Value: tokens})
+					continue
+				}
+			}
+			tokens, err := attrTokens(ctx, field, resource, refs, resource.Label+"_"+attr.Name, vars)
+			if err != nil {
+				return nil, err
+			}
+			items = append(items, hclwrite.ObjectAttrTokens{Name: hclwrite.TokensForIdentifier(field.Name), Value: tokens})
+		}
+		elements = append(elements, hclwrite.TokensForObject(items))
+	}
+	return hclwrite.TokensForTuple(elements), nil
 }

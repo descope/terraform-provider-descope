@@ -146,7 +146,6 @@ var attributeValueOverrides = map[string]string{
 	"descope_auth_access_rule.expire_time":      `0|2000000000`,
 	"descope_auth_access_policy.default_action": `"allow"|"block"`,
 	"descope_auth_access_policy.rule_ids":       `[descope_auth_access_rule.cov_auth_access_rule.id]`,
-	"descope_wellknown_settings.hidden_fields":  `["end_session_endpoint"]|["userinfo_endpoint", "revocation_endpoint"]`,
 }
 
 var nestedValueOverrides = map[string]string{
@@ -157,6 +156,8 @@ var nestedValueOverrides = map[string]string{
 	"attributes_scopes":                         `[{ name = "profile", description = "cov scope" }]`,
 	"attribute_mapping":                         `[{ name = "cov-attr", value = "user.email" }]|[{ name = "cov-attr", value = "user.name" }]`,
 	"descope_auth_access_rule.conditions":       `[{ key = "request.ip", operator = "inCidr", values = ["10.0.0.0/8"] }]|[{ key = "user.email", operator = "in", values = ["a@example.com", "b@example.com"] }]`,
+
+	"descope_password_settings.role_policies": `[{ roles = [descope_role.cov_role.name], min_length = 16 }]|[{ roles = [descope_role.cov_role.name], uppercase = true, enforce_strength = "strong" }]`,
 }
 
 var namePatternValues = []struct {
