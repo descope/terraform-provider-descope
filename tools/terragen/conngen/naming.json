@@ -50,6 +50,11 @@
       "file": "awstranslate",
       "struct": "AWSTranslate"
     },
+    "azure-monitor": {
+      "attribute": "azure_monitor",
+      "file": "azuremonitor",
+      "struct": "AzureMonitor"
+    },
     "bitsight": {
       "attribute": "bitsight",
       "file": "bitsight",
