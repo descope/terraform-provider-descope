@@ -142,6 +142,9 @@ func TestClientAssertionSetValuesKeepsUntrimmedPlan(t *testing.T) {
 	if fresh.JwksUri.ValueString() != "https://example.com/jwks" || fresh.PublicKey.ValueString() != "" {
 		t.Errorf("expected a fresh model to adopt the stored values, got %v", fresh)
 	}
+	if fresh.PublicKey.IsNull() || fresh.SignAlgorithm.IsNull() {
+		t.Errorf("expected fields the backend omits to be empty rather than null on import, got %v", fresh)
+	}
 }
 
 func TestWorkloadClientAssertionValues(t *testing.T) {

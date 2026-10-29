@@ -64,10 +64,11 @@ func (m *ClientAssertionModel) Validate(h *helpers.Handler) {
 	}
 }
 
-// The backend stores entry fields trimmed, so a planned value that only differs by surrounding whitespace is kept.
+// The backend stores entry fields trimmed and omits empty ones, so a planned value that only differs by surrounding
+// whitespace is kept and a missing field is the empty default rather than a null, which would break import.
 func setTrimmed(s *stringattr.Type, data map[string]any, key string) {
 	planned := *s
-	stringattr.Set(s, data, key)
+	stringattr.SetDefault(s, data, key, "")
 	if !planned.IsNull() && !planned.IsUnknown() && strings.TrimSpace(planned.ValueString()) == s.ValueString() {
 		*s = planned
 	}
