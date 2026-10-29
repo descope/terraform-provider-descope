@@ -64,6 +64,7 @@ func InjectModels() {
 	inject(connectors.AWSS3ConnectorAttributes, docsAWSS3Connector)
 	inject(connectors.AWSSESEmailValidationConnectorAttributes, docsAWSSESEmailValidationConnector)
 	inject(connectors.AWSTranslateConnectorAttributes, docsAWSTranslateConnector)
+	inject(connectors.AzureMonitorConnectorAttributes, docsAzureMonitorConnector)
 	inject(connectors.BitsightConnectorAttributes, docsBitsightConnector)
 	inject(connectors.CoralogixConnectorAttributes, docsCoralogixConnector)
 	inject(connectors.CriblConnectorAttributes, docsCriblConnector)
