@@ -44,9 +44,9 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"allowed_tenants":                  strsetattr.Default(),
 	"scope_claim_mapping":              listattr.Default[ScopeClaimMappingModel](ScopeClaimMappingAttributes),
 	"authorization_code_disabled":      boolattr.Default(false),
-	"client_credentials_disabled":      boolattr.Default(false),
+	"client_credentials_disabled":      boolattr.Optional(), // defaulted in ModifyPlan
 	"refresh_token_disabled":           boolattr.Default(false),
-	"jwt_bearer_disabled":              boolattr.Default(false),
+	"jwt_bearer_disabled":              boolattr.Optional(), // defaulted in ModifyPlan
 	"device_code_disabled":             boolattr.Default(false),
 	"token_exchange_disabled":          boolattr.Default(false),
 }
@@ -154,7 +154,9 @@ func (m *InboundAppModel) Validate(h *helpers.Handler) {
 	}
 }
 
-// The backend always disables the client_credentials and jwt-bearer grant types for a public client, so they default to true for one.
+// The backend always disables the client_credentials and jwt-bearer grant types for a public client, so they default to true for
+// one and to false otherwise. A static default would plan a change for a public client before this runs, which marks the other
+// computed attributes as unknown and leaves a diff after apply.
 func (m *InboundAppModel) ModifyPlan(h *helpers.Handler, config, _ *InboundAppModel) {
 	var value types.Bool
 	switch {
@@ -164,7 +166,7 @@ func (m *InboundAppModel) ModifyPlan(h *helpers.Handler, config, _ *InboundAppMo
 		validatePublicGrantTypes(h, config) // Validate misses a public client type that is kept from the state
 		value = types.BoolValue(true)
 	default:
-		return
+		value = types.BoolValue(false)
 	}
 	if config.ClientCredentialsDisabled.IsNull() {
 		m.ClientCredentialsDisabled = value

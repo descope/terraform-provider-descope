@@ -115,30 +115,33 @@ func TestInboundAppClientTypeSetValues(t *testing.T) {
 
 func TestInboundAppGrantTypesModifyPlan(t *testing.T) {
 	str := func(v any) tftypes.Value { return tftypes.NewValue(tftypes.String, v) }
+	unknown, stored := types.BoolUnknown(), types.BoolValue(true)
 	testCases := []struct {
 		name       string
 		configType tftypes.Value
 		planType   tftypes.Value
 		configured types.Bool
+		proposed   types.Bool // the planned value when not configured: unknown on create, the stored value on update
 		expected   types.Bool
 		conflict   bool
 	}{
-		{"public defaults to disabled", str("public"), str("public"), types.BoolNull(), types.BoolValue(true), false},
-		{"public keeps the configured value", str("public"), str("public"), types.BoolValue(true), types.BoolValue(true), false},
-		{"confidential keeps the default", str("confidential"), str("confidential"), types.BoolNull(), types.BoolValue(false), false},
-		{"legacy keeps the default", str(""), str(""), types.BoolNull(), types.BoolValue(false), false},
-		{"omitted type on create is known after apply", str(nil), str(tftypes.UnknownValue), types.BoolNull(), types.BoolUnknown(), false},
-		{"unknown type is known after apply", str(tftypes.UnknownValue), str(tftypes.UnknownValue), types.BoolNull(), types.BoolUnknown(), false},
-		{"unknown type keeps the configured value", str(tftypes.UnknownValue), str(tftypes.UnknownValue), types.BoolValue(false), types.BoolValue(false), false},
-		{"stored public defaults to disabled", str(nil), str("public"), types.BoolNull(), types.BoolValue(true), false},
-		{"stored public cannot enable the grant", str(nil), str("public"), types.BoolValue(false), types.BoolValue(false), true},
+		{"public defaults to disabled", str("public"), str("public"), types.BoolNull(), unknown, types.BoolValue(true), false},
+		{"public keeps the configured value", str("public"), str("public"), types.BoolValue(true), unknown, types.BoolValue(true), false},
+		{"confidential defaults to enabled", str("confidential"), str("confidential"), types.BoolNull(), unknown, types.BoolValue(false), false},
+		{"confidential resets a stored value", str("confidential"), str("confidential"), types.BoolNull(), stored, types.BoolValue(false), false},
+		{"legacy defaults to enabled", str(""), str(""), types.BoolNull(), unknown, types.BoolValue(false), false},
+		{"omitted type on create is known after apply", str(nil), str(tftypes.UnknownValue), types.BoolNull(), unknown, types.BoolUnknown(), false},
+		{"unknown type is known after apply", str(tftypes.UnknownValue), str(tftypes.UnknownValue), types.BoolNull(), stored, types.BoolUnknown(), false},
+		{"unknown type keeps the configured value", str(tftypes.UnknownValue), str(tftypes.UnknownValue), types.BoolValue(false), unknown, types.BoolValue(false), false},
+		{"stored public stays disabled", str(nil), str("public"), types.BoolNull(), stored, types.BoolValue(true), false},
+		{"stored public cannot enable the grant", str(nil), str("public"), types.BoolValue(false), stored, types.BoolValue(false), true},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
 			config := newInboundAppModel(t, tc.configType)
 			config.ClientCredentialsDisabled = tc.configured
 			config.JWTBearerDisabled = tc.configured
-			planned := types.BoolValue(false) // the attribute default when not configured
+			planned := tc.proposed
 			if !tc.configured.IsNull() {
 				planned = tc.configured
 			}
@@ -156,6 +159,15 @@ func TestInboundAppGrantTypesModifyPlan(t *testing.T) {
 			}
 			if !plan.RefreshTokenDisabled.Equal(types.BoolValue(false)) {
 				t.Errorf("expected refresh_token_disabled to be left alone, got %s", plan.RefreshTokenDisabled)
+			}
+		})
+	}
+	// A static default would plan a change for a stored public client before ModifyPlan restores it
+	for _, name := range []string{"client_credentials_disabled", "jwt_bearer_disabled"} {
+		t.Run(name+" has no static default", func(t *testing.T) {
+			attr, ok := inboundapp.InboundAppAttributes[name].(schema.BoolAttribute)
+			if !ok || attr.Default != nil || !attr.Computed {
+				t.Errorf("expected %s to be computed with no default", name)
 			}
 		})
 	}
