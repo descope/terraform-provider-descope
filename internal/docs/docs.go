@@ -1593,6 +1593,15 @@ var docsApplicationScope = map[string]string{
 	"values": "The identifiers of the relevant permission, attribute or connection scopes.",
 }
 
+var docsClientAssertion = map[string]string{
+	"key_source": "Where the key that signed the assertion comes from: `jwks` for a JWKS URL, or `publicKey` for a PEM " +
+		"public key.",
+	"jwks_uri":   "The HTTPS URL of the JWKS document. Required when `key_source` is `jwks`.",
+	"public_key": "A PEM encoded public key or certificate. Required when `key_source` is `publicKey`.",
+	"sign_algorithm": "Pins the JWS algorithm of the assertion, such as `RS256` or `ES256`. Leave empty to accept every " +
+		"supported asymmetric algorithm.",
+}
+
 var docsInboundApp = map[string]string{
 	"project_id": "The ID of the Descope project this inbound app belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
@@ -1638,6 +1647,16 @@ var docsInboundApp = map[string]string{
 	"scope_claim_mapping": "Maps the claims that each scope contributes to the tokens issued for this app. This is the structured " +
 		"form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the " +
 		"mapping here wins.",
+	"client_auth_method": "How the app authenticates at the token endpoint. `clientSecret` (the default, also when empty) uses " +
+		"`client_secret`, `privateKeyJwt` accepts a `private_key_jwt` client assertion verified against " +
+		"`client_assertions`, and `workloadIdentity` accepts a SPIFFE JWT-SVID or an OIDC workload token verified " +
+		"against `workload_client_assertions`. An app that authenticates with mTLS certificates is managed in the " +
+		"Descope console.",
+	"client_assertions": "The keys that verify a `private_key_jwt` client assertion, either a JWKS URL or a PEM public key per " +
+		"entry. Required to have at least one entry when `client_auth_method` is `privateKeyJwt`.",
+	"workload_client_assertions": "The workload identity issuers this app trusts, each a SPIFFE trust domain or an OIDC issuer together with " +
+		"the workload subjects it accepts. Required to have at least one entry when `client_auth_method` is " +
+		"`workloadIdentity`.",
 }
 
 var docsScopeClaimMapping = map[string]string{
@@ -1656,6 +1675,20 @@ var docsInboundappSessionSettings = map[string]string{
 	"key_session_token_expiration": "The expiration duration for access key session tokens. Must be between 3 minutes and one month.",
 	"user_template_id":             "The ID of the JWT template to use for user JWTs issued to this inbound app.",
 	"key_template_id":              "The ID of the JWT template to use for access key JWTs issued to this inbound app.",
+}
+
+var docsWorkloadClientAssertion = map[string]string{
+	"federation_type": "The kind of issuer this entry trusts: `spiffe` for a SPIFFE trust domain, or `oidc` for an OIDC issuer.",
+	"trust_domain":    "The SPIFFE trust domain, such as `prod.example.com`. Required when `federation_type` is `spiffe`.",
+	"issuer": "The HTTPS issuer URL. Required when `federation_type` is `oidc`. For a `spiffe` entry it is the trust " +
+		"domain's OIDC Discovery Provider and replaces the bundle endpoint in `jwks_uri`.",
+	"jwks_uri": "For a `spiffe` entry, the HTTPS URL of the trust domain's bundle endpoint, required unless `issuer` is set. " +
+		"For an `oidc` entry, an optional JWKS URL that overrides the one found by discovery.",
+	"allowed_subjects": "The workloads this app accepts, matched against the assertion's subject. For a `spiffe` entry each value " +
+		"is an exact SPIFFE ID or one ending with `/*` to accept the workloads under that path. For an `oidc` " +
+		"entry each value is an anchored regular expression.",
+	"sign_algorithm": "Pins the JWS algorithm of the assertion, such as `RS256` or `ES256`. Leave empty to accept every " +
+		"supported asymmetric algorithm.",
 }
 
 var docsJWTTemplate = map[string]string{

@@ -42,6 +42,9 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"force_pkce":                       boolattr.Default(false),
 	"allowed_tenants":                  strsetattr.Default(),
 	"scope_claim_mapping":              listattr.Default[ScopeClaimMappingModel](ScopeClaimMappingAttributes),
+	"client_auth_method":               stringattr.Default("", stringvalidator.OneOf("", "clientSecret", "privateKeyJwt", "workloadIdentity")),
+	"client_assertions":                listattr.Default[ClientAssertionModel](ClientAssertionAttributes, ClientAssertionValidator),
+	"workload_client_assertions":       listattr.Default[WorkloadClientAssertionModel](WorkloadClientAssertionAttributes, WorkloadClientAssertionValidator),
 }
 
 var Schema = schema.Schema{
@@ -49,28 +52,31 @@ var Schema = schema.Schema{
 }
 
 type InboundAppModel struct {
-	ID                           stringattr.Type                       `tfsdk:"id"`
-	ProjectID                    stringattr.Type                       `tfsdk:"project_id"`
-	DeletionProtection           boolattr.Type                         `tfsdk:"deletion_protection"`
-	Name                         stringattr.Type                       `tfsdk:"name"`
-	Description                  stringattr.Type                       `tfsdk:"description"`
-	LogoUrl                      stringattr.Type                       `tfsdk:"logo_url"`
-	LoginPageUrl                 stringattr.Type                       `tfsdk:"login_page_url"`
-	ApprovedCallbackUrls         strsetattr.Type                       `tfsdk:"approved_callback_urls"`
-	PermissionsScopes            listattr.Type[ApplicationScopeModel]  `tfsdk:"permissions_scopes"`
-	AttributesScopes             listattr.Type[ApplicationScopeModel]  `tfsdk:"attributes_scopes"`
-	ConnectionsScopes            listattr.Type[ApplicationScopeModel]  `tfsdk:"connections_scopes"`
-	SessionSettings              objattr.Type[SessionSettingsModel]    `tfsdk:"session_settings"`
-	AudienceWhitelist            strsetattr.Type                       `tfsdk:"audience_whitelist"`
-	ForceAddAllAuthorizationInfo boolattr.Type                         `tfsdk:"force_add_all_authorization_info"`
-	ForceDpop                    boolattr.Type                         `tfsdk:"force_dpop"`
-	DefaultAudience              stringattr.Type                       `tfsdk:"default_audience"`
-	ClientType                   stringattr.Type                       `tfsdk:"client_type"`
-	ClientId                     stringattr.Type                       `tfsdk:"client_id"`
-	ClientSecret                 stringattr.Type                       `tfsdk:"client_secret"`
-	ForcePkce                    boolattr.Type                         `tfsdk:"force_pkce"`
-	AllowedTenants               strsetattr.Type                       `tfsdk:"allowed_tenants"`
-	ScopeClaimMapping            listattr.Type[ScopeClaimMappingModel] `tfsdk:"scope_claim_mapping"`
+	ID                           stringattr.Type                             `tfsdk:"id"`
+	ProjectID                    stringattr.Type                             `tfsdk:"project_id"`
+	DeletionProtection           boolattr.Type                               `tfsdk:"deletion_protection"`
+	Name                         stringattr.Type                             `tfsdk:"name"`
+	Description                  stringattr.Type                             `tfsdk:"description"`
+	LogoUrl                      stringattr.Type                             `tfsdk:"logo_url"`
+	LoginPageUrl                 stringattr.Type                             `tfsdk:"login_page_url"`
+	ApprovedCallbackUrls         strsetattr.Type                             `tfsdk:"approved_callback_urls"`
+	PermissionsScopes            listattr.Type[ApplicationScopeModel]        `tfsdk:"permissions_scopes"`
+	AttributesScopes             listattr.Type[ApplicationScopeModel]        `tfsdk:"attributes_scopes"`
+	ConnectionsScopes            listattr.Type[ApplicationScopeModel]        `tfsdk:"connections_scopes"`
+	SessionSettings              objattr.Type[SessionSettingsModel]          `tfsdk:"session_settings"`
+	AudienceWhitelist            strsetattr.Type                             `tfsdk:"audience_whitelist"`
+	ForceAddAllAuthorizationInfo boolattr.Type                               `tfsdk:"force_add_all_authorization_info"`
+	ForceDpop                    boolattr.Type                               `tfsdk:"force_dpop"`
+	DefaultAudience              stringattr.Type                             `tfsdk:"default_audience"`
+	ClientType                   stringattr.Type                             `tfsdk:"client_type"`
+	ClientId                     stringattr.Type                             `tfsdk:"client_id"`
+	ClientSecret                 stringattr.Type                             `tfsdk:"client_secret"`
+	ForcePkce                    boolattr.Type                               `tfsdk:"force_pkce"`
+	AllowedTenants               strsetattr.Type                             `tfsdk:"allowed_tenants"`
+	ScopeClaimMapping            listattr.Type[ScopeClaimMappingModel]       `tfsdk:"scope_claim_mapping"`
+	ClientAuthMethod             stringattr.Type                             `tfsdk:"client_auth_method"`
+	ClientAssertions             listattr.Type[ClientAssertionModel]         `tfsdk:"client_assertions"`
+	WorkloadClientAssertions     listattr.Type[WorkloadClientAssertionModel] `tfsdk:"workload_client_assertions"`
 }
 
 func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
@@ -94,6 +100,9 @@ func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.ForcePkce, data, "forcePkce")
 	strsetattr.Get(m.AllowedTenants, data, "allowedTenants", h)
 	listattr.Get(m.ScopeClaimMapping, data, "scopeClaimMapping", h)
+	stringattr.Get(m.ClientAuthMethod, data, "clientAuthMethod")
+	listattr.Get(m.ClientAssertions, data, "clientAssertions", h)
+	listattr.Get(m.WorkloadClientAssertions, data, "workloadClientAssertions", h)
 	return data
 }
 
@@ -117,12 +126,28 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ForcePkce, data, "forcePkce")
 	strsetattr.Set(&m.AllowedTenants, data, "allowedTenants", h)
 	listattr.Set(&m.ScopeClaimMapping, data, "scopeClaimMapping", h)
+	stringattr.Set(&m.ClientAuthMethod, data, "clientAuthMethod")
+	listattr.Set(&m.ClientAssertions, data, "clientAssertions", h)
+	listattr.Set(&m.WorkloadClientAssertions, data, "workloadClientAssertions", h)
 }
 
 // The backend silently discards a client_secret given for a public client, so without this the apply would fail with an inconsistent-result error.
 func (m *InboundAppModel) Validate(h *helpers.Handler) {
 	if m.ClientSecret.ValueString() != "" && m.ClientType.ValueString() == "public" {
 		h.Conflict("The client_secret field cannot be used when client_type is public, as public clients do not have a secret")
+	}
+	if helpers.HasUnknownValues(m.ClientAuthMethod, m.ClientAssertions, m.WorkloadClientAssertions) {
+		return
+	}
+	switch m.ClientAuthMethod.ValueString() {
+	case "privateKeyJwt":
+		if len(m.ClientAssertions.Elements()) == 0 {
+			h.Missing("The client_assertions field requires at least one entry when client_auth_method is privateKeyJwt")
+		}
+	case "workloadIdentity":
+		if len(m.WorkloadClientAssertions.Elements()) == 0 {
+			h.Missing("The workload_client_assertions field requires at least one entry when client_auth_method is workloadIdentity")
+		}
 	}
 }
 
