@@ -247,3 +247,65 @@ workload_client_assertions
 The workload identity issuers this app trusts, each a SPIFFE trust domain or an OIDC issuer together with
 the workload subjects it accepts. Required to have at least one entry when `client_auth_method` is
 `workloadIdentity`.
+
+
+
+authorization_code_disabled
+---------------------------
+
+- Type: `bool`
+
+Disables the `authorization_code` grant type for this inbound app, including its authorization requests.
+When omitted, the current setting is kept, and a new app has the grant type enabled.
+
+
+
+client_credentials_disabled
+---------------------------
+
+- Type: `bool`
+
+Disables the `client_credentials` grant type for this inbound app. When omitted, the current setting is
+kept, and a new app has the grant type enabled unless `client_type` is `public`. Public clients cannot use
+this grant type, so it cannot be set to `false` for one.
+
+
+
+refresh_token_disabled
+----------------------
+
+- Type: `bool`
+
+Disables the `refresh_token` grant type for this inbound app, so its tokens cannot be refreshed. When
+omitted, the current setting is kept, and a new app has the grant type enabled.
+
+
+
+jwt_bearer_disabled
+-------------------
+
+- Type: `bool`
+
+Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this inbound app. When omitted,
+the current setting is kept, and a new app has the grant type enabled unless `client_type` is `public`.
+Public clients cannot use this grant type, so it cannot be set to `false` for one.
+
+
+
+device_code_disabled
+--------------------
+
+- Type: `bool`
+
+Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this inbound app. When omitted,
+the current setting is kept, and a new app has the grant type enabled.
+
+
+
+token_exchange_disabled
+-----------------------
+
+- Type: `bool`
+
+Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When
+omitted, the current setting is kept, and a new app has the grant type enabled.
