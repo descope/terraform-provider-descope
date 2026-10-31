@@ -148,6 +148,10 @@ var attributeValueOverrides = map[string]string{
 	"descope_auth_access_rule.expire_time":      `0|2000000000`,
 	"descope_auth_access_policy.default_action": `"allow"|"block"`,
 	"descope_auth_access_policy.rule_ids":       `[descope_auth_access_rule.cov_auth_access_rule.id]`,
+
+	"descope_api_resource.user_access":   `""|"allow"`,
+	"descope_api_resource.client_access": `""|"allow"`,
+	"descope_api_resource.uri":           `"https://api-resource.example.com"`,
 }
 
 var nestedValueOverrides = map[string]string{

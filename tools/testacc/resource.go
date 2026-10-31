@@ -166,6 +166,10 @@ func List(t *testing.T) *Resource {
 	return newResource(t, "list")
 }
 
+func APIResource(t *testing.T) *Resource {
+	return newResource(t, "api_resource")
+}
+
 func AuthAccessRule(t *testing.T) *Resource {
 	return newResource(t, "auth_access_rule")
 }

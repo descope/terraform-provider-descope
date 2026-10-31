@@ -1,0 +1,64 @@
+package resources
+
+import (
+	"context"
+	"fmt"
+	"maps"
+
+	"github.com/descope/terraform-provider-descope/internal/infra"
+	"github.com/descope/terraform-provider-descope/internal/models/apiresource"
+	"github.com/hashicorp/terraform-plugin-framework/resource"
+)
+
+func NewAPIResourceResource() resource.Resource {
+	return newResource[apiresource.APIResourceModel]("api_resource", apiresource.Schema, operations{
+		Create: func(ctx context.Context, c *infra.Client, projectID string, data map[string]any) (string, map[string]any, error) {
+			body, err := c.PostData(ctx, projectID, "/v1/mgmt/resource/create", data)
+			if err != nil {
+				return "", nil, err
+			}
+			entity, err := unwrapEntity(body, "resource")
+			if err != nil {
+				return "", nil, err
+			}
+			id, _ := entity["id"].(string)
+			return id, entity, nil
+		},
+		Read: func(ctx context.Context, c *infra.Client, projectID, id string) (map[string]any, error) {
+			return loadAPIResource(ctx, c, projectID, id)
+		},
+		Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
+			current, err := loadAPIResource(ctx, c, projectID, id)
+			if err != nil {
+				return nil, err
+			}
+			payload := maps.Clone(data)
+			payload["id"] = id
+			payload["version"] = current["version"]
+			payload["dynamicRegistrationSettings"] = current["dynamicRegistrationSettings"]
+			body, err := c.PostData(ctx, projectID, "/v1/mgmt/resource/update", map[string]any{"resource": payload})
+			if err != nil {
+				return nil, err
+			}
+			return unwrapEntity(body, "resource")
+		},
+		Delete: func(ctx context.Context, c *infra.Client, projectID, id string) error {
+			return c.Post(ctx, projectID, "/v1/mgmt/resource/delete", map[string]any{"id": id})
+		},
+	})
+}
+
+func loadAPIResource(ctx context.Context, c *infra.Client, projectID, id string) (map[string]any, error) {
+	body, err := c.Get(ctx, projectID, "/v1/mgmt/resource/load", map[string]string{"id": id})
+	if err != nil {
+		return nil, err
+	}
+	entity, err := unwrapEntity(body, "resource")
+	if err != nil {
+		return nil, err
+	}
+	if t, _ := entity["type"].(string); t != "" && t != "api" {
+		return nil, fmt.Errorf("the resource with id %s is of type %q, not \"api\"", id, t)
+	}
+	return entity, nil
+}

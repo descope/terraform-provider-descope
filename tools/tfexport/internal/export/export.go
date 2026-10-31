@@ -37,6 +37,11 @@ func ReadProject(ctx context.Context, client *infra.Client, projectID, only stri
 		warnings = append(warnings, warn.Lost("Failed to list auth access rules: %s", err.Error()))
 	}
 	instances = append(instances, authAccessRules...)
+	apiResources, err := discover.APIResources(ctx, client, projectID)
+	if err != nil {
+		warnings = append(warnings, warn.Lost("Failed to list API resources: %s", err.Error()))
+	}
+	instances = append(instances, apiResources...)
 	instances, resolveWarnings := discover.ResolveAuthorizationIDs(ctx, client, projectID, instances)
 	warnings = append(warnings, resolveWarnings...)
 

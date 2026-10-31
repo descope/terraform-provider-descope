@@ -26,6 +26,7 @@ var replaceModifierAllowlist = map[string]bool{
 	"descope_management_key expire_time": true,
 	"descope_management_key rebac":       true,
 	"descope_flow flow_id":               true,
+	"descope_api_resource uri":           true,
 	"descope_widget widget_id":           true,
 	"descope_oauth_provider id":          true,
 	"descope_email_template method":      true,

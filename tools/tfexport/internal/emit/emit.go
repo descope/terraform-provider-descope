@@ -352,7 +352,7 @@ func areaFile(resourceType string) string {
 		return "flows.tf"
 	case "descope_email_template", "descope_text_template", "descope_jwt_template":
 		return "templates.tf"
-	case "descope_oidc_app", "descope_saml_app", "descope_wsfed_app", "descope_inbound_app", "descope_outbound_app", "descope_app_role", "descope_app_permission":
+	case "descope_oidc_app", "descope_saml_app", "descope_wsfed_app", "descope_inbound_app", "descope_outbound_app", "descope_api_resource", "descope_app_role", "descope_app_permission":
 		return "apps.tf"
 	case "descope_role", "descope_permission":
 		return "authorization.tf"
