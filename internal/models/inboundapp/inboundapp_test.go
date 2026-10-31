@@ -115,26 +115,28 @@ func TestInboundAppClientTypeSetValues(t *testing.T) {
 
 func TestInboundAppGrantTypesModifyPlan(t *testing.T) {
 	str := func(v any) tftypes.Value { return tftypes.NewValue(tftypes.String, v) }
-	unknown, stored := types.BoolUnknown(), types.BoolValue(true)
+	enabled, disabled, unknown := types.BoolValue(false), types.BoolValue(true), types.BoolUnknown()
 	testCases := []struct {
 		name       string
 		configType tftypes.Value
 		planType   tftypes.Value
-		configured types.Bool
-		proposed   types.Bool // the planned value when not configured: unknown on create, the stored value on update
-		expected   types.Bool
+		update     bool
+		configured types.Bool // client_credentials_disabled and jwt_bearer_disabled in the configuration
+		proposed   types.Bool // the planned value of an omitted attribute: unknown on create, the stored value on update
+		publicOnly types.Bool // the expected client_credentials_disabled and jwt_bearer_disabled
+		other      types.Bool // the expected refresh_token_disabled, which is never configured here
 		conflict   bool
 	}{
-		{"public defaults to disabled", str("public"), str("public"), types.BoolNull(), unknown, types.BoolValue(true), false},
-		{"public keeps the configured value", str("public"), str("public"), types.BoolValue(true), unknown, types.BoolValue(true), false},
-		{"confidential defaults to enabled", str("confidential"), str("confidential"), types.BoolNull(), unknown, types.BoolValue(false), false},
-		{"confidential resets a stored value", str("confidential"), str("confidential"), types.BoolNull(), stored, types.BoolValue(false), false},
-		{"legacy defaults to enabled", str(""), str(""), types.BoolNull(), unknown, types.BoolValue(false), false},
-		{"omitted type on create is known after apply", str(nil), str(tftypes.UnknownValue), types.BoolNull(), unknown, types.BoolUnknown(), false},
-		{"unknown type is known after apply", str(tftypes.UnknownValue), str(tftypes.UnknownValue), types.BoolNull(), stored, types.BoolUnknown(), false},
-		{"unknown type keeps the configured value", str(tftypes.UnknownValue), str(tftypes.UnknownValue), types.BoolValue(false), unknown, types.BoolValue(false), false},
-		{"stored public stays disabled", str(nil), str("public"), types.BoolNull(), stored, types.BoolValue(true), false},
-		{"stored public cannot enable the grant", str(nil), str("public"), types.BoolValue(false), stored, types.BoolValue(false), true},
+		{"create public disables the public-only grants", str("public"), str("public"), false, types.BoolNull(), unknown, disabled, enabled, false},
+		{"create public keeps the configured value", str("public"), str("public"), false, disabled, unknown, disabled, enabled, false},
+		{"create confidential enables every grant", str("confidential"), str("confidential"), false, types.BoolNull(), unknown, enabled, enabled, false},
+		{"create legacy enables every grant", str(""), str(""), false, types.BoolNull(), unknown, enabled, enabled, false},
+		{"create with an omitted type is known after apply", str(nil), str(tftypes.UnknownValue), false, types.BoolNull(), unknown, unknown, enabled, false},
+		{"create with an unknown type keeps the configured value", str(tftypes.UnknownValue), str(tftypes.UnknownValue), false, enabled, unknown, enabled, enabled, false},
+		{"update keeps a stored value", str("confidential"), str("confidential"), true, types.BoolNull(), disabled, disabled, disabled, false},
+		{"update keeps a configured value", str("confidential"), str("confidential"), true, enabled, disabled, enabled, disabled, false},
+		{"update keeps a stored public client", str(nil), str("public"), true, types.BoolNull(), disabled, disabled, disabled, false},
+		{"update rejects enabling a grant on a stored public client", str(nil), str("public"), true, enabled, disabled, enabled, disabled, true},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
@@ -148,22 +150,26 @@ func TestInboundAppGrantTypesModifyPlan(t *testing.T) {
 			plan := newInboundAppModel(t, tc.planType)
 			plan.ClientCredentialsDisabled = planned
 			plan.JWTBearerDisabled = planned
-			plan.RefreshTokenDisabled = types.BoolValue(false)
+			plan.RefreshTokenDisabled = tc.proposed
+			state := newInboundAppModel(t, str(nil))
+			if tc.update {
+				state.ID = types.StringValue("TPA1")
+			}
 			diags := diag.Diagnostics{}
-			plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), config, newInboundAppModel(t, str(nil)))
+			plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), config, state)
 			if diags.HasError() != tc.conflict {
 				t.Errorf("expected a conflict to be %t, got %v", tc.conflict, diags)
 			}
-			if !plan.ClientCredentialsDisabled.Equal(tc.expected) || !plan.JWTBearerDisabled.Equal(tc.expected) {
-				t.Errorf("expected client_credentials_disabled and jwt_bearer_disabled to be planned as %s, got %s and %s", tc.expected, plan.ClientCredentialsDisabled, plan.JWTBearerDisabled)
+			if !plan.ClientCredentialsDisabled.Equal(tc.publicOnly) || !plan.JWTBearerDisabled.Equal(tc.publicOnly) {
+				t.Errorf("expected client_credentials_disabled and jwt_bearer_disabled to be planned as %s, got %s and %s", tc.publicOnly, plan.ClientCredentialsDisabled, plan.JWTBearerDisabled)
 			}
-			if !plan.RefreshTokenDisabled.Equal(types.BoolValue(false)) {
-				t.Errorf("expected refresh_token_disabled to be left alone, got %s", plan.RefreshTokenDisabled)
+			if !plan.RefreshTokenDisabled.Equal(tc.other) {
+				t.Errorf("expected refresh_token_disabled to be planned as %s, got %s", tc.other, plan.RefreshTokenDisabled)
 			}
 		})
 	}
-	// A static default would plan a change for a stored public client before ModifyPlan restores it
-	for _, name := range []string{"client_credentials_disabled", "jwt_bearer_disabled"} {
+	// An omitted attribute must keep the stored value, and a static default would also plan a change for a public client
+	for _, name := range []string{"authorization_code_disabled", "client_credentials_disabled", "refresh_token_disabled", "jwt_bearer_disabled", "device_code_disabled", "token_exchange_disabled"} {
 		t.Run(name+" has no static default", func(t *testing.T) {
 			attr, ok := inboundapp.InboundAppAttributes[name].(schema.BoolAttribute)
 			if !ok || attr.Default != nil || !attr.Computed {
@@ -521,12 +527,37 @@ func TestInboundAppGrantTypes(t *testing.T) {
 				return nil
 			},
 		},
-		// Removing the attributes enables the grant types again
+		// Removing the attributes keeps the stored grant types
 		resource.TestStep{
 			Config: p.Config() + a.Config(`
 				project_id = `+p.Path()+`.id
 				client_type = "confidential"
 				deletion_protection = false
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+			},
+			Check: a.Check(map[string]any{
+				"authorization_code_disabled": "true",
+				"client_credentials_disabled": "true",
+				"refresh_token_disabled":      "true",
+				"jwt_bearer_disabled":         "true",
+				"device_code_disabled":        "true",
+				"token_exchange_disabled":     "true",
+			}),
+		},
+		// Setting them to false enables the grant types again
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+				authorization_code_disabled = false
+				client_credentials_disabled = false
+				refresh_token_disabled = false
+				jwt_bearer_disabled = false
+				device_code_disabled = false
+				token_exchange_disabled = false
 			`),
 			Check: a.Check(map[string]any{
 				"authorization_code_disabled": "false",

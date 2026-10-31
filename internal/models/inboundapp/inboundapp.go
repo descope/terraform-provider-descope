@@ -46,12 +46,12 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"client_auth_method":               stringattr.Default("", stringvalidator.OneOf("", "clientSecret", "privateKeyJwt", "workloadIdentity")),
 	"client_assertions":                listattr.Default[ClientAssertionModel](ClientAssertionAttributes, ClientAssertionValidator),
 	"workload_client_assertions":       listattr.Default[WorkloadClientAssertionModel](WorkloadClientAssertionAttributes, WorkloadClientAssertionValidator),
-	"authorization_code_disabled":      boolattr.Default(false),
-	"client_credentials_disabled":      boolattr.Optional(), // defaulted in ModifyPlan
-	"refresh_token_disabled":           boolattr.Default(false),
-	"jwt_bearer_disabled":              boolattr.Optional(), // defaulted in ModifyPlan
-	"device_code_disabled":             boolattr.Default(false),
-	"token_exchange_disabled":          boolattr.Default(false),
+	"authorization_code_disabled":      boolattr.Optional(),
+	"client_credentials_disabled":      boolattr.Optional(),
+	"refresh_token_disabled":           boolattr.Optional(),
+	"jwt_bearer_disabled":              boolattr.Optional(),
+	"device_code_disabled":             boolattr.Optional(),
+	"token_exchange_disabled":          boolattr.Optional(),
 }
 
 var Schema = schema.Schema{
@@ -179,25 +179,35 @@ func (m *InboundAppModel) Validate(h *helpers.Handler) {
 	}
 }
 
-// The backend always disables the client_credentials and jwt-bearer grant types for a public client, so they default to true for
-// one and to false otherwise. A static default would plan a change for a public client before this runs, which marks the other
-// computed attributes as unknown and leaves a diff after apply.
-func (m *InboundAppModel) ModifyPlan(h *helpers.Handler, config, _ *InboundAppModel) {
-	var value types.Bool
-	switch {
-	case m.ClientType.IsUnknown():
-		value = types.BoolUnknown() // the client type is chosen by the server or only known after apply, and might be public
-	case m.ClientType.ValueString() == "public":
+// An omitted grant type attribute keeps the stored value on update, so a grant type set in the console is not overwritten. On
+// create it is planned as the server's default: every grant type is enabled, except that a public client can never use the
+// client_credentials and jwt-bearer grant types.
+func (m *InboundAppModel) ModifyPlan(h *helpers.Handler, config, state *InboundAppModel) {
+	if m.ClientType.ValueString() == "public" {
 		validatePublicGrantTypes(h, config) // Validate misses a public client type that is kept from the state
-		value = types.BoolValue(true)
-	default:
-		value = types.BoolValue(false)
 	}
-	if config.ClientCredentialsDisabled.IsNull() {
-		m.ClientCredentialsDisabled = value
+	if !state.ID.IsNull() {
+		return
 	}
-	if config.JWTBearerDisabled.IsNull() {
-		m.JWTBearerDisabled = value
+	publicOnly := types.BoolValue(m.ClientType.ValueString() == "public")
+	if m.ClientType.IsUnknown() {
+		publicOnly = types.BoolUnknown() // the client type is chosen by the server or only known after apply, and might be public
+	}
+	for _, grant := range []struct {
+		plan       *boolattr.Type
+		configured boolattr.Type
+		value      boolattr.Type
+	}{
+		{&m.AuthorizationCodeDisabled, config.AuthorizationCodeDisabled, types.BoolValue(false)},
+		{&m.ClientCredentialsDisabled, config.ClientCredentialsDisabled, publicOnly},
+		{&m.RefreshTokenDisabled, config.RefreshTokenDisabled, types.BoolValue(false)},
+		{&m.JWTBearerDisabled, config.JWTBearerDisabled, publicOnly},
+		{&m.DeviceCodeDisabled, config.DeviceCodeDisabled, types.BoolValue(false)},
+		{&m.TokenExchangeDisabled, config.TokenExchangeDisabled, types.BoolValue(false)},
+	} {
+		if grant.configured.IsNull() {
+			*grant.plan = grant.value
+		}
 	}
 }
 
