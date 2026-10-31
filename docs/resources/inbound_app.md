@@ -27,6 +27,8 @@ description: |-
 - `attributes_scopes` (Attributes List) A list of user information scopes that the inbound app can request. Attribute scopes provide the app with access to user profile data such as email, phone, or custom attributes. (see [below for nested schema](#nestedatt--attributes_scopes))
 - `audience_whitelist` (Set of String) A set of allowed custom `aud` claim values that the inbound app can request via the `resource` parameter, per RFC 8707.
 - `authorization_code_disabled` (Boolean) Disables the `authorization_code` grant type for this inbound app, including its authorization requests.
+- `client_assertions` (Attributes List) The keys that verify a `private_key_jwt` client assertion, either a JWKS URL or a PEM public key per entry. Required to have at least one entry when `client_auth_method` is `privateKeyJwt`. (see [below for nested schema](#nestedatt--client_assertions))
+- `client_auth_method` (String) How the app authenticates at the token endpoint. `clientSecret` (the default, also when empty) uses `client_secret`, `privateKeyJwt` accepts a `private_key_jwt` client assertion verified against `client_assertions`, and `workloadIdentity` accepts a SPIFFE JWT-SVID or an OIDC workload token verified against `workload_client_assertions`. An app that authenticates with mTLS certificates is managed in the Descope console.
 - `client_credentials_disabled` (Boolean) Disables the `client_credentials` grant type for this inbound app. Public clients cannot use this grant type, so it defaults to `true` when `client_type` is `public` and cannot be set to `false` for one.
 - `client_id` (String) A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing this value after creation will require the resource to be replaced.
 - `client_secret` (String, Sensitive) The client secret for authenticating this inbound app. This value is generated automatically and cannot be retrieved after the resource is created. Store this value securely.
@@ -47,6 +49,7 @@ description: |-
 - `scope_claim_mapping` (Attributes List) Maps the claims that each scope contributes to the tokens issued for this app. This is the structured form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the mapping here wins. (see [below for nested schema](#nestedatt--scope_claim_mapping))
 - `session_settings` (Attributes) Custom session management settings for this inbound app, overriding the project defaults. (see [below for nested schema](#nestedatt--session_settings))
 - `token_exchange_disabled` (Boolean) Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app.
+- `workload_client_assertions` (Attributes List) The workload identity issuers this app trusts, each a SPIFFE trust domain or an OIDC issuer together with the workload subjects it accepts. Required to have at least one entry when `client_auth_method` is `workloadIdentity`. (see [below for nested schema](#nestedatt--workload_client_assertions))
 
 ### Read-Only
 
@@ -64,6 +67,20 @@ Optional:
 
 - `optional` (Boolean) Whether this scope is optional. When `false`, the scope is mandatory and must be granted during authorization. When `true`, the user may choose to withhold it.
 - `values` (List of String) The identifiers of the relevant permission, attribute or connection scopes.
+
+
+<a id="nestedatt--client_assertions"></a>
+### Nested Schema for `client_assertions`
+
+Required:
+
+- `key_source` (String) Where the key that signed the assertion comes from: `jwks` for a JWKS URL, or `publicKey` for a PEM public key.
+
+Optional:
+
+- `jwks_uri` (String) The HTTPS URL of the JWKS document. Required when `key_source` is `jwks`.
+- `public_key` (String) A PEM encoded public key or certificate. Required when `key_source` is `publicKey`.
+- `sign_algorithm` (String) Pins the JWS algorithm of the assertion, such as `RS256` or `ES256`. Leave empty to accept every supported asymmetric algorithm.
 
 
 <a id="nestedatt--connections_scopes"></a>
@@ -120,3 +137,19 @@ Optional:
 - `refresh_token_expiration` (String) The expiration duration for refresh tokens issued to this inbound app.
 - `session_token_expiration` (String) The expiration duration for session tokens issued to this inbound app.
 - `user_template_id` (String) The ID of the JWT template to use for user JWTs issued to this inbound app.
+
+
+<a id="nestedatt--workload_client_assertions"></a>
+### Nested Schema for `workload_client_assertions`
+
+Required:
+
+- `allowed_subjects` (List of String) The workloads this app accepts, matched against the assertion's subject. For a `spiffe` entry each value is an exact SPIFFE ID or one ending with `/*` to accept the workloads under that path. For an `oidc` entry each value is an anchored regular expression.
+- `federation_type` (String) The kind of issuer this entry trusts: `spiffe` for a SPIFFE trust domain, or `oidc` for an OIDC issuer.
+
+Optional:
+
+- `issuer` (String) The HTTPS issuer URL. Required when `federation_type` is `oidc`. For a `spiffe` entry it is the trust domain's OIDC Discovery Provider and replaces the bundle endpoint in `jwks_uri`.
+- `jwks_uri` (String) For a `spiffe` entry, the HTTPS URL of the trust domain's bundle endpoint, required unless `issuer` is set. For an `oidc` entry, an optional JWKS URL that overrides the one found by discovery.
+- `sign_algorithm` (String) Pins the JWS algorithm of the assertion, such as `RS256` or `ES256`. Leave empty to accept every supported asymmetric algorithm.
+- `trust_domain` (String) The SPIFFE trust domain, such as `prod.example.com`. Required when `federation_type` is `spiffe`.
