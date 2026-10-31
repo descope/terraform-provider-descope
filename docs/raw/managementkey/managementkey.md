@@ -60,8 +60,9 @@ rebac
 
 Access control settings for the management key. This defines the permissions granted
 to the management key, either at the company level or for specific projects or for
-project tags. Changing this value after creation will require the management key
-to be replaced.
+project tags. Changing this value after creation updates the management key in
+place without rotating its secret. Changing the roles requires the management key
+that the provider is configured with to be allowed to manage management keys.
 
 
 
