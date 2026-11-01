@@ -33,6 +33,7 @@ var ProjectSettingsAttributes = map[string]schema.Attribute{
 	"test_users_loginid_regexp":           stringattr.Default(""),
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"test_users_verifier_regexp":          stringattr.Default(""),
+	"trusted_proxy_secret":                stringattr.SecretOptional(),
 }
 
 type ProjectSettingsModel struct {
@@ -49,6 +50,7 @@ type ProjectSettingsModel struct {
 	TestUsersLoginIDRegExp          stringattr.Type `tfsdk:"test_users_loginid_regexp"`
 	TestUsersStaticOTP              stringattr.Type `tfsdk:"test_users_static_otp"`
 	TestUsersVerifierRegExp         stringattr.Type `tfsdk:"test_users_verifier_regexp"`
+	TrustedProxySecret              stringattr.Type `tfsdk:"trusted_proxy_secret"`
 }
 
 func (m *ProjectSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -65,6 +67,7 @@ func (m *ProjectSettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.TestUsersStaticOTP, data, "testUserFixedAuthToken")
 	stringattr.Get(m.TestUsersVerifierRegExp, data, "testUserFixedAuthVerifierRegex")
 	data["testUserAllowFixedAuth"] = m.TestUsersStaticOTP.ValueString() != ""
+	stringattr.Get(m.TrustedProxySecret, data, "trustedProxySecret")
 	return data
 }
 
