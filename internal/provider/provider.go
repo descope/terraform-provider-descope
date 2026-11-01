@@ -154,6 +154,7 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewAppPermissionResource,
 		resources.NewFGASchemaResource,
 		resources.NewListResource,
+		resources.NewAPIResourceResource,
 		resources.NewAuthAccessRuleResource,
 		resources.NewAuthAccessPolicyResource,
 		resources.NewJWTTemplateResource,

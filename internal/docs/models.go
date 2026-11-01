@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"github.com/descope/terraform-provider-descope/internal/models/accesskey"
+	"github.com/descope/terraform-provider-descope/internal/models/apiresource"
 	"github.com/descope/terraform-provider-descope/internal/models/apppermission"
 	"github.com/descope/terraform-provider-descope/internal/models/approle"
 	"github.com/descope/terraform-provider-descope/internal/models/apps"
@@ -37,6 +38,9 @@ import (
 func InjectModels() {
 	inject(accesskey.AccessKeyAttributes, docsAccessKey)
 	inject(accesskey.AccessKeyTenantAttributes, docsAccessKeyTenant)
+	inject(apiresource.APIResourceAttributes, docsAPIResource)
+	inject(apiresource.IDJAGTargetAttributes, docsIDJAGTarget)
+	inject(apiresource.ContinuationTrustAttributes, docsContinuationTrust)
 	inject(apppermission.AppPermissionAttributes, docsAppPermission)
 	inject(approle.AppRoleAttributes, docsAppRole)
 	inject(apps.OIDCAppAttributes, docsOIDCApp)
