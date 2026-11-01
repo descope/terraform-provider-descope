@@ -17,6 +17,7 @@ import (
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
 	"github.com/hashicorp/terraform-plugin-testing/plancheck"
+	"github.com/hashicorp/terraform-plugin-testing/terraform"
 )
 
 func TestInboundAppClientTypeReplacement(t *testing.T) {
@@ -109,6 +110,121 @@ func TestInboundAppClientTypeSetValues(t *testing.T) {
 				t.Errorf("expected client type %q, got %s", tc.expected, m.ClientType)
 			}
 		})
+	}
+}
+
+func TestInboundAppGrantTypesModifyPlan(t *testing.T) {
+	str := func(v any) tftypes.Value { return tftypes.NewValue(tftypes.String, v) }
+	enabled, disabled, unknown := types.BoolValue(false), types.BoolValue(true), types.BoolUnknown()
+	testCases := []struct {
+		name       string
+		configType tftypes.Value
+		planType   tftypes.Value
+		update     bool
+		configured types.Bool // client_credentials_disabled and jwt_bearer_disabled in the configuration
+		proposed   types.Bool // the planned value of an omitted attribute: unknown on create, the stored value on update
+		publicOnly types.Bool // the expected client_credentials_disabled and jwt_bearer_disabled
+		other      types.Bool // the expected refresh_token_disabled, which is never configured here
+		conflict   bool
+	}{
+		{"create public disables the public-only grants", str("public"), str("public"), false, types.BoolNull(), unknown, disabled, enabled, false},
+		{"create public keeps the configured value", str("public"), str("public"), false, disabled, unknown, disabled, enabled, false},
+		{"create confidential enables every grant", str("confidential"), str("confidential"), false, types.BoolNull(), unknown, enabled, enabled, false},
+		{"create legacy enables every grant", str(""), str(""), false, types.BoolNull(), unknown, enabled, enabled, false},
+		{"create with an omitted type is known after apply", str(nil), str(tftypes.UnknownValue), false, types.BoolNull(), unknown, unknown, enabled, false},
+		{"create with an unknown type keeps the configured value", str(tftypes.UnknownValue), str(tftypes.UnknownValue), false, enabled, unknown, enabled, enabled, false},
+		{"update keeps a stored value", str("confidential"), str("confidential"), true, types.BoolNull(), disabled, disabled, disabled, false},
+		{"update keeps a configured value", str("confidential"), str("confidential"), true, enabled, disabled, enabled, disabled, false},
+		{"update keeps a stored public client", str(nil), str("public"), true, types.BoolNull(), disabled, disabled, disabled, false},
+		{"update rejects enabling a grant on a stored public client", str(nil), str("public"), true, enabled, disabled, enabled, disabled, true},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			config := newInboundAppModel(t, tc.configType)
+			config.ClientCredentialsDisabled = tc.configured
+			config.JWTBearerDisabled = tc.configured
+			planned := tc.proposed
+			if !tc.configured.IsNull() {
+				planned = tc.configured
+			}
+			plan := newInboundAppModel(t, tc.planType)
+			plan.ClientCredentialsDisabled = planned
+			plan.JWTBearerDisabled = planned
+			plan.RefreshTokenDisabled = tc.proposed
+			state := newInboundAppModel(t, str(nil))
+			if tc.update {
+				state.ID = types.StringValue("TPA1")
+			}
+			diags := diag.Diagnostics{}
+			plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), config, state)
+			if diags.HasError() != tc.conflict {
+				t.Errorf("expected a conflict to be %t, got %v", tc.conflict, diags)
+			}
+			if !plan.ClientCredentialsDisabled.Equal(tc.publicOnly) || !plan.JWTBearerDisabled.Equal(tc.publicOnly) {
+				t.Errorf("expected client_credentials_disabled and jwt_bearer_disabled to be planned as %s, got %s and %s", tc.publicOnly, plan.ClientCredentialsDisabled, plan.JWTBearerDisabled)
+			}
+			if !plan.RefreshTokenDisabled.Equal(tc.other) {
+				t.Errorf("expected refresh_token_disabled to be planned as %s, got %s", tc.other, plan.RefreshTokenDisabled)
+			}
+		})
+	}
+	// An omitted attribute must keep the stored value, and a static default would also plan a change for a public client
+	for _, name := range []string{"authorization_code_disabled", "client_credentials_disabled", "refresh_token_disabled", "jwt_bearer_disabled", "device_code_disabled", "token_exchange_disabled"} {
+		t.Run(name+" has no static default", func(t *testing.T) {
+			attr, ok := inboundapp.InboundAppAttributes[name].(schema.BoolAttribute)
+			if !ok || attr.Default != nil || !attr.Computed {
+				t.Errorf("expected %s to be computed with no default", name)
+			}
+		})
+	}
+}
+
+func TestInboundAppGrantTypesValidate(t *testing.T) {
+	testCases := []struct {
+		name       string
+		clientType string
+		configured types.Bool
+		conflict   bool
+	}{
+		{"public cannot enable the grant", "public", types.BoolValue(false), true},
+		{"public can disable the grant", "public", types.BoolValue(true), false},
+		{"public can omit the grant", "public", types.BoolNull(), false},
+		{"public allows an unknown value", "public", types.BoolUnknown(), false},
+		{"confidential can enable the grant", "confidential", types.BoolValue(false), false},
+	}
+	for _, tc := range testCases {
+		for _, field := range []string{"client_credentials_disabled", "jwt_bearer_disabled"} {
+			t.Run(tc.name+" "+field, func(t *testing.T) {
+				m := newInboundAppModel(t, tftypes.NewValue(tftypes.String, tc.clientType))
+				if field == "client_credentials_disabled" {
+					m.ClientCredentialsDisabled = tc.configured
+				} else {
+					m.JWTBearerDisabled = tc.configured
+				}
+				diags := diag.Diagnostics{}
+				m.Validate(helpers.NewHandler(context.Background(), &diags))
+				if diags.HasError() != tc.conflict {
+					t.Errorf("expected a conflict to be %t, got %v", tc.conflict, diags)
+				}
+			})
+		}
+	}
+}
+
+func TestInboundAppGrantTypesValues(t *testing.T) {
+	h := helpers.NewHandler(context.Background(), &diag.Diagnostics{})
+	keys := []string{"authorizationCodeDisabled", "clientCredentialsDisabled", "refreshTokenDisabled", "jwtBearerDisabled", "deviceCodeDisabled", "tokenExchangeDisabled"}
+	m := newInboundAppModel(t, tftypes.NewValue(tftypes.String, "confidential"))
+	data := map[string]any{}
+	for _, key := range keys {
+		data[key] = true
+	}
+	m.SetValues(h, data)
+	values := m.Values(h)
+	for _, key := range keys {
+		if values[key] != true {
+			t.Errorf("expected %s to round trip as true, got %v", key, values[key])
+		}
 	}
 }
 
@@ -347,6 +463,162 @@ func TestInboundApp(t *testing.T) {
 				deletion_protection = false
 			`),
 			Destroy: true,
+		},
+	)
+}
+
+func TestInboundAppGrantTypes(t *testing.T) {
+	p := testacc.Project(t)
+	a := testacc.InboundApp(t)
+	pub := testacc.InboundApp(t)
+	pub.ID = "public"
+	testacc.Run(t,
+		// Every grant type is enabled by default
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+			`),
+			Check: a.Check(map[string]any{
+				"authorization_code_disabled": "false",
+				"client_credentials_disabled": "false",
+				"refresh_token_disabled":      "false",
+				"jwt_bearer_disabled":         "false",
+				"device_code_disabled":        "false",
+				"token_exchange_disabled":     "false",
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+				authorization_code_disabled = true
+				client_credentials_disabled = true
+				refresh_token_disabled = true
+				jwt_bearer_disabled = true
+				device_code_disabled = true
+				token_exchange_disabled = true
+			`),
+			Check: a.Check(map[string]any{
+				"authorization_code_disabled": "true",
+				"client_credentials_disabled": "true",
+				"refresh_token_disabled":      "true",
+				"jwt_bearer_disabled":         "true",
+				"device_code_disabled":        "true",
+				"token_exchange_disabled":     "true",
+			}),
+		},
+		// Import reads the stored grant types back
+		resource.TestStep{
+			ResourceName:      a.Path(),
+			ImportState:       true,
+			ImportStateIdFunc: testacc.GenerateImportStateID(a.Path(), "project_id", "id"),
+			ImportStateCheck: func(states []*terraform.InstanceState) error {
+				if len(states) != 1 {
+					return fmt.Errorf("expected one imported inbound app, got %d", len(states))
+				}
+				for _, attr := range []string{"authorization_code_disabled", "client_credentials_disabled", "refresh_token_disabled", "jwt_bearer_disabled", "device_code_disabled", "token_exchange_disabled"} {
+					if v := states[0].Attributes[attr]; v != "true" {
+						return fmt.Errorf("expected the imported %s to be true, got %q", attr, v)
+					}
+				}
+				return nil
+			},
+		},
+		// Removing the attributes keeps the stored grant types
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+			},
+			Check: a.Check(map[string]any{
+				"authorization_code_disabled": "true",
+				"client_credentials_disabled": "true",
+				"refresh_token_disabled":      "true",
+				"jwt_bearer_disabled":         "true",
+				"device_code_disabled":        "true",
+				"token_exchange_disabled":     "true",
+			}),
+		},
+		// Setting them to false enables the grant types again
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+				authorization_code_disabled = false
+				client_credentials_disabled = false
+				refresh_token_disabled = false
+				jwt_bearer_disabled = false
+				device_code_disabled = false
+				token_exchange_disabled = false
+			`),
+			Check: a.Check(map[string]any{
+				"authorization_code_disabled": "false",
+				"client_credentials_disabled": "false",
+				"refresh_token_disabled":      "false",
+				"jwt_bearer_disabled":         "false",
+				"device_code_disabled":        "false",
+				"token_exchange_disabled":     "false",
+			}),
+		},
+		// A public client cannot use the client_credentials or jwt-bearer grant types
+		resource.TestStep{
+			Config: p.Config() + pub.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "public"
+				deletion_protection = false
+				client_credentials_disabled = false
+			`),
+			ExpectError: regexp.MustCompile(`client_credentials_disabled field cannot be false`),
+		},
+		resource.TestStep{
+			Config: p.Config() + pub.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "public"
+				deletion_protection = false
+			`),
+			Check: pub.Check(map[string]any{
+				"client_credentials_disabled": "true",
+				"jwt_bearer_disabled":         "true",
+				"refresh_token_disabled":      "false",
+			}),
+		},
+		// A public client is updated in place with its grant types
+		resource.TestStep{
+			Config: p.Config() + pub.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "public"
+				deletion_protection = false
+				description = "Public client"
+				refresh_token_disabled = true
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(pub.Path(), plancheck.ResourceActionUpdate)},
+			},
+			Check: pub.Check(map[string]any{
+				"description":                 "Public client",
+				"client_credentials_disabled": "true",
+				"jwt_bearer_disabled":         "true",
+				"refresh_token_disabled":      "true",
+			}),
+		},
+		// The stored public client type still rejects the grant types when client_type is removed from the configuration
+		resource.TestStep{
+			Config: p.Config() + pub.Config(`
+				project_id = `+p.Path()+`.id
+				deletion_protection = false
+				description = "Public client"
+				refresh_token_disabled = true
+				jwt_bearer_disabled = false
+			`),
+			ExpectError: regexp.MustCompile(`jwt_bearer_disabled field cannot be false`),
 		},
 	)
 }
