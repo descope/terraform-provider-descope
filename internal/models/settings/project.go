@@ -2,12 +2,14 @@ package settings
 
 import (
 	"net/url"
+	"regexp"
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
@@ -33,8 +35,11 @@ var ProjectSettingsAttributes = map[string]schema.Attribute{
 	"test_users_loginid_regexp":           stringattr.Default(""),
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"test_users_verifier_regexp":          stringattr.Default(""),
-	"trusted_proxy_secret":                stringattr.SecretOptional(),
+	"trusted_proxy_secret":                stringattr.SecretOptional(trustedProxySecretValidator),
 }
+
+// an empty string clears the secret, otherwise the backend requires 64 to 256 visible ASCII characters
+var trustedProxySecretValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^([\x21-\x7e]{64,256})?$`), "must be 64 to 256 visible ASCII characters with no spaces, or empty to clear it")
 
 type ProjectSettingsModel struct {
 	ID                              stringattr.Type `tfsdk:"id"`

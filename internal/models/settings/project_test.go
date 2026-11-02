@@ -59,6 +59,14 @@ func TestProjectSettings(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`configured custom domains`),
 		},
+		// trusted proxy secret must be long enough
+		resource.TestStep{
+			Config: m.Block(`
+				project_id = "` + projectID + `"
+				trusted_proxy_secret = "too-short"
+			`),
+			ExpectError: regexp.MustCompile(`visible ASCII characters`),
+		},
 		// update the settings fields
 		resource.TestStep{
 			Config: m.Block(`
