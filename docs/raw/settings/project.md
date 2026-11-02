@@ -125,3 +125,17 @@ test_users_verifier_regexp
 
 A regular expression pattern that determines which test user verifiers (email addresses or
 phone numbers) the static OTP code applies to.
+
+
+
+trusted_proxy_secret
+--------------------
+
+- Type: `secret`
+
+The secret a trusted reverse proxy sends in the `x-descope-proxy-secret` header, so that the forwarded
+hostname and client IP headers it adds are honored. Used to serve tenant vanity domains through a
+gateway. Must be at least 64 visible ASCII characters with no spaces, for example the output of
+`openssl rand -base64 48`. Requires vanity domains to be enabled on the company license. This value
+is write-only and never read back from the server. Removing it from the configuration keeps the
+stored secret, set it to an empty string to clear it.
