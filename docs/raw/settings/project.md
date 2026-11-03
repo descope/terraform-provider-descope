@@ -33,6 +33,19 @@ authentication traffic. Must be a subdomain of the `app_url` domain.
 
 
 
+apps_custom_domain
+------------------
+
+- Type: `string`
+
+The custom domain that federated and inbound application URLs are built on, such as the SAML
+entity ID, SSO and metadata URLs and the OIDC issuer and discovery URL. Set it to `custom_domain`
+or to another custom domain that was added to the project. When empty, or when the domain is no
+longer one of the project's custom domains, `custom_domain` is used. Changing it changes the SAML
+entity ID and SSO URL of every federated application, so service providers must be updated.
+
+
+
 approved_domains
 ----------------
 
@@ -70,6 +83,18 @@ allow_auth_hosting_iframe_embedding
 When enabled, Descope-hosted flows can be displayed within an iframe on
 your website. This modifies the security headers that typically prevent the page from
 being embedded.
+
+
+
+disable_auth_hosting
+--------------------
+
+- Type: `bool`
+
+When enabled, Descope stops serving this project's flows from its hosted login pages, both
+at the Descope domain and at the `/login` path of a custom domain. Anything that relies on
+the default hosted login page URL, such as a federated application or an embedded link that
+lands on it, stops working. Flows running in your own application are unaffected.
 
 
 

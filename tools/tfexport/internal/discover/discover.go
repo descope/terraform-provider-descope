@@ -40,6 +40,22 @@ func InboundApps(ctx context.Context, client *infra.Client, projectID string) ([
 	return instances, nil
 }
 
+func AuthAccessRules(ctx context.Context, client *infra.Client, projectID string) ([]Instance, error) {
+	data, err := client.Get(ctx, projectID, "/v1/mgmt/authaccess/rule/all", nil)
+	if err != nil {
+		return nil, err
+	}
+	var instances []Instance
+	for _, rule := range anyObjectList(data["rules"]) {
+		id, _ := rule["id"].(string)
+		name, _ := rule["name"].(string)
+		if id != "" {
+			instances = append(instances, Instance{Resource: "descope_auth_access_rule", ID: id, Name: name})
+		}
+	}
+	return instances, nil
+}
+
 func ResolveAuthorizationIDs(ctx context.Context, client *infra.Client, projectID string, instances []Instance) (resolved []Instance, warnings []warn.Warning) {
 	live := map[string]map[string]string{}
 	for resource, load := range map[string]func() (map[string]string, error){

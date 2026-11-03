@@ -24,10 +24,12 @@ var ProjectSettingsAttributes = map[string]schema.Attribute{
 	"project_id":                          stringattr.Required(stringplanmodifier.RequiresReplace()),
 	"app_url":                             stringattr.Default("", stringattr.URLValidator),
 	"custom_domain":                       stringattr.Default(""),
+	"apps_custom_domain":                  stringattr.Default(""),
 	"approved_domains":                    strsetattr.Default(strsetattr.CommaSeparatedValidator),
 	"default_no_sso_apps":                 boolattr.Default(false),
 	"tenant_user_isolation":               boolattr.Default(false),
 	"allow_auth_hosting_iframe_embedding": boolattr.Default(false),
+	"disable_auth_hosting":                boolattr.Default(false),
 	"test_users_loginid_regexp":           stringattr.Default(""),
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"test_users_verifier_regexp":          stringattr.Default(""),
@@ -38,10 +40,12 @@ type ProjectSettingsModel struct {
 	ProjectID                       stringattr.Type `tfsdk:"project_id"`
 	AppURL                          stringattr.Type `tfsdk:"app_url"`
 	CustomDomain                    stringattr.Type `tfsdk:"custom_domain"`
+	AppsCustomDomain                stringattr.Type `tfsdk:"apps_custom_domain"`
 	ApprovedDomains                 strsetattr.Type `tfsdk:"approved_domains"`
 	DefaultNoSSOApps                boolattr.Type   `tfsdk:"default_no_sso_apps"`
 	TenantUserIsolation             boolattr.Type   `tfsdk:"tenant_user_isolation"`
 	AllowAuthHostingIframeEmbedding boolattr.Type   `tfsdk:"allow_auth_hosting_iframe_embedding"`
+	DisableAuthHosting              boolattr.Type   `tfsdk:"disable_auth_hosting"`
 	TestUsersLoginIDRegExp          stringattr.Type `tfsdk:"test_users_loginid_regexp"`
 	TestUsersStaticOTP              stringattr.Type `tfsdk:"test_users_static_otp"`
 	TestUsersVerifierRegExp         stringattr.Type `tfsdk:"test_users_verifier_regexp"`
@@ -51,10 +55,12 @@ func (m *ProjectSettingsModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
 	stringattr.Get(m.AppURL, data, "appUrl")
 	stringattr.Get(m.CustomDomain, data, "customDomain")
+	stringattr.Get(m.AppsCustomDomain, data, "appsCustomDomain")
 	strsetattr.GetCommaSeparated(m.ApprovedDomains, data, "trustedDomains", h)
 	boolattr.Get(m.DefaultNoSSOApps, data, "defaultNoSSOApps")
 	boolattr.Get(m.TenantUserIsolation, data, "tenantUserIsolation")
 	boolattr.Get(m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
+	boolattr.Get(m.DisableAuthHosting, data, "disableAuthHosting")
 	stringattr.Get(m.TestUsersLoginIDRegExp, data, "testUserRegex")
 	stringattr.Get(m.TestUsersStaticOTP, data, "testUserFixedAuthToken")
 	stringattr.Get(m.TestUsersVerifierRegExp, data, "testUserFixedAuthVerifierRegex")
@@ -65,10 +71,12 @@ func (m *ProjectSettingsModel) Values(h *helpers.Handler) map[string]any {
 func (m *ProjectSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.AppURL, data, "appUrl")
 	stringattr.Set(&m.CustomDomain, data, "customDomain")
+	stringattr.SetDefault(&m.AppsCustomDomain, data, "appsCustomDomain", "")
 	strsetattr.SetCommaSeparated(&m.ApprovedDomains, data, "trustedDomains", h)
 	boolattr.Set(&m.DefaultNoSSOApps, data, "defaultNoSSOApps")
 	boolattr.Set(&m.TenantUserIsolation, data, "tenantUserIsolation")
 	boolattr.Set(&m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
+	boolattr.SetDefault(&m.DisableAuthHosting, data, "disableAuthHosting", false) // absent on a backend that predates the field, and Set would leave a null that never matches the schema default
 	stringattr.Set(&m.TestUsersLoginIDRegExp, data, "testUserRegex")
 	if data["testUserAllowFixedAuth"] == true {
 		stringattr.Set(&m.TestUsersStaticOTP, data, "testUserFixedAuthToken")
@@ -79,7 +87,7 @@ func (m *ProjectSettingsModel) SetValues(h *helpers.Handler, data map[string]any
 }
 
 func (m *ProjectSettingsModel) Validate(h *helpers.Handler) {
-	if helpers.HasUnknownValues(m.AppURL, m.CustomDomain, m.TestUsersStaticOTP, m.TestUsersVerifierRegExp) {
+	if helpers.HasUnknownValues(m.AppURL, m.CustomDomain, m.AppsCustomDomain, m.TestUsersStaticOTP, m.TestUsersVerifierRegExp) {
 		return
 	}
 
@@ -108,6 +116,10 @@ func (m *ProjectSettingsModel) Validate(h *helpers.Handler) {
 				}
 			}
 		}
+	}
+
+	if strings.Contains(m.AppsCustomDomain.ValueString(), "://") {
+		h.Invalid("The apps_custom_domain attribute must be a domain name and not a full URL")
 	}
 
 	if (m.TestUsersStaticOTP.ValueString() == "") != (m.TestUsersVerifierRegExp.ValueString() == "") {

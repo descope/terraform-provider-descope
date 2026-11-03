@@ -72,6 +72,11 @@ resource "descope_role" "user" {
   permissions = [descope_permission.use.name]
 }
 
+resource "descope_password_settings" "main" {
+  project_id    = descope_project.test.id
+  role_policies = [{ roles = [descope_role.user.name], min_length = 16 }]
+}
+
 resource "descope_flow" "passkeys" {
   project_id = descope_project.test.id
   flow_id    = "replica-passkeys"

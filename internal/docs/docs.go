@@ -99,10 +99,14 @@ var docsOIDCApp = map[string]string{
 		"stays empty. The value in the state is never overwritten afterwards, so a secret rotated via " +
 		"the API or the Descope console is not reflected until the resource is replaced. Changing this " +
 		"value will require the resource to be deleted and recreated.",
-	"client_type": "OAuth client confidentiality. One of `\"\"` (default — legacy access-key authentication), " +
-		"`\"confidential\"` (a dedicated client secret is generated for the app), or `\"public\"` (PKCE " +
-		"only, no client secret). Changing this value on an existing application changes how its " +
-		"clients must authenticate, so coordinate the change with the application's developers.",
+	"client_type": "OAuth client confidentiality. One of `\"confidential\"` (a dedicated client secret is generated for " +
+		"the app) or `\"public\"` (PKCE only, no client secret), and setting it explicitly is recommended. The " +
+		"empty value `\"\"` is the legacy mode with access-key authentication. If this attribute is omitted when " +
+		"the application is created, the account's default client type is used and the stored value shows " +
+		"which one it is, and removing the attribute from the configuration later keeps the current type. " +
+		"Moving an existing application to the legacy mode can be rejected by the Descope API. Changing this " +
+		"value on an existing application changes how its clients must authenticate, so coordinate the change " +
+		"with the application's developers.",
 	"approved_redirect_urls": "A list of approved redirect URLs for this application (supports `*` wildcards). When set, " +
 		"redirect URIs are validated against this per-app list; when empty, validation falls back to " +
 		"the project's approved/trusted domains.",
@@ -258,6 +262,32 @@ var docsUserAttribute = map[string]string{
 		"widget.",
 }
 
+var docsAuthAccessRule = map[string]string{
+	"project_id": "The ID of the project that this rule belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name":        "A name for the rule, shown in the console.",
+	"description": "An optional description of what the rule is for.",
+	"enabled": "Whether the rule is evaluated. A disabled rule keeps its place in the evaluation order " +
+		"but never matches.",
+	"effect": "Whether an authentication that matches the rule is `allow`ed or `block`ed.",
+	"conditions": "The conditions that must all match for the rule to apply. A rule with no conditions " +
+		"matches every authentication.",
+	"expire_time": "The time after which the rule is no longer evaluated, in seconds since the Unix epoch. " +
+		"Set to `0` for a rule that never expires.",
+}
+
+var docsAuthAccessCondition = map[string]string{
+	"key": "The attribute the condition checks. One of `request.ip`, `request.country`, `user.email`, " +
+		"`user.emailDomain`, `user.loginId` or `user.phone`.",
+	"operator": "How the attribute is compared with the values. One of `equal`, `notEqual`, `in`, `notIn`, " +
+		"`inCidr` or `notInCidr`. The CIDR operators are only supported with the `request.ip` key.",
+	"values": "The values to compare with. The `equal`, `notEqual`, `inCidr` and `notInCidr` operators " +
+		"take exactly one value. With `equal` and `notEqual` the value may instead be a reference of " +
+		"the form `{{jwtClaims.<name>}}`, which compares the attribute with that custom claim of the " +
+		"token the user presented. An absent claim never matches. Values must be in canonical form: lowercase emails and domains, uppercase " +
+		"country codes, phone numbers in E.164 form and IP addresses in their shortest form.",
+}
+
 var docsAbuseIPDBConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -324,6 +354,32 @@ var docsAuditWebhookConnector = map[string]string{
 	"insecure": "Will ignore certificate errors raised by the client",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+}
+
+var docsAWSEndUserMessagingConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"aws_region":  "The AWS region the Notify configuration is in.",
+	"auth_type": "How to authenticate with AWS: using static credentials or by assuming an IAM " +
+		"role.",
+	"access_key_id": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+	"secret_access_key": "The AWS secret access key. Required when the authentication type is " +
+		"'credentials'.",
+	"role_arn": "The ARN of the IAM role to assume. Required when the authentication type is " +
+		"'assumeRole'.",
+	"external_id": "The external ID used when assuming the IAM role. Required when the " +
+		"authentication type is 'assumeRole'.",
+	"notify_configuration_id": "The ID of the AWS End User Messaging Notify configuration that sends the " +
+		"messages.",
+	"default_template_id": "The Notify template used when the flow does not select one. Leave empty to use " +
+		"the Notify configuration's default template.",
+	"template_code_variable": "The template variable that receives the OTP code. Defaults to 'code'.",
+	"template_expiry_minutes": "The code expiry in minutes, between 1 and 60. Set it when the template shows the " +
+		"code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message " +
+		"otherwise.",
+	"configuration_set_name": "The AWS configuration set whose event destinations receive delivery events, " +
+		"including messages that AWS blocks.",
 }
 
 var docsAWSEventBridgeConnector = map[string]string{
@@ -394,6 +450,30 @@ var docsAWSTranslateConnector = map[string]string{
 	"session_token": "(Optional) A security or session token to use with these credentials. Usually " +
 		"present for temporary credentials.",
 	"region": "The AWS region to which this client will send requests. (e.g. us-east-1.)",
+}
+
+var docsAzureMonitorConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The scheme and host of the logs ingestion endpoint, in the form " +
+		"https://<name>.<region>-1.ingest.monitor.azure.com, without any path.",
+	"dcr_immutable_id": "The immutable ID of the OTLP-enabled data collection rule, in the form dcr-<32 " +
+		"hex characters>.",
+	"tenant_id": "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id": "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"service_name": "The service name attached to the logs as the `service.name` resource attribute. " +
+		"Default is `descope`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsBitsightConnector = map[string]string{
@@ -834,6 +914,29 @@ var docsLokaliseConnector = map[string]string{
 	"config_project_id": "Lokalise project ID.",
 }
 
+var docsMicrosoftSentinelConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The logs ingestion endpoint of the data collection rule, for example " +
+		"https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Terraform " +
+		"guide outputs it as ingestionEndpoint.",
+	"dcr_immutable_id": "The immutable ID of the data collection rule, in the form dcr-<32 hex " +
+		"characters>. The Terraform guide outputs it as dcrImmutableId.",
+	"stream_name": "The data collection rule stream that receives the audit events.",
+	"tenant_id":   "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id":   "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"troubleshoot_stream_name": "The data collection rule stream that receives the troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
 var docsMixpanelConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1120,6 +1223,9 @@ var docsSESConnector = map[string]string{
 	"sender_name": "The name shown as the sender of the emails.",
 	"tags": "Custom AWS SES message tags added to every email sent through this connector, as " +
 		"key/value pairs.",
+	"configuration_set_name": "The SES configuration set to send every email with, so SES events such as " +
+		"bounces, complaints and deliveries carry it. It must exist in the same AWS " +
+		"account and region.",
 }
 
 var docsAuditFilterField = map[string]string{
@@ -1387,6 +1493,18 @@ var docsUnibeamConnector = map[string]string{
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
+var docsVonageConnector = map[string]string{
+	"project_id":       "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"api_key":          "The Vonage API key.",
+	"api_secret":       "The Vonage API secret.",
+	"sender":           "The sender ID or phone number that text messages are sent from.",
+	"application_id":   "The Vonage voice application ID.",
+	"private_key":      "The Vonage voice application's private key, used to sign the voice API JWT.",
+	"from_phone_voice": "The phone number that voice calls are placed from.",
+}
+
 var docsZeroBounceConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1475,6 +1593,15 @@ var docsApplicationScope = map[string]string{
 	"values": "The identifiers of the relevant permission, attribute or connection scopes.",
 }
 
+var docsClientAssertion = map[string]string{
+	"key_source": "Where the key that signed the assertion comes from: `jwks` for a JWKS URL, or `publicKey` for a PEM " +
+		"public key.",
+	"jwks_uri":   "The HTTPS URL of the JWKS document. Required when `key_source` is `jwks`.",
+	"public_key": "A PEM encoded public key or certificate. Required when `key_source` is `publicKey`.",
+	"sign_algorithm": "Pins the JWS algorithm of the assertion, such as `RS256` or `ES256`. Leave empty to accept every " +
+		"supported asymmetric algorithm.",
+}
+
 var docsInboundApp = map[string]string{
 	"project_id": "The ID of the Descope project this inbound app belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
@@ -1502,8 +1629,15 @@ var docsInboundApp = map[string]string{
 	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
 		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
 	"client_type": "The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for " +
-		"one that authenticates with PKCE and has no secret. Leave empty to let the backend decide. Changing " +
-		"this value after creation will require the resource to be replaced.",
+		"one that authenticates with PKCE and has no secret. Setting it explicitly is recommended. The empty " +
+		"value `\"\"` is the legacy mode. If this attribute is omitted when the app is created, the account's " +
+		"default client type is used and the stored value shows which one it is, and removing the attribute " +
+		"from the configuration later keeps the current type. Moving from the legacy mode to `confidential` " +
+		"updates the app in place and keeps its client ID, and any other change, including a move to the legacy " +
+		"mode, replaces the resource, which issues a new client ID and secret. An app that was never issued a " +
+		"client secret, such as one created with `non_confidential_client = true` in v0.3, needs one after " +
+		"moving to `confidential`: rotate its client secret, for example in the Descope console, or force a " +
+		"replacement with `terraform apply -replace` to get a new client ID and secret.",
 	"client_id": "A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing " +
 		"this value after creation will require the resource to be replaced.",
 	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +
@@ -1513,6 +1647,30 @@ var docsInboundApp = map[string]string{
 	"scope_claim_mapping": "Maps the claims that each scope contributes to the tokens issued for this app. This is the structured " +
 		"form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the " +
 		"mapping here wins.",
+	"client_auth_method": "How the app authenticates at the token endpoint. `clientSecret` (the default, also when empty) uses " +
+		"`client_secret`, `privateKeyJwt` accepts a `private_key_jwt` client assertion verified against " +
+		"`client_assertions`, and `workloadIdentity` accepts a SPIFFE JWT-SVID or an OIDC workload token verified " +
+		"against `workload_client_assertions`. An app that authenticates with mTLS certificates is managed in the " +
+		"Descope console.",
+	"client_assertions": "The keys that verify a `private_key_jwt` client assertion, either a JWKS URL or a PEM public key per " +
+		"entry. Required to have at least one entry when `client_auth_method` is `privateKeyJwt`.",
+	"workload_client_assertions": "The workload identity issuers this app trusts, each a SPIFFE trust domain or an OIDC issuer together with " +
+		"the workload subjects it accepts. Required to have at least one entry when `client_auth_method` is " +
+		"`workloadIdentity`.",
+	"authorization_code_disabled": "Disables the `authorization_code` grant type for this inbound app, including its authorization requests. " +
+		"When omitted, the current setting is kept, and a new app has the grant type enabled.",
+	"client_credentials_disabled": "Disables the `client_credentials` grant type for this inbound app. When omitted, the current setting is " +
+		"kept, and a new app has the grant type enabled unless `client_type` is `public`. Public clients cannot use " +
+		"this grant type, so it cannot be set to `false` for one.",
+	"refresh_token_disabled": "Disables the `refresh_token` grant type for this inbound app, so its tokens cannot be refreshed. When " +
+		"omitted, the current setting is kept, and a new app has the grant type enabled.",
+	"jwt_bearer_disabled": "Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this inbound app. When omitted, " +
+		"the current setting is kept, and a new app has the grant type enabled unless `client_type` is `public`. " +
+		"Public clients cannot use this grant type, so it cannot be set to `false` for one.",
+	"device_code_disabled": "Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this inbound app. When omitted, " +
+		"the current setting is kept, and a new app has the grant type enabled.",
+	"token_exchange_disabled": "Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When " +
+		"omitted, the current setting is kept, and a new app has the grant type enabled.",
 }
 
 var docsScopeClaimMapping = map[string]string{
@@ -1531,6 +1689,20 @@ var docsInboundappSessionSettings = map[string]string{
 	"key_session_token_expiration": "The expiration duration for access key session tokens. Must be between 3 minutes and one month.",
 	"user_template_id":             "The ID of the JWT template to use for user JWTs issued to this inbound app.",
 	"key_template_id":              "The ID of the JWT template to use for access key JWTs issued to this inbound app.",
+}
+
+var docsWorkloadClientAssertion = map[string]string{
+	"federation_type": "The kind of issuer this entry trusts: `spiffe` for a SPIFFE trust domain, or `oidc` for an OIDC issuer.",
+	"trust_domain":    "The SPIFFE trust domain, such as `prod.example.com`. Required when `federation_type` is `spiffe`.",
+	"issuer": "The HTTPS issuer URL. Required when `federation_type` is `oidc`. For a `spiffe` entry it is the trust " +
+		"domain's OIDC Discovery Provider and replaces the bundle endpoint in `jwks_uri`.",
+	"jwks_uri": "For a `spiffe` entry, the HTTPS URL of the trust domain's bundle endpoint, required unless `issuer` is set. " +
+		"For an `oidc` entry, an optional JWKS URL that overrides the one found by discovery.",
+	"allowed_subjects": "The workloads this app accepts, matched against the assertion's subject. For a `spiffe` entry each value " +
+		"is an exact SPIFFE ID or one ending with `/*` to accept the workloads under that path. For an `oidc` " +
+		"entry each value is an anchored regular expression.",
+	"sign_algorithm": "Pins the JWS algorithm of the assertion, such as `RS256` or `ES256`. Leave empty to accept every " +
+		"supported asymmetric algorithm.",
 }
 
 var docsJWTTemplate = map[string]string{
@@ -1583,8 +1755,9 @@ var docsManagementKey = map[string]string{
 		"If not set, the key can be used from any IP address.",
 	"rebac": "Access control settings for the management key. This defines the permissions granted " +
 		"to the management key, either at the company level or for specific projects or for " +
-		"project tags. Changing this value after creation will require the management key " +
-		"to be replaced.",
+		"project tags. Changing this value after creation updates the management key in " +
+		"place without rotating its secret. Changing the roles requires the management key " +
+		"that the provider is configured with to be allowed to manage management keys.",
 	"cleartext": "The plaintext value of the management key. This is only available after the key is " +
 		"created and cannot be retrieved later. Store this value securely as it is required " +
 		"to authenticate API requests.",
@@ -1669,6 +1842,14 @@ var docsOutboundApp = map[string]string{
 		"value, so it cannot be read back and is not verified against the server. Omitting the field leaves " +
 		"any previously stored secret in place, while setting it to a new value replaces it. An empty " +
 		"string is not accepted.",
+	"use_dcr": "Whether Descope registers itself as a client with the provider using OAuth Dynamic Client " +
+		"Registration when the outbound application is created. The registration fills in the `client_id`, " +
+		"`client_secret`, `authorization_url`, `token_url`, `revocation_url`, `default_scopes` and `pkce` " +
+		"fields, so they cannot be set when creating the application. Registration only happens on creation, " +
+		"so this cannot be enabled on an existing outbound application.",
+	"dcr_url": "The URL of the provider's protected resource, such as an MCP server, or of its authorization " +
+		"server, used to discover the registration endpoint when `use_dcr` is enabled. This cannot be " +
+		"changed on an existing outbound application.",
 	"discovery_url":     "The provider's OpenID Connect discovery endpoint, used to look up its other endpoints.",
 	"authorization_url": "The provider's authorization endpoint, which users are redirected to in order to grant consent.",
 	"authorization_url_params": "Additional query parameters to append to the authorization request, for providers that require " +
@@ -1743,6 +1924,17 @@ var docsAdminPortalWidget = map[string]string{
 	"type":      "The type of the Widget",
 }
 
+var docsAuthAccessPolicy = map[string]string{
+	"project_id": "The ID of the project that this policy belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"default_action": "Whether an authentication that matches no rule is `allow`ed or `block`ed.",
+	"rule_ids": "The evaluation order of the project's rules, as a list of `descope_auth_access_rule` ids. " +
+		"The list must include every rule in the project exactly once. Reference the `id` attribute " +
+		"of each rule resource (e.g., `descope_auth_access_rule.example.id`) so that Terraform orders " +
+		"the operations correctly, and avoid `create_before_destroy` on rule resources, which makes " +
+		"Terraform update the order before a removed rule is deleted.",
+}
+
 var docsEmbeddedLinkSettings = map[string]string{
 	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
 		"to be deleted and recreated.",
@@ -1767,6 +1959,15 @@ var docsEnchantedLinkSettings = map[string]string{
 		"template.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
+}
+
+var docsGovernance = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"configured": "Whether the Agentic Governance Suite has been set up for the project.",
+	"auto_approval": "Setting this to `true` approves access requests automatically instead of waiting for an admin to " +
+		"review them.",
+	"suite_disabled": "Setting this to `true` turns off the Agentic Governance Suite for the project.",
 }
 
 var docsInviteSettings = map[string]string{
@@ -1874,6 +2075,31 @@ var docsPasswordSettings = map[string]string{
 	"email_template_id": "The ID of the email template for password reset emails, taken from a `descope_email_template` " +
 		"resource with its `method` set to `password`. The same template serves both the magic link and " +
 		"enchanted link reset flows. An empty value (the default) selects the built-in System template.",
+	"role_policies": "Stricter password requirements for users who hold specific roles. When a user holds any of the " +
+		"roles of a policy, at the project level or in any of their tenants, each rule of the policy is " +
+		"combined with the matching rule of the password settings that apply to the user, and the strictest " +
+		"value wins. A policy can therefore only make the requirements stricter, and when a user matches " +
+		"more than one policy all of them apply. The policies are enforced when a signed-in user sets or " +
+		"changes their own password, and not at sign-up or to passwords set for a user by an administrator. " +
+		"Existing passwords are not checked again when roles or policies change.",
+}
+
+var docsPasswordRolePolicy = map[string]string{
+	"roles": "The names of the roles the policy applies to. Reference the `name` attribute of `descope_role` " +
+		"resources (e.g., `descope_role.admin.name`) so that Terraform orders the operations correctly. " +
+		"Each role must exist when the policy is applied.",
+	"min_length":       "The minimum length of the password, up to `64`. The default value of `0` adds no requirement.",
+	"lowercase":        "Whether passwords must contain at least one lowercase letter.",
+	"uppercase":        "Whether passwords must contain at least one uppercase letter.",
+	"number":           "Whether passwords must contain at least one number.",
+	"non_alphanumeric": "Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).",
+	"any_letter":       "Whether passwords must contain at least one letter, either uppercase or lowercase.",
+	"disallowed_characters": "Reject passwords containing any of these characters, in addition to the characters that the " +
+		"password settings disallow. Each character in the string is treated as a forbidden literal.",
+	"disallow_email_match": "Whether to reject passwords that match the user's email address or its local-part (the segment " +
+		"before `@`), case-insensitively.",
+	"enforce_strength": "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength. " +
+		"The default value of `none` adds no requirement.",
 }
 
 var docsProjectSettings = map[string]string{
@@ -1882,6 +2108,11 @@ var docsProjectSettings = map[string]string{
 	"app_url": "The URL where your application resides.",
 	"custom_domain": "A custom CNAME domain for the project, used instead of the default Descope base URL for " +
 		"authentication traffic. Must be a subdomain of the `app_url` domain.",
+	"apps_custom_domain": "The custom domain that federated and inbound application URLs are built on, such as the SAML " +
+		"entity ID, SSO and metadata URLs and the OIDC issuer and discovery URL. Set it to `custom_domain` " +
+		"or to another custom domain that was added to the project. When empty, or when the domain is no " +
+		"longer one of the project's custom domains, `custom_domain` is used. Changing it changes the SAML " +
+		"entity ID and SSO URL of every federated application, so service providers must be updated.",
 	"approved_domains": "List of approved domains that are allowed for redirect and verification URLs for different " +
 		"authentication methods.",
 	"default_no_sso_apps": "Whether new users should not be given access to any federated applications by default.",
@@ -1890,6 +2121,10 @@ var docsProjectSettings = map[string]string{
 	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
 		"your website. This modifies the security headers that typically prevent the page from " +
 		"being embedded.",
+	"disable_auth_hosting": "When enabled, Descope stops serving this project's flows from its hosted login pages, both " +
+		"at the Descope domain and at the `/login` path of a custom domain. Anything that relies on " +
+		"the default hosted login page URL, such as a federated application or an embedded link that " +
+		"lands on it, stops working. Flows running in your own application are unaffected.",
 	"test_users_loginid_regexp": "A regular expression pattern that, when a user is created with a matching login ID, will " +
 		"automatically mark the user as a test user.",
 	"test_users_static_otp": "A static OTP code that can be used by test users instead of a real verification code. Must " +
@@ -2000,6 +2235,37 @@ var docsTOTPSettings = map[string]string{
 	"disabled": "Setting this to `true` will disallow using TOTP authentication directly via API and SDK calls. Note " +
 		"that this does not affect authentication flows that are configured to use TOTP.",
 	"service_label": "The template for the service issuer label (issuer) shown in the authenticator app.",
+	"account_label": "The template for the account name shown in the authenticator app, for example `{{user.email}}` " +
+		"or `{{user.customAttributes.employeeId}}`. Supports `{{user.email}}`, `{{user.phone}}`, " +
+		"`{{user.name}}`, `{{user.loginId}}` and `{{user.customAttributes.<name>}}`. When empty, or when " +
+		"it renders empty for a user, the user's login ID is used.",
+}
+
+var docsWellKnownSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"enabled": "Setting this to `true` applies the customization to the project's discovery documents. While `false` the " +
+		"customization is kept but the default documents are served.",
+	"hidden_fields": "Fields to omit from the discovery documents. Hiding a field only stops advertising it, the endpoint or " +
+		"capability itself stays enabled. Supported values are `backchannel_authentication_endpoint`, " +
+		"`pushed_authorization_request_endpoint`, `request_parameter_supported`, `registration_endpoint`, " +
+		"`end_session_endpoint`, `introspection_endpoint`, `device_authorization_endpoint`, `revocation_endpoint`, " +
+		"`userinfo_endpoint` and `backchannel_logout_supported`.",
+	"removed_values": "Values to remove from list fields in the discovery documents, such as a grant type from " +
+		"`grant_types_supported`. A list is never emptied, removing every value keeps the full list.",
+	"scopes_supported": "Scopes to add to or exclude from `scopes_supported`.",
+	"claims_supported": "Claims to add to or exclude from `claims_supported`.",
+}
+
+var docsWellKnownRemovedValues = map[string]string{
+	"field": "The name of a list field in the discovery documents, such as `grant_types_supported`, " +
+		"`token_endpoint_auth_methods_supported` or `code_challenge_methods_supported`.",
+	"values": "The values to remove from the list.",
+}
+
+var docsWellKnownValueDelta = map[string]string{
+	"extra":    "Values to add to the list.",
+	"excluded": "Values to remove from the list.",
 }
 
 var docsStyles = map[string]string{
@@ -2007,7 +2273,13 @@ var docsStyles = map[string]string{
 		"deleted and recreated.",
 	"data": "The JSON data of the styles in their exported theme representation, defining the visual styling of " +
 		"the project's flow pages. This will usually be exported as a `.json` file from the Descope console, " +
-		"and set in the `.tf` file using the `data = file(\"...\")` syntax.",
+		"which exports one style per file, and set in the `.tf` file using the `data = file(\"...\")` syntax. " +
+		"Applying this resource creates and overwrites the styles the data carries, and leaves every other " +
+		"style in the project untouched, so styles created in the console are safe from a Terraform apply. " +
+		"For the same reason removing a style from the data does not remove it from the project - delete it " +
+		"in the console or through the management API instead. An apply is rejected if the data's " +
+		"`componentsVersion` differs from the project's, in which case export the styles again or leave " +
+		"`componentsVersion` out, and if it changes the type of a style that already exists in the project.",
 }
 
 var docsTextTemplate = map[string]string{

@@ -13,7 +13,7 @@ func TestAppImportTypeMismatch(t *testing.T) {
 	o := testacc.OIDCApp(t)
 	s := testacc.SAMLApp(t)
 	project := `project_id = "` + projectID + `"`
-	config := o.Config(project, `deletion_protection = false`) + s.Config(project,
+	config := o.Config(project, `client_type = "confidential"`, `deletion_protection = false`) + s.Config(project,
 		`deletion_protection = false`,
 		`manual_configuration = {
 			acs_url = "https://sp.example.com/acs"
