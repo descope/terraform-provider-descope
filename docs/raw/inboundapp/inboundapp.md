@@ -309,3 +309,13 @@ token_exchange_disabled
 
 Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When
 omitted, the current setting is kept, and a new app has the grant type enabled.
+
+
+
+tags
+----
+
+- Type: `set` of `string`
+
+Labels for this inbound app, matched by policy rules through `client.tags` conditions.
+Up to 100 tags, each up to 100 characters. Setting this replaces any tags set elsewhere, such as in the console.

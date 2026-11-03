@@ -228,6 +228,15 @@ func TestInboundAppGrantTypesValues(t *testing.T) {
 	}
 }
 
+func TestInboundAppTagsValues(t *testing.T) {
+	h := helpers.NewHandler(context.Background(), &diag.Diagnostics{})
+	m := newInboundAppModel(t, tftypes.NewValue(tftypes.String, "confidential"))
+	m.SetValues(h, map[string]any{"tags": []any{"our-agent"}})
+	if tags := fmt.Sprint(m.Values(h)["tags"]); tags != "[our-agent]" {
+		t.Errorf("expected tags to round trip as [our-agent], got %s", tags)
+	}
+}
+
 func newInboundAppModel(t *testing.T, clientType tftypes.Value) *inboundapp.InboundAppModel {
 	ctx := context.Background()
 	objType, ok := inboundapp.Schema.Type().TerraformType(ctx).(tftypes.Object)
@@ -326,6 +335,7 @@ func TestInboundApp(t *testing.T) {
 				"force_add_all_authorization_info": "false",
 				"force_dpop":                       "false",
 				"default_audience":                 "",
+				"tags.#":                           "0",
 			}),
 		},
 		// Test update with description and callback URLs
@@ -336,6 +346,7 @@ func TestInboundApp(t *testing.T) {
 				description = "Updated description"
 				force_pkce = true
 				approved_callback_urls = ["https://example.com/callback"]
+				tags = ["our-agent"]
 				permissions_scopes = [
 					{
 						name = "openid"
@@ -358,6 +369,8 @@ func TestInboundApp(t *testing.T) {
 				"permissions_scopes.1.name":        "email",
 				"permissions_scopes.1.description": "Access email",
 				"permissions_scopes.1.optional":    "true",
+				"tags.#":                           "1",
+				"tags.0":                           "our-agent",
 			}),
 		},
 		// Test update with session settings
