@@ -90,6 +90,10 @@ func Governance(t *testing.T) *Resource {
 	return newResource(t, "governance")
 }
 
+func WellKnownSettings(t *testing.T) *Resource {
+	return newResource(t, "wellknown_settings")
+}
+
 func MagicLinkSettings(t *testing.T) *Resource {
 	return newResource(t, "magiclink_settings")
 }
