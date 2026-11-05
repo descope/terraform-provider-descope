@@ -1375,6 +1375,17 @@ var docsSplunkConnector = map[string]string{
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
+var docsSplunkOnCallConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"base_url":    "Splunk On-Call alert ingestion base URL.",
+	"api_key": "The REST Endpoint integration key, from Integrations > REST Endpoint in Splunk " +
+		"On-Call.",
+	"routing_key": "Default routing key, from Settings > Routing Keys. An action can override it.",
+}
+
 var docsSQLConnector = map[string]string{
 	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",

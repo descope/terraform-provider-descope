@@ -126,6 +126,7 @@ func InjectModels() {
 	inject(connectors.SnowflakeConnectorAttributes, docsSnowflakeConnector)
 	inject(connectors.SNSConnectorAttributes, docsSNSConnector)
 	inject(connectors.SplunkConnectorAttributes, docsSplunkConnector)
+	inject(connectors.SplunkOnCallConnectorAttributes, docsSplunkOnCallConnector)
 	inject(connectors.SQLConnectorAttributes, docsSQLConnector)
 	inject(connectors.SumoLogicConnectorAttributes, docsSumoLogicConnector)
 	inject(connectors.SupabaseConnectorAttributes, docsSupabaseConnector)
