@@ -318,4 +318,4 @@ tags
 - Type: `set` of `string`
 
 Labels for this inbound app, matched by policy rules through `client.tags` conditions.
-Up to 100 tags, each up to 100 characters. Setting this replaces any tags set elsewhere, such as in the console.
+Up to 100 tags, each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.

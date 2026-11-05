@@ -4,14 +4,17 @@ import (
 	"context"
 	"fmt"
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
 	"github.com/descope/terraform-provider-descope/tools/testacc"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tftypes"
@@ -234,6 +237,33 @@ func TestInboundAppTagsValues(t *testing.T) {
 	m.SetValues(h, map[string]any{"tags": []any{"our-agent"}})
 	if tags := fmt.Sprint(m.Values(h)["tags"]); tags != "[our-agent]" {
 		t.Errorf("expected tags to round trip as [our-agent], got %s", tags)
+	}
+}
+
+// The backend limits a tag to 100 bytes, and LengthBetween counts bytes, so a tag of
+// 51 two-byte characters fails at plan time instead of at apply.
+func TestInboundAppTagsLengthInBytes(t *testing.T) {
+	attr, ok := inboundapp.InboundAppAttributes["tags"].(schema.SetAttribute)
+	if !ok {
+		t.Fatalf("expected tags to be a set attribute")
+	}
+	ctx := context.Background()
+	for value, wantErr := range map[string]bool{
+		strings.Repeat("a", 100):     false,
+		strings.Repeat("\u05d0", 50): false, // 100 bytes
+		strings.Repeat("\u05d0", 51): true,  // 102 bytes
+	} {
+		set, diags := types.SetValueFrom(ctx, types.StringType, []string{value})
+		if diags.HasError() {
+			t.Fatalf("failed to build set: %v", diags)
+		}
+		resp := &validator.SetResponse{}
+		for _, v := range attr.Validators {
+			v.ValidateSet(ctx, validator.SetRequest{Path: path.Root("tags"), ConfigValue: set}, resp)
+		}
+		if resp.Diagnostics.HasError() != wantErr {
+			t.Errorf("tag of %d bytes: expected error %v, got %v", len(value), wantErr, resp.Diagnostics)
+		}
 	}
 }
 

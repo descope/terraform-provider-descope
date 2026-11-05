@@ -48,7 +48,7 @@ description: |-
 - `refresh_token_disabled` (Boolean) Disables the `refresh_token` grant type for this inbound app, so its tokens cannot be refreshed. When omitted, the current setting is kept, and a new app has the grant type enabled.
 - `scope_claim_mapping` (Attributes List) Maps the claims that each scope contributes to the tokens issued for this app. This is the structured form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the mapping here wins. (see [below for nested schema](#nestedatt--scope_claim_mapping))
 - `session_settings` (Attributes) Custom session management settings for this inbound app, overriding the project defaults. (see [below for nested schema](#nestedatt--session_settings))
-- `tags` (Set of String) Labels for this inbound app, matched by policy rules through `client.tags` conditions. Up to 100 tags, each up to 100 characters. Setting this replaces any tags set elsewhere, such as in the console.
+- `tags` (Set of String) Labels for this inbound app, matched by policy rules through `client.tags` conditions. Up to 100 tags, each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.
 - `token_exchange_disabled` (Boolean) Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When omitted, the current setting is kept, and a new app has the grant type enabled.
 - `workload_client_assertions` (Attributes List) The workload identity issuers this app trusts, each a SPIFFE trust domain or an OIDC issuer together with the workload subjects it accepts. Required to have at least one entry when `client_auth_method` is `workloadIdentity`. (see [below for nested schema](#nestedatt--workload_client_assertions))
 
