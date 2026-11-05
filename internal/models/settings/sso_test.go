@@ -57,6 +57,7 @@ func TestSSOSettings(t *testing.T) {
 					hide_role_mapping = true
 					hide_fga_mapping = true
 					show_xaa = true
+					hide_audit = true
 					support_email = "help@example.com"
 					show_help_contact = true
 				}
@@ -78,6 +79,7 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.hide_role_mapping":    true,
 				"sso_suite_settings.hide_fga_mapping":     true,
 				"sso_suite_settings.show_xaa":             true,
+				"sso_suite_settings.hide_audit":           true,
 				"sso_suite_settings.support_email":        "help@example.com",
 				"sso_suite_settings.show_help_contact":    true,
 			}),
@@ -133,6 +135,7 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.hide_role_mapping":    false,
 				"sso_suite_settings.hide_fga_mapping":     false,
 				"sso_suite_settings.show_xaa":             false,
+				"sso_suite_settings.hide_audit":           false,
 				"sso_suite_settings.support_email":        "",
 				"sso_suite_settings.show_help_contact":    false,
 				"email_connector_id":                      "",
