@@ -72,6 +72,7 @@ resource "descope_role" "sink" {
 resource "descope_oidc_app" "sink" {
   project_id          = descope_project.test.id
   name                = "sink-portal"
+  client_type         = "confidential"
   deletion_protection = false
 }
 
@@ -112,6 +113,7 @@ resource "descope_list" "sink" {
 resource "descope_inbound_app" "sink" {
   project_id             = descope_project.test.id
   name                   = "sink-partner"
+  client_type            = "confidential"
   approved_callback_urls = ["https://partner.example.com/cb"]
   deletion_protection    = false
 }

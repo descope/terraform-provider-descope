@@ -124,6 +124,7 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewEngineResource,
 		resources.NewOAuthSettingsResource,
 		resources.NewOAuthProviderResource,
+		resources.NewWellKnownSettingsResource,
 		resources.NewEmailTemplateResource,
 		resources.NewTextTemplateResource,
 		resources.NewVoiceTemplateResource,

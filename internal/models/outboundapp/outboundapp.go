@@ -5,12 +5,14 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strsetattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/types/valuesettype"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/mapvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+	"github.com/hashicorp/terraform-plugin-framework/types"
 )
 
 var OutboundAppSchema = schema.Schema{
@@ -29,6 +31,8 @@ var OutboundAppAttributes = map[string]schema.Attribute{
 
 	"client_id":     stringattr.Default("", stringattr.StandardLenValidator),
 	"client_secret": stringattr.SecretOptional(stringattr.NonEmptyValidator),
+	"use_dcr":       boolattr.Default(false),
+	"dcr_url":       stringattr.Default("", stringattr.URLValidator),
 
 	"discovery_url":            stringattr.Default("", stringattr.StandardLenValidator),
 	"authorization_url":        stringattr.Default("", stringattr.StandardLenValidator),
@@ -57,6 +61,8 @@ type OutboundAppModel struct {
 
 	ClientID     stringattr.Type `tfsdk:"client_id"`
 	ClientSecret stringattr.Type `tfsdk:"client_secret"`
+	UseDCR       boolattr.Type   `tfsdk:"use_dcr"`
+	DCRURL       stringattr.Type `tfsdk:"dcr_url"`
 
 	DiscoveryURL           stringattr.Type `tfsdk:"discovery_url"`
 	AuthorizationURL       stringattr.Type `tfsdk:"authorization_url"`
@@ -82,6 +88,8 @@ func (m *OutboundAppModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.AppType, data, "appType")
 	stringattr.Get(m.ClientID, data, "clientId")
 	stringattr.Get(m.ClientSecret, data, "clientSecret")
+	boolattr.Get(m.UseDCR, data, "useDcr")
+	stringattr.Get(m.DCRURL, data, "dcrUrl")
 	stringattr.Get(m.DiscoveryURL, data, "discoveryUrl")
 	stringattr.Get(m.AuthorizationURL, data, "authorizationUrl")
 	strmapattr.GetKeyValueList(m.AuthorizationURLParams, data, "authorizationUrlParams", h)
@@ -104,6 +112,8 @@ func (m *OutboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.AppType, data, "appType")
 	stringattr.Set(&m.ClientID, data, "clientId")
 	stringattr.Set(&m.ClientSecret, data, "clientSecret", stringattr.SkipIfAlreadySet)
+	boolattr.Set(&m.UseDCR, data, "useDcr")
+	stringattr.Set(&m.DCRURL, data, "dcrUrl")
 	stringattr.Set(&m.DiscoveryURL, data, "discoveryUrl")
 	stringattr.Set(&m.AuthorizationURL, data, "authorizationUrl")
 	strmapattr.SetKeyValueList(&m.AuthorizationURLParams, data, "authorizationUrlParams", h)
@@ -116,6 +126,65 @@ func (m *OutboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.Pkce, data, "pkce")
 	stringattr.Set(&m.AccessType, data, "accessType")
 	strsetattr.Set(&m.Prompt, data, "prompt", h)
+}
+
+func (m *OutboundAppModel) Validate(h *helpers.Handler) {
+	if m.UseDCR.IsUnknown() {
+		return
+	}
+	if !m.UseDCR.ValueBool() {
+		if m.DCRURL.ValueString() != "" {
+			h.Conflict("The dcr_url field cannot be used unless use_dcr is set to true")
+		}
+		return
+	}
+	if !m.DCRURL.IsUnknown() && m.DCRURL.ValueString() == "" {
+		h.Missing("The dcr_url field is required when use_dcr is set to true")
+	}
+	if m.AppType.ValueString() == "apikey" {
+		h.Conflict("The use_dcr field cannot be used when app_type is set to 'apikey'")
+	}
+}
+
+func (m *OutboundAppModel) ModifyPlan(h *helpers.Handler, config, state *OutboundAppModel) {
+	if !m.UseDCR.ValueBool() {
+		return
+	}
+	if state.ID.IsNull() {
+		if !config.ClientID.IsNull() || !config.ClientSecret.IsNull() || !config.AuthorizationURL.IsNull() || !config.TokenURL.IsNull() || !config.RevocationURL.IsNull() || !config.DefaultScopes.IsNull() || !config.Pkce.IsNull() {
+			h.Conflict("The client_id, client_secret, authorization_url, token_url, revocation_url, default_scopes and pkce fields cannot be set when creating an outbound app with use_dcr, as they are filled in by dynamic client registration")
+			return
+		}
+		m.ClientID = types.StringUnknown()
+		m.AuthorizationURL = types.StringUnknown()
+		m.TokenURL = types.StringUnknown()
+		m.RevocationURL = types.StringUnknown()
+		m.DefaultScopes = valuesettype.NewUnknownValue[types.String](h.Ctx)
+		m.Pkce = types.BoolUnknown()
+		return
+	}
+	if !state.UseDCR.ValueBool() || (!m.DCRURL.IsUnknown() && !m.DCRURL.Equal(state.DCRURL)) {
+		h.Invalid("Dynamic client registration only happens when an outbound app is created, so use_dcr cannot be enabled and dcr_url cannot be changed on an existing outbound app. Create a new outbound app instead.")
+		return
+	}
+	if config.ClientID.IsNull() {
+		m.ClientID = state.ClientID
+	}
+	if config.AuthorizationURL.IsNull() {
+		m.AuthorizationURL = state.AuthorizationURL
+	}
+	if config.TokenURL.IsNull() {
+		m.TokenURL = state.TokenURL
+	}
+	if config.RevocationURL.IsNull() {
+		m.RevocationURL = state.RevocationURL
+	}
+	if config.DefaultScopes.IsNull() {
+		m.DefaultScopes = state.DefaultScopes
+	}
+	if config.Pkce.IsNull() {
+		m.Pkce = state.Pkce
+	}
 }
 
 func (m *OutboundAppModel) GetID() stringattr.Type {
