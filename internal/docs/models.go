@@ -48,6 +48,7 @@ func InjectModels() {
 	inject(apps.GroupsMappingAttributes, docsGroupsMapping)
 	inject(apps.RoleGroupMappingAttributes, docsRoleGroupMapping)
 	inject(attribute.AccessKeyAttributeAttributes, docsAccessKeyAttribute)
+	inject(attribute.InboundAppAttributeAttributes, docsInboundAppAttribute)
 	inject(attribute.WidgetAuthorizationAttributes, docsWidgetAuthorization)
 	inject(attribute.TenantAttributeAttributes, docsTenantAttribute)
 	inject(attribute.TenantAttributeAuthorizationAttributes, docsTenantAttributeAuthorization)

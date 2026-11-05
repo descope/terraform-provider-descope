@@ -131,6 +131,7 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewUserAttributeResource,
 		resources.NewTenantAttributeResource,
 		resources.NewAccessKeyAttributeResource,
+		resources.NewInboundAppAttributeResource,
 		resources.NewPasskeySettingsResource,
 		resources.NewTOTPSettingsResource,
 		resources.NewAdminPortalResource,

@@ -2,7 +2,9 @@ package inboundapp_test
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"reflect"
 	"regexp"
 	"testing"
 
@@ -228,6 +230,26 @@ func TestInboundAppGrantTypesValues(t *testing.T) {
 	}
 }
 
+func TestInboundAppCustomAttributesValues(t *testing.T) {
+	h := helpers.NewHandler(context.Background(), &diag.Diagnostics{})
+	m := newInboundAppModel(t, tftypes.NewValue(tftypes.String, "confidential"))
+	m.CustomAttributes = types.StringValue(`{"managingOrganization": "org-1", "tier": 2}`)
+	expected := map[string]any{"managingOrganization": "org-1", "tier": json.Number("2")}
+	if values := m.Values(h)["customAttributes"]; !reflect.DeepEqual(values, expected) {
+		t.Errorf("expected custom attributes to be sent as %v, got %v", expected, values)
+	}
+
+	m.SetValues(h, map[string]any{"customAttributes": map[string]any{"tier": float64(2), "managingOrganization": "org-1"}})
+	if m.CustomAttributes.ValueString() != `{"managingOrganization": "org-1", "tier": 2}` {
+		t.Errorf("expected an equivalent server document to keep the configured formatting, got %s", m.CustomAttributes)
+	}
+
+	m.SetValues(h, map[string]any{"customAttributes": map[string]any{}})
+	if m.CustomAttributes.ValueString() != "{}" {
+		t.Errorf("expected values cleared outside Terraform to be read back as an empty object, got %s", m.CustomAttributes)
+	}
+}
+
 func newInboundAppModel(t *testing.T, clientType tftypes.Value) *inboundapp.InboundAppModel {
 	ctx := context.Background()
 	objType, ok := inboundapp.Schema.Type().TerraformType(ctx).(tftypes.Object)
@@ -239,6 +261,7 @@ func newInboundAppModel(t *testing.T, clientType tftypes.Value) *inboundapp.Inbo
 		values[name] = tftypes.NewValue(typ, nil)
 	}
 	values["client_type"] = clientType
+	values["custom_attributes"] = tftypes.NewValue(tftypes.String, "{}")
 	m := &inboundapp.InboundAppModel{}
 	if diags := (tfsdk.Plan{Schema: inboundapp.Schema, Raw: tftypes.NewValue(objType, values)}).Get(ctx, m); diags.HasError() {
 		t.Fatalf("failed to build the inbound app model: %v", diags)
@@ -619,6 +642,80 @@ func TestInboundAppGrantTypes(t *testing.T) {
 				jwt_bearer_disabled = false
 			`),
 			ExpectError: regexp.MustCompile(`jwt_bearer_disabled field cannot be false`),
+		},
+	)
+}
+
+func TestInboundAppCustomAttributes(t *testing.T) {
+	p := testacc.Project(t)
+	a := testacc.InboundApp(t)
+	attr := testacc.InboundAppAttribute(t)
+	attrConfig := attr.Block(`
+		project_id = ` + p.Path() + `.id
+		id = "managingOrg"
+		name = "Managing Organization"
+		type = "string"
+	`)
+	testacc.Run(t,
+		// An app is created with no custom attribute values by default
+		resource.TestStep{
+			Config: p.Config() + attrConfig + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+			`),
+			Check: a.Check(map[string]any{
+				"custom_attributes": "{}",
+			}),
+		},
+		// The value references the attribute definition so it is applied after it
+		resource.TestStep{
+			Config: p.Config() + attrConfig + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+				custom_attributes = jsonencode({ (`+attr.Path()+`.id) = "org-1" })
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(a.Path(), plancheck.ResourceActionUpdate)},
+			},
+			Check: a.Check(map[string]any{
+				"custom_attributes": testacc.AttributeMatchesJSON(`{"managingOrg":"org-1"}`),
+			}),
+		},
+		resource.TestStep{
+			Config: p.Config() + attrConfig + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+				custom_attributes = jsonencode({ (`+attr.Path()+`.id) = "org-2" })
+			`),
+			Check: a.Check(map[string]any{
+				"custom_attributes": testacc.AttributeMatchesJSON(`{"managingOrg":"org-2"}`),
+			}),
+		},
+		// Import reads the stored values back
+		resource.TestStep{
+			ResourceName:      a.Path(),
+			ImportState:       true,
+			ImportStateIdFunc: testacc.GenerateImportStateID(a.Path(), "project_id", "id"),
+			ImportStateCheck: func(states []*terraform.InstanceState) error {
+				if len(states) != 1 {
+					return fmt.Errorf("expected one imported inbound app, got %d", len(states))
+				}
+				return testacc.AttributeMatchesJSON(`{"managingOrg":"org-2"}`)(states[0].Attributes["custom_attributes"])
+			},
+		},
+		// Removing the attribute from the configuration clears the values
+		resource.TestStep{
+			Config: p.Config() + attrConfig + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				deletion_protection = false
+			`),
+			Check: a.Check(map[string]any{
+				"custom_attributes": "{}",
+			}),
 		},
 	)
 }

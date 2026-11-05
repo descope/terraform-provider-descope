@@ -2,7 +2,9 @@ package emit
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"maps"
 	"os"
 	"path/filepath"
 	"slices"
@@ -65,6 +67,7 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	refs := references(plan)
 	permissionRefs := nameReferences(ctx, plan, "descope_permission")
 	roleRefs := nameReferences(ctx, plan, "descope_role")
+	inboundAppAttributeRefs := resourceReferences(plan, "descope_inbound_app_attribute")
 	projectRef := projectReference(plan)
 
 	type prepared struct {
@@ -84,7 +87,7 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	claimed := &variables{claims: map[string]map[string]bool{}}
 	scratch := hclwrite.NewEmptyFile()
 	for _, entry := range resources {
-		if err := resourceBody(ctx, scratch.Body(), entry.resource, refs, permissionRefs, roleRefs, projectRef, entry.files, claimed); err != nil {
+		if err := resourceBody(ctx, scratch.Body(), entry.resource, refs, permissionRefs, roleRefs, inboundAppAttributeRefs, projectRef, entry.files, claimed); err != nil {
 			return fmt.Errorf("emitting %s.%s: %w", entry.resource.Type, entry.resource.Label, err)
 		}
 	}
@@ -93,7 +96,7 @@ func Write(ctx context.Context, outDir string, plan *Plan) error {
 	for _, entry := range resources {
 		body := fileBody(areaFile(entry.resource.Type))
 		block := body.AppendNewBlock("resource", []string{entry.resource.Type, entry.resource.Label})
-		if err := resourceBody(ctx, block.Body(), entry.resource, refs, permissionRefs, roleRefs, projectRef, entry.files, vars); err != nil {
+		if err := resourceBody(ctx, block.Body(), entry.resource, refs, permissionRefs, roleRefs, inboundAppAttributeRefs, projectRef, entry.files, vars); err != nil {
 			return fmt.Errorf("emitting %s.%s: %w", entry.resource.Type, entry.resource.Label, err)
 		}
 	}
@@ -170,7 +173,7 @@ func (v *variables) conflicts() map[string]bool {
 	return qualify
 }
 
-func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, refs, permissionRefs, roleRefs map[string]hcl.Traversal, projectRef hcl.Traversal, files map[string]string, vars *variables) error {
+func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, refs, permissionRefs, roleRefs, inboundAppAttributeRefs map[string]hcl.Traversal, projectRef hcl.Traversal, files map[string]string, vars *variables) error {
 	if resource.HasProjectID {
 		if projectRef == nil {
 			projectRef = hcl.Traversal{hcl.TraverseRoot{Name: "var"}, hcl.TraverseAttr{Name: "project_id"}}
@@ -232,7 +235,39 @@ func resourceBody(ctx context.Context, body *hclwrite.Body, resource Resource, r
 		}
 		body.SetAttributeRaw(attr.Name, tokens)
 	}
+	if resource.Type == "descope_inbound_app" {
+		if tokens, ok := customAttributeDependencies(ctx, resource, inboundAppAttributeRefs); ok {
+			body.SetAttributeRaw("depends_on", tokens)
+		}
+	}
 	return nil
+}
+
+func customAttributeDependencies(ctx context.Context, resource Resource, attributeRefs map[string]hcl.Traversal) (hclwrite.Tokens, bool) {
+	for _, attr := range resource.Attrs {
+		if attr.Name != "custom_attributes" {
+			continue
+		}
+		document, ok := stringValue(ctx, attr.Value)
+		if !ok {
+			return nil, false
+		}
+		values := map[string]any{}
+		if err := json.Unmarshal([]byte(document), &values); err != nil {
+			return nil, false
+		}
+		var dependencies []hclwrite.Tokens
+		for _, name := range slices.Sorted(maps.Keys(values)) {
+			if traversal, ok := attributeRefs[name]; ok {
+				dependencies = append(dependencies, hclwrite.TokensForTraversal(traversal))
+			}
+		}
+		if len(dependencies) == 0 {
+			return nil, false
+		}
+		return hclwrite.TokensForTuple(dependencies), true
+	}
+	return nil, false
 }
 
 func attrTokens(ctx context.Context, attr prune.Attr, resource Resource, refs map[string]hcl.Traversal, prefix string, vars *variables) (hclwrite.Tokens, error) {
