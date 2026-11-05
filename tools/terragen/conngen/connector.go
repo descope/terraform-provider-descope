@@ -31,6 +31,15 @@ type Connector struct {
 // Template fields the provider deliberately doesn't model, by connector id. Segment's auto-trigger cluster needs a nested list type
 // (autoTriggerGroups) whose shape lives only in the backend, not the template metadata, so the whole cluster is excluded.
 var excludedFields = map[string][]string{
+	"mparticle": {
+		"autoTrigger",
+		"autoTriggerStepTypes",
+		"autoTriggerIncludeStepData",
+		"autoTriggerEventProperties",
+		"autoTriggerUserIdentities",
+		"autoTriggerUserAttributes",
+		"autoTriggerAdditionalGroups",
+	},
 	"segment": {
 		"autoTrigger",
 		"autoTriggerStepTypes",
