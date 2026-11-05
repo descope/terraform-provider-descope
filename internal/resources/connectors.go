@@ -77,6 +77,7 @@ func ConnectorResources() []func() resource.Resource {
 		newConnectorResource[connectors.SnowflakeConnectorModel]("snowflake_connector", "snowflake", connectors.SnowflakeConnectorSchema),
 		newConnectorResource[connectors.SNSConnectorModel]("sns_connector", "sns", connectors.SNSConnectorSchema),
 		newConnectorResource[connectors.SplunkConnectorModel]("splunk_connector", "splunk", connectors.SplunkConnectorSchema),
+		newConnectorResource[connectors.SplunkOnCallConnectorModel]("splunk_on_call_connector", "splunk-on-call", connectors.SplunkOnCallConnectorSchema),
 		newConnectorResource[connectors.SQLConnectorModel]("sql_connector", "sql", connectors.SQLConnectorSchema),
 		newConnectorResource[connectors.SumoLogicConnectorModel]("sumologic_connector", "sumologic", connectors.SumoLogicConnectorSchema),
 		newConnectorResource[connectors.SupabaseConnectorModel]("supabase_connector", "supabase", connectors.SupabaseConnectorSchema),

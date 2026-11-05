@@ -335,6 +335,11 @@
       "file": "splunk",
       "struct": "Splunk"
     },
+    "splunk-on-call": {
+      "attribute": "splunk_on_call",
+      "file": "splunkoncall",
+      "struct": "SplunkOnCall"
+    },
     "sql": {
       "attribute": "sql",
       "file": "sql",
@@ -947,6 +952,10 @@
     "roleArn": {
       "attribute": "role_arn",
       "struct": "RoleARN"
+    },
+    "routingKey": {
+      "attribute": "routing_key",
+      "struct": "RoutingKey"
     },
     "saSecret": {
       "attribute": "service_account_secret",
