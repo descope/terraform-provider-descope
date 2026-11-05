@@ -158,7 +158,11 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.JWTBearerDisabled, data, "jwtBearerDisabled")
 	boolattr.Set(&m.DeviceCodeDisabled, data, "deviceCodeDisabled")
 	boolattr.Set(&m.TokenExchangeDisabled, data, "tokenExchangeDisabled")
-	jsonattr.Set(&m.CustomAttributes, data, "customAttributes")
+	if data["customAttributes"] == nil {
+		m.CustomAttributes = jsonattr.Value("{}")
+	} else {
+		jsonattr.Set(&m.CustomAttributes, data, "customAttributes")
+	}
 }
 
 // The backend silently discards a client_secret given for a public client, so without this the apply would fail with an inconsistent-result error.

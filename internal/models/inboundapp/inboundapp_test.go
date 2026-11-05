@@ -248,6 +248,12 @@ func TestInboundAppCustomAttributesValues(t *testing.T) {
 	if m.CustomAttributes.ValueString() != "{}" {
 		t.Errorf("expected values cleared outside Terraform to be read back as an empty object, got %s", m.CustomAttributes)
 	}
+
+	m.CustomAttributes = types.StringValue(`{"managingOrganization": "org-1"}`)
+	m.SetValues(h, map[string]any{})
+	if m.CustomAttributes.ValueString() != "{}" {
+		t.Errorf("expected custom attributes omitted by the server to be read back as an empty object, got %s", m.CustomAttributes)
+	}
 }
 
 func newInboundAppModel(t *testing.T, clientType tftypes.Value) *inboundapp.InboundAppModel {
