@@ -45,6 +45,9 @@ func TestSAMLApp(t *testing.T) {
 			"manual_configuration.certificate": "",
 			"subject_name_id_type":             "",
 			"default_signature_algorithm":      "",
+			"logout_redirect_url":              "",
+			"error_redirect_url":               "",
+			"idp_logout_url":                   testacc.AttributeIsSet,
 		}),
 	}
 
@@ -62,6 +65,8 @@ func TestSAMLApp(t *testing.T) {
 			`default_relay_state = "https://sp.example.com/home"`,
 			`attribute_mapping = [{ name = "email", value = "user.email" }]`,
 			`force_authentication = true`,
+			`logout_redirect_url = "https://sp.example.com/logout"`,
+			`error_redirect_url = "https://sp.example.com/error"`,
 		),
 		Check: a.Check(map[string]any{
 			"id":                             sameID,
@@ -75,6 +80,9 @@ func TestSAMLApp(t *testing.T) {
 			"attribute_mapping.0.name":       "email",
 			"attribute_mapping.0.value":      "user.email",
 			"force_authentication":           true,
+			"logout_redirect_url":            "https://sp.example.com/logout",
+			"error_redirect_url":             "https://sp.example.com/error",
+			"idp_logout_url":                 testacc.AttributeIsSet,
 		}),
 	}
 
@@ -88,6 +96,8 @@ func TestSAMLApp(t *testing.T) {
 		Check: a.Check(map[string]any{
 			"id":                                 sameID,
 			"dynamic_configuration.metadata_url": "https://sp.example.com/metadata",
+			"logout_redirect_url":                "",
+			"error_redirect_url":                 "",
 		}),
 	}
 
