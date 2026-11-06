@@ -227,6 +227,20 @@ var docsAccessKeyAttribute = map[string]string{
 		"widget.",
 }
 
+var docsInboundAppAttribute = map[string]string{
+	"id": "The immutable machine name that identifies the attribute. This value is called `Machine Name` in the " +
+		"Descope console, and JWT templates read an inbound app's value for it as " +
+		"`{{app.customAttributes.<id>}}`. Changing this value will require the resource to be deleted and " +
+		"recreated.",
+	"project_id": "The ID of the project that this inbound app attribute belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name": "The display name of the attribute. This value is called `Display Name` in the Descope console.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", " +
+		"\"multiselect\", \"date\", \"monthday\". Changing this value will require the resource to be deleted and " +
+		"recreated.",
+	"select_options": "The list of options to choose from when the attribute type is \"singleselect\" or \"multiselect\".",
+}
+
 var docsWidgetAuthorization = map[string]string{
 	"view_permissions": "The names of the permissions users are required to have to view this attribute in the user management " +
 		"widget. An empty set means no restriction.",
@@ -1700,6 +1714,10 @@ var docsInboundApp = map[string]string{
 		"the current setting is kept, and a new app has the grant type enabled.",
 	"token_exchange_disabled": "Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When " +
 		"omitted, the current setting is kept, and a new app has the grant type enabled.",
+	"custom_attributes": "A JSON-encoded object of custom attribute values for the inbound app, keyed by the `id` of a " +
+		"`descope_inbound_app_attribute`. JWT templates read these values as `{{app.customAttributes.<id>}}`. " +
+		"Reference the attribute resource in the key, as in `jsonencode({ (descope_inbound_app_attribute.org.id) = \"...\" })`, " +
+		"so the attribute is created first, since a value for an attribute that is not defined is not stored.",
 }
 
 var docsScopeClaimMapping = map[string]string{

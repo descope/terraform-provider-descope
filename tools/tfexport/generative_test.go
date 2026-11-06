@@ -98,6 +98,7 @@ var generativeSkippedAttributes = map[string]string{
 	"descope_user_attribute.select_options":               "requires select types, handled by pairing",
 	"descope_tenant_attribute.select_options":             "requires select types, handled by pairing",
 	"descope_access_key_attribute.select_options":         "requires select types, handled by pairing",
+	"descope_inbound_app_attribute.select_options":        "requires select types, handled by pairing",
 	"descope_project_settings.custom_domain":              "requires a real CNAME-verified domain",
 	"descope_project_settings.test_users_static_otp":      "coupled pair, handled by pairing",
 	"descope_project_settings.test_users_verifier_regexp": "coupled pair, handled by pairing",
@@ -149,6 +150,8 @@ var attributeValueOverrides = map[string]string{
 	"descope_auth_access_policy.default_action": `"allow"|"block"`,
 	"descope_auth_access_policy.rule_ids":       `[descope_auth_access_rule.cov_auth_access_rule.id]`,
 	"descope_wellknown_settings.hidden_fields":  `["end_session_endpoint"]|["userinfo_endpoint", "revocation_endpoint"]`,
+	"descope_inbound_app_attribute.type":        `"string"`,
+	"descope_inbound_app.custom_attributes":     `jsonencode({ (descope_inbound_app_attribute.cov_inbound_app_attribute.id) = "cov 0" })|jsonencode({ (descope_inbound_app_attribute.cov_inbound_app_attribute.id) = "cov 1" })`,
 }
 
 var nestedValueOverrides = map[string]string{

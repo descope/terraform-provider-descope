@@ -309,3 +309,16 @@ token_exchange_disabled
 
 Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When
 omitted, the current setting is kept, and a new app has the grant type enabled.
+
+
+
+custom_attributes
+-----------------
+
+- Type: `string`
+- Default: `"{}"`
+
+A JSON-encoded object of custom attribute values for the inbound app, keyed by the `id` of a
+`descope_inbound_app_attribute`. JWT templates read these values as `{{app.customAttributes.<id>}}`.
+Reference the attribute resource in the key, as in `jsonencode({ (descope_inbound_app_attribute.org.id) = "..." })`,
+so the attribute is created first, since a value for an attribute that is not defined is not stored.

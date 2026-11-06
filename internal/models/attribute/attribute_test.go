@@ -144,3 +144,59 @@ func TestAccessKeyAttribute(t *testing.T) {
 		},
 	)
 }
+
+func TestInboundAppAttribute(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	a := testacc.InboundAppAttribute(t)
+	testacc.Run(t,
+		resource.TestStep{
+			Config: a.Block(`
+				project_id = "` + projectID + `"
+				id = "tfaccappmanagingorg"
+				name = "Managing Organization"
+				type = "string"
+			`),
+			Check: a.Check(map[string]any{
+				"id":         "tfaccappmanagingorg",
+				"project_id": projectID,
+				"name":       "Managing Organization",
+				"type":       "string",
+			}),
+		},
+		// updating the display name is an in-place update (id and type are unchanged)
+		resource.TestStep{
+			Config: a.Block(`
+				project_id = "` + projectID + `"
+				id = "tfaccappmanagingorg"
+				name = "Managing Org"
+				type = "string"
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(a.Path(), plancheck.ResourceActionUpdate)},
+			},
+			Check: a.Check(map[string]any{"name": "Managing Org"}),
+		},
+		// changing the type forces a replacement
+		resource.TestStep{
+			Config: a.Block(`
+				project_id = "` + projectID + `"
+				id = "tfaccappmanagingorg"
+				name = "Managing Org"
+				type = "singleselect"
+				select_options = ["north", "south"]
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(a.Path(), plancheck.ResourceActionDestroyBeforeCreate)},
+			},
+			Check: a.Check(map[string]any{
+				"type":           "singleselect",
+				"select_options": []string{"north", "south"},
+			}),
+		},
+		resource.TestStep{
+			ResourceName:      a.Path(),
+			ImportState:       true,
+			ImportStateIdFunc: testacc.GenerateImportStateID(a.Path(), "project_id", "id"),
+		},
+	)
+}
