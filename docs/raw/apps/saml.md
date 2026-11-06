@@ -167,6 +167,34 @@ This configuration overrides the default behavior of the SSO application and for
 
 
 
+logout_redirect_url
+-------------------
+
+- Type: `string`
+
+The URL to redirect to after logout.
+
+
+
+error_redirect_url
+------------------
+
+- Type: `string`
+
+The URL to redirect to when an error occurs.
+
+
+
+idp_logout_url
+--------------
+
+- Type: `string`
+
+The URL that the SP redirects the user to for SP-initiated logout, after which the user is redirected
+to `logout_redirect_url`. This value is set by the server and is read-only.
+
+
+
 
 
 DynamicConfiguration

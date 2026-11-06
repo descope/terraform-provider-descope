@@ -150,6 +150,10 @@ var docsSAMLApp = map[string]string{
 	"default_signature_algorithm": "The signature algorithm used to sign SAML responses. Choose one of `\"\"` (default, SHA-1) or `\"sha256\"` (SHA-256). Only applies to IdP-initiated flows — SP-initiated flows use the algorithm specified in the SP's SAML request.",
 	"attribute_mapping":           "A list of attribute mappings from Descope user attributes to SAML assertion attributes.",
 	"force_authentication":        "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"logout_redirect_url":         "The URL to redirect to after logout.",
+	"error_redirect_url":          "The URL to redirect to when an error occurs.",
+	"idp_logout_url": "The URL that the SP redirects the user to for SP-initiated logout, after which the user is redirected " +
+		"to `logout_redirect_url`. This value is set by the server and is read-only.",
 }
 
 var docsDynamicConfiguration = map[string]string{
