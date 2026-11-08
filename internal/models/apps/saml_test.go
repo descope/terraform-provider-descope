@@ -48,6 +48,11 @@ func TestSAMLApp(t *testing.T) {
 			"logout_redirect_url":              "",
 			"error_redirect_url":               "",
 			"idp_logout_url":                   testacc.AttributeIsSet,
+			"single_logout_enabled":            false,
+			"sp_single_logout_url":             "",
+			"sp_single_logout_binding":         "",
+			"single_logout_propagation":        "",
+			"single_logout_scope":              "",
 		}),
 	}
 
@@ -67,6 +72,11 @@ func TestSAMLApp(t *testing.T) {
 			`force_authentication = true`,
 			`logout_redirect_url = "https://sp.example.com/logout"`,
 			`error_redirect_url = "https://sp.example.com/error"`,
+			`single_logout_enabled = true`,
+			`sp_single_logout_url = "https://sp.example.com/slo"`,
+			`sp_single_logout_binding = "soap"`,
+			`single_logout_propagation = "descopeOnly"`,
+			`single_logout_scope = "allSessions"`,
 		),
 		Check: a.Check(map[string]any{
 			"id":                             sameID,
@@ -83,6 +93,11 @@ func TestSAMLApp(t *testing.T) {
 			"logout_redirect_url":            "https://sp.example.com/logout",
 			"error_redirect_url":             "https://sp.example.com/error",
 			"idp_logout_url":                 testacc.AttributeIsSet,
+			"single_logout_enabled":          true,
+			"sp_single_logout_url":           "https://sp.example.com/slo",
+			"sp_single_logout_binding":       "soap",
+			"single_logout_propagation":      "descopeOnly",
+			"single_logout_scope":            "allSessions",
 		}),
 	}
 
@@ -92,12 +107,18 @@ func TestSAMLApp(t *testing.T) {
 			`dynamic_configuration = {
 				metadata_url = "https://sp.example.com/metadata"
 			}`,
+			`single_logout_enabled = true`,
 		),
 		Check: a.Check(map[string]any{
 			"id":                                 sameID,
 			"dynamic_configuration.metadata_url": "https://sp.example.com/metadata",
 			"logout_redirect_url":                "",
 			"error_redirect_url":                 "",
+			"single_logout_enabled":              true,
+			"sp_single_logout_url":               "",
+			"sp_single_logout_binding":           "",
+			"single_logout_propagation":          "",
+			"single_logout_scope":                "",
 		}),
 	}
 
@@ -133,6 +154,28 @@ func TestSAMLAppInvalid(t *testing.T) {
 				}`,
 			),
 			ExpectError: regexp.MustCompile(`Conflicting Attribute Values`),
+		},
+		resource.TestStep{
+			Config: a.Config(project,
+				`manual_configuration = {
+					acs_url = "https://sp.example.com/acs"
+					entity_id = "sp-entity"
+				}`,
+				`single_logout_enabled = true`,
+			),
+			ExpectError: regexp.MustCompile(`sp_single_logout_url\s+attribute\s+must\s+be\s+set`),
+		},
+		resource.TestStep{
+			Config: a.Config(project,
+				`manual_configuration = {
+					acs_url = "https://sp.example.com/acs"
+					entity_id = "sp-entity"
+				}`,
+				`single_logout_enabled = true`,
+				`sp_single_logout_url = "http://sp.example.com/slo"`,
+				`sp_single_logout_binding = "soap"`,
+			),
+			ExpectError: regexp.MustCompile(`must\s+use\s+https`),
 		},
 	)
 }

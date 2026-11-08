@@ -196,6 +196,62 @@ value is set by the server and is read-only.
 
 
 
+single_logout_enabled
+---------------------
+
+- Type: `bool`
+
+Whether SAML Single Logout (SLO) is enabled for the application. When enabled, the service
+provider can log the user out by sending a signed `LogoutRequest` to the `idp_logout_url`, and
+Descope sends a `LogoutRequest` to the service provider when the user's Descope session ends.
+
+
+
+sp_single_logout_url
+--------------------
+
+- Type: `string`
+
+The service provider's Single Logout Service URL that logout requests are sent to. Required when
+`single_logout_enabled` is `true` and `manual_configuration` is used. With `dynamic_configuration`
+it can be left empty to take the URL from the service provider's metadata.
+
+
+
+sp_single_logout_binding
+------------------------
+
+- Type: `string`
+
+The SAML binding used for `sp_single_logout_url`. Choose one of `""`, `"redirect"`, `"post"` or
+`"soap"`. When `sp_single_logout_url` is set, an empty value means `"redirect"`, and when it's
+empty the binding is taken from the service provider's metadata. The `"soap"` binding sends the
+logout request directly from Descope to the service provider and requires an `https` URL.
+
+
+
+single_logout_propagation
+-------------------------
+
+- Type: `string`
+
+What a logout started by the service provider reaches. Choose one of `""` (default, same as
+`"allApps"`), `"allApps"` to also log the user out of the other applications in the session, or
+`"descopeOnly"` to only end the Descope session.
+
+
+
+single_logout_scope
+-------------------
+
+- Type: `string`
+
+Which Descope sessions a logout started by the service provider ends. Choose one of `""`
+(default, same as `"session"`), `"session"` to end only the session the logout request refers to,
+or `"allSessions"` to end every session of the user.
+
+
+
 
 
 DynamicConfiguration
