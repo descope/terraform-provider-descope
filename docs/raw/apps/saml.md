@@ -167,6 +167,35 @@ This configuration overrides the default behavior of the SSO application and for
 
 
 
+logout_redirect_url
+-------------------
+
+- Type: `string`
+
+The URL to redirect to after logout. When the service provider sends the user to the
+`idp_logout_url`, Descope logs the user out and then redirects them to this URL.
+
+
+
+error_redirect_url
+------------------
+
+- Type: `string`
+
+The URL to redirect to when an error occurs.
+
+
+
+idp_logout_url
+--------------
+
+- Type: `string`
+
+The logout URL of the application, to set as the sign-out URL in the service provider. This
+value is set by the server and is read-only.
+
+
+
 
 
 DynamicConfiguration
