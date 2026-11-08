@@ -82,6 +82,10 @@ func TOTPSettings(t *testing.T) *Resource {
 	return newResource(t, "totp_settings")
 }
 
+func EmailVerificationSettings(t *testing.T) *Resource {
+	return newResource(t, "emailverification_settings")
+}
+
 func AdminPortal(t *testing.T) *Resource {
 	return newResource(t, "admin_portal")
 }

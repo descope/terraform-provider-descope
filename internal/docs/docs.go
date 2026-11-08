@@ -1964,6 +1964,14 @@ var docsAuthAccessPolicy = map[string]string{
 		"Terraform update the order before a removed rule is deleted.",
 }
 
+var docsEmailVerificationSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"enabled": "Whether flows can sign users in with an email verification token, a proof from the user's email provider " +
+		"that the browser hands the flow instead of a code. Email verification is in beta and can only be " +
+		"enabled for projects it is available to.",
+}
+
 var docsEmbeddedLinkSettings = map[string]string{
 	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
 		"to be deleted and recreated.",
