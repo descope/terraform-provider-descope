@@ -45,7 +45,7 @@ var SAMLAppAttributes = map[string]schema.Attribute{
 	"single_logout_enabled":       boolattr.Default(false),
 	"sp_single_logout_url":        stringattr.Default(""),
 	"sp_single_logout_binding":    stringattr.Default("", stringvalidator.OneOf("", "redirect", "post", "soap")),
-	"single_logout_propagation":   stringattr.Default("", stringvalidator.OneOf("", "allApps", "descopeOnly")),
+	"single_logout_propagation":   stringattr.Default("", stringvalidator.OneOf("", "allApps", "none")),
 	"single_logout_scope":         stringattr.Default("", stringvalidator.OneOf("", "session", "allSessions")),
 }
 

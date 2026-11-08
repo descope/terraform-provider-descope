@@ -167,7 +167,7 @@ var docsSAMLApp = map[string]string{
 		"logout request directly from Descope to the service provider and requires an `https` URL.",
 	"single_logout_propagation": "What a logout started by the service provider reaches. Choose one of `\"\"` (default, same as " +
 		"`\"allApps\"`), `\"allApps\"` to also log the user out of the other applications in the session, or " +
-		"`\"descopeOnly\"` to only end the Descope session.",
+		"`\"none\"` to only end the user's session without notifying any other application.",
 	"single_logout_scope": "Which Descope sessions a logout started by the service provider ends. Choose one of `\"\"` " +
 		"(default, same as `\"session\"`), `\"session\"` to end only the session the logout request refers to, " +
 		"or `\"allSessions\"` to end every session of the user.",

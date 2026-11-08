@@ -75,7 +75,7 @@ func TestSAMLApp(t *testing.T) {
 			`single_logout_enabled = true`,
 			`sp_single_logout_url = "https://sp.example.com/slo"`,
 			`sp_single_logout_binding = "soap"`,
-			`single_logout_propagation = "descopeOnly"`,
+			`single_logout_propagation = "none"`,
 			`single_logout_scope = "allSessions"`,
 		),
 		Check: a.Check(map[string]any{
@@ -96,7 +96,7 @@ func TestSAMLApp(t *testing.T) {
 			"single_logout_enabled":          true,
 			"sp_single_logout_url":           "https://sp.example.com/slo",
 			"sp_single_logout_binding":       "soap",
-			"single_logout_propagation":      "descopeOnly",
+			"single_logout_propagation":      "none",
 			"single_logout_scope":            "allSessions",
 		}),
 	}

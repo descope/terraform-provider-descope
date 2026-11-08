@@ -237,7 +237,7 @@ single_logout_propagation
 
 What a logout started by the service provider reaches. Choose one of `""` (default, same as
 `"allApps"`), `"allApps"` to also log the user out of the other applications in the session, or
-`"descopeOnly"` to only end the Descope session.
+`"none"` to only end the user's session without notifying any other application.
 
 
 
