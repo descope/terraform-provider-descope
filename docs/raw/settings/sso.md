@@ -322,6 +322,15 @@ Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. C
 
 
 
+hide_audit
+----------
+
+- Type: `bool`
+
+Setting this to `true` will hide the audit log of SSO and SCIM events in the SSO Suite interface.
+
+
+
 oidc_login_id_attribute
 -----------------------
 

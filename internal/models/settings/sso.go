@@ -148,6 +148,7 @@ var SSOSuiteAttributes = map[string]schema.Attribute{
 	"show_help_contact":         boolattr.Default(false),
 	"hide_jit_guide":            boolattr.Default(false),
 	"show_xaa":                  boolattr.Default(false),
+	"hide_audit":                boolattr.Default(false),
 	"oidc_login_id_attribute":   stringattr.Default(""),
 }
 
@@ -166,6 +167,7 @@ type SSOSuiteModel struct {
 	ShowHelpContact         boolattr.Type   `tfsdk:"show_help_contact"`
 	HideJitGuide            boolattr.Type   `tfsdk:"hide_jit_guide"`
 	ShowXAA                 boolattr.Type   `tfsdk:"show_xaa"`
+	HideAudit               boolattr.Type   `tfsdk:"hide_audit"`
 	OIDCLoginIDAttribute    stringattr.Type `tfsdk:"oidc_login_id_attribute"`
 }
 
@@ -184,6 +186,7 @@ var SSOSuiteDefault = &SSOSuiteModel{
 	ShowHelpContact:         boolattr.Value(false),
 	HideJitGuide:            boolattr.Value(false),
 	ShowXAA:                 boolattr.Value(false),
+	HideAudit:               boolattr.Value(false),
 	OIDCLoginIDAttribute:    stringattr.Value(""),
 }
 
@@ -203,6 +206,7 @@ func (m *SSOSuiteModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Get(m.HideJitGuide, data, "hideSsoSuiteJitGuide")
 	boolattr.Get(m.ShowXAA, data, "showSsoSuiteXaa")
+	boolattr.Get(m.HideAudit, data, "hideSsoSuiteAudit")
 	stringattr.Get(m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
 	return data
 }
@@ -222,6 +226,7 @@ func (m *SSOSuiteModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.ShowHelpContact, data, "ssoSuiteShowHelpContact")
 	boolattr.Set(&m.HideJitGuide, data, "hideSsoSuiteJitGuide")
 	boolattr.Set(&m.ShowXAA, data, "showSsoSuiteXaa")
+	boolattr.Set(&m.HideAudit, data, "hideSsoSuiteAudit")
 	stringattr.Set(&m.OIDCLoginIDAttribute, data, "oidcLoginIdMappingDefaultOverride")
 }
 

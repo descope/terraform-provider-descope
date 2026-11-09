@@ -150,6 +150,11 @@ var docsSAMLApp = map[string]string{
 	"default_signature_algorithm": "The signature algorithm used to sign SAML responses. Choose one of `\"\"` (default, SHA-1) or `\"sha256\"` (SHA-256). Only applies to IdP-initiated flows — SP-initiated flows use the algorithm specified in the SP's SAML request.",
 	"attribute_mapping":           "A list of attribute mappings from Descope user attributes to SAML assertion attributes.",
 	"force_authentication":        "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"logout_redirect_url": "The URL to redirect to after logout. When the service provider sends the user to the " +
+		"`idp_logout_url`, Descope logs the user out and then redirects them to this URL.",
+	"error_redirect_url": "The URL to redirect to when an error occurs.",
+	"idp_logout_url": "The logout URL of the application, to set as the sign-out URL in the service provider. This " +
+		"value is set by the server and is read-only.",
 }
 
 var docsDynamicConfiguration = map[string]string{
@@ -914,6 +919,19 @@ var docsLokaliseConnector = map[string]string{
 	"config_project_id": "Lokalise project ID.",
 }
 
+var docsMailjetConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"sender_email": "The email address that emails are sent from. Make sure it is a verified sender " +
+		"in Mailjet.",
+	"sender_name": "The name shown as the sender of the emails.",
+	"api_key": "The Mailjet API key used to authenticate requests, found under Account settings " +
+		"/ API Key Management.",
+	"secret_key": "The secret key that pairs with the API key. Mailjet requires both to " +
+		"authenticate.",
+}
+
 var docsMicrosoftSentinelConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1375,6 +1393,17 @@ var docsSplunkConnector = map[string]string{
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
+var docsSplunkOnCallConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"base_url":    "Splunk On-Call alert ingestion base URL.",
+	"api_key": "The REST Endpoint integration key, from Integrations > REST Endpoint in Splunk " +
+		"On-Call.",
+	"routing_key": "Default routing key, from Settings > Routing Keys. An action can override it.",
+}
+
 var docsSQLConnector = map[string]string{
 	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
@@ -1755,8 +1784,9 @@ var docsManagementKey = map[string]string{
 		"If not set, the key can be used from any IP address.",
 	"rebac": "Access control settings for the management key. This defines the permissions granted " +
 		"to the management key, either at the company level or for specific projects or for " +
-		"project tags. Changing this value after creation will require the management key " +
-		"to be replaced.",
+		"project tags. Changing this value after creation updates the management key in " +
+		"place without rotating its secret. Changing the roles requires the management key " +
+		"that the provider is configured with to be allowed to manage management keys.",
 	"cleartext": "The plaintext value of the management key. This is only available after the key is " +
 		"created and cannot be retrieved later. Store this value securely as it is required " +
 		"to authenticate API requests.",
@@ -2230,6 +2260,7 @@ var docsSSOSuite = map[string]string{
 	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
 	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
 	"show_xaa":                  "Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.",
+	"hide_audit":                "Setting this to `true` will hide the audit log of SSO and SCIM events in the SSO Suite interface.",
 	"oidc_login_id_attribute": "The identity provider claim the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty " +
 		"to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.",
 }
@@ -2244,6 +2275,33 @@ var docsTOTPSettings = map[string]string{
 		"or `{{user.customAttributes.employeeId}}`. Supports `{{user.email}}`, `{{user.phone}}`, " +
 		"`{{user.name}}`, `{{user.loginId}}` and `{{user.customAttributes.<name>}}`. When empty, or when " +
 		"it renders empty for a user, the user's login ID is used.",
+}
+
+var docsWellKnownSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"enabled": "Setting this to `true` applies the customization to the project's discovery documents. While `false` the " +
+		"customization is kept but the default documents are served.",
+	"hidden_fields": "Fields to omit from the discovery documents. Hiding a field only stops advertising it, the endpoint or " +
+		"capability itself stays enabled. Supported values are `backchannel_authentication_endpoint`, " +
+		"`pushed_authorization_request_endpoint`, `request_parameter_supported`, `registration_endpoint`, " +
+		"`end_session_endpoint`, `introspection_endpoint`, `device_authorization_endpoint`, `revocation_endpoint`, " +
+		"`userinfo_endpoint` and `backchannel_logout_supported`.",
+	"removed_values": "Values to remove from list fields in the discovery documents, such as a grant type from " +
+		"`grant_types_supported`. A list is never emptied, removing every value keeps the full list.",
+	"scopes_supported": "Scopes to add to or exclude from `scopes_supported`.",
+	"claims_supported": "Claims to add to or exclude from `claims_supported`.",
+}
+
+var docsWellKnownRemovedValues = map[string]string{
+	"field": "The name of a list field in the discovery documents, such as `grant_types_supported`, " +
+		"`token_endpoint_auth_methods_supported` or `code_challenge_methods_supported`.",
+	"values": "The values to remove from the list.",
+}
+
+var docsWellKnownValueDelta = map[string]string{
+	"extra":    "Values to add to the list.",
+	"excluded": "Values to remove from the list.",
 }
 
 var docsStyles = map[string]string{
