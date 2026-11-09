@@ -240,8 +240,8 @@ single_logout_propagation
 - Type: `string`
 
 What a logout started by the service provider reaches. Choose one of `""` (default, same as
-`"allApps"`), `"allApps"` to also log the user out of their other applications, or
-`"none"` to only end the user's session without notifying any other application.
+`"none"`), `"none"` to only end the user's session without notifying any other application, or
+`"allApps"` to also log the user out of their other applications.
 
 
 

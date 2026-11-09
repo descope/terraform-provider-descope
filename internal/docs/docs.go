@@ -88,8 +88,8 @@ var docsOIDCApp = map[string]string{
 		"as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) " +
 		"specification. Leave empty to disable back-channel logout notifications for this application.",
 	"logout_propagation": "How far a logout at the application's end-session endpoint reaches. Choose one of `\"\"` " +
-		"(default, same as `\"allApps\"`), `\"allApps\"` to also log the user out of their other applications, or " +
-		"`\"none\"` to only end the user's sessions and notify the calling application alone.",
+		"(default, same as `\"none\"`), `\"none\"` to only end the user's sessions and notify the calling " +
+		"application alone, or `\"allApps\"` to also log the user out of their other applications.",
 	"custom_idp_initiated_login_page_url": "A custom login page URL to redirect users to on IdP-initiated login flows, " +
 		"instead of the default login page.",
 	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is " +
@@ -173,8 +173,8 @@ var docsSAMLApp = map[string]string{
 		"empty the binding is taken from the service provider's metadata. The `\"soap\"` binding sends the " +
 		"logout request directly from Descope to the service provider and requires an `https` URL.",
 	"single_logout_propagation": "What a logout started by the service provider reaches. Choose one of `\"\"` (default, same as " +
-		"`\"allApps\"`), `\"allApps\"` to also log the user out of their other applications, or " +
-		"`\"none\"` to only end the user's session without notifying any other application.",
+		"`\"none\"`), `\"none\"` to only end the user's session without notifying any other application, or " +
+		"`\"allApps\"` to also log the user out of their other applications.",
 	"single_logout_scope": "Which Descope sessions a logout started by the service provider ends. Choose one of `\"\"` " +
 		"(default, same as `\"session\"`), `\"session\"` to end only the session the logout request refers to, " +
 		"or `\"allSessions\"` to end every session of the user.",
