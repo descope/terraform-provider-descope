@@ -163,7 +163,8 @@ var docsSAMLApp = map[string]string{
 		"Descope sends a `LogoutRequest` to the service provider when a logout reaches the user's applications " +
 		"(logout of all devices, an admin logout, or another application's logout that propagates). The request " +
 		"names the user by the application's NameID, and it is sent to every application with single logout " +
-		"enabled that the user can sign in to, including ones the user hasn't used.",
+		"enabled that the user can sign in to, including ones the user hasn't used. A logout without a " +
+		"browser (logout of all devices, an admin logout) reaches only applications with the `\"soap\"` binding.",
 	"sp_single_logout_url": "The service provider's Single Logout Service URL that logout requests are sent to. Required when " +
 		"`single_logout_enabled` is `true` and `manual_configuration` is used. With `dynamic_configuration` " +
 		"it can be left empty to take the URL from the service provider's metadata.",
