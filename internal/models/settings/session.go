@@ -98,7 +98,7 @@ func (m *SessionSettingsModel) SetValues(h *helpers.Handler, data map[string]any
 	stringattr.Set(&m.SessionTokenCookieDomain, data, "sessionTokenCookieDomain")
 	durationattr.SetDefault(&m.StepUpTokenExpiration, data, "stepupTokenExpiration", "10 minutes")
 	durationattr.SetDefault(&m.TrustedDeviceTokenExpiration, data, "trustedDeviceTokenExpiration", "365 days")
-	boolattr.Set(&m.TrustedDeviceExtendOnTrustedLogin, data, "trustedDeviceExtendOnTrustedLogin")
+	boolattr.SetDefault(&m.TrustedDeviceExtendOnTrustedLogin, data, "trustedDeviceExtendOnTrustedLogin", false)
 	durationattr.SetDefault(&m.AccessKeySessionTokenExpiration, data, "keySessionTokenExpiration", "10 minutes")
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
 	durationattr.SetDefault(&m.InactivityTime, data, "inactivityTime", "12 minutes")
