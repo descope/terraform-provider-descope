@@ -89,6 +89,8 @@ var generativeSkippedAttributes = map[string]string{
 	"descope_inbound_app.connections_scopes":              "nested scope objects, exercised by the inbound-app scenario",
 	"descope_inbound_app.session_settings":                "nested settings object, exercised by the inbound-app scenario",
 	"descope_inbound_app.scope_claim_mapping":             "nested mapping objects, exercised by the inbound-app scenario",
+	"descope_inbound_app.client_assertions":               "nested key objects, exercised by the inbound-app scenario",
+	"descope_inbound_app.workload_client_assertions":      "nested trust objects, exercised by the inbound-app scenario",
 	"descope_password_settings.expiration_weeks":          "requires expiration=true pairing, set explicitly",
 	"descope_password_settings.lock_attempts":             "requires lock=true pairing, set explicitly",
 	"descope_password_settings.reuse_amount":              "requires reuse=true pairing, set explicitly",
@@ -141,14 +143,24 @@ var attributeValueOverrides = map[string]string{
 	"refresh_token_response_method":     `"cookies"|"response_body"`,
 	"session_token_response_method":     `"response_body"|"cookies"`,
 	"client_auth_method":                `"client_secret_basic"|"client_secret_post"`,
+
+	"descope_auth_access_rule.effect":           `"allow"|"block"`,
+	"descope_auth_access_rule.expire_time":      `0|2000000000`,
+	"descope_auth_access_policy.default_action": `"allow"|"block"`,
+	"descope_auth_access_policy.rule_ids":       `[descope_auth_access_rule.cov_auth_access_rule.id]`,
+	"descope_wellknown_settings.hidden_fields":  `["end_session_endpoint"]|["userinfo_endpoint", "revocation_endpoint"]`,
 }
 
 var nestedValueOverrides = map[string]string{
-	"widget_authorization":                   `{ view_permissions = [descope_permission.cov_permission.name] }|{ edit_permissions = [descope_permission.cov_permission.name] }`,
-	"descope_tenant_attribute.authorization": `{ view_permissions = [descope_permission.cov_permission.name] }`,
-	"mandatory_user_attributes":              `[{ id = "email" }]|[{ id = "email" }, { id = "givenName" }]`,
-	"attributes_scopes":                      `[{ name = "profile", description = "cov scope" }]`,
-	"attribute_mapping":                      `[{ name = "cov-attr", value = "user.email" }]|[{ name = "cov-attr", value = "user.name" }]`,
+	"widget_authorization":                      `{ view_permissions = [descope_permission.cov_permission.name] }|{ edit_permissions = [descope_permission.cov_permission.name] }`,
+	"descope_tenant_attribute.authorization":    `{ view_permissions = [descope_permission.cov_permission.name] }`,
+	"mandatory_user_attributes":                 `[{ id = "email" }]|[{ id = "email" }, { id = "givenName" }]`,
+	"descope_wellknown_settings.removed_values": `[{ field = "grant_types_supported", values = ["client_credentials"] }]|[{ field = "code_challenge_methods_supported", values = ["plain"] }]`,
+	"attributes_scopes":                         `[{ name = "profile", description = "cov scope" }]`,
+	"attribute_mapping":                         `[{ name = "cov-attr", value = "user.email" }]|[{ name = "cov-attr", value = "user.name" }]`,
+	"descope_auth_access_rule.conditions":       `[{ key = "request.ip", operator = "inCidr", values = ["10.0.0.0/8"] }]|[{ key = "user.email", operator = "in", values = ["a@example.com", "b@example.com"] }]`,
+
+	"descope_password_settings.role_policies": `[{ roles = [descope_role.cov_role.name], min_length = 16 }]|[{ roles = [descope_role.cov_role.name], uppercase = true, enforce_strength = "strong" }]`,
 }
 
 var namePatternValues = []struct {
@@ -287,6 +299,8 @@ func (g *configGenerator) pairings(resourceType string, generation int) ([]strin
 	case "descope_inbound_app":
 		// a public client has no secret and the provider rejects that pairing, and DPoP needs a client type, so it is pinned rather than rotated
 		emit(`  client_type = "confidential"`, "client_type")
+		// the global client_auth_method values belong to the OAuth provider, and the inbound app secret is the default method
+		emit(`  client_auth_method = "clientSecret"`, "client_auth_method")
 	case "descope_email_template":
 		// required unless use_plain_text_body is enabled, so pinned in every generation
 		emit(fmt.Sprintf(`  html_body = "cov body %d"`, generation), "html_body")

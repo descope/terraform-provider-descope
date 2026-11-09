@@ -32,6 +32,11 @@ func ReadProject(ctx context.Context, client *infra.Client, projectID, only stri
 		warnings = append(warnings, warn.Lost("Failed to list inbound apps: %s", err.Error()))
 	}
 	instances = append(instances, inboundApps...)
+	authAccessRules, err := discover.AuthAccessRules(ctx, client, projectID)
+	if err != nil {
+		warnings = append(warnings, warn.Lost("Failed to list auth access rules: %s", err.Error()))
+	}
+	instances = append(instances, authAccessRules...)
 	instances, resolveWarnings := discover.ResolveAuthorizationIDs(ctx, client, projectID, instances)
 	warnings = append(warnings, resolveWarnings...)
 

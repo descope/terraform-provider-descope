@@ -1,0 +1,31 @@
+{
+  "id": "mailjet",
+  "name": "Mailjet",
+  "extProvider": true,
+  "description": "Send emails through the Mailjet email delivery service.",
+  "fields": [
+    {
+      "name": "fromEmail",
+      "description": "The email address that emails are sent from. Make sure it is a verified sender in Mailjet.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "fromName",
+      "description": "The name shown as the sender of the emails.",
+      "type": "string"
+    },
+    {
+      "name": "apiKey",
+      "description": "The Mailjet API key used to authenticate requests, found under Account settings / API Key Management.",
+      "type": "secret",
+      "required": true
+    },
+    {
+      "name": "secretKey",
+      "description": "The secret key that pairs with the API key. Mailjet requires both to authenticate.",
+      "type": "secret",
+      "required": true
+    }
+  ]
+}

@@ -16,7 +16,7 @@ func TestAppRole(t *testing.T) {
 	pr := testacc.Role(t)
 	r := testacc.AppRole(t)
 	project := `project_id = "` + projectID + `"`
-	app := a.Config(project, `deletion_protection = false`)
+	app := a.Config(project, `client_type = "confidential"`, `deletion_protection = false`)
 	appID := `app_id = ` + a.Path() + `.id`
 
 	var roleID string
@@ -79,7 +79,7 @@ func TestAppRoleInvalidPermission(t *testing.T) {
 	project := `project_id = "` + projectID + `"`
 
 	testacc.Run(t, resource.TestStep{
-		Config: a.Config(project, `deletion_protection = false`) + r.Config(project,
+		Config: a.Config(project, `client_type = "confidential"`, `deletion_protection = false`) + r.Config(project,
 			`app_id = `+a.Path()+`.id`,
 			`permission_ids = ["SAP0000000000000000000000000"]`,
 		),

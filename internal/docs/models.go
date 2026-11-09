@@ -10,6 +10,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/approle"
 	"github.com/descope/terraform-provider-descope/internal/models/apps"
 	"github.com/descope/terraform-provider-descope/internal/models/attribute"
+	"github.com/descope/terraform-provider-descope/internal/models/authaccessrule"
 	"github.com/descope/terraform-provider-descope/internal/models/connectors"
 	"github.com/descope/terraform-provider-descope/internal/models/descoper"
 	"github.com/descope/terraform-provider-descope/internal/models/emailtemplate"
@@ -51,6 +52,8 @@ func InjectModels() {
 	inject(attribute.TenantAttributeAttributes, docsTenantAttribute)
 	inject(attribute.TenantAttributeAuthorizationAttributes, docsTenantAttributeAuthorization)
 	inject(attribute.UserAttributeAttributes, docsUserAttribute)
+	inject(authaccessrule.AuthAccessRuleAttributes, docsAuthAccessRule)
+	inject(authaccessrule.AuthAccessConditionAttributes, docsAuthAccessCondition)
 	inject(connectors.AbuseIPDBConnectorAttributes, docsAbuseIPDBConnector)
 	inject(connectors.AlloyConnectorAttributes, docsAlloyConnector)
 	inject(connectors.AmplitudeConnectorAttributes, docsAmplitudeConnector)
@@ -61,6 +64,7 @@ func InjectModels() {
 	inject(connectors.AWSS3ConnectorAttributes, docsAWSS3Connector)
 	inject(connectors.AWSSESEmailValidationConnectorAttributes, docsAWSSESEmailValidationConnector)
 	inject(connectors.AWSTranslateConnectorAttributes, docsAWSTranslateConnector)
+	inject(connectors.AzureMonitorConnectorAttributes, docsAzureMonitorConnector)
 	inject(connectors.BitsightConnectorAttributes, docsBitsightConnector)
 	inject(connectors.CoralogixConnectorAttributes, docsCoralogixConnector)
 	inject(connectors.CriblConnectorAttributes, docsCriblConnector)
@@ -90,6 +94,7 @@ func InjectModels() {
 	inject(connectors.IntercomConnectorAttributes, docsIntercomConnector)
 	inject(connectors.LDAPConnectorAttributes, docsLDAPConnector)
 	inject(connectors.LokaliseConnectorAttributes, docsLokaliseConnector)
+	inject(connectors.MailjetConnectorAttributes, docsMailjetConnector)
 	inject(connectors.MicrosoftSentinelConnectorAttributes, docsMicrosoftSentinelConnector)
 	inject(connectors.MixpanelConnectorAttributes, docsMixpanelConnector)
 	inject(connectors.MParticleConnectorAttributes, docsMParticleConnector)
@@ -122,6 +127,7 @@ func InjectModels() {
 	inject(connectors.SnowflakeConnectorAttributes, docsSnowflakeConnector)
 	inject(connectors.SNSConnectorAttributes, docsSNSConnector)
 	inject(connectors.SplunkConnectorAttributes, docsSplunkConnector)
+	inject(connectors.SplunkOnCallConnectorAttributes, docsSplunkOnCallConnector)
 	inject(connectors.SQLConnectorAttributes, docsSQLConnector)
 	inject(connectors.SumoLogicConnectorAttributes, docsSumoLogicConnector)
 	inject(connectors.SupabaseConnectorAttributes, docsSupabaseConnector)
@@ -142,9 +148,11 @@ func InjectModels() {
 	inject(fgaschema.FGASchemaAttributes, docsFGASchema)
 	inject(flow.FlowAttributes, docsFlow)
 	inject(inboundapp.ApplicationScopeAttributes, docsApplicationScope)
+	inject(inboundapp.ClientAssertionAttributes, docsClientAssertion)
 	inject(inboundapp.InboundAppAttributes, docsInboundApp)
 	inject(inboundapp.ScopeClaimMappingAttributes, docsScopeClaimMapping)
 	inject(inboundapp.SessionSettingsAttributes, docsInboundappSessionSettings)
+	inject(inboundapp.WorkloadClientAssertionAttributes, docsWorkloadClientAssertion)
 	inject(jwttemplate.JWTTemplateAttributes, docsJWTTemplate)
 	inject(list.ListAttributes, docsList)
 	inject(managementkey.ManagementKeyAttributes, docsManagementKey)
@@ -159,6 +167,7 @@ func InjectModels() {
 	inject(role.RoleAttributes, docsRole)
 	inject(settings.AdminPortalAttributes, docsAdminPortal)
 	inject(settings.AdminPortalWidgetAttributes, docsAdminPortalWidget)
+	inject(settings.AuthAccessPolicyAttributes, docsAuthAccessPolicy)
 	inject(settings.EmbeddedLinkSettingsAttributes, docsEmbeddedLinkSettings)
 	inject(settings.EnchantedLinkSettingsAttributes, docsEnchantedLinkSettings)
 	inject(settings.GovernanceAttributes, docsGovernance)
@@ -168,6 +177,7 @@ func InjectModels() {
 	inject(settings.OTPSettingsAttributes, docsOTPSettings)
 	inject(settings.PasskeySettingsAttributes, docsPasskeySettings)
 	inject(settings.PasswordSettingsAttributes, docsPasswordSettings)
+	inject(settings.PasswordRolePolicyAttributes, docsPasswordRolePolicy)
 	inject(settings.ProjectSettingsAttributes, docsProjectSettings)
 	inject(settings.SessionSettingsAttributes, docsSettingsSessionSettings)
 	inject(settings.SessionMigrationSettingsAttributes, docsSessionMigrationSettings)
@@ -176,6 +186,9 @@ func InjectModels() {
 	inject(settings.MandatoryUserAttributeAttributes, docsMandatoryUserAttribute)
 	inject(settings.SSOSuiteAttributes, docsSSOSuite)
 	inject(settings.TOTPSettingsAttributes, docsTOTPSettings)
+	inject(settings.WellKnownSettingsAttributes, docsWellKnownSettings)
+	inject(settings.WellKnownRemovedValuesAttributes, docsWellKnownRemovedValues)
+	inject(settings.WellKnownValueDeltaAttributes, docsWellKnownValueDelta)
 	inject(styles.StylesAttributes, docsStyles)
 	inject(texttemplate.TextTemplateAttributes, docsTextTemplate)
 	inject(voicetemplate.VoiceTemplateAttributes, docsVoiceTemplate)

@@ -21,6 +21,7 @@ func TestTOTPSettings(t *testing.T) {
 				"project_id":    testacc.AttributeIsSet,
 				"disabled":      false,
 				"service_label": "",
+				"account_label": "",
 			}),
 		},
 		// set every field
@@ -29,10 +30,12 @@ func TestTOTPSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 				disabled = true
 				service_label = "MyService"
+				account_label = "{{user.email}}"
 			`),
 			Check: o.Check(map[string]any{
 				"disabled":      true,
 				"service_label": "MyService",
+				"account_label": "{{user.email}}",
 			}),
 		},
 		// import using <project_id>/<id> (id == project_id for this singleton)

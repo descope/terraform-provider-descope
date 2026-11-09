@@ -26,6 +26,7 @@ Manages a AWS SES connector and its configuration in a Descope project. Send ema
 
 - `access_key_id` (String, Sensitive) The AWS access key ID. Required when the authentication type is 'credentials'.
 - `auth_type` (String) How to authenticate with AWS: using static credentials or by assuming an IAM role.
+- `configuration_set_name` (String) The SES configuration set to send every email with, so SES events such as bounces, complaints and deliveries carry it. It must exist in the same AWS account and region.
 - `description` (String) A description of what your connector is used for.
 - `endpoint` (String) A custom endpoint for the SES API. Leave empty to use the default AWS endpoint.
 - `external_id` (String) The external ID used when assuming the IAM role. Required when the authentication type is 'assumeRole'.
