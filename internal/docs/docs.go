@@ -2168,6 +2168,10 @@ var docsProjectSettings = map[string]string{
 	"approved_domains": "List of approved domains that are allowed for redirect and verification URLs for different " +
 		"authentication methods.",
 	"default_no_sso_apps": "Whether new users should not be given access to any federated applications by default.",
+	"force_logout_federated_apps": "Whether a Force Logout of a user, from the Console or the Management API's Logout User from All " +
+		"Devices, also logs them out of their federated applications that have a logout endpoint: OIDC " +
+		"applications with a back-channel logout URL, and SAML applications with single logout over SOAP. " +
+		"When disabled, the default, a force logout ends only the user's Descope sessions.",
 	"tenant_user_isolation": "Isolate users per tenant so the same login ID is treated as a separate identity in each tenant, " +
 		"with independent credentials and MFA state.",
 	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +

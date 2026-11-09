@@ -25,6 +25,7 @@ func TestProjectSettings(t *testing.T) {
 				"apps_custom_domain":                  "",
 				"approved_domains":                    []string{},
 				"default_no_sso_apps":                 false,
+				"force_logout_federated_apps":         false,
 				"tenant_user_isolation":               false,
 				"allow_auth_hosting_iframe_embedding": false,
 				"disable_auth_hosting":                false,
@@ -64,6 +65,7 @@ func TestProjectSettings(t *testing.T) {
 				app_url = "https://app.example.com"
 				approved_domains = ["example.com", "*.example.dev"]
 				default_no_sso_apps = true
+				force_logout_federated_apps = true
 				allow_auth_hosting_iframe_embedding = true
 				disable_auth_hosting = true
 				test_users_loginid_regexp = ".*@test\\.example\\.com"
@@ -74,6 +76,7 @@ func TestProjectSettings(t *testing.T) {
 				"app_url":                             "https://app.example.com",
 				"approved_domains":                    []string{"example.com", "*.example.dev"},
 				"default_no_sso_apps":                 true,
+				"force_logout_federated_apps":         true,
 				"allow_auth_hosting_iframe_embedding": true,
 				"disable_auth_hosting":                true,
 				"test_users_loginid_regexp":           ".*@test\\.example\\.com",
@@ -91,6 +94,7 @@ func TestProjectSettings(t *testing.T) {
 				"apps_custom_domain":                  "",
 				"approved_domains":                    []string{},
 				"default_no_sso_apps":                 false,
+				"force_logout_federated_apps":         false,
 				"allow_auth_hosting_iframe_embedding": false,
 				"disable_auth_hosting":                false,
 				"test_users_loginid_regexp":           "",
