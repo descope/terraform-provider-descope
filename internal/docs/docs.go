@@ -160,7 +160,10 @@ var docsSAMLApp = map[string]string{
 		"value is set by the server and is read-only.",
 	"single_logout_enabled": "Whether SAML Single Logout (SLO) is enabled for the application. When enabled, the service " +
 		"provider can log the user out by sending a signed `LogoutRequest` to the `idp_logout_url`, and " +
-		"Descope sends a `LogoutRequest` to the service provider when the user's Descope session ends.",
+		"Descope sends a `LogoutRequest` to the service provider when a logout reaches the user's applications " +
+		"(logout of all devices, an admin logout, or another application's logout that propagates). The request " +
+		"names the user by the application's NameID, and it is sent to every application with single logout " +
+		"enabled that the user can sign in to, including ones the user hasn't used.",
 	"sp_single_logout_url": "The service provider's Single Logout Service URL that logout requests are sent to. Required when " +
 		"`single_logout_enabled` is `true` and `manual_configuration` is used. With `dynamic_configuration` " +
 		"it can be left empty to take the URL from the service provider's metadata.",
@@ -169,7 +172,7 @@ var docsSAMLApp = map[string]string{
 		"empty the binding is taken from the service provider's metadata. The `\"soap\"` binding sends the " +
 		"logout request directly from Descope to the service provider and requires an `https` URL.",
 	"single_logout_propagation": "What a logout started by the service provider reaches. Choose one of `\"\"` (default, same as " +
-		"`\"allApps\"`), `\"allApps\"` to also log the user out of the other applications in the session, or " +
+		"`\"allApps\"`), `\"allApps\"` to also log the user out of their other applications, or " +
 		"`\"none\"` to only end the user's session without notifying any other application.",
 	"single_logout_scope": "Which Descope sessions a logout started by the service provider ends. Choose one of `\"\"` " +
 		"(default, same as `\"session\"`), `\"session\"` to end only the session the logout request refers to, " +
