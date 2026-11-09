@@ -379,6 +379,23 @@ func TestInboundApp(t *testing.T) {
 				"session_settings.key_session_token_expiration": "30 minutes",
 			}),
 		},
+		// Test session settings with refresh token inactivity
+		resource.TestStep{
+			Config: p.Config() + a.Config(`
+				project_id = `+p.Path()+`.id
+				client_type = "confidential"
+				session_settings = {
+					enabled = true
+					enable_inactivity = true
+					inactivity_time = "30 days"
+				}
+			`),
+			Check: a.Check(map[string]any{
+				"session_settings.enabled":           "true",
+				"session_settings.enable_inactivity": "true",
+				"session_settings.inactivity_time":   "30 days",
+			}),
+		},
 		// Test session settings with a user JWT template
 		resource.TestStep{
 			Config: p.Config() + j.Config(`
