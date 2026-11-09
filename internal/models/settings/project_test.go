@@ -22,6 +22,7 @@ func TestProjectSettings(t *testing.T) {
 				"project_id":                          testacc.AttributeIsSet,
 				"app_url":                             "",
 				"custom_domain":                       "",
+				"apps_custom_domain":                  "",
 				"approved_domains":                    []string{},
 				"default_no_sso_apps":                 false,
 				"tenant_user_isolation":               false,
@@ -39,6 +40,22 @@ func TestProjectSettings(t *testing.T) {
 				test_users_static_otp = "123456"
 			`),
 			ExpectError: regexp.MustCompile(`set together`),
+		},
+		// apps custom domain must be a domain name
+		resource.TestStep{
+			Config: m.Block(`
+				project_id = "` + projectID + `"
+				apps_custom_domain = "https://apps.example.com"
+			`),
+			ExpectError: regexp.MustCompile(`domain name and not a full URL`),
+		},
+		// apps custom domain must be one of the project's custom domains
+		resource.TestStep{
+			Config: m.Block(`
+				project_id = "` + projectID + `"
+				apps_custom_domain = "apps.example.com"
+			`),
+			ExpectError: regexp.MustCompile(`configured custom domains`),
 		},
 		// update the settings fields
 		resource.TestStep{
@@ -71,6 +88,7 @@ func TestProjectSettings(t *testing.T) {
 			`),
 			Check: m.Check(map[string]any{
 				"app_url":                             "",
+				"apps_custom_domain":                  "",
 				"approved_domains":                    []string{},
 				"default_no_sso_apps":                 false,
 				"allow_auth_hosting_iframe_embedding": false,

@@ -50,6 +50,11 @@
       "file": "awstranslate",
       "struct": "AWSTranslate"
     },
+    "azure-monitor": {
+      "attribute": "azure_monitor",
+      "file": "azuremonitor",
+      "struct": "AzureMonitor"
+    },
     "bitsight": {
       "attribute": "bitsight",
       "file": "bitsight",
@@ -195,6 +200,11 @@
       "file": "lokalise",
       "struct": "Lokalise"
     },
+    "mailjet": {
+      "attribute": "mailjet",
+      "file": "mailjet",
+      "struct": "Mailjet"
+    },
     "microsoft-sentinel": {
       "attribute": "microsoft_sentinel",
       "file": "microsoftsentinel",
@@ -329,6 +339,11 @@
       "attribute": "splunk",
       "file": "splunk",
       "struct": "Splunk"
+    },
+    "splunk-on-call": {
+      "attribute": "splunk_on_call",
+      "file": "splunkoncall",
+      "struct": "SplunkOnCall"
     },
     "sql": {
       "attribute": "sql",
@@ -942,6 +957,10 @@
     "roleArn": {
       "attribute": "role_arn",
       "struct": "RoleARN"
+    },
+    "routingKey": {
+      "attribute": "routing_key",
+      "struct": "RoutingKey"
     },
     "saSecret": {
       "attribute": "service_account_secret",

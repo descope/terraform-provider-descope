@@ -38,6 +38,9 @@ var SAMLAppAttributes = map[string]schema.Attribute{
 	"default_signature_algorithm": stringattr.Default("", stringvalidator.OneOf("", "sha256")),
 	"attribute_mapping":           listattr.Default[AttributeMappingModel](AttributeMappingAttributes),
 	"force_authentication":        boolattr.Default(false),
+	"logout_redirect_url":         stringattr.Default(""),
+	"error_redirect_url":          stringattr.Default(""),
+	"idp_logout_url":              stringattr.Generated(),
 }
 
 // Model
@@ -61,6 +64,9 @@ type SAMLAppModel struct {
 	DefaultSignatureAlgorithm stringattr.Type                         `tfsdk:"default_signature_algorithm"`
 	AttributeMapping          listattr.Type[AttributeMappingModel]    `tfsdk:"attribute_mapping"`
 	ForceAuthentication       boolattr.Type                           `tfsdk:"force_authentication"`
+	LogoutRedirectURL         stringattr.Type                         `tfsdk:"logout_redirect_url"`
+	ErrorRedirectURL          stringattr.Type                         `tfsdk:"error_redirect_url"`
+	IDPLogoutURL              stringattr.Type                         `tfsdk:"idp_logout_url"`
 }
 
 func (m *SAMLAppModel) Values(h *helpers.Handler) map[string]any {
@@ -80,6 +86,8 @@ func (m *SAMLAppModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.DefaultSignatureAlgorithm, data, "defaultSignatureAlgorithm")
 	listattr.Get(m.AttributeMapping, data, "attributeMapping", h)
 	boolattr.Get(m.ForceAuthentication, data, "forceAuthentication")
+	stringattr.Get(m.LogoutRedirectURL, data, "logoutRedirectUrl")
+	stringattr.Get(m.ErrorRedirectURL, data, "errorRedirectUrl")
 	return data
 }
 
@@ -99,6 +107,9 @@ func (m *SAMLAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Set(&m.DefaultSignatureAlgorithm, settings, "defaultSignatureAlgorithm")
 		listattr.Set(&m.AttributeMapping, settings, "attributeMapping", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
+		stringattr.Set(&m.LogoutRedirectURL, settings, "logoutRedirectUrl")
+		stringattr.Set(&m.ErrorRedirectURL, settings, "errorRedirectUrl")
+		stringattr.Set(&m.IDPLogoutURL, settings, "idpLogoutUrl")
 	}
 }
 

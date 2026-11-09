@@ -116,9 +116,7 @@ func (m *SESConnectorModel) ConfigurationValues(h *helpers.Handler) map[string]a
 	stringattr.Get(m.Endpoint, c, "endpoint")
 	stringattr.Get(m.SenderEmail, c, "fromEmail")
 	stringattr.Get(m.SenderName, c, "fromName")
-	if !m.Tags.IsEmpty() {
-		getObjectField(m.Tags, c, "tags", h)
-	}
+	getObjectField(m.Tags, c, "tags", h)
 	stringattr.Get(m.ConfigurationSetName, c, "configurationSetName")
 	return c
 }
