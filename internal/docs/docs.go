@@ -87,6 +87,9 @@ var docsOIDCApp = map[string]string{
 	"backchannel_logout_url": "The URL that Descope notifies with a logout token when the user's session ends, " +
 		"as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) " +
 		"specification. Leave empty to disable back-channel logout notifications for this application.",
+	"logout_propagation": "How far a logout at the application's end-session endpoint reaches. Choose one of `\"\"` " +
+		"(default, same as `\"allApps\"`), `\"allApps\"` to also log the user out of their other applications, or " +
+		"`\"none\"` to only end the user's sessions and notify the calling application alone.",
 	"custom_idp_initiated_login_page_url": "A custom login page URL to redirect users to on IdP-initiated login flows, " +
 		"instead of the default login page.",
 	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is " +

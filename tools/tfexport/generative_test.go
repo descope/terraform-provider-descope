@@ -145,6 +145,7 @@ var attributeValueOverrides = map[string]string{
 	"client_auth_method":                `"client_secret_basic"|"client_secret_post"`,
 	"sp_single_logout_binding":          `""|"redirect"|"post"|"soap"`,
 	"single_logout_propagation":         `""|"allApps"|"none"`,
+	"logout_propagation":                `""|"allApps"|"none"`,
 	"single_logout_scope":               `""|"session"|"allSessions"`,
 
 	"descope_auth_access_rule.effect":           `"allow"|"block"`,

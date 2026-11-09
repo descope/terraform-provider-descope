@@ -115,6 +115,17 @@ specification. Leave empty to disable back-channel logout notifications for this
 
 
 
+logout_propagation
+------------------
+
+- Type: `string`
+
+How far a logout at the application's end-session endpoint reaches. Choose one of `""`
+(default, same as `"allApps"`), `"allApps"` to also log the user out of their other applications, or
+`"none"` to only end the user's sessions and notify the calling application alone.
+
+
+
 custom_idp_initiated_login_page_url
 -----------------------------------
 
