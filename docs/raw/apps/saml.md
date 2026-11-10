@@ -256,11 +256,11 @@ single_logout_scope
 
 Which Descope sessions a logout started by the service provider ends. Choose one of `""`
 (default, same as `"session"`), `"session"` to end the sessions the logout request's session indexes
-name, or `"allSessions"` to end every session of the user. A logout request with no session index, or
-with one Descope didn't issue, ends the browser's Descope session when the browser has one for the
-user, else every session of the user its NameID names. One with several session indexes that aren't
-all Descope's ends every session of the user. A visit to the logout URL without a logout request
-always ends every session of the user.
+name, or `"allSessions"` to end every session of the user. With `"session"`, a logout request with no
+session index, or with one Descope didn't issue, ends the browser's Descope session when the browser
+has one for the user, else every session of the user its NameID names, and one with several session
+indexes that aren't all Descope's ends every session of the user. A visit to the logout URL without a
+logout request always ends every session of the user.
 
 
 
