@@ -184,10 +184,11 @@ var docsSAMLApp = map[string]string{
 		"every session of the user ended).",
 	"single_logout_scope": "Which Descope sessions a logout started by the service provider ends. Choose one of `\"\"` " +
 		"(default, same as `\"session\"`), `\"session\"` to end the sessions the logout request's session indexes " +
-		"name, or `\"allSessions\"` to end every session of the user. A logout request whose session index " +
-		"Descope didn't issue ends the browser's Descope session, or every session of the user when the browser " +
-		"has none. A logout request that names the user only by NameID, and a visit to the logout URL without a " +
-		"logout request, always end every session of the user.",
+		"name, or `\"allSessions\"` to end every session of the user. A logout request with no session index, or " +
+		"with one Descope didn't issue, ends the browser's Descope session when the browser has one for the " +
+		"user, else every session of the user its NameID names. One with several session indexes that aren't " +
+		"all Descope's ends every session of the user. A visit to the logout URL without a logout request " +
+		"always ends every session of the user.",
 	"notify_on_force_logout": "Whether a Force Logout of the user, from the Console or the Management API's Logout User from All " +
 		"Devices, sends this application a `LogoutRequest`. Requires single logout with the `\"soap\"` binding, " +
 		"since a force logout has no browser. When disabled, the default, a force logout doesn't notify the " +
