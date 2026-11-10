@@ -204,10 +204,10 @@ single_logout_enabled
 Whether SAML Single Logout (SLO) is enabled for the application. When enabled, the service
 provider can log the user out by sending a signed `LogoutRequest` to the `idp_logout_url`, and
 Descope sends a `LogoutRequest` to the service provider when a logout reaches the user's applications
-(logout of all devices, a force logout when `notify_on_force_logout` is enabled, or another application's logout that propagates). The request
+(the user's own logout of all devices, a force logout when `notify_on_force_logout` is enabled, or another application's logout that propagates). The request
 names the user by the application's NameID, and it is sent to every application with single logout
 enabled that the user can sign in to, including ones the user hasn't used. A logout without a
-browser (logout of all devices, a force logout) reaches only applications with the `"soap"` binding.
+browser (the user's own logout of all devices, a force logout) reaches only applications with the `"soap"` binding.
 
 
 
