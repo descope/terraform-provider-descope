@@ -2184,7 +2184,8 @@ var docsSettingsSessionSettings = map[string]string{
 	"session_token_cookie_domain":     "The domain the session token cookie is restricted to.",
 	"step_up_token_expiration":        "How long step up tokens remain valid before they expire.",
 	"trusted_device_token_expiration": "How long trusted device tokens remain valid before they expire.",
-	"trusted_device_extend_on_trusted_login": "Whether a trusted device token's expiration is reset to `trusted_device_token_expiration` on each login from that device, in any flow. Applies to existing trusted devices as well.",
+	"trusted_device_extend_on_trusted_login": "Whether a trusted device token's expiration is reset to `trusted_device_token_expiration` on each login " +
+		"from that device, in any flow. Applies to existing trusted devices as well.",
 	"access_key_session_token_expiration": "How long access key session tokens remain valid before they expire.",
 	"enable_inactivity":                   "Whether to detect idle sessions and close them on behalf of the user.",
 	"inactivity_time":                     "How long a session can be inactive before it's closed, when `enable_inactivity` is set.",
