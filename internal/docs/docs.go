@@ -90,6 +90,9 @@ var docsOIDCApp = map[string]string{
 	"logout_propagation": "How far a logout at the application's end-session endpoint reaches. Choose one of `\"\"` " +
 		"(default, same as `\"none\"`), `\"none\"` to only end the user's sessions and notify the calling " +
 		"application alone, or `\"allApps\"` to also log the user out of their other applications.",
+	"notify_on_force_logout": "Whether a Force Logout of the user, from the Console or the Management API's Logout User from All " +
+		"Devices, sends this application a back-channel logout token. Requires `backchannel_logout_url`. When " +
+		"disabled, the default, a force logout doesn't notify the application.",
 	"custom_idp_initiated_login_page_url": "A custom login page URL to redirect users to on IdP-initiated login flows, " +
 		"instead of the default login page.",
 	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is " +
@@ -161,7 +164,7 @@ var docsSAMLApp = map[string]string{
 	"single_logout_enabled": "Whether SAML Single Logout (SLO) is enabled for the application. When enabled, the service " +
 		"provider can log the user out by sending a signed `LogoutRequest` to the `idp_logout_url`, and " +
 		"Descope sends a `LogoutRequest` to the service provider when a logout reaches the user's applications " +
-		"(logout of all devices, a force logout when enabled for the project, or another application's logout that propagates). The request " +
+		"(logout of all devices, a force logout when `notify_on_force_logout` is enabled, or another application's logout that propagates). The request " +
 		"names the user by the application's NameID, and it is sent to every application with single logout " +
 		"enabled that the user can sign in to, including ones the user hasn't used. A logout without a " +
 		"browser (logout of all devices, a force logout) reaches only applications with the `\"soap\"` binding.",
@@ -178,6 +181,10 @@ var docsSAMLApp = map[string]string{
 	"single_logout_scope": "Which Descope sessions a logout started by the service provider ends. Choose one of `\"\"` " +
 		"(default, same as `\"session\"`), `\"session\"` to end only the session the logout request refers to, " +
 		"or `\"allSessions\"` to end every session of the user.",
+	"notify_on_force_logout": "Whether a Force Logout of the user, from the Console or the Management API's Logout User from All " +
+		"Devices, sends this application a `LogoutRequest`. Requires single logout with the `\"soap\"` binding, " +
+		"since a force logout has no browser. When disabled, the default, a force logout doesn't notify the " +
+		"application.",
 }
 
 var docsDynamicConfiguration = map[string]string{
@@ -2168,10 +2175,6 @@ var docsProjectSettings = map[string]string{
 	"approved_domains": "List of approved domains that are allowed for redirect and verification URLs for different " +
 		"authentication methods.",
 	"default_no_sso_apps": "Whether new users should not be given access to any federated applications by default.",
-	"force_logout_federated_apps": "Whether a Force Logout of a user, from the Console or the Management API's Logout User from All " +
-		"Devices, also logs them out of their federated applications that have a logout endpoint: OIDC " +
-		"applications with a back-channel logout URL, and SAML applications with single logout over SOAP. " +
-		"When disabled, the default, a force logout ends only the user's Descope sessions.",
 	"tenant_user_isolation": "Isolate users per tenant so the same login ID is treated as a separate identity in each tenant, " +
 		"with independent credentials and MFA state.",
 	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +

@@ -33,6 +33,7 @@ var OIDCAppAttributes = map[string]schema.Attribute{
 	"force_authentication":                boolattr.Default(false),
 	"backchannel_logout_url":              stringattr.Default(""),
 	"logout_propagation":                  stringattr.Default("", stringvalidator.OneOf("", "allApps", "none")),
+	"notify_on_force_logout":              boolattr.Default(false),
 	"custom_idp_initiated_login_page_url": stringattr.Default(""),
 	"client_id":                           stringattr.Optional(stringplanmodifier.RequiresReplace()),
 	"client_secret":                       stringattr.SecretGenerated(true, stringplanmodifier.RequiresReplace()),
@@ -64,6 +65,7 @@ type OIDCAppModel struct {
 	ForceAuthentication            boolattr.Type    `tfsdk:"force_authentication"`
 	BackchannelLogoutURL           stringattr.Type  `tfsdk:"backchannel_logout_url"`
 	LogoutPropagation              stringattr.Type  `tfsdk:"logout_propagation"`
+	NotifyOnForceLogout            boolattr.Type    `tfsdk:"notify_on_force_logout"`
 	CustomIDPInitiatedLoginPageURL stringattr.Type  `tfsdk:"custom_idp_initiated_login_page_url"`
 	ClientID                       stringattr.Type  `tfsdk:"client_id"`
 	ClientSecret                   stringattr.Type  `tfsdk:"client_secret"`
@@ -86,6 +88,7 @@ func (m *OIDCAppModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.ForceAuthentication, data, "forceAuthentication")
 	stringattr.Get(m.BackchannelLogoutURL, data, "backChannelLogoutUrl")
 	stringattr.Get(m.LogoutPropagation, data, "logoutPropagation")
+	boolattr.Get(m.NotifyOnForceLogout, data, "notifyOnForceLogout")
 	stringattr.Get(m.CustomIDPInitiatedLoginPageURL, data, "customIdpInitiatedLoginPageUrl")
 
 	stringattr.Get(m.ClientID, data, "clientId")
@@ -111,6 +114,7 @@ func (m *OIDCAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
 		stringattr.Set(&m.BackchannelLogoutURL, settings, "backChannelLogoutUrl")
 		stringattr.Set(&m.LogoutPropagation, settings, "logoutPropagation")
+		boolattr.Set(&m.NotifyOnForceLogout, settings, "notifyOnForceLogout")
 		stringattr.Set(&m.CustomIDPInitiatedLoginPageURL, settings, "customIdpInitiatedLoginPageUrl")
 
 		// The read returns an empty clientId for server-generated clients until a client_type is set, so it's only adopted when the state has no value.

@@ -27,7 +27,6 @@ var ProjectSettingsAttributes = map[string]schema.Attribute{
 	"apps_custom_domain":                  stringattr.Default(""),
 	"approved_domains":                    strsetattr.Default(strsetattr.CommaSeparatedValidator),
 	"default_no_sso_apps":                 boolattr.Default(false),
-	"force_logout_federated_apps":         boolattr.Default(false),
 	"tenant_user_isolation":               boolattr.Default(false),
 	"allow_auth_hosting_iframe_embedding": boolattr.Default(false),
 	"disable_auth_hosting":                boolattr.Default(false),
@@ -44,7 +43,6 @@ type ProjectSettingsModel struct {
 	AppsCustomDomain                stringattr.Type `tfsdk:"apps_custom_domain"`
 	ApprovedDomains                 strsetattr.Type `tfsdk:"approved_domains"`
 	DefaultNoSSOApps                boolattr.Type   `tfsdk:"default_no_sso_apps"`
-	ForceLogoutFederatedApps        boolattr.Type   `tfsdk:"force_logout_federated_apps"`
 	TenantUserIsolation             boolattr.Type   `tfsdk:"tenant_user_isolation"`
 	AllowAuthHostingIframeEmbedding boolattr.Type   `tfsdk:"allow_auth_hosting_iframe_embedding"`
 	DisableAuthHosting              boolattr.Type   `tfsdk:"disable_auth_hosting"`
@@ -60,7 +58,6 @@ func (m *ProjectSettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.AppsCustomDomain, data, "appsCustomDomain")
 	strsetattr.GetCommaSeparated(m.ApprovedDomains, data, "trustedDomains", h)
 	boolattr.Get(m.DefaultNoSSOApps, data, "defaultNoSSOApps")
-	boolattr.Get(m.ForceLogoutFederatedApps, data, "forceLogoutFederatedApps")
 	boolattr.Get(m.TenantUserIsolation, data, "tenantUserIsolation")
 	boolattr.Get(m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
 	boolattr.Get(m.DisableAuthHosting, data, "disableAuthHosting")
@@ -77,7 +74,6 @@ func (m *ProjectSettingsModel) SetValues(h *helpers.Handler, data map[string]any
 	stringattr.SetDefault(&m.AppsCustomDomain, data, "appsCustomDomain", "")
 	strsetattr.SetCommaSeparated(&m.ApprovedDomains, data, "trustedDomains", h)
 	boolattr.Set(&m.DefaultNoSSOApps, data, "defaultNoSSOApps")
-	boolattr.SetDefault(&m.ForceLogoutFederatedApps, data, "forceLogoutFederatedApps", false) // absent on a backend that predates the field
 	boolattr.Set(&m.TenantUserIsolation, data, "tenantUserIsolation")
 	boolattr.Set(&m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
 	boolattr.SetDefault(&m.DisableAuthHosting, data, "disableAuthHosting", false) // absent on a backend that predates the field, and Set would leave a null that never matches the schema default

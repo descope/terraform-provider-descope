@@ -126,6 +126,17 @@ application alone, or `"allApps"` to also log the user out of their other applic
 
 
 
+notify_on_force_logout
+----------------------
+
+- Type: `bool`
+
+Whether a Force Logout of the user, from the Console or the Management API's Logout User from All
+Devices, sends this application a back-channel logout token. Requires `backchannel_logout_url`. When
+disabled, the default, a force logout doesn't notify the application.
+
+
+
 custom_idp_initiated_login_page_url
 -----------------------------------
 

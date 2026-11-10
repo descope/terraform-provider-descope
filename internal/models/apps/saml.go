@@ -47,6 +47,7 @@ var SAMLAppAttributes = map[string]schema.Attribute{
 	"sp_single_logout_binding":    stringattr.Default("", stringvalidator.OneOf("", "redirect", "post", "soap")),
 	"single_logout_propagation":   stringattr.Default("", stringvalidator.OneOf("", "allApps", "none")),
 	"single_logout_scope":         stringattr.Default("", stringvalidator.OneOf("", "session", "allSessions")),
+	"notify_on_force_logout":      boolattr.Default(false),
 }
 
 // Model
@@ -78,6 +79,7 @@ type SAMLAppModel struct {
 	SPSingleLogoutBinding     stringattr.Type                         `tfsdk:"sp_single_logout_binding"`
 	SingleLogoutPropagation   stringattr.Type                         `tfsdk:"single_logout_propagation"`
 	SingleLogoutScope         stringattr.Type                         `tfsdk:"single_logout_scope"`
+	NotifyOnForceLogout       boolattr.Type                           `tfsdk:"notify_on_force_logout"`
 }
 
 func (m *SAMLAppModel) Values(h *helpers.Handler) map[string]any {
@@ -104,6 +106,7 @@ func (m *SAMLAppModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.SPSingleLogoutBinding, data, "spSingleLogoutBinding")
 	stringattr.Get(m.SingleLogoutPropagation, data, "singleLogoutPropagation")
 	stringattr.Get(m.SingleLogoutScope, data, "singleLogoutScope")
+	boolattr.Get(m.NotifyOnForceLogout, data, "notifyOnForceLogout")
 	return data
 }
 
@@ -131,6 +134,7 @@ func (m *SAMLAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Set(&m.SPSingleLogoutBinding, settings, "spSingleLogoutBinding")
 		stringattr.Set(&m.SingleLogoutPropagation, settings, "singleLogoutPropagation")
 		stringattr.Set(&m.SingleLogoutScope, settings, "singleLogoutScope")
+		boolattr.Set(&m.NotifyOnForceLogout, settings, "notifyOnForceLogout")
 	}
 }
 

@@ -53,6 +53,7 @@ func TestSAMLApp(t *testing.T) {
 			"sp_single_logout_binding":         "",
 			"single_logout_propagation":        "",
 			"single_logout_scope":              "",
+			"notify_on_force_logout":           false,
 		}),
 	}
 
@@ -77,6 +78,7 @@ func TestSAMLApp(t *testing.T) {
 			`sp_single_logout_binding = "soap"`,
 			`single_logout_propagation = "none"`,
 			`single_logout_scope = "allSessions"`,
+			`notify_on_force_logout = true`,
 		),
 		Check: a.Check(map[string]any{
 			"id":                             sameID,
@@ -98,6 +100,7 @@ func TestSAMLApp(t *testing.T) {
 			"sp_single_logout_binding":       "soap",
 			"single_logout_propagation":      "none",
 			"single_logout_scope":            "allSessions",
+			"notify_on_force_logout":         true,
 		}),
 	}
 
@@ -119,6 +122,7 @@ func TestSAMLApp(t *testing.T) {
 			"sp_single_logout_binding":           "",
 			"single_logout_propagation":          "",
 			"single_logout_scope":                "",
+			"notify_on_force_logout":             false,
 		}),
 	}
 

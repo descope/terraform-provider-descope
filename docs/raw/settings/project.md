@@ -65,18 +65,6 @@ Whether new users should not be given access to any federated applications by de
 
 
 
-force_logout_federated_apps
----------------------------
-
-- Type: `bool`
-
-Whether a Force Logout of a user, from the Console or the Management API's Logout User from All
-Devices, also logs them out of their federated applications that have a logout endpoint: OIDC
-applications with a back-channel logout URL, and SAML applications with single logout over SOAP.
-When disabled, the default, a force logout ends only the user's Descope sessions.
-
-
-
 tenant_user_isolation
 ---------------------
 
