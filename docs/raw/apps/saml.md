@@ -203,11 +203,12 @@ single_logout_enabled
 
 Whether SAML Single Logout (SLO) is enabled for the application. When enabled, the service
 provider can log the user out by sending a signed `LogoutRequest` to the `idp_logout_url`, and
-Descope sends a `LogoutRequest` to the service provider when a logout reaches the user's applications
-(the user's own logout of all devices, a force logout when `notify_on_force_logout` is enabled, or another application's logout that propagates). The request
-names the user by the application's NameID, and it is sent to every application with single logout
-enabled that the user can sign in to, including ones the user hasn't used. A logout without a
-browser (the user's own logout of all devices, a force logout) reaches only applications with the `"soap"` binding.
+Descope sends a `LogoutRequest` to the service provider when a logout reaches the user's
+applications (the user's own logout of all devices, a force logout when `notify_on_force_logout`
+is enabled, or another application's logout that propagates). The request names the user by the
+application's NameID, and it is sent to every application with single logout enabled that the
+user can sign in to, including ones the user hasn't used. A logout without a browser (the user's
+own logout of all devices, a force logout) reaches only applications with the `"soap"` binding.
 
 
 
@@ -227,10 +228,12 @@ sp_single_logout_binding
 
 - Type: `string`
 
-The SAML binding used for `sp_single_logout_url`. Choose one of `""`, `"redirect"`, `"post"` or
-`"soap"`. When `sp_single_logout_url` is set, an empty value means `"redirect"`, and when it's
-empty the binding is taken from the service provider's metadata. The `"soap"` binding sends the
-logout request directly from Descope to the service provider and requires an `https` URL.
+The SAML binding used for `sp_single_logout_url`. Choose one of `""` (default), `"redirect"`,
+`"post"` or `"soap"`. With the default and an `sp_single_logout_url`, Descope uses HTTP-Redirect.
+Without an `sp_single_logout_url`, the endpoint comes from the service provider's metadata: the
+default uses SOAP when the metadata offers an `https` SOAP endpoint, else HTTP-Redirect, else
+HTTP-POST, and any other value uses the metadata endpoint with that binding. The `"soap"` binding
+sends the logout request directly from Descope to the service provider and requires an `https` URL.
 
 
 
@@ -241,7 +244,8 @@ single_logout_propagation
 
 What a logout started by the service provider reaches. Choose one of `""` (default, same as
 `"none"`), `"none"` to only end the user's session without notifying any other application, or
-`"allApps"` to also log the user out of their other applications.
+`"allApps"` to also log the user out of their other applications (OIDC applications only when
+every session of the user ended).
 
 
 
