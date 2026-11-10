@@ -141,8 +141,7 @@ trusted_device_extend_on_trusted_login
 - Type: `bool`
 
 Whether a trusted device token's expiration is reset to `trusted_device_token_expiration` on each login
-whose flow checks `riskInfo.trustedDevice` and finds the device trusted. Logins whose flow does not
-check `riskInfo.trustedDevice` never extend it. Applies to existing trusted devices as well.
+from that device, in any flow. Applies to existing trusted devices as well.
 
 
 
