@@ -1986,6 +1986,8 @@ var docsEnchantedLinkSettings = map[string]string{
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System " +
 		"template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
 }
@@ -2027,6 +2029,8 @@ var docsMagicLinkSettings = map[string]string{
 	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `magiclink`. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
 		"its `method` set to `magiclink`. An empty value (the default) selects the built-in System template.",
 }
@@ -2050,6 +2054,8 @@ var docsOTPSettings = map[string]string{
 	"voice_connector_id": "The ID of a voice call connector to use for making voice calls. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
 		"its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
 	"voice_template_id": "The ID of the voice template to use in calls to users, taken from a `descope_voice_template` resource " +
@@ -2104,6 +2110,8 @@ var docsPasswordSettings = map[string]string{
 	"email_template_id": "The ID of the email template for password reset emails, taken from a `descope_email_template` " +
 		"resource with its `method` set to `password`. The same template serves both the magic link and " +
 		"enchanted link reset flows. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 	"role_policies": "Stricter password requirements for users who hold specific roles. When a user holds any of the " +
 		"roles of a policy, at the project level or in any of their tenants, each rule of the policy is " +
 		"combined with the matching rule of the password settings that apply to the user, and the strictest " +
@@ -2236,6 +2244,8 @@ var docsSSOSettings = map[string]string{
 	"email_template_id": "The ID of the email template for SSO configuration invitation emails, taken from a " +
 		"`descope_email_template` resource with its `method` set to `sso`. An empty value (the default) " +
 		"selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 }
 
 var docsMandatoryUserAttribute = map[string]string{
