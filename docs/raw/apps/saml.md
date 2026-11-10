@@ -255,8 +255,11 @@ single_logout_scope
 - Type: `string`
 
 Which Descope sessions a logout started by the service provider ends. Choose one of `""`
-(default, same as `"session"`), `"session"` to end only the session the logout request refers to,
-or `"allSessions"` to end every session of the user.
+(default, same as `"session"`), `"session"` to end the sessions the logout request's session indexes
+name, or `"allSessions"` to end every session of the user. A logout request whose session index
+Descope didn't issue ends the browser's Descope session, or every session of the user when the browser
+has none. A logout request that names the user only by NameID, and a visit to the logout URL without a
+logout request, always end every session of the user.
 
 
 
