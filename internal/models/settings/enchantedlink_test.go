@@ -17,15 +17,16 @@ func TestEnchantedLinkSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"id":                 testacc.AttributeIsSet,
-				"project_id":         testacc.AttributeIsSet,
-				"disabled":           false,
-				"expiration_time":    "3 minutes",
-				"redirect_url":       "",
-				"email_connector_id": "",
-				"text_connector_id":  "",
-				"email_template_id":  "",
-				"text_template_id":   "",
+				"id":                         testacc.AttributeIsSet,
+				"project_id":                 testacc.AttributeIsSet,
+				"disabled":                   false,
+				"expiration_time":            "3 minutes",
+				"redirect_url":               "",
+				"email_connector_id":         "",
+				"external_email_template_id": "",
+				"text_connector_id":          "",
+				"email_template_id":          "",
+				"text_template_id":           "",
 			}),
 		},
 		// update the plain settings fields
@@ -85,11 +86,13 @@ func TestEnchantedLinkSettingsTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
+				external_email_template_id = "d-external"
 			`),
 			Check: m.Check(map[string]any{
-				"email_connector_id": testacc.AttributeIsSet,
-				"email_template_id":  testacc.AttributeIsSet,
-				"text_template_id":   "",
+				"email_connector_id":         testacc.AttributeIsSet,
+				"email_template_id":          testacc.AttributeIsSet,
+				"external_email_template_id": "d-external",
+				"text_template_id":           "",
 			}),
 		},
 	)

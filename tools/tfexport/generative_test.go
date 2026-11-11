@@ -85,6 +85,7 @@ var generativeSkippedAttributes = map[string]string{
 	"descope_oauth_provider.native_client_id":             "native pairing",
 	"descope_oauth_provider.native_client_secret":         "native pairing",
 	"descope_sso_settings.sso_suite_settings":             "nested suite block with its own coupling",
+	"descope_project_settings.trusted_proxy_secret":       "needs 64 visible characters and the vanity domains license, exercised by the settings test",
 	"descope_inbound_app.permissions_scopes":              "nested scope objects, exercised by the inbound-app scenario",
 	"descope_inbound_app.connections_scopes":              "nested scope objects, exercised by the inbound-app scenario",
 	"descope_inbound_app.session_settings":                "nested settings object, exercised by the inbound-app scenario",
@@ -143,6 +144,10 @@ var attributeValueOverrides = map[string]string{
 	"refresh_token_response_method":     `"cookies"|"response_body"`,
 	"session_token_response_method":     `"response_body"|"cookies"`,
 	"client_auth_method":                `"client_secret_basic"|"client_secret_post"`,
+	"sp_single_logout_binding":          `""|"redirect"|"post"|"soap"`,
+	"single_logout_propagation":         `""|"allApps"|"none"`,
+	"logout_propagation":                `""|"allApps"|"none"`,
+	"single_logout_scope":               `""|"session"|"allSessions"`,
 
 	"descope_auth_access_rule.effect":           `"allow"|"block"`,
 	"descope_auth_access_rule.expire_time":      `0|2000000000`,
@@ -334,6 +339,8 @@ func (g *configGenerator) pairings(resourceType string, generation int) ([]strin
     acs_url   = "https://cov.example.com/acs%d"
     entity_id = "cov-entity"
   }`, generation), "manual_configuration")
+		// a manually configured app needs this URL whenever single_logout_enabled is true, so it is pinned in every generation
+		emit(fmt.Sprintf(`  sp_single_logout_url = "https://cov.example.com/slo%d"`, generation), "sp_single_logout_url")
 	}
 	return lines, paired
 }
