@@ -85,6 +85,7 @@ var generativeSkippedAttributes = map[string]string{
 	"descope_oauth_provider.native_client_id":             "native pairing",
 	"descope_oauth_provider.native_client_secret":         "native pairing",
 	"descope_sso_settings.sso_suite_settings":             "nested suite block with its own coupling",
+	"descope_project_settings.trusted_proxy_secret":       "needs 64 visible characters and the vanity domains license, exercised by the settings test",
 	"descope_inbound_app.permissions_scopes":              "nested scope objects, exercised by the inbound-app scenario",
 	"descope_inbound_app.connections_scopes":              "nested scope objects, exercised by the inbound-app scenario",
 	"descope_inbound_app.session_settings":                "nested settings object, exercised by the inbound-app scenario",

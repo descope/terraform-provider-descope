@@ -30,6 +30,7 @@ Manages the project-level password authentication settings. This is a singleton 
 - `enforce_strength` (String) Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.
 - `expiration` (Boolean) Whether users are required to change their password periodically.
 - `expiration_weeks` (Number) The number of weeks after which a user's password expires and they need to replace it.
+- `external_email_template_id` (String) The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An empty value (the default) sends the Descope template selected by `email_template_id`.
 - `lock` (Boolean) Whether the user account should be locked after a specified number of failed login attempts.
 - `lock_attempts` (Number) The number of failed login attempts allowed before an account is locked.
 - `lowercase` (Boolean) Whether passwords must contain at least one lowercase letter.

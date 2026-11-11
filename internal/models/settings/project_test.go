@@ -2,6 +2,7 @@ package settings_test
 
 import (
 	"regexp"
+	"strings"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/tools/testacc"
@@ -31,6 +32,7 @@ func TestProjectSettings(t *testing.T) {
 				"test_users_loginid_regexp":           "",
 				"test_users_static_otp":               "",
 				"test_users_verifier_regexp":          "",
+				"trusted_proxy_secret":                testacc.AttributeIsNotSet,
 			}),
 		},
 		// static otp and verifier regexp must be set together
@@ -57,6 +59,14 @@ func TestProjectSettings(t *testing.T) {
 			`),
 			ExpectError: regexp.MustCompile(`configured custom domains`),
 		},
+		// trusted proxy secret must be long enough
+		resource.TestStep{
+			Config: m.Block(`
+				project_id = "` + projectID + `"
+				trusted_proxy_secret = "too-short"
+			`),
+			ExpectError: regexp.MustCompile(`visible ASCII characters`),
+		},
 		// update the settings fields
 		resource.TestStep{
 			Config: m.Block(`
@@ -69,6 +79,7 @@ func TestProjectSettings(t *testing.T) {
 				test_users_loginid_regexp = ".*@test\\.example\\.com"
 				test_users_static_otp = "123456"
 				test_users_verifier_regexp = ".*"
+				trusted_proxy_secret = "` + strings.Repeat("testacc-proxy-secret-", 4) + `"
 			`),
 			Check: m.Check(map[string]any{
 				"app_url":                             "https://app.example.com",
@@ -79,12 +90,14 @@ func TestProjectSettings(t *testing.T) {
 				"test_users_loginid_regexp":           ".*@test\\.example\\.com",
 				"test_users_static_otp":               "123456",
 				"test_users_verifier_regexp":          ".*",
+				"trusted_proxy_secret":                strings.Repeat("testacc-proxy-secret-", 4),
 			}),
 		},
-		// removing optional fields reverts them to their defaults
+		// removing optional fields reverts them to their defaults, and an empty secret clears the stored one
 		resource.TestStep{
 			Config: m.Block(`
 				project_id = "` + projectID + `"
+				trusted_proxy_secret = ""
 			`),
 			Check: m.Check(map[string]any{
 				"app_url":                             "",
@@ -99,10 +112,11 @@ func TestProjectSettings(t *testing.T) {
 			}),
 		},
 		resource.TestStep{
-			ResourceName:      m.Path(),
-			ImportState:       true,
-			ImportStateVerify: true,
-			ImportStateIdFunc: testacc.GenerateImportStateID(m.Path(), "project_id"),
+			ResourceName:            m.Path(),
+			ImportState:             true,
+			ImportStateVerify:       true,
+			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
+			ImportStateVerifyIgnore: []string{"trusted_proxy_secret"},
 		},
 	)
 }
