@@ -2311,6 +2311,9 @@ var docsSSOSuite = map[string]string{
 	"hide_audit":                "Setting this to `true` will hide the audit log of SSO and SCIM events in the SSO Suite interface.",
 	"oidc_login_id_attribute": "The identity provider claim the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty " +
 		"to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.",
+	"login_flow_id": "The ID of a flow the SSO Suite shows so users can sign in when they open it without an existing session. Leave " +
+		"empty to show the authentication required page instead.",
+	"login_flow_style_id": "The ID of the style to apply to the login flow. Leave empty to use the project's default flow style.",
 }
 
 var docsTOTPSettings = map[string]string{
