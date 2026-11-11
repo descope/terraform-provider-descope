@@ -48,6 +48,10 @@ func NewTOTPSettingsResource() resource.Resource {
 	return newSettingsResource[settings.TOTPSettingsModel]("totp_settings", settings.TOTPSettingsSchema, "/v1/mgmt/totp/settings")
 }
 
+func NewEmailVerificationSettingsResource() resource.Resource {
+	return newSettingsResource[settings.EmailVerificationSettingsModel]("emailverification_settings", settings.EmailVerificationSettingsSchema, "/v1/mgmt/emailverification/settings")
+}
+
 func NewAuthAccessPolicyResource() resource.Resource {
 	return newSettingsResource[settings.AuthAccessPolicyModel]("auth_access_policy", settings.AuthAccessPolicySchema, "/v1/mgmt/authaccess/settings")
 }
