@@ -2,8 +2,10 @@ package outboundapp_test
 
 import (
 	"context"
+	"fmt"
 	"regexp"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
@@ -14,8 +16,12 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/outboundapp"
 	"github.com/descope/terraform-provider-descope/tools/testacc"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
 )
 
 func TestOutboundApp(t *testing.T) {
@@ -169,6 +175,57 @@ func TestOutboundApp(t *testing.T) {
 	)
 }
 
+func TestOutboundAppChosenID(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	a := testacc.OutboundApp(t)
+	first := "testacc-" + a.Name[len(a.Name)-8:]
+	second := first + "-2"
+	testacc.RunWithDestroyCheck(t, "descope_outbound_app",
+		// create the app under an id of our choosing rather than one the backend picks
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				id = "` + first + `"
+			`),
+			Check: a.Check(map[string]any{
+				"id": first,
+			}),
+		},
+		// leaving the id out afterwards keeps the app and its id
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+			},
+			Check: a.Check(map[string]any{
+				"id": first,
+			}),
+		},
+		// a different id is a different app, so it replaces the old one
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				id = "` + second + `"
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(a.Path(), plancheck.ResourceActionReplace)},
+			},
+			Check: a.Check(map[string]any{
+				"id": second,
+			}),
+		},
+		resource.TestStep{
+			ResourceName:            a.Path(),
+			ImportState:             true,
+			ImportStateVerify:       true,
+			ImportStateIdFunc:       testacc.GenerateImportStateID(a.Path(), "project_id", "id"),
+			ImportStateVerifyIgnore: []string{"client_secret"},
+		},
+	)
+}
+
 func TestOutboundAppAPIKeyType(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	a := testacc.OutboundApp(t)
@@ -302,6 +359,74 @@ func TestOutboundAppClientSecretPresence(t *testing.T) {
 	m.ClientSecret = stringattr.Value("real-secret")
 	if m.Values(h)["clientSecret"] != "real-secret" {
 		t.Errorf("a configured client_secret must be sent as is, got %v", m.Values(h)["clientSecret"])
+	}
+}
+
+func TestOutboundAppIDPresence(t *testing.T) {
+	var diags diag.Diagnostics
+	h := helpers.NewHandler(context.Background(), &diags)
+
+	m := &outboundapp.OutboundAppModel{
+		ID:                     types.StringUnknown(),
+		Name:                   stringattr.Value("app"),
+		AuthorizationURLParams: strmapattr.Empty(),
+		TokenURLParams:         strmapattr.Empty(),
+		DefaultScopes:          strsetattr.Empty(),
+		Prompt:                 strsetattr.Empty(),
+	}
+
+	if v, ok := m.Values(h)["id"]; ok {
+		t.Errorf("an id left to the backend must be omitted on create, got %v", v)
+	}
+
+	m.ID = stringattr.Value("crm-app")
+	if m.Values(h)["id"] != "crm-app" {
+		t.Errorf("a configured id must be sent so the app is created under it, got %v", m.Values(h)["id"])
+	}
+}
+
+func TestOutboundAppIDSchema(t *testing.T) {
+	id, ok := outboundapp.OutboundAppAttributes["id"].(schema.StringAttribute)
+	if !ok {
+		t.Fatalf("expected a string attribute, got %T", outboundapp.OutboundAppAttributes["id"])
+	}
+	if !id.Optional || !id.Computed {
+		t.Errorf("the id must be optional, and computed when left out, got optional=%v computed=%v", id.Optional, id.Computed)
+	}
+	replaces := false
+	for _, modifier := range id.PlanModifiers {
+		if strings.Contains(fmt.Sprintf("%T", modifier), "requiresReplace") {
+			replaces = true
+		}
+	}
+	if !replaces {
+		t.Error("changing the id must replace the app, since the backend cannot rename one")
+	}
+}
+
+func TestOutboundAppIDValidators(t *testing.T) {
+	id := outboundapp.OutboundAppAttributes["id"].(schema.StringAttribute)
+	for value, valid := range map[string]bool{
+		"openweather-mcp":                  true,
+		"3m1hllkncymure1mjekc3urdsid":      true,
+		"x":                                true,
+		strings.Repeat("a", 30):            true,
+		strings.Repeat("a", 31):            false,
+		"":                                 false,
+		"Upper":                            false,
+		"under_score":                      false,
+		"dot.ted":                          false,
+		"testacc-outboundappchosenid-1112": false,
+	} {
+		var diags diag.Diagnostics
+		for _, v := range id.Validators {
+			resp := validator.StringResponse{}
+			v.ValidateString(context.Background(), validator.StringRequest{Path: path.Root("id"), ConfigValue: types.StringValue(value)}, &resp)
+			diags.Append(resp.Diagnostics...)
+		}
+		if diags.HasError() == valid {
+			t.Errorf("id %q: expected valid=%v, got diagnostics %v", value, valid, diags)
+		}
 	}
 }
 
