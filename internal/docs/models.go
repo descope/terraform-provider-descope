@@ -17,6 +17,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/models/engine"
 	"github.com/descope/terraform-provider-descope/internal/models/fgaschema"
 	"github.com/descope/terraform-provider-descope/internal/models/flow"
+	"github.com/descope/terraform-provider-descope/internal/models/flowtranslations"
 	"github.com/descope/terraform-provider-descope/internal/models/inboundapp"
 	"github.com/descope/terraform-provider-descope/internal/models/jwttemplate"
 	"github.com/descope/terraform-provider-descope/internal/models/list"
@@ -147,6 +148,7 @@ func InjectModels() {
 	inject(engine.EngineAttributes, docsEngine)
 	inject(fgaschema.FGASchemaAttributes, docsFGASchema)
 	inject(flow.FlowAttributes, docsFlow)
+	inject(flowtranslations.FlowTranslationsAttributes, docsFlowTranslations)
 	inject(inboundapp.ApplicationScopeAttributes, docsApplicationScope)
 	inject(inboundapp.ClientAssertionAttributes, docsClientAssertion)
 	inject(inboundapp.InboundAppAttributes, docsInboundApp)

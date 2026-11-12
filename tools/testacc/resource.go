@@ -138,6 +138,10 @@ func Flow(t *testing.T) *Resource {
 	return newResource(t, "flow")
 }
 
+func FlowTranslations(t *testing.T) *Resource {
+	return newResource(t, "flow_translations")
+}
+
 func Role(t *testing.T) *Resource {
 	return newResource(t, "role")
 }
