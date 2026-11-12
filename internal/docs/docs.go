@@ -87,6 +87,12 @@ var docsOIDCApp = map[string]string{
 	"backchannel_logout_url": "The URL that Descope notifies with a logout token when the user's session ends, " +
 		"as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) " +
 		"specification. Leave empty to disable back-channel logout notifications for this application.",
+	"logout_propagation": "How far a logout at the application's end-session endpoint reaches. Choose one of `\"\"` " +
+		"(default, same as `\"none\"`), `\"none\"` to only end the user's sessions and notify the calling " +
+		"application alone, or `\"allApps\"` to also log the user out of their other applications.",
+	"notify_on_force_logout": "Whether a Force Logout of the user, from the Console or the Management API's Logout User from All " +
+		"Devices, sends this application a back-channel logout token. Requires `backchannel_logout_url`. When " +
+		"disabled, the default, a force logout doesn't notify the application.",
 	"custom_idp_initiated_login_page_url": "A custom login page URL to redirect users to on IdP-initiated login flows, " +
 		"instead of the default login page.",
 	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is " +
@@ -150,6 +156,43 @@ var docsSAMLApp = map[string]string{
 	"default_signature_algorithm": "The signature algorithm used to sign SAML responses. Choose one of `\"\"` (default, SHA-1) or `\"sha256\"` (SHA-256). Only applies to IdP-initiated flows — SP-initiated flows use the algorithm specified in the SP's SAML request.",
 	"attribute_mapping":           "A list of attribute mappings from Descope user attributes to SAML assertion attributes.",
 	"force_authentication":        "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
+	"logout_redirect_url": "The URL to redirect to after logout. When the service provider sends the user to the " +
+		"`idp_logout_url`, Descope logs the user out and then redirects them to this URL.",
+	"error_redirect_url": "The URL to redirect to when an error occurs.",
+	"idp_logout_url": "The logout URL of the application, to set as the sign-out URL in the service provider. This " +
+		"value is set by the server and is read-only.",
+	"single_logout_enabled": "Whether SAML Single Logout (SLO) is enabled for the application. When enabled, the service " +
+		"provider can log the user out by sending a signed `LogoutRequest` to the `idp_logout_url`, and " +
+		"Descope sends a `LogoutRequest` to the service provider when a logout reaches the user's " +
+		"applications (the user's own logout of all devices, a force logout when `notify_on_force_logout` " +
+		"is enabled, or another application's logout that propagates). The request names the user by the " +
+		"application's NameID, and it is sent to every application with single logout enabled that the " +
+		"user can sign in to, including ones the user hasn't used. A logout without a browser (the user's " +
+		"own logout of all devices, a force logout) reaches only applications with the `\"soap\"` binding.",
+	"sp_single_logout_url": "The service provider's Single Logout Service URL that logout requests are sent to. Required when " +
+		"`single_logout_enabled` is `true` and `manual_configuration` is used. With `dynamic_configuration` " +
+		"it can be left empty to take the URL from the service provider's metadata.",
+	"sp_single_logout_binding": "The SAML binding used for `sp_single_logout_url`. Choose one of `\"\"` (default), `\"redirect\"`, " +
+		"`\"post\"` or `\"soap\"`. With the default and an `sp_single_logout_url`, Descope uses HTTP-Redirect. " +
+		"Without an `sp_single_logout_url`, the endpoint comes from the service provider's metadata: the " +
+		"default uses SOAP when the metadata offers an `https` SOAP endpoint, else HTTP-Redirect, else " +
+		"HTTP-POST, and any other value uses the metadata endpoint with that binding. The `\"soap\"` binding " +
+		"sends the logout request directly from Descope to the service provider and requires an `https` URL.",
+	"single_logout_propagation": "What a logout started by the service provider reaches. Choose one of `\"\"` (default, same as " +
+		"`\"none\"`), `\"none\"` to only end the user's session without notifying any other application, or " +
+		"`\"allApps\"` to also log the user out of their other applications (OIDC applications only when " +
+		"every session of the user ended).",
+	"single_logout_scope": "Which Descope sessions a logout started by the service provider ends. Choose one of `\"\"` " +
+		"(default, same as `\"session\"`), `\"session\"` to end the sessions the logout request's session indexes " +
+		"name, or `\"allSessions\"` to end every session of the user. With `\"session\"`, a logout request with no " +
+		"session index, or with one Descope didn't issue, ends the browser's Descope session when the browser " +
+		"has one for the user, else every session of the user its NameID names, and one with several session " +
+		"indexes that aren't all Descope's ends every session of the user. A visit to the logout URL without a " +
+		"logout request always ends every session of the user.",
+	"notify_on_force_logout": "Whether a Force Logout of the user, from the Console or the Management API's Logout User from All " +
+		"Devices, sends this application a `LogoutRequest`. Requires single logout with the `\"soap\"` binding, " +
+		"since a force logout has no browser. When disabled, the default, a force logout doesn't notify the " +
+		"application.",
 }
 
 var docsDynamicConfiguration = map[string]string{
@@ -914,6 +957,19 @@ var docsLokaliseConnector = map[string]string{
 	"config_project_id": "Lokalise project ID.",
 }
 
+var docsMailjetConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"sender_email": "The email address that emails are sent from. Make sure it is a verified sender " +
+		"in Mailjet.",
+	"sender_name": "The name shown as the sender of the emails.",
+	"api_key": "The Mailjet API key used to authenticate requests, found under Account settings " +
+		"/ API Key Management.",
+	"secret_key": "The secret key that pairs with the API key. Mailjet requires both to " +
+		"authenticate.",
+}
+
 var docsMicrosoftSentinelConnector = map[string]string{
 	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
@@ -1373,6 +1429,17 @@ var docsSplunkConnector = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+}
+
+var docsSplunkOnCallConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"base_url":    "Splunk On-Call alert ingestion base URL.",
+	"api_key": "The REST Endpoint integration key, from Integrations > REST Endpoint in Splunk " +
+		"On-Call.",
+	"routing_key": "Default routing key, from Settings > Routing Keys. An action can override it.",
 }
 
 var docsSQLConnector = map[string]string{
@@ -1957,6 +2024,8 @@ var docsEnchantedLinkSettings = map[string]string{
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System " +
 		"template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
 		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
 }
@@ -1998,6 +2067,8 @@ var docsMagicLinkSettings = map[string]string{
 	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `magiclink`. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
 		"its `method` set to `magiclink`. An empty value (the default) selects the built-in System template.",
 }
@@ -2021,6 +2092,8 @@ var docsOTPSettings = map[string]string{
 	"voice_connector_id": "The ID of a voice call connector to use for making voice calls. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
 		"its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
 		"its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
 	"voice_template_id": "The ID of the voice template to use in calls to users, taken from a `descope_voice_template` resource " +
@@ -2075,6 +2148,8 @@ var docsPasswordSettings = map[string]string{
 	"email_template_id": "The ID of the email template for password reset emails, taken from a `descope_email_template` " +
 		"resource with its `method` set to `password`. The same template serves both the magic link and " +
 		"enchanted link reset flows. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 	"role_policies": "Stricter password requirements for users who hold specific roles. When a user holds any of the " +
 		"roles of a policy, at the project level or in any of their tenants, each rule of the policy is " +
 		"combined with the matching rule of the password settings that apply to the user, and the strictest " +
@@ -2131,6 +2206,12 @@ var docsProjectSettings = map[string]string{
 		"be set together with `test_users_verifier_regexp`.",
 	"test_users_verifier_regexp": "A regular expression pattern that determines which test user verifiers (email addresses or " +
 		"phone numbers) the static OTP code applies to.",
+	"trusted_proxy_secret": "The secret a trusted reverse proxy sends in the `x-descope-proxy-secret` header, so that the forwarded " +
+		"hostname and client IP headers it adds are honored. Used to serve tenant vanity domains through a " +
+		"gateway. Must be at least 64 visible ASCII characters with no spaces, for example the output of " +
+		"`openssl rand -base64 48`. Requires vanity domains to be enabled on the company license. This value " +
+		"is write-only and never read back from the server. Removing it from the configuration keeps the " +
+		"stored secret, set it to an empty string to clear it.",
 }
 
 var docsSettingsSessionSettings = map[string]string{
@@ -2201,6 +2282,8 @@ var docsSSOSettings = map[string]string{
 	"email_template_id": "The ID of the email template for SSO configuration invitation emails, taken from a " +
 		"`descope_email_template` resource with its `method` set to `sso`. An empty value (the default) " +
 		"selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 }
 
 var docsMandatoryUserAttribute = map[string]string{
@@ -2225,8 +2308,12 @@ var docsSSOSuite = map[string]string{
 	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
 	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
 	"show_xaa":                  "Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.",
+	"hide_audit":                "Setting this to `true` will hide the audit log of SSO and SCIM events in the SSO Suite interface.",
 	"oidc_login_id_attribute": "The identity provider claim the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty " +
 		"to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.",
+	"login_flow_id": "The ID of a flow the SSO Suite shows so users can sign in when they open it without an existing session. Leave " +
+		"empty to show the authentication required page instead.",
+	"login_flow_style_id": "The ID of the style to apply to the login flow. Leave empty to use the project's default flow style.",
 }
 
 var docsTOTPSettings = map[string]string{

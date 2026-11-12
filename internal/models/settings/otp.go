@@ -18,31 +18,33 @@ var OTPSettingsSchema = schema.Schema{
 }
 
 var OTPSettingsAttributes = map[string]schema.Attribute{
-	"id":                 stringattr.Identifier(),
-	"project_id":         stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"disabled":           boolattr.Default(false),
-	"domain":             stringattr.Default("", stringattr.StandardLenValidator),
-	"expiration_time":    durationattr.Default("3 minutes", durationattr.MinimumValue("1 minute")),
-	"email_connector_id": stringattr.Default(""),
-	"text_connector_id":  stringattr.Default(""),
-	"voice_connector_id": stringattr.Default(""),
-	"email_template_id":  stringattr.Default(""),
-	"text_template_id":   stringattr.Default(""),
-	"voice_template_id":  stringattr.Default(""),
+	"id":                         stringattr.Identifier(),
+	"project_id":                 stringattr.Required(stringplanmodifier.RequiresReplace()),
+	"disabled":                   boolattr.Default(false),
+	"domain":                     stringattr.Default("", stringattr.StandardLenValidator),
+	"expiration_time":            durationattr.Default("3 minutes", durationattr.MinimumValue("1 minute")),
+	"email_connector_id":         stringattr.Default(""),
+	"text_connector_id":          stringattr.Default(""),
+	"voice_connector_id":         stringattr.Default(""),
+	"email_template_id":          stringattr.Default(""),
+	"external_email_template_id": stringattr.Default(""),
+	"text_template_id":           stringattr.Default(""),
+	"voice_template_id":          stringattr.Default(""),
 }
 
 type OTPSettingsModel struct {
-	ID               stringattr.Type `tfsdk:"id"`
-	ProjectID        stringattr.Type `tfsdk:"project_id"`
-	Disabled         boolattr.Type   `tfsdk:"disabled"`
-	Domain           stringattr.Type `tfsdk:"domain"`
-	ExpirationTime   stringattr.Type `tfsdk:"expiration_time"`
-	EmailConnectorID stringattr.Type `tfsdk:"email_connector_id"`
-	TextConnectorID  stringattr.Type `tfsdk:"text_connector_id"`
-	VoiceConnectorID stringattr.Type `tfsdk:"voice_connector_id"`
-	EmailTemplateID  stringattr.Type `tfsdk:"email_template_id"`
-	TextTemplateID   stringattr.Type `tfsdk:"text_template_id"`
-	VoiceTemplateID  stringattr.Type `tfsdk:"voice_template_id"`
+	ID                      stringattr.Type `tfsdk:"id"`
+	ProjectID               stringattr.Type `tfsdk:"project_id"`
+	Disabled                boolattr.Type   `tfsdk:"disabled"`
+	Domain                  stringattr.Type `tfsdk:"domain"`
+	ExpirationTime          stringattr.Type `tfsdk:"expiration_time"`
+	EmailConnectorID        stringattr.Type `tfsdk:"email_connector_id"`
+	TextConnectorID         stringattr.Type `tfsdk:"text_connector_id"`
+	VoiceConnectorID        stringattr.Type `tfsdk:"voice_connector_id"`
+	EmailTemplateID         stringattr.Type `tfsdk:"email_template_id"`
+	ExternalEmailTemplateID stringattr.Type `tfsdk:"external_email_template_id"`
+	TextTemplateID          stringattr.Type `tfsdk:"text_template_id"`
+	VoiceTemplateID         stringattr.Type `tfsdk:"voice_template_id"`
 }
 
 func (m *OTPSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -54,6 +56,7 @@ func (m *OTPSettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.TextConnectorID, data, "textConnectorId")
 	stringattr.Get(m.VoiceConnectorID, data, "voiceConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "emailTemplateId")
+	stringattr.Get(m.ExternalEmailTemplateID, data, "externalEmailTemplateId")
 	stringattr.Get(m.TextTemplateID, data, "textTemplateId")
 	stringattr.Get(m.VoiceTemplateID, data, "voiceTemplateId")
 	return data
@@ -67,6 +70,7 @@ func (m *OTPSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.TextConnectorID, data, "textConnectorId")
 	stringattr.Set(&m.VoiceConnectorID, data, "voiceConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "emailTemplateId")
+	stringattr.Set(&m.ExternalEmailTemplateID, data, "externalEmailTemplateId")
 	stringattr.Set(&m.TextTemplateID, data, "textTemplateId")
 	stringattr.Set(&m.VoiceTemplateID, data, "voiceTemplateId")
 }

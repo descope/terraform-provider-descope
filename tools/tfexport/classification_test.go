@@ -20,7 +20,8 @@ var publicByDesign = map[string]bool{
 	"public_write_key": true, // the segment browser library needs this one in the page, unlike write_key
 	"key":              true, // generic map key fields, not credentials
 
-	"descope_vonage_connector.api_key": true, // vonage api keys are the basic auth username, the credential is api_secret
+	"descope_vonage_connector.api_key":             true, // vonage api keys are the basic auth username, the credential is api_secret
+	"descope_splunk_on_call_connector.routing_key": true, // splunk on-call routing keys name the team an alert routes to, the credential is api_key
 }
 
 // knownMisclassified carry real secret material but are not marked sensitive - each entry is an open bug that must go once its template is fixed.

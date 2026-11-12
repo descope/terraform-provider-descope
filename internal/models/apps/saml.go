@@ -2,6 +2,7 @@ package apps
 
 import (
 	"context"
+	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/listattr"
@@ -38,6 +39,15 @@ var SAMLAppAttributes = map[string]schema.Attribute{
 	"default_signature_algorithm": stringattr.Default("", stringvalidator.OneOf("", "sha256")),
 	"attribute_mapping":           listattr.Default[AttributeMappingModel](AttributeMappingAttributes),
 	"force_authentication":        boolattr.Default(false),
+	"logout_redirect_url":         stringattr.Default(""),
+	"error_redirect_url":          stringattr.Default(""),
+	"idp_logout_url":              stringattr.Generated(),
+	"single_logout_enabled":       boolattr.Default(false),
+	"sp_single_logout_url":        stringattr.Default(""),
+	"sp_single_logout_binding":    stringattr.Default("", stringvalidator.OneOf("", "redirect", "post", "soap")),
+	"single_logout_propagation":   stringattr.Default("", stringvalidator.OneOf("", "allApps", "none")),
+	"single_logout_scope":         stringattr.Default("", stringvalidator.OneOf("", "session", "allSessions")),
+	"notify_on_force_logout":      boolattr.Default(false),
 }
 
 // Model
@@ -61,6 +71,15 @@ type SAMLAppModel struct {
 	DefaultSignatureAlgorithm stringattr.Type                         `tfsdk:"default_signature_algorithm"`
 	AttributeMapping          listattr.Type[AttributeMappingModel]    `tfsdk:"attribute_mapping"`
 	ForceAuthentication       boolattr.Type                           `tfsdk:"force_authentication"`
+	LogoutRedirectURL         stringattr.Type                         `tfsdk:"logout_redirect_url"`
+	ErrorRedirectURL          stringattr.Type                         `tfsdk:"error_redirect_url"`
+	IDPLogoutURL              stringattr.Type                         `tfsdk:"idp_logout_url"`
+	SingleLogoutEnabled       boolattr.Type                           `tfsdk:"single_logout_enabled"`
+	SPSingleLogoutURL         stringattr.Type                         `tfsdk:"sp_single_logout_url"`
+	SPSingleLogoutBinding     stringattr.Type                         `tfsdk:"sp_single_logout_binding"`
+	SingleLogoutPropagation   stringattr.Type                         `tfsdk:"single_logout_propagation"`
+	SingleLogoutScope         stringattr.Type                         `tfsdk:"single_logout_scope"`
+	NotifyOnForceLogout       boolattr.Type                           `tfsdk:"notify_on_force_logout"`
 }
 
 func (m *SAMLAppModel) Values(h *helpers.Handler) map[string]any {
@@ -80,6 +99,14 @@ func (m *SAMLAppModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.DefaultSignatureAlgorithm, data, "defaultSignatureAlgorithm")
 	listattr.Get(m.AttributeMapping, data, "attributeMapping", h)
 	boolattr.Get(m.ForceAuthentication, data, "forceAuthentication")
+	stringattr.Get(m.LogoutRedirectURL, data, "logoutRedirectUrl")
+	stringattr.Get(m.ErrorRedirectURL, data, "errorRedirectUrl")
+	boolattr.Get(m.SingleLogoutEnabled, data, "singleLogoutEnabled")
+	stringattr.Get(m.SPSingleLogoutURL, data, "spSingleLogoutUrl")
+	stringattr.Get(m.SPSingleLogoutBinding, data, "spSingleLogoutBinding")
+	stringattr.Get(m.SingleLogoutPropagation, data, "singleLogoutPropagation")
+	stringattr.Get(m.SingleLogoutScope, data, "singleLogoutScope")
+	boolattr.Get(m.NotifyOnForceLogout, data, "notifyOnForceLogout")
 	return data
 }
 
@@ -99,6 +126,15 @@ func (m *SAMLAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 		stringattr.Set(&m.DefaultSignatureAlgorithm, settings, "defaultSignatureAlgorithm")
 		listattr.Set(&m.AttributeMapping, settings, "attributeMapping", h)
 		boolattr.Set(&m.ForceAuthentication, settings, "forceAuthentication")
+		stringattr.Set(&m.LogoutRedirectURL, settings, "logoutRedirectUrl")
+		stringattr.Set(&m.ErrorRedirectURL, settings, "errorRedirectUrl")
+		stringattr.Set(&m.IDPLogoutURL, settings, "idpLogoutUrl")
+		boolattr.Set(&m.SingleLogoutEnabled, settings, "singleLogoutEnabled")
+		stringattr.Set(&m.SPSingleLogoutURL, settings, "spSingleLogoutUrl")
+		stringattr.Set(&m.SPSingleLogoutBinding, settings, "spSingleLogoutBinding")
+		stringattr.Set(&m.SingleLogoutPropagation, settings, "singleLogoutPropagation")
+		stringattr.Set(&m.SingleLogoutScope, settings, "singleLogoutScope")
+		boolattr.Set(&m.NotifyOnForceLogout, settings, "notifyOnForceLogout")
 	}
 }
 
@@ -110,6 +146,18 @@ func (m *SAMLAppModel) Validate(h *helpers.Handler) {
 		h.Missing("Either the dynamic_configuration or manual_configuration attribute must be set")
 	} else if m.DynamicConfiguration.IsSet() && m.ManualConfiguration.IsSet() {
 		h.Conflict("Only one of the dynamic_configuration and manual_configuration attributes can be set")
+	}
+
+	if helpers.HasUnknownValues(m.SingleLogoutEnabled, m.SPSingleLogoutURL, m.SPSingleLogoutBinding) || !m.SingleLogoutEnabled.ValueBool() {
+		return
+	}
+	if url := m.SPSingleLogoutURL.ValueString(); url == "" {
+		// with dynamic_configuration the URL can come from the service provider's metadata instead
+		if m.ManualConfiguration.IsSet() {
+			h.Missing("The sp_single_logout_url attribute must be set when single_logout_enabled is true and manual_configuration is used")
+		}
+	} else if m.SPSingleLogoutBinding.ValueString() == "soap" && !strings.HasPrefix(strings.ToLower(url), "https://") {
+		h.Invalid("The sp_single_logout_url attribute must use https when sp_single_logout_binding is soap")
 	}
 }
 
