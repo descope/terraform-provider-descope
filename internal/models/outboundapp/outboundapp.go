@@ -1,6 +1,8 @@
 package outboundapp
 
 import (
+	"regexp"
+
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
@@ -20,8 +22,10 @@ var OutboundAppSchema = schema.Schema{
 	Attributes:          OutboundAppAttributes,
 }
 
+var idValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[a-z0-9-]{1,30}$`), "must be 1 to 30 lowercase letters, digits or hyphens")
+
 var OutboundAppAttributes = map[string]schema.Attribute{
-	"id":         stringattr.Identifier(),
+	"id":         stringattr.Optional(idValidator, stringplanmodifier.RequiresReplace()),
 	"project_id": stringattr.Required(stringplanmodifier.RequiresReplace()),
 
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
@@ -82,6 +86,7 @@ type OutboundAppModel struct {
 
 func (m *OutboundAppModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
+	stringattr.Get(m.ID, data, "id")
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")

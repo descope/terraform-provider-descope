@@ -34,6 +34,7 @@ Manages a custom outbound application in a Descope project. Outbound application
 - `default_scopes` (Set of String) The scopes requested from the provider when no scopes are given for a specific connection.
 - `description` (String) A description for the outbound application.
 - `discovery_url` (String) The provider's OpenID Connect discovery endpoint, used to look up its other endpoints.
+- `id` (String) The ID of the outbound application. Set it to create the application under an ID of your choosing, for example one that the application calling Descope looks the application up by, or leave it out to let Descope generate one. A chosen ID has 1 to 30 lowercase letters, digits or hyphens. Changing this value will require the resource to be deleted and recreated.
 - `logo` (String) A URL for an image to display as the outbound application's logo.
 - `pkce` (Boolean) Whether to use PKCE when exchanging the authorization code, which is required by some providers and recommended by all of them.
 - `prompt` (Set of String) How the provider should behave when the user is already signed in. Common values are `none`, `login`, `consent` and `select_account`.
@@ -41,7 +42,3 @@ Manages a custom outbound application in a Descope project. Outbound application
 - `token_url` (String) The provider's token endpoint, used to exchange an authorization code and to refresh tokens.
 - `token_url_params` (Map of String) Additional query parameters to append to the token request, for providers that require them.
 - `use_dcr` (Boolean) Whether Descope registers itself as a client with the provider using OAuth Dynamic Client Registration when the outbound application is created. The registration fills in the `client_id`, `client_secret`, `authorization_url`, `token_url`, `revocation_url`, `default_scopes` and `pkce` fields, so they cannot be set when creating the application. Registration only happens on creation, so this cannot be enabled on an existing outbound application.
-
-### Read-Only
-
-- `id` (String) The ID of this resource.
