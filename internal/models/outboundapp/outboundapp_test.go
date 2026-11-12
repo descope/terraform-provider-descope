@@ -2,7 +2,6 @@ package outboundapp_test
 
 import (
 	"context"
-	"fmt"
 	"regexp"
 	"slices"
 	"strings"
@@ -385,27 +384,11 @@ func TestOutboundAppIDPresence(t *testing.T) {
 	}
 }
 
-func TestOutboundAppIDSchema(t *testing.T) {
+func TestOutboundAppIDValidators(t *testing.T) {
 	id, ok := outboundapp.OutboundAppAttributes["id"].(schema.StringAttribute)
 	if !ok {
 		t.Fatalf("expected a string attribute, got %T", outboundapp.OutboundAppAttributes["id"])
 	}
-	if !id.Optional || !id.Computed {
-		t.Errorf("the id must be optional, and computed when left out, got optional=%v computed=%v", id.Optional, id.Computed)
-	}
-	replaces := false
-	for _, modifier := range id.PlanModifiers {
-		if strings.Contains(fmt.Sprintf("%T", modifier), "requiresReplace") {
-			replaces = true
-		}
-	}
-	if !replaces {
-		t.Error("changing the id must replace the app, since the backend cannot rename one")
-	}
-}
-
-func TestOutboundAppIDValidators(t *testing.T) {
-	id := outboundapp.OutboundAppAttributes["id"].(schema.StringAttribute)
 	for value, valid := range map[string]bool{
 		"openweather-mcp":                  true,
 		"3m1hllkncymure1mjekc3urdsid":      true,
@@ -467,6 +450,7 @@ func TestOutboundAppURLParamOrder(t *testing.T) {
 
 func dcrPlan() *outboundapp.OutboundAppModel {
 	return &outboundapp.OutboundAppModel{
+		ID:               stringattr.Value("app-1"),
 		AppType:          stringattr.Value("oauth"),
 		UseDCR:           boolattr.Value(true),
 		DCRURL:           stringattr.Value("https://mcp.example.com"),
@@ -545,6 +529,14 @@ func TestOutboundAppDCRPlanErrors(t *testing.T) {
 		{"enabling on an existing app", false, func(_, _, s *outboundapp.OutboundAppModel) { s.UseDCR = boolattr.Value(false) }, true},
 		{"changing dcr_url", false, func(_, _, s *outboundapp.OutboundAppModel) { s.DCRURL = stringattr.Value("https://old.example.com") }, true},
 		{"disabling", false, func(p, _, _ *outboundapp.OutboundAppModel) { p.UseDCR = boolattr.Value(false) }, false},
+		{"enabling with a new id", false, func(p, _, s *outboundapp.OutboundAppModel) {
+			p.ID = stringattr.Value("app-2")
+			s.UseDCR = boolattr.Value(false)
+		}, false},
+		{"changing dcr_url with a new id", false, func(p, _, s *outboundapp.OutboundAppModel) {
+			p.ID = stringattr.Value("app-2")
+			s.DCRURL = stringattr.Value("https://old.example.com")
+		}, false},
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
