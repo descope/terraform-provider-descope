@@ -18,6 +18,8 @@ var retryDelays = []time.Duration{500 * time.Millisecond, time.Second, 2 * time.
 
 var rateLimitDelays = []time.Duration{5 * time.Second, 10 * time.Second, 20 * time.Second, 40 * time.Second, 60 * time.Second, 60 * time.Second}
 
+var rateLimitMaxRetryAfter = 2 * time.Minute
+
 var rateLimitJitter = func(delay time.Duration) time.Duration {
 	return rand.N(delay/4 + 1)
 }
@@ -58,7 +60,11 @@ func rateLimitDelay(de *descope.Error, attempt int) (time.Duration, bool) {
 	}
 	delay := rateLimitDelays[attempt]
 	if seconds, ok := de.Info[descope.ErrorInfoKeys.RateLimitExceededRetryAfter].(int); ok {
-		delay = max(delay, time.Duration(seconds)*time.Second)
+		retryAfter := time.Duration(seconds) * time.Second
+		if retryAfter > rateLimitMaxRetryAfter {
+			return 0, false
+		}
+		delay = max(delay, retryAfter)
 	}
 	return delay + rateLimitJitter(delay), true
 }

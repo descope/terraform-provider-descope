@@ -144,6 +144,17 @@ func TestRetryingCountsRateLimitsAndTransientErrorsSeparately(t *testing.T) {
 	assert.Equal(t, 3, calls)
 }
 
+func TestRetryingGivesUpWhenRetryAfterIsTooLong(t *testing.T) {
+	fastRateLimitDelays(t, 6)
+	calls := 0
+	_, err := retrying(t.Context(), func() (*api.HTTPResponse, error) {
+		calls++
+		return nil, rateLimited(121)
+	})
+	require.ErrorIs(t, err, descope.ErrRateLimitExceeded)
+	assert.Equal(t, 1, calls)
+}
+
 func TestRetryingStopsWaitingForARateLimitOnCancelledContext(t *testing.T) {
 	ctx, cancel := context.WithCancel(t.Context())
 	cancel()
@@ -171,6 +182,7 @@ func TestRateLimitDelay(t *testing.T) {
 		{name: "backs off exponentially without Retry-After", attempt: 0, want: 5 * time.Second},
 		{name: "backs off exponentially without Retry-After on a later attempt", attempt: 3, want: 40 * time.Second},
 		{name: "waits as long as Retry-After asks", attempt: 0, retryAfter: 60, want: 60 * time.Second},
+		{name: "waits for a Retry-After of exactly two minutes", attempt: 0, retryAfter: 120, want: 120 * time.Second},
 		{name: "keeps backing off once the backoff passes Retry-After", attempt: 3, retryAfter: 30, want: 40 * time.Second},
 	} {
 		t.Run(tc.name, func(t *testing.T) {
@@ -181,6 +193,9 @@ func TestRateLimitDelay(t *testing.T) {
 	}
 
 	_, ok := rateLimitDelay(descope.AsError(rateLimited(60)), len(rateLimitDelays))
+	assert.False(t, ok)
+
+	_, ok = rateLimitDelay(descope.AsError(rateLimited(121)), 0)
 	assert.False(t, ok)
 }
 
