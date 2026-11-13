@@ -109,3 +109,29 @@ func TestRoleOutOfBandDeletion(t *testing.T) {
 		},
 	)
 }
+
+func TestRoleCreateAdoptsExisting(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	r := testacc.Role(t)
+
+	var existingID string
+	testacc.RunWithDestroyCheck(t, "descope_role",
+		resource.TestStep{
+			PreConfig: func() {
+				entity := testacc.OutOfBandPostData(t, projectID, "/v1/mgmt/role/create", map[string]any{"name": r.Name, "description": "made out of band"})
+				existingID, _ = entity["id"].(string)
+			},
+			Config: r.Config(`project_id = "`+projectID+`"`, `description = "adopted"`),
+			Check: r.Check(map[string]any{
+				"id": func(s string) error {
+					if s != existingID {
+						return fmt.Errorf("expected the existing role %s to be adopted, got %s", existingID, s)
+					}
+					return nil
+				},
+				"name":        r.Name,
+				"description": "adopted",
+			}),
+		},
+	)
+}

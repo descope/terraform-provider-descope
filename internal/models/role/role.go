@@ -11,7 +11,7 @@ import (
 )
 
 var Schema = schema.Schema{
-	MarkdownDescription: "Manages a single role in a Descope project. Roles reference permissions by name, and the referenced permissions must exist when the role is applied.",
+	MarkdownDescription: "Manages a single role in a Descope project. Roles reference permissions by name, and the referenced permissions must exist when the role is applied. Creating a role in a project that already has a project-level role of the same name, such as the `Tenant Admin` role every new project starts with, takes that role over and writes this configuration to it.",
 	Attributes:          RoleAttributes,
 }
 
