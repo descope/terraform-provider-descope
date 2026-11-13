@@ -20,6 +20,10 @@ func NewAccessKeyAttributeResource() resource.Resource {
 	return newResource[attribute.AccessKeyAttributeModel]("access_key_attribute", attribute.AccessKeyAttributeSchema, attributeOps("/v1/mgmt/accesskey/attribute"))
 }
 
+func NewInboundAppAttributeResource() resource.Resource {
+	return newResource[attribute.InboundAppAttributeModel]("inbound_app_attribute", attribute.InboundAppAttributeSchema, attributeOps("/v1/mgmt/thirdparty/app/attribute"))
+}
+
 // attributeOps is for custom attribute resources owning one entry in a backend collection, addressed by a user-chosen name that
 // the model sends in the body and that reads and deletes pass as the `name` query param. Writes return no body, so they re-read.
 func attributeOps(path string) operations {

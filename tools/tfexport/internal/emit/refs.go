@@ -26,6 +26,16 @@ func references(plan *Plan) map[string]hcl.Traversal {
 	return refs
 }
 
+func resourceReferences(plan *Plan, resourceType string) map[string]hcl.Traversal {
+	refs := map[string]hcl.Traversal{}
+	for _, resource := range plan.Resources {
+		if resource.Type == resourceType {
+			refs[resource.EntityID] = hcl.Traversal{hcl.TraverseRoot{Name: resource.Type}, hcl.TraverseAttr{Name: resource.Label}}
+		}
+	}
+	return refs
+}
+
 func projectReference(plan *Plan) hcl.Traversal {
 	if plan.ProjectAddress != nil {
 		return append(slices.Clone(plan.ProjectAddress), hcl.TraverseAttr{Name: "id"})
