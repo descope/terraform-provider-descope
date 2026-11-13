@@ -45,6 +45,9 @@ Set your management key as an environment variable to avoid hardcoding it:
 export DESCOPE_MANAGEMENT_KEY="K2..."
 ```
 
+In CI/CD you can authenticate with the workload's own OIDC token instead of a stored management key. See the
+[Workload Identity](workload-identity) guide.
+
 Run `terraform init` to download the provider:
 
 ```shell
