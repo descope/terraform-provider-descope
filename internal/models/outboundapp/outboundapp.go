@@ -155,7 +155,7 @@ func (m *OutboundAppModel) ModifyPlan(h *helpers.Handler, config, state *Outboun
 	if !m.UseDCR.ValueBool() {
 		return
 	}
-	if state.ID.IsNull() {
+	if state.ID.IsNull() || !m.ID.Equal(state.ID) {
 		if !config.ClientID.IsNull() || !config.ClientSecret.IsNull() || !config.AuthorizationURL.IsNull() || !config.TokenURL.IsNull() || !config.RevocationURL.IsNull() || !config.DefaultScopes.IsNull() || !config.Pkce.IsNull() {
 			h.Conflict("The client_id, client_secret, authorization_url, token_url, revocation_url, default_scopes and pkce fields cannot be set when creating an outbound app with use_dcr, as they are filled in by dynamic client registration")
 			return
