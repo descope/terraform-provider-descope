@@ -3,6 +3,7 @@ package infra
 import (
 	"context"
 	"math/rand/v2"
+	"net/http"
 	"time"
 
 	"github.com/descope/go-sdk/descope"
@@ -34,7 +35,7 @@ func retrying(ctx context.Context, call func() (*api.HTTPResponse, error)) (*api
 			delay = retryDelays[transientAttempts]
 			transientAttempts++
 			tflog.Info(ctx, "Retrying after a transient backend error", map[string]any{"code": de.Code, "delay": delay.String()})
-		} else if de := descope.AsError(err, descope.ErrRateLimitExceeded.Code); de != nil {
+		} else if de := rateLimitError(err); de != nil {
 			var ok bool
 			if delay, ok = rateLimitDelay(de, rateLimitAttempts); !ok {
 				break
@@ -52,6 +53,17 @@ func retrying(ctx context.Context, call func() (*api.HTTPResponse, error)) (*api
 		res, err = call()
 	}
 	return res, err
+}
+
+func rateLimitError(err error) *descope.Error {
+	de := descope.AsError(err)
+	if de == nil {
+		return nil
+	}
+	if de.Code == descope.ErrRateLimitExceeded.Code || de.Info[descope.ErrorInfoKeys.HTTPResponseStatusCode] == http.StatusTooManyRequests {
+		return de
+	}
+	return nil
 }
 
 func rateLimitDelay(de *descope.Error, attempt int) (time.Duration, bool) {

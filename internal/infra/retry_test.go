@@ -3,6 +3,7 @@ package infra
 import (
 	"context"
 	"errors"
+	"net/http"
 	"testing"
 	"time"
 
@@ -123,6 +124,47 @@ func TestRetryingGivesUpOnAPersistentRateLimit(t *testing.T) {
 	})
 	require.ErrorIs(t, err, descope.ErrRateLimitExceeded)
 	assert.Equal(t, 7, calls)
+}
+
+func rateLimitedWithoutErrorBody() error {
+	return descope.ErrInvalidResponse.WithInfo(descope.ErrorInfoKeys.HTTPResponseStatusCode, http.StatusTooManyRequests)
+}
+
+func TestRetryingSucceedsOnceARateLimitWithoutErrorBodyClears(t *testing.T) {
+	fastRateLimitDelays(t, 6)
+	calls := 0
+	res, err := retrying(t.Context(), func() (*api.HTTPResponse, error) {
+		calls++
+		if calls < 3 {
+			return nil, rateLimitedWithoutErrorBody()
+		}
+		return &api.HTTPResponse{BodyStr: "{}"}, nil
+	})
+	require.NoError(t, err)
+	require.NotNil(t, res)
+	assert.Equal(t, 3, calls)
+}
+
+func TestRetryingGivesUpOnAPersistentRateLimitWithoutErrorBody(t *testing.T) {
+	fastRateLimitDelays(t, 6)
+	calls := 0
+	_, err := retrying(t.Context(), func() (*api.HTTPResponse, error) {
+		calls++
+		return nil, rateLimitedWithoutErrorBody()
+	})
+	require.ErrorIs(t, err, descope.ErrInvalidResponse)
+	assert.Equal(t, 7, calls)
+}
+
+func TestRetryingLeavesAnInvalidResponseOfAnotherStatusAlone(t *testing.T) {
+	fastRateLimitDelays(t, 6)
+	calls := 0
+	_, err := retrying(t.Context(), func() (*api.HTTPResponse, error) {
+		calls++
+		return nil, descope.ErrInvalidResponse.WithInfo(descope.ErrorInfoKeys.HTTPResponseStatusCode, http.StatusBadGateway)
+	})
+	require.ErrorIs(t, err, descope.ErrInvalidResponse)
+	assert.Equal(t, 1, calls)
 }
 
 func TestRetryingCountsRateLimitsAndTransientErrorsSeparately(t *testing.T) {
