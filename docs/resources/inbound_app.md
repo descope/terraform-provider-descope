@@ -131,7 +131,9 @@ Optional:
 
 Optional:
 
+- `enable_inactivity` (Boolean) Whether a refresh token unused for `inactivity_time` is rejected, so the client has to authorize again. Only applies when `enabled` is set.
 - `enabled` (Boolean) Whether to override the project's session settings.
+- `inactivity_time` (String) How long a refresh token can go unused before it is rejected, when `enable_inactivity` is set.
 - `key_session_token_expiration` (String) The expiration duration for access key session tokens. Must be between 3 minutes and one month.
 - `key_template_id` (String) The ID of the JWT template to use for access key JWTs issued to this inbound app.
 - `refresh_token_expiration` (String) The expiration duration for refresh tokens issued to this inbound app.
