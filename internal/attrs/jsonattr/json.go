@@ -99,6 +99,28 @@ func equivalent(a, b string) bool {
 	return reflect.DeepEqual(av, bv)
 }
 
+func equivalentExcept(a, b string, fields []string) bool {
+	if equivalent(a, b) {
+		return true
+	}
+	if len(fields) == 0 {
+		return false
+	}
+	av, _ := decode(a)
+	bv, _ := decode(b)
+	ao, aok := av.(map[string]any)
+	bo, bok := bv.(map[string]any)
+	if !aok || !bok {
+		return false
+	}
+	for _, field := range fields {
+		if _, set := bo[field]; !set {
+			delete(ao, field)
+		}
+	}
+	return reflect.DeepEqual(ao, bo)
+}
+
 func decode(s string) (any, error) {
 	decoder := json.NewDecoder(bytes.NewReader([]byte(s)))
 	decoder.UseNumber()

@@ -68,6 +68,52 @@ func TestUseStateWhenEquivalent(t *testing.T) {
 	}
 }
 
+func TestUseStateWhenEquivalentServerFields(t *testing.T) {
+	state := types.StringValue(`{"a":1,"version":"3.26.0"}`)
+	cases := []struct {
+		name     string
+		plan     types.String
+		expected types.String
+	}{
+		{"server field left out", types.StringValue("{\n  \"a\": 1\n}"), state},
+		{"server field set to the same value", types.StringValue(`{"version":"3.26.0","a":1}`), state},
+		{"server field set to another value", types.StringValue(`{"a":1,"version":"3.27.0"}`), types.StringValue(`{"a":1,"version":"3.27.0"}`)},
+		{"other change with the server field left out", types.StringValue(`{"a":2}`), types.StringValue(`{"a":2}`)},
+		{"other field left out", types.StringValue(`{"version":"3.26.0"}`), types.StringValue(`{"version":"3.26.0"}`)},
+		{"not an object", types.StringValue(`[1]`), types.StringValue(`[1]`)},
+		{"invalid", types.StringValue(`not json`), types.StringValue(`not json`)},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			req := planmodifier.StringRequest{Path: path.Root("data"), StateValue: state, PlanValue: c.plan}
+			resp := &planmodifier.StringResponse{PlanValue: c.plan}
+			UseStateWhenEquivalent("version").PlanModifyString(context.Background(), req, resp)
+			assert.Equal(t, c.expected, resp.PlanValue)
+		})
+	}
+}
+
+func TestUseStateWhenEquivalentServerFieldsInState(t *testing.T) {
+	plan := types.StringValue(`{"a":1}`)
+	cases := []struct {
+		name     string
+		state    types.String
+		expected types.String
+	}{
+		{"server field missing from the state", types.StringValue(`{"a":1}`), types.StringValue(`{"a":1}`)},
+		{"state not an object", types.StringValue(`[1]`), plan},
+		{"state invalid", types.StringValue(`not json`), plan},
+	}
+	for _, c := range cases {
+		t.Run(c.name, func(t *testing.T) {
+			req := planmodifier.StringRequest{Path: path.Root("data"), StateValue: c.state, PlanValue: plan}
+			resp := &planmodifier.StringResponse{PlanValue: plan}
+			UseStateWhenEquivalent("version").PlanModifyString(context.Background(), req, resp)
+			assert.Equal(t, c.expected, resp.PlanValue)
+		})
+	}
+}
+
 func TestGet(t *testing.T) {
 	data := map[string]any{}
 	Get(Value(`{"a":1}`), data, "obj")

@@ -28,3 +28,5 @@ For the same reason removing a style from the data does not remove it from the p
 in the console or through the management API instead. An apply is rejected if the data's
 `componentsVersion` differs from the project's, in which case export the styles again or leave
 `componentsVersion` out, and if it changes the type of a style that already exists in the project.
+When the data leaves out `componentsVersion`, a theme whose export differs only in that field
+plans no change.
