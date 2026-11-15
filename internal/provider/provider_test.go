@@ -27,6 +27,7 @@ var replaceModifierAllowlist = map[string]bool{
 	"descope_flow flow_id":               true,
 	"descope_widget widget_id":           true,
 	"descope_oauth_provider id":          true,
+	"descope_outbound_app id":            true,
 	"descope_email_template method":      true,
 	"descope_text_template method":       true,
 	"descope_voice_template method":      true,

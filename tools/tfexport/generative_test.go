@@ -104,6 +104,7 @@ var generativeSkippedAttributes = map[string]string{
 	"descope_project_settings.test_users_verifier_regexp": "coupled pair, handled by pairing",
 	"descope_oauth_provider.claim_mapping":                "claims must map to existing descope attributes",
 	"descope_admin_portal.enabled":                        "requires widgets, handled by pairing",
+	"descope_outbound_app.id":                             "a chosen id replaces the app, exercised by the outbound app test",
 }
 
 var attributeValueOverrides = map[string]string{
