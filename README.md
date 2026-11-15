@@ -35,7 +35,8 @@ using Terraform configuration files.
 -   The [Terraform CLI](https://developer.hashicorp.com/terraform/install) installed.
 -   A pro or enterprise tier license for your Descope company.
 -   A valid management key for your Descope company. You can create one in the
-    [Company section](https://app.descope.com/settings/company) of the Descope console.
+    [Company section](https://app.descope.com/settings/company) of the Descope console. CI/CD workloads can use
+    their own OIDC token instead, see the [Workload Identity](docs/guides/workload-identity.md) guide.
 
 ### Usage
 
