@@ -58,6 +58,7 @@ func TestGenerativeCoverage(t *testing.T) {
 var generativeSkippedResources = map[string]string{
 	"descope_project":           "the container the generated resources live in, created by the seed preamble",
 	"descope_flow":              "payload-based, covered by flow scenarios",
+	"descope_flow_translations": "payload-based and needs a flow with translation turned on, export deferred",
 	"descope_widget":            "payload-based, covered by the widget scenario",
 	"descope_styles":            "payload-based, covered by flow scenarios",
 	"descope_app_role":          "app-scoped wiring, covered by the apps scenario",
