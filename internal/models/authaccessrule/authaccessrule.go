@@ -81,7 +81,7 @@ func (m *AuthAccessRuleModel) GetProjectID() stringattr.Type {
 var AuthAccessConditionValidator = objattr.NewValidator[AuthAccessConditionModel]("must have a valid operator and values")
 
 var AuthAccessConditionAttributes = map[string]schema.Attribute{
-	"key":      stringattr.Required(stringvalidator.OneOf("request.ip", "request.country", "user.email", "user.emailDomain", "user.loginId", "user.phone")),
+	"key":      stringattr.Required(stringvalidator.OneOf("request.ip", "request.country", "request.asn", "user.email", "user.emailDomain", "user.loginId", "user.phone")),
 	"operator": stringattr.Required(stringvalidator.OneOf("equal", "notEqual", "in", "notIn", "inCidr", "notInCidr")),
 	"values":   strlistattr.Required(listvalidator.SizeAtLeast(1), stringattr.NonEmptyValidator),
 }

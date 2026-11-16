@@ -74,6 +74,19 @@ func TestAuthAccessRule(t *testing.T) {
 				"conditions.3.values.0": "{{jwtClaims.loginCountry}}",
 			}),
 		},
+		// match the request autonomous system number
+		resource.TestStep{
+			Config: r.Config(project, `effect = "block"`, `conditions = [{ key = "request.asn", operator = "in", values = ["13335", "15169"] }]`),
+			Check: r.Check(map[string]any{
+				"id":                    sameID,
+				"conditions.#":          1,
+				"conditions.0.key":      "request.asn",
+				"conditions.0.operator": "in",
+				"conditions.0.values.#": 2,
+				"conditions.0.values.0": "13335",
+				"conditions.0.values.1": "15169",
+			}),
+		},
 		// clear the conditions
 		resource.TestStep{
 			Config: r.Config(project, `effect = "block"`, `conditions = []`),
