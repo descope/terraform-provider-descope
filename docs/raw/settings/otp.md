@@ -79,6 +79,16 @@ its `method` set to `otp`. An empty value (the default) selects the built-in Sys
 
 
 
+external_email_template_id
+--------------------------
+
+- Type: `string`
+
+The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An
+empty value (the default) sends the Descope template selected by `email_template_id`.
+
+
+
 text_template_id
 ----------------
 

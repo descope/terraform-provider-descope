@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Descope CLI
-        uses: descope/descopecli/.github/actions/install@76722efc17408640a42340cbdae1528c363e9dc2 # v0.8.15
+        uses: descope/descopecli/.github/actions/install@cd878e92f692529dde524400d418e2b986ae42e4 # v0.8.17
       - name: Delete Leftover Acceptance Projects
         shell: bash
         env:
