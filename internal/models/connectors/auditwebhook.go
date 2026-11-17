@@ -91,6 +91,7 @@ func (m *AuditWebhookConnectorModel) ConfigurationValues(h *helpers.Handler) map
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	c["auditCompanyId"] = ""
 	return c
 }
 

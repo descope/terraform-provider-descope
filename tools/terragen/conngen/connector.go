@@ -24,6 +24,7 @@ type Connector struct {
 	HiddenFields      []*Field         `json:"allFields"`
 	ExtDiscriminators []*Discriminator `json:"extDiscriminators"`
 	ExtProvider       bool             `json:"extProvider"`
+	Company           bool             `json:"-"`
 
 	naming *Naming
 }
@@ -52,6 +53,12 @@ var excludedFields = map[string][]string{
 		"autoTriggerAdditionalGroups",
 	},
 }
+
+const companyIDField = "auditCompanyId"
+
+var companyExcludedFields = []string{"auditFilters", "troubleshootLogEnabled"}
+
+var companyBlockedConnectors = []string{"datadog", "aws-s3", "aws-eventbridge"}
 
 // The field types the generator models. A new template type must get support here and in the field attribute helpers, or be excluded.
 var supportedFieldTypes = []string{
@@ -96,8 +103,16 @@ func (c *Connector) defaultStructName() string {
 	return utils.CapitalCase(c.ID)
 }
 
+func (c *Connector) IsCompanyCapable() bool {
+	return !slices.Contains(companyBlockedConnectors, c.ID) && slices.ContainsFunc(c.HiddenFields, func(f *Field) bool { return f.Name == companyIDField })
+}
+
 func (c *Connector) FileName() string {
-	return c.naming.GetName("connector", c.ID, "file", c.defaultFileName())
+	name := c.naming.GetName("connector", c.ID, "file", c.defaultFileName())
+	if c.Company {
+		return "company_" + name
+	}
+	return name
 }
 
 func (c *Connector) defaultFileName() string {
@@ -122,16 +137,26 @@ func (c *Connector) defaultAttributeName() string {
 
 // The prefix for the standalone resource model and attributes, e.g. `SMTPConnector`.
 func (c *Connector) ResourceStructName() string {
+	if c.Company {
+		return "Company" + c.StructName() + "Connector"
+	}
 	return c.StructName() + "Connector"
 }
 
 // The resource type name without the provider prefix, e.g. `smtp_connector`.
 func (c *Connector) ResourceName() string {
+	if c.Company {
+		return "company_" + c.AttributeName() + "_connector"
+	}
 	return c.AttributeName() + "_connector"
 }
 
 // The schema description for the standalone resource, shown in the registry documentation.
 func (c *Connector) ResourceDocText() string {
+	if c.Company {
+		return "Manages a company-level " + c.Name + " connector that streams the audit events of the whole company. It requires a " +
+			"company management key, and a company can have only one company-level connector."
+	}
 	text := "Manages a " + c.Name + " connector and its configuration in a Descope project."
 	if desc := strings.TrimSpace(c.Description); desc != "" {
 		text += " " + desc
@@ -335,11 +360,32 @@ func (c *Connector) excludeFields() []string {
 		}
 	}
 	c.Fields = slices.DeleteFunc(c.Fields, func(f *Field) bool {
-		if !slices.Contains(names, f.Name) {
+		if !slices.Contains(names, f.Name) && (!c.Company || !slices.Contains(companyExcludedFields, f.Name)) {
 			return false
 		}
 		utils.Debug(1, "- %s: excluded field %s", c.ID, f.Name)
 		return true
 	})
+	if c.Company {
+		names = append(slices.Clone(names), c.excludeCompanyFields()...)
+	}
 	return names
+}
+
+func (c *Connector) excludeCompanyFields() []string {
+	names := slices.Clone(companyExcludedFields)
+	for {
+		before := len(c.Fields)
+		c.Fields = slices.DeleteFunc(c.Fields, func(f *Field) bool {
+			if f.Dependency == nil || !slices.Contains(names, f.Dependency.Name) {
+				return false
+			}
+			utils.Debug(1, "- %s: excluded company field %s", c.ID, f.Name)
+			names = append(names, f.Name)
+			return true
+		})
+		if len(c.Fields) == before {
+			return names
+		}
+	}
 }

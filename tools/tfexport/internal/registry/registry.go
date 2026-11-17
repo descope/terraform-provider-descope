@@ -21,7 +21,7 @@ func Load(ctx context.Context) map[string]resources.ExportableResource {
 func ConnectorTypes(ctx context.Context, loaded map[string]resources.ExportableResource) map[string]string {
 	result := map[string]string{}
 	for name, exportable := range loaded {
-		if !strings.HasSuffix(name, "_connector") {
+		if !strings.HasSuffix(name, "_connector") || strings.HasPrefix(name, "descope_company_") {
 			continue
 		}
 		if wireType := exportable.ExportWireType(ctx); wireType != "" {

@@ -153,6 +153,7 @@ func (m *SnowflakeConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 	floatattr.Get(m.MinFlushIntervalMinutes, c, "minFlushIntervalMinutes")
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
+	c["auditCompanyId"] = ""
 	return c
 }
 

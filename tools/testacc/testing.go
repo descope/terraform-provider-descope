@@ -34,6 +34,13 @@ func RunWithDestroyCheck(t *testing.T, resourceType string, steps ...resource.Te
 	resource.Test(t, testCase)
 }
 
+func RunSerialWithDestroyCheck(t *testing.T, resourceType string, steps ...resource.TestStep) {
+	checker := lookupDestroyChecker(t, resourceType)
+	testCase := TestCase(t, steps...)
+	testCase.CheckDestroy = checkDestroyed(resourceType, checker)
+	resource.Test(t, testCase)
+}
+
 func TestCase(t *testing.T, steps ...resource.TestStep) resource.TestCase {
 	for i := range steps {
 		steps[i] = applyStepThrottling(steps[i])

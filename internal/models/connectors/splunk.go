@@ -94,6 +94,7 @@ func (m *SplunkConnectorModel) ConfigurationValues(h *helpers.Handler) map[strin
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
+	c["auditCompanyId"] = ""
 	return c
 }
 

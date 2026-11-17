@@ -1,6 +1,7 @@
 package conngen
 
 import (
+	"cmp"
 	"log"
 	"os"
 	"path/filepath"
@@ -24,7 +25,12 @@ func (c *Connectors) Read(mockdir string, templatesdir string) {
 	c.readTemplates(mockdir)
 	utils.Debug(0, "+ templates:")
 	c.readTemplates(templatesdir)
-	slices.SortFunc(c.Connectors, func(a, b *Connector) int { return strings.Compare(a.ID, b.ID) })
+	slices.SortFunc(c.Connectors, func(a, b *Connector) int {
+		if a.ID == b.ID {
+			return cmp.Compare(boolToInt(a.Company), boolToInt(b.Company))
+		}
+		return strings.Compare(a.ID, b.ID)
+	})
 	utils.Debug(0, "")
 }
 
@@ -56,11 +62,7 @@ func (c *Connectors) readTemplates(templatesdir string) {
 
 func (c *Connectors) readConnector(path string) {
 	file := filepath.Join(path, "metadata.json")
-
-	connector := &Connector{}
-	if err := utils.ReadJSON(file, connector); err != nil {
-		log.Fatalf("failed to read connector metadata from path %s: %s", file, err.Error())
-	}
+	connector := readConnectorFile(file)
 
 	if connector.IsExperimental() {
 		utils.Debug(1, "- %s (experimental)", connector.ID)
@@ -82,4 +84,27 @@ func (c *Connectors) readConnector(path string) {
 
 	c.Connectors = append(c.Connectors, connector)
 	utils.Debug(1, "- %s", connector.ID)
+
+	if connector.IsCompanyCapable() {
+		company := readConnectorFile(file)
+		company.Company = true
+		company.Prepare()
+		c.Connectors = append(c.Connectors, company)
+		utils.Debug(1, "- %s (company)", connector.ID)
+	}
+}
+
+func readConnectorFile(file string) *Connector {
+	connector := &Connector{}
+	if err := utils.ReadJSON(file, connector); err != nil {
+		log.Fatalf("failed to read connector metadata from path %s: %s", file, err.Error())
+	}
+	return connector
+}
+
+func boolToInt(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
 }
