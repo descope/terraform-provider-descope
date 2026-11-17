@@ -119,7 +119,7 @@ func Instances(files map[string]any, connectorTypes map[string]string) (instance
 	}
 
 	if attributes, ok := files["attributes.json"].(map[string]any); ok {
-		for key, resource := range map[string]string{"user": "descope_user_attribute", "tenant": "descope_tenant_attribute", "accessKey": "descope_access_key_attribute"} {
+		for key, resource := range map[string]string{"user": "descope_user_attribute", "tenant": "descope_tenant_attribute", "accessKey": "descope_access_key_attribute", "inboundApp": "descope_inbound_app_attribute"} {
 			for _, attribute := range anyObjectList(attributes[key]) {
 				name, _ := attribute["name"].(string)
 				display, _ := attribute["displayName"].(string)

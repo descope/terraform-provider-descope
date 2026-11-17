@@ -37,6 +37,8 @@ var replaceModifierAllowlist = map[string]bool{
 	"descope_tenant_attribute type":      true,
 	"descope_access_key_attribute id":    true,
 	"descope_access_key_attribute type":  true,
+	"descope_inbound_app_attribute id":   true,
+	"descope_inbound_app_attribute type": true,
 }
 
 // Guards the deletion protection invariant: isPlannedReplace only detects RequiresReplace on top level string and bool attributes, so
@@ -104,6 +106,7 @@ var jsonAttributes = []string{
 	"descope_access_key custom_attributes",
 	"descope_access_key custom_claims",
 	"descope_flow data",
+	"descope_inbound_app custom_attributes",
 	"descope_jwt_template template",
 	"descope_list json",
 	"descope_styles data",
