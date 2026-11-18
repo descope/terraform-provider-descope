@@ -77,7 +77,6 @@ func (m *CompanyPendoConnectorModel) ConfigurationValues(h *helpers.Handler) map
 	stringattr.Get(m.IntegrationKey, c, "integrationKey")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

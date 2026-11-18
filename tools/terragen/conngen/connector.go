@@ -12,7 +12,7 @@ import (
 
 // Connector
 //
-// The template metadata also carries console and runtime keys that have no Terraform meaning and are knowingly ignored: types,
+// The template metadata also carries console and runtime keys that have no Terraform meaning and are knowingly ignored:
 // content_version, lambda, timeout, categories, logos, commands, clientScripts, sdkConfig, details and tags.
 type Connector struct {
 	ID                string           `json:"id"`
@@ -24,6 +24,7 @@ type Connector struct {
 	HiddenFields      []*Field         `json:"allFields"`
 	ExtDiscriminators []*Discriminator `json:"extDiscriminators"`
 	ExtProvider       bool             `json:"extProvider"`
+	Types             []string         `json:"types"`
 	Company           bool             `json:"-"`
 
 	naming *Naming
@@ -54,11 +55,7 @@ var excludedFields = map[string][]string{
 	},
 }
 
-const companyIDField = "auditCompanyId"
-
 var companyExcludedFields = []string{"auditFilters", "troubleshootLogEnabled"}
-
-var companyBlockedConnectors = []string{"datadog", "aws-s3", "aws-eventbridge"}
 
 // The field types the generator models. A new template type must get support here and in the field attribute helpers, or be excluded.
 var supportedFieldTypes = []string{
@@ -104,7 +101,7 @@ func (c *Connector) defaultStructName() string {
 }
 
 func (c *Connector) IsCompanyCapable() bool {
-	return !slices.Contains(companyBlockedConnectors, c.ID) && slices.ContainsFunc(c.HiddenFields, func(f *Field) bool { return f.Name == companyIDField })
+	return slices.Contains(c.Types, "audit")
 }
 
 func (c *Connector) FileName() string {

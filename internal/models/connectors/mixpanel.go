@@ -109,7 +109,6 @@ func (m *MixpanelConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.OverrideLogsPrefix, c, "overrideLogsPrefix")
 	stringattr.Get(m.LogsPrefix, c, "logsPrefix")
-	c["auditCompanyId"] = ""
 	return c
 }
 

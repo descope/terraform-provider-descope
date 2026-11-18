@@ -140,7 +140,6 @@ func (m *AWSEventBridgeConnectorModel) ConfigurationValues(h *helpers.Handler) m
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

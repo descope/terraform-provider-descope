@@ -88,7 +88,6 @@ func (m *CompanyOpenTelemetryConnectorModel) ConfigurationValues(h *helpers.Hand
 	getSecretObject(m.Headers, m.SecretHeaders, c, "headers", h)
 	boolattr.Get(m.Insecure, c, "insecure")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	c["auditCompanyId"] = ""
 	return c
 }
 

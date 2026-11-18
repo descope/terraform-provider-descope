@@ -77,7 +77,6 @@ func (m *CompanySplunkConnectorModel) ConfigurationValues(h *helpers.Handler) ma
 	stringattr.Get(m.HecURL, c, "hecUrl")
 	stringattr.Get(m.Index, c, "index")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	c["auditCompanyId"] = ""
 	return c
 }
 

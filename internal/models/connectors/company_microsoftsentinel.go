@@ -89,7 +89,6 @@ func (m *CompanyMicrosoftSentinelConnectorModel) ConfigurationValues(h *helpers.
 	stringattr.Get(m.ClientSecret, c, "clientSecret")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

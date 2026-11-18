@@ -92,7 +92,6 @@ func (m *CompanyMixpanelConnectorModel) ConfigurationValues(h *helpers.Handler) 
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	boolattr.Get(m.OverrideLogsPrefix, c, "overrideLogsPrefix")
 	stringattr.Get(m.LogsPrefix, c, "logsPrefix")
-	c["auditCompanyId"] = ""
 	return c
 }
 

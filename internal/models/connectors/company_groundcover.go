@@ -83,7 +83,6 @@ func (m *CompanyGroundcoverConnectorModel) ConfigurationValues(h *helpers.Handle
 	stringattr.Get(m.ServiceName, c, "serviceName")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

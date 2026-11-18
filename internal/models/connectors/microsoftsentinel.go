@@ -109,7 +109,6 @@ func (m *MicrosoftSentinelConnectorModel) ConfigurationValues(h *helpers.Handler
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	stringattr.Get(m.TroubleshootStreamName, c, "troubleshootStreamName")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

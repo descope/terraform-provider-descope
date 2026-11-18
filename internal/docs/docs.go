@@ -562,6 +562,41 @@ var docsCompanyAuditWebhookConnector = map[string]string{
 	"insecure": "Will ignore certificate errors raised by the client",
 }
 
+var docsCompanyAWSEventBridgeConnector = map[string]string{
+	"name":              "A custom name for your connector.",
+	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type":         "The authentication type to use.",
+	"access_key_id":     "The unique AWS access key ID.",
+	"secret_access_key": "The secret AWS access key.",
+	"role_arn":          "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id":       "The external ID to use when assuming the role.",
+	"region":            "The AWS EventBridge region, e.g. `us-east-1`.",
+	"event_bus_name": "The name or ARN of the EventBridge event bus. Use `default` for the default " +
+		"event bus or provide a custom event bus name/ARN.",
+	"detail_type": "The detail type for the EventBridge event. This is a free-form string used to " +
+		"identify the event type, e.g. `descope.audit.event`.",
+	"source": "The source of the EventBridge event. This identifies the application or service " +
+		"that is generating the event, e.g. `descope.auth`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii":      "Whether to mask personally identifiable information in the logs.",
+}
+
+var docsCompanyAWSS3Connector = map[string]string{
+	"name":              "A custom name for your connector.",
+	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type":         "The authentication type to use.",
+	"access_key_id":     "The unique AWS access key ID.",
+	"secret_access_key": "The secret AWS access key.",
+	"role_arn":          "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id":       "The external ID to use when assuming the role.",
+	"region":            "The AWS S3 region, e.g. `us-east-1`.",
+	"bucket":            "The AWS S3 bucket. This bucket should already exist for the connector to work.",
+	"audit_enabled":     "Whether to enable streaming of audit events.",
+	"mask_pii":          "Whether to mask personally identifiable information in the logs.",
+}
+
 var docsCompanyAzureMonitorConnector = map[string]string{
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
@@ -611,6 +646,23 @@ var docsCompanyCriblConnector = map[string]string{
 	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
 		"about what is masked: " +
 		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyDatadogConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"api_key":     "The unique Datadog organization key.",
+	"site": "The Datadog site to send logs to. Default is `datadoghq.com`. European, free " +
+		"tier and other customers should set their site accordingly.",
+	"source": "An optional custom source to use for log entries sent to Datadog. This can be " +
+		"used to differentiate between environments (e.g. `production`, `staging`). If " +
+		"left empty, the default Descope source will be used.",
+	"tags": "An optional comma-separated list of tags to append to all log entries sent to " +
+		"Datadog (e.g. `env:production,team:auth`). These are added in addition to any " +
+		"default tags. If left empty, only the default Descope tags will be used.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii":      "Whether to mask personally identifiable information in the logs.",
 }
 
 var docsCompanyGoogleCloudLoggingConnector = map[string]string{

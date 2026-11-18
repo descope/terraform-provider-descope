@@ -71,7 +71,6 @@ func (m *CompanyGoogleCloudLoggingConnectorModel) ConfigurationValues(h *helpers
 	c := map[string]any{}
 	stringattr.Get(m.ServiceAccountKey, c, "serviceAccountKey")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	c["auditCompanyId"] = ""
 	return c
 }
 

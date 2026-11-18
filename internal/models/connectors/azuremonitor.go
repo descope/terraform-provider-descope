@@ -106,7 +106,6 @@ func (m *AzureMonitorConnectorModel) ConfigurationValues(h *helpers.Handler) map
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

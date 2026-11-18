@@ -140,7 +140,6 @@ func (m *CompanySnowflakeConnectorModel) ConfigurationValues(h *helpers.Handler)
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	floatattr.Get(m.MinFlushIntervalMinutes, c, "minFlushIntervalMinutes")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

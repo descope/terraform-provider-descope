@@ -71,7 +71,6 @@ func (m *CompanySumoLogicConnectorModel) ConfigurationValues(h *helpers.Handler)
 	c := map[string]any{}
 	stringattr.Get(m.HTTPSourceURL, c, "httpSourceUrl")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
-	c["auditCompanyId"] = ""
 	return c
 }
 

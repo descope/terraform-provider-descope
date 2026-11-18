@@ -80,7 +80,6 @@ func (m *CompanyCriblConnectorModel) ConfigurationValues(h *helpers.Handler) map
 	stringattr.Get(m.Source, c, "source")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

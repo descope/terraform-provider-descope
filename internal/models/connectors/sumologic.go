@@ -88,7 +88,6 @@ func (m *SumoLogicConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
-	c["auditCompanyId"] = ""
 	return c
 }
 

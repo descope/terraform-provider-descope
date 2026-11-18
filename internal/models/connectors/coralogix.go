@@ -94,7 +94,6 @@ func (m *CoralogixConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 

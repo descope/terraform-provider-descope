@@ -105,7 +105,6 @@ func (m *OpenTelemetryConnectorModel) ConfigurationValues(h *helpers.Handler) ma
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
-	c["auditCompanyId"] = ""
 	return c
 }
 

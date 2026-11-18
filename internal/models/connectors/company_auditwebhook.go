@@ -84,7 +84,6 @@ func (m *CompanyAuditWebhookConnectorModel) ConfigurationValues(h *helpers.Handl
 	getSecretObject(m.Headers, m.SecretHeaders, c, "headers", h)
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
-	c["auditCompanyId"] = ""
 	return c
 }
 

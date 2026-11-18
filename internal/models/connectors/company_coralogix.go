@@ -77,7 +77,6 @@ func (m *CompanyCoralogixConnectorModel) ConfigurationValues(h *helpers.Handler)
 	stringattr.Get(m.BearerToken, c, "bearerToken")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
-	c["auditCompanyId"] = ""
 	return c
 }
 
