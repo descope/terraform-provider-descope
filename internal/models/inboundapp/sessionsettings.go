@@ -15,6 +15,8 @@ var SessionSettingsAttributes = map[string]schema.Attribute{
 	"key_session_token_expiration": durationattr.Default("10 minutes"),
 	"user_template_id":             stringattr.Default(""),
 	"key_template_id":              stringattr.Default(""),
+	"enable_inactivity":            boolattr.Default(false),
+	"inactivity_time":              durationattr.Default("12 minutes"),
 }
 
 type SessionSettingsModel struct {
@@ -24,6 +26,8 @@ type SessionSettingsModel struct {
 	KeySessionTokenExpiration durationattr.Type `tfsdk:"key_session_token_expiration"`
 	UserTemplateId            stringattr.Type   `tfsdk:"user_template_id"`
 	KeyTemplateId             stringattr.Type   `tfsdk:"key_template_id"`
+	EnableInactivity          boolattr.Type     `tfsdk:"enable_inactivity"`
+	InactivityTime            durationattr.Type `tfsdk:"inactivity_time"`
 }
 
 func (m *SessionSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -34,6 +38,8 @@ func (m *SessionSettingsModel) Values(h *helpers.Handler) map[string]any {
 	durationattr.Get(m.KeySessionTokenExpiration, data, "keySessionTokenExpiration")
 	stringattr.Get(m.UserTemplateId, data, "userTemplateId")
 	stringattr.Get(m.KeyTemplateId, data, "keyTemplateId")
+	boolattr.Get(m.EnableInactivity, data, "enableInactivity")
+	durationattr.Get(m.InactivityTime, data, "inactivityTime")
 	return data
 }
 
@@ -44,4 +50,6 @@ func (m *SessionSettingsModel) SetValues(h *helpers.Handler, data map[string]any
 	durationattr.SetDefault(&m.KeySessionTokenExpiration, data, "keySessionTokenExpiration", "10 minutes")
 	stringattr.SetDefault(&m.UserTemplateId, data, "userTemplateId", "") // omitted by the backend when unset, and Set would leave a null that never matches the schema default
 	stringattr.SetDefault(&m.KeyTemplateId, data, "keyTemplateId", "")   // same, omitted when no key template is set
+	boolattr.SetDefault(&m.EnableInactivity, data, "enableInactivity", false)
+	durationattr.SetDefault(&m.InactivityTime, data, "inactivityTime", "12 minutes")
 }
