@@ -5,9 +5,9 @@ resource "descope_oauth_provider" "custom" {
   client_id              = "roundtrip-client-v2"
   client_secret          = "not-a-real-secret"
   allowed_grant_types    = ["authorization_code", "implicit"]
-  authorization_endpoint = "https://idp2.example.com/authorize"
-  token_endpoint         = "https://idp2.example.com/token"
-  user_info_endpoint     = "https://idp2.example.com/userinfo"
+  authorization_endpoint = "https://example.com/idp2/authorize"
+  token_endpoint         = "https://example.com/idp2/token"
+  user_info_endpoint     = "https://example.com/idp2/userinfo"
   scopes                 = ["openid", "email", "profile"]
 }
 
