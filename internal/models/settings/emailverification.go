@@ -32,7 +32,8 @@ func (m *EmailVerificationSettingsModel) Values(h *helpers.Handler) map[string]a
 }
 
 func (m *EmailVerificationSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
-	boolattr.Set(&m.Enabled, data, "enabled")
+	enabled, _ := data["enabled"].(bool) // absent means disabled
+	m.Enabled = boolattr.Value(enabled)
 }
 
 func (m *EmailVerificationSettingsModel) GetID() stringattr.Type        { return m.ID }
