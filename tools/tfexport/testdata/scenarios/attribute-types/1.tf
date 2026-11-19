@@ -65,3 +65,12 @@ resource "descope_access_key_attribute" "owner" {
   name       = "Owner Attribute"
   type       = "string"
 }
+
+resource "descope_inbound_app_attribute" "region" {
+  depends_on     = [descope_access_key_attribute.owner]
+  project_id     = descope_project.test.id
+  id             = "fuzzRegion"
+  name           = "Region Attribute"
+  type           = "singleselect"
+  select_options = ["north", "south"]
+}

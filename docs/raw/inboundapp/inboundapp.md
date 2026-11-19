@@ -309,3 +309,21 @@ token_exchange_disabled
 
 Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When
 omitted, the current setting is kept, and a new app has the grant type enabled.
+
+
+
+custom_attributes
+-----------------
+
+- Type: `string`
+- Default: `"{}"`
+
+A JSON-encoded object of custom attribute values for the inbound app, keyed by the `id` of a
+`descope_inbound_app_attribute`. JWT templates read these values as `{{app.customAttributes.<id>}}`.
+Reference the attribute resource in the key, as in `jsonencode({ (descope_inbound_app_attribute.org.id) = "..." })`,
+so the attribute is created first, since a value for an attribute that is not defined is rejected. Each value
+must have the attribute's type, as it is not converted: a string for `string` and `singleselect`, an unquoted
+number for `number`, `true` or `false` for `boolean`, a list of strings for `multiselect`, a number of milliseconds
+since the epoch for `date`, and an `MM-DD` string for `monthday`. Values set outside Terraform are removed on the
+next apply unless they are also in this attribute, so the first plan after adding it, or after upgrading the
+provider, shows those values as removed.

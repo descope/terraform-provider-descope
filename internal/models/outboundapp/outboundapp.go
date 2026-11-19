@@ -1,6 +1,8 @@
 package outboundapp
 
 import (
+	"regexp"
+
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
@@ -20,8 +22,10 @@ var OutboundAppSchema = schema.Schema{
 	Attributes:          OutboundAppAttributes,
 }
 
+var idValidator = stringvalidator.RegexMatches(regexp.MustCompile(`^[a-z0-9-]{1,30}$`), "must be 1 to 30 lowercase letters, digits or hyphens")
+
 var OutboundAppAttributes = map[string]schema.Attribute{
-	"id":         stringattr.Identifier(),
+	"id":         stringattr.Optional(idValidator, stringplanmodifier.RequiresReplace()),
 	"project_id": stringattr.Required(stringplanmodifier.RequiresReplace()),
 
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
@@ -82,6 +86,7 @@ type OutboundAppModel struct {
 
 func (m *OutboundAppModel) Values(h *helpers.Handler) map[string]any {
 	data := map[string]any{}
+	stringattr.Get(m.ID, data, "id")
 	stringattr.Get(m.Name, data, "name")
 	stringattr.Get(m.Description, data, "description")
 	stringattr.Get(m.Logo, data, "logo")
@@ -150,7 +155,7 @@ func (m *OutboundAppModel) ModifyPlan(h *helpers.Handler, config, state *Outboun
 	if !m.UseDCR.ValueBool() {
 		return
 	}
-	if state.ID.IsNull() {
+	if state.ID.IsNull() || !m.ID.Equal(state.ID) {
 		if !config.ClientID.IsNull() || !config.ClientSecret.IsNull() || !config.AuthorizationURL.IsNull() || !config.TokenURL.IsNull() || !config.RevocationURL.IsNull() || !config.DefaultScopes.IsNull() || !config.Pkce.IsNull() {
 			h.Conflict("The client_id, client_secret, authorization_url, token_url, revocation_url, default_scopes and pkce fields cannot be set when creating an outbound app with use_dcr, as they are filled in by dynamic client registration")
 			return

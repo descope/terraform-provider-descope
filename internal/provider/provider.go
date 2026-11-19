@@ -53,7 +53,7 @@ func (p *descopeProvider) Schema(_ context.Context, _ provider.SchemaRequest, re
 			"management_key": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "A valid management key for your Descope company",
+				Description: "A valid management key for your Descope company, or a workload identity token for a federated management key",
 			},
 			"base_url": schema.StringAttribute{
 				Optional:    true,
@@ -131,6 +131,7 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewUserAttributeResource,
 		resources.NewTenantAttributeResource,
 		resources.NewAccessKeyAttributeResource,
+		resources.NewInboundAppAttributeResource,
 		resources.NewPasskeySettingsResource,
 		resources.NewTOTPSettingsResource,
 		resources.NewEmailVerificationSettingsResource,

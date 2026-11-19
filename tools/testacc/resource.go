@@ -74,6 +74,10 @@ func AccessKeyAttribute(t *testing.T) *Resource {
 	return newResource(t, "access_key_attribute")
 }
 
+func InboundAppAttribute(t *testing.T) *Resource {
+	return newResource(t, "inbound_app_attribute")
+}
+
 func PasskeySettings(t *testing.T) *Resource {
 	return newResource(t, "passkey_settings")
 }
