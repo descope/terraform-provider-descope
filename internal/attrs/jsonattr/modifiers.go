@@ -8,11 +8,13 @@ import (
 
 // UseStateWhenEquivalent keeps the state value in the plan when the configured document differs from it only in formatting. The framework
 // applies the semantic equality of custom types when reading and after applying but never while planning, so without this a diff shows.
-func UseStateWhenEquivalent() planmodifier.String {
-	return useStateWhenEquivalentModifier{}
+func UseStateWhenEquivalent(serverFields ...string) planmodifier.String {
+	return useStateWhenEquivalentModifier{serverFields: serverFields}
 }
 
-type useStateWhenEquivalentModifier struct{}
+type useStateWhenEquivalentModifier struct {
+	serverFields []string
+}
 
 func (m useStateWhenEquivalentModifier) Description(_ context.Context) string {
 	return "the existing value is kept when the configured JSON only differs in formatting"
@@ -26,7 +28,7 @@ func (m useStateWhenEquivalentModifier) PlanModifyString(_ context.Context, req 
 	if req.StateValue.IsNull() || req.StateValue.IsUnknown() || req.PlanValue.IsNull() || req.PlanValue.IsUnknown() {
 		return
 	}
-	if equivalent(req.StateValue.ValueString(), req.PlanValue.ValueString()) {
+	if equivalentExcept(req.StateValue.ValueString(), req.PlanValue.ValueString(), m.serverFields) {
 		resp.PlanValue = req.StateValue
 	}
 }

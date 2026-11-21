@@ -16,7 +16,7 @@ var Schema = schema.Schema{
 var StylesAttributes = map[string]schema.Attribute{
 	"id":         stringattr.Identifier(),
 	"project_id": stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"data":       jsonattr.Required("styles"),
+	"data":       stringattr.Required(stringattr.JSONValidator("styles"), jsonattr.UseStateWhenEquivalent("componentsVersion")),
 }
 
 type StylesModel struct {
