@@ -35,6 +35,7 @@ Manages the project-level session management settings. This is a singleton resou
 - `session_token_expiration` (String) How long session tokens remain valid before they expire.
 - `session_token_response_method` (String) How session tokens are managed by the Descope SDKs, either `response_body` or `cookies`.
 - `step_up_token_expiration` (String) How long step up tokens remain valid before they expire.
+- `trusted_device_extend_on_trusted_login` (Boolean) Whether a trusted device token's expiration is reset to `trusted_device_token_expiration` on each login from that device, in any flow. Applies to existing trusted devices as well.
 - `trusted_device_token_expiration` (String) How long trusted device tokens remain valid before they expire.
 - `user_jwt_template` (String) The ID of the JWT template used for user session tokens (e.g. `descope_jwt_template.example.id`).
 
