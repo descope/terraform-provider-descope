@@ -111,7 +111,9 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 }
 
 func (p *descopeProvider) DataSources(_ context.Context) []func() datasource.DataSource {
-	return []func() datasource.DataSource{}
+	return []func() datasource.DataSource{
+		resources.NewOutboundAppDataSource,
+	}
 }
 
 func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resource {

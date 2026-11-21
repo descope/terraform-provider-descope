@@ -245,6 +245,43 @@ func TestOutboundAppAPIKeyType(t *testing.T) {
 	)
 }
 
+func TestOutboundAppDataSource(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	a := testacc.OutboundApp(t)
+	app := a.Config(`
+		project_id = "` + projectID + `"
+		app_type = "apikey"
+		description = "static token app"
+	`)
+	testacc.RunWithDestroyCheck(t, "descope_outbound_app",
+		// reads an existing app by its id
+		resource.TestStep{
+			Config: app + `
+				data "descope_outbound_app" "test" {
+					project_id = "` + projectID + `"
+					id = ` + a.Path() + `.id
+				}
+			`,
+			Check: resource.ComposeAggregateTestCheckFunc(
+				resource.TestCheckResourceAttrPair("data.descope_outbound_app.test", "id", a.Path(), "id"),
+				resource.TestCheckResourceAttr("data.descope_outbound_app.test", "name", a.Name),
+				resource.TestCheckResourceAttr("data.descope_outbound_app.test", "description", "static token app"),
+				resource.TestCheckResourceAttr("data.descope_outbound_app.test", "app_type", "apikey"),
+			),
+		},
+		// fails the plan when no app has the id
+		resource.TestStep{
+			Config: app + `
+				data "descope_outbound_app" "missing" {
+					project_id = "` + projectID + `"
+					id = "testacc-no-such-app"
+				}
+			`,
+			ExpectError: regexp.MustCompile(`No outbound app with id "testacc-no-such-app" exists in project`),
+		},
+	)
+}
+
 func TestOutboundAppInvalidValues(t *testing.T) {
 	projectID := testacc.ProjectID(t)
 	a := testacc.OutboundApp(t)
