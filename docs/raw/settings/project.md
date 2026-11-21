@@ -98,6 +98,18 @@ lands on it, stops working. Flows running in your own application are unaffected
 
 
 
+ignore_invalid_idp_phones
+-------------------------
+
+- Type: `bool`
+
+When enabled, a phone number that an identity provider sends through SCIM provisioning or
+the SAML or OIDC phone mapping is ignored if it is not a valid phone number, instead of being
+saved on the user. A new user is created without a phone and an existing user keeps their
+current phone. Each ignored number is recorded in the project's Troubleshooting logs.
+
+
+
 test_users_loginid_regexp
 -------------------------
 
