@@ -10,9 +10,13 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/internal/models/accesskey"
+	"github.com/hashicorp/terraform-plugin-framework/attr"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema/defaults"
+	"github.com/hashicorp/terraform-plugin-framework/tfsdk"
 	"github.com/hashicorp/terraform-plugin-framework/types"
 	"github.com/hashicorp/terraform-plugin-go/tfprotov6"
 	"github.com/hashicorp/terraform-plugin-log/tflog"
@@ -254,8 +258,65 @@ func (r *baseResource[T, M]) Read(ctx context.Context, req resource.ReadRequest,
 	handler := helpers.NewHandler(ctx, &resp.Diagnostics)
 	model.SetValues(handler, data)
 	resp.Diagnostics.Append(resp.State.Set(ctx, model)...)
+	if resp.Diagnostics.HasError() {
+		return
+	}
+	r.reconcileDefaults(ctx, &resp.State, &resp.Diagnostics)
 
 	tflog.Info(ctx, "Read "+r.name+" resource")
+}
+
+// reconcileDefaults mirrors the plan-time schema defaults after a read, so the state of attributes the
+// server response omits doesn't diverge from a fresh apply and show up as a spurious plan change.
+func (r *baseResource[T, M]) reconcileDefaults(ctx context.Context, state *tfsdk.State, diags *diag.Diagnostics) {
+	for name, attribute := range r.schema.Attributes {
+		if !attribute.IsOptional() || !attribute.IsComputed() {
+			continue
+		}
+
+		switch a := attribute.(type) {
+		case schema.BoolAttribute:
+			if a.Default == nil {
+				continue
+			}
+			res := &defaults.BoolResponse{}
+			a.Default.DefaultBool(ctx, defaults.BoolRequest{}, res)
+			setDefaultIfNull(ctx, state, diags, name, res.PlanValue)
+		case schema.StringAttribute:
+			if a.Default == nil {
+				continue
+			}
+			res := &defaults.StringResponse{}
+			a.Default.DefaultString(ctx, defaults.StringRequest{}, res)
+			setDefaultIfNull(ctx, state, diags, name, res.PlanValue)
+		case schema.Int64Attribute:
+			if a.Default == nil {
+				continue
+			}
+			res := &defaults.Int64Response{}
+			a.Default.DefaultInt64(ctx, defaults.Int64Request{}, res)
+			setDefaultIfNull(ctx, state, diags, name, res.PlanValue)
+		case schema.Float64Attribute:
+			if a.Default == nil {
+				continue
+			}
+			res := &defaults.Float64Response{}
+			a.Default.DefaultFloat64(ctx, defaults.Float64Request{}, res)
+			setDefaultIfNull(ctx, state, diags, name, res.PlanValue)
+		}
+	}
+}
+
+func setDefaultIfNull[V attr.Value](ctx context.Context, state *tfsdk.State, diags *diag.Diagnostics, name string, value V) {
+	if value.IsNull() || value.IsUnknown() {
+		return
+	}
+	var current V
+	diags.Append(state.GetAttribute(ctx, path.Root(name), &current)...)
+	if diags.HasError() || !current.IsNull() {
+		return
+	}
+	diags.Append(state.SetAttribute(ctx, path.Root(name), value)...)
 }
 
 func (r *baseResource[T, M]) Update(ctx context.Context, req resource.UpdateRequest, resp *resource.UpdateResponse) {
