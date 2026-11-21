@@ -3,12 +3,12 @@
 page_title: "descope_role Resource - descope"
 subcategory: ""
 description: |-
-  Manages a single role in a Descope project. Roles reference permissions by name, and the referenced permissions must exist when the role is applied.
+  Manages a single role in a Descope project. Roles reference permissions by name, and the referenced permissions must exist when the role is applied. Creating a role in a project that already has a project-level role of the same name, such as the Tenant Admin role every new project starts with, takes that role over and writes this configuration to it.
 ---
 
 # descope_role (Resource)
 
-Manages a single role in a Descope project. Roles reference permissions by name, and the referenced permissions must exist when the role is applied.
+Manages a single role in a Descope project. Roles reference permissions by name, and the referenced permissions must exist when the role is applied. Creating a role in a project that already has a project-level role of the same name, such as the `Tenant Admin` role every new project starts with, takes that role over and writes this configuration to it.
 
 
 

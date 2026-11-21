@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"maps"
 
+	"github.com/descope/go-sdk/descope"
 	"github.com/descope/terraform-provider-descope/internal/infra"
 	"github.com/descope/terraform-provider-descope/internal/models/permission"
 	"github.com/descope/terraform-provider-descope/internal/models/role"
@@ -27,24 +28,36 @@ func NewRoleResource() resource.Resource {
 		return nil, fmt.Errorf("role with id %s: %w", id, infra.ErrNotFound)
 	}
 
+	// the update endpoint identifies the role by exactly one of id or name and expects the planned name in newName
+	update := func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
+		body := maps.Clone(data)
+		body["id"] = id
+		body["newName"] = body["name"]
+		delete(body, "name")
+		return c.PostData(ctx, projectID, "/v1/mgmt/role/update", body)
+	}
+
 	return newResource[role.RoleModel]("role", role.Schema, operations{
+		CreateOverwrites: true,
 		Create: func(ctx context.Context, c *infra.Client, projectID string, data map[string]any) (string, map[string]any, error) {
 			entity, err := c.PostData(ctx, projectID, "/v1/mgmt/role/create", data)
+			if descope.IsError(err, roleAlreadyExists) {
+				entity, err = findRole(ctx, c, projectID, data["name"])
+				if err != nil {
+					return "", nil, err
+				}
+				id, _ := entity["id"].(string)
+				entity, err = update(ctx, c, projectID, id, data)
+				return id, entity, err
+			}
 			if err != nil {
 				return "", nil, err
 			}
 			id, _ := entity["id"].(string)
 			return id, entity, nil
 		},
-		Read: read,
-		// the update endpoint identifies the role by exactly one of id or name and expects the planned name in newName
-		Update: func(ctx context.Context, c *infra.Client, projectID, id string, data map[string]any) (map[string]any, error) {
-			body := maps.Clone(data)
-			body["id"] = id
-			body["newName"] = body["name"]
-			delete(body, "name")
-			return c.PostData(ctx, projectID, "/v1/mgmt/role/update", body)
-		},
+		Read:   read,
+		Update: update,
 		Delete: func(ctx context.Context, c *infra.Client, projectID, id string) error {
 			return c.Post(ctx, projectID, "/v1/mgmt/role/delete", map[string]any{"id": id})
 		},
@@ -101,4 +114,20 @@ func findPermission(ctx context.Context, c *infra.Client, projectID, key, value 
 		}
 	}
 	return nil, fmt.Errorf("permission with %s %s: %w", key, value, infra.ErrNotFound)
+}
+
+const roleAlreadyExists = "E024209"
+
+func findRole(ctx context.Context, c *infra.Client, projectID string, name any) (map[string]any, error) {
+	body, err := c.PostData(ctx, projectID, "/v1/mgmt/role/search", map[string]any{"roleNames": []any{name}})
+	if err != nil {
+		return nil, err
+	}
+	roles, _ := body["roles"].([]any)
+	for _, r := range roles {
+		if entity, ok := r.(map[string]any); ok && entity["name"] == name && entity["tenantId"] == "" {
+			return entity, nil
+		}
+	}
+	return nil, fmt.Errorf("role named %v: %w", name, infra.ErrNotFound)
 }
