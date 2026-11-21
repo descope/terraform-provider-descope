@@ -34,6 +34,7 @@ var SSOSettingsAttributes = map[string]schema.Attribute{
 	"require_groups_attribute_name":           boolattr.Default(false),
 	"block_if_email_domain_mismatch":          boolattr.Default(false),
 	"mark_email_as_unverified":                boolattr.Default(false),
+	"ignore_invalid_idp_phones":               boolattr.Default(false),
 	"allow_merge_users_with_multiple_tenants": boolattr.Default(false),
 	"sso_suite_settings":                      objattr.Default(SSOSuiteDefault, SSOSuiteAttributes, SSOSuiteValidator),
 	"email_connector_id":                      stringattr.Default(""),
@@ -56,6 +57,7 @@ type SSOSettingsModel struct {
 	RequireGroupsAttributeName         boolattr.Type                              `tfsdk:"require_groups_attribute_name"`
 	BlockIfEmailDomainMismatch         boolattr.Type                              `tfsdk:"block_if_email_domain_mismatch"`
 	MarkEmailAsUnverified              boolattr.Type                              `tfsdk:"mark_email_as_unverified"`
+	IgnoreInvalidIdpPhones             boolattr.Type                              `tfsdk:"ignore_invalid_idp_phones"`
 	AllowMergeUsersWithMultipleTenants boolattr.Type                              `tfsdk:"allow_merge_users_with_multiple_tenants"`
 	SSOSuiteSettings                   objattr.Type[SSOSuiteModel]                `tfsdk:"sso_suite_settings"`
 	EmailConnectorID                   stringattr.Type                            `tfsdk:"email_connector_id"`
@@ -74,6 +76,7 @@ func (m *SSOSettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 	boolattr.Get(m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
 	boolattr.Get(m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
+	boolattr.Get(m.IgnoreInvalidIdpPhones, data, "ignoreInvalidIdpPhones")
 	boolattr.Get(m.AllowMergeUsersWithMultipleTenants, data, "allowMergeUsersWithMultipleTenants")
 
 	getMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)
@@ -95,6 +98,7 @@ func (m *SSOSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.LimitMappingToMandatoryAttributes, data, "limitMappingToMandatoryAttributes")
 	boolattr.Set(&m.BlockIfEmailDomainMismatch, data, "blockIfEmailDomainMismatch")
 	boolattr.Set(&m.MarkEmailAsUnverified, data, "markEmailAsUnverified")
+	boolattr.SetDefault(&m.IgnoreInvalidIdpPhones, data, "ignoreInvalidIdpPhones", false)
 	boolattr.Set(&m.AllowMergeUsersWithMultipleTenants, data, "allowMergeUsersWithMultipleTenants")
 
 	setMandatoryUserAttributesValues(&m.MandatoryUserAttributes, &m.RequireSSODomains, &m.RequireGroupsAttributeName, h, data)

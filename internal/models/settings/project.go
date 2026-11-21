@@ -32,7 +32,6 @@ var ProjectSettingsAttributes = map[string]schema.Attribute{
 	"tenant_user_isolation":               boolattr.Default(false),
 	"allow_auth_hosting_iframe_embedding": boolattr.Default(false),
 	"disable_auth_hosting":                boolattr.Default(false),
-	"ignore_invalid_idp_phones":           boolattr.Default(false),
 	"test_users_loginid_regexp":           stringattr.Default(""),
 	"test_users_static_otp":               stringattr.Default("", stringattr.OTPValidator),
 	"test_users_verifier_regexp":          stringattr.Default(""),
@@ -53,7 +52,6 @@ type ProjectSettingsModel struct {
 	TenantUserIsolation             boolattr.Type   `tfsdk:"tenant_user_isolation"`
 	AllowAuthHostingIframeEmbedding boolattr.Type   `tfsdk:"allow_auth_hosting_iframe_embedding"`
 	DisableAuthHosting              boolattr.Type   `tfsdk:"disable_auth_hosting"`
-	IgnoreInvalidIdpPhones          boolattr.Type   `tfsdk:"ignore_invalid_idp_phones"`
 	TestUsersLoginIDRegExp          stringattr.Type `tfsdk:"test_users_loginid_regexp"`
 	TestUsersStaticOTP              stringattr.Type `tfsdk:"test_users_static_otp"`
 	TestUsersVerifierRegExp         stringattr.Type `tfsdk:"test_users_verifier_regexp"`
@@ -70,7 +68,6 @@ func (m *ProjectSettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.TenantUserIsolation, data, "tenantUserIsolation")
 	boolattr.Get(m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
 	boolattr.Get(m.DisableAuthHosting, data, "disableAuthHosting")
-	boolattr.Get(m.IgnoreInvalidIdpPhones, data, "ignoreInvalidIdpPhones")
 	stringattr.Get(m.TestUsersLoginIDRegExp, data, "testUserRegex")
 	stringattr.Get(m.TestUsersStaticOTP, data, "testUserFixedAuthToken")
 	stringattr.Get(m.TestUsersVerifierRegExp, data, "testUserFixedAuthVerifierRegex")
@@ -88,7 +85,6 @@ func (m *ProjectSettingsModel) SetValues(h *helpers.Handler, data map[string]any
 	boolattr.Set(&m.TenantUserIsolation, data, "tenantUserIsolation")
 	boolattr.Set(&m.AllowAuthHostingIframeEmbedding, data, "allowAuthHostingIframeEmbedding")
 	boolattr.SetDefault(&m.DisableAuthHosting, data, "disableAuthHosting", false) // absent on a backend that predates the field, and Set would leave a null that never matches the schema default
-	boolattr.SetDefault(&m.IgnoreInvalidIdpPhones, data, "ignoreInvalidIdpPhones", false)
 	stringattr.Set(&m.TestUsersLoginIDRegExp, data, "testUserRegex")
 	if data["testUserAllowFixedAuth"] == true {
 		stringattr.Set(&m.TestUsersStaticOTP, data, "testUserFixedAuthToken")

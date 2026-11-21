@@ -29,7 +29,6 @@ func TestProjectSettings(t *testing.T) {
 				"tenant_user_isolation":               false,
 				"allow_auth_hosting_iframe_embedding": false,
 				"disable_auth_hosting":                false,
-				"ignore_invalid_idp_phones":           false,
 				"test_users_loginid_regexp":           "",
 				"test_users_static_otp":               "",
 				"test_users_verifier_regexp":          "",
@@ -77,7 +76,6 @@ func TestProjectSettings(t *testing.T) {
 				default_no_sso_apps = true
 				allow_auth_hosting_iframe_embedding = true
 				disable_auth_hosting = true
-				ignore_invalid_idp_phones = true
 				test_users_loginid_regexp = ".*@test\\.example\\.com"
 				test_users_static_otp = "123456"
 				test_users_verifier_regexp = ".*"
@@ -89,7 +87,6 @@ func TestProjectSettings(t *testing.T) {
 				"default_no_sso_apps":                 true,
 				"allow_auth_hosting_iframe_embedding": true,
 				"disable_auth_hosting":                true,
-				"ignore_invalid_idp_phones":           true,
 				"test_users_loginid_regexp":           ".*@test\\.example\\.com",
 				"test_users_static_otp":               "123456",
 				"test_users_verifier_regexp":          ".*",
@@ -109,7 +106,6 @@ func TestProjectSettings(t *testing.T) {
 				"default_no_sso_apps":                 false,
 				"allow_auth_hosting_iframe_embedding": false,
 				"disable_auth_hosting":                false,
-				"ignore_invalid_idp_phones":           false,
 				"test_users_loginid_regexp":           "",
 				"test_users_static_otp":               "",
 				"test_users_verifier_regexp":          "",
