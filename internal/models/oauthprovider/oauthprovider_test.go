@@ -78,15 +78,15 @@ func TestOAuthProviderCustom(t *testing.T) {
 				client_secret = "my-client-secret"
 				allowed_grant_types = ["authorization_code"]
 				authorization_endpoint = "https://auth.example.com"
-				token_endpoint = "https://token.example.com"
-				user_info_endpoint = "https://userinfo.example.com"
+				token_endpoint = "https://example.com/token"
+				user_info_endpoint = "https://example.com/userinfo"
 				client_auth_method = "client_secret_basic"
 			`),
 			Check: o.Check(map[string]any{
 				"id":                     "custom_idp",
 				"authorization_endpoint": "https://auth.example.com",
-				"token_endpoint":         "https://token.example.com",
-				"user_info_endpoint":     "https://userinfo.example.com",
+				"token_endpoint":         "https://example.com/token",
+				"user_info_endpoint":     "https://example.com/userinfo",
 				"client_auth_method":     "client_secret_basic",
 			}),
 		},
@@ -109,8 +109,8 @@ func TestOAuthProviderCustom(t *testing.T) {
 				client_secret = "my-client-secret"
 				allowed_grant_types = ["authorization_code"]
 				authorization_endpoint = "https://auth.example.com"
-				token_endpoint = "https://token.example.com"
-				user_info_endpoint = "https://userinfo.example.com"
+				token_endpoint = "https://example.com/token"
+				user_info_endpoint = "https://example.com/userinfo"
 				apple_key_generator = {
 					key_id      = "KEYID"
 					team_id     = "TEAMID1234"
@@ -128,8 +128,8 @@ func TestOAuthProviderCustom(t *testing.T) {
 				client_secret = "my-client-secret"
 				allowed_grant_types = ["authorization_code"]
 				authorization_endpoint = "https://auth.example.com"
-				token_endpoint = "https://token.example.com"
-				user_info_endpoint = "https://userinfo.example.com"
+				token_endpoint = "https://example.com/token"
+				user_info_endpoint = "https://example.com/userinfo"
 			`),
 		},
 	)
@@ -155,8 +155,8 @@ func TestOAuthSettingsAndProviders(t *testing.T) {
 			client_secret = "my-client-secret"
 			allowed_grant_types = ["authorization_code"]
 			authorization_endpoint = "https://auth.example.com"
-			token_endpoint = "https://token.example.com"
-			user_info_endpoint = "https://userinfo.example.com"
+			token_endpoint = "https://example.com/token"
+			user_info_endpoint = "https://example.com/userinfo"
 		`)
 
 	testacc.Run(t,

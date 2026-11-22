@@ -74,7 +74,7 @@ func TestSAMLApp(t *testing.T) {
 			`logout_redirect_url = "https://sp.example.com/logout"`,
 			`error_redirect_url = "https://sp.example.com/error"`,
 			`single_logout_enabled = true`,
-			`sp_single_logout_url = "https://sp.example.com/slo"`,
+			`sp_single_logout_url = "https://example.com/slo"`,
 			`sp_single_logout_binding = "soap"`,
 			`single_logout_propagation = "none"`,
 			`single_logout_scope = "allSessions"`,
@@ -96,7 +96,7 @@ func TestSAMLApp(t *testing.T) {
 			"error_redirect_url":             "https://sp.example.com/error",
 			"idp_logout_url":                 testacc.AttributeIsSet,
 			"single_logout_enabled":          true,
-			"sp_single_logout_url":           "https://sp.example.com/slo",
+			"sp_single_logout_url":           "https://example.com/slo",
 			"sp_single_logout_binding":       "soap",
 			"single_logout_propagation":      "none",
 			"single_logout_scope":            "allSessions",
@@ -108,13 +108,13 @@ func TestSAMLApp(t *testing.T) {
 		Config: a.Config(project,
 			`deletion_protection = false`,
 			`dynamic_configuration = {
-				metadata_url = "https://sp.example.com/metadata"
+				metadata_url = "https://example.com/metadata"
 			}`,
 			`single_logout_enabled = true`,
 		),
 		Check: a.Check(map[string]any{
 			"id":                                 sameID,
-			"dynamic_configuration.metadata_url": "https://sp.example.com/metadata",
+			"dynamic_configuration.metadata_url": "https://example.com/metadata",
 			"logout_redirect_url":                "",
 			"error_redirect_url":                 "",
 			"single_logout_enabled":              true,
