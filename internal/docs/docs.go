@@ -291,7 +291,7 @@ var docsAuthAccessCondition = map[string]string{
 		"the form `{{jwtClaims.<name>}}`, which compares the attribute with that custom claim of the " +
 		"token the user presented. An absent claim never matches. Values must be in canonical form: lowercase emails and domains, uppercase " +
 		"country codes, phone numbers in E.164 form, IP addresses in their shortest form and " +
-		"autonomous system numbers as digits only, e.g., `13335`.",
+		"autonomous system numbers as positive numbers without leading zeros, e.g., `13335`.",
 }
 
 var docsAbuseIPDBConnector = map[string]string{
