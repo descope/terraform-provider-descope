@@ -327,3 +327,13 @@ number for `number`, `true` or `false` for `boolean`, a list of strings for `mul
 since the epoch for `date`, and an `MM-DD` string for `monthday`. Values set outside Terraform are removed on the
 next apply unless they are also in this attribute, so the first plan after adding it, or after upgrading the
 provider, shows those values as removed.
+
+
+
+tags
+----
+
+- Type: `set` of `string`
+
+Labels for this inbound app, matched by policy rules through `client.tags` conditions.
+Up to 100 tags, each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.
