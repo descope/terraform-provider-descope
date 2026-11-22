@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 	"testing"
 
@@ -135,6 +136,47 @@ func TestRolePoliciesReferenceRolesByName(t *testing.T) {
 
 	if want := `roles      = [descope_role.admin.name, "Auditor"]`; !strings.Contains(files["auth.tf"], want) {
 		t.Errorf("expected %q in auth.tf:\n%s", want, files["auth.tf"])
+	}
+}
+
+func TestInboundAppsDependOnTheirCustomAttributes(t *testing.T) {
+	attribute := func(label, id string) Resource {
+		return Resource{
+			Type:         "descope_inbound_app_attribute",
+			Label:        label,
+			EntityID:     id,
+			ImportID:     "P123/" + id,
+			HasProjectID: true,
+			Attrs:        []prune.Attr{{Name: "id", Value: types.StringValue(id)}, {Name: "name", Value: types.StringValue(label)}},
+		}
+	}
+	app := func(label string, attrs ...prune.Attr) Resource {
+		return Resource{
+			Type:         "descope_inbound_app",
+			Label:        label,
+			EntityID:     "TPA2xXGZtbH4hNmCbS2pP4JRvJkbY",
+			ImportID:     "P123/TPA2xXGZtbH4hNmCbS2pP4JRvJkbY",
+			HasProjectID: true,
+			Attrs:        append([]prune.Attr{{Name: "name", Value: types.StringValue(label)}}, attrs...),
+		}
+	}
+	plan := &Plan{
+		ProjectID: "P123",
+		Resources: []Resource{
+			attribute("tier", "tier"),
+			attribute("managing_org", "managingOrg"),
+			app("partner", prune.Attr{Name: "custom_attributes", Value: types.StringValue(`{"tier":2,"managingOrg":"org-1","undefined":"x"}`)}),
+			app("plain"),
+		},
+	}
+
+	files := write(t, plan)
+
+	if want := regexp.MustCompile(`depends_on\s+= \[descope_inbound_app_attribute\.managing_org, descope_inbound_app_attribute\.tier\]`); !want.MatchString(files["apps.tf"]) {
+		t.Errorf("expected %q in apps.tf:\n%s", want, files["apps.tf"])
+	}
+	if count := strings.Count(files["apps.tf"], "depends_on"); count != 1 {
+		t.Errorf("expected only the app with custom attributes to depend on them, got %d depends_on in apps.tf:\n%s", count, files["apps.tf"])
 	}
 }
 

@@ -28,6 +28,7 @@ Manages the project-level SSO authentication settings. This is a singleton resou
 - `disabled` (Boolean) Setting this to `true` will disallow using SSO authentication directly via API and SDK calls. Note that this does not affect authentication flows that are configured to use SSO.
 - `email_connector_id` (String) The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.
 - `email_template_id` (String) The ID of the email template for SSO configuration invitation emails, taken from a `descope_email_template` resource with its `method` set to `sso`. An empty value (the default) selects the built-in System template.
+- `external_email_template_id` (String) The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An empty value (the default) sends the Descope template selected by `email_template_id`.
 - `groups_priority` (Boolean) Whether to enable groups priority.
 - `limit_mapping_to_mandatory_attributes` (Boolean) Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
 - `mandatory_user_attributes` (Attributes List) Define the required Descope attributes that must be populated when receiving SSO information. (see [below for nested schema](#nestedatt--mandatory_user_attributes))
@@ -60,6 +61,7 @@ Optional:
 Optional:
 
 - `force_domain_verification` (Boolean) Setting this to `true` will allow only verified domains to be used.
+- `hide_audit` (Boolean) Setting this to `true` will hide the audit log of SSO and SCIM events in the SSO Suite interface.
 - `hide_domains` (Boolean) Setting this to `true` will hide the domains configuration section in the SSO Suite interface.
 - `hide_fga_mapping` (Boolean) Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.
 - `hide_groups_mapping` (Boolean) Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.
@@ -69,6 +71,8 @@ Optional:
 - `hide_saml` (Boolean) Setting this to `true` will hide the SAML configuration option.
 - `hide_scim` (Boolean) Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.
 - `hide_sso` (Boolean) Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for tenants that only need to set up SCIM provisioning.
+- `login_flow_id` (String) The ID of a flow the SSO Suite shows so users can sign in when they open it without an existing session. Leave empty to show the authentication required page instead.
+- `login_flow_style_id` (String) The ID of the style to apply to the login flow. Leave empty to use the project's default flow style.
 - `oidc_login_id_attribute` (String) The identity provider claim the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.
 - `show_help_contact` (Boolean) Whether to display the help/support contact link in the SSO Suite UI.
 - `show_xaa` (Boolean) Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.

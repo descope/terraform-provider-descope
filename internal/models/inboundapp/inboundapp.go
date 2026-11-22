@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/jsonattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/listattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
@@ -53,6 +54,7 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"jwt_bearer_disabled":              boolattr.Optional(),
 	"device_code_disabled":             boolattr.Optional(),
 	"token_exchange_disabled":          boolattr.Optional(),
+	"custom_attributes":                jsonattr.Default("{}"),
 	"tags":                             strsetattr.Default(setvalidator.SizeAtMost(100), stringvalidator.LengthBetween(1, 100)),
 }
 
@@ -92,6 +94,7 @@ type InboundAppModel struct {
 	JWTBearerDisabled            boolattr.Type                               `tfsdk:"jwt_bearer_disabled"`
 	DeviceCodeDisabled           boolattr.Type                               `tfsdk:"device_code_disabled"`
 	TokenExchangeDisabled        boolattr.Type                               `tfsdk:"token_exchange_disabled"`
+	CustomAttributes             jsonattr.Type                               `tfsdk:"custom_attributes"`
 	Tags                         strsetattr.Type                             `tfsdk:"tags"`
 }
 
@@ -125,6 +128,7 @@ func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.JWTBearerDisabled, data, "jwtBearerDisabled")
 	boolattr.Get(m.DeviceCodeDisabled, data, "deviceCodeDisabled")
 	boolattr.Get(m.TokenExchangeDisabled, data, "tokenExchangeDisabled")
+	jsonattr.Get(m.CustomAttributes, data, "customAttributes")
 	strsetattr.Get(m.Tags, data, "tags", h)
 	return data
 }
@@ -158,6 +162,11 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	boolattr.Set(&m.JWTBearerDisabled, data, "jwtBearerDisabled")
 	boolattr.Set(&m.DeviceCodeDisabled, data, "deviceCodeDisabled")
 	boolattr.Set(&m.TokenExchangeDisabled, data, "tokenExchangeDisabled")
+	if data["customAttributes"] == nil {
+		m.CustomAttributes = jsonattr.Value("{}")
+	} else {
+		jsonattr.Set(&m.CustomAttributes, data, "customAttributes")
+	}
 	strsetattr.Set(&m.Tags, data, "tags", h)
 }
 

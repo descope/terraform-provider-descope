@@ -85,6 +85,7 @@ var generativeSkippedAttributes = map[string]string{
 	"descope_oauth_provider.native_client_id":             "native pairing",
 	"descope_oauth_provider.native_client_secret":         "native pairing",
 	"descope_sso_settings.sso_suite_settings":             "nested suite block with its own coupling",
+	"descope_project_settings.trusted_proxy_secret":       "needs 64 visible characters and the vanity domains license, exercised by the settings test",
 	"descope_inbound_app.permissions_scopes":              "nested scope objects, exercised by the inbound-app scenario",
 	"descope_inbound_app.connections_scopes":              "nested scope objects, exercised by the inbound-app scenario",
 	"descope_inbound_app.session_settings":                "nested settings object, exercised by the inbound-app scenario",
@@ -98,11 +99,13 @@ var generativeSkippedAttributes = map[string]string{
 	"descope_user_attribute.select_options":               "requires select types, handled by pairing",
 	"descope_tenant_attribute.select_options":             "requires select types, handled by pairing",
 	"descope_access_key_attribute.select_options":         "requires select types, handled by pairing",
+	"descope_inbound_app_attribute.select_options":        "requires select types, handled by pairing",
 	"descope_project_settings.custom_domain":              "requires a real CNAME-verified domain",
 	"descope_project_settings.test_users_static_otp":      "coupled pair, handled by pairing",
 	"descope_project_settings.test_users_verifier_regexp": "coupled pair, handled by pairing",
 	"descope_oauth_provider.claim_mapping":                "claims must map to existing descope attributes",
 	"descope_admin_portal.enabled":                        "requires widgets, handled by pairing",
+	"descope_outbound_app.id":                             "a chosen id replaces the app, exercised by the outbound app test",
 }
 
 var attributeValueOverrides = map[string]string{
@@ -139,16 +142,22 @@ var attributeValueOverrides = map[string]string{
 	"min_length":                        `10|12`,
 	"test_users_static_otp":             `"123456"|"654321"`,
 	"android_fingerprints":              `["00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF:00:11:22:33:44:55:66:77:88:99:AA:BB:CC:DD:EE:FF"]`,
-	"issuer":                            `"https://cov.example.com/issuer"|"https://cov.example.com/issuer2"`,
+	"issuer":                            `"https://example.com/cov/issuer"|"https://example.com/cov/issuer2"`,
 	"refresh_token_response_method":     `"cookies"|"response_body"`,
 	"session_token_response_method":     `"response_body"|"cookies"`,
 	"client_auth_method":                `"client_secret_basic"|"client_secret_post"`,
+	"sp_single_logout_binding":          `""|"redirect"|"post"|"soap"`,
+	"single_logout_propagation":         `""|"allApps"|"none"`,
+	"logout_propagation":                `""|"allApps"|"none"`,
+	"single_logout_scope":               `""|"session"|"allSessions"`,
 
 	"descope_auth_access_rule.effect":           `"allow"|"block"`,
 	"descope_auth_access_rule.expire_time":      `0|2000000000`,
 	"descope_auth_access_policy.default_action": `"allow"|"block"`,
 	"descope_auth_access_policy.rule_ids":       `[descope_auth_access_rule.cov_auth_access_rule.id]`,
 	"descope_wellknown_settings.hidden_fields":  `["end_session_endpoint"]|["userinfo_endpoint", "revocation_endpoint"]`,
+	"descope_inbound_app_attribute.type":        `"string"`,
+	"descope_inbound_app.custom_attributes":     `jsonencode({ (descope_inbound_app_attribute.cov_inbound_app_attribute.id) = "cov 0" })|jsonencode({ (descope_inbound_app_attribute.cov_inbound_app_attribute.id) = "cov 1" })`,
 }
 
 var nestedValueOverrides = map[string]string{
@@ -167,13 +176,13 @@ var namePatternValues = []struct {
 	fragment string
 	values   string
 }{
-	{"endpoint", `"https://cov.example.com/endpoint"|"https://cov.example.com/endpoint2"`},
+	{"endpoint", `"https://example.com/cov/endpoint"|"https://example.com/cov/endpoint2"`},
 	{"cookie_policy", `"strict"|"lax"`},
 	{"response_method", `"onBody"`},
-	{"redirect_url", `"https://cov.example.com/redirect"|"https://cov.example.com/redirect2"`},
-	{"logo", `"https://cov.example.com/logo.png"`},
-	{"_url", `"https://cov.example.com/page"|"https://cov.example.com/page2"`},
-	{"_urls", `["https://cov.example.com/cb"]|["https://cov.example.com/cb", "https://cov.example.com/cb2"]`},
+	{"redirect_url", `"https://example.com/cov/redirect"|"https://example.com/cov/redirect2"`},
+	{"logo", `"https://example.com/cov/logo.png"`},
+	{"_url", `"https://example.com/cov/page"|"https://example.com/cov/page2"`},
+	{"_urls", `["https://example.com/cov/cb"]|["https://example.com/cov/cb", "https://example.com/cov/cb2"]`},
 	{"_domains", `["cov.example.com"]|["cov.example.com", "cov2.example.com"]`},
 	{"domain", `"cov.example.com"|"cov2.example.com"`},
 	{"email", `"cov@example.com"|"cov2@example.com"`},
@@ -318,11 +327,11 @@ func (g *configGenerator) pairings(resourceType string, generation int) ([]strin
 	case "descope_oauth_provider":
 		// custom providers require these on every write, not only when uncovered
 		emit(`  allowed_grant_types = ["authorization_code"]`, "allowed_grant_types")
-		emit(`  user_info_endpoint  = "https://cov.example.com/userinfo"`, "user_info_endpoint")
+		emit(`  user_info_endpoint  = "https://example.com/cov/userinfo"`, "user_info_endpoint")
 		emit(fmt.Sprintf(`  client_id = "cov-client-%d"`, generation), "client_id")
 		emit(`  client_secret = "not-a-real-secret"`, "client_secret")
-		emit(`  authorization_endpoint = "https://cov.example.com/authorize"`, "authorization_endpoint")
-		emit(`  token_endpoint = "https://cov.example.com/token"`, "token_endpoint")
+		emit(`  authorization_endpoint = "https://example.com/cov/authorize"`, "authorization_endpoint")
+		emit(`  token_endpoint = "https://example.com/cov/token"`, "token_endpoint")
 	case "descope_project_settings":
 		emit(fmt.Sprintf(`  test_users_static_otp = "12345%d"`, generation), "test_users_static_otp")
 		emit(`  test_users_verifier_regexp = "^cov-.*$"`, "test_users_verifier_regexp")
@@ -331,9 +340,11 @@ func (g *configGenerator) pairings(resourceType string, generation int) ([]strin
 		emit(`  widgets = [{ widget_id = "user-management", type = "user-management" }]`, "widgets")
 	case "descope_saml_app":
 		emit(fmt.Sprintf(`  manual_configuration = {
-    acs_url   = "https://cov.example.com/acs%d"
+    acs_url   = "https://example.com/cov/acs%d"
     entity_id = "cov-entity"
   }`, generation), "manual_configuration")
+		// a manually configured app needs this URL whenever single_logout_enabled is true, so it is pinned in every generation
+		emit(fmt.Sprintf(`  sp_single_logout_url = "https://example.com/cov/slo%d"`, generation), "sp_single_logout_url")
 	}
 	return lines, paired
 }

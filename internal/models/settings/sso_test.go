@@ -57,8 +57,11 @@ func TestSSOSettings(t *testing.T) {
 					hide_role_mapping = true
 					hide_fga_mapping = true
 					show_xaa = true
+					hide_audit = true
 					support_email = "help@example.com"
 					show_help_contact = true
+					login_flow_id = "sign-in"
+					login_flow_style_id = "login-style"
 				}
 			`),
 			Check: m.Check(map[string]any{
@@ -78,8 +81,11 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.hide_role_mapping":    true,
 				"sso_suite_settings.hide_fga_mapping":     true,
 				"sso_suite_settings.show_xaa":             true,
+				"sso_suite_settings.hide_audit":           true,
 				"sso_suite_settings.support_email":        "help@example.com",
 				"sso_suite_settings.show_help_contact":    true,
+				"sso_suite_settings.login_flow_id":        "sign-in",
+				"sso_suite_settings.login_flow_style_id":  "login-style",
 			}),
 		},
 		// conflicting sso suite settings are rejected
@@ -133,9 +139,13 @@ func TestSSOSettings(t *testing.T) {
 				"sso_suite_settings.hide_role_mapping":    false,
 				"sso_suite_settings.hide_fga_mapping":     false,
 				"sso_suite_settings.show_xaa":             false,
+				"sso_suite_settings.hide_audit":           false,
 				"sso_suite_settings.support_email":        "",
 				"sso_suite_settings.show_help_contact":    false,
+				"sso_suite_settings.login_flow_id":        "",
+				"sso_suite_settings.login_flow_style_id":  "",
 				"email_connector_id":                      "",
+				"external_email_template_id":              "",
 			}),
 		},
 		resource.TestStep{
@@ -169,10 +179,12 @@ func TestSSOSettingsTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
+				external_email_template_id = "d-external"
 			`),
 			Check: m.Check(map[string]any{
-				"email_connector_id": testacc.AttributeIsSet,
-				"email_template_id":  testacc.AttributeIsSet,
+				"email_connector_id":         testacc.AttributeIsSet,
+				"email_template_id":          testacc.AttributeIsSet,
+				"external_email_template_id": "d-external",
 			}),
 		},
 		// Dropping the reference resets the selection to the built-in System template; the settings update runs first, so the same apply can destroy it.
