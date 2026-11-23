@@ -2293,7 +2293,7 @@ var docsSSOSettings = map[string]string{
 		"to be deleted and recreated.",
 	"disabled": "Setting this to `true` will disallow using SSO authentication directly via API and SDK calls. " +
 		"Note that this does not affect authentication flows that are configured to use SSO.",
-	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
+	"merge_users": "Whether to convert an existing user to an SSO-only user after a successful SSO login. When enabled, an existing member of this tenant that matches the SSO identity has their login ID replaced with the SSO login ID, instead of a separate user being created.",
 	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
 		"in tenant level settings or SDK/API call, they will override this value.",
 	"allow_duplicate_domains":               "Whether to allow duplicate SSO domains across tenants.",

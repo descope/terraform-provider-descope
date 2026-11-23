@@ -34,7 +34,7 @@ Manages the project-level SSO authentication settings. This is a singleton resou
 - `limit_mapping_to_mandatory_attributes` (Boolean) Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
 - `mandatory_user_attributes` (Attributes List) Define the required Descope attributes that must be populated when receiving SSO information. (see [below for nested schema](#nestedatt--mandatory_user_attributes))
 - `mark_email_as_unverified` (Boolean) Whether to mark the user's email as unverified when logging in via SSO.
-- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
+- `merge_users` (Boolean) Whether to convert an existing user to an SSO-only user after a successful SSO login. When enabled, an existing member of this tenant that matches the SSO identity has their login ID replaced with the SSO login ID, instead of a separate user being created.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 - `require_groups_attribute_name` (Boolean) When configuring SSO the groups attribute name must be specified.
 - `require_sso_domains` (Boolean) When configuring SSO an SSO domain must be specified.

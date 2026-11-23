@@ -29,7 +29,7 @@ merge_users
 
 - Type: `bool`
 
-Whether to merge existing user accounts with new ones created through SSO authentication.
+Whether to convert an existing user to an SSO-only user after a successful SSO login. When enabled, an existing member of this tenant that matches the SSO identity has their login ID replaced with the SSO login ID, instead of a separate user being created.
 
 
 
