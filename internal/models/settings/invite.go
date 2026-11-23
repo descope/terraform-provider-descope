@@ -3,8 +3,10 @@ package settings
 import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/durationattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/intattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/int64validator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
@@ -18,17 +20,21 @@ var InviteSettingsSchema = schema.Schema{
 }
 
 var InviteSettingsAttributes = map[string]schema.Attribute{
-	"id":                   stringattr.Identifier(),
-	"project_id":           stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"require_invitation":   boolattr.Default(false),
-	"invite_url":           stringattr.Default("", stringattr.URLValidator),
-	"add_magiclink_token":  boolattr.Default(false),
-	"expire_invited_users": boolattr.Default(false),
-	"invite_expiration":    durationattr.Default("1 week", durationattr.MinimumValue("1 hour"), durationattr.MaximumValue("1000 weeks")),
-	"send_email":           boolattr.Default(true),
-	"send_text":            boolattr.Default(false),
-	"email_connector_id":   stringattr.Default(""),
-	"email_template_id":    stringattr.Default(""),
+	"id":                                stringattr.Identifier(),
+	"project_id":                        stringattr.Required(stringplanmodifier.RequiresReplace()),
+	"require_invitation":                boolattr.Default(false),
+	"invite_url":                        stringattr.Default("", stringattr.URLValidator),
+	"add_magiclink_token":               boolattr.Default(false),
+	"expire_invited_users":              boolattr.Default(false),
+	"invite_expiration":                 durationattr.Default("1 week", durationattr.MinimumValue("1 hour"), durationattr.MaximumValue("1000 weeks")),
+	"send_email":                        boolattr.Default(true),
+	"send_text":                         boolattr.Default(false),
+	"email_connector_id":                stringattr.Default(""),
+	"email_template_id":                 stringattr.Default(""),
+	"invite_reminders":                  boolattr.Default(false),
+	"invite_reminder_interval":          durationattr.Default("1 day", durationattr.MinimumValue("1 day"), durationattr.MaximumValue("365 days")),
+	"invite_reminder_max_count":         intattr.Default(3, int64validator.Between(1, 5)),
+	"invite_reminder_email_template_id": stringattr.Default(""),
 }
 
 type InviteSettingsModel struct {
@@ -43,6 +49,10 @@ type InviteSettingsModel struct {
 	SendText           boolattr.Type   `tfsdk:"send_text"`
 	EmailConnectorID   stringattr.Type `tfsdk:"email_connector_id"`
 	EmailTemplateID    stringattr.Type `tfsdk:"email_template_id"`
+	InviteReminders    boolattr.Type   `tfsdk:"invite_reminders"`
+	ReminderInterval   stringattr.Type `tfsdk:"invite_reminder_interval"`
+	ReminderMaxCount   intattr.Type    `tfsdk:"invite_reminder_max_count"`
+	ReminderTemplateID stringattr.Type `tfsdk:"invite_reminder_email_template_id"`
 }
 
 func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -56,6 +66,10 @@ func (m *InviteSettingsModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.SendText, data, "inviteSendSms")
 	stringattr.Get(m.EmailConnectorID, data, "inviteEmailConnectorId")
 	stringattr.Get(m.EmailTemplateID, data, "inviteEmailTemplateId")
+	boolattr.Get(m.InviteReminders, data, "inviteReminderEnabled")
+	durationattr.Get(m.ReminderInterval, data, "inviteReminderInterval")
+	intattr.Get(m.ReminderMaxCount, data, "inviteReminderMaxCount")
+	stringattr.Get(m.ReminderTemplateID, data, "inviteReminderEmailTemplateId")
 	return data
 }
 
@@ -69,6 +83,13 @@ func (m *InviteSettingsModel) SetValues(h *helpers.Handler, data map[string]any)
 	boolattr.Set(&m.SendText, data, "inviteSendSms")
 	stringattr.Set(&m.EmailConnectorID, data, "inviteEmailConnectorId")
 	stringattr.Set(&m.EmailTemplateID, data, "inviteEmailTemplateId")
+	boolattr.Set(&m.InviteReminders, data, "inviteReminderEnabled")
+	durationattr.SetDefault(&m.ReminderInterval, data, "inviteReminderInterval", "1 day")
+	intattr.SetDefault(&m.ReminderMaxCount, data, "inviteReminderMaxCount", 3)
+	if m.ReminderMaxCount.ValueInt64() == 0 {
+		m.ReminderMaxCount = intattr.Value(3)
+	}
+	stringattr.Set(&m.ReminderTemplateID, data, "inviteReminderEmailTemplateId")
 }
 
 func (m *InviteSettingsModel) GetID() stringattr.Type        { return m.ID }

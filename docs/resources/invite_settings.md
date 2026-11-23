@@ -26,6 +26,10 @@ Manages the project-level user invitation settings. This is a singleton resource
 - `email_template_id` (String) The ID of the email template to send to invited users, taken from a `descope_email_template` resource with its `method` set to `invite`. An empty value (the default) selects the built-in System template.
 - `expire_invited_users` (Boolean) Expire the user account if the invitation is not accepted within the expiration time.
 - `invite_expiration` (String) The expiry time for the invitation, meant to be used together with `expire_invited_users` and/or `add_magiclink_token`. Use values such as "2 weeks", "4 days", etc. The minimum value is "1 hour".
+- `invite_reminder_email_template_id` (String) The ID of the email template to send reminders with, taken from a `descope_email_template` resource with its `method` set to `invite`. An empty value (the default) sends reminders with the template the invitation was sent with.
+- `invite_reminder_interval` (String) The time between reminders, measured from the last invitation sent to the user. Use values such as "2 days", "1 week", etc. The minimum value is "1 day".
+- `invite_reminder_max_count` (Number) The maximum number of reminders sent per invitation, from 1 to 5.
+- `invite_reminders` (Boolean) Whether to automatically resend the invitation to users who have not accepted it yet. Requires a custom email or SMS connector. Only invitations sent after this is turned on get reminders, and a manual resend restarts them.
 - `invite_url` (String) Custom URL to include in the message sent to invited users.
 - `require_invitation` (Boolean) Whether users must be invited before they can sign up to the project.
 - `send_email` (Boolean) Whether to send invitation emails to users.

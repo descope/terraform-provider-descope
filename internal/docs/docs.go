@@ -2083,6 +2083,15 @@ var docsInviteSettings = map[string]string{
 	"email_connector_id": "The ID of an email connector to use for sending invitation emails. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to invited users, taken from a `descope_email_template` resource " +
 		"with its `method` set to `invite`. An empty value (the default) selects the built-in System template.",
+	"invite_reminders": "Whether to automatically resend the invitation to users who have not accepted it yet. Requires a " +
+		"custom email or SMS connector. Only invitations sent after this is turned on get reminders, and a " +
+		"manual resend restarts them.",
+	"invite_reminder_interval": "The time between reminders, measured from the last invitation sent to the user. Use values such " +
+		"as \"2 days\", \"1 week\", etc. The minimum value is \"1 day\".",
+	"invite_reminder_max_count": "The maximum number of reminders sent per invitation, from 1 to 5.",
+	"invite_reminder_email_template_id": "The ID of the email template to send reminders with, taken from a `descope_email_template` resource " +
+		"with its `method` set to `invite`. An empty value (the default) sends reminders with the template the " +
+		"invitation was sent with.",
 }
 
 var docsMagicLinkSettings = map[string]string{

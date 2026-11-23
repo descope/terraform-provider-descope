@@ -17,15 +17,18 @@ func TestInviteSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"id":                   testacc.AttributeIsSet,
-				"project_id":           testacc.AttributeIsSet,
-				"require_invitation":   false,
-				"invite_url":           "",
-				"add_magiclink_token":  false,
-				"expire_invited_users": false,
-				"invite_expiration":    "1 week",
-				"send_email":           true,
-				"send_text":            false,
+				"id":                        testacc.AttributeIsSet,
+				"project_id":                testacc.AttributeIsSet,
+				"require_invitation":        false,
+				"invite_url":                "",
+				"add_magiclink_token":       false,
+				"expire_invited_users":      false,
+				"invite_expiration":         "1 week",
+				"send_email":                true,
+				"send_text":                 false,
+				"invite_reminders":          false,
+				"invite_reminder_interval":  "1 day",
+				"invite_reminder_max_count": 3,
 			}),
 		},
 		// update the plain settings fields
@@ -55,13 +58,16 @@ func TestInviteSettings(t *testing.T) {
 				project_id = "` + projectID + `"
 			`),
 			Check: m.Check(map[string]any{
-				"require_invitation":   false,
-				"invite_url":           "",
-				"add_magiclink_token":  false,
-				"expire_invited_users": false,
-				"invite_expiration":    "1 week",
-				"send_email":           true,
-				"send_text":            false,
+				"require_invitation":        false,
+				"invite_url":                "",
+				"add_magiclink_token":       false,
+				"expire_invited_users":      false,
+				"invite_expiration":         "1 week",
+				"send_email":                true,
+				"send_text":                 false,
+				"invite_reminders":          false,
+				"invite_reminder_interval":  "1 day",
+				"invite_reminder_max_count": 3,
 			}),
 		},
 		// invite_expiration unit is normalized to plural on read
@@ -97,10 +103,18 @@ func TestInviteSettingsTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 				email_connector_id = `+c.Path()+`.id
 				email_template_id = `+e.Path()+`.id
+				invite_reminders = true
+				invite_reminder_interval = "2 days"
+				invite_reminder_max_count = 5
+				invite_reminder_email_template_id = `+e.Path()+`.id
 			`),
 			Check: m.Check(map[string]any{
-				"email_connector_id": testacc.AttributeIsSet,
-				"email_template_id":  testacc.AttributeIsSet,
+				"email_connector_id":                testacc.AttributeIsSet,
+				"email_template_id":                 testacc.AttributeIsSet,
+				"invite_reminders":                  true,
+				"invite_reminder_interval":          "2 days",
+				"invite_reminder_max_count":         5,
+				"invite_reminder_email_template_id": testacc.AttributeIsSet,
 			}),
 		},
 		// dropping the references resets delivery and the template to the built-in ones
@@ -112,9 +126,11 @@ func TestInviteSettingsTemplates(t *testing.T) {
 				project_id = "`+projectID+`"
 			`),
 			Check: m.Check(map[string]any{
-				"send_email":         true,
-				"email_connector_id": "",
-				"email_template_id":  "",
+				"send_email":                        true,
+				"email_connector_id":                "",
+				"email_template_id":                 "",
+				"invite_reminders":                  false,
+				"invite_reminder_email_template_id": "",
 			}),
 		},
 	)
