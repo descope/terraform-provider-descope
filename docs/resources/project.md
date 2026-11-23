@@ -269,7 +269,7 @@ resource "descope_project" "example" {
 resource "descope_sso_settings" "example" {
   project_id = descope_project.example.id
 
-  # Merge SSO users with existing accounts of the same email
+  # Convert existing users to SSO-only after a successful SSO login
   merge_users = true
 
   # Allow SSO roles to override a user's existing roles
