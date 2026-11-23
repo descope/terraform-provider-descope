@@ -43,6 +43,7 @@ func TestSSOSettings(t *testing.T) {
 				require_sso_domains = true
 				require_groups_attribute_name = true
 				allow_merge_users_with_multiple_tenants = true
+				ignore_invalid_idp_phones = true
 				mandatory_user_attributes = [
 					{
 						id = "email"
@@ -72,6 +73,7 @@ func TestSSOSettings(t *testing.T) {
 				"require_sso_domains":                     true,
 				"require_groups_attribute_name":           true,
 				"allow_merge_users_with_multiple_tenants": true,
+				"ignore_invalid_idp_phones":               true,
 				"mandatory_user_attributes.#":             "2",
 				"mandatory_user_attributes.0.id":          "email",
 				"mandatory_user_attributes.0.custom":      false,
@@ -134,6 +136,7 @@ func TestSSOSettings(t *testing.T) {
 				"require_sso_domains":                     false,
 				"require_groups_attribute_name":           false,
 				"allow_merge_users_with_multiple_tenants": false,
+				"ignore_invalid_idp_phones":               false,
 				"mandatory_user_attributes.#":             "0",
 				"sso_suite_settings.hide_scim":            false,
 				"sso_suite_settings.hide_role_mapping":    false,
