@@ -76,7 +76,7 @@ func TestInviteSettings(t *testing.T) {
 			ImportState:             true,
 			ImportStateVerify:       true,
 			ImportStateIdFunc:       testacc.GenerateImportStateID(m.Path(), "project_id"),
-			ImportStateVerifyIgnore: []string{"invite_expiration"},
+			ImportStateVerifyIgnore: []string{"invite_expiration", "invite_reminder_interval"},
 		},
 	)
 }
