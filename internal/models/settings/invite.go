@@ -33,7 +33,7 @@ var InviteSettingsAttributes = map[string]schema.Attribute{
 	"email_connector_id":         stringattr.Default(""),
 	"email_template_id":          stringattr.Default(""),
 	"send_reminders":             boolattr.Default(false),
-	"reminder_interval":          durationattr.Default("1 day"),
+	"reminder_interval":          durationattr.Default("1 day", durationattr.MinimumValue("1 day")),
 	"max_reminders":              intattr.Default(3, int64validator.Between(1, 5)),
 	"reminder_email_template_id": stringattr.Default(""),
 	"reminder_text_template_id":  stringattr.Default(""),
