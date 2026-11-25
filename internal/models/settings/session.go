@@ -19,45 +19,47 @@ var SessionSettingsSchema = schema.Schema{
 }
 
 var SessionSettingsAttributes = map[string]schema.Attribute{
-	"id":                                  stringattr.Identifier(),
-	"project_id":                          stringattr.Required(stringplanmodifier.RequiresReplace()),
-	"user_jwt_template":                   stringattr.Default(""),
-	"access_key_jwt_template":             stringattr.Default(""),
-	"refresh_token_expiration":            durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
-	"refresh_token_rotation":              boolattr.Default(false),
-	"refresh_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
-	"refresh_token_cookie_policy":         stringattr.Default("none", stringvalidator.OneOf("strict", "lax", "none")),
-	"refresh_token_cookie_domain":         stringattr.Default(""),
-	"session_token_expiration":            durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
-	"session_token_response_method":       stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
-	"session_token_cookie_policy":         stringattr.Default("none", stringvalidator.OneOf("strict", "lax", "none")),
-	"session_token_cookie_domain":         stringattr.Default(""),
-	"step_up_token_expiration":            durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
-	"trusted_device_token_expiration":     durationattr.Default("365 days", durationattr.MinimumValue("3 minutes")),
-	"access_key_session_token_expiration": durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
-	"enable_inactivity":                   boolattr.Default(false),
-	"inactivity_time":                     durationattr.Default("12 minutes", durationattr.MinimumValue("10 minutes")),
+	"id":                                     stringattr.Identifier(),
+	"project_id":                             stringattr.Required(stringplanmodifier.RequiresReplace()),
+	"user_jwt_template":                      stringattr.Default(""),
+	"access_key_jwt_template":                stringattr.Default(""),
+	"refresh_token_expiration":               durationattr.Default("4 weeks", durationattr.MinimumValue("3 minutes")),
+	"refresh_token_rotation":                 boolattr.Default(false),
+	"refresh_token_response_method":          stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
+	"refresh_token_cookie_policy":            stringattr.Default("none", stringvalidator.OneOf("strict", "lax", "none")),
+	"refresh_token_cookie_domain":            stringattr.Default(""),
+	"session_token_expiration":               durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
+	"session_token_response_method":          stringattr.Default("response_body", stringvalidator.OneOf("cookies", "response_body")),
+	"session_token_cookie_policy":            stringattr.Default("none", stringvalidator.OneOf("strict", "lax", "none")),
+	"session_token_cookie_domain":            stringattr.Default(""),
+	"step_up_token_expiration":               durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
+	"trusted_device_token_expiration":        durationattr.Default("365 days", durationattr.MinimumValue("3 minutes")),
+	"trusted_device_extend_on_trusted_login": boolattr.Default(false),
+	"access_key_session_token_expiration":    durationattr.Default("10 minutes", durationattr.MinimumValue("3 minutes")),
+	"enable_inactivity":                      boolattr.Default(false),
+	"inactivity_time":                        durationattr.Default("12 minutes", durationattr.MinimumValue("10 minutes")),
 }
 
 type SessionSettingsModel struct {
-	ID                              stringattr.Type `tfsdk:"id"`
-	ProjectID                       stringattr.Type `tfsdk:"project_id"`
-	UserJWTTemplate                 stringattr.Type `tfsdk:"user_jwt_template"`
-	AccessKeyJWTTemplate            stringattr.Type `tfsdk:"access_key_jwt_template"`
-	RefreshTokenExpiration          stringattr.Type `tfsdk:"refresh_token_expiration"`
-	RefreshTokenRotation            boolattr.Type   `tfsdk:"refresh_token_rotation"`
-	RefreshTokenResponseMethod      stringattr.Type `tfsdk:"refresh_token_response_method"`
-	RefreshTokenCookiePolicy        stringattr.Type `tfsdk:"refresh_token_cookie_policy"`
-	RefreshTokenCookieDomain        stringattr.Type `tfsdk:"refresh_token_cookie_domain"`
-	SessionTokenExpiration          stringattr.Type `tfsdk:"session_token_expiration"`
-	SessionTokenResponseMethod      stringattr.Type `tfsdk:"session_token_response_method"`
-	SessionTokenCookiePolicy        stringattr.Type `tfsdk:"session_token_cookie_policy"`
-	SessionTokenCookieDomain        stringattr.Type `tfsdk:"session_token_cookie_domain"`
-	StepUpTokenExpiration           stringattr.Type `tfsdk:"step_up_token_expiration"`
-	TrustedDeviceTokenExpiration    stringattr.Type `tfsdk:"trusted_device_token_expiration"`
-	AccessKeySessionTokenExpiration stringattr.Type `tfsdk:"access_key_session_token_expiration"`
-	EnableInactivity                boolattr.Type   `tfsdk:"enable_inactivity"`
-	InactivityTime                  stringattr.Type `tfsdk:"inactivity_time"`
+	ID                                stringattr.Type `tfsdk:"id"`
+	ProjectID                         stringattr.Type `tfsdk:"project_id"`
+	UserJWTTemplate                   stringattr.Type `tfsdk:"user_jwt_template"`
+	AccessKeyJWTTemplate              stringattr.Type `tfsdk:"access_key_jwt_template"`
+	RefreshTokenExpiration            stringattr.Type `tfsdk:"refresh_token_expiration"`
+	RefreshTokenRotation              boolattr.Type   `tfsdk:"refresh_token_rotation"`
+	RefreshTokenResponseMethod        stringattr.Type `tfsdk:"refresh_token_response_method"`
+	RefreshTokenCookiePolicy          stringattr.Type `tfsdk:"refresh_token_cookie_policy"`
+	RefreshTokenCookieDomain          stringattr.Type `tfsdk:"refresh_token_cookie_domain"`
+	SessionTokenExpiration            stringattr.Type `tfsdk:"session_token_expiration"`
+	SessionTokenResponseMethod        stringattr.Type `tfsdk:"session_token_response_method"`
+	SessionTokenCookiePolicy          stringattr.Type `tfsdk:"session_token_cookie_policy"`
+	SessionTokenCookieDomain          stringattr.Type `tfsdk:"session_token_cookie_domain"`
+	StepUpTokenExpiration             stringattr.Type `tfsdk:"step_up_token_expiration"`
+	TrustedDeviceTokenExpiration      stringattr.Type `tfsdk:"trusted_device_token_expiration"`
+	TrustedDeviceExtendOnTrustedLogin boolattr.Type   `tfsdk:"trusted_device_extend_on_trusted_login"`
+	AccessKeySessionTokenExpiration   stringattr.Type `tfsdk:"access_key_session_token_expiration"`
+	EnableInactivity                  boolattr.Type   `tfsdk:"enable_inactivity"`
+	InactivityTime                    stringattr.Type `tfsdk:"inactivity_time"`
 }
 
 func (m *SessionSettingsModel) Values(h *helpers.Handler) map[string]any {
@@ -75,6 +77,7 @@ func (m *SessionSettingsModel) Values(h *helpers.Handler) map[string]any {
 	stringattr.Get(m.SessionTokenCookieDomain, data, "sessionTokenCookieDomain")
 	durationattr.Get(m.StepUpTokenExpiration, data, "stepupTokenExpiration")
 	durationattr.Get(m.TrustedDeviceTokenExpiration, data, "trustedDeviceTokenExpiration")
+	boolattr.Get(m.TrustedDeviceExtendOnTrustedLogin, data, "trustedDeviceExtendOnTrustedLogin")
 	durationattr.Get(m.AccessKeySessionTokenExpiration, data, "keySessionTokenExpiration")
 	boolattr.Get(m.EnableInactivity, data, "enableInactivity")
 	durationattr.Get(m.InactivityTime, data, "inactivityTime")
@@ -95,6 +98,7 @@ func (m *SessionSettingsModel) SetValues(h *helpers.Handler, data map[string]any
 	stringattr.Set(&m.SessionTokenCookieDomain, data, "sessionTokenCookieDomain")
 	durationattr.SetDefault(&m.StepUpTokenExpiration, data, "stepupTokenExpiration", "10 minutes")
 	durationattr.SetDefault(&m.TrustedDeviceTokenExpiration, data, "trustedDeviceTokenExpiration", "365 days")
+	boolattr.SetDefault(&m.TrustedDeviceExtendOnTrustedLogin, data, "trustedDeviceExtendOnTrustedLogin", false)
 	durationattr.SetDefault(&m.AccessKeySessionTokenExpiration, data, "keySessionTokenExpiration", "10 minutes")
 	boolattr.Set(&m.EnableInactivity, data, "enableInactivity")
 	durationattr.SetDefault(&m.InactivityTime, data, "inactivityTime", "12 minutes")
