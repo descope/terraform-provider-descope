@@ -12,7 +12,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Build
         uses: ./.github/actions/ci/build
 
@@ -21,11 +23,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Setup Repo
         uses: ./.github/actions/ci/setup
       - name: Install Descope CLI
-        uses: descope/descopecli/.github/actions/install@76722efc17408640a42340cbdae1528c363e9dc2 # v0.8.15
+        uses: descope/descopecli/.github/actions/install@fe4d021724775767f8ce441a02574d06bd7b2b9c # v0.8.18
       - name: Run Acceptance Tests
         shell: bash
         env:
@@ -33,6 +37,8 @@ jobs:
           DESCOPE_BASE_URL: ${{ secrets.DESCOPE_BASE_URL }}
           DESCOPE_USER_AGENT: ${{ secrets.DESCOPE_USER_AGENT }}
           DESCOPE_TESTACC_THROTTLE: ${{ vars.DESCOPE_TESTACC_THROTTLE }}
+          DESCOPE_TESTACC_PROJECT_ID: ${{ vars.DESCOPE_TESTACC_PROJECT_ID }}
+          DESCOPE_TESTACC_LICENSED: ${{ vars.DESCOPE_TESTACC_LICENSED }}
           DESCOPE_TESTACC_PREFIX: testacc-gh-${{ github.run_id }}
           TF_ACC: 1
         run: |
@@ -54,7 +60,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
       - name: Run Linter
         uses: ./.github/actions/ci/lint
 
@@ -63,8 +71,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          persist-credentials: false
           fetch-depth: 0
       - name: Check Leaks
         uses: ./.github/actions/ci/leaks

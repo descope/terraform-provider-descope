@@ -1,9 +1,9 @@
 package engine
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/intattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/intattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
 )
@@ -17,7 +17,8 @@ var EngineAttributes = map[string]schema.Attribute{
 }
 
 var Schema = schema.Schema{
-	Attributes: EngineAttributes,
+	MarkdownDescription: "Manages a Descope Engine, a self-hosted agent that runs connector actions inside your own network.",
+	Attributes:          EngineAttributes,
 }
 
 type EngineModel struct {

@@ -1,9 +1,9 @@
 package descoper
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -16,7 +16,7 @@ var DescoperAttributes = map[string]schema.Attribute{
 }
 
 var Schema = schema.Schema{
-	MarkdownDescription: "Manages a Descope console user (a \"Descoper\") and their access control settings across your company's projects.",
+	MarkdownDescription: `Manages a Descope console user (a "Descoper") and their access control settings across your company's projects.`,
 	Attributes:          DescoperAttributes,
 }
 

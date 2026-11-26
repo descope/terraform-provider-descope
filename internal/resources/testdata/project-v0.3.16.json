@@ -1,0 +1,137 @@
+{
+  "admin_portal": null,
+  "applications": null,
+  "attributes": null,
+  "authentication": null,
+  "authorization": {
+    "fga": "",
+    "permissions": [
+      {
+        "description": "",
+        "id": "PERM3JkQCnWOlWKRcVJUVxeiZqKekfA",
+        "name": "Tests"
+      }
+    ],
+    "roles": [
+      {
+        "default": false,
+        "description": "",
+        "id": "ROL3JkQCimsZrWNKfH8TnvTE481fvP",
+        "key": "",
+        "name": "Tester",
+        "permissions": [
+          "Tests"
+        ],
+        "private": false
+      }
+    ]
+  },
+  "connectors": null,
+  "environment": "",
+  "flows": null,
+  "id": "P3JkQChdCY9nB5McOvoW72dH7i9Z",
+  "invite_settings": {
+    "add_magiclink_token": false,
+    "email_service": {
+      "connector": "Descope",
+      "templates": []
+    },
+    "expire_invited_users": false,
+    "invite_expiration": "1 week",
+    "invite_url": "",
+    "require_invitation": false,
+    "send_email": true,
+    "send_text": false
+  },
+  "jwt_templates": {
+    "access_key_templates": [
+      {
+        "add_jti_claim": null,
+        "auth_schema": "default",
+        "auto_tenant_claim": null,
+        "conformance_issuer": true,
+        "description": "Default OIDC compliant template for an access key JWT in Descope. Note: Federated Apps tokens will be generated with issuer of the form https://api.descope.com/{ProjectID} or https://api.descope.com/{ProjectID}/{AppID} , Inbound Apps and Federated apps will also include the azp claim populated with the ClientID value.",
+        "empty_claim_policy": null,
+        "enforce_issuer": null,
+        "exclude_permission_claim": null,
+        "id": "JT3JkQClauNCPUKVPSbt9pWtxcC13",
+        "name": "Default OIDC compliant Access Key JWT",
+        "override_subject_claim": null,
+        "template": "{\"aud\":[\"{{project.id}}\"]}"
+      }
+    ],
+    "user_templates": [
+      {
+        "add_jti_claim": null,
+        "auth_schema": "default",
+        "auto_tenant_claim": null,
+        "conformance_issuer": true,
+        "description": "Default OIDC compliant template for a user JWT in Descope. Note: Federated Apps tokens will be generated with issuer of the form https://api.descope.com/{ProjectID} or https://api.descope.com/{ProjectID}/{AppID} , Inbound Apps and Federated apps will also include the azp claim populated with the ClientID value.",
+        "empty_claim_policy": null,
+        "enforce_issuer": null,
+        "exclude_permission_claim": null,
+        "id": "JT3JkQCiQbyLBmbQOnwG6lCqAu9qh",
+        "name": "Default OIDC compliant User JWT",
+        "override_subject_claim": null,
+        "template": "{\"aud\":[\"{{project.id}}\"],\"email\":\"{{user.email}}\"}"
+      }
+    ]
+  },
+  "lists": [
+    {
+      "data": "[\"alpha\",\"beta\"]",
+      "description": "",
+      "id": "3JkQCiEFQafQBWB6qnybHswuAQC",
+      "name": "Allowed",
+      "type": "texts"
+    }
+  ],
+  "name": "testacc-local-upgradefixture",
+  "project_settings": {
+    "access_key_jwt_template": "",
+    "access_key_session_token_expiration": "10 minutes",
+    "allow_auth_hosting_iframe_embedding": false,
+    "app_url": "",
+    "approved_domains": [],
+    "custom_domain": "",
+    "default_no_sso_apps": false,
+    "enable_inactivity": false,
+    "inactivity_time": "12 minutes",
+    "refresh_token_cookie_domain": "",
+    "refresh_token_cookie_policy": "none",
+    "refresh_token_expiration": "3 weeks",
+    "refresh_token_response_method": "response_body",
+    "refresh_token_rotation": false,
+    "session_migration": {
+      "api_token": null,
+      "audience": "",
+      "client_id": "",
+      "domain": "",
+      "issuer": "",
+      "loginid_matched_attributes": [],
+      "user_mapping": [],
+      "user_sync_type": null,
+      "vendor": ""
+    },
+    "session_token_cookie_domain": "",
+    "session_token_cookie_policy": "none",
+    "session_token_expiration": "10 minutes",
+    "session_token_response_method": "response_body",
+    "step_up_token_expiration": "10 minutes",
+    "tenant_user_isolation": false,
+    "test_users_loginid_regexp": "",
+    "test_users_static_otp": "",
+    "test_users_verifier_regexp": "",
+    "trusted_device_token_expiration": "365 days",
+    "user_jwt_template": ""
+  },
+  "styles": null,
+  "tags": [
+    "fixture"
+  ],
+  "widgets": {
+    "access-key-management-widget": {
+      "data": "{}"
+    }
+  }
+}

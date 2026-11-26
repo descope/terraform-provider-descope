@@ -14,6 +14,19 @@ resource to be deleted and recreated.
 
 
 
+deletion_protection
+-------------------
+
+- Type: `bool`
+
+Protects the inbound app from being accidentally destroyed or replaced. Destroying or
+replacing an inbound app issues a new client ID and client secret, breaking any
+integrations that rely on the existing ones, so inbound apps are protected by default.
+To allow the resource to be destroyed or replaced, for example in ephemeral test
+environments, set this attribute to `false` and apply the change first.
+
+
+
 name
 ----
 
@@ -136,13 +149,21 @@ as the audience, `clientId` to set the app's client ID, or leave empty to includ
 
 
 
-non_confidential_client
------------------------
+client_type
+-----------
 
-- Type: `bool`
+- Type: `string`
 
-Whether this is a public (non-confidential) client that does not use a client secret. Changing this
-value after creation will require the resource to be replaced.
+The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for
+one that authenticates with PKCE and has no secret. Setting it explicitly is recommended. The empty
+value `""` is the legacy mode. If this attribute is omitted when the app is created, the account's
+default client type is used and the stored value shows which one it is, and removing the attribute
+from the configuration later keeps the current type. Moving from the legacy mode to `confidential`
+updates the app in place and keeps its client ID, and any other change, including a move to the legacy
+mode, replaces the resource, which issues a new client ID and secret. An app that was never issued a
+client secret, such as one created with `non_confidential_client = true` in v0.3, needs one after
+moving to `confidential`: rotate its client secret, for example in the Descope console, or force a
+replacement with `terraform apply -replace` to get a new client ID and secret.
 
 
 
@@ -172,3 +193,147 @@ force_pkce
 - Type: `bool`
 
 When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.
+
+
+
+allowed_tenants
+---------------
+
+- Type: `set` of `string`
+
+Restricts the app to these tenant IDs. Leave empty to allow all tenants.
+
+
+
+scope_claim_mapping
+-------------------
+
+- Type: `list` of `inboundapp.ScopeClaimMapping`
+
+Maps the claims that each scope contributes to the tokens issued for this app. This is the structured
+form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the
+mapping here wins.
+
+
+
+client_auth_method
+------------------
+
+- Type: `string`
+
+How the app authenticates at the token endpoint. `clientSecret` (the default, also when empty) uses
+`client_secret`, `privateKeyJwt` accepts a `private_key_jwt` client assertion verified against
+`client_assertions`, and `workloadIdentity` accepts a SPIFFE JWT-SVID or an OIDC workload token verified
+against `workload_client_assertions`. An app that authenticates with mTLS certificates is managed in the
+Descope console.
+
+
+
+client_assertions
+-----------------
+
+- Type: `list` of `inboundapp.ClientAssertion`
+
+The keys that verify a `private_key_jwt` client assertion, either a JWKS URL or a PEM public key per
+entry. Required to have at least one entry when `client_auth_method` is `privateKeyJwt`.
+
+
+
+workload_client_assertions
+--------------------------
+
+- Type: `list` of `inboundapp.WorkloadClientAssertion`
+
+The workload identity issuers this app trusts, each a SPIFFE trust domain or an OIDC issuer together with
+the workload subjects it accepts. Required to have at least one entry when `client_auth_method` is
+`workloadIdentity`.
+
+
+
+authorization_code_disabled
+---------------------------
+
+- Type: `bool`
+
+Disables the `authorization_code` grant type for this inbound app, including its authorization requests.
+When omitted, the current setting is kept, and a new app has the grant type enabled.
+
+
+
+client_credentials_disabled
+---------------------------
+
+- Type: `bool`
+
+Disables the `client_credentials` grant type for this inbound app. When omitted, the current setting is
+kept, and a new app has the grant type enabled unless `client_type` is `public`. Public clients cannot use
+this grant type, so it cannot be set to `false` for one.
+
+
+
+refresh_token_disabled
+----------------------
+
+- Type: `bool`
+
+Disables the `refresh_token` grant type for this inbound app, so its tokens cannot be refreshed. When
+omitted, the current setting is kept, and a new app has the grant type enabled.
+
+
+
+jwt_bearer_disabled
+-------------------
+
+- Type: `bool`
+
+Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this inbound app. When omitted,
+the current setting is kept, and a new app has the grant type enabled unless `client_type` is `public`.
+Public clients cannot use this grant type, so it cannot be set to `false` for one.
+
+
+
+device_code_disabled
+--------------------
+
+- Type: `bool`
+
+Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this inbound app. When omitted,
+the current setting is kept, and a new app has the grant type enabled.
+
+
+
+token_exchange_disabled
+-----------------------
+
+- Type: `bool`
+
+Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When
+omitted, the current setting is kept, and a new app has the grant type enabled.
+
+
+
+custom_attributes
+-----------------
+
+- Type: `string`
+- Default: `"{}"`
+
+A JSON-encoded object of custom attribute values for the inbound app, keyed by the `id` of a
+`descope_inbound_app_attribute`. JWT templates read these values as `{{app.customAttributes.<id>}}`.
+Reference the attribute resource in the key, as in `jsonencode({ (descope_inbound_app_attribute.org.id) = "..." })`,
+so the attribute is created first, since a value for an attribute that is not defined is rejected. Each value
+must have the attribute's type, as it is not converted: a string for `string` and `singleselect`, an unquoted
+number for `number`, `true` or `false` for `boolean`, a list of strings for `multiselect`, a number of milliseconds
+since the epoch for `date`, and an `MM-DD` string for `monthday`. Values set outside Terraform are removed on the
+next apply unless they are also in this attribute, so the first plan after adding it, or after upgrading the
+provider, shows those values as removed.
+
+
+
+tags
+----
+
+- Type: `set` of `string`
+
+Labels for this inbound app, matched by policy rules through `client.tags` conditions.
+Up to 100 tags, each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.

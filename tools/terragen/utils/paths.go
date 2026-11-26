@@ -8,13 +8,15 @@ import (
 )
 
 type Paths struct {
-	Root       string
-	Models     string
-	Docs       string
-	Raw        string
-	Connectors string
-	Data       string
-	Templates  string
+	Root          string
+	Models        string
+	Docs          string
+	Raw           string
+	Connectors    string
+	Resources     string
+	Data          string
+	MockTemplates string
+	Templates     string
 }
 
 func PreparePaths() *Paths {
@@ -28,36 +30,36 @@ func PreparePaths() *Paths {
 		log.Fatalf("expected to run from the project root directory")
 	}
 
-	models := filepath.Join(root, "internal", "models")
-	if info, err := os.Stat(models); os.IsNotExist(err) || !info.IsDir() {
-		log.Fatalf("expected to find models directory at path: %s", models)
-	}
+	models := requireDir(root, "internal", "models")
 
 	docs := EnsurePath(root, "internal", "docs")
 
 	raw := EnsurePath(root, "docs", "raw")
 
-	connectors := filepath.Join(models, "project", "connectors")
+	connectors := EnsurePath(models, "connectors")
+
+	resources := requireDir(root, "internal", "resources")
 
 	data := filepath.Join(root, "tools", "terragen", "conngen")
+
+	mockTemplates := requireDir(data, "templates")
 
 	templates := strings.TrimSpace(os.Getenv("DESCOPE_TEMPLATES_PATH"))
 	if templates == "" {
 		log.Fatalf("expected path to templates in DESCOPE_TEMPLATES_PATH environment variable")
 	}
-	templates = filepath.Clean(templates)
-	if info, err := os.Stat(templates); os.IsNotExist(err) || !info.IsDir() {
-		log.Fatalf("expected to find templates directory at path: %s", templates)
-	}
+	templates = requireDir(filepath.Clean(templates))
 
 	return &Paths{
-		Root:       root,
-		Models:     models,
-		Docs:       docs,
-		Raw:        raw,
-		Connectors: connectors,
-		Data:       data,
-		Templates:  templates,
+		Root:          root,
+		Models:        models,
+		Docs:          docs,
+		Raw:           raw,
+		Connectors:    connectors,
+		Resources:     resources,
+		Data:          data,
+		MockTemplates: mockTemplates,
+		Templates:     templates,
 	}
 }
 
@@ -67,6 +69,14 @@ func EnsurePath(path string, subdirs ...string) string {
 		if err := os.Mkdir(path, 0755); err != nil && !os.IsExist(err) {
 			log.Fatalf("failed to create subdirectory %s: %s", path, err.Error())
 		}
+	}
+	return path
+}
+
+func requireDir(path string, subdirs ...string) string {
+	path = filepath.Join(path, filepath.Join(subdirs...))
+	if info, err := os.Stat(path); os.IsNotExist(err) || !info.IsDir() {
+		log.Fatalf("expected to find directory at path: %s", path)
 	}
 	return path
 }

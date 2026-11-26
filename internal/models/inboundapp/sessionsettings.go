@@ -1,15 +1,12 @@
 package inboundapp
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/durationattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/durationattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
-
-var SessionSettingsValidator = objattr.NewValidator[SessionSettingsModel]("must have expiration fields set when enabled")
 
 var SessionSettingsAttributes = map[string]schema.Attribute{
 	"enabled":                      boolattr.Default(false),
@@ -41,28 +38,10 @@ func (m *SessionSettingsModel) Values(h *helpers.Handler) map[string]any {
 }
 
 func (m *SessionSettingsModel) SetValues(h *helpers.Handler, data map[string]any) {
-	boolattr.Set(&m.Enabled, data, "enabled")
-	durationattr.Set(&m.RefreshTokenExpiration, data, "refreshTokenExpiration")
-	durationattr.Set(&m.SessionTokenExpiration, data, "sessionTokenExpiration")
-	durationattr.Set(&m.KeySessionTokenExpiration, data, "keySessionTokenExpiration")
-	stringattr.Set(&m.UserTemplateId, data, "userTemplateId")
-	stringattr.Set(&m.KeyTemplateId, data, "keyTemplateId")
-}
-
-func (m *SessionSettingsModel) Validate(h *helpers.Handler) {
-	if helpers.HasUnknownValues(m.Enabled, m.RefreshTokenExpiration, m.SessionTokenExpiration, m.KeySessionTokenExpiration) {
-		return
-	}
-
-	if m.Enabled.ValueBool() {
-		if m.RefreshTokenExpiration.ValueString() == "" {
-			h.Missing("The refresh_token_expiration attribute is required when session settings are enabled")
-		}
-		if m.SessionTokenExpiration.ValueString() == "" {
-			h.Missing("The session_token_expiration attribute is required when session settings are enabled")
-		}
-		if m.KeySessionTokenExpiration.ValueString() == "" {
-			h.Missing("The key_session_token_expiration attribute is required when session settings are enabled")
-		}
-	}
+	boolattr.SetDefault(&m.Enabled, data, "enabled", false) // omitted by the backend when false, and Set would leave a null that never matches the schema default
+	durationattr.SetDefault(&m.RefreshTokenExpiration, data, "refreshTokenExpiration", "520 weeks")
+	durationattr.SetDefault(&m.SessionTokenExpiration, data, "sessionTokenExpiration", "10 minutes")
+	durationattr.SetDefault(&m.KeySessionTokenExpiration, data, "keySessionTokenExpiration", "10 minutes")
+	stringattr.SetDefault(&m.UserTemplateId, data, "userTemplateId", "") // omitted by the backend when unset, and Set would leave a null that never matches the schema default
+	stringattr.SetDefault(&m.KeyTemplateId, data, "keyTemplateId", "")   // same, omitted when no key template is set
 }

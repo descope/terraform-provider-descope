@@ -25,6 +25,16 @@
       "file": "auditwebhook",
       "struct": "AuditWebhook"
     },
+    "aws-end-user-messaging": {
+      "attribute": "aws_end_user_messaging",
+      "file": "awsendusermessaging",
+      "struct": "AWSEndUserMessaging"
+    },
+    "aws-eventbridge": {
+      "attribute": "aws_eventbridge",
+      "file": "awseventbridge",
+      "struct": "AWSEventBridge"
+    },
     "aws-s3": {
       "attribute": "aws_s3",
       "file": "awss3",
@@ -39,6 +49,11 @@
       "attribute": "aws_translate",
       "file": "awstranslate",
       "struct": "AWSTranslate"
+    },
+    "azure-monitor": {
+      "attribute": "azure_monitor",
+      "file": "azuremonitor",
+      "struct": "AzureMonitor"
     },
     "bitsight": {
       "attribute": "bitsight",
@@ -185,6 +200,16 @@
       "file": "lokalise",
       "struct": "Lokalise"
     },
+    "mailjet": {
+      "attribute": "mailjet",
+      "file": "mailjet",
+      "struct": "Mailjet"
+    },
+    "microsoft-sentinel": {
+      "attribute": "microsoft_sentinel",
+      "file": "microsoftsentinel",
+      "struct": "MicrosoftSentinel"
+    },
     "mixpanel": {
       "attribute": "mixpanel",
       "file": "mixpanel",
@@ -248,7 +273,7 @@
     "rnd-reassigned": {
       "attribute": "rnd_reassigned",
       "file": "rndreassigned",
-      "struct": "RNDReassigned"
+      "struct": "RndReassigned"
     },
     "salesforce": {
       "attribute": "salesforce",
@@ -277,10 +302,12 @@
     },
     "sendgrid": {
       "attribute": "sendgrid",
+      "file": "sendgrid",
       "struct": "SendGrid"
     },
     "ses": {
       "attribute": "ses",
+      "file": "ses",
       "struct": "SES"
     },
     "slack": {
@@ -295,6 +322,7 @@
     },
     "smtp": {
       "attribute": "smtp",
+      "file": "smtp",
       "struct": "SMTP"
     },
     "snowflake": {
@@ -304,12 +332,18 @@
     },
     "sns": {
       "attribute": "sns",
+      "file": "sns",
       "struct": "SNS"
     },
     "splunk": {
       "attribute": "splunk",
       "file": "splunk",
       "struct": "Splunk"
+    },
+    "splunk-on-call": {
+      "attribute": "splunk_on_call",
+      "file": "splunkoncall",
+      "struct": "SplunkOnCall"
     },
     "sql": {
       "attribute": "sql",
@@ -343,16 +377,23 @@
     },
     "twilio-core": {
       "attribute": "twilio_core",
+      "file": "twiliocore",
       "struct": "TwilioCore"
     },
     "twilio-verify": {
       "attribute": "twilio_verify",
+      "file": "twilioverify",
       "struct": "TwilioVerify"
     },
     "unibeam": {
       "attribute": "unibeam",
       "file": "unibeam",
       "struct": "Unibeam"
+    },
+    "vonage": {
+      "attribute": "vonage",
+      "file": "vonage",
+      "struct": "Vonage"
     },
     "zerobounce": {
       "attribute": "zerobounce",
@@ -376,6 +417,14 @@
     "accountId": {
       "attribute": "account_id",
       "struct": "AccountID"
+    },
+    "accountIdentifier": {
+      "attribute": "account_identifier",
+      "struct": "AccountIdentifier"
+    },
+    "accountSid": {
+      "attribute": "account_sid",
+      "struct": "AccountSID"
     },
     "accountUid": {
       "attribute": "account_uid",
@@ -409,6 +458,10 @@
       "attribute": "api_version",
       "struct": "APIVersion"
     },
+    "applicationId": {
+      "attribute": "application_id",
+      "struct": "ApplicationID"
+    },
     "assessmentScore": {
       "attribute": "assessment_score",
       "struct": "AssessmentScore"
@@ -424,6 +477,10 @@
     "auditTable": {
       "attribute": "audit_table",
       "struct": "AuditTable"
+    },
+    "authMethod": {
+      "attribute": "auth_method",
+      "struct": "AuthMethod"
     },
     "authToken": {
       "attribute": "auth_token",
@@ -445,6 +502,10 @@
       "attribute": "aws_auth_type",
       "struct": "AWSAuthType"
     },
+    "awsEndpoint": {
+      "attribute": "endpoint",
+      "struct": "Endpoint"
+    },
     "awsExternalId": {
       "attribute": "aws_external_id",
       "struct": "AWSExternalID"
@@ -456,6 +517,10 @@
     "awsRoleArn": {
       "attribute": "aws_role_arn",
       "struct": "AWSRoleARN"
+    },
+    "awsSNSRegion": {
+      "attribute": "region",
+      "struct": "Region"
     },
     "awsSecretAccessKey": {
       "attribute": "aws_secret_access_key",
@@ -488,6 +553,10 @@
     "botThreshold": {
       "attribute": "bot_threshold",
       "struct": "BotThreshold"
+    },
+    "browserAnalytics": {
+      "attribute": "browser_analytics",
+      "struct": "BrowserAnalytics"
     },
     "bucket": {
       "attribute": "bucket",
@@ -537,6 +606,10 @@
       "attribute": "company_id",
       "struct": "CompanyID"
     },
+    "configurationSetName": {
+      "attribute": "configuration_set_name",
+      "struct": "ConfigurationSetName"
+    },
     "country": {
       "attribute": "country",
       "struct": "Country"
@@ -573,6 +646,10 @@
       "attribute": "database_name",
       "struct": "DatabaseName"
     },
+    "dcrImmutableId": {
+      "attribute": "dcr_immutable_id",
+      "struct": "DcrImmutableID"
+    },
     "defaultEnvironment": {
       "attribute": "default_environment",
       "struct": "DefaultEnvironment"
@@ -585,6 +662,14 @@
       "attribute": "default_result",
       "struct": "DefaultResult"
     },
+    "defaultTemplateId": {
+      "attribute": "default_template_id",
+      "struct": "DefaultTemplateID"
+    },
+    "detailType": {
+      "attribute": "detail_type",
+      "struct": "DetailType"
+    },
     "emailFrom": {
       "attribute": "email_from",
       "struct": "EmailFrom"
@@ -592,6 +677,10 @@
     "endpoint": {
       "attribute": "endpoint",
       "struct": "Endpoint"
+    },
+    "engineId": {
+      "attribute": "engine_id",
+      "struct": "EngineID"
     },
     "engineName": {
       "attribute": "engine_name",
@@ -601,6 +690,14 @@
       "attribute": "enterprise",
       "struct": "Enterprise"
     },
+    "entityId": {
+      "attribute": "entity_id",
+      "struct": "EntityID"
+    },
+    "environmentName": {
+      "attribute": "environment_name",
+      "struct": "EnvironmentName"
+    },
     "euRegion": {
       "attribute": "eu_region",
       "struct": "EURegion"
@@ -608,6 +705,10 @@
     "euResidency": {
       "attribute": "eu_residency",
       "struct": "EUResidency"
+    },
+    "eventBusName": {
+      "attribute": "event_bus_name",
+      "struct": "EventBusName"
     },
     "expirationTimeMinutes": {
       "attribute": "expiration_time",
@@ -617,9 +718,33 @@
       "attribute": "external_id",
       "struct": "ExternalID"
     },
+    "federatedAppId": {
+      "attribute": "federated_app_id",
+      "struct": "FederatedAppID"
+    },
     "flowId": {
       "attribute": "flow_id",
       "struct": "FlowID"
+    },
+    "from": {
+      "attribute": "sender",
+      "struct": "Sender"
+    },
+    "fromEmail": {
+      "attribute": "sender_email",
+      "struct": "SenderEmail"
+    },
+    "fromName": {
+      "attribute": "sender_name",
+      "struct": "SenderName"
+    },
+    "fromPhone": {
+      "attribute": "from_phone",
+      "struct": "FromPhone"
+    },
+    "fromPhoneVoice": {
+      "attribute": "from_phone_voice",
+      "struct": "FromPhoneVoice"
     },
     "headers": {
       "attribute": "headers",
@@ -652,6 +777,10 @@
     "index": {
       "attribute": "index",
       "struct": "Index"
+    },
+    "ingestionEndpoint": {
+      "attribute": "ingestion_endpoint",
+      "struct": "IngestionEndpoint"
     },
     "ingestionKey": {
       "attribute": "ingestion_key",
@@ -689,6 +818,10 @@
       "attribute": "message_stream_id",
       "struct": "MessageStreamID"
     },
+    "messagingServiceSid": {
+      "attribute": "messaging_service_sid",
+      "struct": "MessagingServiceSID"
+    },
     "minFlushIntervalMinutes": {
       "attribute": "min_flush_interval_minutes",
       "struct": "MinFlushIntervalMinutes"
@@ -704,6 +837,14 @@
     "nodeName": {
       "attribute": "node_name",
       "struct": "NodeName"
+    },
+    "notifyConfigurationId": {
+      "attribute": "notify_configuration_id",
+      "struct": "NotifyConfigurationID"
+    },
+    "originationNumber": {
+      "attribute": "origination_number",
+      "struct": "OriginationNumber"
     },
     "overrideAssessment": {
       "attribute": "override_assessment",
@@ -749,6 +890,10 @@
       "attribute": "private_key",
       "struct": "PrivateKey"
     },
+    "privateKeyPassphrase": {
+      "attribute": "private_key_passphrase",
+      "struct": "PrivateKeyPassphrase"
+    },
     "profilingTagsScriptUrl": {
       "attribute": "profiling_tags_script_url",
       "struct": "ProfilingTagsScriptURL"
@@ -772,6 +917,10 @@
     "publicKey": {
       "attribute": "public_key",
       "struct": "PublicKey"
+    },
+    "publicWriteKey": {
+      "attribute": "public_write_key",
+      "struct": "PublicWriteKey"
     },
     "refreshToken": {
       "attribute": "refresh_token",
@@ -809,6 +958,10 @@
       "attribute": "role_arn",
       "struct": "RoleARN"
     },
+    "routingKey": {
+      "attribute": "routing_key",
+      "struct": "RoutingKey"
+    },
     "saSecret": {
       "attribute": "service_account_secret",
       "struct": "ServiceAccountSecret"
@@ -833,13 +986,25 @@
       "attribute": "secret_api_key",
       "struct": "SecretAPIKey"
     },
+    "secretHeaders": {
+      "attribute": "secret_headers",
+      "struct": "SecretHeaders"
+    },
     "secretKey": {
       "attribute": "secret_key",
       "struct": "SecretKey"
     },
+    "selfProvision": {
+      "attribute": "self_provision",
+      "struct": "SelfProvision"
+    },
     "sender": {
       "attribute": "sender",
       "struct": "Sender"
+    },
+    "senderId": {
+      "attribute": "sender_id",
+      "struct": "SenderID"
     },
     "serverAPIToken": {
       "attribute": "server_api_token",
@@ -889,9 +1054,17 @@
       "attribute": "site_key",
       "struct": "SiteKey"
     },
+    "snowflakeUser": {
+      "attribute": "snowflake_user",
+      "struct": "SnowflakeUser"
+    },
     "source": {
       "attribute": "source",
       "struct": "Source"
+    },
+    "streamName": {
+      "attribute": "stream_name",
+      "struct": "StreamName"
     },
     "subAccountId": {
       "attribute": "sub_account_id",
@@ -917,9 +1090,21 @@
       "attribute": "team_id",
       "struct": "TeamID"
     },
+    "templateCodeVariable": {
+      "attribute": "template_code_variable",
+      "struct": "TemplateCodeVariable"
+    },
+    "templateExpiryMinutes": {
+      "attribute": "template_expiry_minutes",
+      "struct": "TemplateExpiryMinutes"
+    },
     "templateId": {
       "attribute": "template_id",
       "struct": "TemplateID"
+    },
+    "tenantId": {
+      "attribute": "tenant_id",
+      "struct": "TenantID"
     },
     "token": {
       "attribute": "token",
@@ -932,6 +1117,10 @@
     "troubleshootLogEnabled": {
       "attribute": "troubleshoot_log_enabled",
       "struct": "TroubleshootLogEnabled"
+    },
+    "troubleshootStreamName": {
+      "attribute": "troubleshoot_stream_name",
+      "struct": "TroubleshootStreamName"
     },
     "useCloudflareIntegration": {
       "attribute": "use_cloudflare_integration",
@@ -960,6 +1149,10 @@
     "verifyBaseUrl": {
       "attribute": "verify_base_url",
       "struct": "VerifyBaseURL"
+    },
+    "verifyServiceSid": {
+      "attribute": "service_sid",
+      "struct": "ServiceSID"
     },
     "version": {
       "attribute": "version",

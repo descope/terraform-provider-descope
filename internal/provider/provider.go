@@ -53,7 +53,7 @@ func (p *descopeProvider) Schema(_ context.Context, _ provider.SchemaRequest, re
 			"management_key": schema.StringAttribute{
 				Optional:    true,
 				Sensitive:   true,
-				Description: "A valid management key for your Descope company",
+				Description: "A valid management key for your Descope company, or a workload identity token for a federated management key",
 			},
 			"base_url": schema.StringAttribute{
 				Optional:    true,
@@ -83,7 +83,7 @@ func (p *descopeProvider) Configure(ctx context.Context, req provider.ConfigureR
 	}
 
 	if v := os.Getenv("DESCOPE_PROJECT_ID"); v != "" {
-		resp.Diagnostics.AddWarning("Redudant Descope Project ID", "The Descope provider no longer requires the DESCOPE_PROJECT_ID environment variable to be set and the value '"+v+"' will be ignored")
+		resp.Diagnostics.AddWarning("Redundant Descope Project ID", "The Descope provider no longer requires the DESCOPE_PROJECT_ID environment variable to be set and the value '"+v+"' will be ignored")
 	}
 
 	managementKey := os.Getenv("DESCOPE_MANAGEMENT_KEY")
@@ -115,7 +115,7 @@ func (p *descopeProvider) DataSources(_ context.Context) []func() datasource.Dat
 }
 
 func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resource {
-	return []func() resource.Resource{
+	list := []func() resource.Resource{
 		resources.NewProjectResource,
 		resources.NewTenantResource,
 		resources.NewDescoperResource,
@@ -123,5 +123,46 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewAccessKeyResource,
 		resources.NewInboundAppResource,
 		resources.NewEngineResource,
+		resources.NewOAuthSettingsResource,
+		resources.NewOAuthProviderResource,
+		resources.NewWellKnownSettingsResource,
+		resources.NewEmailTemplateResource,
+		resources.NewTextTemplateResource,
+		resources.NewVoiceTemplateResource,
+		resources.NewUserAttributeResource,
+		resources.NewTenantAttributeResource,
+		resources.NewAccessKeyAttributeResource,
+		resources.NewInboundAppAttributeResource,
+		resources.NewPasskeySettingsResource,
+		resources.NewTOTPSettingsResource,
+		resources.NewAdminPortalResource,
+		resources.NewGovernanceResource,
+		resources.NewMagicLinkSettingsResource,
+		resources.NewInviteSettingsResource,
+		resources.NewProjectSettingsResource,
+		resources.NewSessionSettingsResource,
+		resources.NewSessionMigrationResource,
+		resources.NewOTPSettingsResource,
+		resources.NewEnchantedLinkSettingsResource,
+		resources.NewEmbeddedLinkSettingsResource,
+		resources.NewPasswordSettingsResource,
+		resources.NewSSOSettingsResource,
+		resources.NewRoleResource,
+		resources.NewPermissionResource,
+		resources.NewOIDCAppResource,
+		resources.NewSAMLAppResource,
+		resources.NewWSFedAppResource,
+		resources.NewOutboundAppResource,
+		resources.NewAppRoleResource,
+		resources.NewAppPermissionResource,
+		resources.NewFGASchemaResource,
+		resources.NewListResource,
+		resources.NewAuthAccessRuleResource,
+		resources.NewAuthAccessPolicyResource,
+		resources.NewJWTTemplateResource,
+		resources.NewFlowResource,
+		resources.NewStylesResource,
+		resources.NewWidgetResource,
 	}
+	return append(list, resources.ConnectorResources()...)
 }

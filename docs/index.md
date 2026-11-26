@@ -12,13 +12,17 @@ Descope is an authentication and user management platform. The Terraform provide
 
 ## Requirements
 
-- [Terraform](https://developer.hashicorp.com/terraform/install) 1.0 or later
+- [Terraform](https://developer.hashicorp.com/terraform/install) 1.0 or later, or 1.5 or later to adopt an existing project
+  with `import` blocks
 - A Descope **Pro or Enterprise** plan
-- A **Management Key** from [Company Settings](https://app.descope.com/settings/company) in the Descope console
+- A **Management Key** from [Company Settings](https://app.descope.com/settings/company) in the Descope console, or a
+  workload identity token for a federated management key
 
 ## Authentication
 
 The provider authenticates with the Descope API using a management key. You can create management keys in the [Company Settings](https://app.descope.com/settings/company) section of the Descope console.
+
+A CI/CD workload can instead authenticate with the short-lived OIDC token its platform issues to it, so no management key is stored. See the [Workload Identity](guides/workload-identity) guide.
 
 ~> **Security Note:** Never hardcode your management key in Terraform configuration files, as this risks exposing it in version control. Use environment variables or a secrets manager instead.
 
@@ -26,7 +30,7 @@ The provider authenticates with the Descope API using a management key. You can 
 
 | Variable                | Description                                              |
 |-------------------------|----------------------------------------------------------|
-| `DESCOPE_MANAGEMENT_KEY` | A valid management key for your Descope company         |
+| `DESCOPE_MANAGEMENT_KEY` | A valid management key for your Descope company, or a workload identity token |
 | `DESCOPE_BASE_URL`       | Override the Descope API base URL (optional, for testing) |
 
 ```shell
@@ -43,7 +47,7 @@ terraform {
   required_providers {
     descope = {
       source  = "descope/descope"
-      version = "~> 0.3"
+      version = "~> 1.0"
     }
   }
 }
@@ -71,7 +75,7 @@ terraform {
   required_providers {
     descope = {
       source  = "descope/descope"
-      version = "~> 0.3"
+      version = "~> 1.0"
     }
   }
 }
@@ -88,15 +92,27 @@ provider "descope" {
 
 ## Resources
 
-| Resource | Description |
-|----------|-------------|
-| [`descope_project`](resources/project) | Full project configuration: authentication, RBAC, connectors, flows, and more |
-| [`descope_management_key`](resources/management_key) | Programmatic management keys with scoped permissions |
-| [`descope_descoper`](resources/descoper) | Descope console user accounts with role assignments |
+`descope_project` manages the project itself: its name, environment, tags and deletion protection. Everything inside
+the project is managed by its own resource, which references the project with a `project_id` attribute.
+
+| Area | Resources |
+|------|-----------|
+| Project | [`descope_project`](resources/project), [`descope_project_settings`](resources/project_settings), [`descope_session_settings`](resources/session_settings), [`descope_session_migration`](resources/session_migration), [`descope_invite_settings`](resources/invite_settings), [`descope_admin_portal`](resources/admin_portal) |
+| Authentication methods | [`descope_password_settings`](resources/password_settings), [`descope_otp_settings`](resources/otp_settings), [`descope_magiclink_settings`](resources/magiclink_settings), [`descope_enchantedlink_settings`](resources/enchantedlink_settings), [`descope_embeddedlink_settings`](resources/embeddedlink_settings), [`descope_passkey_settings`](resources/passkey_settings), [`descope_totp_settings`](resources/totp_settings), [`descope_sso_settings`](resources/sso_settings), [`descope_oauth_settings`](resources/oauth_settings), [`descope_oauth_provider`](resources/oauth_provider) |
+| Messaging | [`descope_email_template`](resources/email_template), [`descope_text_template`](resources/text_template), [`descope_voice_template`](resources/voice_template) |
+| Authorization | [`descope_role`](resources/role), [`descope_permission`](resources/permission), [`descope_fga_schema`](resources/fga_schema) |
+| Attributes | [`descope_user_attribute`](resources/user_attribute), [`descope_tenant_attribute`](resources/tenant_attribute), [`descope_access_key_attribute`](resources/access_key_attribute), [`descope_inbound_app_attribute`](resources/inbound_app_attribute) |
+| Applications | [`descope_oidc_app`](resources/oidc_app), [`descope_saml_app`](resources/saml_app), [`descope_wsfed_app`](resources/wsfed_app), [`descope_inbound_app`](resources/inbound_app), [`descope_outbound_app`](resources/outbound_app), [`descope_app_role`](resources/app_role), [`descope_app_permission`](resources/app_permission) |
+| Flows and styles | [`descope_flow`](resources/flow), [`descope_widget`](resources/widget), [`descope_styles`](resources/styles) |
+| Access keys, tokens and lists | [`descope_access_key`](resources/access_key), [`descope_jwt_template`](resources/jwt_template), [`descope_list`](resources/list) |
+| Connectors | One resource per connector type, named after it, e.g. [`descope_http_connector`](resources/http_connector) or [`descope_sendgrid_connector`](resources/sendgrid_connector), and [`descope_engine`](resources/engine) to run connector actions inside your own network |
+| Company | [`descope_management_key`](resources/management_key), [`descope_descoper`](resources/descoper) |
 
 ## Guides
 
-- [Quickstart](guides/quickstart) – Set up the provider and manage your first project
+- [Quickstart](guides/quickstart) - Set up the provider and manage your first project
+- [Upgrading from v0.3.x](guides/upgrading-from-v0.3) - Adopt a project managed by v0.3.x into the standalone resources
+- [Workload Identity](guides/workload-identity) - Authenticate a CI/CD workload with its own OIDC token instead of a management key
 
 <!-- schema generated by tfplugindocs -->
 ## Schema
@@ -104,7 +120,7 @@ provider "descope" {
 ### Optional
 
 - `base_url` (String) An optional base URL for the Descope API
-- `management_key` (String, Sensitive) A valid management key for your Descope company
+- `management_key` (String, Sensitive) A valid management key for your Descope company, or a workload identity token for a federated management key
 - `project_id` (String, Deprecated)
 
 

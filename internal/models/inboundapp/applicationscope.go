@@ -1,10 +1,10 @@
 package inboundapp
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/boolattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 )
 
@@ -34,6 +34,6 @@ func (m *ApplicationScopeModel) Values(h *helpers.Handler) map[string]any {
 func (m *ApplicationScopeModel) SetValues(h *helpers.Handler, data map[string]any) {
 	stringattr.Set(&m.Name, data, "name")
 	stringattr.Set(&m.Description, data, "description")
-	boolattr.Set(&m.Optional, data, "optional")
+	boolattr.SetDefault(&m.Optional, data, "optional", false) // omitted by the backend when false, and Set would leave a null that never matches the schema default
 	strlistattr.Set(&m.ScopeValues, data, "values", h)
 }

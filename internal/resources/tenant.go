@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/descope/terraform-provider-descope/internal/infra"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/descope/terraform-provider-descope/internal/models/tenant"
 	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"

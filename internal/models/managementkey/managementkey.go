@@ -1,15 +1,14 @@
 package managementkey
 
 import (
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/intattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/objattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/stringattr"
-	"github.com/descope/terraform-provider-descope/internal/models/attrs/strlistattr"
-	"github.com/descope/terraform-provider-descope/internal/models/helpers"
+	"github.com/descope/terraform-provider-descope/internal/attrs/intattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/objattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strlistattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/int64planmodifier"
-	"github.com/hashicorp/terraform-plugin-framework/resource/schema/objectplanmodifier"
 )
 
 var ManagementKeyAttributes = map[string]schema.Attribute{
@@ -19,7 +18,7 @@ var ManagementKeyAttributes = map[string]schema.Attribute{
 	"status":        stringattr.Default("active", stringvalidator.OneOf("active", "inactive")),
 	"expire_time":   intattr.Default(0, int64planmodifier.RequiresReplace()),
 	"permitted_ips": strlistattr.Default(),
-	"rebac":         objattr.Required[ReBacModel](ReBacAttributes, ReBacValidator, objectplanmodifier.RequiresReplace()),
+	"rebac":         objattr.Required[ReBacModel](ReBacAttributes, ReBacValidator),
 	"cleartext":     stringattr.SecretGenerated(false),
 }
 

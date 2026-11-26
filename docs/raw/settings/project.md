@@ -1,0 +1,141 @@
+
+ProjectSettings
+===============
+
+
+
+project_id
+----------
+
+- Type: `string` (required)
+
+The ID of the project that these settings belong to. Changing this value will require the resource
+to be deleted and recreated.
+
+
+
+app_url
+-------
+
+- Type: `string`
+
+The URL where your application resides.
+
+
+
+custom_domain
+-------------
+
+- Type: `string`
+
+A custom CNAME domain for the project, used instead of the default Descope base URL for
+authentication traffic. Must be a subdomain of the `app_url` domain.
+
+
+
+apps_custom_domain
+------------------
+
+- Type: `string`
+
+The custom domain that federated and inbound application URLs are built on, such as the SAML
+entity ID, SSO and metadata URLs and the OIDC issuer and discovery URL. Set it to `custom_domain`
+or to another custom domain that was added to the project. When empty, or when the domain is no
+longer one of the project's custom domains, `custom_domain` is used. Changing it changes the SAML
+entity ID and SSO URL of every federated application, so service providers must be updated.
+
+
+
+approved_domains
+----------------
+
+- Type: `set` of `string`
+
+List of approved domains that are allowed for redirect and verification URLs for different
+authentication methods.
+
+
+
+default_no_sso_apps
+-------------------
+
+- Type: `bool`
+
+Whether new users should not be given access to any federated applications by default.
+
+
+
+tenant_user_isolation
+---------------------
+
+- Type: `bool`
+
+Isolate users per tenant so the same login ID is treated as a separate identity in each tenant,
+with independent credentials and MFA state.
+
+
+
+allow_auth_hosting_iframe_embedding
+-----------------------------------
+
+- Type: `bool`
+
+When enabled, Descope-hosted flows can be displayed within an iframe on
+your website. This modifies the security headers that typically prevent the page from
+being embedded.
+
+
+
+disable_auth_hosting
+--------------------
+
+- Type: `bool`
+
+When enabled, Descope stops serving this project's flows from its hosted login pages, both
+at the Descope domain and at the `/login` path of a custom domain. Anything that relies on
+the default hosted login page URL, such as a federated application or an embedded link that
+lands on it, stops working. Flows running in your own application are unaffected.
+
+
+
+test_users_loginid_regexp
+-------------------------
+
+- Type: `string`
+
+A regular expression pattern that, when a user is created with a matching login ID, will
+automatically mark the user as a test user.
+
+
+
+test_users_static_otp
+---------------------
+
+- Type: `string`
+
+A static OTP code that can be used by test users instead of a real verification code. Must
+be set together with `test_users_verifier_regexp`.
+
+
+
+test_users_verifier_regexp
+--------------------------
+
+- Type: `string`
+
+A regular expression pattern that determines which test user verifiers (email addresses or
+phone numbers) the static OTP code applies to.
+
+
+
+trusted_proxy_secret
+--------------------
+
+- Type: `secret`
+
+The secret a trusted reverse proxy sends in the `x-descope-proxy-secret` header, so that the forwarded
+hostname and client IP headers it adds are honored. Used to serve tenant vanity domains through a
+gateway. Must be at least 64 visible ASCII characters with no spaces, for example the output of
+`openssl rand -base64 48`. Requires vanity domains to be enabled on the company license. This value
+is write-only and never read back from the server. Removing it from the configuration keeps the
+stored secret, set it to an empty string to clear it.

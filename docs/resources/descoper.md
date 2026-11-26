@@ -114,8 +114,8 @@ resource "descope_descoper" "multi_role" {
 Optional:
 
 - `is_company_admin` (Boolean) Whether this descoper has company-wide admin access. When set to `true`, the descoper cannot have `tag_roles` or `project_roles`.
-- `project_roles` (Attributes List) A list of roles that are granted to the descoper for specific projects by their project ID. (see [below for nested schema](#nestedatt--rbac--project_roles))
-- `tag_roles` (Attributes List) A list of roles that are granted to the descoper for all projects that have a specific tag. (see [below for nested schema](#nestedatt--rbac--tag_roles))
+- `project_roles` (Attributes Set) A list of roles that are granted to the descoper for specific projects by their project ID. (see [below for nested schema](#nestedatt--rbac--project_roles))
+- `tag_roles` (Attributes Set) A list of roles that are granted to the descoper for all projects that have a specific tag. (see [below for nested schema](#nestedatt--rbac--tag_roles))
 
 <a id="nestedatt--rbac--project_roles"></a>
 ### Nested Schema for `rbac.project_roles`

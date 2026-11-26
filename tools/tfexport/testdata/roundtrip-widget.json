@@ -1,0 +1,467 @@
+{
+  "metadata": {
+    "components": [
+      "user-profile-widget"
+    ],
+    "description": "The user\u2019s main identifier in the system is their email address, and that\u2019s also how they authenticate. With this widget, the user will be able to manage their email address and other personal information, as well as authentication methods.",
+    "flowsIds": [
+      "user-profile-delete-email",
+      "user-profile-delete-name",
+      "user-profile-delete-phone",
+      "user-profile-reset-password",
+      "user-profile-set-email",
+      "user-profile-set-name",
+      "user-profile-set-phone",
+      "user-profile-set-picture",
+      "user-profile-set-single-passkey"
+    ],
+    "name": "User Profile",
+    "screens": [
+      "root"
+    ],
+    "translation": {
+      "connectorId": "",
+      "enabled": false,
+      "sourceLanguage": "",
+      "targetLanguages": []
+    },
+    "type": "user-profile-widget",
+    "widgetId": "user-profile-widget"
+  },
+  "screens": [
+    {
+      "contents": {
+        "ROOT": {
+          "custom": {},
+          "displayName": "Container",
+          "hidden": false,
+          "isCanvas": true,
+          "linkedNodes": {},
+          "nodes": [
+            "avatarContainer",
+            "userAttrsContainer",
+            "divider1",
+            "authMethodsContainer",
+            "divider2",
+            "logoutContainer"
+          ],
+          "props": {
+            "align": "center",
+            "background": "",
+            "data-editor-type": "container",
+            "direction": "column",
+            "id": "ROOT",
+            "justify": "center",
+            "paddingX": "4",
+            "paddingY": "4",
+            "space-between": "md",
+            "spaceBetween": "4",
+            "st-items-grow": 0,
+            "width": "100%"
+          },
+          "type": {
+            "resolvedName": "Container"
+          }
+        },
+        "YYoRsgo8m8": {
+          "custom": {},
+          "displayName": "Passkeys",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "authMethodsContainer",
+          "props": {
+            "add-passkey-button-label": "Add",
+            "add-passkey-flow-id": "user-profile-set-single-passkey",
+            "allowRemove": false,
+            "buttonIcon": "data:image/svg+xml;base64,PHN2ZwogIGhlaWdodD0iMjQiCiAgdmlld0JveD0iMCAwIDEyIDEyIgogIHdpZHRoPSIyNCIKICBmaWxsPSJub25lIgogIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAKPgogIDxwYXRoCiAgICBkPSJNNS4yMTgxIDUuMjE4MUgxLjIyMzA1QzAuNzkxMzU5IDUuMjE4MSAwLjQ0MTQwNiA1LjU2ODA1IDAuNDQxNDA2IDUuOTk5NzRDMC40NDE0MDYgNi40MzE0MyAwLjc5MTM1OSA2Ljc4MTM4IDEuMjIzMDUgNi43ODEzOEg1LjIxODFWMTAuNzc2NEM1LjIxODEgMTEuMjA4MSA1LjU2ODA1IDExLjU1ODEgNS45OTk3NCAxMS41NTgxQzYuNDMxNDMgMTEuNTU4MSA2Ljc4MTM4IDExLjIwODEgNi43ODEzOCAxMC43NzY0VjYuNzgxMzhIMTAuNzc2NEMxMS4yMDgxIDYuNzgxMzggMTEuNTU4MSA2LjQzMTQzIDExLjU1ODEgNS45OTk3NEMxMS41NTgxIDUuNTY4MDUgMTEuMjA4MSA1LjIxODEgMTAuNzc2NCA1LjIxODFINi43ODEzOFYxLjIyMzA1QzYuNzgxMzggMC43OTEzNTkgNi40MzE0MyAwLjQ0MTQwNiA1Ljk5OTc0IDAuNDQxNDA2QzUuNTY4MDUgMC40NDE0MDYgNS4yMTgxIDAuNzkxMzU5IDUuMjE4MSAxLjIyMzA1VjUuMjE4MVoiCiAgICBmaWxsPSIjMDA2QUY1IgogIC8+Cjwvc3ZnPgo=",
+            "buttonIconDark": "data:image/svg+xml;base64,PHN2ZwogIGhlaWdodD0iMjQiCiAgdmlld0JveD0iMCAwIDEyIDEyIgogIHdpZHRoPSIyNCIKICBmaWxsPSJub25lIgogIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAKPgogIDxwYXRoCiAgICBkPSJNNS4yMTgxIDUuMjE4MUgxLjIyMzA1QzAuNzkxMzU5IDUuMjE4MSAwLjQ0MTQwNiA1LjU2ODA1IDAuNDQxNDA2IDUuOTk5NzRDMC40NDE0MDYgNi40MzE0MyAwLjc5MTM1OSA2Ljc4MTM4IDEuMjIzMDUgNi43ODEzOEg1LjIxODFWMTAuNzc2NEM1LjIxODEgMTEuMjA4MSA1LjU2ODA1IDExLjU1ODEgNS45OTk3NCAxMS41NTgxQzYuNDMxNDMgMTEuNTU4MSA2Ljc4MTM4IDExLjIwODEgNi43ODEzOCAxMC43NzY0VjYuNzgxMzhIMTAuNzc2NEMxMS4yMDgxIDYuNzgxMzggMTEuNTU4MSA2LjQzMTQzIDExLjU1ODEgNS45OTk3NEMxMS41NTgxIDUuNTY4MDUgMTEuMjA4MSA1LjIxODEgMTAuNzc2NCA1LjIxODFINi43ODEzOFYxLjIyMzA1QzYuNzgxMzggMC43OTEzNTkgNi40MzE0MyAwLjQ0MTQwNiA1Ljk5OTc0IDAuNDQxNDA2QzUuNTY4MDUgMC40NDE0MDYgNS4yMTgxIDAuNzkxMzU5IDUuMjE4MSAxLjIyMzA1VjUuMjE4MVoiCiAgICBmaWxsPSIjMDA2QUY1IgogIC8+Cjwvc3ZnPgo=",
+            "data-id": "passkey",
+            "format": "MM-DD-YYYY",
+            "full-width": true,
+            "id": "YYoRsgo8m8",
+            "label": "Passkey",
+            "methodIcon": "data:image/svg+xml;base64,PHN2ZwogIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICB2aWV3Qm94PSIwIDAgMjkgMzAiCiAgd2lkdGg9IjEuNWVtIgogIGhlaWdodD0iMS41ZW0iCiAgZmlsbD0iIzAwMDAwMCIKICBkYXRhLWljb249ImZpbmdlcnByaW50IgogIAo+CiAgPHBhdGggZD0iTTIxLjUyMDQgNS41ODc1QzIxLjQyMzggNS41ODc1IDIxLjMyNzEgNS41NjI1IDIxLjI0MjUgNS41MTI1QzE4LjkyMjUgNC4yNzUgMTYuOTE2NyAzLjc1IDE0LjUxMjEgMy43NUMxMi4xMTk2IDMuNzUgOS44NDc5MiA0LjMzNzUgNy43ODE2NyA1LjUxMjVDNy40OTE2NyA1LjY3NSA3LjEyOTE3IDUuNTYyNSA2Ljk2IDUuMjYyNUM2LjgwMjkyIDQuOTYyNSA2LjkxMTY3IDQuNTc1IDcuMjAxNjcgNC40MTI1QzkuNDQ5MTcgMy4xNSAxMS45MTQyIDIuNSAxNC41MTIxIDIuNUMxNy4wODU4IDIuNSAxOS4zMzMzIDMuMDg3NSAyMS43OTgzIDQuNEMyMi4xMDA0IDQuNTYyNSAyMi4yMDkyIDQuOTM3NSAyMi4wNTIxIDUuMjM3NUMyMS45NDMzIDUuNDYyNSAyMS43Mzc5IDUuNTg3NSAyMS41MjA0IDUuNTg3NVY1LjU4NzVaTTQuMjI5MTcgMTIuMTVDNC4xMDgzNCAxMi4xNSAzLjk4NzUgMTIuMTEyNSAzLjg3ODc1IDEyLjAzNzVDMy42MDA4NCAxMS44Mzc1IDMuNTQwNDIgMTEuNDUgMy43MzM3NSAxMS4xNjI1QzQuOTMgOS40MTI1IDYuNDUyNSA4LjAzNzUgOC4yNjUgNy4wNzVDMTIuMDU5MiA1LjA1IDE2LjkxNjcgNS4wMzc1IDIwLjcyMjkgNy4wNjI1QzIyLjUzNTQgOC4wMjUgMjQuMDU3OSA5LjM4NzUgMjUuMjU0MiAxMS4xMjVDMjUuNDQ3NSAxMS40IDI1LjM4NzEgMTEuOCAyNS4xMDkyIDEyQzI0LjgzMTMgMTIuMiAyNC40NTY3IDEyLjEzNzUgMjQuMjYzMyAxMS44NUMyMy4xNzU4IDEwLjI3NSAyMS43OTgzIDkuMDM3NSAyMC4xNjcxIDguMTc1QzE2LjY5OTIgNi4zMzc1IDEyLjI2NDYgNi4zMzc1IDguODA4NzUgOC4xODc1QzcuMTY1NDIgOS4wNjI1IDUuNzg3OTIgMTAuMzEyNSA0LjcwMDQyIDExLjg4NzVDNC42MDM3NSAxMi4wNjI1IDQuNDIyNSAxMi4xNSA0LjIyOTE3IDEyLjE1VjEyLjE1Wk0xMS43ODEzIDI3LjIzNzVDMTEuNjI0MiAyNy4yMzc1IDExLjQ2NzEgMjcuMTc1IDExLjM1ODMgMjcuMDVDMTAuMzA3MSAyNS45NjI1IDkuNzM5MTcgMjUuMjYyNSA4LjkyOTU5IDIzLjc1QzguMDk1ODQgMjIuMjEyNSA3LjY2MDg0IDIwLjMzNzUgNy42NjA4NCAxOC4zMjVDNy42NjA4NCAxNC42MTI1IDEwLjczIDExLjU4NzUgMTQuNSAxMS41ODc1QzE4LjI3IDExLjU4NzUgMjEuMzM5MiAxNC42MTI1IDIxLjMzOTIgMTguMzI1QzIxLjMzOTIgMTguNjc1IDIxLjA3MzMgMTguOTUgMjAuNzM1IDE4Ljk1QzIwLjM5NjcgMTguOTUgMjAuMTMwOCAxOC42NzUgMjAuMTMwOCAxOC4zMjVDMjAuMTMwOCAxNS4zIDE3LjYwNTQgMTIuODM3NSAxNC41IDEyLjgzNzVDMTEuMzk0NiAxMi44Mzc1IDguODY5MTcgMTUuMyA4Ljg2OTE3IDE4LjMyNUM4Ljg2OTE3IDIwLjEyNSA5LjI1NTg0IDIxLjc4NzUgOS45OTI5MiAyMy4xMzc1QzEwLjc2NjMgMjQuNTc1IDExLjI5NzkgMjUuMTg3NSAxMi4yMjgzIDI2LjE2MjVDMTIuNDU3OSAyNi40MTI1IDEyLjQ1NzkgMjYuOCAxMi4yMjgzIDI3LjA1QzEyLjA5NTQgMjcuMTc1IDExLjkzODMgMjcuMjM3NSAxMS43ODEzIDI3LjIzNzVaTTIwLjQ0NSAyNC45MjVDMTkuMDA3MSAyNC45MjUgMTcuNzM4MyAyNC41NSAxNi42OTkyIDIzLjgxMjVDMTQuODk4OCAyMi41NSAxMy44MjMzIDIwLjUgMTMuODIzMyAxOC4zMjVDMTMuODIzMyAxNy45NzUgMTQuMDg5MiAxNy43IDE0LjQyNzUgMTcuN0MxNC43NjU4IDE3LjcgMTUuMDMxNyAxNy45NzUgMTUuMDMxNyAxOC4zMjVDMTUuMDMxNyAyMC4wODc1IDE1LjkwMTcgMjEuNzUgMTcuMzc1OCAyMi43NzVDMTguMjMzOCAyMy4zNzUgMTkuMjM2NyAyMy42NjI1IDIwLjQ0NSAyMy42NjI1QzIwLjczNSAyMy42NjI1IDIxLjIxODMgMjMuNjI1IDIxLjcwMTcgMjMuNTM3NUMyMi4wMjc5IDIzLjQ3NSAyMi4zNDIxIDIzLjcgMjIuNDAyNSAyNC4wNUMyMi40NjI5IDI0LjM4NzUgMjIuMjQ1NCAyNC43MTI1IDIxLjkwNzEgMjQuNzc1QzIxLjIxODMgMjQuOTEyNSAyMC42MTQyIDI0LjkyNSAyMC40NDUgMjQuOTI1VjI0LjkyNVpNMTguMDE2MyAyNy41QzE3Ljk2NzkgMjcuNSAxNy45MDc1IDI3LjQ4NzUgMTcuODU5MiAyNy40NzVDMTUuOTM3OSAyNi45MjUgMTQuNjgxMyAyNi4xODc1IDEzLjM2NDIgMjQuODVDMTEuNjcyNSAyMy4xMTI1IDEwLjc0MjEgMjAuOCAxMC43NDIxIDE4LjMyNUMxMC43NDIxIDE2LjMgMTIuNDA5NiAxNC42NSAxNC40NjM4IDE0LjY1QzE2LjUxNzkgMTQuNjUgMTguMTg1NCAxNi4zIDE4LjE4NTQgMTguMzI1QzE4LjE4NTQgMTkuNjYyNSAxOS4zMDkyIDIwLjc1IDIwLjY5ODggMjAuNzVDMjIuMDg4MyAyMC43NSAyMy4yMTIxIDE5LjY2MjUgMjMuMjEyMSAxOC4zMjVDMjMuMjEyMSAxMy42MTI1IDE5LjI4NSA5Ljc4NzUgMTQuNDUxNyA5Ljc4NzVDMTEuMDIgOS43ODc1IDcuODc4MzQgMTEuNzYyNSA2LjQ2NDU5IDE0LjgyNUM1Ljk5MzM0IDE1LjgzNzUgNS43NTE2NyAxNy4wMjUgNS43NTE2NyAxOC4zMjVDNS43NTE2NyAxOS4zIDUuODM2MjUgMjAuODM3NSA2LjU2MTI1IDIyLjgzNzVDNi42ODIwOSAyMy4xNjI1IDYuNTI1IDIzLjUyNSA2LjIxMDg0IDIzLjYzNzVDNS44OTY2NyAyMy43NjI1IDUuNTQ2MjUgMjMuNTg3NSA1LjQzNzUgMjMuMjc1QzQuODQ1NDIgMjEuNjM3NSA0LjU1NTQyIDIwLjAxMjUgNC41NTU0MiAxOC4zMjVDNC41NTU0MiAxNi44MjUgNC44MzMzNCAxNS40NjI1IDUuMzc3MDkgMTQuMjc1QzYuOTg0MTcgMTAuNzg3NSAxMC41NDg4IDguNTI1IDE0LjQ1MTcgOC41MjVDMTkuOTQ5NiA4LjUyNSAyNC40MjA0IDEyLjkxMjUgMjQuNDIwNCAxOC4zMTI1QzI0LjQyMDQgMjAuMzM3NSAyMi43NTI5IDIxLjk4NzUgMjAuNjk4OCAyMS45ODc1QzE4LjY0NDYgMjEuOTg3NSAxNi45NzcxIDIwLjMzNzUgMTYuOTc3MSAxOC4zMTI1QzE2Ljk3NzEgMTYuOTc1IDE1Ljg1MzMgMTUuODg3NSAxNC40NjM4IDE1Ljg4NzVDMTMuMDc0MiAxNS44ODc1IDExLjk1MDQgMTYuOTc1IDExLjk1MDQgMTguMzEyNUMxMS45NTA0IDIwLjQ1IDEyLjc0NzkgMjIuNDUgMTQuMjEgMjMuOTVDMTUuMzU3OSAyNS4xMjUgMTYuNDU3NSAyNS43NzUgMTguMTYxMyAyNi4yNjI1QzE4LjQ4NzUgMjYuMzUgMTguNjY4OCAyNi43IDE4LjU4NDIgMjcuMDI1QzE4LjUyMzggMjcuMzEyNSAxOC4yNyAyNy41IDE4LjAxNjMgMjcuNVYyNy41WiIgLz4KPC9zdmc+Cg==",
+            "methodIconDark": "data:image/svg+xml;base64,PHN2ZwogIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICB2aWV3Qm94PSIwIDAgMjkgMzAiCiAgd2lkdGg9IjEuNWVtIgogIGhlaWdodD0iMS41ZW0iCiAgZmlsbD0iIzAwMDAwMCIKICBkYXRhLWljb249ImZpbmdlcnByaW50IgogIAo+CiAgPHBhdGggZD0iTTIxLjUyMDQgNS41ODc1QzIxLjQyMzggNS41ODc1IDIxLjMyNzEgNS41NjI1IDIxLjI0MjUgNS41MTI1QzE4LjkyMjUgNC4yNzUgMTYuOTE2NyAzLjc1IDE0LjUxMjEgMy43NUMxMi4xMTk2IDMuNzUgOS44NDc5MiA0LjMzNzUgNy43ODE2NyA1LjUxMjVDNy40OTE2NyA1LjY3NSA3LjEyOTE3IDUuNTYyNSA2Ljk2IDUuMjYyNUM2LjgwMjkyIDQuOTYyNSA2LjkxMTY3IDQuNTc1IDcuMjAxNjcgNC40MTI1QzkuNDQ5MTcgMy4xNSAxMS45MTQyIDIuNSAxNC41MTIxIDIuNUMxNy4wODU4IDIuNSAxOS4zMzMzIDMuMDg3NSAyMS43OTgzIDQuNEMyMi4xMDA0IDQuNTYyNSAyMi4yMDkyIDQuOTM3NSAyMi4wNTIxIDUuMjM3NUMyMS45NDMzIDUuNDYyNSAyMS43Mzc5IDUuNTg3NSAyMS41MjA0IDUuNTg3NVY1LjU4NzVaTTQuMjI5MTcgMTIuMTVDNC4xMDgzNCAxMi4xNSAzLjk4NzUgMTIuMTEyNSAzLjg3ODc1IDEyLjAzNzVDMy42MDA4NCAxMS44Mzc1IDMuNTQwNDIgMTEuNDUgMy43MzM3NSAxMS4xNjI1QzQuOTMgOS40MTI1IDYuNDUyNSA4LjAzNzUgOC4yNjUgNy4wNzVDMTIuMDU5MiA1LjA1IDE2LjkxNjcgNS4wMzc1IDIwLjcyMjkgNy4wNjI1QzIyLjUzNTQgOC4wMjUgMjQuMDU3OSA5LjM4NzUgMjUuMjU0MiAxMS4xMjVDMjUuNDQ3NSAxMS40IDI1LjM4NzEgMTEuOCAyNS4xMDkyIDEyQzI0LjgzMTMgMTIuMiAyNC40NTY3IDEyLjEzNzUgMjQuMjYzMyAxMS44NUMyMy4xNzU4IDEwLjI3NSAyMS43OTgzIDkuMDM3NSAyMC4xNjcxIDguMTc1QzE2LjY5OTIgNi4zMzc1IDEyLjI2NDYgNi4zMzc1IDguODA4NzUgOC4xODc1QzcuMTY1NDIgOS4wNjI1IDUuNzg3OTIgMTAuMzEyNSA0LjcwMDQyIDExLjg4NzVDNC42MDM3NSAxMi4wNjI1IDQuNDIyNSAxMi4xNSA0LjIyOTE3IDEyLjE1VjEyLjE1Wk0xMS43ODEzIDI3LjIzNzVDMTEuNjI0MiAyNy4yMzc1IDExLjQ2NzEgMjcuMTc1IDExLjM1ODMgMjcuMDVDMTAuMzA3MSAyNS45NjI1IDkuNzM5MTcgMjUuMjYyNSA4LjkyOTU5IDIzLjc1QzguMDk1ODQgMjIuMjEyNSA3LjY2MDg0IDIwLjMzNzUgNy42NjA4NCAxOC4zMjVDNy42NjA4NCAxNC42MTI1IDEwLjczIDExLjU4NzUgMTQuNSAxMS41ODc1QzE4LjI3IDExLjU4NzUgMjEuMzM5MiAxNC42MTI1IDIxLjMzOTIgMTguMzI1QzIxLjMzOTIgMTguNjc1IDIxLjA3MzMgMTguOTUgMjAuNzM1IDE4Ljk1QzIwLjM5NjcgMTguOTUgMjAuMTMwOCAxOC42NzUgMjAuMTMwOCAxOC4zMjVDMjAuMTMwOCAxNS4zIDE3LjYwNTQgMTIuODM3NSAxNC41IDEyLjgzNzVDMTEuMzk0NiAxMi44Mzc1IDguODY5MTcgMTUuMyA4Ljg2OTE3IDE4LjMyNUM4Ljg2OTE3IDIwLjEyNSA5LjI1NTg0IDIxLjc4NzUgOS45OTI5MiAyMy4xMzc1QzEwLjc2NjMgMjQuNTc1IDExLjI5NzkgMjUuMTg3NSAxMi4yMjgzIDI2LjE2MjVDMTIuNDU3OSAyNi40MTI1IDEyLjQ1NzkgMjYuOCAxMi4yMjgzIDI3LjA1QzEyLjA5NTQgMjcuMTc1IDExLjkzODMgMjcuMjM3NSAxMS43ODEzIDI3LjIzNzVaTTIwLjQ0NSAyNC45MjVDMTkuMDA3MSAyNC45MjUgMTcuNzM4MyAyNC41NSAxNi42OTkyIDIzLjgxMjVDMTQuODk4OCAyMi41NSAxMy44MjMzIDIwLjUgMTMuODIzMyAxOC4zMjVDMTMuODIzMyAxNy45NzUgMTQuMDg5MiAxNy43IDE0LjQyNzUgMTcuN0MxNC43NjU4IDE3LjcgMTUuMDMxNyAxNy45NzUgMTUuMDMxNyAxOC4zMjVDMTUuMDMxNyAyMC4wODc1IDE1LjkwMTcgMjEuNzUgMTcuMzc1OCAyMi43NzVDMTguMjMzOCAyMy4zNzUgMTkuMjM2NyAyMy42NjI1IDIwLjQ0NSAyMy42NjI1QzIwLjczNSAyMy42NjI1IDIxLjIxODMgMjMuNjI1IDIxLjcwMTcgMjMuNTM3NUMyMi4wMjc5IDIzLjQ3NSAyMi4zNDIxIDIzLjcgMjIuNDAyNSAyNC4wNUMyMi40NjI5IDI0LjM4NzUgMjIuMjQ1NCAyNC43MTI1IDIxLjkwNzEgMjQuNzc1QzIxLjIxODMgMjQuOTEyNSAyMC42MTQyIDI0LjkyNSAyMC40NDUgMjQuOTI1VjI0LjkyNVpNMTguMDE2MyAyNy41QzE3Ljk2NzkgMjcuNSAxNy45MDc1IDI3LjQ4NzUgMTcuODU5MiAyNy40NzVDMTUuOTM3OSAyNi45MjUgMTQuNjgxMyAyNi4xODc1IDEzLjM2NDIgMjQuODVDMTEuNjcyNSAyMy4xMTI1IDEwLjc0MjEgMjAuOCAxMC43NDIxIDE4LjMyNUMxMC43NDIxIDE2LjMgMTIuNDA5NiAxNC42NSAxNC40NjM4IDE0LjY1QzE2LjUxNzkgMTQuNjUgMTguMTg1NCAxNi4zIDE4LjE4NTQgMTguMzI1QzE4LjE4NTQgMTkuNjYyNSAxOS4zMDkyIDIwLjc1IDIwLjY5ODggMjAuNzVDMjIuMDg4MyAyMC43NSAyMy4yMTIxIDE5LjY2MjUgMjMuMjEyMSAxOC4zMjVDMjMuMjEyMSAxMy42MTI1IDE5LjI4NSA5Ljc4NzUgMTQuNDUxNyA5Ljc4NzVDMTEuMDIgOS43ODc1IDcuODc4MzQgMTEuNzYyNSA2LjQ2NDU5IDE0LjgyNUM1Ljk5MzM0IDE1LjgzNzUgNS43NTE2NyAxNy4wMjUgNS43NTE2NyAxOC4zMjVDNS43NTE2NyAxOS4zIDUuODM2MjUgMjAuODM3NSA2LjU2MTI1IDIyLjgzNzVDNi42ODIwOSAyMy4xNjI1IDYuNTI1IDIzLjUyNSA2LjIxMDg0IDIzLjYzNzVDNS44OTY2NyAyMy43NjI1IDUuNTQ2MjUgMjMuNTg3NSA1LjQzNzUgMjMuMjc1QzQuODQ1NDIgMjEuNjM3NSA0LjU1NTQyIDIwLjAxMjUgNC41NTU0MiAxOC4zMjVDNC41NTU0MiAxNi44MjUgNC44MzMzNCAxNS40NjI1IDUuMzc3MDkgMTQuMjc1QzYuOTg0MTcgMTAuNzg3NSAxMC41NDg4IDguNTI1IDE0LjQ1MTcgOC41MjVDMTkuOTQ5NiA4LjUyNSAyNC40MjA0IDEyLjkxMjUgMjQuNDIwNCAxOC4zMTI1QzI0LjQyMDQgMjAuMzM3NSAyMi43NTI5IDIxLjk4NzUgMjAuNjk4OCAyMS45ODc1QzE4LjY0NDYgMjEuOTg3NSAxNi45NzcxIDIwLjMzNzUgMTYuOTc3MSAxOC4zMTI1QzE2Ljk3NzEgMTYuOTc1IDE1Ljg1MzMgMTUuODg3NSAxNC40NjM4IDE1Ljg4NzVDMTMuMDc0MiAxNS44ODc1IDExLjk1MDQgMTYuOTc1IDExLjk1MDQgMTguMzEyNUMxMS45NTA0IDIwLjQ1IDEyLjc0NzkgMjIuNDUgMTQuMjEgMjMuOTVDMTUuMzU3OSAyNS4xMjUgMTYuNDU3NSAyNS43NzUgMTguMTYxMyAyNi4yNjI1QzE4LjQ4NzUgMjYuMzUgMTguNjY4OCAyNi43IDE4LjU4NDIgMjcuMDI1QzE4LjUyMzggMjcuMzEyNSAxOC4yNyAyNy41IDE4LjAxNjMgMjcuNVYyNy41WiIgLz4KPC9zdmc+Cg==",
+            "removeButtonLabel": "Remove",
+            "removeIcon": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuMTQyODYgMTcuNzc3OEMzLjE0Mjg2IDE5IDQuMTcxNDMgMjAgNS40Mjg1NyAyMEgxNC41NzE0QzE1LjgyODYgMjAgMTYuODU3MSAxOSAxNi44NTcxIDE3Ljc3NzhWNC40NDQ0NEgzLjE0Mjg2VjE3Ljc3NzhaTTUuNDI4NTcgNi42NjY2N0gxNC41NzE0VjE3Ljc3NzhINS40Mjg1N1Y2LjY2NjY3Wk0xNCAxLjExMTExTDEyLjg1NzEgMEg3LjE0Mjg2TDYgMS4xMTExMUgyVjMuMzMzMzNIMThWMS4xMTExMUgxNFoiIGZpbGw9IiMwMDZBRjUiLz4KPC9zdmc+Cg==",
+            "removeIconDark": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuMTQyODYgMTcuNzc3OEMzLjE0Mjg2IDE5IDQuMTcxNDMgMjAgNS40Mjg1NyAyMEgxNC41NzE0QzE1LjgyODYgMjAgMTYuODU3MSAxOSAxNi44NTcxIDE3Ljc3NzhWNC40NDQ0NEgzLjE0Mjg2VjE3Ljc3NzhaTTUuNDI4NTcgNi42NjY2N0gxNC41NzE0VjE3Ljc3NzhINS40Mjg1N1Y2LjY2NjY3Wk0xNCAxLjExMTExTDEyLjg1NzEgMEg3LjE0Mjg2TDYgMS4xMTExMUgyVjMuMzMzMzNIMThWMS4xMTExMUgxNFoiIGZpbGw9IiMxRjgwRkYiLz4KPC9zdmc+Cg=="
+          },
+          "type": {
+            "resolvedName": "UserPasskeys"
+          }
+        },
+        "authMethodsContainer": {
+          "custom": {},
+          "displayName": "Container",
+          "hidden": false,
+          "isCanvas": true,
+          "linkedNodes": {},
+          "nodes": [
+            "authMethodsTitle",
+            "YYoRsgo8m8",
+            "passwordAuthMethod"
+          ],
+          "parent": "ROOT",
+          "props": {
+            "align": "start",
+            "background": "#ffffff00",
+            "data-editor-type": "container",
+            "direction": "column",
+            "id": "authMethodsContainer",
+            "justify": "start",
+            "paddingX": "0",
+            "paddingY": "4",
+            "spaceBetween": "8",
+            "st-items-grow": 0,
+            "width": "100%"
+          },
+          "type": {
+            "resolvedName": "Container"
+          }
+        },
+        "authMethodsTitle": {
+          "custom": {},
+          "displayName": "Text",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "authMethodsContainer",
+          "props": {
+            "children": "Authentication Methods",
+            "full-width": false,
+            "id": "authMethodsTitle",
+            "isEnriched": true,
+            "italic": false,
+            "link-target-blank": true,
+            "mode": "primary",
+            "text-align": "center",
+            "tooltipText": "Tooltip text",
+            "variant": "subtitle2"
+          },
+          "type": {
+            "resolvedName": "Text"
+          }
+        },
+        "avatar": {
+          "custom": {},
+          "displayName": "Avatar",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "avatarContainer",
+          "props": {
+            "data-id": "avatar",
+            "editable": "true",
+            "flow-id": "user-profile-set-picture",
+            "size": "lg"
+          },
+          "type": {
+            "resolvedName": "Avatar"
+          }
+        },
+        "avatarContainer": {
+          "custom": {},
+          "displayName": "Container",
+          "hidden": false,
+          "isCanvas": true,
+          "linkedNodes": {},
+          "nodes": [
+            "avatar"
+          ],
+          "parent": "ROOT",
+          "props": {
+            "align": "start",
+            "background": "#ffffff00",
+            "data-editor-type": "container",
+            "direction": "row",
+            "id": "avatarContainer",
+            "justify": "start",
+            "paddingX": "0",
+            "paddingY": "0",
+            "spaceBetween": "0",
+            "st-items-grow": 0,
+            "width": "100%"
+          },
+          "type": {
+            "resolvedName": "Container"
+          }
+        },
+        "divider1": {
+          "custom": {},
+          "displayName": "Divider",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "ROOT",
+          "props": {
+            "children": "",
+            "id": "divider1",
+            "italic": false,
+            "mode": "primary",
+            "variant": "body1",
+            "vertical": false
+          },
+          "type": {
+            "resolvedName": "Divider"
+          }
+        },
+        "divider2": {
+          "custom": {},
+          "displayName": "Divider",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "ROOT",
+          "props": {
+            "children": "",
+            "id": "divider2",
+            "italic": false,
+            "mode": "primary",
+            "variant": "body1",
+            "vertical": false
+          },
+          "type": {
+            "resolvedName": "Divider"
+          }
+        },
+        "emailUserAttr": {
+          "custom": {},
+          "displayName": "User Email Attribute",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "userAttrsContainer",
+          "props": {
+            "data-id": "email",
+            "delete-button-label": "",
+            "delete-flow-id": "user-profile-delete-email",
+            "deleteIconDark": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuMTQyODYgMTcuNzc3OEMzLjE0Mjg2IDE5IDQuMTcxNDMgMjAgNS40Mjg1NyAyMEgxNC41NzE0QzE1LjgyODYgMjAgMTYuODU3MSAxOSAxNi44NTcxIDE3Ljc3NzhWNC40NDQ0NEgzLjE0Mjg2VjE3Ljc3NzhaTTUuNDI4NTcgNi42NjY2N0gxNC41NzE0VjE3Ljc3NzhINS40Mjg1N1Y2LjY2NjY3Wk0xNCAxLjExMTExTDEyLjg1NzEgMEg3LjE0Mjg2TDYgMS4xMTExMUgyVjMuMzMzMzNIMThWMS4xMTExMUgxNFoiIGZpbGw9IiMwMDZBRjUiLz4KPC9zdmc+Cg==",
+            "deleteIconLight": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuMTQyODYgMTcuNzc3OEMzLjE0Mjg2IDE5IDQuMTcxNDMgMjAgNS40Mjg1NyAyMEgxNC41NzE0QzE1LjgyODYgMjAgMTYuODU3MSAxOSAxNi44NTcxIDE3Ljc3NzhWNC40NDQ0NEgzLjE0Mjg2VjE3Ljc3NzhaTTUuNDI4NTcgNi42NjY2N0gxNC41NzE0VjE3Ljc3NzhINS40Mjg1N1Y2LjY2NjY3Wk0xNCAxLjExMTExTDEyLjg1NzEgMEg3LjE0Mjg2TDYgMS4xMTExMUgyVjMuMzMzMzNIMThWMS4xMTExMUgxNFoiIGZpbGw9IiMwMDZBRjUiLz4KPC9zdmc+Cg==",
+            "edit-button-label": "",
+            "edit-flow-id": "user-profile-set-email",
+            "editIconDark": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE3OTFfMzI4MikiPgo8cGF0aCBkPSJNMTMuMzMyMyAxLjMyMzk3QzEzLjMzMjMgMS4zNTU5NSAxMy4zMzIzIDEuMzU1OTUgMTMuMzMyMyAxLjM1NTk1TDEwLjk2NjQgNC4wMTAyNUgzLjk5NjVDMy4yOTMxMiA0LjAxMDI1IDIuNjg1NjUgNC41ODU4OCAyLjY4NTY1IDUuMzIxNDFWMTYuMDAyNkMyLjY4NTY1IDE2LjcwNjEgMy4yNjExNSAxNy4zMTM3IDMuOTk2NSAxNy4zMTM3SDcuMzg1NTRDNy44MDExNyAxNy4zNzc3IDguMjE2ODEgMTcuMzc3NyA4LjYzMjQ1IDE3LjMxMzdIMTQuNjc1MkMxNS4zNzg1IDE3LjMxMzcgMTUuOTg2IDE2LjczODEgMTUuOTg2IDE2LjAwMjZWMTAuMzc0MkwxOC41NzU3IDcuNDk2MDFMMTguNjcxNyA3LjU1OTk3VjE1Ljk3MDZDMTguNjcxNyAxOC4yMDkxIDE2Ljg4MTIgMjAgMTQuNjc1MiAyMEg0LjAyODQ4QzEuNzkwNDMgMjAgMCAxOC4yMDkxIDAgMTUuOTcwNlY1LjMyMTQxQzAgMy4xMTQ4MiAxLjc5MDQzIDEuMzIzOTcgNC4wMjg0OCAxLjMyMzk3SDEzLjMzMjNaTTE1LjAyNjkgMy40OTg1OEwxNi44MTczIDUuNDgxMzFMMTAuMjk1IDEyLjkwMDVDMTAuMDA3MiAxMy4yMjAzIDkuMTEyMDMgMTMuNjM2MSA3LjU3NzM3IDE0LjE0NzhDNy41NDU0IDE0LjE3OTcgNy40ODE0NSAxNC4xNzk3IDcuNDE3NTEgMTQuMTQ3OEM3LjI4OTYyIDE0LjExNTggNy4xOTM3MSAxMy45NTU5IDcuMjU3NjUgMTMuODI4QzcuNjczMjkgMTIuMzI0OSA4LjA1Njk1IDExLjM5NzUgOC4zNDQ3IDExLjA3NzdMMTUuMDI2OSAzLjQ5ODU4Wk0xNS44OTAxIDIuNDc1MjNMMTcuNzEyNSAwLjQyODU0M0MxOC4xOTIxIC0wLjExNTEwOCAxOS4wMjM0IC0wLjE0NzA4OCAxOS41NjY5IDAuMzY0NTg0QzIwLjExMDQgMC44NDQyNzcgMjAuMTQyNCAxLjcwNzcyIDE5LjY2MjggMi4yNTEzOEwxNy42ODA1IDQuNDg5OTRMMTUuODkwMSAyLjQ3NTIzWiIgZmlsbD0iIzAwNkFGNSIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE3OTFfMzI4MiI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K",
+            "editIconLight": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE3OTFfMzI4MikiPgo8cGF0aCBkPSJNMTMuMzMyMyAxLjMyMzk3QzEzLjMzMjMgMS4zNTU5NSAxMy4zMzIzIDEuMzU1OTUgMTMuMzMyMyAxLjM1NTk1TDEwLjk2NjQgNC4wMTAyNUgzLjk5NjVDMy4yOTMxMiA0LjAxMDI1IDIuNjg1NjUgNC41ODU4OCAyLjY4NTY1IDUuMzIxNDFWMTYuMDAyNkMyLjY4NTY1IDE2LjcwNjEgMy4yNjExNSAxNy4zMTM3IDMuOTk2NSAxNy4zMTM3SDcuMzg1NTRDNy44MDExNyAxNy4zNzc3IDguMjE2ODEgMTcuMzc3NyA4LjYzMjQ1IDE3LjMxMzdIMTQuNjc1MkMxNS4zNzg1IDE3LjMxMzcgMTUuOTg2IDE2LjczODEgMTUuOTg2IDE2LjAwMjZWMTAuMzc0MkwxOC41NzU3IDcuNDk2MDFMMTguNjcxNyA3LjU1OTk3VjE1Ljk3MDZDMTguNjcxNyAxOC4yMDkxIDE2Ljg4MTIgMjAgMTQuNjc1MiAyMEg0LjAyODQ4QzEuNzkwNDMgMjAgMCAxOC4yMDkxIDAgMTUuOTcwNlY1LjMyMTQxQzAgMy4xMTQ4MiAxLjc5MDQzIDEuMzIzOTcgNC4wMjg0OCAxLjMyMzk3SDEzLjMzMjNaTTE1LjAyNjkgMy40OTg1OEwxNi44MTczIDUuNDgxMzFMMTAuMjk1IDEyLjkwMDVDMTAuMDA3MiAxMy4yMjAzIDkuMTEyMDMgMTMuNjM2MSA3LjU3NzM3IDE0LjE0NzhDNy41NDU0IDE0LjE3OTcgNy40ODE0NSAxNC4xNzk3IDcuNDE3NTEgMTQuMTQ3OEM3LjI4OTYyIDE0LjExNTggNy4xOTM3MSAxMy45NTU5IDcuMjU3NjUgMTMuODI4QzcuNjczMjkgMTIuMzI0OSA4LjA1Njk1IDExLjM5NzUgOC4zNDQ3IDExLjA3NzdMMTUuMDI2OSAzLjQ5ODU4Wk0xNS44OTAxIDIuNDc1MjNMMTcuNzEyNSAwLjQyODU0M0MxOC4xOTIxIC0wLjExNTEwOCAxOS4wMjM0IC0wLjE0NzA4OCAxOS41NjY5IDAuMzY0NTg0QzIwLjExMDQgMC44NDQyNzcgMjAuMTQyNCAxLjcwNzcyIDE5LjY2MjggMi4yNTEzOEwxNy42ODA1IDQuNDg5OTRMMTUuODkwMSAyLjQ3NTIzWiIgZmlsbD0iIzAwNkFGNSIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE3OTFfMzI4MiI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K",
+            "full-width": "true",
+            "hide-delete": false,
+            "label": "Email",
+            "placeholder": "Add an email",
+            "readonly": false,
+            "value": "value"
+          },
+          "type": {
+            "resolvedName": "EmailUserAttribute"
+          }
+        },
+        "logoutBtn": {
+          "custom": {
+            "type": "button"
+          },
+          "displayName": "Logout Button",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "logoutContainer",
+          "props": {
+            "auto-submit": true,
+            "children": "Logout",
+            "color": "error",
+            "data-id": "logout",
+            "data-type": "button",
+            "formNoValidate": false,
+            "full-width": false,
+            "id": "logoutBtn",
+            "mode": "error",
+            "shape": "",
+            "size": "lg",
+            "tooltipText": "Tooltip text",
+            "variant": "link"
+          },
+          "type": {
+            "resolvedName": "LogoutButton"
+          }
+        },
+        "logoutContainer": {
+          "custom": {},
+          "displayName": "Container",
+          "hidden": false,
+          "isCanvas": true,
+          "linkedNodes": {},
+          "nodes": [
+            "logoutBtn"
+          ],
+          "parent": "ROOT",
+          "props": {
+            "align": "start",
+            "background": "#ffffff00",
+            "data-editor-type": "container",
+            "direction": "column",
+            "id": "logoutContainer",
+            "justify": "start",
+            "paddingX": "0",
+            "paddingY": "4",
+            "spaceBetween": "8",
+            "st-items-grow": 0,
+            "width": "100%"
+          },
+          "type": {
+            "resolvedName": "Container"
+          }
+        },
+        "nameUserAttr": {
+          "custom": {},
+          "displayName": "User Name Attribute",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "userAttrsContainer",
+          "props": {
+            "data-id": "name",
+            "delete-button-label": "",
+            "delete-flow-id": "user-profile-delete-name",
+            "deleteIconDark": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuMTQyODYgMTcuNzc3OEMzLjE0Mjg2IDE5IDQuMTcxNDMgMjAgNS40Mjg1NyAyMEgxNC41NzE0QzE1LjgyODYgMjAgMTYuODU3MSAxOSAxNi44NTcxIDE3Ljc3NzhWNC40NDQ0NEgzLjE0Mjg2VjE3Ljc3NzhaTTUuNDI4NTcgNi42NjY2N0gxNC41NzE0VjE3Ljc3NzhINS40Mjg1N1Y2LjY2NjY3Wk0xNCAxLjExMTExTDEyLjg1NzEgMEg3LjE0Mjg2TDYgMS4xMTExMUgyVjMuMzMzMzNIMThWMS4xMTExMUgxNFoiIGZpbGw9IiMwMDZBRjUiLz4KPC9zdmc+Cg==",
+            "deleteIconLight": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuMTQyODYgMTcuNzc3OEMzLjE0Mjg2IDE5IDQuMTcxNDMgMjAgNS40Mjg1NyAyMEgxNC41NzE0QzE1LjgyODYgMjAgMTYuODU3MSAxOSAxNi44NTcxIDE3Ljc3NzhWNC40NDQ0NEgzLjE0Mjg2VjE3Ljc3NzhaTTUuNDI4NTcgNi42NjY2N0gxNC41NzE0VjE3Ljc3NzhINS40Mjg1N1Y2LjY2NjY3Wk0xNCAxLjExMTExTDEyLjg1NzEgMEg3LjE0Mjg2TDYgMS4xMTExMUgyVjMuMzMzMzNIMThWMS4xMTExMUgxNFoiIGZpbGw9IiMwMDZBRjUiLz4KPC9zdmc+Cg==",
+            "edit-button-label": "",
+            "edit-flow-id": "user-profile-set-name",
+            "editIconDark": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE3OTFfMzI4MikiPgo8cGF0aCBkPSJNMTMuMzMyMyAxLjMyMzk3QzEzLjMzMjMgMS4zNTU5NSAxMy4zMzIzIDEuMzU1OTUgMTMuMzMyMyAxLjM1NTk1TDEwLjk2NjQgNC4wMTAyNUgzLjk5NjVDMy4yOTMxMiA0LjAxMDI1IDIuNjg1NjUgNC41ODU4OCAyLjY4NTY1IDUuMzIxNDFWMTYuMDAyNkMyLjY4NTY1IDE2LjcwNjEgMy4yNjExNSAxNy4zMTM3IDMuOTk2NSAxNy4zMTM3SDcuMzg1NTRDNy44MDExNyAxNy4zNzc3IDguMjE2ODEgMTcuMzc3NyA4LjYzMjQ1IDE3LjMxMzdIMTQuNjc1MkMxNS4zNzg1IDE3LjMxMzcgMTUuOTg2IDE2LjczODEgMTUuOTg2IDE2LjAwMjZWMTAuMzc0MkwxOC41NzU3IDcuNDk2MDFMMTguNjcxNyA3LjU1OTk3VjE1Ljk3MDZDMTguNjcxNyAxOC4yMDkxIDE2Ljg4MTIgMjAgMTQuNjc1MiAyMEg0LjAyODQ4QzEuNzkwNDMgMjAgMCAxOC4yMDkxIDAgMTUuOTcwNlY1LjMyMTQxQzAgMy4xMTQ4MiAxLjc5MDQzIDEuMzIzOTcgNC4wMjg0OCAxLjMyMzk3SDEzLjMzMjNaTTE1LjAyNjkgMy40OTg1OEwxNi44MTczIDUuNDgxMzFMMTAuMjk1IDEyLjkwMDVDMTAuMDA3MiAxMy4yMjAzIDkuMTEyMDMgMTMuNjM2MSA3LjU3NzM3IDE0LjE0NzhDNy41NDU0IDE0LjE3OTcgNy40ODE0NSAxNC4xNzk3IDcuNDE3NTEgMTQuMTQ3OEM3LjI4OTYyIDE0LjExNTggNy4xOTM3MSAxMy45NTU5IDcuMjU3NjUgMTMuODI4QzcuNjczMjkgMTIuMzI0OSA4LjA1Njk1IDExLjM5NzUgOC4zNDQ3IDExLjA3NzdMMTUuMDI2OSAzLjQ5ODU4Wk0xNS44OTAxIDIuNDc1MjNMMTcuNzEyNSAwLjQyODU0M0MxOC4xOTIxIC0wLjExNTEwOCAxOS4wMjM0IC0wLjE0NzA4OCAxOS41NjY5IDAuMzY0NTg0QzIwLjExMDQgMC44NDQyNzcgMjAuMTQyNCAxLjcwNzcyIDE5LjY2MjggMi4yNTEzOEwxNy42ODA1IDQuNDg5OTRMMTUuODkwMSAyLjQ3NTIzWiIgZmlsbD0iIzAwNkFGNSIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE3OTFfMzI4MiI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K",
+            "editIconLight": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE3OTFfMzI4MikiPgo8cGF0aCBkPSJNMTMuMzMyMyAxLjMyMzk3QzEzLjMzMjMgMS4zNTU5NSAxMy4zMzIzIDEuMzU1OTUgMTMuMzMyMyAxLjM1NTk1TDEwLjk2NjQgNC4wMTAyNUgzLjk5NjVDMy4yOTMxMiA0LjAxMDI1IDIuNjg1NjUgNC41ODU4OCAyLjY4NTY1IDUuMzIxNDFWMTYuMDAyNkMyLjY4NTY1IDE2LjcwNjEgMy4yNjExNSAxNy4zMTM3IDMuOTk2NSAxNy4zMTM3SDcuMzg1NTRDNy44MDExNyAxNy4zNzc3IDguMjE2ODEgMTcuMzc3NyA4LjYzMjQ1IDE3LjMxMzdIMTQuNjc1MkMxNS4zNzg1IDE3LjMxMzcgMTUuOTg2IDE2LjczODEgMTUuOTg2IDE2LjAwMjZWMTAuMzc0MkwxOC41NzU3IDcuNDk2MDFMMTguNjcxNyA3LjU1OTk3VjE1Ljk3MDZDMTguNjcxNyAxOC4yMDkxIDE2Ljg4MTIgMjAgMTQuNjc1MiAyMEg0LjAyODQ4QzEuNzkwNDMgMjAgMCAxOC4yMDkxIDAgMTUuOTcwNlY1LjMyMTQxQzAgMy4xMTQ4MiAxLjc5MDQzIDEuMzIzOTcgNC4wMjg0OCAxLjMyMzk3SDEzLjMzMjNaTTE1LjAyNjkgMy40OTg1OEwxNi44MTczIDUuNDgxMzFMMTAuMjk1IDEyLjkwMDVDMTAuMDA3MiAxMy4yMjAzIDkuMTEyMDMgMTMuNjM2MSA3LjU3NzM3IDE0LjE0NzhDNy41NDU0IDE0LjE3OTcgNy40ODE0NSAxNC4xNzk3IDcuNDE3NTEgMTQuMTQ3OEM3LjI4OTYyIDE0LjExNTggNy4xOTM3MSAxMy45NTU5IDcuMjU3NjUgMTMuODI4QzcuNjczMjkgMTIuMzI0OSA4LjA1Njk1IDExLjM5NzUgOC4zNDQ3IDExLjA3NzdMMTUuMDI2OSAzLjQ5ODU4Wk0xNS44OTAxIDIuNDc1MjNMMTcuNzEyNSAwLjQyODU0M0MxOC4xOTIxIC0wLjExNTEwOCAxOS4wMjM0IC0wLjE0NzA4OCAxOS41NjY5IDAuMzY0NTg0QzIwLjExMDQgMC44NDQyNzcgMjAuMTQyNCAxLjcwNzcyIDE5LjY2MjggMi4yNTEzOEwxNy42ODA1IDQuNDg5OTRMMTUuODkwMSAyLjQ3NTIzWiIgZmlsbD0iIzAwNkFGNSIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE3OTFfMzI4MiI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K",
+            "full-width": "true",
+            "hide-delete": false,
+            "label": "Name",
+            "readonly": false,
+            "value": "value"
+          },
+          "type": {
+            "resolvedName": "NameUserAttribute"
+          }
+        },
+        "passwordAuthMethod": {
+          "custom": {
+            "buttonSectionLabel": "resetButton"
+          },
+          "displayName": "Password Authentication Method",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "authMethodsContainer",
+          "props": {
+            "button-label": "Reset password",
+            "buttonIcon": "reload",
+            "buttonIconDark": "data:image/svg+xml;base64,CTxzdmcKCQl3aWR0aD0iMjQiCgkJaGVpZ2h0PSIyNCIKCQl2aWV3Qm94PSIwIDAgMTQgMTYiCgkJZmlsbD0ibm9uZSIKCQl4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciCgk+CgkJPHBhdGgKCQkJZD0iTTIuMDAwNjUgOC44MzM5OEMyLjAwMDY1IDcuNDU4OTggMi41NTg5OCA2LjIwODk4IDMuNDY3MzIgNS4zMDA2NUwyLjI4Mzk4IDQuMTE3MzJDMS4wODM5OCA1LjMyNTY1IDAuMzMzOTg0IDYuOTkyMzIgMC4zMzM5ODQgOC44MzM5OEMwLjMzMzk4NCAxMi4yMzQgMi44NzU2NSAxNS4wMzQgNi4xNjczMiAxNS40NDIzVjEzLjc1OUMzLjgwODk4IDEzLjM1OSAyLjAwMDY1IDExLjMwOSAyLjAwMDY1IDguODMzOThaTTEzLjY2NzMgOC44MzM5OEMxMy42NjczIDUuMTUwNjUgMTAuNjg0IDIuMTY3MzIgNy4wMDA2NSAyLjE2NzMyQzYuOTUwNjUgMi4xNjczMiA2LjkwMDY1IDIuMTc1NjUgNi44NTA2NSAyLjE3NTY1TDcuNzU4OTggMS4yNjczMkw2LjU4Mzk4IDAuMDgzOTg0NEwzLjY2NzMyIDMuMDAwNjVMNi41ODM5OCA1LjkxNzMyTDcuNzU4OTggNC43NDIzMkw2Ljg1ODk4IDMuODQyMzJDNi45MDg5OCAzLjg0MjMyIDYuOTU4OTggMy44MzM5OCA3LjAwMDY1IDMuODMzOThDOS43NTg5OCAzLjgzMzk4IDEyLjAwMDcgNi4wNzU2NSAxMi4wMDA3IDguODMzOThDMTIuMDAwNyAxMS4zMDkgMTAuMTkyMyAxMy4zNTkgNy44MzM5OCAxMy43NTlWMTUuNDQyM0MxMS4xMjU3IDE1LjAzNCAxMy42NjczIDEyLjIzNCAxMy42NjczIDguODMzOThaIgoJCQlmaWxsPSIjMDA2QUY1IgoJCS8+Cgk8L3N2Zz4K",
+            "data-id": "password",
+            "flow-id": "user-profile-reset-password",
+            "full-width": "true",
+            "label": "Password",
+            "methodIcon": "password",
+            "methodIconDark": "data:image/svg+xml;base64,PHN2ZwogIHdpZHRoPSIyNCIKICBoZWlnaHQ9IjI0IgogIHZpZXdCb3g9IjAgMCAyNCAyNCIKICBmaWxsPSJub25lIgogIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIKICAKPgogIDxwYXRoCiAgICBkPSJNMiAxN0gyMlYxOUgyVjE3Wk0zLjE1IDEyLjk1TDQgMTEuNDdMNC44NSAxMi45NUw2LjE1IDEyLjJMNS4zIDEwLjcySDdWOS4yMkg1LjNMNi4xNSA3Ljc1TDQuODUgN0w0IDguNDdMMy4xNSA3TDEuODUgNy43NUwyLjcgOS4yMkgxVjEwLjcySDIuN0wxLjg1IDEyLjJMMy4xNSAxMi45NVpNOS44NSAxMi4yTDExLjE1IDEyLjk1TDEyIDExLjQ3TDEyLjg1IDEyLjk1TDE0LjE1IDEyLjJMMTMuMyAxMC43MkgxNVY5LjIySDEzLjNMMTQuMTUgNy43NUwxMi44NSA3TDEyIDguNDdMMTEuMTUgN0w5Ljg1IDcuNzVMMTAuNyA5LjIySDlWMTAuNzJIMTAuN0w5Ljg1IDEyLjJaTTIzIDkuMjJIMjEuM0wyMi4xNSA3Ljc1TDIwLjg1IDdMMjAgOC40N0wxOS4xNSA3TDE3Ljg1IDcuNzVMMTguNyA5LjIySDE3VjEwLjcySDE4LjdMMTcuODUgMTIuMkwxOS4xNSAxMi45NUwyMCAxMS40N0wyMC44NSAxMi45NUwyMi4xNSAxMi4yTDIxLjMgMTAuNzJIMjNWOS4yMloiCiAgICBmaWxsPSIjODA4MDgwIgogIC8+Cjwvc3ZnPgo=",
+            "required": true,
+            "value": "something"
+          },
+          "type": {
+            "resolvedName": "PasswordUserAuthMethod"
+          }
+        },
+        "phoneUserAttr": {
+          "custom": {},
+          "displayName": "User Phone Attribute",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "userAttrsContainer",
+          "props": {
+            "data-id": "phone",
+            "delete-button-label": "",
+            "delete-flow-id": "user-profile-delete-phone",
+            "deleteIconDark": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuMTQyODYgMTcuNzc3OEMzLjE0Mjg2IDE5IDQuMTcxNDMgMjAgNS40Mjg1NyAyMEgxNC41NzE0QzE1LjgyODYgMjAgMTYuODU3MSAxOSAxNi44NTcxIDE3Ljc3NzhWNC40NDQ0NEgzLjE0Mjg2VjE3Ljc3NzhaTTUuNDI4NTcgNi42NjY2N0gxNC41NzE0VjE3Ljc3NzhINS40Mjg1N1Y2LjY2NjY3Wk0xNCAxLjExMTExTDEyLjg1NzEgMEg3LjE0Mjg2TDYgMS4xMTExMUgyVjMuMzMzMzNIMThWMS4xMTExMUgxNFoiIGZpbGw9IiMwMDZBRjUiLz4KPC9zdmc+Cg==",
+            "deleteIconLight": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTMuMTQyODYgMTcuNzc3OEMzLjE0Mjg2IDE5IDQuMTcxNDMgMjAgNS40Mjg1NyAyMEgxNC41NzE0QzE1LjgyODYgMjAgMTYuODU3MSAxOSAxNi44NTcxIDE3Ljc3NzhWNC40NDQ0NEgzLjE0Mjg2VjE3Ljc3NzhaTTUuNDI4NTcgNi42NjY2N0gxNC41NzE0VjE3Ljc3NzhINS40Mjg1N1Y2LjY2NjY3Wk0xNCAxLjExMTExTDEyLjg1NzEgMEg3LjE0Mjg2TDYgMS4xMTExMUgyVjMuMzMzMzNIMThWMS4xMTExMUgxNFoiIGZpbGw9IiMwMDZBRjUiLz4KPC9zdmc+Cg==",
+            "edit-button-label": "",
+            "edit-flow-id": "user-profile-set-phone",
+            "editIconDark": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE3OTFfMzI4MikiPgo8cGF0aCBkPSJNMTMuMzMyMyAxLjMyMzk3QzEzLjMzMjMgMS4zNTU5NSAxMy4zMzIzIDEuMzU1OTUgMTMuMzMyMyAxLjM1NTk1TDEwLjk2NjQgNC4wMTAyNUgzLjk5NjVDMy4yOTMxMiA0LjAxMDI1IDIuNjg1NjUgNC41ODU4OCAyLjY4NTY1IDUuMzIxNDFWMTYuMDAyNkMyLjY4NTY1IDE2LjcwNjEgMy4yNjExNSAxNy4zMTM3IDMuOTk2NSAxNy4zMTM3SDcuMzg1NTRDNy44MDExNyAxNy4zNzc3IDguMjE2ODEgMTcuMzc3NyA4LjYzMjQ1IDE3LjMxMzdIMTQuNjc1MkMxNS4zNzg1IDE3LjMxMzcgMTUuOTg2IDE2LjczODEgMTUuOTg2IDE2LjAwMjZWMTAuMzc0MkwxOC41NzU3IDcuNDk2MDFMMTguNjcxNyA3LjU1OTk3VjE1Ljk3MDZDMTguNjcxNyAxOC4yMDkxIDE2Ljg4MTIgMjAgMTQuNjc1MiAyMEg0LjAyODQ4QzEuNzkwNDMgMjAgMCAxOC4yMDkxIDAgMTUuOTcwNlY1LjMyMTQxQzAgMy4xMTQ4MiAxLjc5MDQzIDEuMzIzOTcgNC4wMjg0OCAxLjMyMzk3SDEzLjMzMjNaTTE1LjAyNjkgMy40OTg1OEwxNi44MTczIDUuNDgxMzFMMTAuMjk1IDEyLjkwMDVDMTAuMDA3MiAxMy4yMjAzIDkuMTEyMDMgMTMuNjM2MSA3LjU3NzM3IDE0LjE0NzhDNy41NDU0IDE0LjE3OTcgNy40ODE0NSAxNC4xNzk3IDcuNDE3NTEgMTQuMTQ3OEM3LjI4OTYyIDE0LjExNTggNy4xOTM3MSAxMy45NTU5IDcuMjU3NjUgMTMuODI4QzcuNjczMjkgMTIuMzI0OSA4LjA1Njk1IDExLjM5NzUgOC4zNDQ3IDExLjA3NzdMMTUuMDI2OSAzLjQ5ODU4Wk0xNS44OTAxIDIuNDc1MjNMMTcuNzEyNSAwLjQyODU0M0MxOC4xOTIxIC0wLjExNTEwOCAxOS4wMjM0IC0wLjE0NzA4OCAxOS41NjY5IDAuMzY0NTg0QzIwLjExMDQgMC44NDQyNzcgMjAuMTQyNCAxLjcwNzcyIDE5LjY2MjggMi4yNTEzOEwxNy42ODA1IDQuNDg5OTRMMTUuODkwMSAyLjQ3NTIzWiIgZmlsbD0iIzAwNkFGNSIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE3OTFfMzI4MiI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K",
+            "editIconLight": "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHZpZXdCb3g9IjAgMCAyMCAyMCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPGcgY2xpcC1wYXRoPSJ1cmwoI2NsaXAwXzE3OTFfMzI4MikiPgo8cGF0aCBkPSJNMTMuMzMyMyAxLjMyMzk3QzEzLjMzMjMgMS4zNTU5NSAxMy4zMzIzIDEuMzU1OTUgMTMuMzMyMyAxLjM1NTk1TDEwLjk2NjQgNC4wMTAyNUgzLjk5NjVDMy4yOTMxMiA0LjAxMDI1IDIuNjg1NjUgNC41ODU4OCAyLjY4NTY1IDUuMzIxNDFWMTYuMDAyNkMyLjY4NTY1IDE2LjcwNjEgMy4yNjExNSAxNy4zMTM3IDMuOTk2NSAxNy4zMTM3SDcuMzg1NTRDNy44MDExNyAxNy4zNzc3IDguMjE2ODEgMTcuMzc3NyA4LjYzMjQ1IDE3LjMxMzdIMTQuNjc1MkMxNS4zNzg1IDE3LjMxMzcgMTUuOTg2IDE2LjczODEgMTUuOTg2IDE2LjAwMjZWMTAuMzc0MkwxOC41NzU3IDcuNDk2MDFMMTguNjcxNyA3LjU1OTk3VjE1Ljk3MDZDMTguNjcxNyAxOC4yMDkxIDE2Ljg4MTIgMjAgMTQuNjc1MiAyMEg0LjAyODQ4QzEuNzkwNDMgMjAgMCAxOC4yMDkxIDAgMTUuOTcwNlY1LjMyMTQxQzAgMy4xMTQ4MiAxLjc5MDQzIDEuMzIzOTcgNC4wMjg0OCAxLjMyMzk3SDEzLjMzMjNaTTE1LjAyNjkgMy40OTg1OEwxNi44MTczIDUuNDgxMzFMMTAuMjk1IDEyLjkwMDVDMTAuMDA3MiAxMy4yMjAzIDkuMTEyMDMgMTMuNjM2MSA3LjU3NzM3IDE0LjE0NzhDNy41NDU0IDE0LjE3OTcgNy40ODE0NSAxNC4xNzk3IDcuNDE3NTEgMTQuMTQ3OEM3LjI4OTYyIDE0LjExNTggNy4xOTM3MSAxMy45NTU5IDcuMjU3NjUgMTMuODI4QzcuNjczMjkgMTIuMzI0OSA4LjA1Njk1IDExLjM5NzUgOC4zNDQ3IDExLjA3NzdMMTUuMDI2OSAzLjQ5ODU4Wk0xNS44OTAxIDIuNDc1MjNMMTcuNzEyNSAwLjQyODU0M0MxOC4xOTIxIC0wLjExNTEwOCAxOS4wMjM0IC0wLjE0NzA4OCAxOS41NjY5IDAuMzY0NTg0QzIwLjExMDQgMC44NDQyNzcgMjAuMTQyNCAxLjcwNzcyIDE5LjY2MjggMi4yNTEzOEwxNy42ODA1IDQuNDg5OTRMMTUuODkwMSAyLjQ3NTIzWiIgZmlsbD0iIzAwNkFGNSIvPgo8L2c+CjxkZWZzPgo8Y2xpcFBhdGggaWQ9ImNsaXAwXzE3OTFfMzI4MiI+CjxyZWN0IHdpZHRoPSIyMCIgaGVpZ2h0PSIyMCIgZmlsbD0id2hpdGUiLz4KPC9jbGlwUGF0aD4KPC9kZWZzPgo8L3N2Zz4K",
+            "full-width": "true",
+            "hide-delete": false,
+            "label": "Phone",
+            "placeholder": "Add a phone number",
+            "readonly": false,
+            "value": "value"
+          },
+          "type": {
+            "resolvedName": "PhoneUserAttribute"
+          }
+        },
+        "userAttrsContainer": {
+          "custom": {},
+          "displayName": "Container",
+          "hidden": false,
+          "isCanvas": true,
+          "linkedNodes": {},
+          "nodes": [
+            "userAttrsTitle",
+            "emailUserAttr",
+            "nameUserAttr",
+            "phoneUserAttr"
+          ],
+          "parent": "ROOT",
+          "props": {
+            "align": "start",
+            "background": "#ffffff00",
+            "data-editor-type": "container",
+            "direction": "column",
+            "id": "userAttrsContainer",
+            "justify": "start",
+            "paddingX": "0",
+            "paddingY": "4",
+            "spaceBetween": "8",
+            "st-items-grow": 0,
+            "width": "100%"
+          },
+          "type": {
+            "resolvedName": "Container"
+          }
+        },
+        "userAttrsTitle": {
+          "custom": {},
+          "displayName": "Text",
+          "hidden": false,
+          "isCanvas": false,
+          "linkedNodes": {},
+          "nodes": [],
+          "parent": "userAttrsContainer",
+          "props": {
+            "children": "Personal Information",
+            "full-width": false,
+            "id": "userAttrsTitle",
+            "isEnriched": true,
+            "italic": false,
+            "link-target-blank": true,
+            "mode": "primary",
+            "text-align": "center",
+            "tooltipText": "Tooltip text",
+            "variant": "subtitle2"
+          },
+          "type": {
+            "resolvedName": "Text"
+          }
+        }
+      },
+      "interactions": [
+        {
+          "id": "logoutBtn",
+          "label": "Logout",
+          "type": "button"
+        }
+      ],
+      "screenId": "root"
+    }
+  ]
+}

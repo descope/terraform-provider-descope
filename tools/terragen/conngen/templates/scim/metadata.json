@@ -1,0 +1,39 @@
+{
+  "id": "scim",
+  "name": "Outbound SCIM",
+  "description": "Provision users and groups to an external system through the SCIM protocol.",
+  "fields": [
+    {
+      "name": "federatedAppId",
+      "description": "The ID of the federated application this SCIM connector provisions for.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "baseUrl",
+      "description": "The base URL of the SCIM server that users and groups are provisioned to.",
+      "type": "string",
+      "required": true
+    },
+    {
+      "name": "authentication",
+      "description": "The authentication used when calling the SCIM server.",
+      "type": "httpAuth"
+    },
+    {
+      "name": "headers",
+      "description": "Additional HTTP headers to send with each request to the SCIM server.",
+      "type": "secret-object"
+    },
+    {
+      "name": "hmacSecret",
+      "description": "A secret used to sign requests to the SCIM server with an HMAC signature.",
+      "type": "secret"
+    },
+    {
+      "name": "insecure",
+      "description": "Whether to skip verification of the SCIM server's TLS certificate.",
+      "type": "boolean"
+    }
+  ]
+}

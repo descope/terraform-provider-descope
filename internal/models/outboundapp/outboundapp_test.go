@@ -1,0 +1,582 @@
+package outboundapp_test
+
+import (
+	"context"
+	"regexp"
+	"slices"
+	"strings"
+	"testing"
+
+	"github.com/descope/terraform-provider-descope/internal/attrs/boolattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strmapattr"
+	"github.com/descope/terraform-provider-descope/internal/attrs/strsetattr"
+	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/descope/terraform-provider-descope/internal/models/outboundapp"
+	"github.com/descope/terraform-provider-descope/tools/testacc"
+	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
+	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+	"github.com/hashicorp/terraform-plugin-framework/schema/validator"
+	"github.com/hashicorp/terraform-plugin-framework/types"
+	"github.com/hashicorp/terraform-plugin-testing/helper/resource"
+	"github.com/hashicorp/terraform-plugin-testing/plancheck"
+)
+
+func TestOutboundApp(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	a := testacc.OutboundApp(t)
+	testacc.RunWithDestroyCheck(t, "descope_outbound_app",
+		// create with only the required fields, so the defaults are pinned
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+			`),
+			Check: a.Check(map[string]any{
+				"id":                         testacc.AttributeIsSet,
+				"project_id":                 testacc.AttributeIsSet,
+				"name":                       a.Name,
+				"description":                "",
+				"logo":                       "",
+				"app_type":                   "oauth",
+				"client_id":                  "",
+				"use_dcr":                    false,
+				"dcr_url":                    "",
+				"discovery_url":              "",
+				"authorization_url":          "",
+				"authorization_url_params.%": "0",
+				"token_url":                  "",
+				"token_url_params.%":         "0",
+				"revocation_url":             "",
+				"default_scopes.#":           "0",
+				"default_redirect_url":       "",
+				"callback_domain":            "",
+				"pkce":                       false,
+				"access_type":                "",
+				"prompt.#":                   "0",
+			}),
+		},
+		// populate every field, including both url param lists and the secret
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				description = "calendar access"
+				logo = "https://example.com/logo.png"
+				app_type = "oauth"
+				client_id = "client-abc"
+				client_secret = "secret-one"
+				discovery_url = "https://accounts.example.com/.well-known/openid-configuration"
+				authorization_url = "https://accounts.example.com/authorize"
+				authorization_url_params = {
+					audience   = "https://api.example.com"
+					login_hint = "user@example.com"
+				}
+				token_url = "https://oauth2.example.com/token"
+				token_url_params = {
+					resource = "https://api.example.com"
+				}
+				revocation_url = "https://oauth2.example.com/revoke"
+				default_scopes = ["openid", "email", "calendar.read"]
+				default_redirect_url = "https://app.example.com/oauth/callback"
+				callback_domain = "app.example.com"
+				pkce = true
+				access_type = "offline"
+				prompt = ["consent", "select_account"]
+			`),
+			Check: a.Check(map[string]any{
+				"description":                         "calendar access",
+				"logo":                                "https://example.com/logo.png",
+				"app_type":                            "oauth",
+				"client_id":                           "client-abc",
+				"client_secret":                       "secret-one",
+				"discovery_url":                       "https://accounts.example.com/.well-known/openid-configuration",
+				"authorization_url":                   "https://accounts.example.com/authorize",
+				"authorization_url_params.%":          "2",
+				"authorization_url_params.audience":   "https://api.example.com",
+				"authorization_url_params.login_hint": "user@example.com",
+				"token_url":                           "https://oauth2.example.com/token",
+				"token_url_params.%":                  "1",
+				"token_url_params.resource":           "https://api.example.com",
+				"revocation_url":                      "https://oauth2.example.com/revoke",
+				"default_scopes":                      []string{"openid", "email", "calendar.read"},
+				"default_redirect_url":                "https://app.example.com/oauth/callback",
+				"callback_domain":                     "app.example.com",
+				"pkce":                                true,
+				"access_type":                         "offline",
+				"prompt":                              []string{"consent", "select_account"},
+			}),
+		},
+		// omitting client_secret must be accepted and must not plan a change
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				description = "calendar access, updated"
+				app_type = "oauth"
+				client_id = "client-abc"
+				authorization_url = "https://accounts.example.com/authorize"
+				token_url = "https://oauth2.example.com/token"
+				default_redirect_url = "https://app.example.com/oauth/callback"
+				pkce = true
+				access_type = "offline"
+			`),
+			Check: a.Check(map[string]any{
+				"description":   "calendar access, updated",
+				"client_secret": testacc.AttributeIsNotSet,
+				"access_type":   "offline",
+			}),
+		},
+		// rotating the secret in place must not require a replacement
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				description = "calendar access, updated"
+				app_type = "oauth"
+				client_id = "client-abc"
+				client_secret = "secret-two"
+				authorization_url = "https://accounts.example.com/authorize"
+				token_url = "https://oauth2.example.com/token"
+				default_redirect_url = "https://app.example.com/oauth/callback"
+				pkce = true
+				access_type = "offline"
+			`),
+			Check: a.Check(map[string]any{
+				"id":            testacc.AttributeIsSet,
+				"client_secret": "secret-two",
+			}),
+		},
+		// removing the url params and scopes must actually clear them rather than leave the old values
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				app_type = "oauth"
+				client_id = "client-abc"
+				client_secret = "secret-two"
+				authorization_url = "https://accounts.example.com/authorize"
+				token_url = "https://oauth2.example.com/token"
+			`),
+			Check: a.Check(map[string]any{
+				"authorization_url_params.%": "0",
+				"token_url_params.%":         "0",
+				"default_scopes.#":           "0",
+				"description":                "",
+				"pkce":                       false,
+				"access_type":                "",
+			}),
+		},
+		// the client secret is never returned by the API, so it cannot participate in an import
+		resource.TestStep{
+			ResourceName:            a.Path(),
+			ImportState:             true,
+			ImportStateVerify:       true,
+			ImportStateIdFunc:       testacc.GenerateImportStateID(a.Path(), "project_id", "id"),
+			ImportStateVerifyIgnore: []string{"client_secret"},
+		},
+	)
+}
+
+func TestOutboundAppChosenID(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	a := testacc.OutboundApp(t)
+	first := "testacc-" + a.Name[len(a.Name)-8:]
+	second := first + "-2"
+	testacc.RunWithDestroyCheck(t, "descope_outbound_app",
+		// create the app under an id of our choosing rather than one the backend picks
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				id = "` + first + `"
+			`),
+			Check: a.Check(map[string]any{
+				"id": first,
+			}),
+		},
+		// leaving the id out afterwards keeps the app and its id
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectEmptyPlan()},
+			},
+			Check: a.Check(map[string]any{
+				"id": first,
+			}),
+		},
+		// a different id is a different app, so it replaces the old one
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				id = "` + second + `"
+			`),
+			ConfigPlanChecks: resource.ConfigPlanChecks{
+				PreApply: []plancheck.PlanCheck{plancheck.ExpectResourceAction(a.Path(), plancheck.ResourceActionReplace)},
+			},
+			Check: a.Check(map[string]any{
+				"id": second,
+			}),
+		},
+		resource.TestStep{
+			ResourceName:            a.Path(),
+			ImportState:             true,
+			ImportStateVerify:       true,
+			ImportStateIdFunc:       testacc.GenerateImportStateID(a.Path(), "project_id", "id"),
+			ImportStateVerifyIgnore: []string{"client_secret"},
+		},
+	)
+}
+
+func TestOutboundAppAPIKeyType(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	a := testacc.OutboundApp(t)
+	testacc.RunWithDestroyCheck(t, "descope_outbound_app",
+		// an apikey app runs no OAuth flow, so it needs none of the endpoint fields
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				app_type = "apikey"
+				description = "static token app"
+			`),
+			Check: a.Check(map[string]any{
+				"app_type":    "apikey",
+				"description": "static token app",
+				"pkce":        false,
+			}),
+		},
+	)
+}
+
+func TestOutboundAppInvalidValues(t *testing.T) {
+	projectID := testacc.ProjectID(t)
+	a := testacc.OutboundApp(t)
+
+	// every closed set is rejected when the plan is generated, not when it is applied
+	testacc.Run(t,
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				app_type = "workflow"
+			`),
+			ExpectError: regexp.MustCompile(`Attribute app_type value must be one of`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				access_type = "forever"
+			`),
+			ExpectError: regexp.MustCompile(`Attribute access_type value must be one of`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				prompt = ["consent", "shout"]
+			`),
+			ExpectError: regexp.MustCompile(`value must be one of`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				default_redirect_url = "not-a-url"
+			`),
+			ExpectError: regexp.MustCompile(`(?i)url`),
+		},
+		// an empty client_secret must be rejected when the plan is generated
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				client_secret = ""
+			`),
+			ExpectError: regexp.MustCompile(`(?i)empty`),
+		},
+		// a url parameter without a value is rejected when the plan is generated, since a map has no
+		// per-element default that could turn it into an empty string
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				authorization_url_params = { audience = null }
+			`),
+			ExpectError: regexp.MustCompile(`(?i)null`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				token_url_params = { resource = null }
+			`),
+			ExpectError: regexp.MustCompile(`(?i)null`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				use_dcr = true
+			`),
+			ExpectError: regexp.MustCompile(`dcr_url field is required`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				dcr_url = "https://mcp.example.com"
+			`),
+			ExpectError: regexp.MustCompile(`cannot be used unless use_dcr`),
+		},
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				app_type = "apikey"
+				use_dcr = true
+				dcr_url = "https://mcp.example.com"
+			`),
+			ExpectError: regexp.MustCompile(`cannot be used when app_type`),
+		},
+		// registration overwrites the client credentials and endpoints on create, so they cannot be configured alongside it
+		resource.TestStep{
+			Config: a.Config(`
+				project_id = "` + projectID + `"
+				use_dcr = true
+				dcr_url = "https://mcp.example.com"
+				client_id = "client-abc"
+			`),
+			ExpectError: regexp.MustCompile(`filled in by dynamic client registration`),
+		},
+	)
+}
+
+func TestOutboundAppClientSecretPresence(t *testing.T) {
+	var diags diag.Diagnostics
+	h := helpers.NewHandler(context.Background(), &diags)
+
+	m := &outboundapp.OutboundAppModel{
+		Name:                   stringattr.Value("app"),
+		AuthorizationURLParams: strmapattr.Empty(),
+		TokenURLParams:         strmapattr.Empty(),
+		DefaultScopes:          strsetattr.Empty(),
+		Prompt:                 strsetattr.Empty(),
+	}
+
+	if v, ok := m.Values(h)["clientSecret"]; ok {
+		t.Errorf("an unset client_secret must be omitted so the stored secret is kept, got %v", v)
+	}
+
+	m.ClientSecret = stringattr.Value("real-secret")
+	if m.Values(h)["clientSecret"] != "real-secret" {
+		t.Errorf("a configured client_secret must be sent as is, got %v", m.Values(h)["clientSecret"])
+	}
+}
+
+func TestOutboundAppIDPresence(t *testing.T) {
+	var diags diag.Diagnostics
+	h := helpers.NewHandler(context.Background(), &diags)
+
+	m := &outboundapp.OutboundAppModel{
+		ID:                     types.StringUnknown(),
+		Name:                   stringattr.Value("app"),
+		AuthorizationURLParams: strmapattr.Empty(),
+		TokenURLParams:         strmapattr.Empty(),
+		DefaultScopes:          strsetattr.Empty(),
+		Prompt:                 strsetattr.Empty(),
+	}
+
+	if v, ok := m.Values(h)["id"]; ok {
+		t.Errorf("an id left to the backend must be omitted on create, got %v", v)
+	}
+
+	m.ID = stringattr.Value("crm-app")
+	if m.Values(h)["id"] != "crm-app" {
+		t.Errorf("a configured id must be sent so the app is created under it, got %v", m.Values(h)["id"])
+	}
+}
+
+func TestOutboundAppIDValidators(t *testing.T) {
+	id, ok := outboundapp.OutboundAppAttributes["id"].(schema.StringAttribute)
+	if !ok {
+		t.Fatalf("expected a string attribute, got %T", outboundapp.OutboundAppAttributes["id"])
+	}
+	for value, valid := range map[string]bool{
+		"openweather-mcp":                  true,
+		"3m1hllkncymure1mjekc3urdsid":      true,
+		"x":                                true,
+		strings.Repeat("a", 30):            true,
+		strings.Repeat("a", 31):            false,
+		"":                                 false,
+		"Upper":                            false,
+		"under_score":                      false,
+		"dot.ted":                          false,
+		"testacc-outboundappchosenid-1112": false,
+	} {
+		var diags diag.Diagnostics
+		for _, v := range id.Validators {
+			resp := validator.StringResponse{}
+			v.ValidateString(context.Background(), validator.StringRequest{Path: path.Root("id"), ConfigValue: types.StringValue(value)}, &resp)
+			diags.Append(resp.Diagnostics...)
+		}
+		if diags.HasError() == valid {
+			t.Errorf("id %q: expected valid=%v, got diagnostics %v", value, valid, diags)
+		}
+	}
+}
+
+func TestOutboundAppURLParamOrder(t *testing.T) {
+	var diags diag.Diagnostics
+	h := helpers.NewHandler(context.Background(), &diags)
+
+	m := &outboundapp.OutboundAppModel{
+		Name:                   stringattr.Value("app"),
+		AuthorizationURLParams: strmapattr.Value(map[string]string{"c": "3", "a": "1", "b": "2"}),
+		TokenURLParams:         strmapattr.Empty(),
+		DefaultScopes:          strsetattr.Empty(),
+		Prompt:                 strsetattr.Empty(),
+	}
+
+	for range 10 {
+		entries, ok := m.Values(h)["authorizationUrlParams"].([]any)
+		if !ok {
+			t.Fatalf("expected an array of url params, got %T", m.Values(h)["authorizationUrlParams"])
+		}
+		keys := []string{}
+		for _, entry := range entries {
+			pair, ok := entry.(map[string]any)
+			if !ok {
+				t.Fatalf("expected a key and value pair, got %T", entry)
+			}
+			key, ok := pair["key"].(string)
+			if !ok {
+				t.Fatalf("expected a string key, got %T", pair["key"])
+			}
+			keys = append(keys, key)
+		}
+		if !slices.IsSorted(keys) {
+			t.Fatalf("url params must serialize in a stable order or the request body differs on every apply, got %v", keys)
+		}
+	}
+}
+
+func dcrPlan() *outboundapp.OutboundAppModel {
+	return &outboundapp.OutboundAppModel{
+		ID:               stringattr.Value("app-1"),
+		AppType:          stringattr.Value("oauth"),
+		UseDCR:           boolattr.Value(true),
+		DCRURL:           stringattr.Value("https://mcp.example.com"),
+		ClientID:         stringattr.Value(""),
+		AuthorizationURL: stringattr.Value(""),
+		TokenURL:         stringattr.Value(""),
+		RevocationURL:    stringattr.Value(""),
+		DefaultScopes:    strsetattr.Empty(),
+		Pkce:             boolattr.Value(false),
+	}
+}
+
+func dcrState() *outboundapp.OutboundAppModel {
+	return &outboundapp.OutboundAppModel{
+		ID:               stringattr.Value("app-1"),
+		UseDCR:           boolattr.Value(true),
+		DCRURL:           stringattr.Value("https://mcp.example.com"),
+		ClientID:         stringattr.Value("registered-client"),
+		AuthorizationURL: stringattr.Value("https://as.example.com/authorize"),
+		TokenURL:         stringattr.Value("https://as.example.com/token"),
+		RevocationURL:    stringattr.Value("https://as.example.com/revoke"),
+		DefaultScopes:    strsetattr.Value([]string{"read", "write"}),
+		Pkce:             boolattr.Value(true),
+	}
+}
+
+func dcrConfig() *outboundapp.OutboundAppModel {
+	return &outboundapp.OutboundAppModel{UseDCR: boolattr.Value(true), DCRURL: stringattr.Value("https://mcp.example.com")}
+}
+
+func TestOutboundAppDCRCreatePlan(t *testing.T) {
+	var diags diag.Diagnostics
+	plan := dcrPlan()
+	plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), dcrConfig(), &outboundapp.OutboundAppModel{})
+	if diags.HasError() {
+		t.Fatalf("unexpected errors: %v", diags)
+	}
+	for name, unknown := range map[string]bool{
+		"client_id":         plan.ClientID.IsUnknown(),
+		"authorization_url": plan.AuthorizationURL.IsUnknown(),
+		"token_url":         plan.TokenURL.IsUnknown(),
+		"revocation_url":    plan.RevocationURL.IsUnknown(),
+		"default_scopes":    plan.DefaultScopes.IsUnknown(),
+		"pkce":              plan.Pkce.IsUnknown(),
+	} {
+		if !unknown {
+			t.Errorf("%s is filled in by registration on create and must be planned as unknown", name)
+		}
+	}
+}
+
+func TestOutboundAppDCRUpdatePlan(t *testing.T) {
+	var diags diag.Diagnostics
+	plan, state := dcrPlan(), dcrState()
+	plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), dcrConfig(), state)
+	if diags.HasError() {
+		t.Fatalf("unexpected errors: %v", diags)
+	}
+	if !plan.ClientID.Equal(state.ClientID) || !plan.AuthorizationURL.Equal(state.AuthorizationURL) || !plan.TokenURL.Equal(state.TokenURL) ||
+		!plan.RevocationURL.Equal(state.RevocationURL) || !plan.DefaultScopes.Equal(state.DefaultScopes) || !plan.Pkce.Equal(state.Pkce) {
+		t.Errorf("registered values must be kept on update when not configured, got %+v", plan)
+	}
+}
+
+func TestOutboundAppDCRPlanErrors(t *testing.T) {
+	testCases := []struct {
+		name    string
+		create  bool
+		modify  func(plan, config, state *outboundapp.OutboundAppModel)
+		invalid bool
+	}{
+		{"client_id on create", true, func(_, c, _ *outboundapp.OutboundAppModel) { c.ClientID = stringattr.Value("x") }, true},
+		{"client_secret on create", true, func(_, c, _ *outboundapp.OutboundAppModel) { c.ClientSecret = stringattr.Value("x") }, true},
+		{"pkce on create", true, func(_, c, _ *outboundapp.OutboundAppModel) { c.Pkce = boolattr.Value(false) }, true},
+		{"client_id on update", false, func(_, c, _ *outboundapp.OutboundAppModel) { c.ClientID = stringattr.Value("registered-client") }, false},
+		{"enabling on an existing app", false, func(_, _, s *outboundapp.OutboundAppModel) { s.UseDCR = boolattr.Value(false) }, true},
+		{"changing dcr_url", false, func(_, _, s *outboundapp.OutboundAppModel) { s.DCRURL = stringattr.Value("https://old.example.com") }, true},
+		{"disabling", false, func(p, _, _ *outboundapp.OutboundAppModel) { p.UseDCR = boolattr.Value(false) }, false},
+		{"enabling with a new id", false, func(p, _, s *outboundapp.OutboundAppModel) {
+			p.ID = stringattr.Value("app-2")
+			s.UseDCR = boolattr.Value(false)
+		}, false},
+		{"changing dcr_url with a new id", false, func(p, _, s *outboundapp.OutboundAppModel) {
+			p.ID = stringattr.Value("app-2")
+			s.DCRURL = stringattr.Value("https://old.example.com")
+		}, false},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var diags diag.Diagnostics
+			plan, config, state := dcrPlan(), dcrConfig(), dcrState()
+			if tc.create {
+				state = &outboundapp.OutboundAppModel{}
+			}
+			tc.modify(plan, config, state)
+			plan.ModifyPlan(helpers.NewHandler(context.Background(), &diags), config, state)
+			if diags.HasError() != tc.invalid {
+				t.Errorf("expected invalid=%t, got %v", tc.invalid, diags)
+			}
+		})
+	}
+}
+
+func TestOutboundAppDCRValidate(t *testing.T) {
+	testCases := []struct {
+		name    string
+		appType stringattr.Type
+		useDCR  boolattr.Type
+		dcrURL  stringattr.Type
+		invalid bool
+	}{
+		{"use_dcr with dcr_url", stringattr.Value("oauth"), boolattr.Value(true), stringattr.Value("https://mcp.example.com"), false},
+		{"use_dcr without dcr_url", stringattr.Value("oauth"), boolattr.Value(true), types.StringNull(), true},
+		{"dcr_url without use_dcr", stringattr.Value("oauth"), types.BoolNull(), stringattr.Value("https://mcp.example.com"), true},
+		{"apikey with use_dcr", stringattr.Value("apikey"), boolattr.Value(true), stringattr.Value("https://mcp.example.com"), true},
+		{"unknown use_dcr", stringattr.Value("oauth"), types.BoolUnknown(), stringattr.Value("https://mcp.example.com"), false},
+		{"unknown dcr_url", stringattr.Value("oauth"), boolattr.Value(true), types.StringUnknown(), false},
+	}
+	for _, tc := range testCases {
+		t.Run(tc.name, func(t *testing.T) {
+			var diags diag.Diagnostics
+			m := &outboundapp.OutboundAppModel{AppType: tc.appType, UseDCR: tc.useDCR, DCRURL: tc.dcrURL}
+			m.Validate(helpers.NewHandler(context.Background(), &diags))
+			if diags.HasError() != tc.invalid {
+				t.Errorf("expected invalid=%t, got %v", tc.invalid, diags)
+			}
+		})
+	}
+}

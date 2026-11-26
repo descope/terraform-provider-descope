@@ -35,174 +35,51 @@ var docsAccessKeyTenant = map[string]string{
 	"roles":     "The roles the access key will be granted within the tenant.",
 }
 
-var docsDescoper = map[string]string{
-	"email": "The email address of the Descope console user.",
-	"phone": "The phone number of the Descope console user.",
-	"name":  "The display name of the Descope console user.",
-	"rbac": "Access control settings for the Descope console user. This defines the permissions " +
-		"granted to the user, either as a company admin or for specific projects or project tags.",
-}
-
-var docsDescoperProjectRole = map[string]string{
-	"project_ids": "The project IDs this role grant applies to.",
-	"role": "The roles the descoper will be granted in the applicable projects. " +
-		"Must be one of: `admin`, `developer`, `support`, `auditor`.",
-}
-
-var docsRBac = map[string]string{
-	"is_company_admin": "Whether this descoper has company-wide admin access. When set to `true`, " +
-		"the descoper cannot have `tag_roles` or `project_roles`.",
-	"project_roles": "A list of roles that are granted to the descoper for specific " +
-		"projects by their project ID.",
-	"tag_roles": "A list of roles that are granted to the descoper for all projects " +
-		"that have a specific tag.",
-}
-
-var docsDescoperTagRole = map[string]string{
-	"tags": "The project tags this role assignment applies to.",
-	"role": "The role the descoper will be granted in the applicable projects. " +
-		"Must be one of: `admin`, `developer`, `support`, `auditor`.",
-}
-
-var docsEngine = map[string]string{
-	"project_id": "The ID of the Descope project this engine belongs to. Changing this value will require the " +
+var docsAppPermission = map[string]string{
+	"project_id": "The ID of the project that this permission belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
-	"name":         "A name for the engine.",
-	"created_time": "The creation time of the engine as a Unix timestamp.",
-	"secret": "The plaintext secret for the engine. This is only available after the engine is created and " +
-		"cannot be retrieved later. Store this value securely as it is used to authenticate the engine.",
+	"app_id": "The ID of the federated application that this permission is scoped to. Reference the `id` " +
+		"attribute of the application resource (e.g., `descope_oidc_app.example.id`). Changing this " +
+		"value will require the resource to be deleted and recreated.",
+	"name": "The name of the permission. Permission names must be unique per application, and a permission " +
+		"can be renamed freely without affecting roles that reference it. Note that if a permission is " +
+		"deleted, it is silently removed from any application roles that still reference it.",
+	"description": "An optional description for the permission.",
 }
 
-var docsApplicationScope = map[string]string{
-	"name":        "A name for the scope.",
-	"description": "A description for the scope.",
-	"optional": "Whether this scope is optional. When `false`, the scope is mandatory and must be granted during " +
-		"authorization. When `true`, the user may choose to withhold it.",
-	"values": "The identifiers of the relevant permission, attribute or connection scopes.",
-}
-
-var docsInboundApp = map[string]string{
-	"project_id": "The ID of the Descope project this inbound app belongs to. Changing this value will require the " +
+var docsAppRole = map[string]string{
+	"project_id": "The ID of the project that this role belongs to. Changing this value will require the " +
 		"resource to be deleted and recreated.",
-	"name":                   "A name for the inbound app.",
-	"description":            "A description for the inbound app.",
-	"logo_url":               "A URL to the inbound app's logo image.",
-	"login_page_url":         "The Flow Hosting URL.",
-	"approved_callback_urls": "A set of approved redirect URIs that the inbound app is allowed to redirect to after authorization.",
-	"permissions_scopes": "A list of permission scopes that the inbound app can request. Permission scopes provide the app with " +
-		"the ability to act on behalf of a user based on their roles and permissions.",
-	"attributes_scopes": "A list of user information scopes that the inbound app can request. Attribute scopes provide the app " +
-		"with access to user profile data such as email, phone, or custom attributes.",
-	"connections_scopes": "A list of connection scopes that the inbound app can request. Connection scopes provide the app with " +
-		"the ability to access external tokens based on the mapped scopes.",
-	"session_settings": "Custom session management settings for this inbound app, overriding the project defaults.",
-	"audience_whitelist": "A set of allowed custom `aud` claim values that the inbound app can request via the `resource` " +
-		"parameter, per RFC 8707.",
-	"force_add_all_authorization_info": "When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.",
-	"force_dpop":                       "Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.",
-	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
-		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
-	"non_confidential_client": "Whether this is a public (non-confidential) client that does not use a client secret. Changing this " +
-		"value after creation will require the resource to be replaced.",
-	"client_id": "A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing " +
-		"this value after creation will require the resource to be replaced.",
-	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +
-		"cannot be retrieved after the resource is created. Store this value securely.",
-	"force_pkce": "When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.",
+	"app_id": "The ID of the federated application that this role is scoped to. Reference the `id` " +
+		"attribute of the application resource (e.g., `descope_oidc_app.example.id`). Changing this " +
+		"value will require the resource to be deleted and recreated.",
+	"name": "The name of the role. Role names must be unique per application, and a role is renamed in " +
+		"place, so user assignments and service account references to it are preserved.",
+	"description": "An optional description for the role.",
+	"permission_ids": "The IDs of the application permissions this role grants. Reference the `id` attribute of " +
+		"`descope_app_permission` resources on the same application (e.g., " +
+		"`descope_app_permission.example.id`) so that Terraform orders the operations correctly.",
+	"role_mappings": "The IDs of project-level roles that map users to this application role at login. Reference " +
+		"the `id` attribute of `descope_role` resources (e.g., `descope_role.example.id`).",
 }
 
-var docsSessionSettings = map[string]string{
-	"enabled":                      "Whether to override the project's session settings.",
-	"refresh_token_expiration":     "The expiration duration for refresh tokens issued to this inbound app.",
-	"session_token_expiration":     "The expiration duration for session tokens issued to this inbound app.",
-	"key_session_token_expiration": "The expiration duration for access key session tokens. Must be between 3 minutes and one month.",
-	"user_template_id":             "The ID of the JWT template to use for user JWTs issued to this inbound app.",
-	"key_template_id":              "The ID of the JWT template to use for access key JWTs issued to this inbound app.",
-}
-
-var docsManagementKey = map[string]string{
-	"name":        "A name for the management key.",
-	"description": "A description for the management key.",
-	"status":      "The status of the management key. Must be either `active` or `inactive`.",
-	"expire_time": "The expiration time of the management key as a Unix timestamp. If not set, " +
-		"the key will not expire. Changing this value after creation will require " +
-		"the management key to be replaced.",
-	"permitted_ips": "A list of IP addresses or CIDR ranges that are allowed to use this management key. " +
-		"If not set, the key can be used from any IP address.",
-	"rebac": "Access control settings for the management key. This defines the permissions granted " +
-		"to the management key, either at the company level or for specific projects or for " +
-		"project tags. Changing this value after creation will require the management key " +
-		"to be replaced.",
-	"cleartext": "The plaintext value of the management key. This is only available after the key is " +
-		"created and cannot be retrieved later. Store this value securely as it is required " +
-		"to authenticate API requests.",
-}
-
-var docsProjectRole = map[string]string{
-	"project_ids": "The project IDs this role grant applies to.",
-	"roles":       "The roles the management key will be granted in the applicable projects.",
-}
-
-var docsReBac = map[string]string{
-	"company_roles": "A list of company-level role names that are granted to the management key. This " +
-		"attribute is mutually exclusive with `tag_roles` and `project_roles`.",
-	"project_roles": "A list of project-level role names that are granted to the management key for " +
-		"specific projects by their project ID.",
-	"tag_roles": "A list of project-level role names that are granted to the management key for " +
-		"all projects that have a specific tag.",
-}
-
-var docsTagRole = map[string]string{
-	"tags":  "The project tags this role grant applies to.",
-	"roles": "The roles the management key will be granted in the applicable projects.",
-}
-
-var docsProject = map[string]string{
-	"name": "The name of the Descope project.",
-	"environment": "This can be set to `production` to mark production projects, otherwise this should be " +
-		"left unset for development or staging projects.",
-	"tags":             "Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.",
-	"project_settings": "General settings for the Descope project.",
-	"invite_settings":  "User invitation settings and behavior.",
-	"authentication":   "Settings for each authentication method.",
-	"authorization":    "Define Role-Based Access Control (RBAC) for your users by creating roles and permissions.",
-	"attributes":       "Custom attributes that can be attached to users and tenants.",
-	"connectors":       "Enrich your flows by interacting with third party services.",
-	"applications":     "Applications that are registered with the project.",
-	"jwt_templates":    "Defines templates for JSON Web Tokens (JWT) used for authentication.",
-	"styles":           "Custom styles that can be applied to the project's authentication flows.",
-	"flows":            "Custom authentication flows to use in this project.",
-	"widgets": "Embeddable components designed to facilitate the delegation of operations to " +
-		"tenant admins and end users.",
-	"lists": "Lists that can be used for various purposes in the project, such as IP allowlists, " +
-		"text lists, or custom JSON data.",
-	"admin_portal": "Admin portal configuration - A hosted page for end users to access and use Descope Widgets",
-}
-
-var docsAdminPortalWidget = map[string]string{
-	"widget_id": "The unique identifier of the Widget",
-	"type":      "The type of the Widget",
-}
-
-var docsAdminPortal = map[string]string{
-	"enabled":  "Whether the Admin Portal is enabled",
-	"style_id": "The style id to use",
-	"widgets":  "The widgets to show in the Admin Portal",
-}
-
-var docsApplications = map[string]string{
-	"oidc_applications":  "Applications using OpenID Connect (OIDC) for authentication.",
-	"saml_applications":  "Applications using SAML for authentication.",
-	"wsfed_applications": "Applications using WS-Federation for authentication.",
-}
-
-var docsOIDC = map[string]string{
-	"id":          "An optional identifier for the OIDC application.",
+var docsOIDCApp = map[string]string{
+	"id": "An optional identifier for the application. When omitted, an identifier is generated by the " +
+		"server. Can only be set when the application is created, and changing it will require the " +
+		"resource to be deleted and recreated.",
+	"project_id": "The ID of the project that this application belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"deletion_protection": "Protects the application from being accidentally destroyed or replaced. Destroying or replacing " +
+		"a federated application breaks the service provider's configured integration and invalidates " +
+		"its client credentials, so these applications are protected by default. To allow the resource " +
+		"to be destroyed or replaced, for example in ephemeral test environments, set this attribute " +
+		"to `false` and apply the change first.",
 	"name":        "A name for the OIDC application.",
 	"description": "A description for the OIDC application.",
 	"logo":        "A logo for the OIDC application. Should be a hosted image URL.",
 	"disabled":    "Whether the application should be enabled or disabled.",
-	"login_page_url": "The Flow Hosting URL. Read more about using this parameter with custom " +
+	"login_page_url": "The Flow Hosting URL. When left empty the project's default login page URL is used, and the " +
+		"computed value is reflected in this attribute. Read more about using this parameter with custom " +
 		"domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
 	"claims": "A list of supported claims. e.g. `sub`, `email`, `exp`.",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces " +
@@ -210,15 +87,32 @@ var docsOIDC = map[string]string{
 	"backchannel_logout_url": "The URL that Descope notifies with a logout token when the user's session ends, " +
 		"as per the [OIDC Back-Channel Logout](https://openid.net/specs/openid-connect-backchannel-1_0.html) " +
 		"specification. Leave empty to disable back-channel logout notifications for this application.",
+	"logout_propagation": "How far a logout at the application's end-session endpoint reaches. Choose one of `\"\"` " +
+		"(default, same as `\"none\"`), `\"none\"` to only end the user's sessions and notify the calling " +
+		"application alone, or `\"allApps\"` to also log the user out of their other applications.",
+	"notify_on_force_logout": "Whether a Force Logout of the user, from the Console or the Management API's Logout User from All " +
+		"Devices, sends this application a back-channel logout token. Requires `backchannel_logout_url`. When " +
+		"disabled, the default, a force logout doesn't notify the application.",
 	"custom_idp_initiated_login_page_url": "A custom login page URL to redirect users to on IdP-initiated login flows, " +
 		"instead of the default login page.",
-	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is computed " +
-		"by the server; when set, it must be unique within the project. Can only be set when the application is " +
-		"created, and attempting to change it on an existing application will fail.",
-	"client_secret": "A dedicated OIDC `client_secret` to import for this application, applied on creation only. When omitted, " +
-		"a secret is generated server-side. The value is sensitive and is not returned on subsequent reads.",
-	"client_type": "OAuth client confidentiality. One of `\"\"` (default — legacy access-key authentication), " +
-		"`\"confidential\"` (a dedicated client secret is generated for the app), or `\"public\"`.",
+	"client_id": "A dedicated OIDC `client_id` to import for this application. When omitted, the `client_id` is " +
+		"generated by the server and is not returned on reads. Can only be set when the application is " +
+		"created, and changing it will require the resource to be deleted and recreated.",
+	"client_secret": "A dedicated OIDC `client_secret` to import for this application. When omitted, a secret is " +
+		"generated server-side only for applications with a `confidential` client type, either on " +
+		"creation or when the application is later switched to `confidential`, and fetched into the " +
+		"Terraform state. Applications with other client types don't use a client secret and the value " +
+		"stays empty. The value in the state is never overwritten afterwards, so a secret rotated via " +
+		"the API or the Descope console is not reflected until the resource is replaced. Changing this " +
+		"value will require the resource to be deleted and recreated.",
+	"client_type": "OAuth client confidentiality. One of `\"confidential\"` (a dedicated client secret is generated for " +
+		"the app) or `\"public\"` (PKCE only, no client secret), and setting it explicitly is recommended. The " +
+		"empty value `\"\"` is the legacy mode with access-key authentication. If this attribute is omitted when " +
+		"the application is created, the account's default client type is used and the stored value shows " +
+		"which one it is, and removing the attribute from the configuration later keeps the current type. " +
+		"Moving an existing application to the legacy mode can be rejected by the Descope API. Changing this " +
+		"value on an existing application changes how its clients must authenticate, so coordinate the change " +
+		"with the application's developers.",
 	"approved_redirect_urls": "A list of approved redirect URLs for this application (supports `*` wildcards). When set, " +
 		"redirect URIs are validated against this per-app list; when empty, validation falls back to " +
 		"the project's approved/trusted domains.",
@@ -232,33 +126,73 @@ var docsOIDC = map[string]string{
 	"trusted_apps_audience": "Controls the audience values appended to the issued token's `aud` claim for trusted sibling " +
 		"applications. One of `\"projectId\"`, `\"clientId\"`, `\"appId\"`, `\"empty\"` (add none), or `\"\"` " +
 		"(default — both the project ID and the client ID). Independent of `default_audience`.",
-	"permissions": "",
-	"roles":       "",
 }
 
-var docsSAML = map[string]string{
-	"id":                          "An optional identifier for the SAML application.",
-	"name":                        "A name for the SAML application.",
-	"description":                 "A description for the SAML application.",
-	"logo":                        "A logo for the SAML application. Should be a hosted image URL.",
-	"disabled":                    "Whether the application should be enabled or disabled.",
-	"login_page_url":              "The Flow Hosting URL. Read more about using this parameter with custom domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
-	"dynamic_configuration":       "The `DynamicConfiguration` object. Read the description below.",
-	"manual_configuration":        "The `ManualConfiguration` object. Read the description below.",
+var docsSAMLApp = map[string]string{
+	"id": "An optional identifier for the application. When omitted, an identifier is generated by the " +
+		"server. Can only be set when the application is created, and changing it will require the " +
+		"resource to be deleted and recreated.",
+	"project_id": "The ID of the project that this application belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"deletion_protection": "Protects the application from being accidentally destroyed or replaced. Destroying or replacing " +
+		"a federated application breaks the service provider's configured integration, so these " +
+		"applications are protected by default. To allow the resource to be destroyed or replaced, for " +
+		"example in ephemeral test environments, set this attribute to `false` and apply the change first.",
+	"name":        "A name for the SAML application.",
+	"description": "A description for the SAML application.",
+	"logo":        "A logo for the SAML application. Should be a hosted image URL.",
+	"disabled":    "Whether the application should be enabled or disabled.",
+	"login_page_url": "The Flow Hosting URL. When left empty the project's default login page URL is used, and the " +
+		"computed value is reflected in this attribute. Read more about using this parameter with custom " +
+		"domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
+	"dynamic_configuration": "Connection details are retrieved dynamically from the SP's metadata URL. Exactly one of " +
+		"`dynamic_configuration` and `manual_configuration` must be set.",
+	"manual_configuration": "Connection details are provided manually. Exactly one of `dynamic_configuration` and " +
+		"`manual_configuration` must be set.",
 	"acs_allowed_callback_urls":   "A list of allowed ACS callback URLS. This configuration is used when the default ACS URL value is unreachable. Supports wildcards.",
 	"subject_name_id_type":        "The subject name id type. Choose one of \"\", \"email\", \"phone\". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
 	"subject_name_id_format":      "The subject name id format. Choose one of \"\", \"urn:oasis:names:tc:SAML:1.1:nameid-format:unspecified\", \"urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress\", \"urn:oasis:names:tc:SAML:2.0:nameid-format:persistent\", \"urn:oasis:names:tc:SAML:2.0:nameid-format:transient\". Read more about this configuration [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
 	"default_relay_state":         "The default relay state. When using IdP-initiated authentication, this value may be used as a URL to a resource in the Service Provider.",
 	"default_signature_algorithm": "The signature algorithm used to sign SAML responses. Choose one of `\"\"` (default, SHA-1) or `\"sha256\"` (SHA-256). Only applies to IdP-initiated flows — SP-initiated flows use the algorithm specified in the SP's SAML request.",
-	"attribute_mapping":           "The `AttributeMapping` object. Read the description below.",
+	"attribute_mapping":           "A list of attribute mappings from Descope user attributes to SAML assertion attributes.",
 	"force_authentication":        "This configuration overrides the default behavior of the SSO application and forces the user to authenticate via the Descope flow, regardless of the SP's request.",
-	"permissions":                 "",
-	"roles":                       "",
-}
-
-var docsAttributeMapping = map[string]string{
-	"name":  "The name of the attribute.",
-	"value": "The value of the attribute.",
+	"logout_redirect_url": "The URL to redirect to after logout. When the service provider sends the user to the " +
+		"`idp_logout_url`, Descope logs the user out and then redirects them to this URL.",
+	"error_redirect_url": "The URL to redirect to when an error occurs.",
+	"idp_logout_url": "The logout URL of the application, to set as the sign-out URL in the service provider. This " +
+		"value is set by the server and is read-only.",
+	"single_logout_enabled": "Whether SAML Single Logout (SLO) is enabled for the application. When enabled, the service " +
+		"provider can log the user out by sending a signed `LogoutRequest` to the `idp_logout_url`, and " +
+		"Descope sends a `LogoutRequest` to the service provider when a logout reaches the user's " +
+		"applications (the user's own logout of all devices, a force logout when `notify_on_force_logout` " +
+		"is enabled, or another application's logout that propagates). The request names the user by the " +
+		"application's NameID, and it is sent to every application with single logout enabled that the " +
+		"user can sign in to, including ones the user hasn't used. A logout without a browser (the user's " +
+		"own logout of all devices, a force logout) reaches only applications with the `\"soap\"` binding.",
+	"sp_single_logout_url": "The service provider's Single Logout Service URL that logout requests are sent to. Required when " +
+		"`single_logout_enabled` is `true` and `manual_configuration` is used. With `dynamic_configuration` " +
+		"it can be left empty to take the URL from the service provider's metadata.",
+	"sp_single_logout_binding": "The SAML binding used for `sp_single_logout_url`. Choose one of `\"\"` (default), `\"redirect\"`, " +
+		"`\"post\"` or `\"soap\"`. With the default and an `sp_single_logout_url`, Descope uses HTTP-Redirect. " +
+		"Without an `sp_single_logout_url`, the endpoint comes from the service provider's metadata: the " +
+		"default uses SOAP when the metadata offers an `https` SOAP endpoint, else HTTP-Redirect, else " +
+		"HTTP-POST, and any other value uses the metadata endpoint with that binding. The `\"soap\"` binding " +
+		"sends the logout request directly from Descope to the service provider and requires an `https` URL.",
+	"single_logout_propagation": "What a logout started by the service provider reaches. Choose one of `\"\"` (default, same as " +
+		"`\"none\"`), `\"none\"` to only end the user's session without notifying any other application, or " +
+		"`\"allApps\"` to also log the user out of their other applications (OIDC applications only when " +
+		"every session of the user ended).",
+	"single_logout_scope": "Which Descope sessions a logout started by the service provider ends. Choose one of `\"\"` " +
+		"(default, same as `\"session\"`), `\"session\"` to end the sessions the logout request's session indexes " +
+		"name, or `\"allSessions\"` to end every session of the user. With `\"session\"`, a logout request with no " +
+		"session index, or with one Descope didn't issue, ends the browser's Descope session when the browser " +
+		"has one for the user, else every session of the user its NameID names, and one with several session " +
+		"indexes that aren't all Descope's ends every session of the user. A visit to the logout URL without a " +
+		"logout request always ends every session of the user.",
+	"notify_on_force_logout": "Whether a Force Logout of the user, from the Console or the Management API's Logout User from All " +
+		"Devices, sends this application a `LogoutRequest`. Requires single logout with the `\"soap\"` binding, " +
+		"since a force logout has no browser. When disabled, the default, a force logout doesn't notify the " +
+		"application.",
 }
 
 var docsDynamicConfiguration = map[string]string{
@@ -271,36 +205,37 @@ var docsManualConfiguration = map[string]string{
 	"certificate": "Enter the `Certificate` from the SP.",
 }
 
-var docsSSOAppPermission = map[string]string{
-	"name":        "",
-	"description": "",
+var docsAttributeMapping = map[string]string{
+	"name":  "The name of the attribute.",
+	"value": "The value of the attribute.",
 }
 
-var docsSSOAppRole = map[string]string{
-	"name":          "",
-	"description":   "",
-	"permissions":   "",
-	"role_mappings": "",
-}
-
-var docsWSFed = map[string]string{
-	"id":                          "An optional identifier for the WS-Fed application.",
-	"name":                        "A name for the WS-Fed application.",
-	"description":                 "A description for the WS-Fed application.",
-	"logo":                        "A logo for the WS-Fed application. Should be a hosted image URL.",
+var docsWSFedApp = map[string]string{
+	"id": "An optional identifier for the application. When omitted, an identifier is generated by the " +
+		"server. Can only be set when the application is created, and changing it will require the " +
+		"resource to be deleted and recreated.",
+	"project_id": "The ID of the project that this application belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"deletion_protection": "Protects the application from being accidentally destroyed or replaced. Destroying or replacing " +
+		"a federated application breaks the service provider's configured integration, so these " +
+		"applications are protected by default. To allow the resource to be destroyed or replaced, for " +
+		"example in ephemeral test environments, set this attribute to `false` and apply the change first.",
+	"name":                        "A name for the WS-Federation application.",
+	"description":                 "A description for the WS-Federation application.",
+	"logo":                        "A logo for the WS-Federation application. Should be a hosted image URL.",
 	"disabled":                    "Whether the application should be enabled or disabled.",
 	"realm":                       "The WS-Fed realm identifier for the application.",
 	"reply_url":                   "The default reply URL where WS-Fed responses are sent. Used for IdP-initiated flows and when no `wreply` is supplied by the RP.",
 	"reply_allowed_callback_urls": "Additional allowed `wreply` callback URLs beyond `reply_url`. Each entry may include the `*` wildcard. When the RP supplies a `wreply` parameter, it must match either the default `reply_url` or one of these patterns.",
-	"login_page_url":              "The Flow Hosting URL.",
-	"attribute_mapping":           "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
-	"groups_mapping":              "A list of group mappings from Descope roles to WS-Fed groups.",
+	"login_page_url": "The Flow Hosting URL. When left empty the project's default login page URL is used, and the " +
+		"computed value is reflected in this attribute. Read more about using this parameter with custom " +
+		"domain [here](https://docs.descope.com/sso-integrations/applications/saml-apps).",
+	"attribute_mapping": "A list of attribute mappings from Descope user attributes to WS-Fed assertion attributes.",
+	"groups_mapping":    "A list of group mappings from Descope roles to WS-Fed groups.",
 	"force_authentication": "This configuration overrides the default behavior of the SSO application and forces the user to " +
 		"authenticate via the Descope flow, regardless of the SP's request.",
 	"logout_redirect_url": "The URL to redirect to after logout.",
 	"error_redirect_url":  "The URL to redirect to when an error occurs.",
-	"permissions":         "",
-	"roles":               "",
 }
 
 var docsGroupsMapping = map[string]string{
@@ -308,315 +243,132 @@ var docsGroupsMapping = map[string]string{
 	"type":        "The type of the groups mapping.",
 	"filter_type": "The filter type for the groups mapping.",
 	"value":       "The value of the groups mapping.",
-	"roles":       "The `RoleGroupMapping` object. A list of roles mapped to this group.",
+	"roles":       "The Descope roles that are included in the groups mapping.",
 }
 
 var docsRoleGroupMapping = map[string]string{
-	"id":   "The identifier of the role.",
+	"id":   "The ID of the role.",
 	"name": "The name of the role.",
 }
 
 var docsAccessKeyAttribute = map[string]string{
-	"id": "An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. " +
-		"If a value is not provided then an appropriate one will be created from the value of `name`.",
-	"name": "The name of the attribute. This value is called `Display Name` in the Descope console.",
-	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", " +
-		"\"singleselect\", \"multiselect\", \"date\".",
-	"select_options": "When the attribute type is \"multiselect\". A list of options to choose from.",
-	"widget_authorization": "Determines the permissions access key are required to have to access this attribute " +
-		"in the access key management widget.",
+	"id": "The immutable machine name that identifies the attribute. This value is called `Machine Name` in the " +
+		"Descope console. Changing this value will require the resource to be deleted and recreated.",
+	"project_id": "The ID of the project that this access key attribute belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name": "The display name of the attribute. This value is called `Display Name` in the Descope console.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", " +
+		"\"multiselect\", \"date\", \"monthday\". Changing this value will require the resource to be deleted and " +
+		"recreated.",
+	"select_options": "The list of options to choose from when the attribute type is \"singleselect\" or \"multiselect\".",
+	"widget_authorization": "Determines the permissions users are required to have to access this attribute in the user management " +
+		"widget.",
 }
 
-var docsAccessKeyAttributeWidgetAuthorization = map[string]string{
-	"view_permissions": "The permissions users are required to have to view this attribute in the access key management widget.",
-	"edit_permissions": "The permissions users are required to have to edit this attribute in the access key management widget.",
+var docsInboundAppAttribute = map[string]string{
+	"id": "The immutable machine name that identifies the attribute. This value is called `Machine Name` in the " +
+		"Descope console, and JWT templates read an inbound app's value for it as " +
+		"`{{app.customAttributes.<id>}}`. Changing this value will require the resource to be deleted and " +
+		"recreated.",
+	"project_id": "The ID of the project that this inbound app attribute belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name": "The display name of the attribute. This value is called `Display Name` in the Descope console.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", " +
+		"\"multiselect\", \"date\", \"monthday\". Changing this value will require the resource to be deleted and " +
+		"recreated.",
+	"select_options": "The list of options to choose from when the attribute type is \"singleselect\" or \"multiselect\".",
 }
 
-var docsAttributes = map[string]string{
-	"tenant": "A list of custom attributes for storing additional details about " +
-		"each tenant in the project.",
-	"user": "A list of custom attributes for storing additional details about " +
-		"each user in the project.",
-	"access_key": "A list of custom attributes for storing additional details about " +
-		"each access key in the project.",
+var docsWidgetAuthorization = map[string]string{
+	"view_permissions": "The names of the permissions users are required to have to view this attribute in the user management " +
+		"widget. An empty set means no restriction.",
+	"edit_permissions": "The names of the permissions users are required to have to edit this attribute in the user management " +
+		"widget. An empty set means no restriction.",
 }
 
 var docsTenantAttribute = map[string]string{
-	"id": "An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. " +
-		"If a value is not provided then an appropriate one will be created from the value of `name`.",
-	"name":           "The name of the attribute. This value is called `Display Name` in the Descope console.",
-	"type":           "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", \"multiselect\", \"date\".",
-	"select_options": "When the attribute type is \"multiselect\". A list of options to choose from.",
-	"authorization":  "Determines the required permissions for this tenant.",
+	"id": "The immutable machine name that identifies the attribute. This value is called `Machine Name` in the " +
+		"Descope console. Changing this value will require the resource to be deleted and recreated.",
+	"project_id": "The ID of the project that this tenant attribute belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name": "The display name of the attribute. This value is called `Display Name` in the Descope console.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", " +
+		"\"multiselect\", \"date\", \"monthday\". Changing this value will require the resource to be deleted and " +
+		"recreated.",
+	"select_options": "The list of options to choose from when the attribute type is \"singleselect\" or \"multiselect\".",
+	"authorization": "Determines the permissions users are required to have to access this attribute. Tenant attributes are " +
+		"view-only and do not support edit permissions.",
 }
 
 var docsTenantAttributeAuthorization = map[string]string{
-	"view_permissions": "Determines the required permissions for this tenant.",
+	"view_permissions": "The names of the permissions users are required to have to view this attribute. An empty set means no " +
+		"restriction.",
 }
 
 var docsUserAttribute = map[string]string{
-	"id": "An optional identifier for the attribute. This value is called `Machine Name` in the Descope console. " +
-		"If a value is not provided then an appropriate one will be created from the value of `name`.",
-	"name": "The name of the attribute. This value is called `Display Name` in the Descope console.",
-	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", " +
-		"\"singleselect\", \"multiselect\", \"date\".",
-	"select_options": "When the attribute type is \"multiselect\". A list of options to choose from.",
-	"widget_authorization": "Determines the permissions users are required to have to access this attribute " +
-		"in the user management widget.",
+	"id": "The immutable machine name that identifies the attribute. This value is called `Machine Name` in the " +
+		"Descope console. Changing this value will require the resource to be deleted and recreated.",
+	"project_id": "The ID of the project that this user attribute belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name": "The display name of the attribute. This value is called `Display Name` in the Descope console.",
+	"type": "The type of the attribute. Choose one of \"string\", \"number\", \"boolean\", \"singleselect\", " +
+		"\"multiselect\", \"date\", \"monthday\". Changing this value will require the resource to be deleted and " +
+		"recreated.",
+	"select_options": "The list of options to choose from when the attribute type is \"singleselect\" or \"multiselect\".",
+	"widget_authorization": "Determines the permissions users are required to have to access this attribute in the user management " +
+		"widget.",
 }
 
-var docsUserAttributeWidgetAuthorization = map[string]string{
-	"view_permissions": "The permissions users are required to have to view this attribute in the user management widget.",
-	"edit_permissions": "The permissions users are required to have to edit this attribute in the user management widget.",
+var docsAuthAccessRule = map[string]string{
+	"project_id": "The ID of the project that this rule belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name":        "A name for the rule, shown in the console.",
+	"description": "An optional description of what the rule is for.",
+	"enabled": "Whether the rule is evaluated. A disabled rule keeps its place in the evaluation order " +
+		"but never matches.",
+	"effect": "Whether an authentication that matches the rule is `allow`ed or `block`ed.",
+	"conditions": "The conditions that must all match for the rule to apply. A rule with no conditions " +
+		"matches every authentication.",
+	"expire_time": "The time after which the rule is no longer evaluated, in seconds since the Unix epoch. " +
+		"Set to `0` for a rule that never expires.",
 }
 
-var docsAuthentication = map[string]string{
-	"otp":        "A dynamically generated set of numbers, granting the user one-time access.",
-	"magic_link": "An authentication method where a user receives a unique link via email to log in.",
-	"enchanted_link": "An enhanced and more secure version of Magic Link, enabling users to start the authentication " +
-		"process on one device and execute the verification on another.",
-	"embedded_link": "Make the authentication experience smoother for the user by generating their initial token in a " +
-		"way that does not require the end user to initiate the process, requiring only verification.",
-	"password": "The classic username and password combination used for authentication.",
-	"oauth": "Authentication using Open Authorization, which allows users to authenticate with various external " +
-		"services.",
-	"sso": "Single Sign-On (SSO) authentication method that enables users to access multiple applications with " +
-		"a single set of credentials.",
-	"totp":     "A one-time code generated for the user using a shared secret and time.",
-	"passkeys": "Device-based passwordless authentication, using fingerprint, face scan, and more.",
+var docsAuthAccessCondition = map[string]string{
+	"key": "The attribute the condition checks. One of `request.ip`, `request.country`, `user.email`, " +
+		"`user.emailDomain`, `user.loginId` or `user.phone`.",
+	"operator": "How the attribute is compared with the values. One of `equal`, `notEqual`, `in`, `notIn`, " +
+		"`inCidr` or `notInCidr`. The CIDR operators are only supported with the `request.ip` key.",
+	"values": "The values to compare with. The `equal`, `notEqual`, `inCidr` and `notInCidr` operators " +
+		"take exactly one value. With `equal` and `notEqual` the value may instead be a reference of " +
+		"the form `{{jwtClaims.<name>}}`, which compares the attribute with that custom claim of the " +
+		"token the user presented. An absent claim never matches. Values must be in canonical form: lowercase emails and domains, uppercase " +
+		"country codes, phone numbers in E.164 form and IP addresses in their shortest form.",
 }
 
-var docsEmbeddedLink = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"expiration_time": "How long the embedded link remains valid before it expires.",
-}
-
-var docsEnchantedLink = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"expiration_time": "How long the enchanted link remains valid before it expires.",
-	"redirect_url":    "The URL to redirect users to after they log in using the enchanted link.",
-	"email_service":   "Settings related to sending emails as part of the enchanted link authentication.",
-}
-
-var docsMagicLink = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"expiration_time": "How long the magic link remains valid before it expires.",
-	"redirect_url":    "The URL to redirect users to after they log in using the magic link.",
-	"email_service":   "Settings related to sending emails as part of the magic link authentication.",
-	"text_service":    "Settings related to sending SMS messages as part of the magic link authentication.",
-}
-
-var docsOAuth = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"system": "Custom configurations for builtin OAuth providers such as Apple, Google, GitHub, Facebook, etc.",
-	"custom": "Custom OAuth providers configured for this project.",
-}
-
-var docsOAuthSystemProvider = map[string]string{
-	"apple":     "Apple's OAuth provider, allowing users to authenticate with their Apple Account.",
-	"discord":   "Discord's OAuth provider, allowing users to authenticate with their Discord account.",
-	"facebook":  "Facebook's OAuth provider, allowing users to authenticate with their Facebook account.",
-	"github":    "GitHub's OAuth provider, allowing users to authenticate with their GitHub account.",
-	"gitlab":    "GitLab's OAuth provider, allowing users to authenticate with their GitLab account.",
-	"google":    "Google's OAuth provider, allowing users to authenticate with their Google account.",
-	"linkedin":  "LinkedIn's OAuth provider, allowing users to authenticate with their LinkedIn account.",
-	"microsoft": "Microsoft's OAuth provider, allowing users to authenticate with their Microsoft account.",
-	"slack":     "Slack's OAuth provider, allowing users to authenticate with their Slack account.",
-}
-
-var docsOAuthProvider = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"client_id":              "The client ID for the OAuth provider, used to identify the application to the provider.",
-	"client_secret":          "The client secret for the OAuth provider, used to authenticate the application with the provider.",
-	"manage_provider_tokens": "Whether to enable provider token management for this OAuth provider.",
-	"callback_domain":        "Use a custom domain in your OAuth verification screen.",
-	"redirect_url": "Users will be directed to this URL after authentication. If redirect URL is specified in " +
-		"the SDK/API call, it will override this value.",
-	"provider_token_management": "This attribute is deprecated, use the `manage_provider_tokens`, `callback_domain`, and `redirect_url` fields instead.",
-	"prompts":                   "Custom prompts or consent screens that users may see during OAuth authentication.",
-	"allowed_grant_types": "The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens " +
-		"from the OAuth provider.",
-	"scopes":              "Scopes of access that the application requests from the user's account on the OAuth provider.",
-	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
-	"disable_jit_updates": "By default the user attribute mapping configuration is used to update the user's " +
-		"attributes automatically during sign in. Disable this if you want this to happen " +
-		"only during user creation.",
-	"native_client_id":           "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
-	"native_client_secret":       "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
-	"apple_key_generator":        "The apple key generator object describing how to create a dynamic apple client secret for applications.",
-	"native_apple_key_generator": "The apple key generator object describing how to create a dynamic native apple client secret for mobile apps.",
-	"description":                "A brief description of the OAuth provider.",
-	"logo":                       "The URL of the logo associated with the OAuth provider.",
-	"issuer":                     "The issuer identifier for the OAuth provider.",
-	"authorization_endpoint":     "The URL that users are redirected to for authorization with the OAuth provider.",
-	"token_endpoint":             "The URL where the application requests an access token from the OAuth provider.",
-	"user_info_endpoint":         "The URL where the application retrieves user information from the OAuth provider.",
-	"jwks_endpoint":              "The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.",
-	"use_client_assertion":       "Use private key JWT (client assertion) instead of client secret.",
-	"claim_mapping":              "Maps OAuth provider claims to Descope user attributes.",
-}
-
-var docsAppleKeyGeneratorModel = map[string]string{
-	"key_id":      "The apple generator key id produced by Apple.",
-	"team_id":     "The apple generator team id assigned to the key by Apple.",
-	"private_key": "The apple generator private key produced by Apple.",
-}
-
-var docsOTP = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"domain":          "The domain to embed in OTP messages.",
-	"expiration_time": "The amount of time that an OTP code will be valid for.",
-	"email_service":   "Settings related to sending emails with OTP codes.",
-	"text_service":    "Settings related to sending SMS messages with OTP codes.",
-	"voice_service":   "Settings related to voice calls with OTP codes.",
-}
-
-var docsPasskeys = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"display_name": "The human-friendly name shown to users when they create or use a passkey. Some password " +
-		"managers display this name, while others display the top level domain instead. When left " +
-		"empty, the project name is used.",
-	"top_level_domain": "Passkeys will be usable in the following domain and all its subdomains.",
-	"android_fingerprints": "A list of SHA-256 APK key hash fingerprints (colon-separated hex, e.g. `AB:CD:EF:...`) that are " +
-		"allowed as passkey origins for Android apps. When set, only Android apps with a matching fingerprint " +
-		"will be permitted to use passkey authentication.",
-}
-
-var docsPassword = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"expiration":              "Whether users are required to change their password periodically.",
-	"expiration_weeks":        "The number of weeks after which a user's password expires and they need to replace it.",
-	"lock":                    "Whether the user account should be locked after a specified number of failed login attempts.",
-	"lock_attempts":           "The number of failed login attempts allowed before an account is locked.",
-	"temporary_lock":          "Whether the user account should be temporarily locked after a specified number of failed login attempts.",
-	"temporary_lock_attempts": "The number of failed login attempts allowed before an account is temporarily locked.",
-	"temporary_lock_duration": "The amount of time before the user can sign in again after the account is temporarily locked.",
-	"lowercase":               "Whether passwords must contain at least one lowercase letter.",
-	"min_length":              "The minimum length of the password that users are required to use. The maximum length is always `64`.",
-	"non_alphanumeric":        "Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).",
-	"number":                  "Whether passwords must contain at least one number.",
-	"reuse":                   "Whether to forbid password reuse when users change their password.",
-	"reuse_amount": "The number of previous passwords whose hashes are kept to prevent users from " +
-		"reusing old passwords.",
-	"uppercase":  "Whether passwords must contain at least one uppercase letter.",
-	"any_letter": "Whether passwords must contain at least one letter, either uppercase or lowercase.",
-	"disallowed_characters": "Reject passwords containing any of these characters. Each character in the string is " +
-		"treated as a forbidden literal (e.g., `\"'\"` to reject single and double quotes).",
-	"disallow_email_match": "Whether to reject passwords that match the user's email address or its local-part " +
-		"(the segment before `@`), case-insensitively. The check is skipped if the user's email " +
-		"is not known at validation time.",
-	"enforce_strength": "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.",
-	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., " +
-		"whether a user already exists.",
-	"email_service": "Settings related to sending password reset emails as part of the password feature.",
-}
-
-var docsSSO = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
-	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
-		"in tenant level settings or SDK/API call, they will override this value.",
-	"sso_suite_settings":                    "Configuration block for the SSO Suite.",
-	"allow_duplicate_domains":               "Whether to allow duplicate SSO domains across tenants.",
-	"allow_override_roles":                  "Whether to allow overriding user's roles with SSO related roles.",
-	"groups_priority":                       "Whether to enable groups priority.",
-	"mandatory_user_attributes":             "Define the required Descope attributes that must be populated when receiving SSO information.",
-	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
-	"require_sso_domains":                   "When configuring SSO an SSO domain must be specified.",
-	"require_groups_attribute_name":         "When configuring SSO the groups attribute name must be specified.",
-	"block_if_email_domain_mismatch":        "Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.",
-	"mark_email_as_unverified":              "Whether to mark the user's email as unverified when logging in via SSO.",
-	"email_service":                         "Settings related to sending SSO invite emails as part of the SSO feature.",
-}
-
-var docsMandatoryUserAttribute = map[string]string{
-	"id":     "The identifier for the attribute. This value is called `Machine Name` in the Descope console.",
-	"custom": "Whether the attribute is a custom attribute defined in addition to the default Descope user attributes.",
-}
-
-var docsSSOSuite = map[string]string{
-	"style_id": "Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in " +
-		"the console for it to be used.",
-	"hide_scim":                 "Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.",
-	"hide_groups_mapping":       "Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.",
-	"hide_role_mapping":         "Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.",
-	"hide_fga_mapping":          "Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.",
-	"hide_domains":              "Setting this to `true` will hide the domains configuration section in the SSO Suite interface.",
-	"hide_saml":                 "Setting this to `true` will hide the SAML configuration option.",
-	"hide_oidc":                 "Setting this to `true` will hide the OIDC configuration option.",
-	"force_domain_verification": "Setting this to `true` will allow only verified domains to be used.",
-	"support_email":             "Email address shown to end-users in the SSO Suite UI as a support contact.",
-	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
-	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
-}
-
-var docsTOTP = map[string]string{
-	"disabled": "Setting this to `true` will disallow using this authentication method directly via " +
-		"API and SDK calls. Note that this does not affect authentication flows that are " +
-		"configured to use this authentication method.",
-	"service_label": "The template for the service issuer label (issuer) shown in the authenticator app.",
-}
-
-var docsAuthorization = map[string]string{
-	"roles":       "A list of `Role` objects.",
-	"permissions": "A list of `Permission` objects.",
-	"fga": "The project's FGA schema, configured in the [Descope console](https://app.descope.com/authorization/fga) " +
-		"under the FGA tab. Use the code view to get the schema text and paste it as the value for this attribute.",
-}
-
-var docsPermission = map[string]string{
-	"name":        "A name for the permission.",
-	"description": "A description for the permission.",
-}
-
-var docsRole = map[string]string{
-	"key": "A persistent value that identifies a role uniquely across plan changes and configuration updates. It " +
-		"is used exclusively by the Terraform provider during planning, to ensure that user roles are maintained " +
-		"consistently even when role names or other details are changed. Once the `key` is set it should never be " +
-		"changed, otherwise the role will be removed and a new one will be created instead.",
-	"name":        "A name for the role.",
-	"description": "A description for the role.",
-	"permissions": "A list of permissions by name to be included in the role.",
-	"default":     "Whether this role should automatically be assigned to users that are created without any roles.",
-	"private":     "Whether this role should not be displayed to tenant admins.",
-}
-
-var docsAbuseIPDB = map[string]string{
+var docsAbuseIPDBConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_key":     "The unique AbuseIPDB API key.",
 }
 
-var docsAlloy = map[string]string{
+var docsAlloyConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_token":   "The Alloy API token.",
 	"api_secret":  "The Alloy API secret.",
 	"base_url": "The base URL for the Alloy API, e.g.: https://sandbox.alloy.co/v1, " +
 		"https://api.alloy.co/v1.",
 }
 
-var docsAmplitude = map[string]string{
+var docsAmplitudeConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_key":     "The Amplitude API Key generated for the Descope service.",
 	"server_url": "The server URL of the Amplitude API, when using different api or a custom domain " +
 		"in Amplitude.",
@@ -624,9 +376,11 @@ var docsAmplitude = map[string]string{
 		"projects created in `EU` data center. Default is `US`.",
 }
 
-var docsArkose = map[string]string{
+var docsArkoseConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"public_key":  "The public key that's shown in the Keys screen in the Arkose Labs portal.",
 	"private_key": "The private key that can be copied from the Keys screen in the Arkose Labs " +
 		"portal.",
@@ -638,12 +392,17 @@ var docsArkose = map[string]string{
 		"`https://verify-api.arkoselabs.com/api/v4` will be used.",
 }
 
-var docsAuditWebhook = map[string]string{
+var docsAuditWebhookConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"base_url":       "The base URL to fetch",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the payload, and the resulting signature will be sent in the " +
 		"`x-descope-webhook-s256` header. The receiving service should use this secret to " +
@@ -652,13 +411,63 @@ var docsAuditWebhook = map[string]string{
 	"insecure": "Will ignore certificate errors raised by the client",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsAWSS3 = map[string]string{
+var docsAWSEndUserMessagingConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"aws_region":  "The AWS region the Notify configuration is in.",
+	"auth_type": "How to authenticate with AWS: using static credentials or by assuming an IAM " +
+		"role.",
+	"access_key_id": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+	"secret_access_key": "The AWS secret access key. Required when the authentication type is " +
+		"'credentials'.",
+	"role_arn": "The ARN of the IAM role to assume. Required when the authentication type is " +
+		"'assumeRole'.",
+	"external_id": "The external ID used when assuming the IAM role. Required when the " +
+		"authentication type is 'assumeRole'.",
+	"notify_configuration_id": "The ID of the AWS End User Messaging Notify configuration that sends the " +
+		"messages.",
+	"default_template_id": "The Notify template used when the flow does not select one. Leave empty to use " +
+		"the Notify configuration's default template.",
+	"template_code_variable": "The template variable that receives the OTP code. Defaults to 'code'.",
+	"template_expiry_minutes": "The code expiry in minutes, between 1 and 60. Set it when the template shows the " +
+		"code's expiry, and leave it at 0 when it doesn't, since AWS rejects the message " +
+		"otherwise.",
+	"configuration_set_name": "The AWS configuration set whose event destinations receive delivery events, " +
+		"including messages that AWS blocks.",
+}
+
+var docsAWSEventBridgeConnector = map[string]string{
+	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":              "A custom name for your connector.",
 	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type":         "The authentication type to use.",
+	"access_key_id":     "The unique AWS access key ID.",
+	"secret_access_key": "The secret AWS access key.",
+	"role_arn":          "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id":       "The external ID to use when assuming the role.",
+	"region":            "The AWS EventBridge region, e.g. `us-east-1`.",
+	"event_bus_name": "The name or ARN of the EventBridge event bus. Use `default` for the default " +
+		"event bus or provide a custom event bus name/ARN.",
+	"detail_type": "The detail type for the EventBridge event. This is a free-form string used to " +
+		"identify the event type, e.g. `descope.audit.event`.",
+	"source": "The source of the EventBridge event. This identifies the application or service " +
+		"that is generating the event, e.g. `descope.auth`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
+var docsAWSS3Connector = map[string]string{
+	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":              "A custom name for your connector.",
+	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"auth_type":         "The authentication type to use.",
 	"access_key_id":     "The unique AWS access key ID.",
 	"secret_access_key": "The secret AWS access key.",
@@ -671,13 +480,13 @@ var docsAWSS3 = map[string]string{
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsAWSSESEmailValidation = map[string]string{
+var docsAWSSESEmailValidationConnector = map[string]string{
+	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":              "A custom name for your connector.",
 	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"auth_type":         "The authentication type to use.",
 	"access_key_id":     "AWS access key ID.",
 	"secret_access_key": "AWS secret access key.",
@@ -686,146 +495,60 @@ var docsAWSSESEmailValidation = map[string]string{
 	"role_arn":    "The Amazon Resource Name (ARN) of the role to assume.",
 	"external_id": "The external ID to use when assuming the role.",
 	"region":      "The AWS region to which this client will send requests. (e.g. us-east-1.)",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsAWSTranslate = map[string]string{
+var docsAWSTranslateConnector = map[string]string{
+	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":              "A custom name for your connector.",
 	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"access_key_id":     "AWS access key ID.",
 	"secret_access_key": "AWS secret access key.",
 	"session_token": "(Optional) A security or session token to use with these credentials. Usually " +
 		"present for temporary credentials.",
 	"region": "The AWS region to which this client will send requests. (e.g. us-east-1.)",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsBitsight = map[string]string{
+var docsAzureMonitorConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The scheme and host of the logs ingestion endpoint, in the form " +
+		"https://<name>.<region>-1.ingest.monitor.azure.com, without any path.",
+	"dcr_immutable_id": "The immutable ID of the OTLP-enabled data collection rule, in the form dcr-<32 " +
+		"hex characters>.",
+	"tenant_id": "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id": "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"service_name": "The service name attached to the logs as the `service.name` resource attribute. " +
+		"Default is `descope`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsBitsightConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"client_id": "API Client ID issued when you create the credentials in Bitsight Threat " +
 		"Intelligence.",
 	"client_secret": "Client secret issued when you create the credentials in Bitsight Threat " +
 		"Intelligence.",
 }
 
-var docsConnectors = map[string]string{
-	"abuseipdb": "Utilize IP threat intelligence to block malicious login attempts with the " +
-		"AbuseIPDB connector.",
-	"alloy": "Streamline identity verification and fraud monitoring with the Alloy connector.",
-	"amplitude": "Track user activity and traits at any point in your user journey with the " +
-		"Amplitude connector.",
-	"arkose":        "Use the Arkose connector to integrate with Arkose's bot and fraud detection.",
-	"audit_webhook": "Send audit events to a custom webhook.",
-	"aws_s3":        "Stream authentication audit logs with the Amazon S3 connector.",
-	"aws_ses_email_validation": "Validate email addresses using the AWS SES Email Validation API to check syntax, " +
-		"DNS records, mailbox existence, and deliverability.",
-	"aws_translate": "Localize the language of your login and user journey screens with the Amazon Translate connector.",
-	"bitsight": "Utilize threat intelligence to block malicious login attempts or check leaks " +
-		"with the Bitsight Threat Intelligence connector.",
-	"coralogix": "Send audit events and troubleshooting logs to Coralogix.",
-	"cribl": "Stream audit events and troubleshooting logs to Cribl Stream via the HTTP/S Bulk " +
-		"API. Requires an HTTP source configured in your Cribl deployment. See Cribl's " +
-		"HTTP/S source setup guide: https://docs.cribl.io/stream/sources-https/",
-	"darwinium": "Connect to Darwinium API for fraud detection and device intelligence.",
-	"datadog":   "Stream authentication audit logs with the Datadog connector.",
-	"devrev_grow": "DevRev Grow is a Growth CRM that brings salespeople, product marketers, and PMs onto " +
-		"an AI-native platform to follow the journey of a visitor to a lead, to a contact, and " +
-		"then to a user - to create a champion, not a churned user.",
-	"docebo": "Get user information from Docebo in your Descope user journeys with the Docebo " +
-		"connector.",
-	"eight_by_eight_viber":    "Send Viber messages to the user.",
-	"eight_by_eight_whatsapp": "Send WhatsApp messages to the user.",
-	"elephant":                "Use this connector to obtain an identity trust score.",
-	"external_token_http":     "A generic HTTP token connector.",
-	"fingerprint":             "Prevent fraud by adding device intelligence with the Fingerprint connector.",
-	"fingerprint_descope":     "Descope Fingerprint capabilities for fraud detection and risk assessment.",
-	"firebase_admin": "Firebase connector enables you to utilize Firebase's APIs to generate a Firebase user " +
-		"token for a given Descope user.",
-	"forter":                "Leverage ML-based risk scores for fraud prevention with the Forter connector.",
-	"generic_email_gateway": "Send emails using a generic Email gateway.",
-	"generic_sms_gateway":   "Send messages using a generic SMS gateway.",
-	"google_cloud_translation": "Localize the language of your login and user journey screens with " +
-		"the Google Cloud Translation connector.",
-	"google_maps_places":   "Get address autocompletions from Place Autocomplete Data API.",
-	"google_cloud_logging": "Stream logs and audit events with the Google Cloud Logging connector.",
-	"groundcover":          "Send audit events and troubleshooting logs to groundcover.",
-	"hcaptcha": "hCaptcha can help protect your applications from bots, spam, and other forms of " +
-		"automated abuse.",
-	"hibp": "Check if passwords have been previously exposed in data breaches with the Have I " +
-		"Been Pwned connector.",
-	"http": "A general purpose HTTP client",
-	"hubspot": "Orchestrate customer identity information from your Descope user journey with " +
-		"the HubSpot connector.",
-	"incode": "Use the Incode connection to run identity verification processes like document " +
-		"checks or facial recognition.",
-	"intercom": "Orchestrate customer identity information from your Descope user journey with " +
-		"the Intercom connector.",
-	"ldap": "Use this connector to authenticate users against an LDAP directory server with " +
-		"support for both password and mTLS authentication.",
-	"lokalise": "Localize the language of your login and user journey screens with the Lokalise " +
-		"connector.",
-	"mixpanel": "Stream authentication audit logs and troubleshoot logs to Mixpanel.",
-	"mparticle": "Track and send user event data (e.g. page views, purchases, etc.) across " +
-		"connected tools using the mParticle connector.",
-	"newrelic": "Stream authentication audit logs with the New Relic connector.",
-	"opentelemetry": "Send audit events and troubleshooting logs to an OpenTelemetry-compatible " +
-		"endpoint using OTLP over HTTP or gRPC.",
-	"pendo":                "Stream authentication audit logs with the Pendo connector.",
-	"ping_directory":       "Authenticate against PingDirectory.",
-	"postmark":             "Send emails using Postmark",
-	"radar":                "Get address autocompletions from Radar Autocomplete API.",
-	"recaptcha":            "Prevent bot attacks on your login pages with the reCAPTCHA v3 connector.",
-	"recaptcha_enterprise": "Mitigate fraud using advanced risk analysis and add adaptive MFA with the reCAPTCHA Enterprise connector.",
-	"recaptcha_v2":         "Use the reCAPTCHA v2 \"I'm not a robot\" checkbox widget with your flows.",
-	"rekognition": "Add image recognition capabilities for identity verification and fraud " +
-		"prevention with the Amazon Rekognition connector.",
-	"rnd_reassigned": "Query the FCC Reassigned Numbers Database (RND) to validate whether telephone " +
-		"numbers have been permanently disconnected (reassigned) since a specific date. " +
-		"Helps obtain Safe Harbor from TCPA liability by checking the most recent " +
-		"database update.",
-	"salesforce": "Run SQL queries to retrieve user roles, profiles, account status, and more with " +
-		"the Salesforce connector.",
-	"salesforce_marketing_cloud": "Send transactional messages with the Salesforce Marketing Cloud connector.",
-	"sardine":                    "Evaluate customer risk using Sardine",
-	"scim": "Provision and de-provision users to an external SCIM v2 endpoint as part of your " +
-		"Descope user journey.",
-	"segment": "Orchestrate customer identity traits and signals from your Descope user journey " +
-		"with the Segment connector.",
-	"sendgrid": "SendGrid is a cloud-based SMTP provider that allows you to send emails without having " +
-		"to maintain email servers.",
-	"ses":   "Amazon Simple Email Service (SES) for sending emails through AWS infrastructure.",
-	"slack": "Send updates to your team on Slack.",
-	"smartling": "Localize the language of your login and user journey screens with the Smartling " +
-		"connector.",
-	"smtp": "Simple Mail Transfer Protocol (SMTP) server for sending emails.",
-	"snowflake": "Stream authentication audit logs to your Snowflake data warehouse with the " +
-		"Snowflake connector.",
-	"sns":    "Amazon Simple Notification Service (SNS) for sending SMS messages through AWS.",
-	"splunk": "Stream logs and audit events with the Splunk HTTP Event Collector (HEC).",
-	"sql": "SQL connector for relational databases including PostgreSQL, MySQL, MariaDB, " +
-		"Microsoft SQL Server (MSSQL), Oracle, CockroachDB, and Amazon Redshift.",
-	"sumologic": "Stream logs and audit events with the Sumo Logic connector.",
-	"supabase":  "Generate external tokens for user authentication in Supabase projects.",
-	"telesign": "Verify phone numbers and leverage granular risk scores for adaptive MFA with the " +
-		"Telesign Intelligence connector.",
-	"traceable": "Identify and respond to fraudulent login activity with the Traceable Digital " +
-		"Fraud Prevention connector.",
-	"turnstile": "Prevent bot attacks on your login pages with the Turnstile connector.",
-	"twilio_core": "Twilio is a cloud-based communication provider of communication tools for making and receiving " +
-		"phone calls, sending and receiving text messages, and performing other communication functions.",
-	"twilio_verify": "Twilio Verify is an OTP service that can be used via text messages, instant messaging platforms, " +
-		"voice and e-mail. Choose this connector only if you are a Twilio Verify customer.",
-	"unibeam": "SIM-based authentication and approval using Unibeam's OnSim technology for " +
-		"passwordless authentication and transaction approval.",
-	"zerobounce": "Email validation with ZeroBounce",
-}
-
-var docsCoralogix = map[string]string{
+var docsCoralogixConnector = map[string]string{
+	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"endpoint":      "The ingress OpenTelemetry endpoint URL.",
 	"bearer_token":  "Bearer token issued by Coralogix as Send-Your-Data API key",
 	"audit_enabled": "Whether to enable streaming of audit events.",
@@ -835,9 +558,11 @@ var docsCoralogix = map[string]string{
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
 }
 
-var docsCribl = map[string]string{
+var docsCriblConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"endpoint": "The base URL of your Cribl Stream HTTP source. For Cribl Cloud, the default http " +
 		"source looks something like " +
 		"https://<worker-group>.main.<organization-id>.cribl.cloud:10080. You can also " +
@@ -854,9 +579,11 @@ var docsCribl = map[string]string{
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
 }
 
-var docsDarwinium = map[string]string{
+var docsDarwiniumConnector = map[string]string{
+	"project_id":      "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":            "A custom name for your connector.",
 	"description":     "A description of what your connector is used for.",
+	"disabled":        "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"node_name":       "The name of the Darwinium node.",
 	"journey_name":    "The name of the Darwinium journey to use for profiling.",
 	"web_api_name":    "The name of the Darwinium Web API to use.",
@@ -871,9 +598,11 @@ var docsDarwinium = map[string]string{
 	"default_result": "The default result to return if no result is available.",
 }
 
-var docsDatadog = map[string]string{
+var docsDatadogConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_key":     "The unique Datadog organization key.",
 	"site": "The Datadog site to send logs to. Default is `datadoghq.com`. European, free " +
 		"tier and other customers should set their site accordingly.",
@@ -888,19 +617,21 @@ var docsDatadog = map[string]string{
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsDevRevGrow = map[string]string{
+var docsDevRevGrowConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_key":     "Authentication to DevRev APIs requires a personal access token (PAT).",
 }
 
-var docsDocebo = map[string]string{
+var docsDoceboConnector = map[string]string{
+	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"base_url":      "The Docebo api base url.",
 	"client_id":     "The Docebo OAuth 2.0 app client ID.",
 	"client_secret": "The Docebo OAuth 2.0 app client secret.",
@@ -908,18 +639,22 @@ var docsDocebo = map[string]string{
 	"password":      "The Docebo user's password.",
 }
 
-var docsEightByEightViber = map[string]string{
+var docsEightByEightViberConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"sub_account_id": "The 8x8 sub-account ID is required for the Messaging API.",
 	"api_key":        "The 8x8 API key for authentication.",
 	"country":        "The country code or region where your Viber messaging service is configured.",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
-var docsEightByEightWhatsapp = map[string]string{
+var docsEightByEightWhatsappConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"sub_account_id": "The 8x8 sub-account ID is required for the Messaging API.",
 	"api_key":        "The 8x8 API key for authentication.",
 	"template_id":    "The ID of a WhatsApp message template.",
@@ -927,20 +662,27 @@ var docsEightByEightWhatsapp = map[string]string{
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
-var docsElephant = map[string]string{
+var docsElephantConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"access_key":  "The Elephant access key.",
 }
 
-var docsExternalTokenHTTP = map[string]string{
+var docsExternalTokenHTTPConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"endpoint": "The endpoint to get the token from (Using POST method). Descope will send the " +
 		"user information in the body of the request, and should return a JSON response " +
 		"with a 'token' string field.",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the base64 encoded payload, and the resulting signature will be " +
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
@@ -950,34 +692,43 @@ var docsExternalTokenHTTP = map[string]string{
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
-var docsFingerprint = map[string]string{
+var docsFingerprintConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"public_api_key": "The Fingerprint public API key.",
 	"secret_api_key": "The Fingerprint secret API key.",
+	"region": "The Fingerprint region your workspace belongs to: `us` (default), `eu`, or `ap`. " +
+		"A workspace is bound to one region and cannot be moved; using the wrong one " +
+		"returns 403 on every request. Find it in your Fingerprint dashboard.",
 	"use_cloudflare_integration": "Enable to configure the relevant Cloudflare integration parameters if Cloudflare " +
 		"integration is set in your Fingerprint account.",
 	"cloudflare_script_url":   "The Cloudflare integration Script URL.",
 	"cloudflare_endpoint_url": "The Cloudflare integration Endpoint URL.",
 }
 
-var docsFingerprintDescope = map[string]string{
+var docsFingerprintDescopeConnector = map[string]string{
+	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"custom_domain": "The custom domain to fetch",
 }
 
-var docsFirebaseAdmin = map[string]string{
+var docsFirebaseAdminConnector = map[string]string{
+	"project_id":      "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":            "A custom name for your connector.",
 	"description":     "A description of what your connector is used for.",
+	"disabled":        "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"service_account": "The Firebase service account JSON.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsForter = map[string]string{
+var docsForterConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"site_id":     "The Forter site ID.",
 	"secret_key":  "The Forter secret key.",
 	"api_version": "The Forter API version.",
@@ -989,13 +740,18 @@ var docsForter = map[string]string{
 	"override_user_email": "Override the user email.",
 }
 
-var docsGenericEmailGateway = map[string]string{
+var docsGenericEmailGatewayConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"post_url":       "The URL of the post email request",
 	"sender":         "The sender address",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the base64 encoded payload, and the resulting signature will be " +
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
@@ -1005,13 +761,18 @@ var docsGenericEmailGateway = map[string]string{
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
-var docsGenericSMSGateway = map[string]string{
+var docsGenericSMSGatewayConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"post_url":       "The URL of the post message request",
 	"sender":         "The sender number",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the base64 encoded payload, and the resulting signature will be " +
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
@@ -1021,9 +782,11 @@ var docsGenericSMSGateway = map[string]string{
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
-var docsGoogleCloudLogging = map[string]string{
+var docsGoogleCloudLoggingConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"service_account_key": "A Service Account Key JSON file created from a service account on your Google " +
 		"Cloud project. This file is used to authenticate and authorize the connector to " +
 		"access Google Cloud Logging. The service account this key belongs to must have " +
@@ -1032,45 +795,51 @@ var docsGoogleCloudLogging = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsGoogleCloudTranslation = map[string]string{
+var docsGoogleCloudTranslationConnector = map[string]string{
+	"project_id":           "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":                 "A custom name for your connector.",
 	"description":          "A description of what your connector is used for.",
-	"project_id":           "The Google Cloud project ID where the Google Cloud Translation is managed.",
+	"disabled":             "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"config_project_id":    "The Google Cloud project ID where the Google Cloud Translation is managed.",
 	"service_account_json": "Service Account JSON associated with the current project.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsGoogleMapsPlaces = map[string]string{
+var docsGoogleMapsPlacesConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"public_api_key": "The Google Maps Places public API key.",
 	"address_types":  "The address types to return.",
 	"language":       "The language in which to return results.",
 	"region":         "The region code, specified as a CLDR two-character region code.",
 }
 
-var docsGroundcover = map[string]string{
+var docsGroundcoverConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"endpoint": "The gRPC OTLP backend endpoint URL. Found in the groundcover console under " +
 		"Settings → Ingestion Keys → Backend Endpoints.",
 	"ingestion_key": "Third Party ingestion key for authenticating with groundcover. Create one in the " +
 		"groundcover console under Settings → Ingestion Keys (type: thirdParty).",
-	"audit_enabled": "Whether to enable streaming of audit events.",
+	"environment_name": "Name of the environment tag.",
+	"service_name":     "Name of the service tag.",
+	"audit_enabled":    "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
 }
 
-var docsHCaptcha = map[string]string{
+var docsHCaptchaConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"site_key": "The site key is used to invoke hCaptcha service on your site or mobile " +
 		"application.",
 	"secret_key": "The secret key authorizes communication between Descope backend and the hCaptcha " +
@@ -1085,19 +854,24 @@ var docsHCaptcha = map[string]string{
 		"is a bot.",
 }
 
-var docsHIBP = map[string]string{
+var docsHIBPConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 }
 
-var docsHTTP = map[string]string{
+var docsHTTPConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"base_url":       "The base URL to fetch",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
 	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
 		"used to sign the base64 encoded payload, and the resulting signature will be " +
 		"sent in the `x-descope-webhook-s256` header. The receiving service should use " +
@@ -1110,6 +884,14 @@ var docsHTTP = map[string]string{
 	"aws_external_id":       "The external ID to use when assuming the role.",
 	"aws_region":            "The AWS region, e.g. `us-east-1`.",
 	"aws_service":           "The AWS service to target, e.g. `lambda`, `execute-api`, `s3`, etc.",
+	"use_mtls": "Present a client certificate during the TLS handshake. Requires an `https://` " +
+		"base URL. Independent of the Authentication method above, so it can be combined " +
+		"with a bearer token, API key, basic auth or OAuth 2.0 client credentials.",
+	"client_certificate": "The client certificate in PEM format for mTLS authentication.",
+	"client_key":         "The client private key in PEM format for mTLS authentication.",
+	"ca_certificate": "The Certificate Authority certificate in PEM format, for endpoints whose server " +
+		"certificate is signed by a private or internal CA. Leave empty to verify against " +
+		"the public trust store.",
 	"rfc9421_signing_enabled": "Enable RFC 9421 HTTP Message Signatures for cryptographically signing requests. " +
 		"Supports multiple algorithms including ECDSA, Ed25519, RSA, and HMAC",
 	"rfc9421_private_key": "Provide a private key in PEM format or an HMAC secret. Algorithms such as ECDSA " +
@@ -1128,37 +910,43 @@ var docsHTTP = map[string]string{
 		"The context will have a \"body\" attribute, a \"headers\" attribute, and a " +
 		"\"statusCode\" attribute. See more details in the help guide",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsHubSpot = map[string]string{
+var docsHubSpotConnector = map[string]string{
+	"project_id":   "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":         "A custom name for your connector.",
 	"description":  "A description of what your connector is used for.",
+	"disabled":     "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"access_token": "The HubSpot private API access token generated for the Descope service.",
 	"base_url": "The base URL of the HubSpot API, when using a custom domain in HubSpot, default " +
 		"value is https://api.hubapi.com .",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
-var docsIncode = map[string]string{
+var docsIncodeConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_key":     "Your InCode API key.",
 	"api_url":     "The base URL of the Incode API",
 	"flow_id":     "Your wanted InCode's flow ID.",
 }
 
-var docsIntercom = map[string]string{
+var docsIntercomConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"token":       "The Intercom access token.",
 	"region":      "Regional Hosting - US, EU, or AU. default: US",
 }
 
-var docsLDAP = map[string]string{
+var docsLDAPConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"server_url": "The LDAP server URL (e.g., ldap://localhost:389 or ldaps://localhost:636 for " +
 		"SSL/TLS).",
 	"use_mtls":           "Enable mutual TLS authentication for LDAP connection.",
@@ -1169,27 +957,65 @@ var docsLDAP = map[string]string{
 	"ca_certificate": "The Certificate Authority certificate in PEM format for validating the server " +
 		"certificate.",
 	"reject_unauthorized": "Reject connections to LDAP servers with invalid certificates.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsLokalise = map[string]string{
+var docsLokaliseConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
-	"api_token":   "Lokalise API token.",
-	"project_id":  "Lokalise project ID.",
-	"team_id":     "Lokalise team ID. If not provided, the oldest available team will be used.",
-	"card_id": "(Optional) The ID of the payment card to use for translation orders. If not " +
-		"provided, the team credit will be used.",
-	"translation_provider": "The translation provider to use ('gengo', 'google', 'lokalise', 'deepl'), " +
-		"default is 'deepl'.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"api_token": "Lokalise API token. The token must belong to a user that can manage keys in the " +
+		"project (Owner/Admin recommended).",
+	"config_project_id": "Lokalise project ID.",
 }
 
-var docsMixpanel = map[string]string{
+var docsMailjetConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"sender_email": "The email address that emails are sent from. Make sure it is a verified sender " +
+		"in Mailjet.",
+	"sender_name": "The name shown as the sender of the emails.",
+	"api_key": "The Mailjet API key used to authenticate requests, found under Account settings " +
+		"/ API Key Management.",
+	"secret_key": "The secret key that pairs with the API key. Mailjet requires both to " +
+		"authenticate.",
+}
+
+var docsMicrosoftSentinelConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The logs ingestion endpoint of the data collection rule, for example " +
+		"https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Terraform " +
+		"guide outputs it as ingestionEndpoint.",
+	"dcr_immutable_id": "The immutable ID of the data collection rule, in the form dcr-<32 hex " +
+		"characters>. The Terraform guide outputs it as dcrImmutableId.",
+	"stream_name": "The data collection rule stream that receives the audit events.",
+	"tenant_id":   "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id":   "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"audit_filters": "Specify which events will be sent to the external audit service (including " +
+		"tenant selection).",
+	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
+	"troubleshoot_stream_name": "The data collection rule stream that receives the troubleshooting events.",
+	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+}
+
+var docsMixpanelConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"project_token": "The unique Mixpanel project token used to identify the project where data will " +
 		"be sent.",
 	"api_secret":               "The Mixpanel API secret key used for authenticating API requests.",
-	"project_id":               "The unique identifier for your Mixpanel project.",
+	"config_project_id":        "The unique identifier for your Mixpanel project.",
 	"service_account_username": "The Mixpanel service account username used for integration.",
 	"service_account_secret":   "The Mixpanel service account secret used for integration.",
 	"eu_residency":             "Indicates if your Mixpanel project data is stored in the EU region.",
@@ -1201,9 +1027,11 @@ var docsMixpanel = map[string]string{
 	"logs_prefix":              "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
 }
 
-var docsMParticle = map[string]string{
+var docsMParticleConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_key":     "The mParticle Server to Server Key generated for the Descope service.",
 	"api_secret":  "The mParticle Server to Server Secret generated for the Descope service.",
 	"base_url": "The base URL of the mParticle API, when using a custom domain in mParticle. " +
@@ -1214,9 +1042,11 @@ var docsMParticle = map[string]string{
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
-var docsNewRelic = map[string]string{
+var docsNewRelicConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_key":     "Ingest License Key of the account you want to report data to.",
 	"data_center": "The New Relic data center the account belongs to. Possible values are: `US`, " +
 		"`EU`, `FedRAMP`. Default is `US`.",
@@ -1228,23 +1058,30 @@ var docsNewRelic = map[string]string{
 	"logs_prefix":              "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
 }
 
-var docsOpenTelemetry = map[string]string{
+var docsOpenTelemetryConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"endpoint":       "The OTLP endpoint URL.",
 	"protocol":       "Protocol to use for OTLP: http or grpc.",
 	"authentication": "Authentication Information",
 	"headers":        "The headers to send with the request",
-	"insecure":       "Will ignore certificate errors raised by the client",
-	"audit_enabled":  "Whether to enable streaming of audit events.",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
+	"insecure":      "Will ignore certificate errors raised by the client",
+	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
-var docsPendo = map[string]string{
+var docsPendoConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"base_url": "The Pendo regional domain to send logs to. Default is the US region, " +
 		"`https://data.pendo.io`. Customers in other regions must set this accordingly.",
 	"integration_key": "The secret Pendo integration key Descope should use.",
@@ -1255,26 +1092,30 @@ var docsPendo = map[string]string{
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
 }
 
-var docsPingDirectory = map[string]string{
+var docsPingDirectoryConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"host":        "PingDirectory's REST API host.",
 	"port":        "PingDirectory's REST API port.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsPostmark = map[string]string{
+var docsPostmarkConnector = map[string]string{
+	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":              "A custom name for your connector.",
 	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"server_api_token":  "The API token for authenticating with the Postmark server",
 	"message_stream_id": "The ID of the message stream to use for the email",
 	"email_from":        "The email address that will appear in the 'From' field of the sent email",
 }
 
-var docsRadar = map[string]string{
+var docsRadarConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"public_api_key": "The Radar publishable API key.",
 	"address_types":  "The address types to return.",
 	"language":       "The language in which to return results.",
@@ -1282,9 +1123,11 @@ var docsRadar = map[string]string{
 	"limit":          "The maximum number of results to return.",
 }
 
-var docsRecaptcha = map[string]string{
+var docsRecaptchaConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"site_key": "The site key is used to invoke reCAPTCHA service on your site or mobile " +
 		"application.",
 	"secret_key": "The secret key authorizes communication between Descope backend and the " +
@@ -1296,10 +1139,12 @@ var docsRecaptcha = map[string]string{
 		"and 0 is a bot.",
 }
 
-var docsRecaptchaEnterprise = map[string]string{
-	"name":        "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"project_id":  "The Google Cloud project ID where the reCAPTCHA Enterprise is managed.",
+var docsRecaptchaEnterpriseConnector = map[string]string{
+	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":              "A custom name for your connector.",
+	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"config_project_id": "The Google Cloud project ID where the reCAPTCHA Enterprise is managed.",
 	"site_key": "The site key is used to invoke reCAPTCHA Enterprise service on your site or " +
 		"mobile application.",
 	"api_key": "API key associated with the current project.",
@@ -1315,13 +1160,13 @@ var docsRecaptchaEnterprise = map[string]string{
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 		"the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 		"and 0 is a bot.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsRecaptchaV2 = map[string]string{
+var docsRecaptchaV2Connector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"site_key": "The reCAPTCHA v2 site key from the Google reCAPTCHA admin console (checkbox / " +
 		"\"I'm not a robot\" type).",
 	"secret_key": "The secret key used to verify the user's response with Google siteverify.",
@@ -1331,114 +1176,126 @@ var docsRecaptchaV2 = map[string]string{
 	"assessment_score":    "When override is enabled, return this score instead of calling Google.",
 }
 
-var docsRekognition = map[string]string{
+var docsRekognitionConnector = map[string]string{
+	"project_id":        "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":              "A custom name for your connector.",
 	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"access_key_id":     "The AWS access key ID",
 	"secret_access_key": "The AWS secret access key",
 	"collection_id": "The collection to store registered users in. Should match `[a-zA-Z0-9_.-]+` " +
 		"pattern. Changing this will cause losing existing users.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsRNDReassigned = map[string]string{
+var docsRndReassignedConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"company_id": "Your RND company ID (e.g., C038612852). Retrieve this from your RND account " +
 		"under Account → Company → Company ID.",
 	"refresh_token": "Your RND refresh token for authentication. Retrieve this from your RND account " +
 		"under Account → API Credentials.",
 }
 
-var docsSalesforce = map[string]string{
+var docsSalesforceConnector = map[string]string{
+	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"base_url":      "The Salesforce API base URL.",
 	"client_id":     "The consumer key of the connected app.",
 	"client_secret": "The consumer secret of the connected app.",
 	"version":       "REST API Version.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsSalesforceMarketingCloud = map[string]string{
+var docsSalesforceMarketingCloudConnector = map[string]string{
+	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"subdomain":     "The Salesforce Marketing Cloud endpoint subdomain.",
 	"client_id":     "Client ID issued when you create the API integration in Installed Packages.",
 	"client_secret": "Client secret issued when you create the API integration in Installed Packages.",
 	"scope":         "Space-separated list of data-access permissions for your connector.",
 	"account_id":    "Account identifier, or MID, of the target business unit.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsSardine = map[string]string{
+var docsSardineConnector = map[string]string{
+	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"client_id":     "The Sardine Client ID.",
 	"client_secret": "The Sardine Client Secret.",
 	"base_url": "The base URL for the Sardine API, e.g.: https://api.sandbox.sardine.ai, " +
 		"https://api.sardine.ai, https://api.eu.sardine.ai.",
 }
 
-var docsSCIM = map[string]string{
-	"name":        "A custom name for your connector.",
-	"description": "A description of what your connector is used for.",
-	"disabled": "Whether to disable this SCIM connector. When disabled, provisioning events will not be " +
-		"sent to the configured endpoint.",
-	"federated_app_id": "The ID of the federated SSO application this SCIM connector is associated with.",
-	"base_url":         "The base URL of the SCIM v2 endpoint that user provisioning events will be sent to.",
-	"authentication":   "Authentication credentials used when sending requests to the SCIM endpoint.",
-	"headers":          "Custom HTTP headers to send with each provisioning request.",
-	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
-		"used to sign the base64 encoded payload, and the resulting signature will be sent " +
-		"in the `x-descope-webhook-s256` header. The receiving service should use this " +
-		"secret to verify the integrity and authenticity of the payload by checking the " +
-		"provided signature.",
-	"insecure": "Will ignore certificate errors raised by the client.",
+var docsSCIMConnector = map[string]string{
+	"project_id":       "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"disabled":         "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"federated_app_id": "The ID of the federated application this SCIM connector provisions for.",
+	"base_url":         "The base URL of the SCIM server that users and groups are provisioned to.",
+	"authentication":   "The authentication used when calling the SCIM server.",
+	"headers":          "Additional HTTP headers to send with each request to the SCIM server.",
+	"secret_headers": "Additional HTTP headers to send with each request to the SCIM server. Values set " +
+		"here are stored encrypted and are never returned by the API, so they are not " +
+		"read back into the Terraform state.",
+	"hmac_secret": "A secret used to sign requests to the SCIM server with an HMAC signature.",
+	"insecure":    "Whether to skip verification of the SCIM server's TLS certificate.",
 }
 
-var docsSegment = map[string]string{
+var docsSegmentConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"write_key":   "The Segment Write Key generated for the Descope service.",
 	"host":        "The base URL of the Segment API, when using a custom domain in Segment.",
+	"browser_analytics": "Load Segment's analytics.js library in your end users' browsers during flows, so " +
+		"Segment can recognize the same visitor across your sites. Loading the library " +
+		"sends no events on its own, and you choose which screens or actions load it.",
+	"public_write_key": "The write key of your Segment JavaScript Website source. This is a different " +
+		"Segment source than the Write Key field, and unlike it this value is visible to " +
+		"end users, which is how Segment's browser library works.",
 }
 
-var docsSendGrid = map[string]string{
-	"name":           "A custom name for your connector.",
-	"description":    "A description of what your connector is used for.",
-	"sender":         "The sender details that should be displayed in the email message.",
-	"authentication": "SendGrid API authentication configuration.",
+var docsSendGridConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"sender_email": "The email address that emails are sent from. Make sure it is a verified sender " +
+		"in SendGrid.",
+	"sender_name": "The name shown as the sender of the emails.",
+	"api_key":     "The SendGrid API key used to authenticate requests.",
 }
 
-var docsSendGridAuthField = map[string]string{
-	"api_key": "SendGrid API key for authentication.",
-}
-
-var docsSES = map[string]string{
-	"name":          "A custom name for your connector.",
-	"description":   "A description of what your connector is used for.",
-	"auth_type":     "The authentication type to use.",
-	"access_key_id": "AWS Access key ID.",
-	"secret":        "AWS Secret Access Key.",
-	"role_arn":      "The Amazon Resource Name (ARN) of the role to assume.",
-	"external_id":   "The external ID to use when assuming the role.",
-	"region":        "AWS region to send requests to (e.g. `us-west-2`).",
-	"endpoint":      "An optional endpoint URL (hostname only or fully qualified URI).",
-	"sender":        "The sender details that should be displayed in the email message.",
-}
-
-var docsSenderField = map[string]string{
-	"email": "The email address that will appear as the sender of the email.",
-	"name":  "The display name that will appear as the sender of the email.",
-}
-
-var docsServerField = map[string]string{
-	"host": "The hostname or IP address of the SMTP server.",
-	"port": "The port number to connect to on the SMTP server.",
+var docsSESConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"auth_type": "How to authenticate with AWS: using static credentials or by assuming an IAM " +
+		"role.",
+	"access_key_id": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+	"secret_access_key": "The AWS secret access key. Required when the authentication type is " +
+		"'credentials'.",
+	"role_arn": "The ARN of the IAM role to assume. Required when the authentication type is " +
+		"'assumeRole'.",
+	"external_id": "The external ID used when assuming the IAM role. Required when the " +
+		"authentication type is 'assumeRole'.",
+	"region":   "The AWS region the SES service is configured in.",
+	"endpoint": "A custom endpoint for the SES API. Leave empty to use the default AWS endpoint.",
+	"sender_email": "The email address that emails are sent from. Make sure it is a verified identity " +
+		"in SES.",
+	"sender_name": "The name shown as the sender of the emails.",
+	"tags": "Custom AWS SES message tags added to every email sent through this connector, as " +
+		"key/value pairs.",
+	"configuration_set_name": "The SES configuration set to send every email with, so SES events such as " +
+		"bounces, complaints and deliveries carry it. It must exist in the same AWS " +
+		"account and region.",
 }
 
 var docsAuditFilterField = map[string]string{
@@ -1474,48 +1331,74 @@ var docsHTTPAuthOAuth2ClientCredentialsField = map[string]string{
 	"token_request_headers": "Additional headers to include in the token request sent to the token endpoint.",
 }
 
-var docsSlack = map[string]string{
+var docsSlackConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"token":       "The OAuth token for Slack's Bot User, used to authenticate API requests.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsSmartling = map[string]string{
+var docsSmartlingConnector = map[string]string{
+	"project_id":      "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":            "A custom name for your connector.",
 	"description":     "A description of what your connector is used for.",
+	"disabled":        "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"user_identifier": "The user identifier for the Smartling account.",
 	"user_secret":     "The user secret for the Smartling account.",
 	"account_uid":     "The account UID for the Smartling account.",
 }
 
-var docsSMTP = map[string]string{
-	"name":           "A custom name for your connector.",
-	"description":    "A description of what your connector is used for.",
-	"sender":         "The sender details that should be displayed in the email message.",
-	"server":         "SMTP server connection details including hostname and port.",
-	"authentication": "SMTP server authentication credentials and method.",
+var docsSMTPConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"host":        "The hostname or IP address of the SMTP server.",
+	"port":        "The port the SMTP server listens on.",
+	"username":    "The username used to authenticate with the SMTP server.",
+	"password":    "The password used to authenticate with the SMTP server.",
+	"auth_method": "The authentication method to use when connecting to the SMTP server.",
+	"sender_email": "The email address that emails are sent from. Make sure it is properly registered " +
+		"with your server.",
+	"sender_name":    "The name shown as the sender of the emails.",
 	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
-var docsSMTPAuthField = map[string]string{
-	"username": "Username for SMTP server authentication.",
-	"password": "Password for SMTP server authentication.",
-	"method":   "SMTP authentication method (`plain` or `login`).",
-}
-
-var docsSnowflake = map[string]string{
+var docsSnowflakeConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type": "How Descope authenticates to the Snowflake SQL API. See the connector " +
+		"documentation for the setup steps of each method.",
 	"api_key": "A Snowflake Programmatic Access Token (PAT). The token's user must have CREATE " +
-		"DATABASE privileges.",
+		"DATABASE privileges, unless Self Provision is enabled - in which case it only " +
+		"needs write access to the table you created.",
+	"snowflake_user": "The Snowflake user Descope authenticates as. The public key must be registered " +
+		"on this user with `ALTER USER ... SET RSA_PUBLIC_KEY`.",
+	"private_key": "The private key in PEM format, RSA 2048-bit or stronger. Descope reads PKCS#8 " +
+		"encrypted with PBES2, or unencrypted PKCS#8 or PKCS#1. For Snowflake's own " +
+		"key-pair requirements see " +
+		"https://docs.snowflake.com/en/user-guide/key-pair-auth.",
+	"private_key_passphrase": "Required only if the private key is passphrase-protected. Leave empty for an " +
+		"unencrypted key.",
+	"account_identifier": "Overrides the account identifier derived from the Account URL. Only needed for " +
+		"PrivateLink or legacy region locators.",
 	"site": "Your Snowflake account URL, e.g. " +
 		"`https://<org>-<account>.snowflakecomputing.com`.",
-	"warehouse":     "The Snowflake warehouse to use. Defaults to `COMPUTE_WH`.",
-	"database":      "The Snowflake database to use. Defaults to `DESCOPE_EXPORT_DB`.",
-	"schema":        "The schema within the database. Defaults to `PUBLIC`.",
-	"audit_table":   "The table to write audit events to. Defaults to `DESCOPE_AUDIT_LOGS`.",
+	"warehouse": "The Snowflake warehouse, exactly as stored (unquoted names are uppercased: " +
+		"descope_wh->DESCOPE_WH). Run SHOW WAREHOUSES to check. Defaults to `COMPUTE_WH`.",
+	"database": "The Snowflake database, exactly as stored (unquoted names are uppercased: " +
+		"descope_db->DESCOPE_DB). Run SHOW DATABASES to check. Defaults to " +
+		"`DESCOPE_EXPORT_DB`.",
+	"schema": "The schema within the database, exactly as stored (unquoted names are " +
+		"uppercased: public->PUBLIC). Run SHOW SCHEMAS to check. Defaults to `PUBLIC`.",
+	"audit_table": "The table to write audit events to, exactly as stored (unquoted names are " +
+		"uppercased: audit_logs->AUDIT_LOGS). Run SHOW TABLES to check. Defaults to " +
+		"`DESCOPE_AUDIT_LOGS`.",
+	"self_provision": "Create the database, table and schema in Snowflake manually instead of allowing " +
+		"the connector to create them. Useful when the Snowflake user Descope " +
+		"authenticates as is restricted to minimal or write-only privileges.",
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
@@ -1525,33 +1408,34 @@ var docsSnowflake = map[string]string{
 		"empty) to write events according to the default Descope cycle.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsSNS = map[string]string{
-	"name":          "A custom name for your connector.",
-	"description":   "A description of what your connector is used for.",
-	"auth_type":     "The authentication type to use.",
-	"access_key_id": "AWS Access key ID.",
-	"secret":        "AWS Secret Access Key.",
-	"role_arn":      "The Amazon Resource Name (ARN) of the role to assume.",
-	"external_id":   "The external ID to use when assuming the role.",
-	"region":        "AWS region to send requests to (e.g. `us-west-2`).",
-	"endpoint":      "An optional endpoint URL (hostname only or fully qualified URI).",
-	"origination_number": "An optional phone number from which the text messages are going to be sent. Make sure it " +
-		"is registered properly in your server.",
-	"sender_id": "The name of the sender from which the text message is going to be sent (see SNS documentation " +
-		"regarding acceptable IDs and supported regions/countries).",
-	"entity_id": "The entity ID or principal entity (PE) ID for sending text messages to recipients in India.",
-	"template_id": "The template for sending text messages to recipients in India. The template ID must be " +
-		"associated with the sender ID.",
-	"organization_number": "Use the `origination_number` attribute instead.",
+var docsSNSConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"auth_type": "How to authenticate with AWS: using static credentials or by assuming an IAM " +
+		"role.",
+	"access_key_id": "The AWS access key ID. Required when the authentication type is 'credentials'.",
+	"secret_access_key": "The AWS secret access key. Required when the authentication type is " +
+		"'credentials'.",
+	"role_arn": "The ARN of the IAM role to assume. Required when the authentication type is " +
+		"'assumeRole'.",
+	"external_id": "The external ID used when assuming the IAM role. Required when the " +
+		"authentication type is 'assumeRole'.",
+	"region":             "The AWS region the SNS service is configured in.",
+	"endpoint":           "A custom endpoint for the SNS API. Leave empty to use the default AWS endpoint.",
+	"origination_number": "The phone number that text messages are sent from.",
+	"sender_id":          "The sender ID shown as the origin of the text messages, where supported.",
+	"entity_id":          "The entity ID used for regulatory registration, where required.",
+	"template_id":        "The template ID used for regulatory registration, where required.",
 }
 
-var docsSplunk = map[string]string{
+var docsSplunkConnector = map[string]string{
+	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"hec_token":     "An HTTP Event Collector token configured on your Splunk project.",
 	"hec_url":       "The URL to be used accessing your Splunk system, including the appropriate port",
 	"index":         "An optional index to use for all sent events",
@@ -1559,13 +1443,24 @@ var docsSplunk = map[string]string{
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
-		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsSQL = map[string]string{
+var docsSplunkOnCallConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"base_url":    "Splunk On-Call alert ingestion base URL.",
+	"api_key": "The REST Endpoint integration key, from Integrations > REST Endpoint in Splunk " +
+		"On-Call.",
+	"routing_key": "Default routing key, from Settings > Routing Keys. An action can override it.",
+}
+
+var docsSQLConnector = map[string]string{
+	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
 	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"engine_name":   "The database engine type.",
 	"database_name": "The database name.",
 	"service_name":  "The Oracle service name (required for Oracle only).",
@@ -1574,11 +1469,15 @@ var docsSQL = map[string]string{
 		"will be used.",
 	"username": "The database username.",
 	"password": "The database password.",
+	"engine_id": "The ID of the Descope Engine that runs this connector's actions inside your " +
+		"private network. Leave empty to run the connector in the Descope backend.",
 }
 
-var docsSumoLogic = map[string]string{
+var docsSumoLogicConnector = map[string]string{
+	"project_id":      "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":            "A custom name for your connector.",
 	"description":     "A description of what your connector is used for.",
+	"disabled":        "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"http_source_url": "The URL associated with an HTTP Hosted collector",
 	"audit_enabled":   "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
@@ -1586,9 +1485,11 @@ var docsSumoLogic = map[string]string{
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
-var docsSupabase = map[string]string{
+var docsSupabaseConnector = map[string]string{
+	"project_id":     "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":           "A custom name for your connector.",
 	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"auth_type":      "The authentication type to use.",
 	"signing_secret": "The signing secret for your Supabase project.",
 	"private_key": "The private key in JWK format used to sign the JWT. You can generate a key using " +
@@ -1604,69 +1505,67 @@ var docsSupabase = map[string]string{
 	"expiration_time":       "The duration in minutes for which the token is valid.",
 }
 
-var docsTelesign = map[string]string{
+var docsTelesignConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"customer_id": "The unique Telesign account Customer ID",
 	"api_key":     "The unique Telesign API key",
 }
 
-var docsTraceable = map[string]string{
+var docsTraceableConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"secret_key":  "The Traceable secret key.",
 	"eu_region":   "EU(Europe) Region deployment of Traceable platform.",
 }
 
-var docsTurnstile = map[string]string{
+var docsTurnstileConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"site_key": "The site key is used to invoke Turnstile service on your site or mobile " +
 		"application.",
 	"secret_key": "The secret key authorizes communication between Descope backend and the " +
 		"Turnstile server to verify the user's response.",
 }
 
-var docsTwilioCore = map[string]string{
-	"name":           "A custom name for your connector.",
-	"description":    "A description of what your connector is used for.",
-	"account_sid":    "Twilio Account SID from your Twilio Console.",
-	"senders":        "Configuration for SMS and voice message senders.",
-	"authentication": "Twilio authentication credentials (either auth token or API key/secret).",
+var docsTwilioCoreConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"account_sid": "The Twilio account SID.",
+	"from_phone": "The phone number that text messages are sent from. Set either this or a " +
+		"messaging service SID.",
+	"messaging_service_sid": "The Twilio messaging service SID to send text messages through. Set either this " +
+		"or a from phone number.",
+	"from_phone_voice": "The phone number that voice calls are placed from.",
+	"auth_token":       "The Twilio auth token. Set either this or an API key and secret pair.",
+	"api_key":          "The Twilio API key. Set together with an API secret instead of an auth token.",
+	"api_secret":       "The Twilio API secret. Set together with an API key instead of an auth token.",
 }
 
-var docsTwilioCoreSendersField = map[string]string{
-	"sms":   "SMS sender configuration using either a phone number or messaging service.",
-	"voice": "Voice call sender configuration.",
+var docsTwilioVerifyConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"account_sid": "The Twilio account SID.",
+	"service_sid": "The Twilio Verify service SID used to send verification codes.",
+	"sender":      "The sender shown as the origin of the verification messages, where supported.",
+	"auth_token":  "The Twilio auth token. Set either this or an API key and secret pair.",
+	"api_key":     "The Twilio API key. Set together with an API secret instead of an auth token.",
+	"api_secret":  "The Twilio API secret. Set together with an API key instead of an auth token.",
 }
 
-var docsTwilioCoreSendersSMSField = map[string]string{
-	"phone_number":          "Twilio phone number for sending SMS messages.",
-	"messaging_service_sid": "Twilio Messaging Service SID for sending SMS messages.",
-}
-
-var docsTwilioCoreSendersVoiceField = map[string]string{
-	"phone_number": "Twilio phone number for making voice calls.",
-}
-
-var docsTwilioAuthField = map[string]string{
-	"auth_token": "Twilio Auth Token for authentication.",
-	"api_key":    "Twilio API Key for authentication (used with API Secret).",
-	"api_secret": "Twilio API Secret for authentication (used with API Key).",
-}
-
-var docsTwilioVerify = map[string]string{
-	"name":           "A custom name for your connector.",
-	"description":    "A description of what your connector is used for.",
-	"account_sid":    "Twilio Account SID from your Twilio Console.",
-	"service_sid":    "Twilio Verify Service SID for verification services.",
-	"sender":         "Optional sender identifier for verification messages.",
-	"authentication": "Twilio authentication credentials (either auth token or API key/secret).",
-}
-
-var docsUnibeam = map[string]string{
+var docsUnibeamConnector = map[string]string{
+	"project_id":      "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":            "A custom name for your connector.",
 	"description":     "A description of what your connector is used for.",
+	"disabled":        "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"base_url":        "Unibeam API base URL.",
 	"customer_id":     "Your Unibeam customer ID.",
 	"client_id":       "OAuth2 client ID for authentication.",
@@ -1675,26 +1574,238 @@ var docsUnibeam = map[string]string{
 	"default_message": "Default message to display when no message is provided in the command.",
 }
 
-var docsZeroBounce = map[string]string{
+var docsVonageConnector = map[string]string{
+	"project_id":       "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
+	"name":             "A custom name for your connector.",
+	"description":      "A description of what your connector is used for.",
+	"api_key":          "The Vonage API key.",
+	"api_secret":       "The Vonage API secret.",
+	"sender":           "The sender ID or phone number that text messages are sent from.",
+	"application_id":   "The Vonage voice application ID.",
+	"private_key":      "The Vonage voice application's private key, used to sign the voice API JWT.",
+	"from_phone_voice": "The phone number that voice calls are placed from.",
+}
+
+var docsZeroBounceConnector = map[string]string{
+	"project_id":  "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":        "A custom name for your connector.",
 	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
 	"api_key":     "The ZeroBounce API key.",
 	"region":      "ZeroBounce platform region.",
 }
 
-var docsFlow = map[string]string{
-	"data": "The JSON data defining the authentication flow configuration, including metadata, screens, " +
-		"contents, and references.",
+var docsDescoper = map[string]string{
+	"email": "The email address of the Descope console user.",
+	"phone": "The phone number of the Descope console user.",
+	"name":  "The display name of the Descope console user.",
+	"rbac": "Access control settings for the Descope console user. This defines the permissions " +
+		"granted to the user, either as a company admin or for specific projects or project tags.",
 }
 
-var docsStyles = map[string]string{
-	"data": "The JSON data defining the visual styling and theme configuration used " +
-		"for authentication, widgets, etc.",
+var docsDescoperProjectRole = map[string]string{
+	"project_ids": "The project IDs this role grant applies to.",
+	"role": "The roles the descoper will be granted in the applicable projects. " +
+		"Must be one of: `admin`, `developer`, `support`, `auditor`.",
+}
+
+var docsRBac = map[string]string{
+	"is_company_admin": "Whether this descoper has company-wide admin access. When set to `true`, " +
+		"the descoper cannot have `tag_roles` or `project_roles`.",
+	"project_roles": "A list of roles that are granted to the descoper for specific " +
+		"projects by their project ID.",
+	"tag_roles": "A list of roles that are granted to the descoper for all projects " +
+		"that have a specific tag.",
+}
+
+var docsDescoperTagRole = map[string]string{
+	"tags": "The project tags this role assignment applies to.",
+	"role": "The role the descoper will be granted in the applicable projects. " +
+		"Must be one of: `admin`, `developer`, `support`, `auditor`.",
+}
+
+var docsEmailTemplate = map[string]string{
+	"project_id": "The ID of the project that the email template belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"method":  "The authentication method the email template is used with, e.g. `magiclink` or `otp`. Changing this value will require the resource to be deleted and recreated.",
+	"name":    "A name for the email template that's unique among the templates of the same authentication method.",
+	"subject": "The subject line of emails sent with this template.",
+	"html_body": "The HTML body of emails sent with this template. Required unless `use_plain_text_body` is enabled. " +
+		"Template macros such as `{{.code}}` can be used to insert dynamic values.",
+	"plain_text_body": "The plain text body of emails sent with this template. Required when `use_plain_text_body` is " +
+		"enabled.",
+	"use_plain_text_body": "Whether emails are sent with the plain text body instead of the HTML body.",
+}
+
+var docsEngine = map[string]string{
+	"project_id": "The ID of the Descope project this engine belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name":         "A name for the engine.",
+	"created_time": "The creation time of the engine as a Unix timestamp.",
+	"secret": "The plaintext secret for the engine. This is only available after the engine is created and " +
+		"cannot be retrieved later. Store this value securely as it is used to authenticate the engine.",
+}
+
+var docsFGASchema = map[string]string{
+	"project_id": "The ID of the project that this FGA schema belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"schema": "The project's FGA (fine-grained authorization) schema, configured in the " +
+		"[Descope console](https://app.descope.com/authorization/fga) under the FGA tab. Use the code view " +
+		"to get the schema text and paste it as the value for this attribute. When set, the schema must " +
+		"start with `model AuthZ`. Setting an empty schema, or destroying the resource, clears the " +
+		"project's FGA schema, which also removes any FGA relations that depend on it.",
+}
+
+var docsFlow = map[string]string{
+	"project_id": "The ID of the project that the flow belongs to. Changing this value will require the resource to be " +
+		"deleted and recreated.",
+	"flow_id": "The machine identifier of the flow (e.g., `sign-up-or-in`), used to run the flow and to reference it " +
+		"in other resources. Changing this value will require the resource to be deleted and recreated.",
+	"data": "The JSON data of the flow in its exported representation, including its metadata, contents, and " +
+		"references. This will usually be exported as a `.json` file from the Descope console, and set in the " +
+		"`.tf` file using the `data = file(\"...\")` syntax.",
+}
+
+var docsApplicationScope = map[string]string{
+	"name":        "A name for the scope.",
+	"description": "A description for the scope.",
+	"optional": "Whether this scope is optional. When `false`, the scope is mandatory and must be granted during " +
+		"authorization. When `true`, the user may choose to withhold it.",
+	"values": "The identifiers of the relevant permission, attribute or connection scopes.",
+}
+
+var docsClientAssertion = map[string]string{
+	"key_source": "Where the key that signed the assertion comes from: `jwks` for a JWKS URL, or `publicKey` for a PEM " +
+		"public key.",
+	"jwks_uri":   "The HTTPS URL of the JWKS document. Required when `key_source` is `jwks`.",
+	"public_key": "A PEM encoded public key or certificate. Required when `key_source` is `publicKey`.",
+	"sign_algorithm": "Pins the JWS algorithm of the assertion, such as `RS256` or `ES256`. Leave empty to accept every " +
+		"supported asymmetric algorithm.",
+}
+
+var docsInboundApp = map[string]string{
+	"project_id": "The ID of the Descope project this inbound app belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"deletion_protection": "Protects the inbound app from being accidentally destroyed or replaced. Destroying or " +
+		"replacing an inbound app issues a new client ID and client secret, breaking any " +
+		"integrations that rely on the existing ones, so inbound apps are protected by default. " +
+		"To allow the resource to be destroyed or replaced, for example in ephemeral test " +
+		"environments, set this attribute to `false` and apply the change first.",
+	"name":                   "A name for the inbound app.",
+	"description":            "A description for the inbound app.",
+	"logo_url":               "A URL to the inbound app's logo image.",
+	"login_page_url":         "The Flow Hosting URL.",
+	"approved_callback_urls": "A set of approved redirect URIs that the inbound app is allowed to redirect to after authorization.",
+	"permissions_scopes": "A list of permission scopes that the inbound app can request. Permission scopes provide the app with " +
+		"the ability to act on behalf of a user based on their roles and permissions.",
+	"attributes_scopes": "A list of user information scopes that the inbound app can request. Attribute scopes provide the app " +
+		"with access to user profile data such as email, phone, or custom attributes.",
+	"connections_scopes": "A list of connection scopes that the inbound app can request. Connection scopes provide the app with " +
+		"the ability to access external tokens based on the mapped scopes.",
+	"session_settings": "Custom session management settings for this inbound app, overriding the project defaults.",
+	"audience_whitelist": "A set of allowed custom `aud` claim values that the inbound app can request via the `resource` " +
+		"parameter, per RFC 8707.",
+	"force_add_all_authorization_info": "When enabled, all of the user's tenants, roles, and permissions will always be included in issued tokens.",
+	"force_dpop":                       "Require clients to use DPoP (Demonstrating Proof of Possession), binding access tokens to a key held by the client so a stolen token cannot be used by anyone else.",
+	"default_audience": "The default `aud` claim to include in tokens issued for this app. Use `projectId` to set the project ID " +
+		"as the audience, `clientId` to set the app's client ID, or leave empty to include both.",
+	"client_type": "The OAuth client type: `confidential` for a client that authenticates with a secret, or `public` for " +
+		"one that authenticates with PKCE and has no secret. Setting it explicitly is recommended. The empty " +
+		"value `\"\"` is the legacy mode. If this attribute is omitted when the app is created, the account's " +
+		"default client type is used and the stored value shows which one it is, and removing the attribute " +
+		"from the configuration later keeps the current type. Moving from the legacy mode to `confidential` " +
+		"updates the app in place and keeps its client ID, and any other change, including a move to the legacy " +
+		"mode, replaces the resource, which issues a new client ID and secret. An app that was never issued a " +
+		"client secret, such as one created with `non_confidential_client = true` in v0.3, needs one after " +
+		"moving to `confidential`: rotate its client secret, for example in the Descope console, or force a " +
+		"replacement with `terraform apply -replace` to get a new client ID and secret.",
+	"client_id": "A custom client ID for the inbound app. If not set, an ID will be generated automatically. Changing " +
+		"this value after creation will require the resource to be replaced.",
+	"client_secret": "The client secret for authenticating this inbound app. This value is generated automatically and " +
+		"cannot be retrieved after the resource is created. Store this value securely.",
+	"force_pkce":      "When enabled, the authorization code flow requires PKCE in addition to the normal client authentication. A confidential client must then present both its client secret and a valid PKCE `code_verifier`. Public clients always use PKCE regardless of this setting.",
+	"allowed_tenants": "Restricts the app to these tenant IDs. Leave empty to allow all tenants.",
+	"scope_claim_mapping": "Maps the claims that each scope contributes to the tokens issued for this app. This is the structured " +
+		"form of `attributes_scopes` and takes precedence over it: when a requested scope appears in both, the " +
+		"mapping here wins.",
+	"client_auth_method": "How the app authenticates at the token endpoint. `clientSecret` (the default, also when empty) uses " +
+		"`client_secret`, `privateKeyJwt` accepts a `private_key_jwt` client assertion verified against " +
+		"`client_assertions`, and `workloadIdentity` accepts a SPIFFE JWT-SVID or an OIDC workload token verified " +
+		"against `workload_client_assertions`. An app that authenticates with mTLS certificates is managed in the " +
+		"Descope console.",
+	"client_assertions": "The keys that verify a `private_key_jwt` client assertion, either a JWKS URL or a PEM public key per " +
+		"entry. Required to have at least one entry when `client_auth_method` is `privateKeyJwt`.",
+	"workload_client_assertions": "The workload identity issuers this app trusts, each a SPIFFE trust domain or an OIDC issuer together with " +
+		"the workload subjects it accepts. Required to have at least one entry when `client_auth_method` is " +
+		"`workloadIdentity`.",
+	"authorization_code_disabled": "Disables the `authorization_code` grant type for this inbound app, including its authorization requests. " +
+		"When omitted, the current setting is kept, and a new app has the grant type enabled.",
+	"client_credentials_disabled": "Disables the `client_credentials` grant type for this inbound app. When omitted, the current setting is " +
+		"kept, and a new app has the grant type enabled unless `client_type` is `public`. Public clients cannot use " +
+		"this grant type, so it cannot be set to `false` for one.",
+	"refresh_token_disabled": "Disables the `refresh_token` grant type for this inbound app, so its tokens cannot be refreshed. When " +
+		"omitted, the current setting is kept, and a new app has the grant type enabled.",
+	"jwt_bearer_disabled": "Disables the `urn:ietf:params:oauth:grant-type:jwt-bearer` grant type for this inbound app. When omitted, " +
+		"the current setting is kept, and a new app has the grant type enabled unless `client_type` is `public`. " +
+		"Public clients cannot use this grant type, so it cannot be set to `false` for one.",
+	"device_code_disabled": "Disables the `urn:ietf:params:oauth:grant-type:device_code` grant type for this inbound app. When omitted, " +
+		"the current setting is kept, and a new app has the grant type enabled.",
+	"token_exchange_disabled": "Disables the `urn:ietf:params:oauth:grant-type:token-exchange` grant type for this inbound app. When " +
+		"omitted, the current setting is kept, and a new app has the grant type enabled.",
+	"custom_attributes": "A JSON-encoded object of custom attribute values for the inbound app, keyed by the `id` of a " +
+		"`descope_inbound_app_attribute`. JWT templates read these values as `{{app.customAttributes.<id>}}`. " +
+		"Reference the attribute resource in the key, as in `jsonencode({ (descope_inbound_app_attribute.org.id) = \"...\" })`, " +
+		"so the attribute is created first, since a value for an attribute that is not defined is rejected. Each value " +
+		"must have the attribute's type, as it is not converted: a string for `string` and `singleselect`, an unquoted " +
+		"number for `number`, `true` or `false` for `boolean`, a list of strings for `multiselect`, a number of milliseconds " +
+		"since the epoch for `date`, and an `MM-DD` string for `monthday`. Values set outside Terraform are removed on the " +
+		"next apply unless they are also in this attribute, so the first plan after adding it, or after upgrading the " +
+		"provider, shows those values as removed.",
+	"tags": "Labels for this inbound app, matched by policy rules through `client.tags` conditions. Up to 100 tags, " +
+		"each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.",
+}
+
+var docsScopeClaimMapping = map[string]string{
+	"scope":               "The scope this mapping applies to.",
+	"claims":              "The claims the scope contributes, mapping each claim name to the attribute it is taken from.",
+	"description":         "A description of what the scope grants access to.",
+	"use_project_mapping": "Whether the entry inherits the project-wide claim mapping instead of the claims listed here.",
+	"mandatory": "Whether the scope is non-optional. A token request that is denied a mandatory scope fails outright, " +
+		"rather than succeeding with the subset of scopes that were granted.",
+}
+
+var docsInboundappSessionSettings = map[string]string{
+	"enabled":                      "Whether to override the project's session settings.",
+	"refresh_token_expiration":     "The expiration duration for refresh tokens issued to this inbound app.",
+	"session_token_expiration":     "The expiration duration for session tokens issued to this inbound app.",
+	"key_session_token_expiration": "The expiration duration for access key session tokens. Must be between 3 minutes and one month.",
+	"user_template_id":             "The ID of the JWT template to use for user JWTs issued to this inbound app.",
+	"key_template_id":              "The ID of the JWT template to use for access key JWTs issued to this inbound app.",
+}
+
+var docsWorkloadClientAssertion = map[string]string{
+	"federation_type": "The kind of issuer this entry trusts: `spiffe` for a SPIFFE trust domain, or `oidc` for an OIDC issuer.",
+	"trust_domain":    "The SPIFFE trust domain, such as `prod.example.com`. Required when `federation_type` is `spiffe`.",
+	"issuer": "The HTTPS issuer URL. Required when `federation_type` is `oidc`. For a `spiffe` entry it is the trust " +
+		"domain's OIDC Discovery Provider and replaces the bundle endpoint in `jwks_uri`.",
+	"jwks_uri": "For a `spiffe` entry, the HTTPS URL of the trust domain's bundle endpoint, required unless `issuer` is set. " +
+		"For an `oidc` entry, an optional JWKS URL that overrides the one found by discovery.",
+	"allowed_subjects": "The workloads this app accepts, matched against the assertion's subject. For a `spiffe` entry each value " +
+		"is an exact SPIFFE ID or one ending with `/*` to accept the workloads under that path. For an `oidc` " +
+		"entry each value is an anchored regular expression.",
+	"sign_algorithm": "Pins the JWS algorithm of the assertion, such as `RS256` or `ES256`. Leave empty to accept every " +
+		"supported asymmetric algorithm.",
 }
 
 var docsJWTTemplate = map[string]string{
-	"name":        "Name of the JWT Template.",
-	"description": "Description of the JWT Template.",
+	"project_id": "The ID of the project that this JWT template belongs to. Changing this value will require " +
+		"the resource to be deleted and recreated.",
+	"name":        "Name of the JWT template. Must be unique among the project's JWT templates of both types.",
+	"description": "Description of the JWT template.",
+	"type": "The kind of tokens this template applies to - `user` for user session JWTs or `key` for " +
+		"access key JWTs. This value can be changed in place without recreating the template.",
+	"issuer_type": "The issuer format for the JWT - `legacy`, `inbound` or `federated`. The `federated` issuer " +
+		"type cannot be combined with the `conformance_issuer` attribute.",
 	"auth_schema": "The authorization claims format - `default`, `tenantOnly` or `none`. " +
 		"Read more about schema types [here](https://docs.descope.com/project-settings/jwt-templates).",
 	"empty_claim_policy": "Policy for empty claims - `none`, `nil` or `delete`.",
@@ -1707,28 +1818,259 @@ var docsJWTTemplate = map[string]string{
 		"will be added with the user ID.",
 	"add_jti_claim": "When enabled, a unique JWT ID (jti) claim will be added to the token for tracking and preventing replay attacks.",
 	"template": "The JSON template defining the structure and claims of the JWT token. This is expected " +
-		"to be a valid JSON object given as a `string` value.",
-}
-
-var docsJWTTemplates = map[string]string{
-	"user_templates":       "A list of `User` type JWT Templates.",
-	"access_key_templates": "A list of `Access Key` type JWT Templates.",
+		"to be a valid JSON object given as a `string` value, preferably with the `jsonencode` " +
+		"function so the value converges with what the Descope service returns.",
 }
 
 var docsList = map[string]string{
+	"project_id": "The ID of the project that this list belongs to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
 	"name":        "The name of the list. Maximum length is 100 characters.",
 	"description": "An optional description for the list. Defaults to an empty string if not provided.",
-	"type": "The type of list. Must be one of: " +
-		"- `\"texts\"` - A list of text strings " +
-		"- `\"ips\"` - A list of IP addresses or CIDR ranges " +
-		"- `\"json\"` - A JSON object",
-	"data": "The JSON data for the list. The format depends on the `type`: " +
-		"- For `\"texts\"` and `\"ips\"` types: Must be a JSON array of strings (e.g., `[\"item1\", \"item2\"]`) " +
-		"- For `\"ips\"` type: Each string must be a valid IP address or CIDR range " +
-		"- For `\"json\"` type: Must be a JSON object (e.g., `{\"key\": \"value\"}`)",
+	"texts": "A set of text values. Exactly one of `texts`, `ips` or `json` must be set, and which one is set " +
+		"determines the kind of list. Duplicate values are collapsed by the set, matching the backend which " +
+		"stores each value once.",
+	"ips": "A set of IP addresses and CIDR ranges. Each value must be a valid IP address or CIDR range. " +
+		"Exactly one of `texts`, `ips` or `json` must be set.",
+	"json": "An arbitrary JSON object, given as a JSON string. Exactly one of `texts`, `ips` or `json` must be " +
+		"set. The document is compared by content, so reindenting it or reordering its keys is not a change.",
+}
+
+var docsManagementKey = map[string]string{
+	"name":        "A name for the management key.",
+	"description": "A description for the management key.",
+	"status":      "The status of the management key. Must be either `active` or `inactive`.",
+	"expire_time": "The expiration time of the management key as a Unix timestamp. If not set, " +
+		"the key will not expire. Changing this value after creation will require " +
+		"the management key to be replaced.",
+	"permitted_ips": "A list of IP addresses or CIDR ranges that are allowed to use this management key. " +
+		"If not set, the key can be used from any IP address.",
+	"rebac": "Access control settings for the management key. This defines the permissions granted " +
+		"to the management key, either at the company level or for specific projects or for " +
+		"project tags. Changing this value after creation updates the management key in " +
+		"place without rotating its secret. Changing the roles requires the management key " +
+		"that the provider is configured with to be allowed to manage management keys.",
+	"cleartext": "The plaintext value of the management key. This is only available after the key is " +
+		"created and cannot be retrieved later. Store this value securely as it is required " +
+		"to authenticate API requests.",
+}
+
+var docsProjectRole = map[string]string{
+	"project_ids": "The project IDs this role grant applies to.",
+	"roles":       "The roles the management key will be granted in the applicable projects.",
+}
+
+var docsReBac = map[string]string{
+	"company_roles": "A list of company-level role names that are granted to the management key. This " +
+		"attribute is mutually exclusive with `tag_roles` and `project_roles`.",
+	"project_roles": "A list of project-level role names that are granted to the management key for " +
+		"specific projects by their project ID.",
+	"tag_roles": "A list of project-level role names that are granted to the management key for " +
+		"all projects that have a specific tag.",
+}
+
+var docsTagRole = map[string]string{
+	"tags":  "The project tags this role grant applies to.",
+	"roles": "The roles the management key will be granted in the applicable projects.",
+}
+
+var docsProvider = map[string]string{
+	"id": "The OAuth provider to configure. Use one of the built-in system providers (`apple`, `discord`, " +
+		"`facebook`, `github`, `gitlab`, `google`, `linkedin`, `microsoft`, `slack`) or any other value to " +
+		"define a custom OAuth/OIDC provider. Changing this value will require the resource to be deleted " +
+		"and recreated.",
+	"project_id": "The ID of the project that this OAuth provider belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using this OAuth provider directly via API and SDK calls. Note " +
+		"that this does not affect authentication flows that are configured to use this provider.",
+	"client_id":              "The client ID for the OAuth provider, used to identify the application to the provider.",
+	"client_secret":          "The client secret for the OAuth provider, used to authenticate the application with the provider.",
+	"manage_provider_tokens": "Whether to enable provider token management for this OAuth provider.",
+	"callback_domain":        "Use a custom domain in your OAuth verification screen.",
+	"redirect_url": "Users will be directed to this URL after authentication. If redirect URL is specified in the SDK/API " +
+		"call, it will override this value.",
+	"prompts": "Custom prompts or consent screens that users may see during OAuth authentication.",
+	"allowed_grant_types": "The type of grants (`authorization_code` or `implicit`) to allow when requesting access tokens from " +
+		"the OAuth provider.",
+	"scopes":              "Scopes of access that the application requests from the user's account on the OAuth provider.",
+	"merge_user_accounts": "Whether to merge existing user accounts with new ones created through OAuth authentication.",
+	"disable_jit_updates": "By default the user attribute mapping configuration is used to update the user's attributes " +
+		"automatically during sign in. Disable this if you want this to happen only during user creation.",
+	"client_auth_method":   "The token endpoint client authentication method: `client_secret_basic` (credentials in the HTTP Basic auth header) or `client_secret_post` (credentials in the request body). Empty defaults to `client_secret_post`.",
+	"native_client_id":     "The client ID for the OAuth provider, used for Sign in with Apple in mobile apps.",
+	"native_client_secret": "The client secret for the OAuth provider, used for Sign in with Apple in mobile apps.",
+	"apple_key_generator": "The apple key generator object describing how to create a dynamic apple client secret for " +
+		"applications.",
+	"native_apple_key_generator": "The apple key generator object describing how to create a dynamic native apple client secret for " +
+		"mobile apps.",
+	"description":            "A brief description of the OAuth provider.",
+	"logo":                   "The URL of the logo associated with the OAuth provider.",
+	"issuer":                 "The issuer identifier for the OAuth provider.",
+	"authorization_endpoint": "The URL that users are redirected to for authorization with the OAuth provider.",
+	"token_endpoint":         "The URL where the application requests an access token from the OAuth provider.",
+	"user_info_endpoint":     "The URL where the application retrieves user information from the OAuth provider.",
+	"jwks_endpoint":          "The URL where the application can retrieve JSON Web Key Sets (JWKS) for the OAuth provider.",
+	"use_client_assertion":   "Use private key JWT (client assertion) instead of client secret.",
+	"claim_mapping":          "Maps OAuth provider claims to Descope user attributes.",
+}
+
+var docsAppleKeyGeneratorModel = map[string]string{
+	"key_id":      "The apple generator key id produced by Apple.",
+	"team_id":     "The apple generator team id assigned to the key by Apple.",
+	"private_key": "The apple generator private key produced by Apple.",
+}
+
+var docsOutboundApp = map[string]string{
+	"id": "The ID of the outbound application. Set it to create the application under an ID of your choosing, " +
+		"for example one that the application calling Descope looks the application up by, or leave it out to " +
+		"let Descope generate one. A chosen ID has 1 to 30 lowercase letters, digits or hyphens. Changing this " +
+		"value will require the resource to be deleted and recreated.",
+	"project_id": "The ID of the Descope project this outbound application belongs to. Changing this value will " +
+		"require the resource to be deleted and recreated.",
+	"name":        "A name for the outbound application.",
+	"description": "A description for the outbound application.",
+	"logo":        "A URL for an image to display as the outbound application's logo.",
+	"app_type": "The kind of credential this application holds. Use `oauth` for an application that runs the OAuth " +
+		"flow, so that Descope obtains and refreshes tokens on the user's behalf, or `apikey` for an " +
+		"application whose tokens are uploaded directly and never refreshed.",
+	"client_id": "The OAuth client ID issued by the third party provider.",
+	"client_secret": "The OAuth client secret issued by the third party provider. The Descope API never returns this " +
+		"value, so it cannot be read back and is not verified against the server. Omitting the field leaves " +
+		"any previously stored secret in place, while setting it to a new value replaces it. An empty " +
+		"string is not accepted.",
+	"use_dcr": "Whether Descope registers itself as a client with the provider using OAuth Dynamic Client " +
+		"Registration when the outbound application is created. The registration fills in the `client_id`, " +
+		"`client_secret`, `authorization_url`, `token_url`, `revocation_url`, `default_scopes` and `pkce` " +
+		"fields, so they cannot be set when creating the application. Registration only happens on creation, " +
+		"so this cannot be enabled on an existing outbound application.",
+	"dcr_url": "The URL of the provider's protected resource, such as an MCP server, or of its authorization " +
+		"server, used to discover the registration endpoint when `use_dcr` is enabled. This cannot be " +
+		"changed on an existing outbound application.",
+	"discovery_url":     "The provider's OpenID Connect discovery endpoint, used to look up its other endpoints.",
+	"authorization_url": "The provider's authorization endpoint, which users are redirected to in order to grant consent.",
+	"authorization_url_params": "Additional query parameters to append to the authorization request, for providers that require " +
+		"them.",
+	"token_url":        "The provider's token endpoint, used to exchange an authorization code and to refresh tokens.",
+	"token_url_params": "Additional query parameters to append to the token request, for providers that require them.",
+	"revocation_url":   "The provider's token revocation endpoint.",
+	"default_scopes":   "The scopes requested from the provider when no scopes are given for a specific connection.",
+	"default_redirect_url": "The URL that users are returned to once they have finished granting or denying consent at the " +
+		"provider. This can be overridden per connection.",
+	"callback_domain": "The domain that the provider redirects back to after consent. Leave this empty to use the project's " +
+		"configured domain.",
+	"pkce": "Whether to use PKCE when exchanging the authorization code, which is required by some providers and " +
+		"recommended by all of them.",
+	"access_type": "Whether the provider should issue a refresh token alongside the access token. Use `offline` to " +
+		"request one, so that Descope can keep the connection alive without the user present, or `online` " +
+		"for an access token only.",
+	"prompt": "How the provider should behave when the user is already signed in. Common values are `none`, " +
+		"`login`, `consent` and `select_account`.",
+}
+
+var docsPermission = map[string]string{
+	"project_id": "The ID of the project that this permission belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"name": "The name of the permission. Permission names must be unique in the project, and roles reference " +
+		"permissions by name. The names of the system permissions that are created in every project are " +
+		"reserved and cannot be used: `Impersonate`, `SSO Admin`, `Super User`, and `User Admin`.",
+	"description": "An optional description for the permission.",
+}
+
+var docsProject = map[string]string{
+	"name": "The name of the Descope project.",
+	"environment": "This can be set to `production` to mark production projects, otherwise this should be " +
+		"left unset for development or staging projects.",
+	"deletion_protection": "Protects the project from being accidentally destroyed. When this attribute isn't set, " +
+		"deletion protection is enabled automatically for every project, whatever its `environment` " +
+		"attribute is set to. To destroy a protected project, set this attribute to `false` and apply " +
+		"the change first. Note that this only guards operations performed through this provider, so " +
+		"removing the resource from the Terraform state is not prevented.",
+	"tags": "Descriptive tags for your Descope project. Each tag must be no more than 50 characters long.",
+}
+
+var docsRole = map[string]string{
+	"project_id": "The ID of the project that this role belongs to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"name": "The name of the role. Role names must be unique in the project, and a role can be renamed " +
+		"freely without affecting resources that reference it.",
+	"description": "An optional description for the role.",
+	"permissions": "The names of the permissions this role grants. Permissions are referenced by name, and their " +
+		"existence is validated when the role is created or updated. Reference the `name` attribute of " +
+		"`descope_permission` resources (e.g., `descope_permission.example.name`) so that Terraform " +
+		"orders the operations correctly. Note that if a permission is deleted, it is silently removed " +
+		"from any roles that still reference it.",
+	"default": "Whether this role is a default role in the project.",
+	"private": "Whether this role is private.",
+}
+
+var docsAdminPortal = map[string]string{
+	"project_id": "The ID of the project that this configuration belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"enabled": "Whether the Admin Portal is enabled. At least one widget must be listed in the `widgets` " +
+		"attribute when this is set to `true`.",
+	"style_id": "The name of the style the Admin Portal uses. Styles are defined in the project theme, which " +
+		"can be managed with the `descope_styles` resource. When left empty, the default style is used.",
+	"widgets": "The widgets to show in the Admin Portal, in display order. The `widget_id` values usually " +
+		"reference widgets managed with the `descope_widget` resource, e.g., " +
+		"`widget_id = descope_widget.mywidget.widget_id`.",
+}
+
+var docsAdminPortalWidget = map[string]string{
+	"widget_id": "The unique identifier of the Widget",
+	"type":      "The type of the Widget",
+}
+
+var docsAuthAccessPolicy = map[string]string{
+	"project_id": "The ID of the project that this policy belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"default_action": "Whether an authentication that matches no rule is `allow`ed or `block`ed.",
+	"rule_ids": "The evaluation order of the project's rules, as a list of `descope_auth_access_rule` ids. " +
+		"The list must include every rule in the project exactly once. Reference the `id` attribute " +
+		"of each rule resource (e.g., `descope_auth_access_rule.example.id`) so that Terraform orders " +
+		"the operations correctly, and avoid `create_before_destroy` on rule resources, which makes " +
+		"Terraform update the order before a removed rule is deleted.",
+}
+
+var docsEmbeddedLinkSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using embedded link authentication directly via API and SDK " +
+		"calls. Note that this does not affect authentication flows that are configured to use embedded " +
+		"links.",
+	"expiration_time": "How long the embedded link remains valid before it expires.",
+}
+
+var docsEnchantedLinkSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using enchanted link authentication directly via API and SDK " +
+		"calls. Note that this does not affect authentication flows that are configured to use enchanted " +
+		"links.",
+	"expiration_time":    "How long the enchanted link remains valid before it expires.",
+	"redirect_url":       "The URL to redirect users to after they log in using the enchanted link.",
+	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
+	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
+		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System " +
+		"template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
+	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
+		"its `method` set to `enchantedlink`. An empty value (the default) selects the built-in System template.",
+}
+
+var docsGovernance = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"configured": "Whether the Agentic Governance Suite has been set up for the project.",
+	"auto_approval": "Setting this to `true` approves access requests automatically instead of waiting for an admin to " +
+		"review them.",
+	"suite_disabled": "Setting this to `true` turns off the Agentic Governance Suite for the project.",
 }
 
 var docsInviteSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
 	"require_invitation":   "Whether users must be invited before they can sign up to the project.",
 	"invite_url":           "Custom URL to include in the message sent to invited users.",
 	"add_magiclink_token":  "Whether to include a magic link token in invitation messages.",
@@ -1736,118 +2078,371 @@ var docsInviteSettings = map[string]string{
 	"invite_expiration": "The expiry time for the invitation, meant to be used together with " +
 		"`expire_invited_users` and/or `add_magiclink_token`. Use values such " +
 		"as \"2 weeks\", \"4 days\", etc. The minimum value is \"1 hour\".",
-	"send_email":    "Whether to send invitation emails to users.",
-	"send_text":     "Whether to send invitation SMS messages to users.",
-	"email_service": "Settings related to sending invitation emails.",
+	"send_email":         "Whether to send invitation emails to users.",
+	"send_text":          "Whether to send invitation SMS messages to users.",
+	"email_connector_id": "The ID of an email connector to use for sending invitation emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"email_template_id": "The ID of the email template to send to invited users, taken from a `descope_email_template` resource " +
+		"with its `method` set to `invite`. An empty value (the default) selects the built-in System template.",
+	"send_reminders": "Whether to automatically resend the invitation to users who have not accepted it yet, every " +
+		"`reminder_interval` and up to `max_reminders` times. Reminders are only sent through a custom " +
+		"connector, so turning this on requires `email_connector_id` to be set when invitations are sent " +
+		"by email. Turning reminders on only affects invitations sent from then on.",
+	"reminder_interval": "How long to wait before sending a reminder, measured from the last invitation or reminder sent " +
+		"to the user. Use values such as \"2 days\", \"1 week\", etc. The minimum value is \"1 day\".",
+	"max_reminders": "The maximum number of reminders to send for each invitation, between 1 and 5.",
+	"reminder_email_template_id": "The ID of the email template to send reminders with, taken from a `descope_email_template` resource " +
+		"with its `method` set to `invite`. An empty value (the default) sends reminders with the same template " +
+		"as the invitation, and the value `System` selects the built-in System template.",
+	"reminder_text_template_id": "The ID of the invitation SMS template to send reminders with. An empty value (the default) sends " +
+		"reminders with the same template as the invitation, and the value `System` selects the built-in " +
+		"System template.",
 }
 
-var docsSessionMigration = map[string]string{
-	"vendor":    "The name of the vendor the sessions are migrated from, in all lowercase.",
-	"client_id": "The unique client ID for the vendor.",
-	"domain":    "The domain value if needed by the vendor.",
-	"audience":  "The audience value if needed by the vendor.",
-	"issuer":    "An issuer URL if needed by the vendor.",
-	"api_token": "An API token for the vendor, required when `vendor` is set to `okta`.",
-	"loginid_matched_attributes": "A set of attributes from the vendor's user that should be used to match with " +
-		"the Descope user's login ID.",
-	"user_sync_type": "The type of user synchronization to perform. Valid values are `matchOnly` (match existing users only) and `jit` (just-in-time provisioning).",
-	"user_mapping":   "A list of attribute mappings from the external vendor's user to Descope user attributes.",
+var docsMagicLinkSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using magic link authentication directly via API and SDK calls. " +
+		"Note that this does not affect authentication flows that are configured to use magic links.",
+	"expiration_time":    "How long the magic link remains valid before it expires.",
+	"redirect_url":       "The URL to redirect users to after they log in using the magic link.",
+	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
+	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
+		"its `method` set to `magiclink`. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
+	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
+		"its `method` set to `magiclink`. An empty value (the default) selects the built-in System template.",
 }
 
-var docsExternalAuthUserMappingItem = map[string]string{
+var docsOAuthSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using OAuth authentication directly via API and SDK calls. Note " +
+		"that this does not affect authentication flows that are configured to use OAuth.",
+}
+
+var docsOTPSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using OTP authentication directly via API and SDK calls. Note " +
+		"that this does not affect authentication flows that are configured to use OTP.",
+	"domain":             "The domain to embed in OTP messages.",
+	"expiration_time":    "The amount of time that an OTP code will be valid for.",
+	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"text_connector_id":  "The ID of an SMS connector to use for sending text messages. An empty value (the default) selects the built-in Descope delivery service.",
+	"voice_connector_id": "The ID of a voice call connector to use for making voice calls. An empty value (the default) selects the built-in Descope delivery service.",
+	"email_template_id": "The ID of the email template to send to users, taken from a `descope_email_template` resource with " +
+		"its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
+	"text_template_id": "The ID of the text template to send to users, taken from a `descope_text_template` resource with " +
+		"its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
+	"voice_template_id": "The ID of the voice template to use in calls to users, taken from a `descope_voice_template` resource " +
+		"with its `method` set to `otp`. An empty value (the default) selects the built-in System template.",
+}
+
+var docsPasskeySettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using passkey authentication directly via API and SDK calls. " +
+		"Note that this does not affect authentication flows that are configured to use passkeys.",
+	"display_name": "The human-friendly name shown to users when they create or use a passkey. Some password managers " +
+		"display this name, while others display the top level domain instead. When left empty, the project " +
+		"name is used.",
+	"top_level_domain": "Passkeys will be usable in the following domain and all its subdomains.",
+	"android_fingerprints": "A list of SHA-256 APK key hash fingerprints (colon-separated hex, e.g. `AB:CD:EF:...`) that are " +
+		"allowed as passkey origins for Android apps. When set, only Android apps with a matching fingerprint " +
+		"will be permitted to use passkey authentication.",
+}
+
+var docsPasswordSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using password authentication directly via API and SDK calls. " +
+		"Note that this does not affect authentication flows that are configured to use passwords.",
+	"min_length": "The minimum length of the password that users are required to use. The maximum length is always " +
+		"`64`.",
+	"lowercase":        "Whether passwords must contain at least one lowercase letter.",
+	"uppercase":        "Whether passwords must contain at least one uppercase letter.",
+	"number":           "Whether passwords must contain at least one number.",
+	"non_alphanumeric": "Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).",
+	"any_letter":       "Whether passwords must contain at least one letter, either uppercase or lowercase.",
+	"disallowed_characters": "Reject passwords containing any of these characters. Each character in the string is treated as a " +
+		"forbidden literal (e.g., `\"'\"` to reject single and double quotes).",
+	"disallow_email_match": "Whether to reject passwords that match the user's email address or its local-part (the segment " +
+		"before `@`), case-insensitively. The check is skipped if the user's email is not known at validation " +
+		"time.",
+	"expiration":       "Whether users are required to change their password periodically.",
+	"expiration_weeks": "The number of weeks after which a user's password expires and they need to replace it.",
+	"reuse":            "Whether to forbid password reuse when users change their password.",
+	"reuse_amount":     "The number of previous passwords whose hashes are kept to prevent users from reusing old passwords.",
+	"lock":             "Whether the user account should be locked after a specified number of failed login attempts.",
+	"lock_attempts":    "The number of failed login attempts allowed before an account is locked.",
+	"temporary_lock": "Whether the user account should be temporarily locked after a specified number of failed login " +
+		"attempts.",
+	"temporary_lock_attempts": "The number of failed login attempts allowed before an account is temporarily locked.",
+	"temporary_lock_duration": "The amount of time before the user can sign in again after the account is temporarily locked.",
+	"enforce_strength":        "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength.",
+	"mask_errors": "Prevents information about user accounts from being revealed in error messages, e.g., whether a user " +
+		"already exists.",
+	"email_connector_id": "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"email_template_id": "The ID of the email template for password reset emails, taken from a `descope_email_template` " +
+		"resource with its `method` set to `password`. The same template serves both the magic link and " +
+		"enchanted link reset flows. An empty value (the default) selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
+	"role_policies": "Stricter password requirements for users who hold specific roles. When a user holds any of the " +
+		"roles of a policy, at the project level or in any of their tenants, each rule of the policy is " +
+		"combined with the matching rule of the password settings that apply to the user, and the strictest " +
+		"value wins. A policy can therefore only make the requirements stricter, and when a user matches " +
+		"more than one policy all of them apply. The policies are enforced when a signed-in user sets or " +
+		"changes their own password, and not at sign-up or to passwords set for a user by an administrator. " +
+		"Existing passwords are not checked again when roles or policies change.",
+}
+
+var docsPasswordRolePolicy = map[string]string{
+	"roles": "The names of the roles the policy applies to. Reference the `name` attribute of `descope_role` " +
+		"resources (e.g., `descope_role.admin.name`) so that Terraform orders the operations correctly. " +
+		"Each role must exist when the policy is applied.",
+	"min_length":       "The minimum length of the password, up to `64`. The default value of `0` adds no requirement.",
+	"lowercase":        "Whether passwords must contain at least one lowercase letter.",
+	"uppercase":        "Whether passwords must contain at least one uppercase letter.",
+	"number":           "Whether passwords must contain at least one number.",
+	"non_alphanumeric": "Whether passwords must contain at least one non-alphanumeric character (e.g. `!`, `@`, `#`).",
+	"any_letter":       "Whether passwords must contain at least one letter, either uppercase or lowercase.",
+	"disallowed_characters": "Reject passwords containing any of these characters, in addition to the characters that the " +
+		"password settings disallow. Each character in the string is treated as a forbidden literal.",
+	"disallow_email_match": "Whether to reject passwords that match the user's email address or its local-part (the segment " +
+		"before `@`), case-insensitively.",
+	"enforce_strength": "Use zxcvbn to calculate the strength of a given password and enforce a minimum level of strength. " +
+		"The default value of `none` adds no requirement.",
+}
+
+var docsProjectSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"app_url": "The URL where your application resides.",
+	"custom_domain": "A custom CNAME domain for the project, used instead of the default Descope base URL for " +
+		"authentication traffic. Must be a subdomain of the `app_url` domain.",
+	"apps_custom_domain": "The custom domain that federated and inbound application URLs are built on, such as the SAML " +
+		"entity ID, SSO and metadata URLs and the OIDC issuer and discovery URL. Set it to `custom_domain` " +
+		"or to another custom domain that was added to the project. When empty, or when the domain is no " +
+		"longer one of the project's custom domains, `custom_domain` is used. Changing it changes the SAML " +
+		"entity ID and SSO URL of every federated application, so service providers must be updated.",
+	"approved_domains": "List of approved domains that are allowed for redirect and verification URLs for different " +
+		"authentication methods.",
+	"default_no_sso_apps": "Whether new users should not be given access to any federated applications by default.",
+	"tenant_user_isolation": "Isolate users per tenant so the same login ID is treated as a separate identity in each tenant, " +
+		"with independent credentials and MFA state.",
+	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
+		"your website. This modifies the security headers that typically prevent the page from " +
+		"being embedded.",
+	"disable_auth_hosting": "When enabled, Descope stops serving this project's flows from its hosted login pages, both " +
+		"at the Descope domain and at the `/login` path of a custom domain. Anything that relies on " +
+		"the default hosted login page URL, such as a federated application or an embedded link that " +
+		"lands on it, stops working. Flows running in your own application are unaffected.",
+	"test_users_loginid_regexp": "A regular expression pattern that, when a user is created with a matching login ID, will " +
+		"automatically mark the user as a test user.",
+	"test_users_static_otp": "A static OTP code that can be used by test users instead of a real verification code. Must " +
+		"be set together with `test_users_verifier_regexp`.",
+	"test_users_verifier_regexp": "A regular expression pattern that determines which test user verifiers (email addresses or " +
+		"phone numbers) the static OTP code applies to.",
+	"trusted_proxy_secret": "The secret a trusted reverse proxy sends in the `x-descope-proxy-secret` header, so that the forwarded " +
+		"hostname and client IP headers it adds are honored. Used to serve tenant vanity domains through a " +
+		"gateway. Must be at least 64 visible ASCII characters with no spaces, for example the output of " +
+		"`openssl rand -base64 48`. Requires vanity domains to be enabled on the company license. This value " +
+		"is write-only and never read back from the server. Removing it from the configuration keeps the " +
+		"stored secret, set it to an empty string to clear it.",
+}
+
+var docsSettingsSessionSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"user_jwt_template":               "The ID of the JWT template used for user session tokens (e.g. `descope_jwt_template.example.id`).",
+	"access_key_jwt_template":         "The ID of the JWT template used for access key session tokens.",
+	"refresh_token_expiration":        "How long refresh tokens remain valid before they expire.",
+	"refresh_token_rotation":          "Whether to rotate the refresh token every time it's used to refresh the session.",
+	"refresh_token_response_method":   "How refresh tokens are managed by the Descope SDKs, either `response_body` or `cookies`.",
+	"refresh_token_cookie_policy":     "The SameSite cookie policy for the refresh token cookie, either `strict`, `lax` or `none`.",
+	"refresh_token_cookie_domain":     "The domain the refresh token cookie is restricted to.",
+	"session_token_expiration":        "How long session tokens remain valid before they expire.",
+	"session_token_response_method":   "How session tokens are managed by the Descope SDKs, either `response_body` or `cookies`.",
+	"session_token_cookie_policy":     "The SameSite cookie policy for the session token cookie, either `strict`, `lax` or `none`.",
+	"session_token_cookie_domain":     "The domain the session token cookie is restricted to.",
+	"step_up_token_expiration":        "How long step up tokens remain valid before they expire.",
+	"trusted_device_token_expiration": "How long trusted device tokens remain valid before they expire.",
+	"trusted_device_extend_on_trusted_login": "Whether a trusted device token's expiration is reset to `trusted_device_token_expiration` on each login " +
+		"from that device, in any flow. Applies to existing trusted devices as well.",
+	"access_key_session_token_expiration": "How long access key session tokens remain valid before they expire.",
+	"enable_inactivity":                   "Whether to detect idle sessions and close them on behalf of the user.",
+	"inactivity_time":                     "How long a session can be inactive before it's closed, when `enable_inactivity` is set.",
+}
+
+var docsSessionMigrationSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"vendor": "The vendor to migrate user sessions from, either `auth0` or `okta`. Session migration is " +
+		"disabled when this isn't set.",
+	"client_id": "The client ID from the vendor's authentication configuration.",
+	"domain":    "The domain from the vendor's authentication configuration. Only used with the `auth0` vendor.",
+	"audience": "An optional audience value from the vendor's authentication configuration. Only used with the " +
+		"`auth0` vendor.",
+	"issuer": "The issuer from the vendor's authentication configuration. Only used with the `okta` vendor.",
+	"api_token": "The API token for the vendor's management API. Only used with the `okta` vendor. This value is " +
+		"write-only and never read back from the server.",
+	"loginid_matched_attributes": "Which attributes from the vendor's user should be used to match the Descope user's login ID " +
+		"(e.g. `email`).",
+	"user_sync_type": "The type of user synchronization to perform, either `matchOnly` to only match existing users or " +
+		"`jit` for just-in-time provisioning.",
+	"user_mapping": "A list of attribute mappings from the external vendor's user to Descope user attributes.",
+}
+
+var docsUserMappingItem = map[string]string{
 	"external_key": "The attribute key in the external vendor's user object.",
 	"descope_key":  "The Descope user attribute to map the external key to.",
 }
 
-var docsSettings = map[string]string{
-	"app_url": "The URL which your application resides on.",
-	"custom_domain": "A custom CNAME that's configured to point to `cname.descope.com`. Read more about custom " +
-		"domains and cookie policy [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"approved_domains": "The list of approved domains that are allowed for redirect and verification URLs " +
-		"for different authentication methods.",
-	"default_no_sso_apps": "Define whether a user created with no federated apps, will have access to all apps, " +
-		"or will not have access to any app.",
-	"tenant_user_isolation": "When enabled, users are completely isolated per tenant. The same login ID in " +
-		"Tenant A and Tenant B will be treated as separate identities with isolated credentials, " +
-		"sessions, and MFA state.",
-	"allow_auth_hosting_iframe_embedding": "When enabled, Descope-hosted flows can be displayed within an iframe on " +
-		"your website. This modifies the security headers that typically prevent the page from " +
-		"being embedded.",
-	"refresh_token_rotation": "Every time the user refreshes their session token via their refresh token, the " +
-		"refresh token itself is also updated to a new one.",
-	"refresh_token_expiration": "The expiry time for the refresh token, after which the user must log in again. Use values " +
-		"such as \"4 weeks\", \"14 days\", etc. The minimum value is \"3 minutes\".",
-	"refresh_token_response_method": "Configure how refresh tokens are managed by the Descope SDKs. Must be either `response_body` " +
-		"or `cookies`. The default value is `response_body`.",
-	"refresh_token_cookie_policy": "Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy " +
-		"[here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"refresh_token_cookie_domain": "The domain name for refresh token cookies. To read more about custom domain and " +
-		"cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"session_token_expiration": "The expiry time of the session token, used for accessing the application's resources. The value " +
-		"needs to be at least 3 minutes and can't be longer than the refresh token expiration.",
-	"session_token_response_method": "Configure how sessions tokens are managed by the Descope SDKs. Must be either `response_body` " +
-		"or `cookies`. The default value is `response_body`.",
-	"session_token_cookie_policy": "Use `strict`, `lax` or `none`. Read more about custom domains and cookie policy " +
-		"[here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"session_token_cookie_domain": "The domain name for session token cookies. To read more about custom domain and " +
-		"cookie policy click [here](https://docs.descope.com/how-to-deploy-to-production/custom-domain).",
-	"step_up_token_expiration": "The expiry time for the step up token, after which it will not be valid and the user will " +
-		"automatically go back to the session token.",
-	"trusted_device_token_expiration": "The expiry time for the trusted device token. The minimum value is \"3 minutes\".",
-	"access_key_session_token_expiration": "The expiry time for access key session tokens. Use values such as \"10 minutes\", \"4 hours\", etc. The " +
-		"value needs to be at least 3 minutes and can't be longer than 4 weeks.",
-	"enable_inactivity": "Use `True` to enable session inactivity. To read more about session inactivity " +
-		"click [here](https://docs.descope.com/project-settings#session-inactivity).",
-	"inactivity_time": "The session inactivity time. Use values such as \"15 minutes\", \"1 hour\", etc. The minimum " +
-		"value is \"10 minutes\".",
-	"test_users_loginid_regexp": "Define a regular expression so that whenever a user is created with a matching login ID it will " +
-		"automatically be marked as a test user.",
-	"test_users_verifier_regexp": "The pattern of the verifiers that will be used for testing.",
-	"test_users_static_otp":      "A 6 digit static OTP code for use with test users.",
-	"user_jwt_template":          "Name of the user JWT Template.",
-	"access_key_jwt_template":    "Name of the access key JWT Template.",
-	"session_migration":          "Configure seamless migration of existing user sessions from another vendor to Descope.",
+var docsSSOSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using SSO authentication directly via API and SDK calls. " +
+		"Note that this does not affect authentication flows that are configured to use SSO.",
+	"merge_users": "Whether to convert an existing user to an SSO-only user after a successful SSO login. When enabled, an existing member of this tenant that matches the SSO identity has their login ID replaced with the SSO login ID, instead of a separate user being created.",
+	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
+		"in tenant level settings or SDK/API call, they will override this value.",
+	"allow_duplicate_domains":               "Whether to allow duplicate SSO domains across tenants.",
+	"allow_override_roles":                  "Whether to allow overriding user's roles with SSO related roles.",
+	"groups_priority":                       "Whether to enable groups priority.",
+	"mandatory_user_attributes":             "Define the required Descope attributes that must be populated when receiving SSO information.",
+	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
+	"require_sso_domains":                   "When configuring SSO an SSO domain must be specified.",
+	"require_groups_attribute_name":         "When configuring SSO the groups attribute name must be specified.",
+	"block_if_email_domain_mismatch":        "Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.",
+	"mark_email_as_unverified":              "Whether to mark the user's email as unverified when logging in via SSO.",
+	"ignore_invalid_idp_phones": "When enabled, a phone number that an identity provider sends through SCIM provisioning or " +
+		"the SAML or OIDC phone mapping is ignored if it is not a valid phone number, instead of being " +
+		"saved on the user. A new user is created without a phone and an existing user keeps their " +
+		"current phone. Each ignored number is recorded in the project's Troubleshooting logs.",
+	"allow_merge_users_with_multiple_tenants": "Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.",
+	"sso_suite_settings":                      "Configuration block for the SSO Suite.",
+	"email_connector_id":                      "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",
+	"email_template_id": "The ID of the email template for SSO configuration invitation emails, taken from a " +
+		"`descope_email_template` resource with its `method` set to `sso`. An empty value (the default) " +
+		"selects the built-in System template.",
+	"external_email_template_id": "The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An " +
+		"empty value (the default) sends the Descope template selected by `email_template_id`.",
 }
 
-var docsEmailService = map[string]string{
-	"connector": "The name of the email connector to use for sending emails.",
-	"templates": "A list of email templates for different authentication flows.",
+var docsMandatoryUserAttribute = map[string]string{
+	"id":     "The identifier for the attribute. This value is called `Machine Name` in the Descope console.",
+	"custom": "Whether the attribute is a custom attribute defined in addition to the default Descope user attributes.",
 }
 
-var docsEmailTemplate = map[string]string{
-	"active":              "Whether this email template is currently active and in use.",
-	"name":                "Unique name for this email template.",
-	"subject":             "Subject line of the email message.",
-	"html_body":           "HTML content of the email message body, required if `use_plain_text_body` isn't set.",
-	"plain_text_body":     "Plain text version of the email message body, required if `use_plain_text_body` is set to `true`.",
-	"use_plain_text_body": "Whether to use the plain text body instead of HTML for the email.",
+var docsSSOSuite = map[string]string{
+	"style_id": "Specifies the style ID to apply in the SSO Suite. Ensure a style with this ID exists in " +
+		"the console for it to be used.",
+	"hide_sso": "Setting this to `true` will hide the SSO configuration in the SSO Suite interface, for " +
+		"tenants that only need to set up SCIM provisioning.",
+	"hide_scim":                 "Setting this to `true` will hide the SCIM configuration in the SSO Suite interface.",
+	"hide_groups_mapping":       "Setting this to `true` will hide the groups mapping configuration section in the SSO Suite interface.",
+	"hide_role_mapping":         "Setting this to `true` will hide the role mapping configuration section in the SSO Suite interface.",
+	"hide_fga_mapping":          "Setting this to `true` will hide the FGA mapping configuration section in the SSO Suite interface.",
+	"hide_domains":              "Setting this to `true` will hide the domains configuration section in the SSO Suite interface.",
+	"hide_saml":                 "Setting this to `true` will hide the SAML configuration option.",
+	"hide_oidc":                 "Setting this to `true` will hide the OIDC configuration option.",
+	"force_domain_verification": "Setting this to `true` will allow only verified domains to be used.",
+	"support_email":             "Email address shown to end-users in the SSO Suite UI as a support contact.",
+	"show_help_contact":         "Whether to display the help/support contact link in the SSO Suite UI.",
+	"hide_jit_guide":            "Whether to hide the JIT provisioning guide section in the SSO Suite hosted UI.",
+	"show_xaa":                  "Whether to show the Cross-App Access (XAA) section in the SSO Suite hosted UI. Cross-App Access is opt-in: it stays hidden unless this is set.",
+	"hide_audit":                "Setting this to `true` will hide the audit log of SSO and SCIM events in the SSO Suite interface.",
+	"oidc_login_id_attribute": "The identity provider claim the SSO Suite suggests as the Login ID when a tenant configures OIDC. Leave empty " +
+		"to keep the default, which suggests the `sub` claim. SAML configurations are unaffected.",
+	"login_flow_id": "The ID of a flow the SSO Suite shows so users can sign in when they open it without an existing session. Leave " +
+		"empty to show the authentication required page instead.",
+	"login_flow_style_id": "The ID of the style to apply to the login flow. Leave empty to use the project's default flow style.",
 }
 
-var docsTextService = map[string]string{
-	"connector": "The name of the SMS/text connector to use for sending text messages.",
-	"templates": "A list of text message templates for different authentication flows.",
+var docsTOTPSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"disabled": "Setting this to `true` will disallow using TOTP authentication directly via API and SDK calls. Note " +
+		"that this does not affect authentication flows that are configured to use TOTP.",
+	"service_label": "The template for the service issuer label (issuer) shown in the authenticator app.",
+	"account_label": "The template for the account name shown in the authenticator app, for example `{{user.email}}` " +
+		"or `{{user.customAttributes.employeeId}}`. Supports `{{user.email}}`, `{{user.phone}}`, " +
+		"`{{user.name}}`, `{{user.loginId}}` and `{{user.customAttributes.<name>}}`. When empty, or when " +
+		"it renders empty for a user, the user's login ID is used.",
+}
+
+var docsWellKnownSettings = map[string]string{
+	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
+		"to be deleted and recreated.",
+	"enabled": "Setting this to `true` applies the customization to the project's discovery documents. While `false` the " +
+		"customization is kept but the default documents are served.",
+	"hidden_fields": "Fields to omit from the discovery documents. Hiding a field only stops advertising it, the endpoint or " +
+		"capability itself stays enabled. Supported values are `backchannel_authentication_endpoint`, " +
+		"`pushed_authorization_request_endpoint`, `request_parameter_supported`, `registration_endpoint`, " +
+		"`end_session_endpoint`, `introspection_endpoint`, `device_authorization_endpoint`, `revocation_endpoint`, " +
+		"`userinfo_endpoint` and `backchannel_logout_supported`.",
+	"removed_values": "Values to remove from list fields in the discovery documents, such as a grant type from " +
+		"`grant_types_supported`. A list is never emptied, removing every value keeps the full list.",
+	"scopes_supported": "Scopes to add to or exclude from `scopes_supported`.",
+	"claims_supported": "Claims to add to or exclude from `claims_supported`.",
+}
+
+var docsWellKnownRemovedValues = map[string]string{
+	"field": "The name of a list field in the discovery documents, such as `grant_types_supported`, " +
+		"`token_endpoint_auth_methods_supported` or `code_challenge_methods_supported`.",
+	"values": "The values to remove from the list.",
+}
+
+var docsWellKnownValueDelta = map[string]string{
+	"extra":    "Values to add to the list.",
+	"excluded": "Values to remove from the list.",
+}
+
+var docsStyles = map[string]string{
+	"project_id": "The ID of the project that the styles belong to. Changing this value will require the resource to be " +
+		"deleted and recreated.",
+	"data": "The JSON data of the styles in their exported theme representation, defining the visual styling of " +
+		"the project's flow pages. This will usually be exported as a `.json` file from the Descope console, " +
+		"which exports one style per file, and set in the `.tf` file using the `data = file(\"...\")` syntax. " +
+		"Applying this resource creates and overwrites the styles the data carries, and leaves every other " +
+		"style in the project untouched, so styles created in the console are safe from a Terraform apply. " +
+		"For the same reason removing a style from the data does not remove it from the project - delete it " +
+		"in the console or through the management API instead. An apply is rejected if the data's " +
+		"`componentsVersion` differs from the project's, in which case export the styles again or leave " +
+		"`componentsVersion` out, and if it changes the type of a style that already exists in the project.",
 }
 
 var docsTextTemplate = map[string]string{
-	"active": "Whether this text template is currently active and in use.",
-	"name":   "Unique name for this text template.",
-	"body":   "The content of the text message.",
-}
-
-var docsVoiceService = map[string]string{
-	"connector": "The name of the voice connector to use for making voice calls.",
-	"templates": "A list of voice message templates for different purposes.",
+	"project_id": "The ID of the project that the text template belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"method": "The authentication method the text template is used with, e.g. `magiclink`, `otp` or `enchantedlink`. Changing this value will require the resource to be deleted and recreated.",
+	"name":   "A name for the text template that's unique among the templates of the same authentication method.",
+	"body":   "The body of text messages sent with this template. Template macros such as `{{.code}}` can be used to insert dynamic values.",
 }
 
 var docsVoiceTemplate = map[string]string{
-	"active": "Whether this voice template is currently active and in use.",
-	"name":   "Unique name for this voice template.",
-	"body":   "The content of the voice message that will be spoken.",
+	"project_id": "The ID of the project that the voice template belongs to. Changing this value will require the " +
+		"resource to be deleted and recreated.",
+	"method": "The authentication method the voice template is used with. Currently only `otp` is supported. " +
+		"Changing this value will require the resource to be deleted and recreated.",
+	"name": "A name for the voice template that's unique among the templates of the same authentication method.",
+	"body": "The text that's read aloud in voice calls made with this template. Template macros such as `{{.code}}` can be used to insert dynamic values.",
 }
 
 var docsWidget = map[string]string{
-	"data": "The JSON data defining the widget. This will usually be exported as a `.json` file from the Descope console, " +
-		"and set in the `.tf` file using the `data = file(\"...\")` syntax.",
+	"project_id": "The ID of the project that the widget belongs to. Changing this value will require the resource to " +
+		"be deleted and recreated.",
+	"widget_id": "The machine identifier of the widget (e.g., `user-management`), used to embed the widget and to " +
+		"reference it in other resources. Changing this value will require the resource to be deleted and " +
+		"recreated.",
+	"data": "The JSON data of the widget in its exported representation, including its metadata and screens. This " +
+		"will usually be exported as a `.json` file from the Descope console, and set in the `.tf` file using " +
+		"the `data = file(\"...\")` syntax.",
 }
 
 var docsTenant = map[string]string{

@@ -1,0 +1,46 @@
+---
+page_title: "descope_inbound_app Resource - descope"
+subcategory: ""
+description: |-
+  Manages an inbound app, an OAuth client that requests tokens from a Descope project.
+---
+
+# descope_inbound_app (Resource)
+
+Manages an inbound app, an OAuth client that requests tokens from a Descope project.
+
+## Example Usage
+
+### Machine-to-machine app with a custom attribute
+
+The app below only uses the `client_credentials` grant type, so every other grant type is disabled. Its
+`managingOrganization` custom attribute value can be added to its tokens by a JWT template that is shared
+by every app, with a claim such as `"{{ "{{" }}app.customAttributes.managingOrganization{{ "}}" }}"`.
+
+```hcl
+resource "descope_inbound_app_attribute" "managing_organization" {
+  project_id = descope_project.example.id
+  id         = "managingOrganization"
+  name       = "Managing Organization"
+  type       = "string"
+}
+
+resource "descope_inbound_app" "partner_backend" {
+  project_id  = descope_project.example.id
+  name        = "Partner Backend"
+  client_type = "confidential"
+
+  authorization_code_disabled = true
+  refresh_token_disabled      = true
+  device_code_disabled        = true
+  jwt_bearer_disabled         = true
+  token_exchange_disabled     = true
+
+  # Referencing the attribute in the key creates it before its value is set on the app
+  custom_attributes = jsonencode({
+    (descope_inbound_app_attribute.managing_organization.id) = "6f1c2a9e-4b3d-4e8a-9c1f-2d7b5a0e8f13"
+  })
+}
+```
+
+{{ .SchemaMarkdown }}

@@ -86,7 +86,7 @@ resource "descope_management_key" "restricted_key" {
 ### Required
 
 - `name` (String) A name for the management key.
-- `rebac` (Attributes) Access control settings for the management key. This defines the permissions granted to the management key, either at the company level or for specific projects or for project tags. Changing this value after creation will require the management key to be replaced. (see [below for nested schema](#nestedatt--rebac))
+- `rebac` (Attributes) Access control settings for the management key. This defines the permissions granted to the management key, either at the company level or for specific projects or for project tags. Changing this value after creation updates the management key in place without rotating its secret. Changing the roles requires the management key that the provider is configured with to be allowed to manage management keys. (see [below for nested schema](#nestedatt--rebac))
 
 ### Optional
 
