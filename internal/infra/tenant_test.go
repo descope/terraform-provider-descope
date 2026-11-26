@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -23,6 +24,7 @@ func TestCreateTenant_whenRequestSucceeds(t *testing.T) {
 		require.NoError(t, json.NewDecoder(req.Body).Decode(&body))
 		require.Equal(t, "Tenant name", body.Name)
 		require.Equal(t, []string{"example.com"}, body.SelfProvisioningDomains)
+		require.Equal(t, []string{"10.0.0.0/8"}, body.PermittedIPs)
 
 		_, err := w.Write([]byte(`{"id":"tenant-id"}`))
 		require.NoError(t, err)
@@ -34,6 +36,7 @@ func TestCreateTenant_whenRequestSucceeds(t *testing.T) {
 	id, err := client.CreateTenant(context.Background(), "project-id", TenantCreateRequest{
 		Name:                    "Tenant name",
 		SelfProvisioningDomains: []string{"example.com"},
+		PermittedIPs:            []string{"10.0.0.0/8"},
 	})
 
 	// Then
@@ -48,7 +51,7 @@ func TestReadTenant_whenRequestSucceeds(t *testing.T) {
 		require.Equal(t, "/v1/mgmt/tenant", req.URL.Path)
 		require.Equal(t, "tenant-id", req.URL.Query().Get("id"))
 
-		_, err := w.Write([]byte(`{"id":"tenant-id","name":"Tenant name","selfProvisioningDomains":["example.com"],"enforceSSO":true}`))
+		_, err := w.Write([]byte(`{"id":"tenant-id","name":"Tenant name","selfProvisioningDomains":["example.com"],"enforceSSO":true,"permittedIps":["10.0.0.0/8","192.168.1.1"]}`))
 		require.NoError(t, err)
 	}))
 	t.Cleanup(server.Close)
@@ -63,6 +66,7 @@ func TestReadTenant_whenRequestSucceeds(t *testing.T) {
 	require.Equal(t, "Tenant name", tenant.Name)
 	require.Equal(t, []string{"example.com"}, tenant.SelfProvisioningDomains)
 	require.True(t, tenant.EnforceSSO)
+	require.Equal(t, []string{"10.0.0.0/8", "192.168.1.1"}, tenant.PermittedIPs)
 }
 
 func TestUpdateTenant_whenRequestSucceeds(t *testing.T) {
@@ -71,11 +75,17 @@ func TestUpdateTenant_whenRequestSucceeds(t *testing.T) {
 		require.Equal(t, http.MethodPost, req.Method)
 		require.Equal(t, "/v1/mgmt/tenant/update", req.URL.Path)
 
+		rawBody, err := io.ReadAll(req.Body)
+		require.NoError(t, err)
 		var body TenantUpdateRequest
-		require.NoError(t, json.NewDecoder(req.Body).Decode(&body))
+		require.NoError(t, json.Unmarshal(rawBody, &body))
 		require.Equal(t, "tenant-id", body.ID)
 		require.Equal(t, "Updated tenant", body.Name)
 		require.JSONEq(t, `{"department":"engineering"}`, string(body.CustomAttributes))
+		// an empty list is sent, not omitted, so removing every IP in Terraform clears them on the tenant
+		var raw map[string]any
+		require.NoError(t, json.Unmarshal(rawBody, &raw))
+		require.Contains(t, raw, "permittedIps")
 
 		w.WriteHeader(http.StatusOK)
 	}))

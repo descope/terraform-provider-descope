@@ -67,6 +67,7 @@ func (r *tenantResource) Create(ctx context.Context, req resource.CreateRequest,
 		FederatedApplicationIDs: values.FederatedApplicationIDs,
 		Parent:                  values.Parent,
 		RoleInheritance:         values.RoleInheritance,
+		PermittedIPs:            values.PermittedIPs,
 	})
 	if err != nil {
 		resp.Diagnostics.AddError("Error creating tenant", err.Error())
@@ -143,6 +144,7 @@ func (r *tenantResource) Update(ctx context.Context, req resource.UpdateRequest,
 		EnforceSSOExclusions:    values.EnforceSSOExclusions,
 		FederatedApplicationIDs: values.FederatedApplicationIDs,
 		RoleInheritance:         values.RoleInheritance,
+		PermittedIPs:            values.PermittedIPs,
 		IDJagSettings:           current.IDJagSettings,
 		IDJagEnabled:            current.IDJagEnabled,
 	})

@@ -1861,4 +1861,5 @@ var docsTenant = map[string]string{
 	"federated_application_ids": "Federated application identifiers associated with the tenant.",
 	"parent": "The parent tenant identifier. Changing this value requires replacing the tenant resource.",
 	"role_inheritance": "Role inheritance from the parent tenant. Valid values are `none` and `userOnly`.",
+	"permitted_ips": "IP addresses or CIDR ranges added to the permitted IPs of every access key that belongs to the tenant. A key with no permitted IPs of its own is limited to these. Leave empty to add no restriction.",
 }

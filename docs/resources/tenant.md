@@ -28,5 +28,6 @@ description: |-
 - `federated_application_ids` (List of String) Federated application identifiers associated with the tenant.
 - `id` (String) An optional tenant identifier. If omitted, Descope generates an identifier. Changing this value requires replacing the tenant resource.
 - `parent` (String) The parent tenant identifier. Changing this value requires replacing the tenant resource.
+- `permitted_ips` (List of String) IP addresses or CIDR ranges added to the permitted IPs of every access key that belongs to the tenant. A key with no permitted IPs of its own is limited to these. Leave empty to add no restriction.
 - `role_inheritance` (String) Role inheritance from the parent tenant. Valid values are `none` and `userOnly`.
 - `self_provisioning_domains` (List of String) Domains whose users may self-provision into the tenant.

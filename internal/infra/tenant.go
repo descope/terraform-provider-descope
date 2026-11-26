@@ -27,6 +27,7 @@ type Tenant struct {
 	RoleInheritance         string          `json:"roleInheritance"`
 	IDJagSettings           json.RawMessage `json:"idJagSettings"`
 	IDJagEnabled            bool            `json:"idJagEnabled"`
+	PermittedIPs            []string        `json:"permittedIps"`
 }
 
 type TenantCreateRequest struct {
@@ -39,6 +40,7 @@ type TenantCreateRequest struct {
 	FederatedApplicationIDs []string `json:"federatedAppIds"`
 	Parent                  string   `json:"parent,omitempty"`
 	RoleInheritance         string   `json:"roleInheritance,omitempty"`
+	PermittedIPs            []string `json:"permittedIps"`
 }
 
 type TenantUpdateRequest struct {
@@ -54,6 +56,7 @@ type TenantUpdateRequest struct {
 	RoleInheritance         string          `json:"roleInheritance,omitempty"`
 	IDJagSettings           json.RawMessage `json:"idJagSettings,omitempty"`
 	IDJagEnabled            bool            `json:"idJagEnabled"`
+	PermittedIPs            []string        `json:"permittedIps"`
 }
 
 type TenantDeleteRequest struct {

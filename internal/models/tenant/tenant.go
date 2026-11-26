@@ -30,6 +30,7 @@ var TenantAttributes = map[string]schema.Attribute{
 	"federated_application_ids": strlistattr.Default(stringattr.MachineIDValidator, stringattr.StandardLenValidator),
 	"parent":                    stringattr.ReplaceOptional(tenantIDValidators[0]),
 	"role_inheritance":          stringattr.Optional(stringvalidator.OneOf("none", "userOnly")),
+	"permitted_ips":             strlistattr.Default(stringattr.StandardLenValidator),
 }
 
 type Model struct {
@@ -43,6 +44,7 @@ type Model struct {
 	FederatedApplicationIDs strlistattr.Type `tfsdk:"federated_application_ids"`
 	Parent                  stringattr.Type  `tfsdk:"parent"`
 	RoleInheritance         stringattr.Type  `tfsdk:"role_inheritance"`
+	PermittedIPs            strlistattr.Type `tfsdk:"permitted_ips"`
 }
 
 type Values struct {
@@ -56,6 +58,7 @@ type Values struct {
 	FederatedApplicationIDs []string
 	Parent                  string
 	RoleInheritance         string
+	PermittedIPs            []string
 }
 
 func (m Model) Values(ctx context.Context, diagnostics *diag.Diagnostics) Values {
@@ -71,6 +74,7 @@ func (m Model) Values(ctx context.Context, diagnostics *diag.Diagnostics) Values
 		FederatedApplicationIDs: collect(strlistattr.Iterator(m.FederatedApplicationIDs, handler)),
 		Parent:                  m.Parent.ValueString(),
 		RoleInheritance:         m.RoleInheritance.ValueString(),
+		PermittedIPs:            collect(strlistattr.Iterator(m.PermittedIPs, handler)),
 	}
 }
 
@@ -86,6 +90,7 @@ func (m *Model) SetTenant(ctx context.Context, value *infra.Tenant) {
 		m.Parent = stringattr.Value(value.Parent)
 	}
 	m.RoleInheritance = stringattr.Value(value.RoleInheritance)
+	m.PermittedIPs = strlistattr.ValueContext(ctx, value.PermittedIPs)
 }
 
 func collect(values func(func(string) bool)) []string {

@@ -91,3 +91,12 @@ role_inheritance
 - Type: `string` 
 
 Role inheritance from the parent tenant. Valid values are `none` and `userOnly`.
+
+
+
+permitted_ips
+-------------
+
+- Type: `list` of `string` 
+
+IP addresses or CIDR ranges added to the permitted IPs of every access key that belongs to the tenant. A key with no permitted IPs of its own is limited to these. Leave empty to add no restriction.
