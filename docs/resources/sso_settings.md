@@ -30,10 +30,11 @@ Manages the project-level SSO authentication settings. This is a singleton resou
 - `email_template_id` (String) The ID of the email template for SSO configuration invitation emails, taken from a `descope_email_template` resource with its `method` set to `sso`. An empty value (the default) selects the built-in System template.
 - `external_email_template_id` (String) The ID of an email template hosted by the email connector's provider, to send instead of a Descope template. An empty value (the default) sends the Descope template selected by `email_template_id`.
 - `groups_priority` (Boolean) Whether to enable groups priority.
+- `ignore_invalid_idp_phones` (Boolean) When enabled, a phone number that an identity provider sends through SCIM provisioning or the SAML or OIDC phone mapping is ignored if it is not a valid phone number, instead of being saved on the user. A new user is created without a phone and an existing user keeps their current phone. Each ignored number is recorded in the project's Troubleshooting logs.
 - `limit_mapping_to_mandatory_attributes` (Boolean) Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.
 - `mandatory_user_attributes` (Attributes List) Define the required Descope attributes that must be populated when receiving SSO information. (see [below for nested schema](#nestedatt--mandatory_user_attributes))
 - `mark_email_as_unverified` (Boolean) Whether to mark the user's email as unverified when logging in via SSO.
-- `merge_users` (Boolean) Whether to merge existing user accounts with new ones created through SSO authentication.
+- `merge_users` (Boolean) Whether to convert an existing user to an SSO-only user after a successful SSO login. When enabled, an existing member of this tenant that matches the SSO identity has their login ID replaced with the SSO login ID, instead of a separate user being created.
 - `redirect_url` (String) The URL the end user is redirected to after a successful authentication. If one is specified in tenant level settings or SDK/API call, they will override this value.
 - `require_groups_attribute_name` (Boolean) When configuring SSO the groups attribute name must be specified.
 - `require_sso_domains` (Boolean) When configuring SSO an SSO domain must be specified.

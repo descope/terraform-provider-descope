@@ -29,7 +29,7 @@ merge_users
 
 - Type: `bool`
 
-Whether to merge existing user accounts with new ones created through SSO authentication.
+Whether to convert an existing user to an SSO-only user after a successful SSO login. When enabled, an existing member of this tenant that matches the SSO identity has their login ID replaced with the SSO login ID, instead of a separate user being created.
 
 
 
@@ -121,6 +121,18 @@ mark_email_as_unverified
 - Type: `bool`
 
 Whether to mark the user's email as unverified when logging in via SSO.
+
+
+
+ignore_invalid_idp_phones
+-------------------------
+
+- Type: `bool`
+
+When enabled, a phone number that an identity provider sends through SCIM provisioning or
+the SAML or OIDC phone mapping is ignored if it is not a valid phone number, instead of being
+saved on the user. A new user is created without a phone and an existing user keeps their
+current phone. Each ignored number is recorded in the project's Troubleshooting logs.
 
 
 

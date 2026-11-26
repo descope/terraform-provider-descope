@@ -2047,6 +2047,8 @@ var docsInboundApp = map[string]string{
 		"since the epoch for `date`, and an `MM-DD` string for `monthday`. Values set outside Terraform are removed on the " +
 		"next apply unless they are also in this attribute, so the first plan after adding it, or after upgrading the " +
 		"provider, shows those values as removed.",
+	"tags": "Labels for this inbound app, matched by policy rules through `client.tags` conditions. Up to 100 tags, " +
+		"each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.",
 }
 
 var docsScopeClaimMapping = map[string]string{
@@ -2367,6 +2369,19 @@ var docsInviteSettings = map[string]string{
 	"email_connector_id": "The ID of an email connector to use for sending invitation emails. An empty value (the default) selects the built-in Descope delivery service.",
 	"email_template_id": "The ID of the email template to send to invited users, taken from a `descope_email_template` resource " +
 		"with its `method` set to `invite`. An empty value (the default) selects the built-in System template.",
+	"send_reminders": "Whether to automatically resend the invitation to users who have not accepted it yet, every " +
+		"`reminder_interval` and up to `max_reminders` times. Reminders are only sent through a custom " +
+		"connector, so turning this on requires `email_connector_id` to be set when invitations are sent " +
+		"by email. Turning reminders on only affects invitations sent from then on.",
+	"reminder_interval": "How long to wait before sending a reminder, measured from the last invitation or reminder sent " +
+		"to the user. Use values such as \"2 days\", \"1 week\", etc. The minimum value is \"1 day\".",
+	"max_reminders": "The maximum number of reminders to send for each invitation, between 1 and 5.",
+	"reminder_email_template_id": "The ID of the email template to send reminders with, taken from a `descope_email_template` resource " +
+		"with its `method` set to `invite`. An empty value (the default) sends reminders with the same template " +
+		"as the invitation, and the value `System` selects the built-in System template.",
+	"reminder_text_template_id": "The ID of the invitation SMS template to send reminders with. An empty value (the default) sends " +
+		"reminders with the same template as the invitation, and the value `System` selects the built-in " +
+		"System template.",
 }
 
 var docsMagicLinkSettings = map[string]string{
@@ -2530,19 +2545,21 @@ var docsProjectSettings = map[string]string{
 var docsSettingsSessionSettings = map[string]string{
 	"project_id": "The ID of the project that these settings belong to. Changing this value will require the resource " +
 		"to be deleted and recreated.",
-	"user_jwt_template":                   "The ID of the JWT template used for user session tokens (e.g. `descope_jwt_template.example.id`).",
-	"access_key_jwt_template":             "The ID of the JWT template used for access key session tokens.",
-	"refresh_token_expiration":            "How long refresh tokens remain valid before they expire.",
-	"refresh_token_rotation":              "Whether to rotate the refresh token every time it's used to refresh the session.",
-	"refresh_token_response_method":       "How refresh tokens are managed by the Descope SDKs, either `response_body` or `cookies`.",
-	"refresh_token_cookie_policy":         "The SameSite cookie policy for the refresh token cookie, either `strict`, `lax` or `none`.",
-	"refresh_token_cookie_domain":         "The domain the refresh token cookie is restricted to.",
-	"session_token_expiration":            "How long session tokens remain valid before they expire.",
-	"session_token_response_method":       "How session tokens are managed by the Descope SDKs, either `response_body` or `cookies`.",
-	"session_token_cookie_policy":         "The SameSite cookie policy for the session token cookie, either `strict`, `lax` or `none`.",
-	"session_token_cookie_domain":         "The domain the session token cookie is restricted to.",
-	"step_up_token_expiration":            "How long step up tokens remain valid before they expire.",
-	"trusted_device_token_expiration":     "How long trusted device tokens remain valid before they expire.",
+	"user_jwt_template":               "The ID of the JWT template used for user session tokens (e.g. `descope_jwt_template.example.id`).",
+	"access_key_jwt_template":         "The ID of the JWT template used for access key session tokens.",
+	"refresh_token_expiration":        "How long refresh tokens remain valid before they expire.",
+	"refresh_token_rotation":          "Whether to rotate the refresh token every time it's used to refresh the session.",
+	"refresh_token_response_method":   "How refresh tokens are managed by the Descope SDKs, either `response_body` or `cookies`.",
+	"refresh_token_cookie_policy":     "The SameSite cookie policy for the refresh token cookie, either `strict`, `lax` or `none`.",
+	"refresh_token_cookie_domain":     "The domain the refresh token cookie is restricted to.",
+	"session_token_expiration":        "How long session tokens remain valid before they expire.",
+	"session_token_response_method":   "How session tokens are managed by the Descope SDKs, either `response_body` or `cookies`.",
+	"session_token_cookie_policy":     "The SameSite cookie policy for the session token cookie, either `strict`, `lax` or `none`.",
+	"session_token_cookie_domain":     "The domain the session token cookie is restricted to.",
+	"step_up_token_expiration":        "How long step up tokens remain valid before they expire.",
+	"trusted_device_token_expiration": "How long trusted device tokens remain valid before they expire.",
+	"trusted_device_extend_on_trusted_login": "Whether a trusted device token's expiration is reset to `trusted_device_token_expiration` on each login " +
+		"from that device, in any flow. Applies to existing trusted devices as well.",
 	"access_key_session_token_expiration": "How long access key session tokens remain valid before they expire.",
 	"enable_inactivity":                   "Whether to detect idle sessions and close them on behalf of the user.",
 	"inactivity_time":                     "How long a session can be inactive before it's closed, when `enable_inactivity` is set.",
@@ -2577,18 +2594,22 @@ var docsSSOSettings = map[string]string{
 		"to be deleted and recreated.",
 	"disabled": "Setting this to `true` will disallow using SSO authentication directly via API and SDK calls. " +
 		"Note that this does not affect authentication flows that are configured to use SSO.",
-	"merge_users": "Whether to merge existing user accounts with new ones created through SSO authentication.",
+	"merge_users": "Whether to convert an existing user to an SSO-only user after a successful SSO login. When enabled, an existing member of this tenant that matches the SSO identity has their login ID replaced with the SSO login ID, instead of a separate user being created.",
 	"redirect_url": "The URL the end user is redirected to after a successful authentication. If one is specified " +
 		"in tenant level settings or SDK/API call, they will override this value.",
-	"allow_duplicate_domains":                 "Whether to allow duplicate SSO domains across tenants.",
-	"allow_override_roles":                    "Whether to allow overriding user's roles with SSO related roles.",
-	"groups_priority":                         "Whether to enable groups priority.",
-	"mandatory_user_attributes":               "Define the required Descope attributes that must be populated when receiving SSO information.",
-	"limit_mapping_to_mandatory_attributes":   "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
-	"require_sso_domains":                     "When configuring SSO an SSO domain must be specified.",
-	"require_groups_attribute_name":           "When configuring SSO the groups attribute name must be specified.",
-	"block_if_email_domain_mismatch":          "Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.",
-	"mark_email_as_unverified":                "Whether to mark the user's email as unverified when logging in via SSO.",
+	"allow_duplicate_domains":               "Whether to allow duplicate SSO domains across tenants.",
+	"allow_override_roles":                  "Whether to allow overriding user's roles with SSO related roles.",
+	"groups_priority":                       "Whether to enable groups priority.",
+	"mandatory_user_attributes":             "Define the required Descope attributes that must be populated when receiving SSO information.",
+	"limit_mapping_to_mandatory_attributes": "Mapping to attributes not specified in `mandatory_user_attributes` is not allowed.",
+	"require_sso_domains":                   "When configuring SSO an SSO domain must be specified.",
+	"require_groups_attribute_name":         "When configuring SSO the groups attribute name must be specified.",
+	"block_if_email_domain_mismatch":        "Whether to block SSO login if the user's email domain doesn't match the configured SSO domains.",
+	"mark_email_as_unverified":              "Whether to mark the user's email as unverified when logging in via SSO.",
+	"ignore_invalid_idp_phones": "When enabled, a phone number that an identity provider sends through SCIM provisioning or " +
+		"the SAML or OIDC phone mapping is ignored if it is not a valid phone number, instead of being " +
+		"saved on the user. A new user is created without a phone and an existing user keeps their " +
+		"current phone. Each ignored number is recorded in the project's Troubleshooting logs.",
 	"allow_merge_users_with_multiple_tenants": "Whether to allow converting an existing user who is already a member of this tenant into this SSO connection even when the user also belongs to other tenants. Disabled by default because it increases the risk of cross-tenant account takeover.",
 	"sso_suite_settings":                      "Configuration block for the SSO Suite.",
 	"email_connector_id":                      "The ID of an email connector to use for sending emails. An empty value (the default) selects the built-in Descope delivery service.",

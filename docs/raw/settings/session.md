@@ -135,6 +135,16 @@ How long trusted device tokens remain valid before they expire.
 
 
 
+trusted_device_extend_on_trusted_login
+--------------------------------------
+
+- Type: `bool`
+
+Whether a trusted device token's expiration is reset to `trusted_device_token_expiration` on each login
+from that device, in any flow. Applies to existing trusted devices as well.
+
+
+
 access_key_session_token_expiration
 -----------------------------------
 

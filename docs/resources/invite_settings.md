@@ -27,8 +27,13 @@ Manages the project-level user invitation settings. This is a singleton resource
 - `expire_invited_users` (Boolean) Expire the user account if the invitation is not accepted within the expiration time.
 - `invite_expiration` (String) The expiry time for the invitation, meant to be used together with `expire_invited_users` and/or `add_magiclink_token`. Use values such as "2 weeks", "4 days", etc. The minimum value is "1 hour".
 - `invite_url` (String) Custom URL to include in the message sent to invited users.
+- `max_reminders` (Number) The maximum number of reminders to send for each invitation, between 1 and 5.
+- `reminder_email_template_id` (String) The ID of the email template to send reminders with, taken from a `descope_email_template` resource with its `method` set to `invite`. An empty value (the default) sends reminders with the same template as the invitation, and the value `System` selects the built-in System template.
+- `reminder_interval` (String) How long to wait before sending a reminder, measured from the last invitation or reminder sent to the user. Use values such as "2 days", "1 week", etc. The minimum value is "1 day".
+- `reminder_text_template_id` (String) The ID of the invitation SMS template to send reminders with. An empty value (the default) sends reminders with the same template as the invitation, and the value `System` selects the built-in System template.
 - `require_invitation` (Boolean) Whether users must be invited before they can sign up to the project.
 - `send_email` (Boolean) Whether to send invitation emails to users.
+- `send_reminders` (Boolean) Whether to automatically resend the invitation to users who have not accepted it yet, every `reminder_interval` and up to `max_reminders` times. Reminders are only sent through a custom connector, so turning this on requires `email_connector_id` to be set when invitations are sent by email. Turning reminders on only affects invitations sent from then on.
 - `send_text` (Boolean) Whether to send invitation SMS messages to users.
 
 ### Read-Only

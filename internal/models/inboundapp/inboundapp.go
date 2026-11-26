@@ -10,6 +10,7 @@ import (
 	"github.com/descope/terraform-provider-descope/internal/attrs/stringattr"
 	"github.com/descope/terraform-provider-descope/internal/attrs/strsetattr"
 	"github.com/descope/terraform-provider-descope/internal/helpers"
+	"github.com/hashicorp/terraform-plugin-framework-validators/setvalidator"
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/planmodifier"
@@ -54,6 +55,7 @@ var InboundAppAttributes = map[string]schema.Attribute{
 	"device_code_disabled":             boolattr.Optional(),
 	"token_exchange_disabled":          boolattr.Optional(),
 	"custom_attributes":                jsonattr.Default("{}"),
+	"tags":                             strsetattr.Default(setvalidator.SizeAtMost(100), stringvalidator.LengthBetween(1, 100)),
 }
 
 var Schema = schema.Schema{
@@ -93,6 +95,7 @@ type InboundAppModel struct {
 	DeviceCodeDisabled           boolattr.Type                               `tfsdk:"device_code_disabled"`
 	TokenExchangeDisabled        boolattr.Type                               `tfsdk:"token_exchange_disabled"`
 	CustomAttributes             jsonattr.Type                               `tfsdk:"custom_attributes"`
+	Tags                         strsetattr.Type                             `tfsdk:"tags"`
 }
 
 func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
@@ -126,6 +129,7 @@ func (m *InboundAppModel) Values(h *helpers.Handler) map[string]any {
 	boolattr.Get(m.DeviceCodeDisabled, data, "deviceCodeDisabled")
 	boolattr.Get(m.TokenExchangeDisabled, data, "tokenExchangeDisabled")
 	jsonattr.Get(m.CustomAttributes, data, "customAttributes")
+	strsetattr.Get(m.Tags, data, "tags", h)
 	return data
 }
 
@@ -163,6 +167,7 @@ func (m *InboundAppModel) SetValues(h *helpers.Handler, data map[string]any) {
 	} else {
 		jsonattr.Set(&m.CustomAttributes, data, "customAttributes")
 	}
+	strsetattr.Set(&m.Tags, data, "tags", h)
 }
 
 // The backend silently discards a client_secret given for a public client, so without this the apply would fail with an inconsistent-result error.
