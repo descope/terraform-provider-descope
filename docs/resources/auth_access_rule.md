@@ -37,6 +37,6 @@ Manages a single rule of the project's auth access policy. Rules are evaluated i
 
 Required:
 
-- `key` (String) The attribute the condition checks. One of `request.ip`, `request.country`, `user.email`, `user.emailDomain`, `user.loginId` or `user.phone`.
+- `key` (String) The attribute the condition checks. One of `request.ip`, `request.country`, `request.asn`, `user.email`, `user.emailDomain`, `user.loginId` or `user.phone`.
 - `operator` (String) How the attribute is compared with the values. One of `equal`, `notEqual`, `in`, `notIn`, `inCidr` or `notInCidr`. The CIDR operators are only supported with the `request.ip` key.
-- `values` (List of String) The values to compare with. The `equal`, `notEqual`, `inCidr` and `notInCidr` operators take exactly one value. With `equal` and `notEqual` the value may instead be a reference of the form `{{jwtClaims.<name>}}`, which compares the attribute with that custom claim of the token the user presented. An absent claim never matches. Values must be in canonical form: lowercase emails and domains, uppercase country codes, phone numbers in E.164 form and IP addresses in their shortest form.
+- `values` (List of String) The values to compare with. The `equal`, `notEqual`, `inCidr` and `notInCidr` operators take exactly one value. With `equal` and `notEqual` the value may instead be a reference of the form `{{jwtClaims.<name>}}`, which compares the attribute with that custom claim of the token the user presented. An absent claim never matches. Values must be in canonical form: lowercase emails and domains, uppercase country codes, phone numbers in E.164 form, IP addresses in their shortest form and autonomous system numbers as positive numbers without leading zeros, e.g., `13335`.

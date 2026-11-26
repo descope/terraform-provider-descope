@@ -84,8 +84,8 @@ key
 
 - Type: `string` (required)
 
-The attribute the condition checks. One of `request.ip`, `request.country`, `user.email`,
-`user.emailDomain`, `user.loginId` or `user.phone`.
+The attribute the condition checks. One of `request.ip`, `request.country`, `request.asn`,
+`user.email`, `user.emailDomain`, `user.loginId` or `user.phone`.
 
 
 
@@ -108,4 +108,5 @@ The values to compare with. The `equal`, `notEqual`, `inCidr` and `notInCidr` op
 take exactly one value. With `equal` and `notEqual` the value may instead be a reference of
 the form `{{jwtClaims.<name>}}`, which compares the attribute with that custom claim of the
 token the user presented. An absent claim never matches. Values must be in canonical form: lowercase emails and domains, uppercase
-country codes, phone numbers in E.164 form and IP addresses in their shortest form.
+country codes, phone numbers in E.164 form, IP addresses in their shortest form and
+autonomous system numbers as positive numbers without leading zeros, e.g., `13335`.
