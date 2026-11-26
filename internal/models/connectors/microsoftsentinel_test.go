@@ -25,6 +25,7 @@ func TestMicrosoftSentinelConnector(t *testing.T) {
 				client_secret = "tjpxl7uy4wbb"
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+				company_audits_disabled = true
 				troubleshoot_log_enabled = false
 				troubleshoot_stream_name = "Custom-DescopeTroubleshoot_CL"
 				mask_pii = false
@@ -43,6 +44,7 @@ func TestMicrosoftSentinelConnector(t *testing.T) {
 				"client_secret":            "tjpxl7uy4wbb",
 				"audit_enabled":            true,
 				"audit_filters.0.values":   []string{"kekpon4oj34w"},
+				"company_audits_disabled":  true,
 				"troubleshoot_log_enabled": false,
 				"troubleshoot_stream_name": "Custom-DescopeTroubleshoot_CL",
 				"mask_pii":                 false,
@@ -62,6 +64,7 @@ func TestMicrosoftSentinelConnector(t *testing.T) {
 				client_secret = "hgw76gicp7vp"
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["po4by43vyqpb"] }]
+				company_audits_disabled = false
 				troubleshoot_log_enabled = false
 				troubleshoot_stream_name = "Custom-DescopeTroubleshoot_CL"
 				mask_pii = true
@@ -77,6 +80,7 @@ func TestMicrosoftSentinelConnector(t *testing.T) {
 				"client_secret":            "hgw76gicp7vp",
 				"audit_enabled":            true,
 				"audit_filters.0.values":   []string{"po4by43vyqpb"},
+				"company_audits_disabled":  false,
 				"troubleshoot_log_enabled": false,
 				"troubleshoot_stream_name": "Custom-DescopeTroubleshoot_CL",
 				"mask_pii":                 true,

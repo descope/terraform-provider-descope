@@ -27,13 +27,14 @@ var AuditWebhookConnectorAttributes = map[string]schema.Attribute{
 	"description": stringattr.Default(""),
 	"disabled":    boolattr.Default(false),
 
-	"base_url":       stringattr.Required(),
-	"authentication": objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
-	"headers":        strmapattr.Default(),
-	"secret_headers": strmapattr.Secret(),
-	"hmac_secret":    stringattr.SecretOptional(),
-	"insecure":       boolattr.Default(false),
-	"audit_filters":  listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"base_url":                stringattr.Required(),
+	"authentication":          objattr.Default(HTTPAuthFieldDefault, HTTPAuthFieldAttributes, HTTPAuthFieldValidator),
+	"headers":                 strmapattr.Default(),
+	"secret_headers":          strmapattr.Secret(),
+	"hmac_secret":             stringattr.SecretOptional(),
+	"insecure":                boolattr.Default(false),
+	"audit_filters":           listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"company_audits_disabled": boolattr.Default(false),
 }
 
 // Model
@@ -45,13 +46,14 @@ type AuditWebhookConnectorModel struct {
 	Description stringattr.Type `tfsdk:"description"`
 	Disabled    boolattr.Type   `tfsdk:"disabled"`
 
-	BaseURL        stringattr.Type                      `tfsdk:"base_url"`
-	Authentication objattr.Type[HTTPAuthFieldModel]     `tfsdk:"authentication"`
-	Headers        strmapattr.Type                      `tfsdk:"headers"`
-	SecretHeaders  strmapattr.Type                      `tfsdk:"secret_headers"`
-	HMACSecret     stringattr.Type                      `tfsdk:"hmac_secret"`
-	Insecure       boolattr.Type                        `tfsdk:"insecure"`
-	AuditFilters   listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	BaseURL               stringattr.Type                      `tfsdk:"base_url"`
+	Authentication        objattr.Type[HTTPAuthFieldModel]     `tfsdk:"authentication"`
+	Headers               strmapattr.Type                      `tfsdk:"headers"`
+	SecretHeaders         strmapattr.Type                      `tfsdk:"secret_headers"`
+	HMACSecret            stringattr.Type                      `tfsdk:"hmac_secret"`
+	Insecure              boolattr.Type                        `tfsdk:"insecure"`
+	AuditFilters          listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	CompanyAuditsDisabled boolattr.Type                        `tfsdk:"company_audits_disabled"`
 }
 
 func (m *AuditWebhookConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -91,6 +93,7 @@ func (m *AuditWebhookConnectorModel) ConfigurationValues(h *helpers.Handler) map
 	stringattr.Get(m.HMACSecret, c, "hmacSecret")
 	boolattr.Get(m.Insecure, c, "insecure")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	boolattr.Get(m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	return c
 }
 
@@ -101,6 +104,7 @@ func (m *AuditWebhookConnectorModel) SetConfigurationValues(c map[string]any, h 
 	stringattr.SetSecret(&m.HMACSecret, c, "hmacSecret", h)
 	boolattr.Set(&m.Insecure, c, "insecure")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+	boolattr.Set(&m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 }
 
 func (m *AuditWebhookConnectorModel) GetID() stringattr.Type        { return m.ID }

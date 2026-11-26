@@ -33,8 +33,10 @@ var AWSS3ConnectorAttributes = map[string]schema.Attribute{
 	"external_id":              stringattr.Default(""),
 	"region":                   stringattr.Required(),
 	"bucket":                   stringattr.Required(),
+	"output_format":            stringattr.Default("json", stringvalidator.OneOf("", "json", "ndjson")),
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"company_audits_disabled":  boolattr.Default(false),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 	"mask_pii":                 boolattr.Default(false),
 }
@@ -55,8 +57,10 @@ type AWSS3ConnectorModel struct {
 	ExternalID             stringattr.Type                      `tfsdk:"external_id"`
 	Region                 stringattr.Type                      `tfsdk:"region"`
 	Bucket                 stringattr.Type                      `tfsdk:"bucket"`
+	OutputFormat           stringattr.Type                      `tfsdk:"output_format"`
 	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
 	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	CompanyAuditsDisabled  boolattr.Type                        `tfsdk:"company_audits_disabled"`
 	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
 	MaskPII                boolattr.Type                        `tfsdk:"mask_pii"`
 }
@@ -117,6 +121,9 @@ func (m *AWSS3ConnectorModel) Validate(h *helpers.Handler) {
 	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
+	if m.CompanyAuditsDisabled.ValueBool() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+		h.Conflict("The company_audits_disabled field cannot be used when audit_enabled isn't set to true")
+	}
 }
 
 // Configuration
@@ -130,8 +137,10 @@ func (m *AWSS3ConnectorModel) ConfigurationValues(h *helpers.Handler) map[string
 	stringattr.Get(m.ExternalID, c, "externalId")
 	stringattr.Get(m.Region, c, "region")
 	stringattr.Get(m.Bucket, c, "bucket")
+	stringattr.Get(m.OutputFormat, c, "outputFormat")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	boolattr.Get(m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
 	return c
@@ -145,8 +154,10 @@ func (m *AWSS3ConnectorModel) SetConfigurationValues(c map[string]any, h *helper
 	stringattr.Set(&m.ExternalID, c, "externalId")
 	stringattr.Set(&m.Region, c, "region")
 	stringattr.Set(&m.Bucket, c, "bucket")
+	stringattr.Set(&m.OutputFormat, c, "outputFormat")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+	boolattr.Set(&m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Set(&m.MaskPII, c, "maskPII")
 }

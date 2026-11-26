@@ -29,7 +29,8 @@ Manages a company-level AWS S3 connector that streams the audit events of the wh
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
 - `external_id` (String) The external ID to use when assuming the role.
-- `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
+- `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs. Learn more about what is masked: https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs
+- `output_format` (String) The format of the files written to the bucket. JSON writes each batch as a JSON array in a `.json` file. NDJSON writes one event per line in a `.ndjson` file, which most log tools can ingest directly. Changing this also changes the file extension, so update any suffix filters on the bucket.
 - `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
 - `secret_access_key` (String, Sensitive) The secret AWS access key.
 

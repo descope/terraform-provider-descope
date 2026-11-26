@@ -23,7 +23,7 @@ Manages a Segment connector and its configuration in a Descope project. Orchestr
 
 ### Optional
 
-- `browser_analytics` (Boolean) Load Segment's analytics.js library in your end users' browsers during flows, so Segment can recognize the same visitor across your sites. Loading the library sends no events on its own, and you choose which screens or actions load it.
+- `browser_analytics` (Boolean) Load Segment's analytics.js library in your end users' browsers during flows, so Segment can recognize the same visitor across your sites. Loading the library sends no events on its own, and you choose which screens or actions load it. With Auto Audit on, it loads in every flow.
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
 - `host` (String) The base URL of the Segment API, when using a custom domain in Segment.

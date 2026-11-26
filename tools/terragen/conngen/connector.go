@@ -55,7 +55,7 @@ var excludedFields = map[string][]string{
 	},
 }
 
-var companyExcludedFields = []string{"auditFilters", "troubleshootLogEnabled"}
+var companyExcludedFields = []string{"auditFilters", "troubleshootLogEnabled", "companyAuditsDisabled"}
 
 // The field types the generator models. A new template type must get support here and in the field attribute helpers, or be excluded.
 var supportedFieldTypes = []string{
@@ -330,6 +330,10 @@ func (c *Connector) Prepare() {
 				}
 			case FieldTypeNumber:
 				if f.Required && f.Initial != nil && f.Initial != 0 {
+					log.Fatalf("Field %s of type %s has a non-zero initial value which is not supported", f.Name, f.Type)
+				}
+			case FieldTypeBool:
+				if f.Required && f.Initial != nil && f.Initial != false {
 					log.Fatalf("Field %s of type %s has a non-zero initial value which is not supported", f.Name, f.Type)
 				}
 			case FieldTypeAuditFilters:

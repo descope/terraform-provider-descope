@@ -32,6 +32,7 @@ Manages a reCAPTCHA Enterprise connector and its configuration in a Descope proj
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
 - `override_assessment` (Boolean) Override the default assessment model. Note: Overriding assessment is intended for automated testing and should not be utilized in production environments.
+- `use_static_ips` (Boolean) Whether the connector should send all requests from specific static IPs.
 
 ### Read-Only
 

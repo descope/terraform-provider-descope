@@ -31,6 +31,7 @@ func TestSnowflakeConnector(t *testing.T) {
 				self_provision = true
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+				company_audits_disabled = true
 				min_flush_interval_minutes = 23
 				troubleshoot_log_enabled = false
 				mask_pii = false
@@ -55,6 +56,7 @@ func TestSnowflakeConnector(t *testing.T) {
 				"self_provision":             true,
 				"audit_enabled":              true,
 				"audit_filters.0.values":     []string{"kekpon4oj34w"},
+				"company_audits_disabled":    true,
 				"min_flush_interval_minutes": 23,
 				"troubleshoot_log_enabled":   false,
 				"mask_pii":                   false,
@@ -80,6 +82,7 @@ func TestSnowflakeConnector(t *testing.T) {
 				self_provision = false
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["po4by43vyqpb"] }]
+				company_audits_disabled = false
 				min_flush_interval_minutes = 24
 				troubleshoot_log_enabled = true
 				mask_pii = true
@@ -101,6 +104,7 @@ func TestSnowflakeConnector(t *testing.T) {
 				"self_provision":             false,
 				"audit_enabled":              true,
 				"audit_filters.0.values":     []string{"po4by43vyqpb"},
+				"company_audits_disabled":    false,
 				"min_flush_interval_minutes": 24,
 				"troubleshoot_log_enabled":   true,
 				"mask_pii":                   true,

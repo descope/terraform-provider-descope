@@ -26,6 +26,7 @@ Manages a Mixpanel connector and its configuration in a Descope project. Stream 
 - `api_secret` (String, Sensitive) The Mixpanel API secret key used for authenticating API requests.
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--audit_filters))
+- `company_audits_disabled` (Boolean) Stop sending company-level audit events, such as console logins and management key changes, to this connector. Stream them once for the whole company with the company audit connector in Company Settings instead.
 - `config_project_id` (String) The unique identifier for your Mixpanel project.
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.

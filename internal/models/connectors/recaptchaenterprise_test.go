@@ -25,6 +25,7 @@ func TestRecaptchaEnterpriseConnector(t *testing.T) {
 				override_assessment = true
 				bot_threshold = 12
 				assessment_score = 15
+				use_static_ips = false
 			`),
 			Check: c.Check(map[string]any{
 				"id":                  testacc.AttributeIsSet,
@@ -40,6 +41,7 @@ func TestRecaptchaEnterpriseConnector(t *testing.T) {
 				"override_assessment": true,
 				"bot_threshold":       12,
 				"assessment_score":    15,
+				"use_static_ips":      false,
 			}),
 		},
 		// update the connector in place with changed field values
@@ -56,6 +58,7 @@ func TestRecaptchaEnterpriseConnector(t *testing.T) {
 				override_assessment = true
 				bot_threshold = 13
 				assessment_score = 16
+				use_static_ips = true
 			`),
 			Check: c.Check(map[string]any{
 				"description":         "updated",
@@ -68,6 +71,7 @@ func TestRecaptchaEnterpriseConnector(t *testing.T) {
 				"override_assessment": true,
 				"bot_threshold":       13,
 				"assessment_score":    16,
+				"use_static_ips":      true,
 			}),
 		},
 	)

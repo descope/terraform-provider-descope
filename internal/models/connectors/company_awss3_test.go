@@ -22,6 +22,7 @@ func TestCompanyAWSS3Connector(t *testing.T) {
 				external_id = null
 				region = "y2l5fg"
 				bucket = "ywdzxd"
+				output_format = "json"
 				audit_enabled = true
 				mask_pii = false
 			`),
@@ -37,6 +38,7 @@ func TestCompanyAWSS3Connector(t *testing.T) {
 				"external_id":       "",
 				"region":            "y2l5fg",
 				"bucket":            "ywdzxd",
+				"output_format":     "json",
 				"audit_enabled":     true,
 				"mask_pii":          false,
 			}),
@@ -53,6 +55,7 @@ func TestCompanyAWSS3Connector(t *testing.T) {
 				external_id = null
 				region = "versrj"
 				bucket = "vmwzsv"
+				output_format = "json"
 				audit_enabled = false
 				mask_pii = true
 			`),
@@ -66,6 +69,7 @@ func TestCompanyAWSS3Connector(t *testing.T) {
 				"external_id":       "",
 				"region":            "versrj",
 				"bucket":            "vmwzsv",
+				"output_format":     "json",
 				"audit_enabled":     false,
 				"mask_pii":          true,
 			}),

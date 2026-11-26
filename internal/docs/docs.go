@@ -411,6 +411,9 @@ var docsAuditWebhookConnector = map[string]string{
 	"insecure": "Will ignore certificate errors raised by the client",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 }
 
 var docsAWSEndUserMessagingConnector = map[string]string{
@@ -459,8 +462,13 @@ var docsAWSEventBridgeConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsAWSS3Connector = map[string]string{
@@ -475,11 +483,20 @@ var docsAWSS3Connector = map[string]string{
 	"external_id":       "The external ID to use when assuming the role.",
 	"region":            "The AWS S3 region, e.g. `us-east-1`.",
 	"bucket":            "The AWS S3 bucket. This bucket should already exist for the connector to work.",
-	"audit_enabled":     "Whether to enable streaming of audit events.",
+	"output_format": "The format of the files written to the bucket. JSON writes each batch as a JSON " +
+		"array in a `.json` file. NDJSON writes one event per line in a `.ndjson` file, " +
+		"which most log tools can ingest directly. Changing this also changes the file " +
+		"extension, so update any suffix filters on the bucket.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsAWSSESEmailValidationConnector = map[string]string{
@@ -527,6 +544,9 @@ var docsAzureMonitorConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
 		"about what is masked: " +
@@ -579,7 +599,9 @@ var docsCompanyAWSEventBridgeConnector = map[string]string{
 	"source": "The source of the EventBridge event. This identifies the application or service " +
 		"that is generating the event, e.g. `descope.auth`.",
 	"audit_enabled": "Whether to enable streaming of audit events.",
-	"mask_pii":      "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsCompanyAWSS3Connector = map[string]string{
@@ -593,8 +615,14 @@ var docsCompanyAWSS3Connector = map[string]string{
 	"external_id":       "The external ID to use when assuming the role.",
 	"region":            "The AWS S3 region, e.g. `us-east-1`.",
 	"bucket":            "The AWS S3 bucket. This bucket should already exist for the connector to work.",
-	"audit_enabled":     "Whether to enable streaming of audit events.",
-	"mask_pii":          "Whether to mask personally identifiable information in the logs.",
+	"output_format": "The format of the files written to the bucket. JSON writes each batch as a JSON " +
+		"array in a `.json` file. NDJSON writes one event per line in a `.ndjson` file, " +
+		"which most log tools can ingest directly. Changing this also changes the file " +
+		"extension, so update any suffix filters on the bucket.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsCompanyAzureMonitorConnector = map[string]string{
@@ -662,7 +690,9 @@ var docsCompanyDatadogConnector = map[string]string{
 		"Datadog (e.g. `env:production,team:auth`). These are added in addition to any " +
 		"default tags. If left empty, only the default Descope tags will be used.",
 	"audit_enabled": "Whether to enable streaming of audit events.",
-	"mask_pii":      "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsCompanyGoogleCloudLoggingConnector = map[string]string{
@@ -840,8 +870,13 @@ var docsCoralogixConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsCriblConnector = map[string]string{
@@ -861,8 +896,13 @@ var docsCriblConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsDarwiniumConnector = map[string]string{
@@ -901,8 +941,13 @@ var docsDatadogConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsDevRevGrowConnector = map[string]string{
@@ -1080,6 +1125,9 @@ var docsGoogleCloudLoggingConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
@@ -1117,8 +1165,13 @@ var docsGroundcoverConnector = map[string]string{
 	"audit_enabled":    "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsHCaptchaConnector = map[string]string{
@@ -1288,9 +1341,14 @@ var docsMicrosoftSentinelConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"troubleshoot_stream_name": "The data collection rule stream that receives the troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsMixpanelConnector = map[string]string{
@@ -1308,6 +1366,9 @@ var docsMixpanelConnector = map[string]string{
 	"audit_enabled":            "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"override_logs_prefix":     "Enable this option to use a custom prefix for log fields.",
 	"logs_prefix":              "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
@@ -1339,6 +1400,9 @@ var docsNewRelicConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"override_logs_prefix":     "Enable this option to use a custom prefix for log fields.",
 	"logs_prefix":              "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
@@ -1360,6 +1424,9 @@ var docsOpenTelemetryConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
@@ -1374,8 +1441,13 @@ var docsPendoConnector = map[string]string{
 	"audit_enabled":   "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsPingDirectoryConnector = map[string]string{
@@ -1446,6 +1518,7 @@ var docsRecaptchaEnterpriseConnector = map[string]string{
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 		"the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 		"and 0 is a bot.",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
 var docsRecaptchaV2Connector = map[string]string{
@@ -1543,7 +1616,8 @@ var docsSegmentConnector = map[string]string{
 	"host":        "The base URL of the Segment API, when using a custom domain in Segment.",
 	"browser_analytics": "Load Segment's analytics.js library in your end users' browsers during flows, so " +
 		"Segment can recognize the same visitor across your sites. Loading the library " +
-		"sends no events on its own, and you choose which screens or actions load it.",
+		"sends no events on its own, and you choose which screens or actions load it. " +
+		"With Auto Audit on, it loads in every flow.",
 	"public_write_key": "The write key of your Segment JavaScript Website source. This is a different " +
 		"Segment source than the Write Key field, and unlike it this value is visible to " +
 		"end users, which is how Segment's browser library works.",
@@ -1688,12 +1762,17 @@ var docsSnowflakeConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"min_flush_interval_minutes": "The minimum time between writes to Snowflake, in minutes. When set, events are " +
 		"accumulated and written in a single batch at most once per interval, which lets " +
 		"the warehouse auto-suspend between writes and reduces cost. Set to 0 (or leave " +
 		"empty) to write events according to the default Descope cycle.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsSNSConnector = map[string]string{
@@ -1728,6 +1807,9 @@ var docsSplunkConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
@@ -1768,6 +1850,9 @@ var docsSumoLogicConnector = map[string]string{
 	"audit_enabled":   "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
@@ -2047,8 +2132,8 @@ var docsInboundApp = map[string]string{
 		"since the epoch for `date`, and an `MM-DD` string for `monthday`. Values set outside Terraform are removed on the " +
 		"next apply unless they are also in this attribute, so the first plan after adding it, or after upgrading the " +
 		"provider, shows those values as removed.",
-	"tags": "Labels for this inbound app, matched by policy rules through `client.tags` conditions. Up to 100 tags, " +
-		"each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.",
+	"tags": "Labels for this inbound app, matched by policy rules through `client.tags` conditions. " +
+		"Up to 100 tags, each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.",
 }
 
 var docsScopeClaimMapping = map[string]string{

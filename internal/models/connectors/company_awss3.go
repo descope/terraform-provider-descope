@@ -30,6 +30,7 @@ var CompanyAWSS3ConnectorAttributes = map[string]schema.Attribute{
 	"external_id":       stringattr.Default(""),
 	"region":            stringattr.Required(),
 	"bucket":            stringattr.Required(),
+	"output_format":     stringattr.Default("json", stringvalidator.OneOf("", "json", "ndjson")),
 	"audit_enabled":     boolattr.Default(true),
 	"mask_pii":          boolattr.Default(false),
 }
@@ -49,6 +50,7 @@ type CompanyAWSS3ConnectorModel struct {
 	ExternalID      stringattr.Type `tfsdk:"external_id"`
 	Region          stringattr.Type `tfsdk:"region"`
 	Bucket          stringattr.Type `tfsdk:"bucket"`
+	OutputFormat    stringattr.Type `tfsdk:"output_format"`
 	AuditEnabled    boolattr.Type   `tfsdk:"audit_enabled"`
 	MaskPII         boolattr.Type   `tfsdk:"mask_pii"`
 }
@@ -119,6 +121,7 @@ func (m *CompanyAWSS3ConnectorModel) ConfigurationValues(h *helpers.Handler) map
 	stringattr.Get(m.ExternalID, c, "externalId")
 	stringattr.Get(m.Region, c, "region")
 	stringattr.Get(m.Bucket, c, "bucket")
+	stringattr.Get(m.OutputFormat, c, "outputFormat")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
 	return c
@@ -132,6 +135,7 @@ func (m *CompanyAWSS3ConnectorModel) SetConfigurationValues(c map[string]any, h 
 	stringattr.Set(&m.ExternalID, c, "externalId")
 	stringattr.Set(&m.Region, c, "region")
 	stringattr.Set(&m.Bucket, c, "bucket")
+	stringattr.Set(&m.OutputFormat, c, "outputFormat")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	boolattr.Set(&m.MaskPII, c, "maskPII")
 }

@@ -34,6 +34,7 @@ var RecaptchaEnterpriseConnectorAttributes = map[string]schema.Attribute{
 	"override_assessment": boolattr.Default(false),
 	"bot_threshold":       floatattr.Default(0.5),
 	"assessment_score":    floatattr.Default(0.5),
+	"use_static_ips":      boolattr.Default(false),
 }
 
 // Model
@@ -53,6 +54,7 @@ type RecaptchaEnterpriseConnectorModel struct {
 	OverrideAssessment boolattr.Type   `tfsdk:"override_assessment"`
 	BotThreshold       floatattr.Type  `tfsdk:"bot_threshold"`
 	AssessmentScore    floatattr.Type  `tfsdk:"assessment_score"`
+	UseStaticIPs       boolattr.Type   `tfsdk:"use_static_ips"`
 }
 
 func (m *RecaptchaEnterpriseConnectorModel) Values(h *helpers.Handler) map[string]any {
@@ -94,6 +96,7 @@ func (m *RecaptchaEnterpriseConnectorModel) ConfigurationValues(h *helpers.Handl
 	boolattr.Get(m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Get(m.BotThreshold, c, "botThreshold")
 	floatattr.Get(m.AssessmentScore, c, "assessmentScore")
+	boolattr.Get(m.UseStaticIPs, c, "useStaticIps")
 	c["enterprise"] = true
 	return c
 }
@@ -107,6 +110,7 @@ func (m *RecaptchaEnterpriseConnectorModel) SetConfigurationValues(c map[string]
 	boolattr.Set(&m.OverrideAssessment, c, "overrideAssessment")
 	floatattr.Set(&m.BotThreshold, c, "botThreshold")
 	floatattr.Set(&m.AssessmentScore, c, "assessmentScore")
+	boolattr.Set(&m.UseStaticIPs, c, "useStaticIps")
 }
 
 func (m *RecaptchaEnterpriseConnectorModel) GetID() stringattr.Type        { return m.ID }

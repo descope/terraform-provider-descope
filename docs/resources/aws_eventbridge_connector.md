@@ -30,10 +30,11 @@ Manages a AWS EventBridge connector and its configuration in a Descope project. 
 - `audit_enabled` (Boolean) Whether to enable streaming of audit events.
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--audit_filters))
 - `auth_type` (String) The authentication type to use.
+- `company_audits_disabled` (Boolean) Stop sending company-level audit events, such as console logins and management key changes, to this connector. Stream them once for the whole company with the company audit connector in Company Settings instead.
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
 - `external_id` (String) The external ID to use when assuming the role.
-- `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
+- `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs. Learn more about what is masked: https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs
 - `role_arn` (String) The Amazon Resource Name (ARN) of the role to assume.
 - `secret_access_key` (String, Sensitive) The secret AWS access key.
 - `troubleshoot_log_enabled` (Boolean) Whether to send troubleshooting events.
