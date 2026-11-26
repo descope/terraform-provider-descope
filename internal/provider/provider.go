@@ -134,6 +134,7 @@ func (p *descopeProvider) Resources(_ context.Context) []func() resource.Resourc
 		resources.NewInboundAppAttributeResource,
 		resources.NewPasskeySettingsResource,
 		resources.NewTOTPSettingsResource,
+		resources.NewEmailVerificationSettingsResource,
 		resources.NewAdminPortalResource,
 		resources.NewGovernanceResource,
 		resources.NewMagicLinkSettingsResource,
