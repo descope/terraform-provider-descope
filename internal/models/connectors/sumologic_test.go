@@ -20,6 +20,7 @@ func TestSumoLogicConnector(t *testing.T) {
 				http_source_url = "shhxfygq6qspm"
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+				company_audits_disabled = true
 				troubleshoot_log_enabled = false
 			`),
 			Check: c.Check(map[string]any{
@@ -31,6 +32,7 @@ func TestSumoLogicConnector(t *testing.T) {
 				"http_source_url":          "shhxfygq6qspm",
 				"audit_enabled":            true,
 				"audit_filters.0.values":   []string{"kekpon4oj34w"},
+				"company_audits_disabled":  true,
 				"troubleshoot_log_enabled": false,
 			}),
 		},
@@ -43,6 +45,7 @@ func TestSumoLogicConnector(t *testing.T) {
 				http_source_url = "kykx6dpdxusof"
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["po4by43vyqpb"] }]
+				company_audits_disabled = false
 				troubleshoot_log_enabled = true
 			`),
 			Check: c.Check(map[string]any{
@@ -51,6 +54,7 @@ func TestSumoLogicConnector(t *testing.T) {
 				"http_source_url":          "kykx6dpdxusof",
 				"audit_enabled":            true,
 				"audit_filters.0.values":   []string{"po4by43vyqpb"},
+				"company_audits_disabled":  false,
 				"troubleshoot_log_enabled": true,
 			}),
 		},

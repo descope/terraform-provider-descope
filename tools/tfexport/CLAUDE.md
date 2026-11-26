@@ -76,6 +76,10 @@ Import block id formats have to match what `baseResource.ImportState` expects.
 one from that list without adding discovery makes `TestGenerativeCoverage` fail with a discovery gap, which
 is the intended guard: a registered resource with no discovery path is silently absent from every export.
 
+The company-level `descope_company_*_connector` resources are out of scope too. The generative test skips them
+with every `_connector`, the connector sweep skips their `company_*_test.go` files, and `ConnectorTypes` leaves
+them out so they don't take over their project connector's wire type.
+
 ## Test suites
 
 Everything here needs `TF_ACC=1`, and the round-trip battery additionally needs

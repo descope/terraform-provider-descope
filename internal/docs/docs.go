@@ -411,6 +411,9 @@ var docsAuditWebhookConnector = map[string]string{
 	"insecure": "Will ignore certificate errors raised by the client",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 }
 
 var docsAWSEndUserMessagingConnector = map[string]string{
@@ -459,8 +462,13 @@ var docsAWSEventBridgeConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsAWSS3Connector = map[string]string{
@@ -475,11 +483,20 @@ var docsAWSS3Connector = map[string]string{
 	"external_id":       "The external ID to use when assuming the role.",
 	"region":            "The AWS S3 region, e.g. `us-east-1`.",
 	"bucket":            "The AWS S3 bucket. This bucket should already exist for the connector to work.",
-	"audit_enabled":     "Whether to enable streaming of audit events.",
+	"output_format": "The format of the files written to the bucket. JSON writes each batch as a JSON " +
+		"array in a `.json` file. NDJSON writes one event per line in a `.ndjson` file, " +
+		"which most log tools can ingest directly. Changing this also changes the file " +
+		"extension, so update any suffix filters on the bucket.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsAWSSESEmailValidationConnector = map[string]string{
@@ -527,6 +544,9 @@ var docsAzureMonitorConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
 		"about what is masked: " +
@@ -544,6 +564,302 @@ var docsBitsightConnector = map[string]string{
 		"Intelligence.",
 }
 
+var docsCompanyAuditWebhookConnector = map[string]string{
+	"name":           "A custom name for your connector.",
+	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"base_url":       "The base URL to fetch",
+	"authentication": "Authentication Information",
+	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
+	"hmac_secret": "HMAC is a method for message signing with a symmetrical key. This secret will be " +
+		"used to sign the payload, and the resulting signature will be sent in the " +
+		"`x-descope-webhook-s256` header. The receiving service should use this secret to " +
+		"verify the integrity and authenticity of the payload by checking the provided " +
+		"signature",
+	"insecure": "Will ignore certificate errors raised by the client",
+}
+
+var docsCompanyAWSEventBridgeConnector = map[string]string{
+	"name":              "A custom name for your connector.",
+	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type":         "The authentication type to use.",
+	"access_key_id":     "The unique AWS access key ID.",
+	"secret_access_key": "The secret AWS access key.",
+	"role_arn":          "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id":       "The external ID to use when assuming the role.",
+	"region":            "The AWS EventBridge region, e.g. `us-east-1`.",
+	"event_bus_name": "The name or ARN of the EventBridge event bus. Use `default` for the default " +
+		"event bus or provide a custom event bus name/ARN.",
+	"detail_type": "The detail type for the EventBridge event. This is a free-form string used to " +
+		"identify the event type, e.g. `descope.audit.event`.",
+	"source": "The source of the EventBridge event. This identifies the application or service " +
+		"that is generating the event, e.g. `descope.auth`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyAWSS3Connector = map[string]string{
+	"name":              "A custom name for your connector.",
+	"description":       "A description of what your connector is used for.",
+	"disabled":          "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type":         "The authentication type to use.",
+	"access_key_id":     "The unique AWS access key ID.",
+	"secret_access_key": "The secret AWS access key.",
+	"role_arn":          "The Amazon Resource Name (ARN) of the role to assume.",
+	"external_id":       "The external ID to use when assuming the role.",
+	"region":            "The AWS S3 region, e.g. `us-east-1`.",
+	"bucket":            "The AWS S3 bucket. This bucket should already exist for the connector to work.",
+	"output_format": "The format of the files written to the bucket. JSON writes each batch as a JSON " +
+		"array in a `.json` file. NDJSON writes one event per line in a `.ndjson` file, " +
+		"which most log tools can ingest directly. Changing this also changes the file " +
+		"extension, so update any suffix filters on the bucket.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyAzureMonitorConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The scheme and host of the logs ingestion endpoint, in the form " +
+		"https://<name>.<region>-1.ingest.monitor.azure.com, without any path.",
+	"dcr_immutable_id": "The immutable ID of the OTLP-enabled data collection rule, in the form dcr-<32 " +
+		"hex characters>.",
+	"tenant_id": "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id": "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"service_name": "The service name attached to the logs as the `service.name` resource attribute. " +
+		"Default is `descope`.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyCoralogixConnector = map[string]string{
+	"name":          "A custom name for your connector.",
+	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"endpoint":      "The ingress OpenTelemetry endpoint URL.",
+	"bearer_token":  "Bearer token issued by Coralogix as Send-Your-Data API key",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyCriblConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"endpoint": "The base URL of your Cribl Stream HTTP source. For Cribl Cloud, the default http " +
+		"source looks something like " +
+		"https://<worker-group>.main.<organization-id>.cribl.cloud:10080. You can also " +
+		"define a custom source (find this in your Cribl Cloud portal under Data " +
+		"Sources). For self-hosted deployments, use https://<your-cribl-host>:10080 or " +
+		"however you have it configured.",
+	"auth_token": "A shared secret token for authenticating with the Cribl HTTP source. This token " +
+		"is defined on the source and is strongly recommended for security reasons.",
+	"source":        "An optional source identifier for events in Cribl (defaults to 'descope').",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyDatadogConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"api_key":     "The unique Datadog organization key.",
+	"site": "The Datadog site to send logs to. Default is `datadoghq.com`. European, free " +
+		"tier and other customers should set their site accordingly.",
+	"source": "An optional custom source to use for log entries sent to Datadog. This can be " +
+		"used to differentiate between environments (e.g. `production`, `staging`). If " +
+		"left empty, the default Descope source will be used.",
+	"tags": "An optional comma-separated list of tags to append to all log entries sent to " +
+		"Datadog (e.g. `env:production,team:auth`). These are added in addition to any " +
+		"default tags. If left empty, only the default Descope tags will be used.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyGoogleCloudLoggingConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"service_account_key": "A Service Account Key JSON file created from a service account on your Google " +
+		"Cloud project. This file is used to authenticate and authorize the connector to " +
+		"access Google Cloud Logging. The service account this key belongs to must have " +
+		"the appropriate permissions to write logs.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+}
+
+var docsCompanyGroundcoverConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"endpoint": "The gRPC OTLP backend endpoint URL. Found in the groundcover console under " +
+		"Settings → Ingestion Keys → Backend Endpoints.",
+	"ingestion_key": "Third Party ingestion key for authenticating with groundcover. Create one in the " +
+		"groundcover console under Settings → Ingestion Keys (type: thirdParty).",
+	"environment_name": "Name of the environment tag.",
+	"service_name":     "Name of the service tag.",
+	"audit_enabled":    "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyMicrosoftSentinelConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"ingestion_endpoint": "The logs ingestion endpoint of the data collection rule, for example " +
+		"https://<dcr-name>-<suffix>.<region>-1.ingest.monitor.azure.com. The Terraform " +
+		"guide outputs it as ingestionEndpoint.",
+	"dcr_immutable_id": "The immutable ID of the data collection rule, in the form dcr-<32 hex " +
+		"characters>. The Terraform guide outputs it as dcrImmutableId.",
+	"stream_name": "The data collection rule stream that receives the audit events.",
+	"tenant_id":   "The Microsoft Entra tenant ID of the application that Descope authenticates as.",
+	"client_id":   "The client ID of the Entra application that Descope authenticates as.",
+	"client_secret": "A client secret of the Entra application. Entra client secrets expire, so update " +
+		"this value before the secret does.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanyMixpanelConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"project_token": "The unique Mixpanel project token used to identify the project where data will " +
+		"be sent.",
+	"api_secret":               "The Mixpanel API secret key used for authenticating API requests.",
+	"config_project_id":        "The unique identifier for your Mixpanel project.",
+	"service_account_username": "The Mixpanel service account username used for integration.",
+	"service_account_secret":   "The Mixpanel service account secret used for integration.",
+	"eu_residency":             "Indicates if your Mixpanel project data is stored in the EU region.",
+	"audit_enabled":            "Whether to enable streaming of audit events.",
+	"override_logs_prefix":     "Enable this option to use a custom prefix for log fields.",
+	"logs_prefix":              "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
+}
+
+var docsCompanyNewRelicConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"api_key":     "Ingest License Key of the account you want to report data to.",
+	"data_center": "The New Relic data center the account belongs to. Possible values are: `US`, " +
+		"`EU`, `FedRAMP`. Default is `US`.",
+	"audit_enabled":        "Whether to enable streaming of audit events.",
+	"override_logs_prefix": "Enable this option to use a custom prefix for log fields.",
+	"logs_prefix":          "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
+}
+
+var docsCompanyOpenTelemetryConnector = map[string]string{
+	"name":           "A custom name for your connector.",
+	"description":    "A description of what your connector is used for.",
+	"disabled":       "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"endpoint":       "The OTLP endpoint URL.",
+	"protocol":       "Protocol to use for OTLP: http or grpc.",
+	"authentication": "Authentication Information",
+	"headers":        "The headers to send with the request",
+	"secret_headers": "The headers to send with the request. Values set here are stored encrypted and " +
+		"are never returned by the API, so they are not read back into the Terraform " +
+		"state.",
+	"insecure":      "Will ignore certificate errors raised by the client",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+}
+
+var docsCompanyPendoConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"base_url": "The Pendo regional domain to send logs to. Default is the US region, " +
+		"`https://data.pendo.io`. Customers in other regions must set this accordingly.",
+	"integration_key": "The secret Pendo integration key Descope should use.",
+	"audit_enabled":   "Whether to enable streaming of audit events.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanySnowflakeConnector = map[string]string{
+	"name":        "A custom name for your connector.",
+	"description": "A description of what your connector is used for.",
+	"disabled":    "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"auth_type": "How Descope authenticates to the Snowflake SQL API. See the connector " +
+		"documentation for the setup steps of each method.",
+	"api_key": "A Snowflake Programmatic Access Token (PAT). The token's user must have CREATE " +
+		"DATABASE privileges, unless Self Provision is enabled - in which case it only " +
+		"needs write access to the table you created.",
+	"snowflake_user": "The Snowflake user Descope authenticates as. The public key must be registered " +
+		"on this user with `ALTER USER ... SET RSA_PUBLIC_KEY`.",
+	"private_key": "The private key in PEM format, RSA 2048-bit or stronger. Descope reads PKCS#8 " +
+		"encrypted with PBES2, or unencrypted PKCS#8 or PKCS#1. For Snowflake's own " +
+		"key-pair requirements see " +
+		"https://docs.snowflake.com/en/user-guide/key-pair-auth.",
+	"private_key_passphrase": "Required only if the private key is passphrase-protected. Leave empty for an " +
+		"unencrypted key.",
+	"account_identifier": "Overrides the account identifier derived from the Account URL. Only needed for " +
+		"PrivateLink or legacy region locators.",
+	"site": "Your Snowflake account URL, e.g. " +
+		"`https://<org>-<account>.snowflakecomputing.com`.",
+	"warehouse": "The Snowflake warehouse, exactly as stored (unquoted names are uppercased: " +
+		"descope_wh->DESCOPE_WH). Run SHOW WAREHOUSES to check. Defaults to `COMPUTE_WH`.",
+	"database": "The Snowflake database, exactly as stored (unquoted names are uppercased: " +
+		"descope_db->DESCOPE_DB). Run SHOW DATABASES to check. Defaults to " +
+		"`DESCOPE_EXPORT_DB`.",
+	"schema": "The schema within the database, exactly as stored (unquoted names are " +
+		"uppercased: public->PUBLIC). Run SHOW SCHEMAS to check. Defaults to `PUBLIC`.",
+	"audit_table": "The table to write audit events to, exactly as stored (unquoted names are " +
+		"uppercased: audit_logs->AUDIT_LOGS). Run SHOW TABLES to check. Defaults to " +
+		"`DESCOPE_AUDIT_LOGS`.",
+	"self_provision": "Create the database, table and schema in Snowflake manually instead of allowing " +
+		"the connector to create them. Useful when the Snowflake user Descope " +
+		"authenticates as is restricted to minimal or write-only privileges.",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+	"min_flush_interval_minutes": "The minimum time between writes to Snowflake, in minutes. When set, events are " +
+		"accumulated and written in a single batch at most once per interval, which lets " +
+		"the warehouse auto-suspend between writes and reduces cost. Set to 0 (or leave " +
+		"empty) to write events according to the default Descope cycle.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
+}
+
+var docsCompanySplunkConnector = map[string]string{
+	"name":          "A custom name for your connector.",
+	"description":   "A description of what your connector is used for.",
+	"disabled":      "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"hec_token":     "An HTTP Event Collector token configured on your Splunk project.",
+	"hec_url":       "The URL to be used accessing your Splunk system, including the appropriate port",
+	"index":         "An optional index to use for all sent events",
+	"audit_enabled": "Whether to enable streaming of audit events.",
+}
+
+var docsCompanySumoLogicConnector = map[string]string{
+	"name":            "A custom name for your connector.",
+	"description":     "A description of what your connector is used for.",
+	"disabled":        "Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.",
+	"http_source_url": "The URL associated with an HTTP Hosted collector",
+	"audit_enabled":   "Whether to enable streaming of audit events.",
+}
+
 var docsCoralogixConnector = map[string]string{
 	"project_id":    "The ID of the Descope project that the connector belongs to. Changing this value will require the resource to be deleted and recreated.",
 	"name":          "A custom name for your connector.",
@@ -554,8 +870,13 @@ var docsCoralogixConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsCriblConnector = map[string]string{
@@ -575,8 +896,13 @@ var docsCriblConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsDarwiniumConnector = map[string]string{
@@ -615,8 +941,13 @@ var docsDatadogConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsDevRevGrowConnector = map[string]string{
@@ -794,6 +1125,9 @@ var docsGoogleCloudLoggingConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
@@ -831,8 +1165,13 @@ var docsGroundcoverConnector = map[string]string{
 	"audit_enabled":    "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsHCaptchaConnector = map[string]string{
@@ -1002,9 +1341,14 @@ var docsMicrosoftSentinelConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"troubleshoot_stream_name": "The data collection rule stream that receives the troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsMixpanelConnector = map[string]string{
@@ -1022,6 +1366,9 @@ var docsMixpanelConnector = map[string]string{
 	"audit_enabled":            "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"override_logs_prefix":     "Enable this option to use a custom prefix for log fields.",
 	"logs_prefix":              "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
@@ -1053,6 +1400,9 @@ var docsNewRelicConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 	"override_logs_prefix":     "Enable this option to use a custom prefix for log fields.",
 	"logs_prefix":              "Specify a custom prefix for all log fields. The default prefix is `descope.`.",
@@ -1074,6 +1424,9 @@ var docsOpenTelemetryConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
@@ -1088,8 +1441,13 @@ var docsPendoConnector = map[string]string{
 	"audit_enabled":   "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsPingDirectoryConnector = map[string]string{
@@ -1160,6 +1518,7 @@ var docsRecaptchaEnterpriseConnector = map[string]string{
 	"assessment_score": "When configured, the Recaptcha action will return the score without assessing " +
 		"the request. The score ranges between 0 and 1, where 1 is a human interaction " +
 		"and 0 is a bot.",
+	"use_static_ips": "Whether the connector should send all requests from specific static IPs.",
 }
 
 var docsRecaptchaV2Connector = map[string]string{
@@ -1257,7 +1616,8 @@ var docsSegmentConnector = map[string]string{
 	"host":        "The base URL of the Segment API, when using a custom domain in Segment.",
 	"browser_analytics": "Load Segment's analytics.js library in your end users' browsers during flows, so " +
 		"Segment can recognize the same visitor across your sites. Loading the library " +
-		"sends no events on its own, and you choose which screens or actions load it.",
+		"sends no events on its own, and you choose which screens or actions load it. " +
+		"With Auto Audit on, it loads in every flow.",
 	"public_write_key": "The write key of your Segment JavaScript Website source. This is a different " +
 		"Segment source than the Write Key field, and unlike it this value is visible to " +
 		"end users, which is how Segment's browser library works.",
@@ -1402,12 +1762,17 @@ var docsSnowflakeConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"min_flush_interval_minutes": "The minimum time between writes to Snowflake, in minutes. When set, events are " +
 		"accumulated and written in a single batch at most once per interval, which lets " +
 		"the warehouse auto-suspend between writes and reduces cost. Set to 0 (or leave " +
 		"empty) to write events according to the default Descope cycle.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
-	"mask_pii":                 "Whether to mask personally identifiable information in the logs.",
+	"mask_pii": "Whether to mask personally identifiable information in the logs. Learn more " +
+		"about what is masked: " +
+		"https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs",
 }
 
 var docsSNSConnector = map[string]string{
@@ -1442,6 +1807,9 @@ var docsSplunkConnector = map[string]string{
 	"audit_enabled": "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
@@ -1482,6 +1850,9 @@ var docsSumoLogicConnector = map[string]string{
 	"audit_enabled":   "Whether to enable streaming of audit events.",
 	"audit_filters": "Specify which events will be sent to the external audit service (including " +
 		"tenant selection).",
+	"company_audits_disabled": "Stop sending company-level audit events, such as console logins and management " +
+		"key changes, to this connector. Stream them once for the whole company with the " +
+		"company audit connector in Company Settings instead.",
 	"troubleshoot_log_enabled": "Whether to send troubleshooting events.",
 }
 
@@ -1761,8 +2132,8 @@ var docsInboundApp = map[string]string{
 		"since the epoch for `date`, and an `MM-DD` string for `monthday`. Values set outside Terraform are removed on the " +
 		"next apply unless they are also in this attribute, so the first plan after adding it, or after upgrading the " +
 		"provider, shows those values as removed.",
-	"tags": "Labels for this inbound app, matched by policy rules through `client.tags` conditions. Up to 100 tags, " +
-		"each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.",
+	"tags": "Labels for this inbound app, matched by policy rules through `client.tags` conditions. " +
+		"Up to 100 tags, each up to 100 bytes. Setting this replaces any tags set elsewhere, such as in the console.",
 }
 
 var docsScopeClaimMapping = map[string]string{

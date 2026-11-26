@@ -32,9 +32,10 @@ Manages a Snowflake connector and its configuration in a Descope project. Stream
 - `audit_filters` (Attributes List) Specify which events will be sent to the external audit service (including tenant selection). (see [below for nested schema](#nestedatt--audit_filters))
 - `audit_table` (String) The table to write audit events to, exactly as stored (unquoted names are uppercased: audit_logs->AUDIT_LOGS). Run SHOW TABLES to check. Defaults to `DESCOPE_AUDIT_LOGS`.
 - `auth_type` (String) How Descope authenticates to the Snowflake SQL API. See the connector documentation for the setup steps of each method.
+- `company_audits_disabled` (Boolean) Stop sending company-level audit events, such as console logins and management key changes, to this connector. Stream them once for the whole company with the company audit connector in Company Settings instead.
 - `description` (String) A description of what your connector is used for.
 - `disabled` (Boolean) Whether the connector is disabled. This can be used to temporarily stop a connector from executing without fully deleting it.
-- `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs.
+- `mask_pii` (Boolean) Whether to mask personally identifiable information in the logs. Learn more about what is masked: https://docs.descope.com/audit-trails-and-integrations/masking-pii-in-audit-logs
 - `min_flush_interval_minutes` (Number) The minimum time between writes to Snowflake, in minutes. When set, events are accumulated and written in a single batch at most once per interval, which lets the warehouse auto-suspend between writes and reduces cost. Set to 0 (or leave empty) to write events according to the default Descope cycle.
 - `private_key` (String, Sensitive) The private key in PEM format, RSA 2048-bit or stronger. Descope reads PKCS#8 encrypted with PBES2, or unencrypted PKCS#8 or PKCS#1. For Snowflake's own key-pair requirements see https://docs.snowflake.com/en/user-guide/key-pair-auth.
 - `private_key_passphrase` (String, Sensitive) Required only if the private key is passphrase-protected. Leave empty for an unencrypted key.

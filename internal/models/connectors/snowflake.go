@@ -41,6 +41,7 @@ var SnowflakeConnectorAttributes = map[string]schema.Attribute{
 	"self_provision":             boolattr.Default(false),
 	"audit_enabled":              boolattr.Default(true),
 	"audit_filters":              listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"company_audits_disabled":    boolattr.Default(false),
 	"min_flush_interval_minutes": floatattr.Default(15),
 	"troubleshoot_log_enabled":   boolattr.Default(false),
 	"mask_pii":                   boolattr.Default(false),
@@ -69,6 +70,7 @@ type SnowflakeConnectorModel struct {
 	SelfProvision           boolattr.Type                        `tfsdk:"self_provision"`
 	AuditEnabled            boolattr.Type                        `tfsdk:"audit_enabled"`
 	AuditFilters            listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	CompanyAuditsDisabled   boolattr.Type                        `tfsdk:"company_audits_disabled"`
 	MinFlushIntervalMinutes floatattr.Type                       `tfsdk:"min_flush_interval_minutes"`
 	TroubleshootLogEnabled  boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
 	MaskPII                 boolattr.Type                        `tfsdk:"mask_pii"`
@@ -130,6 +132,9 @@ func (m *SnowflakeConnectorModel) Validate(h *helpers.Handler) {
 	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
+	if m.CompanyAuditsDisabled.ValueBool() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+		h.Conflict("The company_audits_disabled field cannot be used when audit_enabled isn't set to true")
+	}
 }
 
 // Configuration
@@ -150,6 +155,7 @@ func (m *SnowflakeConnectorModel) ConfigurationValues(h *helpers.Handler) map[st
 	boolattr.Get(m.SelfProvision, c, "selfProvision")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	boolattr.Get(m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	floatattr.Get(m.MinFlushIntervalMinutes, c, "minFlushIntervalMinutes")
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.MaskPII, c, "maskPII")
@@ -171,6 +177,7 @@ func (m *SnowflakeConnectorModel) SetConfigurationValues(c map[string]any, h *he
 	boolattr.Set(&m.SelfProvision, c, "selfProvision")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+	boolattr.Set(&m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	floatattr.Set(&m.MinFlushIntervalMinutes, c, "minFlushIntervalMinutes")
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Set(&m.MaskPII, c, "maskPII")

@@ -26,6 +26,7 @@ func TestAuditWebhookConnector(t *testing.T) {
 				hmac_secret = "ooxzct5yxz"
 				insecure = false
 				audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+				company_audits_disabled = true
 			`),
 			Check: c.Check(map[string]any{
 				"id":                          testacc.AttributeIsSet,
@@ -40,6 +41,7 @@ func TestAuditWebhookConnector(t *testing.T) {
 				"hmac_secret":                 "ooxzct5yxz",
 				"insecure":                    false,
 				"audit_filters.0.values":      []string{"kekpon4oj34w"},
+				"company_audits_disabled":     true,
 			}),
 		},
 		// update the connector in place with changed field values
@@ -57,6 +59,7 @@ func TestAuditWebhookConnector(t *testing.T) {
 				hmac_secret = "twukowwuij"
 				insecure = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["po4by43vyqpb"] }]
+				company_audits_disabled = false
 			`),
 			Check: c.Check(map[string]any{
 				"description":                 "updated",
@@ -68,6 +71,7 @@ func TestAuditWebhookConnector(t *testing.T) {
 				"hmac_secret":                 "twukowwuij",
 				"insecure":                    true,
 				"audit_filters.0.values":      []string{"po4by43vyqpb"},
+				"company_audits_disabled":     false,
 			}),
 		},
 	)

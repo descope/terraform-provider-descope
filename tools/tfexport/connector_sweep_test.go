@@ -64,6 +64,9 @@ func connectorSeedConfigs(t *testing.T) map[string]string {
 
 	configs := map[string]string{}
 	for _, file := range files {
+		if strings.HasPrefix(filepath.Base(file), "company_") {
+			continue
+		}
 		content, err := os.ReadFile(file)
 		if err != nil {
 			t.Fatal(err)

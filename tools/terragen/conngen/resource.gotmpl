@@ -28,7 +28,9 @@ import (
 	"github.com/hashicorp/terraform-plugin-framework-validators/stringvalidator"
     {{- end }}
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema"
+    {{- if not .Company }}
 	"github.com/hashicorp/terraform-plugin-framework/resource/schema/stringplanmodifier"
+    {{- end }}
 )
 
 // descope_{{.ResourceName}} is a standalone {{.Name}} connector with a server-assigned id.
@@ -40,7 +42,9 @@ var {{.ResourceStructName}}Schema = schema.Schema{
 
 var {{.ResourceStructName}}Attributes = map[string]schema.Attribute{
 	"id":          stringattr.Identifier(),
+    {{- if not .Company }}
 	"project_id":  stringattr.Required(stringplanmodifier.RequiresReplace()),
+    {{- end }}
 	"name":        stringattr.Required(stringattr.StandardLenValidator),
 	"description": stringattr.Default(""),
     {{- if not .ExtProvider }}
@@ -56,7 +60,9 @@ var {{.ResourceStructName}}Attributes = map[string]schema.Attribute{
 
 type {{.ResourceStructName}}Model struct {
 	ID          stringattr.Type `tfsdk:"id"`
+    {{- if not .Company }}
 	ProjectID   stringattr.Type `tfsdk:"project_id"`
+    {{- end }}
 	Name        stringattr.Type `tfsdk:"name"`
 	Description stringattr.Type `tfsdk:"description"`
     {{- if not .ExtProvider }}
@@ -178,4 +184,8 @@ func (m *{{.ResourceStructName}}Model) SetConfigurationValues(c map[string]any, 
 
 func (m *{{.ResourceStructName}}Model) GetID() stringattr.Type        { return m.ID }
 func (m *{{.ResourceStructName}}Model) SetID(id stringattr.Type)      { m.ID = id }
+{{- if .Company }}
+func (m *{{.ResourceStructName}}Model) GetProjectID() stringattr.Type { return stringattr.Value("") }
+{{- else }}
 func (m *{{.ResourceStructName}}Model) GetProjectID() stringattr.Type { return m.ProjectID }
+{{- end }}

@@ -33,6 +33,7 @@ var MixpanelConnectorAttributes = map[string]schema.Attribute{
 	"eu_residency":             boolattr.Default(false),
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"company_audits_disabled":  boolattr.Default(false),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 	"override_logs_prefix":     boolattr.Default(false),
 	"logs_prefix":              stringattr.Default("descope."),
@@ -55,6 +56,7 @@ type MixpanelConnectorModel struct {
 	EUResidency            boolattr.Type                        `tfsdk:"eu_residency"`
 	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
 	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	CompanyAuditsDisabled  boolattr.Type                        `tfsdk:"company_audits_disabled"`
 	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
 	OverrideLogsPrefix     boolattr.Type                        `tfsdk:"override_logs_prefix"`
 	LogsPrefix             stringattr.Type                      `tfsdk:"logs_prefix"`
@@ -92,6 +94,9 @@ func (m *MixpanelConnectorModel) Validate(h *helpers.Handler) {
 	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
+	if m.CompanyAuditsDisabled.ValueBool() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+		h.Conflict("The company_audits_disabled field cannot be used when audit_enabled isn't set to true")
+	}
 }
 
 // Configuration
@@ -106,6 +111,7 @@ func (m *MixpanelConnectorModel) ConfigurationValues(h *helpers.Handler) map[str
 	boolattr.Get(m.EUResidency, c, "euResidency")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	boolattr.Get(m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Get(m.OverrideLogsPrefix, c, "overrideLogsPrefix")
 	stringattr.Get(m.LogsPrefix, c, "logsPrefix")
@@ -121,6 +127,7 @@ func (m *MixpanelConnectorModel) SetConfigurationValues(c map[string]any, h *hel
 	boolattr.Set(&m.EUResidency, c, "euResidency")
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+	boolattr.Set(&m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	boolattr.Set(&m.OverrideLogsPrefix, c, "overrideLogsPrefix")
 	stringattr.Set(&m.LogsPrefix, c, "logsPrefix")

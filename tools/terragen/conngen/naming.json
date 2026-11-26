@@ -602,6 +602,10 @@
       "attribute": "collection_id",
       "struct": "CollectionID"
     },
+    "companyAuditsDisabled": {
+      "attribute": "company_audits_disabled",
+      "struct": "CompanyAuditsDisabled"
+    },
     "companyId": {
       "attribute": "company_id",
       "struct": "CompanyID"
@@ -845,6 +849,10 @@
     "originationNumber": {
       "attribute": "origination_number",
       "struct": "OriginationNumber"
+    },
+    "outputFormat": {
+      "attribute": "output_format",
+      "struct": "OutputFormat"
     },
     "overrideAssessment": {
       "attribute": "override_assessment",

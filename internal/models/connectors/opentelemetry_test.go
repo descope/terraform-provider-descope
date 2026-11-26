@@ -27,6 +27,7 @@ func TestOpenTelemetryConnector(t *testing.T) {
 				insecure = false
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["kekpon4oj34w"] }]
+				company_audits_disabled = true
 				troubleshoot_log_enabled = false
 			`),
 			Check: c.Check(map[string]any{
@@ -43,6 +44,7 @@ func TestOpenTelemetryConnector(t *testing.T) {
 				"insecure":                    false,
 				"audit_enabled":               true,
 				"audit_filters.0.values":      []string{"kekpon4oj34w"},
+				"company_audits_disabled":     true,
 				"troubleshoot_log_enabled":    false,
 			}),
 		},
@@ -62,6 +64,7 @@ func TestOpenTelemetryConnector(t *testing.T) {
 				insecure = true
 				audit_enabled = true
 				audit_filters = [{ key = "actions", operator = "includes", values = ["po4by43vyqpb"] }]
+				company_audits_disabled = false
 				troubleshoot_log_enabled = true
 			`),
 			Check: c.Check(map[string]any{
@@ -75,6 +78,7 @@ func TestOpenTelemetryConnector(t *testing.T) {
 				"insecure":                    true,
 				"audit_enabled":               true,
 				"audit_filters.0.values":      []string{"po4by43vyqpb"},
+				"company_audits_disabled":     false,
 				"troubleshoot_log_enabled":    true,
 			}),
 		},

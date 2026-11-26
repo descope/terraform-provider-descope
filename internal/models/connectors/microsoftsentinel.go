@@ -33,6 +33,7 @@ var MicrosoftSentinelConnectorAttributes = map[string]schema.Attribute{
 	"client_secret":            stringattr.SecretRequired(),
 	"audit_enabled":            boolattr.Default(true),
 	"audit_filters":            listattr.Default[AuditFilterFieldModel](AuditFilterFieldAttributes),
+	"company_audits_disabled":  boolattr.Default(false),
 	"troubleshoot_log_enabled": boolattr.Default(false),
 	"troubleshoot_stream_name": stringattr.Default("Custom-DescopeTroubleshoot_CL"),
 	"mask_pii":                 boolattr.Default(false),
@@ -55,6 +56,7 @@ type MicrosoftSentinelConnectorModel struct {
 	ClientSecret           stringattr.Type                      `tfsdk:"client_secret"`
 	AuditEnabled           boolattr.Type                        `tfsdk:"audit_enabled"`
 	AuditFilters           listattr.Type[AuditFilterFieldModel] `tfsdk:"audit_filters"`
+	CompanyAuditsDisabled  boolattr.Type                        `tfsdk:"company_audits_disabled"`
 	TroubleshootLogEnabled boolattr.Type                        `tfsdk:"troubleshoot_log_enabled"`
 	TroubleshootStreamName stringattr.Type                      `tfsdk:"troubleshoot_stream_name"`
 	MaskPII                boolattr.Type                        `tfsdk:"mask_pii"`
@@ -92,6 +94,9 @@ func (m *MicrosoftSentinelConnectorModel) Validate(h *helpers.Handler) {
 	if !m.AuditFilters.IsEmpty() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
 		h.Conflict("The audit_filters field cannot be used when audit_enabled isn't set to true")
 	}
+	if m.CompanyAuditsDisabled.ValueBool() && !m.AuditEnabled.IsUnknown() && !m.AuditEnabled.IsNull() && !m.AuditEnabled.ValueBool() {
+		h.Conflict("The company_audits_disabled field cannot be used when audit_enabled isn't set to true")
+	}
 }
 
 // Configuration
@@ -106,6 +111,7 @@ func (m *MicrosoftSentinelConnectorModel) ConfigurationValues(h *helpers.Handler
 	stringattr.Get(m.ClientSecret, c, "clientSecret")
 	boolattr.Get(m.AuditEnabled, c, "auditEnabled")
 	listattr.Get(m.AuditFilters, c, "auditFilters", h)
+	boolattr.Get(m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	boolattr.Get(m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	stringattr.Get(m.TroubleshootStreamName, c, "troubleshootStreamName")
 	boolattr.Get(m.MaskPII, c, "maskPII")
@@ -121,6 +127,7 @@ func (m *MicrosoftSentinelConnectorModel) SetConfigurationValues(c map[string]an
 	stringattr.SetSecret(&m.ClientSecret, c, "clientSecret", h)
 	boolattr.Set(&m.AuditEnabled, c, "auditEnabled")
 	listattr.Set(&m.AuditFilters, c, "auditFilters", h)
+	boolattr.Set(&m.CompanyAuditsDisabled, c, "companyAuditsDisabled")
 	boolattr.Set(&m.TroubleshootLogEnabled, c, "troubleshootLogEnabled")
 	stringattr.Set(&m.TroubleshootStreamName, c, "troubleshootStreamName")
 	boolattr.Set(&m.MaskPII, c, "maskPII")
