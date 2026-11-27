@@ -39,6 +39,8 @@ var replaceModifierAllowlist = map[string]bool{
 	"descope_access_key_attribute type":  true,
 	"descope_inbound_app_attribute id":   true,
 	"descope_inbound_app_attribute type": true,
+	"descope_tenant id":                  true,
+	"descope_tenant parent":              true,
 }
 
 // Guards the deletion protection invariant: isPlannedReplace only detects RequiresReplace on top level string and bool attributes, so
